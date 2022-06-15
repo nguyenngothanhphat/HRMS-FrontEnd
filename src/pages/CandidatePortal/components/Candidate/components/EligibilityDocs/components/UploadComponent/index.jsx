@@ -12,13 +12,14 @@ const UploadComponent = (props) => {
     getResponse = () => {},
   } = props;
 
-  const imageType = (fileName) => {
+  const isFileValid = (fileName) => {
     const parts = fileName.split('.');
     const ext = parts[parts.length - 1];
     switch (ext.toLowerCase()) {
       case 'jpg':
       case 'jpeg':
       case 'png':
+      case 'pdf':
         return true;
       default:
         return false;
@@ -26,7 +27,7 @@ const UploadComponent = (props) => {
   };
 
   const beforeUpload = (f) => {
-    const checkType = imageType(f.name);
+    const checkType = isFileValid(f.name);
     const isLt5M = f.size / 1024 / 1024 < 5;
     return checkType && isLt5M;
   };

@@ -1,14 +1,14 @@
 import { Col, Row } from 'antd';
 import React, { PureComponent } from 'react';
+import Joyride from 'react-joyride';
 import { connect } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
-// import ApplicationStatus from './components/ApplicationStatus';
-import ApplicationStatus from './components/NewApplicationStatus';
+import { NEW_COMER_STEPS } from '@/utils/candidatePortal';
+import { getIsFirstLogin, setIsFirstLogin } from '@/utils/authority';
 import CompanyProfile from './components/CompanyProfile';
-// import EmployeeDetails from './components/EmployeeDetails';
-import styles from './index.less';
+import ApplicationStatus from './components/NewApplicationStatus';
 import PendingTasks from './components/PendingTasks';
 import YourActivity from './components/YourActivity';
+import styles from './index.less';
 
 @connect(
   ({
@@ -33,8 +33,16 @@ class Dashboard extends PureComponent {
     }
   };
 
+  handleJoyrideCallback = (data) => {
+    const { status } = data;
+    if (status === 'finished') {
+      setIsFirstLogin(false);
+    }
+  };
+
   render() {
     const { loadingFetchCandidate, data = {} } = this.props;
+    const isFirstLogin = getIsFirstLogin();
 
     return (
       <div className={styles.Dashboard}>
@@ -46,33 +54,41 @@ class Dashboard extends PureComponent {
             style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
           >
             <Row span={24} gutter={[24, 24]} style={{ marginBottom: '24px' }}>
-              <Col xs={24}>
+              <Col xs={24} className="applicationStatus">
                 <ApplicationStatus loading={loadingFetchCandidate} data={data} />
               </Col>
-              {/* <Col xs={24} sm={16} lg={16}>
-                <EmployeeDetails loading={loadingFetchCandidate} data={data} />
-              </Col> */}
             </Row>
 
             <Row span={24} gutter={[24, 24]} style={{ height: '100%' }}>
-              <Col xs={24} lg={14}>
+              <Col xs={24} lg={14} className="yourActivity">
                 <YourActivity />
               </Col>
-              <Col xs={24} lg={10}>
+              <Col xs={24} lg={10} className="pendingTasks">
                 <PendingTasks />
               </Col>
             </Row>
           </Col>
 
-          <Col sm={24} lg={8}>
+          <Col sm={24} lg={8} className="companyProfile">
             <CompanyProfile />
           </Col>
         </Row>
-        {/* <Row span={24} gutter={[24, 24]}>
-          <Col span={24}>
-            <QueryBar />
-          </Col>
-        </Row> */}
+        <Joyride
+          steps={NEW_COMER_STEPS}
+          continuous
+          showProgress
+          showSkipButton
+          run={isFirstLogin}
+          callback={this.handleJoyrideCallback}
+          close
+          styles={{
+            options: {
+              primaryColor: '#ffa100',
+              width: 300,
+              zIndex: 2023,
+            },
+          }}
+        />
       </div>
     );
   }

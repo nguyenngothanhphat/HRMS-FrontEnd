@@ -1,3 +1,5 @@
+import { history } from 'umi';
+import { notification } from 'antd';
 import { dialog } from '@/utils/utils';
 import {
   getCompaniesList,
@@ -14,8 +16,6 @@ import {
   getCompanyTypeList,
   getIndustryList,
 } from '@/services/companiesManangement';
-import { history } from 'umi';
-import { notification } from 'antd';
 import { getCurrentCompany } from '@/utils/authority';
 
 const companiesManagement = {
