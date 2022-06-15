@@ -1,25 +1,30 @@
 import { Card, Col, Row, Divider, Avatar, Tooltip, Popover } from 'antd';
 import React from 'react';
 import moment from 'moment';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import avtDefault from '@/assets/defaultAvatar.png';
 import IconPopup from './assets/popupIcon.svg';
 import styles from './index.less';
-import { dateFormat } from '@/utils/offboarding';
+import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
 
-const RequestDraft = (props) => {
+const { STATUS } = OFFBOARDING;
+
+const YourRequest = (props) => {
   const {
     status = '',
-    data: { ticketId = '', updatedAt = '', reason = '', createdAt = '', LWD = '' } = {},
+    data: { ticketId = '', updatedAt = '', reason = '', createdAt = '', LWD = '', _id = '' } = {},
+    getMyRequest = () => {},
     dispatch,
+
+
   } = props;
 
   const renderTitle = (statusProps) => {
     switch (statusProps) {
-      case 'In Progress':
-      case 'Approved':
+      case STATUS.IN_PROGRESS:
+      case STATUS.ACCEPTED:
         return 'Your Request';
-      case 'Draft':
+      case STATUS.DRAFT:
         return 'Saved Draft';
       default:
         return '';
@@ -28,7 +33,7 @@ const RequestDraft = (props) => {
 
   const renderStatus = (statusProps) => {
     switch (statusProps) {
-      case 'DRAFT':
+      case STATUS.DRAFT:
         return (
           <div className={styles.containerStatus}>
             <div>Status: </div>
@@ -36,8 +41,7 @@ const RequestDraft = (props) => {
             <div style={{ color: '#fd4546' }}>Draft</div>
           </div>
         );
-      case 'In Progress':
-      case 'Approved':
+      case STATUS.IN_PROGRESS:
         return (
           <div className={styles.containerStatus}>
             <div>Status: </div>
@@ -45,7 +49,7 @@ const RequestDraft = (props) => {
             <div style={{ color: '#ffa100' }}>In Progress</div>
           </div>
         );
-      case 'Acepted':
+      case STATUS.ACCEPTED:
         return (
           <div className={styles.containerStatus}>
             <div>Status: </div>
@@ -68,7 +72,7 @@ const RequestDraft = (props) => {
   };
 
   const handleEdit = () => {
-    history.push('/offboarding/list/my-request/new');
+    history.push(`/offboarding/list/my-request/edit/${_id}`);
   };
 
   const handleDelete = () => {
@@ -78,31 +82,31 @@ const RequestDraft = (props) => {
     }).then((res) => {
       const { statusCode = '' } = res;
       if (statusCode === 200) {
-        history.push('/offboarding/list');
+        getMyRequest();
       }
     });
   };
 
   const renderButton = (statusProps) => {
     switch (statusProps) {
-      case 'DRAFT':
+      case STATUS.DRAFT:
         return (
           <div className={styles.containerBtn}>
             <div className={styles.btnEdit} onClick={handleEdit}>
-              Back to edit{' '}
+              Back to edit
             </div>
             <div className={styles.btnDelete} onClick={handleDelete}>
-              Delete{' '}
+              Delete
             </div>
           </div>
         );
-      case 'In Progress':
+      case STATUS.IN_PROGRESS:
         return (
           <div className={styles.containerBtn}>
             <div className={styles.btnWithdraw}>Withdraw </div>
           </div>
         );
-      case 'Approved':
+      case STATUS.ACCEPTED:
         return (
           <div className={styles.containerBtn}>
             <Popover
@@ -131,7 +135,7 @@ const RequestDraft = (props) => {
 
   const renderContent = (statusProps) => {
     switch (statusProps) {
-      case 'DRAFT':
+      case STATUS.DRAFT:
         return (
           <div className={styles.containerContent}>
             <Row gutter={[24, 24]}>
@@ -164,8 +168,8 @@ const RequestDraft = (props) => {
             </Row>
           </div>
         );
-      case 'In Progress':
-      case 'Approved':
+      case STATUS.IN_PROGRESS:
+      case STATUS.ACCEPTED:
         return (
           <div className={styles.containerContent}>
             <Row gutter={[24, 24]}>
@@ -225,7 +229,7 @@ const RequestDraft = (props) => {
   };
 
   return (
-    <div className={styles.RequestDraft}>
+    <div className={styles.YourRequest}>
       <Card title={renderTitle(status)} extra={renderStatus(status)}>
         {renderContent(status)}
         <Divider />
@@ -235,4 +239,4 @@ const RequestDraft = (props) => {
   );
 };
 
-export default RequestDraft;
+export default connect()(YourRequest);

@@ -5,12 +5,12 @@ import { PageContainer } from '@/layouts/layout/src';
 import ViewLeftInitial from './components/ViewLeftInitial';
 import ChainOfApproval from './components/ChainOfApproval';
 import RequestDetail from './components/RequestDetail';
-import RequestDraft from './components/RequestDraft';
-import ConfirmRequest from './components/ConfirmRequest';
+import YourRequest from './components/YourRequest';
+import WhatNext from './components/WhatNext';
 import RelievingFormalities from './RelievingFormalities';
 import styles from './index.less';
 import OffboardingWorkFlow from './components/OffboardingWorkFlow';
-import ViewRightQuicklLink from './components/ViewRightQuicklLink';
+import ViewRightQuickLink from './components/ViewRightQuickLink';
 import ViewRight from './components/ViewRight';
 import DidYouKnow from './components/DidYouKnow';
 import ViewRightNote from './components/ViewRightNote';
@@ -29,7 +29,7 @@ const EmployeeView = (props) => {
 
   const [relievingInQueue, setRelievingInQueue] = useState(false);
 
-  const getMyRequestEffect = () => {
+  const getMyRequest = () => {
     dispatch({
       type: 'offboarding/getMyRequestEffect',
       payload: {},
@@ -39,8 +39,8 @@ const EmployeeView = (props) => {
   useEffect(() => {
     if (!tabName) {
       history.replace(`/offboarding/list`);
-    } else getMyRequestEffect();
-  }, [status]);
+    } else getMyRequest();
+  }, []);
 
   const renderContent = (statusProps) => {
     switch (statusProps) {
@@ -63,7 +63,7 @@ const EmployeeView = (props) => {
                   <ViewRight />
                 </Col>
                 <Col span={24}>
-                  <ViewRightQuicklLink />
+                  <ViewRightQuickLink />
                 </Col>
               </Row>
             </Col>
@@ -75,10 +75,15 @@ const EmployeeView = (props) => {
             <Col span={17}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <RequestDraft data={myRequest} employee={employee} status={status} />
+                  <YourRequest
+                    data={myRequest}
+                    employee={employee}
+                    status={status}
+                    getMyRequest={getMyRequest}
+                  />
                 </Col>
                 <Col span={24}>
-                  <OffboardingWorkFlow employee={employee} step={step} />
+                  <OffboardingWorkFlow employee={employee} step={step} status={status} />
                 </Col>
               </Row>
             </Col>
@@ -103,11 +108,12 @@ const EmployeeView = (props) => {
                   <RequestDetail
                     data={myRequest}
                     // fetchData={fetchData}
+                    getMyRequest={getMyRequest}
                     employee={employee}
                   />
                 </Col>
                 <Col span={24}>
-                  <ConfirmRequest />
+                  <OffboardingWorkFlow employee={employee} step={step} status={status} />
                 </Col>
               </Row>
             </Col>
@@ -136,7 +142,7 @@ const EmployeeView = (props) => {
                   />
                 </Col>
                 <Col span={24}>
-                  <OffboardingWorkFlow employee={employee} />
+                  <OffboardingWorkFlow employee={employee} status={status} step={step} />
                 </Col>
               </Row>
             </Col>
@@ -146,7 +152,7 @@ const EmployeeView = (props) => {
                   <ViewRight />
                 </Col>
                 <Col span={24}>
-                  <ViewRightQuicklLink />
+                  <ViewRightQuickLink />
                 </Col>
               </Row>
             </Col>
@@ -170,7 +176,7 @@ const EmployeeView = (props) => {
               <div className={styles.paddingHR}>
                 <div className={styles.root}>
                   <Spin spinning={loadingStatus}>
-                    {status ? (
+                    {myRequest !== null ? (
                       renderContent(status)
                     ) : (
                       <Row className={styles.content} gutter={[24, 24]}>
@@ -184,7 +190,11 @@ const EmployeeView = (props) => {
                               />
                             </Col>
                             <Col span={24}>
-                              <OffboardingWorkFlow employee={employee} />
+                              <OffboardingWorkFlow
+                                employee={employee}
+                                status={status}
+                                step={step}
+                              />
                             </Col>
                           </Row>
                         </Col>
@@ -194,7 +204,7 @@ const EmployeeView = (props) => {
                               <ViewRight />
                             </Col>
                             <Col span={24}>
-                              <ViewRightQuicklLink />
+                              <ViewRightQuickLink />
                             </Col>
                           </Row>
                         </Col>

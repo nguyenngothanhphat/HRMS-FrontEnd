@@ -4,7 +4,7 @@ import avtDefault from '@/assets/defaultAvatar.png';
 import styles from './index.less';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
-const ConfirmRequest = (props) => {
+const WhatNext = (props) => {
   const {
     employee: {
       managerInfo: {
@@ -91,7 +91,7 @@ const ConfirmRequest = (props) => {
   };
 
   return (
-    <div className={styles.ConfirmRequest}>
+    <div className={styles.WhatNext}>
       <Card title="What's next?">
         {renderContent()}
         {renderButtons()}
@@ -100,4 +100,4 @@ const ConfirmRequest = (props) => {
   );
 };
 
-export default ConfirmRequest;
+export default WhatNext;

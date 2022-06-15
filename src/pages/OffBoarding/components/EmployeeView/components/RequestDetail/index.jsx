@@ -1,26 +1,28 @@
 import { Card, Col, Divider, Row } from 'antd';
+import moment from 'moment';
 import React, { useState } from 'react';
 import { connect, history } from 'umi';
-import moment from 'moment';
-import styles from './index.less';
-import SetMeetingModal from '../../../SetMeetingModal';
+import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
-import { dateFormat } from '@/utils/offboarding';
+import SetMeetingModal from '../../../SetMeetingModal';
 
+import styles from './index.less';
+
+const { STATUS } = OFFBOARDING;
 const RequestDetail = (props) => {
   const {
     loading = false,
     employee = {},
     dispatch,
-    data: { ticketId = '', createdAt = '', LWD = '', reason = '' } = {},
+    data: { ticketId = '', createdAt = '', LWD = '', reason = '', status } = {},
+    getMyRequest = () => {},
   } = props;
 
   const [visible, setVisible] = useState(false);
-  const status = 'In Progress';
 
   const renderStatus = (statusPorps) => {
-    if (statusPorps === 'DRAFT') {
+    if (statusPorps === STATUS.DRAFT) {
       return (
         <div className={styles.containerStatus}>
           <div>Status: </div>
@@ -47,7 +49,7 @@ const RequestDetail = (props) => {
     }).then((res) => {
       const { statusCode = '' } = res;
       if (statusCode === 200) {
-        history.push('/offboarding/list');
+        getMyRequest();
       }
     });
   };
@@ -92,10 +94,7 @@ const RequestDetail = (props) => {
         title="Set 1-on1 with Manager"
         onClose={() => setVisible(false)}
         partnerRole="Manager"
-        employee={{
-          generalInfo: employee?.managerInfo?.generalInfoInfo,
-          title: employee?.managerInfo?.titleInfo,
-        }}
+        employee={employee}
         onFinish={onFinish}
       />
     </div>

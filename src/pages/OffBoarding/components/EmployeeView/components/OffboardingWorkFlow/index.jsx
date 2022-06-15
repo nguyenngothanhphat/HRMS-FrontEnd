@@ -5,7 +5,7 @@ import styles from './index.less';
 import { OFFBOARDING } from '@/utils/offboarding';
 
 const { Step } = Steps;
-const { STEP } = OFFBOARDING;
+const { STEP, STATUS } = OFFBOARDING;
 const current = 0;
 const steps1 = [
   {
@@ -42,7 +42,7 @@ const steps2 = [
 ];
 
 const OffboardingWorkFlow = (props) => {
-  const { step = '' } = props;
+  const { step = '', status = '' } = props;
 
   const handleResignation = () => {
     history.push('/offboarding/list/my-request/new');
@@ -54,21 +54,26 @@ const OffboardingWorkFlow = (props) => {
       case STEP.SUBMIT_REQUEST:
         return 1;
       case STEP.VS_MANAGER:
-        return 0;
+        return 2;
       case STEP.APPROVE:
-        return 0;
+        return 3;
       default:
         return 0;
     }
   };
+
   return (
     <Card
       className={styles.OffboardingWorkFlow}
       title="Offboarding Workflow"
       extra={
-        <Button onClick={handleResignation} className={styles.stepAction__btn}>
-          Initiate resignation request
-        </Button>
+        status !== STATUS.DRAFT ? (
+          <Button onClick={handleResignation} className={styles.stepAction__btn}>
+            Initiate resignation request
+          </Button>
+        ) : (
+          ''
+        )
       }
     >
       <div className={styles.titleProcessStep}>Step 1: Offboarding</div>
