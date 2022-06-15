@@ -1,4 +1,4 @@
-import { Col, Popover, Row } from 'antd';
+import { Col, Popover, Row, Tag } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import CloseX from '@/assets/dashboard/closeX.svg';
@@ -25,6 +25,7 @@ const UserProfilePopover = (props) => {
     titleInfo = {},
     departmentInfo = {},
     avatar: avatar1 = '',
+    skills = [],
   } = data;
 
   const {
@@ -39,6 +40,47 @@ const UserProfilePopover = (props) => {
     const url = `/directory/employee-profile/${id}`;
     window.open(url, '_blank');
   };
+
+  const formatListSkill = (skill, colors) => {
+    let temp = 0;
+    const listFormat = skill.map((item) => {
+      if (temp >= 5) {
+        temp -= 5;
+      }
+      temp += 1;
+      return {
+        color: colors[temp - 1],
+        name: item.name,
+        id: item._id || item.id,
+      };
+    });
+    return [...listFormat];
+  };
+
+  const listColors = [
+    {
+      bg: '#E0F4F0',
+      colorText: '#00c598',
+    },
+    {
+      bg: '#ffefef',
+      colorText: '#fd4546',
+    },
+    {
+      bg: '#f1edff',
+      colorText: '#6236ff',
+    },
+    {
+      bg: '#f1f8ff',
+      colorText: '#006bec',
+    },
+    {
+      bg: '#fff7fa',
+      colorText: '#ff6ca1',
+    },
+  ];
+
+  const formatedListSkill = formatListSkill(skills, listColors) || [];
 
   const renderHeader = () => {
     return (
@@ -88,6 +130,21 @@ const UserProfilePopover = (props) => {
       {
         label: 'Local Time',
         value: time,
+      },
+      {
+        label: 'Skills',
+        value: formatedListSkill.map((item) => (
+          <Tag
+            style={{
+              color: `${item.color.colorText}`,
+              fontWeight: 500,
+            }}
+            key={item.id}
+            color={item.color.bg}
+          >
+            {item.name}
+          </Tag>
+        )),
       },
     ];
 
