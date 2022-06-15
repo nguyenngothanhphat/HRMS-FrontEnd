@@ -3,9 +3,10 @@ import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { io } from 'socket.io-client';
 import { connect } from 'umi';
-import { ChatEvent, SOCKET_URL } from '@/utils/chatSocket';
+import { ChatEvent } from '@/utils/chatSocket';
 import UnseenIcon from '@/assets/candidatePortal/unseen.svg';
 import SeenIcon from '@/assets/candidatePortal/seen.svg';
+import { SOCKET_URL } from '../../../../../../../config/proxy';
 import styles from './index.less';
 
 @connect(

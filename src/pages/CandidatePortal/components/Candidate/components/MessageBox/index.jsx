@@ -1,12 +1,12 @@
 import { Button, Form, Input, Skeleton } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
-import { connect } from 'umi';
 import { io } from 'socket.io-client';
-import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
+import { connect } from 'umi';
+import { ChatEvent } from '@/utils/chatSocket';
 import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
-import { ChatEvent, SOCKET_URL } from '@/utils/chatSocket';
-
+import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
+import { SOCKET_URL } from '../../../../../../../config/proxy';
 import styles from './index.less';
 
 const { TextArea } = Input;
