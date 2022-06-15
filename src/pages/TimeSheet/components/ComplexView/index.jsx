@@ -226,7 +226,10 @@ const ComplexView = (props) => {
   const viewHRReport = permissions.viewHRReportCVTimesheet === 1;
   const viewFinanceReport = permissions.viewFinanceReportCVTimesheet === 1;
   const viewPeopleManagerReport = permissions.viewPeopleManagerCVTimesheet === 1;
-  const viewPMReport = permissions.viewProjectManagerCVTimesheet === 1;
+  const viewPMReport =
+    permissions.viewProjectManagerCVTimesheet === 1 ||
+    permissions?.viewReportProjectViewTimesheet === 1 ||
+    permissions?.viewReportTeamViewTimesheet === 1;
   const viewSettingTimesheet = permissions.viewSettingTimesheet === 1;
 
   const getActiveKey = () => {

@@ -305,7 +305,7 @@ class ActiveChat extends PureComponent {
     const {
       dispatch,
       activeId = '',
-      candidate: { _id: candidateId = '' } = {},
+      candidate: { _id: candidateId = '', ticketID = '' } = {},
       assignTo = '',
     } = this.props;
     const { message } = values;
@@ -324,6 +324,7 @@ class ActiveChat extends PureComponent {
           sender: candidateId,
           text: message,
           isSeen: true,
+          ticketID,
         },
       });
 
