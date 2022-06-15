@@ -67,7 +67,7 @@ const OffboardingWorkFlow = (props) => {
       className={styles.OffboardingWorkFlow}
       title="Offboarding Workflow"
       extra={
-        status !== STATUS.DRAFT ? (
+        !status ? (
           <Button onClick={handleResignation} className={styles.stepAction__btn}>
             Initiate resignation request
           </Button>

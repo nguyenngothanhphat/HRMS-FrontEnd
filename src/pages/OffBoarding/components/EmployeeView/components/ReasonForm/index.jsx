@@ -20,7 +20,8 @@ const ReasonForm = (props) => {
   const {
     dispatch,
     viewingRequest: { reason: reasonProps = '', status = '' } = {},
-    match: { params: { reId = '' } = {} },
+    match: { params: { reId = '', action = '' } = {} },
+    loading = false,
   } = props;
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [statusState, setStatusState] = useState('');
@@ -55,12 +56,14 @@ const ReasonForm = (props) => {
   };
 
   useEffect(() => {
-    dispatch({
-      type: 'offboarding/getRequestByIdEffect',
-      payload: {
-        offBoardingId: reId,
-      },
-    });
+    if (reId) {
+      dispatch({
+        type: 'offboarding/getRequestByIdEffect',
+        payload: {
+          offBoardingId: reId,
+        },
+      });
+    }
   }, [reId]);
 
   useEffect(() => {
@@ -79,7 +82,7 @@ const ReasonForm = (props) => {
               className={styles.container}
               initialValues={{
                 LWD: moment.utc().add(90, 'days'),
-                reason: reasonProps,
+                reason: action === 'edit' ? reasonProps : '',
               }}
             >
               <div style={{ padding: '24px' }}>
@@ -121,6 +124,7 @@ const ReasonForm = (props) => {
                     htmlType="submit"
                     onClick={() => setStatusState('DRAFT')}
                     disabled={status !== STATUS.DRAFT ? !value : !reasonProps}
+                    loading={loading && statusState === 'DRAFT'}
                   >
                     Save to Draft
                   </CustomSecondaryButton>
@@ -128,6 +132,7 @@ const ReasonForm = (props) => {
                     htmlType="submit"
                     onClick={() => setStatusState('Submit')}
                     disabled={status !== STATUS.DRAFT ? !value : !reasonProps}
+                    loading={loading && statusState === 'Submit'}
                   >
                     Submit
                   </CustomPrimaryButton>
@@ -189,4 +194,5 @@ const ReasonForm = (props) => {
 export default connect(({ offboarding: { viewingRequest = {} } = {}, loading }) => ({
   viewingRequest,
   loadingStatus: loading.effects['offboarding/getMyRequestEffect'],
+  loading: loading.effects['offboarding/createRequestEffect'],
 }))(ReasonForm);
