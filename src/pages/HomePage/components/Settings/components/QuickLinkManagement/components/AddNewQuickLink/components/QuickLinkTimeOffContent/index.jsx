@@ -8,30 +8,29 @@ const { Dragger } = Upload;
 const QuickLinkTimeOffContent = (props) => {
   const { defaultFileList = [] } = props;
 
-  const identifyImage = (fileName) => {
-    const parts = fileName.split('.');
-    const ext = parts[parts.length - 1];
-    switch (ext.toLowerCase()) {
-      case 'pdf':
-        return 1;
+  const beforeUpload = (file) => {
+    let checkType = false;
+    switch (file.type) {
+      case 'image/png':
+      case 'image/jpg':
+      case 'image/jpeg':
+      case 'application/pdf':
+        checkType = true;
+        break;
 
       default:
-        return 0;
+        checkType = false;
+        break;
     }
-  };
-
-  const beforeUpload = (file) => {
-    const checkType = identifyImage(file.name) === 1;
     if (!checkType) {
-      message.error('You can only upload pdf files!');
+      message.error('You can only upload PNG/JPG/JPEG/PDF files');
     }
     const isLt3M = file.size / 1024 / 1024 < 3;
     if (!isLt3M) {
       message.error('File must smaller than 3MB!');
     }
-    return checkType && isLt3M;
+    return (checkType && isLt3M) || Upload.LIST_IGNORE;
   };
-
   return (
     <div className={styles.QuickLinkContent}>
       <Form.Item
