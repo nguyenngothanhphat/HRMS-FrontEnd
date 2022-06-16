@@ -77,7 +77,7 @@ class CandidatePortal extends PureComponent {
     });
     if (conversations.statusCode === 200) {
       dispatch({
-        type: 'conversation/getNumberUnseenConversationEffect',
+        type: 'conversation/getConversationUnSeenEffect',
         payload: {
           userId: candidate._id,
         },
@@ -172,7 +172,7 @@ class CandidatePortal extends PureComponent {
           continuous
           showProgress
           showSkipButton
-          run={true || isFirstLogin}
+          run={isFirstLogin}
           callback={this.handleJoyrideCallback}
           close
           styles={{

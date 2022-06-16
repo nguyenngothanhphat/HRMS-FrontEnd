@@ -1,6 +1,5 @@
 import { Breadcrumb, Button, Dropdown, Layout, Menu, Result, Skeleton } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
-import { io } from 'socket.io-client';
+import React, { useEffect, useState } from 'react';
 import { connect, history, Link } from 'umi';
 import avtDefault from '@/assets/avtDefault.jpg';
 import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
@@ -11,9 +10,8 @@ import CommonModal from '@/pages/CandidatePortal/components/Dashboard/components
 import { getCurrentCompany, getFirstChangePassword } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
 import { CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
-import { ChatEvent } from '@/utils/chatSocket';
+import { ChatEvent, socket, disconnectSocket } from '@/utils/socket';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import { SOCKET_URL } from '../../config/proxy';
 import s from './CandidatePortalLayout.less';
 
 const { Header, Content } = Layout;
@@ -32,7 +30,6 @@ const noMatch = (
 );
 
 const CandidatePortalLayout = React.memo((props) => {
-  const socket = useRef();
   const {
     children,
     location = {
@@ -65,15 +62,6 @@ const CandidatePortalLayout = React.memo((props) => {
   };
   const disablePage = getFirstChangePassword();
 
-  // const fetchUnseenTotal = (candidateId) => {
-  //   dispatch({
-  //     type: 'conversation/getNumberUnseenConversationEffect',
-  //     payload: {
-  //       userId: candidateId,
-  //     },
-  //   });
-  // };
-
   const fetchNotificationList = async () => {
     if (candidate) {
       await dispatch({
@@ -87,11 +75,11 @@ const CandidatePortalLayout = React.memo((props) => {
 
   useEffect(() => {
     fetchNotificationList();
-  }, [candidate]);
+  }, [JSON.stringify(candidate)]);
 
   useEffect(() => {
     setNotification(Number(unseenTotal));
-  }, [activeConversationUnseen]);
+  }, [JSON.stringify(activeConversationUnseen)]);
 
   const saveNewMessage = (message) => {
     dispatch({
@@ -115,7 +103,19 @@ const CandidatePortalLayout = React.memo((props) => {
         type: 'user/fetchCurrent',
       });
     }
+    return () => {
+      disconnectSocket();
+    };
   }, []);
+
+  const initialSocket = () => {
+    socket.emit(ChatEvent.ADD_USER, candidate?._id);
+    socket.on(ChatEvent.GET_MESSAGE, (message) => {
+      saveNewMessage(message);
+      fetchNotificationList();
+      getListLastMessage();
+    });
+  };
 
   useEffect(() => {
     if (candidate) {
@@ -126,17 +126,7 @@ const CandidatePortalLayout = React.memo((props) => {
         },
       });
 
-      // realtime message
-      socket.current = io(SOCKET_URL);
-      socket.current.emit(ChatEvent.ADD_USER, candidate._id);
-
-      socket.current.on(ChatEvent.GET_MESSAGE, (message) => {
-        saveNewMessage(message);
-        setTimeout(async () => {
-          await fetchNotificationList();
-          getListLastMessage();
-        }, 500);
-      });
+      initialSocket();
     }
   }, [JSON.stringify(candidate)]);
 
