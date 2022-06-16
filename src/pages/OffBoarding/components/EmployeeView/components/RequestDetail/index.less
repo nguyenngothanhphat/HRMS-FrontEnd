@@ -1,0 +1,69 @@
+.RequestDetail {
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
+  :global {
+    .ant-card-head-title {
+      color: #161c29;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 19px;
+    }
+    .ant-card-body {
+      padding: 0;
+    }
+    .ant-select-selector {
+      height: 42px !important;
+      border-radius: 5px !important;
+    }
+    .ant-select-single.ant-select-show-arrow .ant-select-selection-item {
+      margin-top: 5px;
+    }
+  }
+  .containerInfo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 12px;
+  }
+  .title {
+    padding-right: 20px;
+    color: #161c29;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 15px;
+  }
+  .containerBtn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 24px 24px 24px;
+  }
+  .containerStatus {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 15px;
+    &:first-child {
+      color: #161c29;
+    }
+  }
+  .statusDraft {
+    width: 8px;
+    height: 8px;
+    margin: 0 5px;
+    line-height: 8px;
+    background-color: #fd4546;
+    border-radius: 50%;
+  }
+  .statusInProgress {
+    width: 8px;
+    height: 8px;
+    margin: 0 5px;
+    line-height: 8px;
+    background-color: #ffa100;
+    border-radius: 50%;
+  }
+}

@@ -1,7 +1,5 @@
-// import React, { Component } from 'react';
 import { Row, Col, Divider, Button } from 'antd';
-import React, { PureComponent } from 'react';
-// import icon from '@/assets/offboarding-schedule.svg';
+import React from 'react';
 import icon1 from '@/assets/offboadingIcon1.svg';
 import icon2 from '@/assets/offboadingIcon2.svg';
 import icon3 from '@/assets/offboadingIcon3.svg';
@@ -10,16 +8,7 @@ import styles from './index.less';
 const array = [
   {
     icon: icon1,
-    decription: (
-      <p>
-        Discuss your decision with a
-        <span style={{ color: '#2C6DF9', fontWeight: '500', borderBottom: '1px solid #2C6DF9' }}>
-          {' '}
-          supervisor{' '}
-        </span>{' '}
-        and not your reporting manager
-      </p>
-    ),
+    decription: <p>Discuss your decision with your Skip-level manager</p>,
   },
   {
     icon: icon2,
@@ -50,22 +39,17 @@ const array = [
   },
 ];
 
-export default class ViewRight extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  renderItem = (render) => {
+const ViewRight = () => {
+  const renderItem = (render) => {
     return (
       <div className={styles.rowInfo}>
-        <Row justify="space-between">
+        <Row justify="space-between" gutter={[24, 24]}>
           <Col span={4}>
             <div className={styles.icon}>
               <img src={render.icon} alt="iconCheck" />
             </div>
           </Col>
-          <Col span={19}>
+          <Col span={20}>
             <div className={styles.description}>{render.decription} </div>
           </Col>
         </Row>
@@ -73,32 +57,25 @@ export default class ViewRight extends PureComponent {
     );
   };
 
-  render() {
-    return (
-      <div className={styles.ViewRight}>
-        <div className={styles.twoRight}>
-          <div className={styles.headerTitle}>Few thing to consider</div>
-          <Divider className={styles.divider} />
-          <div className={styles.twoRight__bottom}>
-            {array.map((render) => this.renderItem(render))}
-          </div>
-          <div className={styles.bottom}>
-            <div className={styles.btnBottom} />
-            <Button className={styles.btnBottom__btn}>Speak to manager</Button>
-          </div>
-          {/* <img alt="icontop" className={styles.icon} src={icon} />
-          <div className={styles.text_Title}> Did you know?</div>
-          <div className={styles.text_Body}>
-            <p>
-              Your Manager, Sandeep, usually conducts 1-on-1s and you can speak anything to him.
-              8/10 employees have changed their mind!
-            </p>
-          </div>
-          <div className={styles.text_Schedule}>Schedule 1-on-1 Now!</div> */}
+  const handleSchedule = () => {
+    window.open('https://calendar.google.com/', '_blank');
+  };
+
+  return (
+    <div className={styles.ViewRight}>
+      <div className={styles.twoRight}>
+        <div className={styles.headerTitle}>Few thing to consider</div>
+        <Divider className={styles.divider} />
+        <div className={styles.twoRight__bottom}>{array.map((render) => renderItem(render))}</div>
+        <div className={styles.bottom}>
+          <div className={styles.btnBottom} />
+          <Button onClick={handleSchedule} className={styles.btnBottom__btn}>
+            Speak to manager
+          </Button>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-// export default InfoRight;
+export default ViewRight;
