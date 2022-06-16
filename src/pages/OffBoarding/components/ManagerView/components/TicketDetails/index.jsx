@@ -19,11 +19,9 @@ const TicketDetails = (props) => {
     offboarding: {
       viewingRequest: { ticketId = '', employee = {} } = {},
       viewingRequest = {},
-      listProjectByEmployee: projectList = [],
     } = {},
     loadingFetchData = false,
   } = props;
-  console.log('🚀  ~ viewingRequest', viewingRequest);
 
   const [isEnterClosingComment, setIsEnterClosingComment] = useState(false);
 
@@ -57,10 +55,10 @@ const TicketDetails = (props) => {
             <Col span={14} xs={24} lg={14}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <RequesteeDetails employee={employee} />
+                  <RequesteeDetails item={viewingRequest} />
                 </Col>
                 <Col span={24}>
-                  <CurrentProjectDetails projectList={projectList} />
+                  <CurrentProjectDetails item={viewingRequest} />
                 </Col>
                 <Col span={24}>
                   <ResignationRequestDetail item={viewingRequest} />

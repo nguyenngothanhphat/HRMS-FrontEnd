@@ -1,13 +1,30 @@
-import { Col, DatePicker, Form, Row } from 'antd';
+import { Col, DatePicker, Form, Row, Select } from 'antd';
+import moment from 'moment';
 import React from 'react';
-import CustomEmployeeTag from '@/components/CustomEmployeeTag';
-import CustomTimeRangeSelector from '@/components/CustomTimeRangeSelector';
+import { connect } from 'umi';
 import { dateFormat, getEmployeeName } from '@/utils/offboarding';
+import CustomEmployeeTag from '@/components/CustomEmployeeTag';
 import styles from './index.less';
 
-const SetMeetingModalContent = ({ employee = {}, partnerRole = '', onFinish = () => {} }) => {
+const SetMeetingModalContent = ({
+  dispatch,
+  employee = {},
+  partnerRole = '',
+  onFinish = () => {},
+  offboarding = {},
+}) => {
   const [form] = Form.useForm();
   const { generalInfoInfo = {}, titleInfo = {} } = employee || {};
+  const { hourList = [] } = offboarding;
+
+  const onDateChange = (date) => {
+    dispatch({
+      type: 'offboarding/getTimeInDateEffect',
+      payload: {
+        date: moment(date).format('YYYY-MM-DD'),
+      },
+    });
+  };
 
   return (
     <div className={styles.SetMeetingModalContent}>
@@ -31,12 +48,22 @@ const SetMeetingModalContent = ({ employee = {}, partnerRole = '', onFinish = ()
         <Row align="middle" gutter={[16, 16]}>
           <Col span={12}>
             <Form.Item name="date" label="Date" rules={[{ required: true }]}>
-              <DatePicker format={dateFormat} placeholder="Select the date" />
+              <DatePicker
+                format={dateFormat}
+                placeholder="Select the date"
+                onChange={onDateChange}
+              />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item name="time" label="Time" rules={[{ required: true }]}>
-              <CustomTimeRangeSelector minuteStep={60} placeholder="Select the time" />
+              <Select placeholder="Select the time">
+                {hourList.map((x) => (
+                  <Select.Option value={x.time} disabled={x.disabled}>
+                    {x.time}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
           </Col>
         </Row>
@@ -45,4 +72,4 @@ const SetMeetingModalContent = ({ employee = {}, partnerRole = '', onFinish = ()
   );
 };
 
-export default SetMeetingModalContent;
+export default connect(({ offboarding }) => ({ offboarding }))(SetMeetingModalContent);
