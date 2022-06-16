@@ -3,7 +3,7 @@ import React from 'react';
 import moment from 'moment';
 import { history, connect } from 'umi';
 import avtDefault from '@/assets/defaultAvatar.png';
-import IconPopup from './assets/popupIcon.svg';
+import IconPopup from '@/assets/offboarding/popupIcon.svg';
 import styles from './index.less';
 import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
 
@@ -15,8 +15,6 @@ const YourRequest = (props) => {
     data: { ticketId = '', updatedAt = '', reason = '', createdAt = '', LWD = '', _id = '' } = {},
     getMyRequest = () => {},
     dispatch,
-
-
   } = props;
 
   const renderTitle = (statusProps) => {
@@ -53,8 +51,8 @@ const YourRequest = (props) => {
         return (
           <div className={styles.containerStatus}>
             <div>Status: </div>
-            <div className={styles.statusAcepted} />
-            <div style={{ color: '#00C598' }}>Acepted</div>
+            <div className={styles.statusAccepted} />
+            <div style={{ color: '#00C598' }}>Accepted</div>
           </div>
         );
       default:
@@ -72,7 +70,7 @@ const YourRequest = (props) => {
   };
 
   const handleEdit = () => {
-    history.push(`/offboarding/list/my-request/edit/${_id}`);
+    history.push(`/offboarding/my-request/edit/${_id}`);
   };
 
   const handleDelete = () => {
@@ -229,13 +227,11 @@ const YourRequest = (props) => {
   };
 
   return (
-    <div className={styles.YourRequest}>
-      <Card title={renderTitle(status)} extra={renderStatus(status)}>
-        {renderContent(status)}
-        <Divider />
-        {renderButton(status)}
-      </Card>
-    </div>
+    <Card title={renderTitle(status)} extra={renderStatus(status)} className={styles.YourRequest}>
+      {renderContent(status)}
+      <Divider />
+      {renderButton(status)}
+    </Card>
   );
 };
 

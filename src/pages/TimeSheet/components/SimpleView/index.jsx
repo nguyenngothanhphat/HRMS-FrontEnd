@@ -24,7 +24,9 @@ const SimpleView = (props) => {
   const options = () => {
     return (
       <div className={styles.options}>
-        <CustomBlueButton onClick={() => setNavToTimeoffModalVisible(true)} title="Request Leave" />
+        <CustomBlueButton onClick={() => setNavToTimeoffModalVisible(true)}>
+          Request Leave
+        </CustomBlueButton>
       </div>
     );
   };

@@ -3,7 +3,7 @@ import { Button, Row, Col } from 'antd';
 import styles from './index.less';
 import UserProfilePopover from '@/components/UserProfilePopover';
 
-const ViewLeftInitial = (props) => {
+const FirstSchedule = (props) => {
   const {
     employee: {
       managerInfo: {
@@ -24,7 +24,7 @@ const ViewLeftInitial = (props) => {
   };
 
   return (
-    <div className={styles.ViewLeftInitial}>
+    <div className={styles.FirstSchedule}>
       <Row className={styles.header} justify="space-between">
         <Col span={24} className={styles.headerSchedule}>
           <div className={styles.headerSchedule__title}>Did you know?</div>
@@ -58,4 +58,4 @@ const ViewLeftInitial = (props) => {
   );
 };
 
-export default ViewLeftInitial;
+export default FirstSchedule;

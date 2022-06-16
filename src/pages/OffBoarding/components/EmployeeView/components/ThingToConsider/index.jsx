@@ -1,18 +1,19 @@
-import { Row, Col, Divider, Button } from 'antd';
+import { Card, Col, Row } from 'antd';
 import React from 'react';
 import icon1 from '@/assets/offboadingIcon1.svg';
 import icon2 from '@/assets/offboadingIcon2.svg';
 import icon3 from '@/assets/offboadingIcon3.svg';
+import CustomBlueButton from '@/components/CustomBlueButton';
 import styles from './index.less';
 
 const array = [
   {
     icon: icon1,
-    decription: <p>Discuss your decision with your Skip-level manager</p>,
+    description: <p>Discuss your decision with your Skip-level manager</p>,
   },
   {
     icon: icon2,
-    decription: (
+    description: (
       <p>
         Make sure you are done with your current project to have this discussion continued. If not,
         please{' '}
@@ -26,7 +27,7 @@ const array = [
   },
   {
     icon: icon3,
-    decription: (
+    description: (
       <p>
         We have prepared an
         <span style={{ color: '#2C6DF9', fontWeight: '500', borderBottom: '1px solid #2C6DF9' }}>
@@ -39,7 +40,7 @@ const array = [
   },
 ];
 
-const ViewRight = () => {
+const ThingToConsider = () => {
   const renderItem = (render) => {
     return (
       <div className={styles.rowInfo}>
@@ -50,7 +51,7 @@ const ViewRight = () => {
             </div>
           </Col>
           <Col span={20}>
-            <div className={styles.description}>{render.decription} </div>
+            <div className={styles.description}>{render.description} </div>
           </Col>
         </Row>
       </div>
@@ -62,20 +63,15 @@ const ViewRight = () => {
   };
 
   return (
-    <div className={styles.ViewRight}>
-      <div className={styles.twoRight}>
-        <div className={styles.headerTitle}>Few thing to consider</div>
-        <Divider className={styles.divider} />
-        <div className={styles.twoRight__bottom}>{array.map((render) => renderItem(render))}</div>
+    <Card title="Few thing to consider" className={styles.ThingToConsider}>
+      <div className={styles.container}>
+        <div className={styles.items}>{array.map((render) => renderItem(render))}</div>
         <div className={styles.bottom}>
-          <div className={styles.btnBottom} />
-          <Button onClick={handleSchedule} className={styles.btnBottom__btn}>
-            Speak to manager
-          </Button>
+          <CustomBlueButton onClick={handleSchedule}>Speak to manager</CustomBlueButton>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 
-export default ViewRight;
+export default ThingToConsider;

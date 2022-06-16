@@ -1,15 +1,15 @@
 import { Divider, Space, Typography } from 'antd';
 import React from 'react';
-import StepsOfViewRight from '../StepsOfViewRight';
+import StepsOfViewRight from './components/StepsOfViewRight';
 import NoteIcon from './assets/NoteIcon.svg';
 import NoteIcon2 from './assets/noteIcon2.svg';
 import styles from './index.less';
 
-const ViewRightNote = (props) => {
+const Notes = (props) => {
   const { status = '' } = props;
 
   return (
-    <div className={styles.ViewRightNote}>
+    <div className={styles.Notes}>
       <Space size="middle" className={styles.NoteHeader}>
         <div className={styles.NoteTitle}>
           <div>
@@ -50,4 +50,4 @@ const ViewRightNote = (props) => {
   );
 };
 
-export default ViewRightNote;
+export default Notes;

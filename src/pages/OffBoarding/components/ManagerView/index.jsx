@@ -53,7 +53,7 @@ const ManagerView = (props) => {
           label="Location"
           selectedList={selectedLocations}
         />
-        <CustomBlueButton title="Generate Report" />
+        <CustomBlueButton>Generate Report</CustomBlueButton>
       </div>
     );
   };

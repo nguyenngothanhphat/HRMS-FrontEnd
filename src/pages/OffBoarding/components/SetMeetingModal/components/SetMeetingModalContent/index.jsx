@@ -1,6 +1,6 @@
 import { Col, DatePicker, Form, Row, Select } from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { dateFormat, getEmployeeName } from '@/utils/offboarding';
 import CustomEmployeeTag from '@/components/CustomEmployeeTag';
@@ -17,15 +17,12 @@ const SetMeetingModalContent = ({
   const { generalInfoInfo = {}, titleInfo = {} } = employee || {};
   const { hourList = [] } = offboarding;
 
-  const [selectedDate, setSelectedDate] = useState();
-
   const disabledDate = (current) => {
     const customDate = moment().format('YYYY-MM-DD');
     return current && current < moment(customDate, 'YYYY-MM-DD');
   };
 
   const onDateChange = (date) => {
-    setSelectedDate(date);
     dispatch({
       type: 'offboarding/getTimeInDateEffect',
       payload: {
@@ -33,6 +30,10 @@ const SetMeetingModalContent = ({
       },
     });
   };
+
+  useEffect(() => {
+    onDateChange(moment());
+  }, []);
 
   return (
     <div className={styles.SetMeetingModalContent}>
@@ -52,6 +53,9 @@ const SetMeetingModalContent = ({
         id="myForm"
         preserve={false}
         onFinish={onFinish}
+        initialValues={{
+          date: moment(),
+        }}
       >
         <Row align="middle" gutter={[16, 16]}>
           <Col span={12}>
@@ -61,12 +65,13 @@ const SetMeetingModalContent = ({
                 placeholder="Select the date"
                 onChange={onDateChange}
                 disabledDate={disabledDate}
+                allowClear={false}
               />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item name="time" label="Time" rules={[{ required: true }]}>
-              <Select placeholder="Select the time" disabled={!selectedDate}>
+              <Select placeholder="Select the time">
                 {hourList.map((x) => (
                   <Select.Option value={x.time} disabled={x.disabled}>
                     {x.time}

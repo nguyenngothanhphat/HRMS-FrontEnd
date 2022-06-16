@@ -162,10 +162,9 @@ const ComplexView = (props) => {
       case TAB_NAME.MY:
         return (
           <div className={styles.options}>
-            <CustomBlueButton
-              onClick={() => setNavToTimeoffModalVisible(true)}
-              title="Request Leave"
-            />
+            <CustomBlueButton onClick={() => setNavToTimeoffModalVisible(true)}>
+              Request Leave
+            </CustomBlueButton>
           </div>
         );
 

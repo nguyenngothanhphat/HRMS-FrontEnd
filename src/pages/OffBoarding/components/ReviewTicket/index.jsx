@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import TicketEmployee from '../EmployeeView/Request';
 import TicketManager from '../ManagerView/components/TicketDetails';
 import TicketHr from '../HRView/components/HrRequestTable/Ticket';
 
@@ -32,7 +31,7 @@ class OffBoarding extends PureComponent {
       'hr-manager': <TicketHr {...this.props} />,
       owner: <TicketHr {...this.props} />,
       manager: <TicketManager {...this.props} />,
-      employee: <TicketEmployee {...this.props} />,
+      // employee: <TicketEmployee {...this.props} />,
     };
     const listRole = localStorage.getItem('antd-pro-authority');
     const role = this.findRole(JSON.parse(listRole));

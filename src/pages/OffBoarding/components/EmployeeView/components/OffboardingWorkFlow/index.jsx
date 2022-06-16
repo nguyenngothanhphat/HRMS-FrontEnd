@@ -45,7 +45,7 @@ const OffboardingWorkFlow = (props) => {
   const { step = '', status = '' } = props;
 
   const handleResignation = () => {
-    history.push('/offboarding/list/my-request/new');
+    history.push('/offboarding/my-request/new');
   };
   const renderCurrentStep = (stepProps) => {
     switch (stepProps) {
@@ -76,26 +76,28 @@ const OffboardingWorkFlow = (props) => {
         )
       }
     >
-      <div className={styles.titleProcessStep}>Step 1: Offboarding</div>
-      <div className={styles.offboardingProcess}>
-        <div className={styles.offboardingProcess__process}>
-          <Steps current={renderCurrentStep(step)} labelPlacement="vertical">
-            {steps1.map((item) => (
-              <Step key={item.step} description={item.description} />
-            ))}
-          </Steps>
-        </div>
-        <Divider />
-        <div className={styles.titleProcess}>Step 2 : Relieving Formalities </div>
-        <div className={styles.description}>
-          (Relieving formalities will be initiated 2 days before the LWD)
-        </div>
-        <div className={styles.offboardingProcess__process}>
-          <Steps current={current} labelPlacement="vertical">
-            {steps2.map((item) => (
-              <Step key={item.step} description={item.description} />
-            ))}
-          </Steps>
+      <div className={styles.container}>
+        <div className={styles.titleProcessStep}>Step 1: Offboarding</div>
+        <div className={styles.offboardingProcess}>
+          <div className={styles.offboardingProcess__process}>
+            <Steps current={renderCurrentStep(step)} labelPlacement="vertical">
+              {steps1.map((item) => (
+                <Step key={item.step} description={item.description} />
+              ))}
+            </Steps>
+          </div>
+          <Divider />
+          <div className={styles.titleProcess}>Step 2 : Relieving Formalities </div>
+          <div className={styles.description}>
+            (Relieving formalities will be initiated 2 days before the LWD)
+          </div>
+          <div className={styles.offboardingProcess__process}>
+            <Steps current={current} labelPlacement="vertical">
+              {steps2.map((item) => (
+                <Step key={item.step} description={item.description} />
+              ))}
+            </Steps>
+          </div>
         </div>
       </div>
     </Card>

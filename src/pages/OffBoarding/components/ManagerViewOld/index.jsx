@@ -57,7 +57,7 @@ class ManagerView extends Component {
   componentDidMount() {
     const { tabName = '' } = this.props;
     if (!tabName) {
-      history.replace(`/offboarding/list`);
+      history.replace(`/offboarding`);
     } else {
       const { dispatch, listTeamRequest, locationID } = this.props;
       if (!dispatch) {
@@ -176,7 +176,7 @@ class ManagerView extends Component {
                 <>
                   {!checkSendRequest && (
                     <Button className={styles.btnInitiate}>
-                      <Link to="/offboarding/list/my-request/new">
+                      <Link to="/offboarding/my-request/new">
                         <span className={styles.btnText}>Initiate Resignation Request</span>
                       </Link>
                     </Button>

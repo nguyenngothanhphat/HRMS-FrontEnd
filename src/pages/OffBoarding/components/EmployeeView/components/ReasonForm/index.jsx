@@ -8,8 +8,8 @@ import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import { PageContainer } from '@/layouts/layout/src';
 import { OFFBOARDING } from '@/utils/offboarding';
-import ViewRightNote from '../ViewRightNote';
-import ModalImage from './assets/modalImage1.png';
+import Notes from '../Notes';
+import ModalImage from '@/assets/offboarding/modalImage1.png';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -46,14 +46,14 @@ const ReasonForm = (props) => {
         setSuccessModalVisible(true);
       } else if (statusCode === 200) {
         notification.success({ message: `Withdraw successfully` });
-        history.push('/offboarding/list');
+        history.push('/offboarding');
       }
     });
   };
 
   const handleOk = () => {
     setSuccessModalVisible(false);
-    history.push('/offboarding/list');
+    history.push('/offboarding');
   };
 
   const setFormValuesDebounce = debounce((values) => {
@@ -82,7 +82,7 @@ const ReasonForm = (props) => {
   const renderContent = () => {
     return (
       <Row gutter={[24, 24]}>
-        <Col span={17}>
+        <Col span={24} lg={16}>
           <div className={styles.containerReasonForm}>
             <Form
               name="myForm"
@@ -150,8 +150,8 @@ const ReasonForm = (props) => {
             </Form>
           </div>
         </Col>
-        <Col span={7}>
-          <ViewRightNote />
+        <Col span={24} lg={8}>
+          <Notes />
         </Col>
       </Row>
     );

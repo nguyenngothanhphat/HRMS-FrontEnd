@@ -1,5 +1,6 @@
 import { Button, Space, Typography } from 'antd';
 import React from 'react';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import NoteIcon from './assets/NoteIcon.svg';
 import styles from './index.less';
 
@@ -28,7 +29,7 @@ const DidYouKnow = () => {
           </Typography.Text>
         </div>
         <div className={styles.btn}>
-          <Button>Schedule 1-on-1</Button>
+          <CustomPrimaryButton>Schedule 1-on-1</CustomPrimaryButton>
         </div>
       </div>
     </div>

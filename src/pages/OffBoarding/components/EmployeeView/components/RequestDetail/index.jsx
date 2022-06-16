@@ -22,8 +22,8 @@ const RequestDetail = (props) => {
 
   const [visible, setVisible] = useState(false);
 
-  const renderStatus = (statusPorps) => {
-    if (statusPorps === STATUS.DRAFT) {
+  const renderStatus = (statusProp) => {
+    if (statusProp === STATUS.DRAFT) {
       return (
         <div className={styles.containerStatus}>
           <div>Status: </div>
@@ -47,7 +47,7 @@ const RequestDetail = (props) => {
       payload: {
         action: UPDATE_ACTION.EMPLOYEE_RESCHEDULE,
         meeting: {
-          emplyeetDate: moment.utc(values?.date).format('YYYY-MM-DD'),
+          employeeDate: moment(values?.date).format('YYYY-MM-DD'),
         },
         id: _id,
       },

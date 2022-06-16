@@ -1,33 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { Row, Col, Tabs, Spin } from 'antd';
+import { Col, Row, Spin, Tabs } from 'antd';
+import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
-import { PageContainer } from '@/layouts/layout/src';
-import ViewLeftInitial from './components/ViewLeftInitial';
-import ChainOfApproval from './components/ChainOfApproval';
-import RequestDetail from './components/RequestDetail';
-import YourRequest from './components/YourRequest';
-import WhatNext from './components/WhatNext';
-import RelievingFormalities from './RelievingFormalities';
-import styles from './index.less';
-import OffboardingWorkFlow from './components/OffboardingWorkFlow';
-import ViewRightQuickLink from './components/ViewRightQuickLink';
-import ViewRight from './components/ViewRight';
-import DidYouKnow from './components/DidYouKnow';
-import ViewRightNote from './components/ViewRightNote';
 import { OFFBOARDING } from '@/utils/offboarding';
+import { PageContainer } from '@/layouts/layout/src';
+import ChainOfApproval from './components/ChainOfApproval';
+import DidYouKnow from './components/DidYouKnow';
+import FirstSchedule from './components/FirstSchedule';
+import Notes from './components/Notes';
+import OffboardingWorkFlow from './components/OffboardingWorkFlow';
+import QuickLinks from './components/QuickLinks';
+import RequestDetail from './components/RequestDetail';
+import ThingToConsider from './components/ThingToConsider';
+import YourRequest from './components/YourRequest';
+import styles from './index.less';
 
 const { TabPane } = Tabs;
 const { STATUS = {} } = OFFBOARDING;
+
 const EmployeeView = (props) => {
   const { tabName = '', dispatch } = props;
   const {
-    employee = {},
-    myRequest: { status = '', step = '' } = {},
-    myRequest = {},
     loadingStatus = false,
+    user: { currentUser: { employee = {} } = {} } = {},
+    offboarding: { myRequest = {} } = {},
   } = props;
 
-  const [relievingInQueue, setRelievingInQueue] = useState(false);
+  const { status = '', step = '' } = myRequest;
 
   const getMyRequest = () => {
     dispatch({
@@ -38,41 +36,16 @@ const EmployeeView = (props) => {
 
   useEffect(() => {
     if (!tabName) {
-      history.replace(`/offboarding/list`);
+      history.replace(`/offboarding/my-request`);
     } else getMyRequest();
   }, []);
 
   const renderContent = (statusProps) => {
     switch (statusProps) {
-      case STATUS.DELETED:
-        return (
-          <Row className={styles.content} gutter={[24, 24]}>
-            <Col span={17}>
-              <Row gutter={[24, 24]}>
-                <Col span={24}>
-                  <ViewLeftInitial employee={employee} />
-                </Col>
-                <Col span={24}>
-                  <OffboardingWorkFlow employee={employee} />
-                </Col>
-              </Row>
-            </Col>
-            <Col span={7}>
-              <Row gutter={[24, 24]}>
-                <Col span={24}>
-                  <ViewRight />
-                </Col>
-                <Col span={24}>
-                  <ViewRightQuickLink />
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        );
       case STATUS.DRAFT:
         return (
           <Row className={styles.content} gutter={[24, 24]}>
-            <Col span={17}>
+            <Col span={24} lg={16}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
                   <YourRequest
@@ -87,13 +60,13 @@ const EmployeeView = (props) => {
                 </Col>
               </Row>
             </Col>
-            <Col span={7}>
+            <Col span={24} lg={8}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
                   <DidYouKnow employee={employee} />
                 </Col>
                 <Col span={24}>
-                  <ViewRight />
+                  <ThingToConsider />
                 </Col>
               </Row>
             </Col>
@@ -102,7 +75,7 @@ const EmployeeView = (props) => {
       case STATUS.IN_PROGRESS:
         return (
           <Row className={styles.content} gutter={[24, 24]}>
-            <Col span={17}>
+            <Col span={24} lg={16}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
                   <RequestDetail
@@ -117,13 +90,13 @@ const EmployeeView = (props) => {
                 </Col>
               </Row>
             </Col>
-            <Col span={7}>
+            <Col span={24} lg={8}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
                   <ChainOfApproval employee={employee} status={status} />
                 </Col>
                 <Col span={24}>
-                  <ViewRightNote status={status} />
+                  <Notes status={status} />
                 </Col>
               </Row>
             </Col>
@@ -132,10 +105,10 @@ const EmployeeView = (props) => {
       default:
         return (
           <Row className={styles.content} gutter={[24, 24]}>
-            <Col span={17}>
+            <Col span={24} lg={16}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <ViewLeftInitial
+                  <FirstSchedule
                     data={myRequest}
                     // fetchData={fetchData}
                     employee={employee}
@@ -146,13 +119,13 @@ const EmployeeView = (props) => {
                 </Col>
               </Row>
             </Col>
-            <Col span={7}>
+            <Col span={24} lg={8}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <ViewRight />
+                  <ThingToConsider />
                 </Col>
                 <Col span={24}>
-                  <ViewRightQuickLink />
+                  <QuickLinks />
                 </Col>
               </Row>
             </Col>
@@ -167,12 +140,12 @@ const EmployeeView = (props) => {
       <div className={styles.EmployeeView}>
         <div className={styles.tabs}>
           <Tabs
-            activeKey={tabName || 'list'}
+            activeKey={tabName || 'my-request'}
             onChange={(key) => {
               history.push(`/offboarding/${key}`);
             }}
           >
-            <TabPane tab="Terminate work relationship" key="list">
+            <TabPane tab="Terminate work relationship" key="my-request">
               <div className={styles.paddingHR}>
                 <div className={styles.root}>
                   <Spin spinning={loadingStatus}>
@@ -180,10 +153,10 @@ const EmployeeView = (props) => {
                       renderContent(status)
                     ) : (
                       <Row className={styles.content} gutter={[24, 24]}>
-                        <Col span={17}>
+                        <Col span={24} lg={16}>
                           <Row gutter={[24, 24]}>
                             <Col span={24}>
-                              <ViewLeftInitial
+                              <FirstSchedule
                                 data={myRequest}
                                 // fetchData={fetchData}
                                 employee={employee}
@@ -198,13 +171,13 @@ const EmployeeView = (props) => {
                             </Col>
                           </Row>
                         </Col>
-                        <Col span={7}>
+                        <Col span={24} lg={8}>
                           <Row gutter={[24, 24]}>
                             <Col span={24}>
-                              <ViewRight />
+                              <ThingToConsider />
                             </Col>
                             <Col span={24}>
-                              <ViewRightQuickLink />
+                              <QuickLinks />
                             </Col>
                           </Row>
                         </Col>
@@ -214,14 +187,6 @@ const EmployeeView = (props) => {
                 </div>
               </div>
             </TabPane>
-
-            <TabPane
-              disabled={!relievingInQueue}
-              tab="Relieving Formalities"
-              key="relieving-formalities"
-            >
-              <RelievingFormalities />
-            </TabPane>
           </Tabs>
         </div>
       </div>
@@ -229,22 +194,8 @@ const EmployeeView = (props) => {
   );
 };
 
-export default connect(
-  ({
-    offboarding: { myRequest = {} } = {},
-    user: {
-      currentUser: {
-        location: { _id: locationID = '' } = {},
-        company: { _id: companyID } = {},
-        employee = {},
-      } = {},
-    } = {},
-    loading,
-  }) => ({
-    myRequest,
-    locationID,
-    companyID,
-    employee,
-    loadingStatus: loading.effects['offboarding/getMyRequestEffect'],
-  }),
-)(EmployeeView);
+export default connect(({ offboarding, user, loading }) => ({
+  offboarding,
+  user,
+  loadingStatus: loading.effects['offboarding/getMyRequestEffect'],
+}))(EmployeeView);

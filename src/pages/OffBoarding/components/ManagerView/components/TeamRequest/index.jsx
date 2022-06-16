@@ -13,6 +13,7 @@ import UserProfilePopover from '@/components/UserProfilePopover';
 import { OFFBOARDING, OFFBOARDING_MANAGER_TABS } from '@/utils/offboarding';
 import { addZeroToNumber } from '@/utils/utils';
 import styles from './index.less';
+import SetMeetingModal from '../../../SetMeetingModal';
 
 const TeamRequest = (props) => {
   const {
@@ -27,6 +28,11 @@ const TeamRequest = (props) => {
   const [size, setSize] = useState(10);
   const [page, setPage] = useState(1);
   const [currentStatus, setCurrentStatus] = useState(OFFBOARDING.STATUS.IN_PROGRESS);
+  const [handlingRequest, setHandlingRequest] = useState(null);
+
+  const onScheduleMeeting = (values) => {
+    console.log('🚀  ~ values', values);
+  };
 
   useEffect(() => {
     dispatch({
@@ -170,13 +176,14 @@ const TeamRequest = (props) => {
     },
     {
       title: <span className={styles.title}>1-on-1 date</span>,
-      render: () => {
+      render: (_, row) => {
         return (
           <span
             className={styles.title__value}
             style={{
               textDecoration: 'underline',
             }}
+            onClick={() => setHandlingRequest(row)}
           >
             Schedule 1 on 1
           </span>
@@ -243,6 +250,14 @@ const TeamRequest = (props) => {
           </Tabs.TabPane>
         ))}
       </Tabs>
+      <SetMeetingModal
+        visible={!!handlingRequest}
+        title={`Set 1-on1 with ${handlingRequest?.employee?.generalInfoInfo?.legalName}`}
+        onClose={() => setHandlingRequest(null)}
+        partnerRole="Employee"
+        employee={handlingRequest?.employee}
+        onFinish={onScheduleMeeting}
+      />
     </div>
   );
 };
