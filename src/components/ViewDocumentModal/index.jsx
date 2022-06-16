@@ -21,12 +21,14 @@ class ViewDocumentModal extends PureComponent {
     };
   }
 
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'adminSetting/getDomain',
-    });
-  }
+  componentDidUpdate = (prevProps) => {
+    const { dispatch, visible = false } = this.props;
+    if (visible !== prevProps.visible && visible) {
+      dispatch({
+        type: 'adminSetting/getDomain',
+      });
+    }
+  };
 
   onDownload = (url) => {
     const fileName = url.split('/').pop();
@@ -144,7 +146,7 @@ class ViewDocumentModal extends PureComponent {
     return (
       <div className={styles.stickyFooter}>
         <span>
-          For any queries, email at {' '}
+          For any queries, email at{' '}
           <span style={{ fontWeight: 'bold' }}>{`hr@${emailDomain}`}</span>
         </span>
       </div>

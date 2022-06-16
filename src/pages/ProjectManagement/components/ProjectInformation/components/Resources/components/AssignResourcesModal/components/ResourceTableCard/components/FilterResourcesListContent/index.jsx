@@ -83,7 +83,14 @@ const FilterResourcesListContent = (props) => {
       className={styles.FilterResourcesListContent}
     >
       <Form.Item label="By division" name="division">
-        <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
+        <Select
+          mode="multiple"
+          allowClear
+          style={{ width: '100%' }}
+          placeholder="Please select"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
           {divisionList.map((x) => (
             <Option value={x.name}>{x.name}</Option>
           ))}
@@ -118,7 +125,14 @@ const FilterResourcesListContent = (props) => {
       </Form.Item>
 
       <Form.Item label="By Project" name="project">
-        <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
+        <Select
+          mode="multiple"
+          allowClear
+          style={{ width: '100%' }}
+          placeholder="Please select"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
           {projectList
             .filter((i) => i.projectId !== projectId)
             .map((x) => (

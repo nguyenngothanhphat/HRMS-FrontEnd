@@ -1,8 +1,8 @@
 import { Breadcrumb, Button, Dropdown, Layout, Menu, Result, Skeleton } from 'antd';
-import React, { useEffect, useState, useRef } from 'react';
-import { connect, history, Link } from 'umi';
+import React, { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
-import avtDefault from '@/assets/defaultAvatar.png';
+import { connect, history, Link } from 'umi';
+import avtDefault from '@/assets/avtDefault.jpg';
 import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
 import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
 import Footer from '@/components/Footer';
@@ -11,9 +11,9 @@ import CommonModal from '@/pages/CandidatePortal/components/Dashboard/components
 import { getCurrentCompany, getFirstChangePassword } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
 import { CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
-import { ChatEvent, SOCKET_URL } from '@/utils/chatSocket';
-
+import { ChatEvent } from '@/utils/chatSocket';
 import { getAuthorityFromRouter } from '@/utils/utils';
+import { SOCKET_URL } from '../../config/proxy';
 import s from './CandidatePortalLayout.less';
 
 const { Header, Content } = Layout;

@@ -24,6 +24,7 @@ const AddResourcesModal = (props) => {
     employee = '',
     permissions = {},
   } = props;
+
   const {
     id: projectNumberId = '',
     projectName = '',

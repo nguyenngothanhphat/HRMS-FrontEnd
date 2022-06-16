@@ -1,9 +1,10 @@
-import { Card, Col, Row } from 'antd';
+import { Card, Col, Row, Tag } from 'antd';
 import { debounce } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
+import { CloseOutlined } from '@ant-design/icons';
 import TimeIcon from '@/assets/projectManagement/time.svg';
-import CommonTable from '@/pages/ProjectManagement/components/ProjectInformation/components/CommonTable';
+import CommonTable from '@/components/CommonTable';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import CustomSearchBox from '@/components/CustomSearchBox';
@@ -19,13 +20,21 @@ const ResourceTableCard = (props) => {
     selectedResources = [],
     setSelectedResources = () => {},
   } = props;
+
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [searchValue, setSearchValue] = useState('');
+  const [applied, setApplied] = useState(0);
+  // if reselect project status or search, clear filter form
+  const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
+  const [filter, setFilter] = useState({});
 
-  useEffect(() => {
-    fetchData(searchValue, page, limit);
-  }, [page, limit]);
+  useEffect(
+    () =>
+      filter ? fetchData(searchValue, page, limit, filter) : fetchData(searchValue, page, limit),
+    [page, limit],
+  );
 
   const onChangePage = (p, l) => {
     setPage(p);
@@ -45,6 +54,24 @@ const ResourceTableCard = (props) => {
   const setSelectedRowKeys = (ids = []) => {
     const result = data.filter((x) => ids.includes(x._id));
     setSelectedResources(result);
+  };
+
+  const onFilter = (filterPayload) => {
+    fetchData(searchValue, page, limit, filterPayload);
+    if (Object.keys(filterPayload).length > 0) {
+      setIsFiltering(true);
+      setFilter(filterPayload);
+      setApplied(Object.keys(filterPayload).length);
+    } else {
+      setIsFiltering(false);
+      setFilter(null);
+      setApplied(0);
+    }
+  };
+
+  const clearFilter = () => {
+    onFilter({});
+    setNeedResetFilterForm(true);
   };
 
   const generateColumns = () => {
@@ -164,13 +191,29 @@ const ResourceTableCard = (props) => {
   const renderOption = () => {
     const content = (
       <FilterResourcesListContent
-        onFilter={(values) => fetchData(searchValue, page, limit, values)}
+        onFilter={onFilter}
+        needResetFilterForm={needResetFilterForm}
+        setNeedResetFilterForm={setNeedResetFilterForm}
+        setIsFiltering={setIsFiltering}
+        setApplied={setApplied}
       />
     );
     return (
       <div className={styles.options}>
+        {applied > 0 && (
+          <Tag
+            className={styles.tagCountFilter}
+            closable
+            closeIcon={<CloseOutlined />}
+            onClose={() => {
+              clearFilter();
+            }}
+          >
+            {applied} filters applied
+          </Tag>
+        )}
         <FilterPopover placement="bottomRight" content={content}>
-          <FilterButton />
+          <FilterButton showDot={isFiltering} />
         </FilterPopover>
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Name" />
       </div>

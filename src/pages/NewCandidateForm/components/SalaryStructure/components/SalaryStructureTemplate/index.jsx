@@ -638,7 +638,6 @@ const SalaryStructureTemplate = (props) => {
       settingsTempData.find((x) => x.key === 'annual_retention_bonus') || {};
     const joining_bonus = settingsTempData.find((x) => x.key === 'joining_bonus') || {};
     const midterm_hike = settingsTempData.find((x) => x.key === 'midterm_hike') || {};
-
     const isJoiningBonus = !isEmpty(joining_bonus) ? joining_bonus.value !== 0 : false;
     const isMidtermHike = !isEmpty(midterm_hike) ? midterm_hike.value !== 0 : false;
 
@@ -667,7 +666,7 @@ const SalaryStructureTemplate = (props) => {
                   <Input
                     addonAfter="% of basics"
                     disabled={!isEditingSalary}
-                    value={convertVariable(eligible_variable_pay.value)}
+                    defaultValue={convertVariable(eligible_variable_pay.value)}
                     onChange={(e) => calculationForIndia(e, eligible_variable_pay.key)}
                   />
                 </div>
@@ -682,7 +681,7 @@ const SalaryStructureTemplate = (props) => {
                   <Input
                     addonBefore="INR"
                     disabled={!isEditingSalary}
-                    value={convertVariable(annual_retention_bonus.value)}
+                    defaultValue={convertVariable(annual_retention_bonus.value)}
                     onChange={(e) => calculationForIndia(e, annual_retention_bonus.key)}
                   />
                 </div>
@@ -697,7 +696,7 @@ const SalaryStructureTemplate = (props) => {
                   <Input
                     addonBefore="INR"
                     disabled={!isEditingSalary}
-                    value={convertVariable(joining_bonus.value)}
+                    defaultValue={convertVariable(joining_bonus.value)}
                     onChange={(e) => calculationForIndia(e, joining_bonus.key)}
                   />
                 </div>
@@ -712,7 +711,7 @@ const SalaryStructureTemplate = (props) => {
                   <Input
                     addonBefore="INR"
                     disabled={!isEditingSalary}
-                    value={convertVariable(midterm_hike.value)}
+                    defaultValue={convertVariable(midterm_hike.value)}
                     onChange={(e) => calculationForIndia(e, midterm_hike.key)}
                   />
                 </div>
@@ -732,7 +731,7 @@ const SalaryStructureTemplate = (props) => {
                   <div className={styles.inputBefore}>
                     <Input
                       addonBefore="INR"
-                      value={convertVariable(annualTotal.value)}
+                      defaultValue={convertVariable(annualTotal.value)}
                       onChange={(e) => calculationForIndia(e, annualTotal.key)}
                     />
                   </div>
@@ -774,17 +773,19 @@ const SalaryStructureTemplate = (props) => {
             Note-
             {isJoiningBonus && (
               <div className={styles.noteField}>
-                1. As a part of this offer the candidate shall be entitled to a Joining Bonus of
-                INR. Post Joining 50% of this amount shall be paid along with the second month's
-                salary (or the applicable first payroll). And on completion of three months of
-                service the balance 50% shall be paid along with the immediate next payroll.
+                1. As a part of this offer the candidate shall be entitled to a Joining Bonus of INR{' '}
+                {convertValue(joining_bonus.value)}. Post Joining 50% of this amount shall be paid
+                along with the second month's salary (or the applicable first payroll). And on
+                completion of three months of service the balance 50% shall be paid along with the
+                immediate next payroll.
               </div>
             )}
             {isMidtermHike && (
               <div className={styles.noteField}>
                 2. As a part of this offer the candidate shall be entitled to a one time Mid Term
-                Hike of INR . Upon completion of 6 months duration of employment with full standing
-                and meeting the Project and Management expectations.
+                Hike of INR {convertValue(midterm_hike.value)}. Upon completion of 6 months duration
+                of employment with full standing and meeting the Project and Management
+                expectations.
               </div>
             )}
           </div>
