@@ -1,12 +1,10 @@
-import { Button, Form, Input, Skeleton } from 'antd';
+import { Button, Form, Input, Skeleton, Spin } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
-import { io } from 'socket.io-client';
 import { connect } from 'umi';
-import { ChatEvent } from '@/utils/chatSocket';
+import { ChatEvent, socket } from '@/utils/socket';
 import UnseenIcon from '@/assets/candidatePortal/unseen.svg';
 import SeenIcon from '@/assets/candidatePortal/seen.svg';
-import { SOCKET_URL } from '../../../../../../../config/proxy';
 import styles from './index.less';
 
 @connect(
@@ -42,8 +40,6 @@ import styles from './index.less';
 class ActiveChat extends PureComponent {
   formRef = React.createRef();
 
-  socket = React.createRef();
-
   constructor(props) {
     super(props);
     this.state = {};
@@ -53,24 +49,11 @@ class ActiveChat extends PureComponent {
 
   componentDidMount() {
     this.scrollToBottom();
-    // realtime get message
-    // const { candidate } = this.props;
-    this.socket.current = io(SOCKET_URL);
-    // this.socket.current.emit(ChatEvent.ADD_USER, candidate._id);
-    // this.socket.current.on(ChatEvent.GET_USER, (users) => {
-    //   console.log('users messages', users);
-    // });
-    // this.socket.current.on(ChatEvent.GET_MESSAGE, (message) => {
-    //   console.log('message a', message);
-    //   this.saveNewMessage(message);
-    // });
   }
 
   componentDidUpdate = () => {};
 
   componentWillUnmount = () => {
-    // socket.on(ChatEvent.DISCONNECT, () => {});
-    // socket.disconnect();
     const { dispatch } = this.props;
     dispatch({
       type: 'conversation/clearState',
@@ -310,14 +293,14 @@ class ActiveChat extends PureComponent {
     } = this.props;
     const { message } = values;
     if (activeId && message) {
-      this.socket.current.emit(ChatEvent.SEND_MESSAGE, {
+      socket.emit(ChatEvent.SEND_MESSAGE, {
         conversationId: activeId,
         senderId: candidateId,
         receiverId: assignTo?._id || assignTo || '',
         text: message,
       });
 
-      const res = await dispatch({
+      dispatch({
         type: 'conversation/addNewMessageEffect',
         payload: {
           conversationId: activeId,
@@ -328,16 +311,14 @@ class ActiveChat extends PureComponent {
         },
       });
 
-      if (res.statusCode === 200) {
-        this.formRef.current.setFieldsValue({
-          message: '',
-        });
-        const { fetchUnseenTotal = () => {}, getListLastMessage = () => {} } = this.props;
-        setTimeout(() => {
-          fetchUnseenTotal();
-          getListLastMessage();
-        }, 100);
-      }
+      this.formRef.current.setFieldsValue({
+        message: '',
+      });
+      const { fetchUnseenTotal = () => {}, getListLastMessage = () => {} } = this.props;
+      setTimeout(() => {
+        fetchUnseenTotal();
+        getListLastMessage();
+      }, 100);
     }
     this.scrollToBottom();
   };
@@ -360,21 +341,13 @@ class ActiveChat extends PureComponent {
       );
     }
     return (
-      <div className={styles.ActiveChat}>
-        <div className={styles.chatContainer}>
-          {loadingMessages ? (
-            <div style={{ margin: '32px' }}>
-              <Skeleton />
-            </div>
-          ) : (
-            <>
-              {this.renderSender(messages)}
-              {this.renderChatContent(messages)}
-            </>
-          )}
+      <Spin spinning={loadingMessages}>
+        <div className={styles.ActiveChat}>
+          {this.renderSender(messages)}
+          {this.renderChatContent(messages)}
+          {this.renderInput()}
         </div>
-        {this.renderInput()}
-      </div>
+      </Spin>
     );
   }
 }
