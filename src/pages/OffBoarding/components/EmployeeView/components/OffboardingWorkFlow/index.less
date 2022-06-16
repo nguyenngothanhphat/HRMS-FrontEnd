@@ -1,0 +1,113 @@
+.OffboardingWorkFlow {
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
+  :global {
+    .ant-card {
+      border-radius: 5px;
+    }
+    .ant-card-head-title {
+      color: #161c29;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 19px;
+    }
+    .ant-steps-item-icon {
+      width: 36px;
+      height: 36px;
+    }
+
+    .ant-steps-item-icon .ant-steps-icon {
+      top: 0;
+      font-weight: 500;
+      font-size: 13px;
+      font-style: normal;
+      line-height: 17px;
+    }
+
+    .ant-steps-item-description {
+      font-weight: 500;
+      font-size: 13px;
+      font-style: normal;
+      line-height: 15px;
+      text-align: center;
+    }
+
+    .ant-steps-item-process
+      > .ant-steps-item-container
+      > .ant-steps-item-content
+      > .ant-steps-item-description {
+      color: #2c6df9;
+    }
+
+    .ant-steps-item-tail::after {
+      height: 0;
+      border-top: 3px solid #d6dce0;
+    }
+
+    .ant-steps-label-vertical .ant-steps-item-tail {
+      margin-left: 78px;
+      padding: 3.5px 0px;
+    }
+
+    .ant-steps-item-wait .ant-steps-item-icon {
+      background: #d6dce0;
+      border: 1px solid #d6dce0;
+    }
+
+    .ant-steps-item-wait .ant-steps-icon {
+      color: #707177;
+      font-weight: 500;
+      font-size: 13px;
+    }
+    .ant-steps-item-wait .ant-steps-item-description {
+      color: #707177;
+      font-weight: 500;
+      font-size: 13px;
+      font-style: normal;
+      line-height: 15px;
+      text-align: center;
+    }
+    .ant-btn {
+      height: 40px;
+      padding: 4px 25px;
+      object-fit: contain;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.13px;
+      text-shadow: none;
+      background-color: #ffa100;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
+      box-shadow: none;
+      &:hover {
+        color: #ffffff;
+        background-color: #ffa100;
+      }
+    }
+  }
+  .titleProcessStep {
+    margin-bottom: 24px;
+    color: #161c29;
+    font-weight: bold;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+  }
+  .titleProcess {
+    margin-bottom: 10px;
+    color: #161c29;
+    font-weight: bold;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+  }
+  .description {
+    margin-bottom: 24px;
+    color: #161c29;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+  }
+}

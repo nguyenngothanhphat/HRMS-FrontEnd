@@ -15,6 +15,13 @@ export async function createRequest(payload) {
   });
 }
 
+export async function updateRequest(payload) {
+  return request('/api/offboardingtenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getMyRequest(params) {
   return request('/api/offboardingtenant/get', {
     method: 'GET',
@@ -26,6 +33,13 @@ export async function getRequestById(params) {
   return request('/api/offboardingtenant/get-by-id', {
     method: 'GET',
     params,
+  });
+}
+
+export async function withdrawRequest(payload) {
+  return request('/api/offboardingtenant/withdraw', {
+    method: 'POST',
+    data: payload,
   });
 }
 

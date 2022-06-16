@@ -3,9 +3,11 @@ import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils
 import { dialog } from '@/utils/utils';
 import {
   createRequest,
+  updateRequest,
   getList,
   getMyRequest,
   getRequestById,
+  withdrawRequest,
   getTimeInDate,
 
   // helpers
@@ -68,6 +70,22 @@ const offboarding = {
       }
       return response;
     },
+    *updateRequestEffect({ payload }, { call }) {
+      let response;
+      try {
+        response = yield call(updateRequest, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
     *getMyRequestEffect({ payload }, { call, put }) {
       let response;
       try {
@@ -81,7 +99,7 @@ const offboarding = {
         yield put({
           type: 'save',
           payload: {
-            myRequest: data,
+            myRequest: data || {},
           },
         });
       } catch (errors) {
@@ -110,6 +128,23 @@ const offboarding = {
       }
       return response;
     },
+    *withdrawRequestEffect({ payload }, { call }) {
+      let response;
+      try {
+        response = yield call(withdrawRequest, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
     *getTimeInDateEffect({ payload }, { call, put }) {
       let response;
       try {

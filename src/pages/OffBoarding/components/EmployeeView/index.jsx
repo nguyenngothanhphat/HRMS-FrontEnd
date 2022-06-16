@@ -1,204 +1,250 @@
-import React, { Component } from 'react';
-import { Row, Col, Tabs, Button, Spin } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Tabs, Spin } from 'antd';
 import { connect, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-import ViewLeft from './components/ViewLeft';
-import ViewRight from './components/ViewRight';
-// import RightDataTable from './components/RightContent';
 import ViewLeftInitial from './components/ViewLeftInitial';
-
+import ChainOfApproval from './components/ChainOfApproval';
+import RequestDetail from './components/RequestDetail';
+import YourRequest from './components/YourRequest';
+import WhatNext from './components/WhatNext';
 import RelievingFormalities from './RelievingFormalities';
 import styles from './index.less';
+import OffboardingWorkFlow from './components/OffboardingWorkFlow';
+import ViewRightQuickLink from './components/ViewRightQuickLink';
+import ViewRight from './components/ViewRight';
+import DidYouKnow from './components/DidYouKnow';
+import ViewRightNote from './components/ViewRightNote';
+import { OFFBOARDING } from '@/utils/offboarding';
 
 const { TabPane } = Tabs;
+const { STATUS = {} } = OFFBOARDING;
+const EmployeeView = (props) => {
+  const { tabName = '', dispatch } = props;
+  const {
+    employee = {},
+    myRequest: { status = '', step = '' } = {},
+    myRequest = {},
+    loadingStatus = false,
+  } = props;
 
-@connect(
+  const [relievingInQueue, setRelievingInQueue] = useState(false);
+
+  const getMyRequest = () => {
+    dispatch({
+      type: 'offboarding/getMyRequestEffect',
+      payload: {},
+    });
+  };
+
+  useEffect(() => {
+    if (!tabName) {
+      history.replace(`/offboarding/list`);
+    } else getMyRequest();
+  }, []);
+
+  const renderContent = (statusProps) => {
+    switch (statusProps) {
+      case STATUS.DELETED:
+        return (
+          <Row className={styles.content} gutter={[24, 24]}>
+            <Col span={17}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <ViewLeftInitial employee={employee} />
+                </Col>
+                <Col span={24}>
+                  <OffboardingWorkFlow employee={employee} />
+                </Col>
+              </Row>
+            </Col>
+            <Col span={7}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <ViewRight />
+                </Col>
+                <Col span={24}>
+                  <ViewRightQuickLink />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        );
+      case STATUS.DRAFT:
+        return (
+          <Row className={styles.content} gutter={[24, 24]}>
+            <Col span={17}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <YourRequest
+                    data={myRequest}
+                    employee={employee}
+                    status={status}
+                    getMyRequest={getMyRequest}
+                  />
+                </Col>
+                <Col span={24}>
+                  <OffboardingWorkFlow employee={employee} step={step} status={status} />
+                </Col>
+              </Row>
+            </Col>
+            <Col span={7}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <DidYouKnow employee={employee} />
+                </Col>
+                <Col span={24}>
+                  <ViewRight />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        );
+      case STATUS.IN_PROGRESS:
+        return (
+          <Row className={styles.content} gutter={[24, 24]}>
+            <Col span={17}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <RequestDetail
+                    data={myRequest}
+                    // fetchData={fetchData}
+                    getMyRequest={getMyRequest}
+                    employee={employee}
+                  />
+                </Col>
+                <Col span={24}>
+                  <OffboardingWorkFlow employee={employee} step={step} status={status} />
+                </Col>
+              </Row>
+            </Col>
+            <Col span={7}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <ChainOfApproval employee={employee} status={status} />
+                </Col>
+                <Col span={24}>
+                  <ViewRightNote status={status} />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        );
+      default:
+        return (
+          <Row className={styles.content} gutter={[24, 24]}>
+            <Col span={17}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <ViewLeftInitial
+                    data={myRequest}
+                    // fetchData={fetchData}
+                    employee={employee}
+                  />
+                </Col>
+                <Col span={24}>
+                  <OffboardingWorkFlow employee={employee} status={status} step={step} />
+                </Col>
+              </Row>
+            </Col>
+            <Col span={7}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <ViewRight />
+                </Col>
+                <Col span={24}>
+                  <ViewRightQuickLink />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        );
+    }
+  };
+
+  if (!tabName) return '';
+  return (
+    <PageContainer>
+      <div className={styles.EmployeeView}>
+        <div className={styles.tabs}>
+          <Tabs
+            activeKey={tabName || 'list'}
+            onChange={(key) => {
+              history.push(`/offboarding/${key}`);
+            }}
+          >
+            <TabPane tab="Terminate work relationship" key="list">
+              <div className={styles.paddingHR}>
+                <div className={styles.root}>
+                  <Spin spinning={loadingStatus}>
+                    {myRequest !== null ? (
+                      renderContent(status)
+                    ) : (
+                      <Row className={styles.content} gutter={[24, 24]}>
+                        <Col span={17}>
+                          <Row gutter={[24, 24]}>
+                            <Col span={24}>
+                              <ViewLeftInitial
+                                data={myRequest}
+                                // fetchData={fetchData}
+                                employee={employee}
+                              />
+                            </Col>
+                            <Col span={24}>
+                              <OffboardingWorkFlow
+                                employee={employee}
+                                status={status}
+                                step={step}
+                              />
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col span={7}>
+                          <Row gutter={[24, 24]}>
+                            <Col span={24}>
+                              <ViewRight />
+                            </Col>
+                            <Col span={24}>
+                              <ViewRightQuickLink />
+                            </Col>
+                          </Row>
+                        </Col>
+                      </Row>
+                    )}
+                  </Spin>
+                </div>
+              </div>
+            </TabPane>
+
+            <TabPane
+              disabled={!relievingInQueue}
+              tab="Relieving Formalities"
+              key="relieving-formalities"
+            >
+              <RelievingFormalities />
+            </TabPane>
+          </Tabs>
+        </div>
+      </div>
+    </PageContainer>
+  );
+};
+
+export default connect(
   ({
-    offboarding: {
-      listOffboarding = [],
-      totalList = [],
-      hrManager = {},
-      acceptedRequest = [],
-    } = {},
+    offboarding: { myRequest = {} } = {},
     user: {
       currentUser: {
         location: { _id: locationID = '' } = {},
         company: { _id: companyID } = {},
+        employee = {},
       } = {},
     } = {},
     loading,
   }) => ({
-    acceptedRequest,
-    totalList,
+    myRequest,
     locationID,
     companyID,
-    listOffboarding,
-    // loadingFetchList: loading.effects['offboarding/fetchList'],
-    loadingAcceptedRequest: loading.effects['offboarding/fetchAcceptedRequest'],
-    hrManager,
+    employee,
+    loadingStatus: loading.effects['offboarding/getMyRequestEffect'],
   }),
-)
-class EmployeeView extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      relievingInQueue: false,
-      dataDraft: [],
-      dataRequest: [],
-      loadingFetchList: true,
-    };
-  }
-
-  componentDidMount() {
-    const { tabName = '' } = this.props;
-    if (!tabName) {
-      history.replace(`/offboarding/list`);
-    } else this.fetchData();
-  }
-
-  fetchData = () => {
-    const { dispatch } = this.props;
-
-    dispatch({
-      type: 'offboarding/fetchList',
-      payload: {
-        // status: 'IN-PROGRESS',
-      },
-    }).then((data) => {
-      if (data) {
-        this.setState({
-          dataRequest: data.filter(
-            (value) => value.status !== 'DRAFT' && value.status !== 'WITHDRAW',
-          ),
-          loadingFetchList: false,
-        });
-      }
-    });
-    dispatch({
-      type: 'offboarding/fetchList',
-      payload: {
-        status: 'DRAFT',
-      },
-    }).then((data) => {
-      if (data) {
-        this.setState({
-          dataDraft: data,
-          loadingFetchList: false,
-        });
-      }
-    });
-    dispatch({
-      type: 'offboarding/fetchAcceptedRequest',
-      payload: {
-        status: 'ACCEPTED',
-      },
-    }).then((data) => {
-      if (data !== null) {
-        this.checkIfExistingRequest();
-      }
-    });
-  };
-
-  viewActivityLogs = () => {
-    return (
-      <Button className={styles.viewActivityLogs} type="secondary">
-        View Activity log (15)
-      </Button>
-    );
-  };
-
-  checkIfExistingRequest = () => {
-    const { acceptedRequest = [], companyID = '', dispatch } = this.props;
-    if (acceptedRequest.length > 0) {
-      const accepted = acceptedRequest[0]; // only one offboarding request
-      const { _id = '' } = accepted;
-      dispatch({
-        type: 'offboarding/fetchRelievingDetailsById',
-        payload: {
-          id: _id,
-          company: companyID,
-          packageType: '',
-        },
-      }).then((res) => {
-        const { data = {} } = res;
-        const { item: { relievingStatus = '' } = {} } = data;
-        if (relievingStatus === 'IN-QUEUES') {
-          this.setState({
-            relievingInQueue: true,
-          });
-        }
-      });
-    }
-  };
-
-  render() {
-    const {
-      // listOffboarding = [],
-      totalList = [],
-      hrManager = {},
-      // acceptedRequest = [],
-      tabName = '',
-    } = this.props;
-    const { relievingInQueue, dataDraft = [], dataRequest = [], loadingFetchList } = this.state;
-
-    if (!tabName) return '';
-    return (
-      <PageContainer>
-        <div className={styles.EmployeeView}>
-          <div className={styles.tabs}>
-            <Tabs
-              activeKey={tabName || 'list'}
-              onChange={(key) => {
-                history.push(`/offboarding/${key}`);
-              }}
-            >
-              <TabPane tab="Terminate work relationship" key="list">
-                <div className={styles.paddingHR}>
-                  <div className={styles.root}>
-                    <Row className={styles.content} gutter={[20, 20]}>
-                      <Col span={18}>
-                        {loadingFetchList ? (
-                          <Spin className={styles.spinLoading} />
-                        ) : (
-                          <>
-                            {dataDraft.length > 0 || dataRequest.length > 0 ? (
-                              <ViewLeft
-                                data={
-                                  // listOffboarding.length > 0 ? listOffboarding : acceptedRequest
-                                  dataRequest.length > 0 ? dataRequest : dataDraft
-                                }
-                                fetchData={this.fetchData}
-                                countdata={totalList}
-                                hrManager={hrManager}
-                              />
-                            ) : (
-                              <ViewLeftInitial hrManager={hrManager} />
-                            )}
-                          </>
-                        )}
-                      </Col>
-                      <Col span={6}>
-                        {/* {listOffboarding.length > 0 ? <RightDataTable /> : <ViewRight />} */}
-                        <ViewRight />
-                      </Col>
-                    </Row>
-                  </div>
-                </div>
-              </TabPane>
-
-              <TabPane
-                disabled={!relievingInQueue}
-                tab="Relieving Formalities"
-                key="relieving-formalities"
-              >
-                <RelievingFormalities />
-              </TabPane>
-            </Tabs>
-          </div>
-        </div>
-      </PageContainer>
-    );
-  }
-}
-
-export default EmployeeView;
+)(EmployeeView);
