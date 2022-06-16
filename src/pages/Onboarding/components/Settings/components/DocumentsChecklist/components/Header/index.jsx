@@ -6,7 +6,11 @@ import styles from './index.less';
 
 const { Option } = Select;
 const Header = (props) => {
-  const { dispatch, handleUploadDocument = () => {} } = props;
+  const {
+    dispatch,
+    handleUploadDocument = () => {},
+    handleCancelUploadDocument = () => {},
+  } = props;
   const {
     user: {
       currentUser: {

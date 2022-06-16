@@ -1,6 +1,9 @@
 .UploadDocument {
   padding: 24px;
   :global {
+    .ant-card-body {
+      padding: 0;
+    }
     .ant-card-head-title {
       color: #161c29;
       font-weight: 600;
@@ -62,5 +65,148 @@
     background: #ffffff;
     border: 1px solid #d6dce0;
     border-radius: 8px;
+  }
+  .formContent {
+    padding: 24px 24px 0 24px;
+  }
+  .containerBtn {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 24px 24px 24px;
+
+    :global {
+      .ant-btn-primary {
+        width: 94px;
+        height: 40px;
+        object-fit: contain;
+        color: #ffffff;
+        font-weight: 500;
+
+        font-size: 14px;
+        letter-spacing: 0.13px;
+        // display: none;
+        text-shadow: none;
+        background-color: #ffa100;
+        border: solid 1px #ffa100;
+        border-radius: 25px;
+        box-shadow: none;
+        &:active {
+          opacity: 0.5;
+        }
+        &:disabled {
+          cursor: default;
+          opacity: 0.5;
+        }
+      }
+      .ant-btn-secondary {
+        width: 94px;
+        height: 40px;
+        margin-right: 20px;
+        padding-right: 41px;
+        object-fit: contain;
+        color: #fd4546;
+        font-weight: 500;
+        font-size: 14px;
+        letter-spacing: 0.13px;
+        border: none;
+        border-radius: 25px;
+        &:active {
+          border: none;
+          opacity: 0.5;
+        }
+        &:disabled {
+          cursor: default;
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+  .fileUploadForm {
+    height: 100%;
+    padding: 0 24px;
+    background-color: white;
+    .fileUploadedContainer {
+      position: relative;
+      .trashIcon {
+        position: absolute;
+        top: -20px;
+        right: 0;
+        display: block;
+        cursor: pointer;
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+
+      .previewIcon {
+        margin-bottom: 20px;
+      }
+      .fileName {
+        font-size: 14px;
+        a {
+          color: #2c6df9;
+        }
+      }
+    }
+    .drapperBlock {
+      position: relative;
+      margin: 20px;
+
+      .uploadIcon {
+        margin-right: 10px;
+      }
+      .aboveText {
+        .browseText {
+          display: inline-block;
+          margin-left: 5px;
+          color: #2c6df9;
+          font-weight: normal;
+          font-size: 14px;
+          font-style: normal;
+          line-height: 22px;
+          text-decoration: underline;
+        }
+        .uploadText {
+          display: inline-block;
+          margin-left: 5px;
+          color: #000000;
+          font-weight: 500;
+          font-size: 14px;
+          font-style: normal;
+          line-height: 16px;
+        }
+        .uploadbrowseText {
+          color: #707177;
+          font-weight: normal;
+          font-size: 14px;
+          font-style: normal;
+          line-height: 22px;
+        }
+      }
+      .belowText {
+        color: #707177;
+        font-size: 12px;
+        line-height: 12px;
+        opacity: 0.5;
+      }
+    }
+    :global {
+      .ant-upload.ant-upload-drag {
+        background: #fff;
+        border-radius: 8px;
+      }
+      .ant-btn {
+        height: 35px;
+        padding: 0 35px;
+        background-color: #ffa100;
+        border: none;
+        border-radius: 40px;
+        span {
+          color: white;
+          font-weight: 700;
+          font-size: 14px;
+        }
+      }
+    }
   }
 }

@@ -7,14 +7,21 @@ import styles from './index.less';
 
 const DocumentsChecklist = () => {
   const [uploadDocument, setUploadDocument] = useState(false);
+
   const handleUploadDocument = () => {
     setUploadDocument(true);
   };
-  if (uploadDocument) return <UploadDocument />;
+
+  const handleCancelUploadDocument = () => {
+    setUploadDocument(false);
+  }
+
+  
+  if (uploadDocument) return <UploadDocument handleCancelUploadDocument={handleCancelUploadDocument} />;
   return (
     <Row className={styles.DocumentsChecklist} gutter={[24, 24]}>
       <Col span={24}>
-        <Header handleUploadDocument={handleUploadDocument} />
+        <Header handleUploadDocument={handleUploadDocument}  />
       </Col>
       <Col span={24}>
         <TableDocuments />
