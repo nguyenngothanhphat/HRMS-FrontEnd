@@ -67,6 +67,8 @@ const Assignee = (props) => {
   const [delegating, setDelegating] = useState(false);
   const [secondaryManager, setSecondaryManager] = useState(null);
 
+  const getType = (type) => (type ? 'Primary' : 'Secondary');
+
   const onEmployeeSearch = (value) => {
     if (!value) {
       return new Promise((resolve) => {
@@ -98,12 +100,11 @@ const Assignee = (props) => {
       const newManagerAssignees = JSON.parse(JSON.stringify(managerAssignees));
       const newManager = employeeList.find((employee) => employee._id === secondaryManager.value);
       const newObj = {
-        type: 'Secondary',
+        primary: false,
         name: getEmployeeName(newManager?.generalInfo),
         title: newManager?.title?.name,
         userId: newManager?.generalInfo?.userId,
         avatar: newManager?.generalInfo?.avatar,
-        new: true,
       };
       if (newManagerAssignees.length === 1) {
         newManagerAssignees.push(newObj);
@@ -118,7 +119,7 @@ const Assignee = (props) => {
   useEffect(() => {
     setHrAssignees([
       {
-        type: 'Primary',
+        primary: true,
         name: getEmployeeName(hr?.generalInfoInfo),
         title: hr?.titleInfo?.name,
         userId: hr?.generalInfoInfo?.userId,
@@ -127,7 +128,7 @@ const Assignee = (props) => {
     ]);
     setManagerAssignees([
       {
-        type: 'Secondary',
+        primary: true,
         name: getEmployeeName(manager?.generalInfoInfo),
         title: manager?.titleInfo?.name,
         userId: manager?.generalInfoInfo?.userId,
@@ -165,7 +166,9 @@ const Assignee = (props) => {
                     />
                   </Col>
                   <Col span={5}>
-                    <span className={styles.type}>{y.type}</span>
+                    <div className={styles.options}>
+                      <span className={styles.type}>{getType(y.primary)}</span>
+                    </div>
                   </Col>
                 </>
               ))}
@@ -202,9 +205,10 @@ const Assignee = (props) => {
                   </Col>
                   <Col span={5}>
                     <div className={styles.options}>
-                      <span className={styles.type}>{y.type}</span>
-
-                      <img src={DownArrowIcon} alt="" className={styles.arrowIcon} />
+                      <span className={styles.type}>{getType(y.primary)}</span>
+                      {!y.primary && (
+                        <img src={DownArrowIcon} alt="" className={styles.arrowIcon} />
+                      )}
                     </div>
                   </Col>
                 </>

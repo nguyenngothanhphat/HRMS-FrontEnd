@@ -16,7 +16,7 @@ import {
 const offboarding = {
   namespace: 'offboarding',
   state: {
-    selectedLocations: [getCurrentLocation()],
+    selectedLocations: [],
     teamRequests: {
       list: [],
       totalStatus: {},

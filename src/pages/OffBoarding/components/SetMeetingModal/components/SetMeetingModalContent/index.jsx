@@ -1,6 +1,6 @@
 import { Col, DatePicker, Form, Row, Select } from 'antd';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
 import { dateFormat, getEmployeeName } from '@/utils/offboarding';
 import CustomEmployeeTag from '@/components/CustomEmployeeTag';
@@ -17,7 +17,15 @@ const SetMeetingModalContent = ({
   const { generalInfoInfo = {}, titleInfo = {} } = employee || {};
   const { hourList = [] } = offboarding;
 
+  const [selectedDate, setSelectedDate] = useState();
+
+  const disabledDate = (current) => {
+    const customDate = moment().format('YYYY-MM-DD');
+    return current && current < moment(customDate, 'YYYY-MM-DD');
+  };
+
   const onDateChange = (date) => {
+    setSelectedDate(date);
     dispatch({
       type: 'offboarding/getTimeInDateEffect',
       payload: {
@@ -52,12 +60,13 @@ const SetMeetingModalContent = ({
                 format={dateFormat}
                 placeholder="Select the date"
                 onChange={onDateChange}
+                disabledDate={disabledDate}
               />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item name="time" label="Time" rules={[{ required: true }]}>
-              <Select placeholder="Select the time">
+              <Select placeholder="Select the time" disabled={!selectedDate}>
                 {hourList.map((x) => (
                   <Select.Option value={x.time} disabled={x.disabled}>
                     {x.time}

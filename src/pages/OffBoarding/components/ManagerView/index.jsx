@@ -19,10 +19,10 @@ const ManagerView = (props) => {
     dispatch,
     tabName = '',
     companyLocationList = [],
-    offboarding: { selectedLocations: selectedLocationsProp = [] },
+    // offboarding: { selectedLocations: selectedLocationsProp = [] },
   } = props;
 
-  const [selectedLocations, setSelectedLocation] = useState(selectedLocationsProp);
+  const [selectedLocations, setSelectedLocation] = useState([]);
 
   const onLocationChange = (selection) => {
     dispatch({
