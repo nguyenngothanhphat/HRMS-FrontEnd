@@ -2,13 +2,11 @@ import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Skeleton } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
-import { io } from 'socket.io-client';
 import { connect } from 'umi';
-import { ChatEvent } from '@/utils/chatSocket';
+import { ChatEvent, socket } from '@/utils/socket';
 import { getCurrentCompany } from '@/utils/authority';
 import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
-import { SOCKET_URL } from '../../../../../config/proxy';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -55,8 +53,6 @@ class MessageBox extends PureComponent {
 
   formRefEmptyChat = React.createRef();
 
-  socket = React.createRef();
-
   constructor(props) {
     super(props);
     this.state = { activeId: '', contentVisible: true };
@@ -67,18 +63,6 @@ class MessageBox extends PureComponent {
     this.scrollToBottom();
 
     const { dispatch, candidate, assignTo: hrId } = this.props;
-
-    this.socket.current = io(SOCKET_URL);
-
-    // realtime get message
-    // this.socket.current.emit(ChatEvent.ADD_USER, hrId?._id || hrId || '');
-    // this.socket.current.on(ChatEvent.GET_USER, (users) => {
-    //   console.log('users HR', users);
-    // });
-    // this.socket.current.on(ChatEvent.GET_MESSAGE, (data) => {
-    //   console.log('data HR', data);
-    //   this.saveNewMessage(data);
-    // });
 
     if (candidate) {
       const getConversationList = () => {
@@ -141,7 +125,7 @@ class MessageBox extends PureComponent {
   };
 
   componentWillUnmount = () => {
-    // this.socket.current.on(ChatEvent.DISCONNECT);
+    // socket.on(ChatEvent.DISCONNECT);
     const { dispatch } = this.props;
     dispatch({
       type: 'conversation/clearState',
@@ -326,7 +310,7 @@ class MessageBox extends PureComponent {
     const { activeId } = this.state;
     const { message } = values;
     if (activeId && message) {
-      this.socket.current.emit(ChatEvent.SEND_MESSAGE, {
+      socket.emit(ChatEvent.SEND_MESSAGE, {
         conversationId: activeId,
         senderId: hrId?._id || hrId || '',
         receiverId: candidate,
@@ -335,7 +319,7 @@ class MessageBox extends PureComponent {
 
       let candidateName = `${candidateFN} ${candidateLN}`;
       if (candidateMN) candidateName = `${candidateFN} ${candidateMN} ${candidateLN}`;
-      const res = await dispatch({
+      dispatch({
         type: 'conversation/addNewMessageEffect',
         payload: {
           conversationId: activeId,
@@ -346,17 +330,15 @@ class MessageBox extends PureComponent {
         },
       });
 
-      if (res.statusCode === 200) {
-        if (this.formRef?.current) {
-          this.formRef.current.setFieldsValue({
-            message: '',
-          });
-        }
-        if (this.formRefEmptyChat?.current) {
-          this.formRefEmptyChat.current.setFieldsValue({
-            message: '',
-          });
-        }
+      if (this.formRef?.current) {
+        this.formRef.current.setFieldsValue({
+          message: '',
+        });
+      }
+      if (this.formRefEmptyChat?.current) {
+        this.formRefEmptyChat.current.setFieldsValue({
+          message: '',
+        });
       }
     }
     this.scrollToBottom();
