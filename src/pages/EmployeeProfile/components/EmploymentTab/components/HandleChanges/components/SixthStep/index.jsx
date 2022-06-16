@@ -41,10 +41,7 @@ export default function SixthStep(props) {
   };
 
   const checkIfChanged = (arr) => {
-    return arr.every(
-      (x) =>
-        x.oldVal !== x.newVal && JSON.stringify(x.oldVal) !== JSON.stringify(x.newVal) && x.newVal,
-    );
+    return arr.some((x) => JSON.stringify(x.oldVal) !== JSON.stringify(x.newVal) && x.newVal);
   };
 
   const getItems = () => {

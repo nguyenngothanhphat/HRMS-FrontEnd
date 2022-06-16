@@ -27,6 +27,14 @@ class LocalEmployeeComponent extends PureComponent {
     );
   };
 
+  isSubCheckBox = (list) => {
+    let check = false;
+    list.forEach((item) => {
+      if (item.subCheckBox.length > 0) check = true;
+    });
+    return check;
+  };
+
   render() {
     const { IndiaEmployeesCheckbox, onChange, handleChange, handleCheckAll, benefits } = this.props;
 
@@ -37,60 +45,40 @@ class LocalEmployeeComponent extends PureComponent {
     const CheckboxGroup = Checkbox.Group;
     return (
       <div className={styles.LocalEmployeeComponent}>
-        {checkBox.map(
-          (item) => (
-            // item.subCheckBox.length > 1 ? (
-            <div className={styles.checkBoxHeader}>
-              <Checkbox
-                className={
-                  item.value === 'Paytm Wallet' ? styles.checkboxMedical : styles.checkBoxHeaderTop
-                }
-                name={item}
-                onChange={(e) => handleCheckAll(e, item.subCheckBox, item.title)}
-                checked={item.title === 'employeeProvident' ? employeeProvident : paytmWallet}
-              >
-                <Typography.Text className={styles.checkBoxTitle}>{item.value}</Typography.Text>
-              </Checkbox>
-              {/* <Typography.Text className={styles.checkBoxTitle}>{item.value}</Typography.Text> */}
-              {this.getCreateBenefitAt(item.title)}
-              <div className={styles.paddingLeft}>
-                {this.getCreateBenefitAt(item.title)}
-                <CheckboxGroup
-                  options={item.subCheckBox.map((data) => data.value)}
-                  onChange={(e) => handleChange(e, item.subCheckBox, item.title)}
-                  value={
-                    item.title === 'employeeProvident'
-                      ? listSelectedEmployee
-                      : listSelectedPaytmWallet
-                  }
-                />
-              </div>
-            </div>
-          ),
-          // ) : (
-          //   <div className={styles.checkBoxHeader}>
-          //     <Typography.Paragraph className={styles.checkBoxTitle}>
-          //       {item.value}
-          //     </Typography.Paragraph>
-          //     <div className={styles.paddingLeft}>
-          //       {this.getCreateBenefitAt(item.title)}
-          //       {/* {item.subCheckBox.map((data) => (
-          //       <Row>
-          //         <Checkbox
-          //           onChange={(e) => onChange(e, item.value)}
-          //           value={data.value}
-          //           checked={item.title === 'employeeProvident' ? employeeProvident : paytmWallet}
-          //         >
-          //           <Typography.Text className={styles.subCheckboxTitle}>
-          //             {data.value}
-          //           </Typography.Text>
-          //         </Checkbox>
-          //       </Row>
-          //     ))} */}
-          //     </div>
-          //   </div>
-          // ),
-        )}
+        {this.isSubCheckBox(checkBox) &&
+          checkBox.map(
+            (item) =>
+              item.subCheckBox.length > 0 && (
+                <div className={styles.checkBoxHeader}>
+                  <Checkbox
+                    className={
+                      item.value === 'Paytm Wallet'
+                        ? styles.checkboxMedical
+                        : styles.checkBoxHeaderTop
+                    }
+                    name={item}
+                    onChange={(e) => handleCheckAll(e, item.subCheckBox, item.title)}
+                    checked={item.title === 'employeeProvident' ? employeeProvident : paytmWallet}
+                  >
+                    <Typography.Text className={styles.checkBoxTitle}>{item.value}</Typography.Text>
+                  </Checkbox>
+                  {/* <Typography.Text className={styles.checkBoxTitle}>{item.value}</Typography.Text> */}
+                  {this.getCreateBenefitAt(item.title)}
+                  <div className={styles.paddingLeft}>
+                    {this.getCreateBenefitAt(item.title)}
+                    <CheckboxGroup
+                      options={item.subCheckBox.map((data) => data.value)}
+                      onChange={(e) => handleChange(e, item.subCheckBox, item.title)}
+                      value={
+                        item.title === 'employeeProvident'
+                          ? listSelectedEmployee
+                          : listSelectedPaytmWallet
+                      }
+                    />
+                  </div>
+                </div>
+              ),
+          )}
       </div>
     );
   }
