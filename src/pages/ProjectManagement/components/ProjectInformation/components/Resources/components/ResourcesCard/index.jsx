@@ -172,7 +172,7 @@ const ResourcesCard = (props) => {
       type: 'projectDetails/fetchResourceOfProjectEffect',
       payload: {
         project: [id],
-        name,
+        ...name,
         page: p,
         limit: l,
         adminMode: true,
