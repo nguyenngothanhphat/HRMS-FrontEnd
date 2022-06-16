@@ -3,19 +3,31 @@ import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils
 import { dialog } from '@/utils/utils';
 import {
   createRequest,
+  updateRequest,
   getList,
   getMyRequest,
   getRequestById,
   withdrawRequest,
+  getTimeInDate,
+
+  // helpers
+  getProjectByEmployee,
+  getEmployeeList,
 } from '../services/offboarding';
 
 const offboarding = {
   namespace: 'offboarding',
   state: {
     selectedLocations: [getCurrentLocation()],
-    list: [],
+    teamRequests: {
+      list: [],
+      totalStatus: {},
+    },
     viewingRequest: {},
     myRequest: {},
+    employeeProjects: [],
+    employeeList: [],
+    hourList: [],
   },
   effects: {
     *fetchListEffect({ payload }, { call, put }) {
@@ -26,12 +38,15 @@ const offboarding = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data = [] } = response;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
           payload: {
-            list: data,
+            teamRequests: {
+              list: data.list,
+              totalStatus: data.totalStatus,
+            },
           },
         });
       } catch (errors) {
@@ -47,8 +62,25 @@ const offboarding = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode } = response;
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *updateRequestEffect({ payload }, { call }) {
+      let response;
+      try {
+        response = yield call(updateRequest, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
       } catch (errors) {
         dialog(errors);
       }
@@ -107,6 +139,72 @@ const offboarding = {
         const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *getTimeInDateEffect({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getTimeInDate, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            hourList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    // helpers
+    *fetchEmployeeProjectEffect({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getProjectByEmployee, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            employeeProjects: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchEmployeeListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getEmployeeList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            employeeList: data,
+          },
+        });
       } catch (errors) {
         dialog(errors);
       }

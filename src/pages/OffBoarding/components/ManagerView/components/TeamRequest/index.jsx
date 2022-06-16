@@ -1,4 +1,4 @@
-import { Avatar, Popover, Tabs, Tooltip } from 'antd';
+import { Avatar, Popover, Tabs } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -10,16 +10,18 @@ import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { getEmployeeName, OFFBOARDING, OFFBOARDING_MANAGER_TABS } from '@/utils/offboarding';
+import { OFFBOARDING, OFFBOARDING_MANAGER_TABS } from '@/utils/offboarding';
 import { addZeroToNumber } from '@/utils/utils';
 import styles from './index.less';
 
 const TeamRequest = (props) => {
   const {
     dispatch,
-    offboarding: { listTeamRequest = [], totalListTeamRequest = [], selectedLocations = [] } = {},
-    loadingFetchListTeamRequest = false,
-    user: { currentUser: { employee = {} } = {} } = {},
+    offboarding: {
+      teamRequests: { list = [], totalStatus = {} } = {},
+      selectedLocations = [],
+    } = {},
+    loadingFetchList = false,
   } = props;
 
   const [size, setSize] = useState(10);
@@ -30,8 +32,7 @@ const TeamRequest = (props) => {
     dispatch({
       type: 'offboarding/fetchListEffect',
       payload: {
-        employeeId: employee?._id,
-        location: [selectedLocations],
+        location: selectedLocations,
         page,
         limit: size,
         status: currentStatus,
@@ -40,8 +41,7 @@ const TeamRequest = (props) => {
   }, [currentStatus, page, size, JSON.stringify(selectedLocations)]);
 
   const getTabName = (tab) => {
-    const find = totalListTeamRequest.find((item) => item._id === tab.id);
-    return `${tab.label} (${addZeroToNumber(find?.count || 0)})`;
+    return `${tab.label} (${addZeroToNumber(totalStatus.asObject?.[tab.id] || 0)})`;
   };
 
   const filterPane = () => {
@@ -74,11 +74,11 @@ const TeamRequest = (props) => {
   const columns = [
     {
       title: <span className={styles.title}>Ticket ID </span>,
-      dataIndex: 'ticketID',
-      render: (ticketID, record) => {
+      dataIndex: 'ticketId',
+      render: (ticketId, record) => {
         return (
           <Link to={`/offboarding/list/review/${record._id}`} className={styles.title__value}>
-            {ticketID}
+            {ticketId}
           </Link>
         );
       },
@@ -102,16 +102,17 @@ const TeamRequest = (props) => {
       title: <span className={styles.title}>Requestee Name</span>,
       dataIndex: 'employee',
       ellipsis: true,
-      render: (obj = {}, row) => {
-        const { generalInfo: { legalName = '', userId = '' } = {} } = obj;
+      render: (obj = {}) => {
+        const { generalInfoInfo: { legalName = '', userId = '' } = {} } = obj;
         return (
           <UserProfilePopover
             placement="bottomRight"
             data={{
               ...obj,
-              locationInfo: obj.location,
-              department: row.department,
-              manager: row.manager,
+              generalInfo: obj.generalInfoInfo,
+              // locationInfo: obj.location,
+              // department: row.department,
+              // manager: row.manager,
             }}
           >
             <Link to={`/directory/employee-profile/${userId}`} className={styles.title__value}>
@@ -123,26 +124,31 @@ const TeamRequest = (props) => {
     },
     {
       title: 'Manager',
-      dataIndex: 'manager',
-      render: (manager = {}) => {
-        const name = getEmployeeName(manager.generalInfo);
-        const { generalInfo: { avatar = '' } = {} || {} } = manager;
+      dataIndex: 'assigned',
+      render: (assigned = {}) => {
+        const { generalInfoInfo: { avatar = '' } = {} || {} } = assigned?.manager || {};
 
         return (
-          <Tooltip title={name}>
+          <UserProfilePopover
+            placement="bottomRight"
+            data={{
+              ...assigned?.manager,
+              generalInfo: assigned?.manager?.generalInfoInfo,
+            }}
+          >
             <Avatar
               src={<img alt="" src={avatar || DefaultAvatar} />}
               style={{ width: 21, height: 21 }}
             />
-          </Tooltip>
+          </UserProfilePopover>
         );
       },
     },
     {
       title: <span className={styles.title}>HR POC</span>,
-      dataIndex: 'assigneeHR',
-      render: (assigneeHR = {}) => {
-        if (isEmpty(assigneeHR)) {
+      dataIndex: 'assigned',
+      render: (assigned = {}) => {
+        if (isEmpty(assigned?.hr)) {
           return '-';
         }
 
@@ -150,12 +156,12 @@ const TeamRequest = (props) => {
           <UserProfilePopover
             placement="bottomRight"
             data={{
-              ...assigneeHR,
-              locationInfo: assigneeHR.location,
+              ...assigned?.hr,
+              generalInfo: assigned?.hr?.generalInfoInfo,
             }}
           >
             <Avatar
-              src={<img alt="" src={assigneeHR?.generalInfo?.avatar || DefaultAvatar} />}
+              src={<img alt="" src={assigned?.hr?.generalInfo?.avatar || DefaultAvatar} />}
               style={{ width: 21, height: 21 }}
             />
           </UserProfilePopover>
@@ -225,14 +231,14 @@ const TeamRequest = (props) => {
         {OFFBOARDING_MANAGER_TABS.map((x) => (
           <Tabs.TabPane tab={getTabName(x)} key={x.id}>
             <CommonTable
-              loading={loadingFetchListTeamRequest}
+              loading={loadingFetchList}
               columns={columns}
-              list={listTeamRequest}
+              list={list}
               isBackendPaging
               limit={size}
               page={page}
               onChangePage={onChangePagination}
-              scrollable
+              // scrollable
             />
           </Tabs.TabPane>
         ))}
@@ -246,6 +252,6 @@ export default connect(
     user,
     offboarding,
     companyLocationList,
-    loadingFetchListTeamRequest: loading.effects['offboarding/fetchListTeamRequest'],
+    loadingFetchList: loading.effects['offboarding/fetchListEffect'],
   }),
 )(TeamRequest);

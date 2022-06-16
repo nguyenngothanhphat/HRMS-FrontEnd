@@ -1,7 +1,5 @@
-// import React, { Component } from 'react';
 import { Row, Col, Divider, Button } from 'antd';
-import React, { PureComponent } from 'react';
-// import icon from '@/assets/offboarding-schedule.svg';
+import React from 'react';
 import icon1 from '@/assets/offboadingIcon1.svg';
 import icon2 from '@/assets/offboadingIcon2.svg';
 import icon3 from '@/assets/offboadingIcon3.svg';
@@ -41,13 +39,8 @@ const array = [
   },
 ];
 
-export default class ViewRight extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  renderItem = (render) => {
+const ViewRight = () => {
+  const renderItem = (render) => {
     return (
       <div className={styles.rowInfo}>
         <Row justify="space-between" gutter={[24, 24]}>
@@ -64,23 +57,25 @@ export default class ViewRight extends PureComponent {
     );
   };
 
-  render() {
-    return (
-      <div className={styles.ViewRight}>
-        <div className={styles.twoRight}>
-          <div className={styles.headerTitle}>Few thing to consider</div>
-          <Divider className={styles.divider} />
-          <div className={styles.twoRight__bottom}>
-            {array.map((render) => this.renderItem(render))}
-          </div>
-          <div className={styles.bottom}>
-            <div className={styles.btnBottom} />
-            <Button className={styles.btnBottom__btn}>Speak to manager</Button>
-          </div>
+  const handleSchedule = () => {
+    window.open('https://calendar.google.com/', '_blank');
+  };
+
+  return (
+    <div className={styles.ViewRight}>
+      <div className={styles.twoRight}>
+        <div className={styles.headerTitle}>Few thing to consider</div>
+        <Divider className={styles.divider} />
+        <div className={styles.twoRight__bottom}>{array.map((render) => renderItem(render))}</div>
+        <div className={styles.bottom}>
+          <div className={styles.btnBottom} />
+          <Button onClick={handleSchedule} className={styles.btnBottom__btn}>
+            Speak to manager
+          </Button>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-// export default InfoRight;
+export default ViewRight;

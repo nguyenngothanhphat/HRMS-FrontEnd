@@ -1,15 +1,16 @@
-import { Col, DatePicker, Divider, Input, Row, Tabs, Form, notification } from 'antd';
-import React, { useState, useEffect } from 'react';
+import { Col, DatePicker, Divider, Form, Input, notification, Row, Tabs } from 'antd';
+import { debounce } from 'lodash';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { PageContainer } from '@/layouts/layout/src';
 import CommonModal from '@/components/CommonModal';
-import ModalImage from './assets/modalImage1.png';
-import ViewRightNote from '../ViewRightNote';
-import styles from './index.less';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import { PageContainer } from '@/layouts/layout/src';
 import { OFFBOARDING } from '@/utils/offboarding';
+import ViewRightNote from '../ViewRightNote';
+import ModalImage from './assets/modalImage1.png';
+import styles from './index.less';
 
 const { TextArea } = Input;
 const { TabPane } = Tabs;
@@ -55,6 +56,14 @@ const ReasonForm = (props) => {
     history.push('/offboarding/list');
   };
 
+  const setFormValuesDebounce = debounce((values) => {
+    setValue(values);
+  }, 500);
+
+  const onValuesChange = (values) => {
+    setFormValuesDebounce(values);
+  };
+
   useEffect(() => {
     if (reId) {
       dispatch({
@@ -89,7 +98,7 @@ const ReasonForm = (props) => {
                 <div className={styles.title}>What is the reason for leaving us ?</div>
                 <Form.Item name="reason" rules={[{ required: true }]}>
                   <TextArea
-                    onChange={(e) => setValue(e.target.value)}
+                    onChange={(e) => onValuesChange(e.target.value)}
                     className={styles.boxReason}
                     placeholder="The reason I have decided to end my journey with Terralogic here is because…"
                   />

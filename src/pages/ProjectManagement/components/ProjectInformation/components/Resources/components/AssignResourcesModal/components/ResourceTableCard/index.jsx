@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import TimeIcon from '@/assets/projectManagement/time.svg';
-import CommonTable from '@/pages/ProjectManagement/components/ProjectInformation/components/CommonTable';
+import CommonTable from '@/components/CommonTable';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import CustomSearchBox from '@/components/CustomSearchBox';

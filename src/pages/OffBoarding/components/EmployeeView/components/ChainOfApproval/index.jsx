@@ -2,11 +2,11 @@ import React from 'react';
 import { Steps } from 'antd';
 import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { OFFBOARDING } from '@/utils/offboarding';
 import styles from './index.less';
 
 const { Step } = Steps;
-const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED, WITHDRAWN } = TIMEOFF_STATUS;
+const { IN_PROGRESS, ACCEPTED, REJECTED, DELETED, DRAFT } = OFFBOARDING.STATUS;
 
 const ChainOfApproval = (props) => {
   const {
@@ -14,7 +14,7 @@ const ChainOfApproval = (props) => {
       generalInfo: { legalName: ln1 = '', avatar: av1 = '' } = {},
       managerInfo: { generalInfoInfo: { legalName: ln2 = '', avatar: av2 = '' } = {} } = {},
     } = {},
-    status = 'IN-PROGRESS',
+    status = '',
   } = props;
 
   const renderIcon = (url, statusProps) => {
@@ -81,8 +81,8 @@ const ChainOfApproval = (props) => {
                       {index === 1 && (
                         <>
                           {status === REJECTED && renderIcon(avatar, REJECTED)}
-                          {(status === IN_PROGRESS || status === WITHDRAWN) && renderIcon(avatar)}
-                          {(status === ACCEPTED || status === ON_HOLD) && renderIcon2(avatar)}
+                          {(status === IN_PROGRESS || status === DRAFT) && renderIcon(avatar)}
+                          {status === ACCEPTED && renderIcon2(avatar)}
                         </>
                       )}
                     </>

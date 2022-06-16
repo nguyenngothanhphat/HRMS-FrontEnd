@@ -5,7 +5,7 @@ import styles from './index.less';
 import { OFFBOARDING } from '@/utils/offboarding';
 
 const { Step } = Steps;
-const { STEP, STATUS } = OFFBOARDING;
+const { STEP } = OFFBOARDING;
 const current = 0;
 const steps1 = [
   {

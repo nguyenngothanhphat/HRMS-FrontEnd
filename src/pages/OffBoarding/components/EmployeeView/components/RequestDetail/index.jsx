@@ -1,7 +1,7 @@
 import { Card, Col, Divider, Row } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
-import { connect, history } from 'umi';
+import { connect } from 'umi';
 import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
@@ -9,13 +9,14 @@ import SetMeetingModal from '../../../SetMeetingModal';
 
 import styles from './index.less';
 
-const { STATUS } = OFFBOARDING;
+const { STATUS, UPDATE_ACTION } = OFFBOARDING;
 const RequestDetail = (props) => {
   const {
-    loading = false,
-    employee = {},
+    loadingSchedule = false,
+    loadingWithdraw = false,
+    employee: { managerInfo = {} } = {},
     dispatch,
-    data: { ticketId = '', createdAt = '', LWD = '', reason = '', status } = {},
+    data: { ticketId = '', createdAt = '', LWD = '', reason = '', status = '', _id = '' } = {},
     getMyRequest = () => {},
   } = props;
 
@@ -40,7 +41,18 @@ const RequestDetail = (props) => {
     );
   };
 
-  const onFinish = (value) => {};
+  const onFinish = (values) => {
+    dispatch({
+      type: 'offboarding/updateRequestEffect',
+      payload: {
+        action: UPDATE_ACTION.EMPLOYEE_RESCHEDULE,
+        meeting: {
+          emplyeetDate: moment.utc(values?.date).format('YYYY-MM-DD'),
+        },
+        id: _id,
+      },
+    });
+  };
 
   const handleWithdraw = () => {
     dispatch({
@@ -83,8 +95,10 @@ const RequestDetail = (props) => {
         </div>
         <Divider />
         <div className={styles.containerBtn}>
-          <CustomSecondaryButton onClick={handleWithdraw}>Withdraw</CustomSecondaryButton>
-          <CustomPrimaryButton onClick={() => setVisible(true)}>
+          <CustomSecondaryButton onClick={handleWithdraw} loading={loadingWithdraw}>
+            Withdraw
+          </CustomSecondaryButton>
+          <CustomPrimaryButton onClick={() => setVisible(true)} loading={loadingSchedule}>
             Schedule 1 on 1
           </CustomPrimaryButton>
         </div>
@@ -94,11 +108,14 @@ const RequestDetail = (props) => {
         title="Set 1-on1 with Manager"
         onClose={() => setVisible(false)}
         partnerRole="Manager"
-        employee={employee}
+        employee={managerInfo}
         onFinish={onFinish}
       />
     </div>
   );
 };
 
-export default connect()(RequestDetail);
+export default connect(({ loading }) => ({
+  loadingSchedule: loading.effects['offboarding/createMeeting'],
+  loadingWithdraw: loading.effects['offboarding/createRequestEffect'],
+}))(RequestDetail);

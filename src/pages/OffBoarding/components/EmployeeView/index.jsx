@@ -120,7 +120,7 @@ const EmployeeView = (props) => {
             <Col span={7}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <ChainOfApproval employee={employee} />
+                  <ChainOfApproval employee={employee} status={status} />
                 </Col>
                 <Col span={24}>
                   <ViewRightNote status={status} />

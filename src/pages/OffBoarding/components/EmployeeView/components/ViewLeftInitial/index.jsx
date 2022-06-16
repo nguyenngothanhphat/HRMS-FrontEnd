@@ -19,6 +19,10 @@ const ViewLeftInitial = (props) => {
     window.open(url, '_blank');
   };
 
+  const handleSchedule = () => {
+    window.open('https://calendar.google.com/', '_blank');
+  };
+
   return (
     <div className={styles.ViewLeftInitial}>
       <Row className={styles.header} justify="space-between">
@@ -45,7 +49,7 @@ const ViewLeftInitial = (props) => {
               <p style={{ marginBottom: '0' }}>Schedule a meeting now!</p>
             </div>
             <div>
-              <Button>Schedule 1-on-1</Button>
+              <Button onClick={handleSchedule}>Schedule 1-on-1</Button>
             </div>
           </div>
         </Col>

@@ -17,9 +17,8 @@ const TicketDetails = (props) => {
     dispatch,
     match: { params: { id = '' } = {} },
     offboarding: {
-      myRequest: { ticketID = '', employee = {} } = {},
-      myRequest = {},
-      listProjectByEmployee: projectList = [],
+      viewingRequest: { ticketId = '', employee = {} } = {},
+      viewingRequest = {},
     } = {},
     loadingFetchData = false,
   } = props;
@@ -28,9 +27,9 @@ const TicketDetails = (props) => {
 
   const fetchData = () => {
     dispatch({
-      type: 'offboarding/fetchRequestById',
+      type: 'offboarding/getRequestByIdEffect',
       payload: {
-        id,
+        offBoardingId: id,
       },
     });
   };
@@ -46,8 +45,8 @@ const TicketDetails = (props) => {
         <Affix offsetTop={42}>
           <div className={styles.titlePage}>
             <p className={styles.titlePage__text}>
-              [Ticket id: {ticketID}] Terminate work relationship with{' '}
-              {getEmployeeName(employee.generalInfo)}
+              [Ticket id: {ticketId}] Terminate work relationship with{' '}
+              {getEmployeeName(employee.generalInfoInfo)}
             </p>
           </div>
         </Affix>
@@ -56,20 +55,20 @@ const TicketDetails = (props) => {
             <Col span={14} xs={24} lg={14}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <RequesteeDetails employee={employee} />
+                  <RequesteeDetails item={viewingRequest} />
                 </Col>
                 <Col span={24}>
-                  <CurrentProjectDetails projectList={projectList} />
+                  <CurrentProjectDetails item={viewingRequest} />
                 </Col>
                 <Col span={24}>
-                  <ResignationRequestDetail item={myRequest} />
+                  <ResignationRequestDetail item={viewingRequest} />
                 </Col>
                 <Col span={24}>
                   {isEnterClosingComment ? (
-                    <ClosingComment item={myRequest} />
+                    <ClosingComment item={viewingRequest} />
                   ) : (
                     <WhatNext
-                      item={myRequest}
+                      item={viewingRequest}
                       setIsEnterClosingComment={setIsEnterClosingComment}
                     />
                   )}
@@ -79,7 +78,7 @@ const TicketDetails = (props) => {
             <Col span={10} xs={24} lg={10}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <Assignee item={myRequest} />
+                  <Assignee item={viewingRequest} />
                 </Col>
               </Row>
             </Col>
@@ -92,5 +91,5 @@ const TicketDetails = (props) => {
 
 export default connect(({ offboarding, loading }) => ({
   offboarding,
-  loadingFetchData: loading.effects['offboarding/fetchRequestById'],
+  loadingFetchData: loading.effects['offboarding/getRequestByIdEffect'],
 }))(TicketDetails);
