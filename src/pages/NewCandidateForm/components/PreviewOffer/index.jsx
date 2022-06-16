@@ -34,8 +34,8 @@ const PreviewOffer = (props) => {
     loading2,
     loading3,
     loadingFetchCandidate = false,
-    loadingExtendOfferDate = false,
-    loadingWithdrawOffer = false,
+    // loadingExtendOfferDate = false,
+    // loadingWithdrawOffer = false,
   } = props;
 
   const {
@@ -119,8 +119,8 @@ const PreviewOffer = (props) => {
 
   // MODALS
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
-  const [extendOfferModalVisible, setExtendOfferModalVisible] = useState(false);
-  const [withdrawOfferModalVisible, setWithdrawOfferModalVisible] = useState(false);
+  // const [extendOfferModalVisible, setExtendOfferModalVisible] = useState(false);
+  // const [withdrawOfferModalVisible, setWithdrawOfferModalVisible] = useState(false);
   // FUNCTIONS
 
   const resetImg = (type) => {
@@ -269,35 +269,35 @@ const PreviewOffer = (props) => {
     });
   };
 
-  const handleExtendOfferDate = async (newDate) => {
-    const { candidate } = data;
-    const res = await dispatch({
-      type: 'newCandidateForm/extendOfferLetterEffect',
-      payload: {
-        candidate,
-        expiryDate: newDate,
-        oldExpiryDate: expiryDateProp,
-      },
-    });
-    if (res.statusCode === 200) {
-      setExtendOfferModalVisible(false);
-    }
-  };
+  // const handleExtendOfferDate = async (newDate) => {
+  //   const { candidate } = data;
+  //   const res = await dispatch({
+  //     type: 'newCandidateForm/extendOfferLetterEffect',
+  //     payload: {
+  //       candidate,
+  //       expiryDate: newDate,
+  //       oldExpiryDate: expiryDateProp,
+  //     },
+  //   });
+  //   if (res.statusCode === 200) {
+  //     setExtendOfferModalVisible(false);
+  //   }
+  // };
 
-  const handleWithdrawOffer = async (reason) => {
-    const { candidate } = data;
-    const res = await dispatch({
-      type: 'newCandidateForm/withdrawOfferEffect',
-      payload: {
-        candidate,
-        reasonForWithdraw: reason,
-      },
-    });
-    if (res.statusCode === 200) {
-      setWithdrawOfferModalVisible(false);
-      setOpenModal4(true);
-    }
-  };
+  // const handleWithdrawOffer = async (reason) => {
+  //   const { candidate } = data;
+  //   const res = await dispatch({
+  //     type: 'newCandidateForm/withdrawOfferEffect',
+  //     payload: {
+  //       candidate,
+  //       reasonForWithdraw: reason,
+  //     },
+  //   });
+  //   if (res.statusCode === 200) {
+  //     setWithdrawOfferModalVisible(false);
+  //     setOpenModal4(true);
+  //   }
+  // };
 
   const handleRejectOffer = async (reason) => {
     const { id } = hrManagerSignature;
@@ -825,9 +825,9 @@ const PreviewOffer = (props) => {
     // HR MANAGER IS TICKET MANAGER or HR MANAGER IS BOTH ASSIGNEE & MANAGER
     if (isTicketManager) {
       const managerSecondaryButtonText = () => {
-        if (isSentOffer) {
-          return 'Extend Offer Date';
-        }
+        // if (isSentOffer) {
+        //   return 'Extend Offer Date';
+        // }
         if (isAwaitingOffer || isNewOffer) {
           return 'Needs Changes';
         }
@@ -836,9 +836,9 @@ const PreviewOffer = (props) => {
         //   return 'Offer Rejected';
         // }
 
-        if (isWithdrawnOffer) {
-          return 'Offer Withdrawn';
-        }
+        // if (isWithdrawnOffer) {
+        //   return 'Offer Withdrawn';
+        // }
         return 'Previous';
       };
 
@@ -1419,24 +1419,24 @@ const PreviewOffer = (props) => {
         />
 
         {/* EXTEND OFFER  */}
-        <ExtendOfferModal
+        {/* <ExtendOfferModal
           title="Extend offer letter date"
           visible={extendOfferModalVisible}
           onClose={() => setExtendOfferModalVisible(false)}
           onFinish={handleExtendOfferDate}
           currentExpiryDate={expiryDateProp}
           loading={loadingExtendOfferDate}
-        />
+        /> */}
 
         {/* WITHDRAW MODAL  */}
 
-        <WithdrawOfferModal
+        {/* <WithdrawOfferModal
           title="Offer Withdraw"
           visible={withdrawOfferModalVisible}
           onClose={() => setWithdrawOfferModalVisible(false)}
           loading={loadingWithdrawOffer}
           onFinish={handleWithdrawOffer}
-        />
+        /> */}
       </Col>
     </Row>
   );

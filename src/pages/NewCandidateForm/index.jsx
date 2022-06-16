@@ -183,7 +183,11 @@ class NewCandidateForm extends PureComponent {
         name: 'Offer Details',
         key: 'offerDetails',
         component: (
-          <OfferDetail processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />
+          <OfferDetail
+            reId={reId}
+            processStatus={processStatus}
+            valueToFinalOffer={valueToFinalOffer}
+          />
         ),
         link: ONBOARDING_FORM_LINK.OFFER_DETAILS,
       },

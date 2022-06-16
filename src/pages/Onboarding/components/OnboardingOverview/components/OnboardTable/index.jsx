@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Table, Empty, Dropdown, Menu, Popover } from 'antd';
 import { formatMessage, Link, connect, history } from 'umi';
 import moment from 'moment';
-import MenuIcon from '@/assets/menuDots.svg';
+import MenuIcon from '@/assets/projectManagement/actionIcon.svg';
 import {
   NEW_PROCESS_STATUS,
   ONBOARDING_FORM_LINK,
@@ -22,6 +22,11 @@ import JoiningFormalitiesModal from './components/JoiningFormalitiesModal';
 import styles from './index.less';
 import CandidateUserName from './components/CandidateUserName/index';
 import ConfirmModal from './components/ConfirmModal/index';
+
+import EyeIcon from '@/assets/eyes.svg';
+import JoiningIcon from '@/assets/Vector.svg';
+import LaunchIcon from '@/assets/launchIcon.svg';
+import DeleteIcon from '@/assets/bin.svg';
 
 const compare = (dateTimeA, dateTimeB) => {
   const momentA = moment(dateTimeA, 'DD/MM/YYYY');
@@ -503,16 +508,25 @@ class OnboardTable extends Component {
           <>
             <Menu.Item>
               <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
+                <img className={styles.actionIcon} src={JoiningIcon} alt="joiningIcon" />
+                <span>Send Pre-Joining Documents</span>
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
+                <img className={styles.actionIcon} src={EyeIcon} alt="eyesIcon" />
                 <span>{actionText}</span>
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <div
+              <img className={styles.actionIcon} src={LaunchIcon} alt="launchIcon" />
+              <span
                 onClick={() =>
-                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)}
+                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)
+                }
               >
                 Initiate joining formalities
-              </div>
+              </span>
             </Menu.Item>
           </>
         );
@@ -542,7 +556,8 @@ class OnboardTable extends Component {
                   id,
                   processStatusId,
                   type,
-                )}
+                )
+              }
               className={styles.actionText}
             >
               Re-assign
@@ -561,7 +576,8 @@ class OnboardTable extends Component {
         )}
         {!isRemovable && processStatusId !== JOINED && (
           <Menu.Item>
-            <div
+            <img className={styles.actionIcon} src={DeleteIcon} alt="deleteIcon" />
+            <span
               onClick={
                 !isRemovable
                   ? () => this.handleActionWithDraw(candidate, processStatusId)
@@ -570,7 +586,7 @@ class OnboardTable extends Component {
               className={styles.actionText}
             >
               Withdraw
-            </div>
+            </span>
           </Menu.Item>
         )}
       </Menu>
