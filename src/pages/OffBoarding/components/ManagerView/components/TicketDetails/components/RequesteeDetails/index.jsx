@@ -4,14 +4,14 @@ import { Link } from 'umi';
 import { getEmployeeName } from '@/utils/offboarding';
 import styles from './index.less';
 
-const RequesteeDetails = (props) => {
+const RequesteeDetails = ({ item = {} }) => {
   const {
     employee: {
       generalInfoInfo: { employeeId = '', userId = '' } = {},
       generalInfoInfo = {},
       titleInfo: { name: title = '' } = {},
     } = {},
-  } = props;
+  } = item;
 
   return (
     <Card title="Requestee details" className={styles.RequesteeDetails}>

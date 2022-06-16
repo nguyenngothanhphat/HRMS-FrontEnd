@@ -9,6 +9,31 @@
       font-weight: 500;
       padding-inline: 25px;
     }
+    // SELECT
+    .ant-select {
+      width: 100% !important;
+    }
+    .ant-select-selector {
+      min-height: 42px !important;
+      overflow: hidden;
+      border: 1px solid #d6dce4 !important;
+      border-radius: 5px !important;
+    }
+    .ant-select-single {
+      .ant-select-selection-search-input {
+        height: 42px !important;
+      }
+    }
+    .ant-select-selection-item,
+    .ant-select-selection-placeholder {
+      font-size: 13px !important;
+      line-height: 42px !important;
+    }
+    .ant-select-auto-complete {
+      .ant-input {
+        border: none !important;
+      }
+    }
   }
   .container {
     .block {
@@ -20,12 +45,25 @@
         font-size: 16px;
         line-height: 19px;
       }
+      &__searchEmployeeSelector {
+        margin-bottom: 24px;
+      }
       &__members {
-        .type {
-          color: #464646;
-          font-weight: 500;
-          font-size: 12px;
-          line-height: 14px;
+        .options {
+          display: flex;
+          align-items: center;
+          .type {
+            color: #464646;
+            font-weight: 500;
+            font-size: 12px;
+            line-height: 14px;
+          }
+          .arrowIcon {
+            margin-top: -2px;
+            margin-left: 5px;
+            padding: 4px;
+            cursor: pointer;
+          }
         }
       }
       &:not(:last-child) {

@@ -1,15 +1,31 @@
 import { notification } from 'antd';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import { createRequest, getList, getMyRequest, getRequestById } from '../services/offboarding';
+import {
+  createRequest,
+  getList,
+  getMyRequest,
+  getRequestById,
+  getTimeInDate,
+
+  // helpers
+  getProjectByEmployee,
+  getEmployeeList,
+} from '../services/offboarding';
 
 const offboarding = {
   namespace: 'offboarding',
   state: {
     selectedLocations: [getCurrentLocation()],
-    list: [],
+    teamRequests: {
+      list: [],
+      totalStatus: {},
+    },
     viewingRequest: {},
     myRequest: {},
+    employeeProjects: [],
+    employeeList: [],
+    hourList: [],
   },
   effects: {
     *fetchListEffect({ payload }, { call, put }) {
@@ -20,12 +36,15 @@ const offboarding = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data = [] } = response;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
           payload: {
-            list: data,
+            teamRequests: {
+              list: data.list,
+              totalStatus: data.totalStatus,
+            },
           },
         });
       } catch (errors) {
@@ -84,6 +103,71 @@ const offboarding = {
           type: 'save',
           payload: {
             viewingRequest: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *getTimeInDateEffect({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getTimeInDate, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            hourList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    // helpers
+    *fetchEmployeeProjectEffect({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getProjectByEmployee, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            employeeProjects: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchEmployeeListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getEmployeeList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            employeeList: data,
           },
         });
       } catch (errors) {

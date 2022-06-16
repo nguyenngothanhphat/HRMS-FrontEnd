@@ -17,7 +17,10 @@ import styles from './index.less';
 const TeamRequest = (props) => {
   const {
     dispatch,
-    offboarding: { list = [], selectedLocations = [] } = {},
+    offboarding: {
+      teamRequests: { list = [], totalStatus = {} } = {},
+      selectedLocations = [],
+    } = {},
     loadingFetchList = false,
   } = props;
 
@@ -38,8 +41,7 @@ const TeamRequest = (props) => {
   }, [currentStatus, page, size, JSON.stringify(selectedLocations)]);
 
   const getTabName = (tab) => {
-    const find = {};
-    return `${tab.label} (${addZeroToNumber(find?.count || 0)})`;
+    return `${tab.label} (${addZeroToNumber(totalStatus.asObject?.[tab.id] || 0)})`;
   };
 
   const filterPane = () => {
