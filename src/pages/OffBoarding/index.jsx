@@ -4,6 +4,7 @@ import EmployeeView from './components/EmployeeView';
 import HRView from './components/HRView';
 import ManagerView from './components/ManagerView';
 import { goToTop } from '@/utils/utils';
+import WorkInProgress from '@/components/WorkInProgress';
 
 const OffBoarding = (props) => {
   const {
@@ -21,8 +22,9 @@ const OffBoarding = (props) => {
   };
 
   const renderComponent = {
-    'hr-manager': <HRView tabName={tabName} type={type} />,
-    hr: <HRView tabName={tabName} type={type} />,
+    'hr-manager': <WorkInProgress />,
+    // hr: <HRView tabName={tabName} type={type} />,
+    hr: <WorkInProgress />,
     manager: <ManagerView tabName={tabName} />,
     employee: <EmployeeView tabName={tabName} />,
   };

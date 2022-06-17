@@ -3,9 +3,9 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import Comment from './components/Comment';
-import ClosingComment from '../../../../ManagerViewOld/components/DetailTicket/components/ClosingComment';
-import ModalNotice from '../../../../ManagerViewOld/components/DetailTicket/components/ModalNotice';
-import ScheduleMeeting from '../../../../ManagerViewOld/components/DetailTicket/components/ScheduleMeeting';
+// import ClosingComment from '../../../../ManagerViewOld/components/DetailTicket/components/ClosingComment';
+// import ModalNotice from '../../../../ManagerViewOld/components/DetailTicket/components/ModalNotice';
+// import ScheduleMeeting from '../../../../ManagerViewOld/components/DetailTicket/components/ScheduleMeeting';
 import Assignee from './components/Assignee';
 // import HrApproved from './components/HrApproved';
 import RequesteeDetail from './components/RequesteeDetail';
@@ -242,7 +242,7 @@ class HRDetailTicket extends Component {
                 {listScheduleMeeting.map((item) => {
                   return (
                     <Fragment key={item._id}>
-                      <ScheduleMeeting isHRManager={isHRManager} data={item} />
+                      {/* <ScheduleMeeting isHRManager={isHRManager} data={item} /> */}
                     </Fragment>
                   );
                 })}
@@ -273,11 +273,11 @@ class HRDetailTicket extends Component {
             </Row>
           </div>
         </PageContainer>
-        <ModalNotice
+        {/* <ModalNotice
           visible={showModalSuccessfully}
           type="ACCEPTED"
           handleCancel={this.hideModal}
-        />
+        /> */}
       </>
     );
   }
