@@ -70,7 +70,7 @@ const offboarding = {
       }
       return response;
     },
-    *updateRequestEffect({ payload }, { call }) {
+    *updateRequestEffect({ payload }, { call, put }) {
       let response;
       try {
         response = yield call(updateRequest, {
@@ -78,9 +78,15 @@ const offboarding = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, message = '' } = response;
+        const { statusCode, message = '', data = {} } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message });
+        yield put({
+          type: 'save',
+          payload: {
+            myRequest: data || {},
+          },
+        });
       } catch (errors) {
         dialog(errors);
       }

@@ -12,6 +12,7 @@ const SetMeetingModalContent = ({
   partnerRole = '',
   onFinish = () => {},
   offboarding = {},
+  selectedDate = null,
 }) => {
   const [form] = Form.useForm();
   const { generalInfoInfo = {}, titleInfo = {} } = employee || {};
@@ -32,8 +33,11 @@ const SetMeetingModalContent = ({
   };
 
   useEffect(() => {
-    onDateChange(moment());
-  }, []);
+    onDateChange(selectedDate || moment());
+    form.setFieldsValue({
+      date: selectedDate ? moment(selectedDate) : moment(),
+    });
+  }, [selectedDate]);
 
   return (
     <div className={styles.SetMeetingModalContent}>
@@ -53,9 +57,6 @@ const SetMeetingModalContent = ({
         id="myForm"
         preserve={false}
         onFinish={onFinish}
-        initialValues={{
-          date: moment(),
-        }}
       >
         <Row align="middle" gutter={[16, 16]}>
           <Col span={12}>
@@ -73,7 +74,7 @@ const SetMeetingModalContent = ({
             <Form.Item name="time" label="Time" rules={[{ required: true }]}>
               <Select placeholder="Select the time">
                 {hourList.map((x) => (
-                  <Select.Option value={x.time} disabled={x.disabled}>
+                  <Select.Option value={x.startTime} disabled={x.disabled}>
                     {x.time}
                   </Select.Option>
                 ))}

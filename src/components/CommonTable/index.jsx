@@ -4,24 +4,24 @@ import { connect, formatMessage } from 'umi';
 import Empty from '@/components/Empty';
 import styles from './index.less';
 
-const CommonTable = (props) => {
-  const {
-    onChangePage = () => {},
-    isBackendPaging = false,
-    list = [],
-    columns,
-    loading = false,
-    page = 1,
-    limit = 10,
-    total: totalProp,
-    selectable = false,
-    rowKey = '',
-    scrollable = false,
-    showPagination = true,
-    selectedRowKeys = [],
-    setSelectedRowKeys = () => {},
-    components,
-  } = props;
+const CommonTable = ({
+  onChangePage = () => {},
+  isBackendPaging = false,
+  list = [],
+  columns,
+  loading = false,
+  page = 1,
+  limit = 10,
+  total: totalProp,
+  selectable = false,
+  rowKey = '',
+  scrollable = false,
+  showPagination = true,
+  selectedRowKeys = [],
+  setSelectedRowKeys = () => {},
+  components,
+  ...props
+}) => {
   const [pageSelected, setPageSelected] = useState(1);
   const [rowSize, setRowSize] = useState(10);
 
@@ -69,6 +69,7 @@ const CommonTable = (props) => {
       <div className={styles.CommonTable}>
         <Table
           // eslint-disable-next-line react/jsx-props-no-spreading
+          {...props}
           components={components}
           size="middle"
           locale={{

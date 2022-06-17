@@ -7,12 +7,18 @@ const SetMeetingModal = ({
   partnerRole = 'Employee',
   title = '',
   onFinish = () => {},
+  selectedDate = '',
   ...restProps
 }) => {
   return (
     <CommonModal
       content={
-        <SetMeetingModalContent employee={employee} partnerRole={partnerRole} onFinish={onFinish} />
+        <SetMeetingModalContent
+          employee={employee}
+          partnerRole={partnerRole}
+          onFinish={onFinish}
+          selectedDate={selectedDate}
+        />
       }
       title={title}
       width={500}

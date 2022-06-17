@@ -32,22 +32,28 @@ const CurrentProjectDetails = ({
   const columns = [
     {
       title: 'Project Name',
-      dataIndex: 'name',
+      dataIndex: 'project',
       key: 'name',
+      render: (project = {}) => project?.projectName,
     },
     {
       title: 'Customer Name',
-      dataIndex: 'customerName',
+      dataIndex: 'project',
       key: 'customerName',
+      render: (project = {}) => (
+        <Link to={`/customer-management/customers/customer-profile/${project.customerId}`}>
+          {project?.customerName}
+        </Link>
+      ),
     },
     {
       title: 'Project Manager',
-      dataIndex: 'manager',
-      key: 'manager',
-      render: (manager = {}) => {
+      dataIndex: 'projectManager',
+      key: 'projectManager',
+      render: (projectManager = {}) => {
         return (
-          <Link to={`/directory/employee-profile/${manager._id}`}>
-            {getEmployeeName(manager.generalInfo)}
+          <Link to={`/directory/employee-profile/${projectManager._id}`}>
+            {getEmployeeName(projectManager.generalInfo)}
           </Link>
         );
       },
@@ -60,6 +66,7 @@ const CurrentProjectDetails = ({
           list={employeeProjects}
           columns={columns}
           loading={loadingFetchEmployeeProjects}
+          showPagination={false}
         />
       </div>
     </Card>

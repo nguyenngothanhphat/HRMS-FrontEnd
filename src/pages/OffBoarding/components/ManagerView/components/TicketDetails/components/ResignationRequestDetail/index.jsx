@@ -26,7 +26,7 @@ const ResignationRequestDetail = (props) => {
           <span className={styles.title}>Tentative Last Working Date (System generated)</span>
           <div className={styles.datePicker}>
             <DatePicker
-              defaultValue={LWD ? moment(LWD) : null}
+              value={LWD ? moment(LWD) : null}
               format="MM/DD/YYYY"
               disabled
               placeholder="Tentative LWD"
