@@ -1,27 +1,31 @@
 import { Col, Row, Spin, Tabs } from 'antd';
 import React, { useEffect } from 'react';
-import { connect, history } from 'umi';
+import { connect } from 'umi';
 import { OFFBOARDING } from '@/utils/offboarding';
 import { PageContainer } from '@/layouts/layout/src';
-import DidYouKnow from './components/DidYouKnow';
-import FirstSchedule from './components/FirstSchedule';
-import Notes from './components/Notes';
-import OffboardingWorkFlow from './components/OffboardingWorkFlow';
-import QuickLinks from './components/QuickLinks';
-import RequestDetail from './components/RequestDetail';
-import ThingToConsider from './components/ThingToConsider';
-import WhatSteps from './components/WhatSteps';
-import YourRequest from './components/YourRequest';
+import YourRequest from '../YourRequest';
+import OffboardingWorkFlow from '../OffboardingWorkFlow';
+import DidYouKnow from '../DidYouKnow';
+import ThingToConsider from '../ThingToConsider';
+import WhatNext from '../WhatNext';
+import ChainOfApproval from '../ChainOfApproval';
+import Notes from '../Notes';
+import RequestDetail from '../RequestDetail';
 import styles from './index.less';
-import WhatNext from './components/WhatNext';
+import WhatSteps from '../WhatSteps';
+import FirstSchedule from '../FirstSchedule';
+import QuickLinks from '@/components/QuickLinks';
 
 const { TabPane } = Tabs;
 const { STATUS = {}, MEETING_STATUS = {} } = OFFBOARDING;
 
-const EmployeeView = (props) => {
-  const { tabName = '', dispatch } = props;
+const ResignationRequest = (props) => {
   const {
-    loadingStatus = false,
+    match: { params: { reId = '' } = {} },
+    dispatch,
+  } = props;
+  const {
+    loading = false,
     user: { currentUser: { employee = {} } = {} } = {},
     offboarding: { myRequest = {} } = {},
   } = props;
@@ -36,10 +40,15 @@ const EmployeeView = (props) => {
   };
 
   useEffect(() => {
-    if (!tabName) {
-      history.replace(`/offboarding/my-request`);
-    } else getMyRequest();
-  }, []);
+    if (reId) {
+      dispatch({
+        type: 'offboarding/getRequestByIdEffect',
+        payload: {
+          offBoardingId: reId,
+        },
+      });
+    }
+  }, [reId]);
 
   const renderContent = (statusProps) => {
     switch (statusProps) {
@@ -74,6 +83,44 @@ const EmployeeView = (props) => {
           </Row>
         );
       case STATUS.IN_PROGRESS: {
+        if (
+          meetingStatus &&
+          (meetingStatus === MEETING_STATUS.EMPLOYEE_PICK_DATE ||
+            meetingStatus === MEETING_STATUS.MANAGER_PICK_DATE ||
+            meetingStatus === MEETING_STATUS.DATE_CONFIRMED ||
+            meetingStatus === MEETING_STATUS.MANAGER_REJECT_DATE)
+        ) {
+          return (
+            <Row className={styles.content} gutter={[24, 24]}>
+              <Col span={24} lg={16}>
+                <Row gutter={[24, 24]}>
+                  <Col span={24}>
+                    <YourRequest
+                      data={myRequest}
+                      getMyRequest={getMyRequest}
+                      employee={employee}
+                      step={step}
+                      status={status}
+                    />
+                  </Col>
+                  <Col span={24}>
+                    <WhatNext employee={employee} item={myRequest} />
+                  </Col>
+                </Row>
+              </Col>
+              <Col span={24} lg={8}>
+                <Row gutter={[24, 24]}>
+                  <Col span={24}>
+                    <ChainOfApproval employee={employee} status={status} />
+                  </Col>
+                  <Col span={24}>
+                    <Notes status={status} />
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          );
+        }
         return (
           <Row className={styles.content} gutter={[24, 24]}>
             <Col span={24} lg={16}>
@@ -94,13 +141,41 @@ const EmployeeView = (props) => {
             <Col span={24} lg={8}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <ThingToConsider />
+                  <ChainOfApproval employee={employee} status={status} />
+                </Col>
+                <Col span={24}>
+                  <Notes status={status} />
                 </Col>
               </Row>
             </Col>
           </Row>
         );
       }
+      case STATUS.ACCEPTED:
+        return (
+          <Row className={styles.content} gutter={[24, 24]}>
+            <Col span={24} lg={16}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <YourRequest data={myRequest} employee={employee} getMyRequest={getMyRequest} />
+                </Col>
+                <Col span={24}>
+                  <WhatSteps />
+                </Col>
+              </Row>
+            </Col>
+            <Col span={24} lg={8}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <ChainOfApproval employee={employee} status={status} />
+                </Col>
+                <Col span={24}>
+                  <Notes status={status} />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        );
       default:
         return (
           <Row className={styles.content} gutter={[24, 24]}>
@@ -133,57 +208,16 @@ const EmployeeView = (props) => {
     }
   };
 
-  if (!tabName) return '';
   return (
     <PageContainer>
-      <div className={styles.EmployeeView}>
+      <div className={styles.ResignationRequest}>
         <div className={styles.tabs}>
-          <Tabs
-            activeKey={tabName || 'my-request'}
-            onChange={(key) => {
-              history.push(`/offboarding/${key}`);
-            }}
-          >
-            <TabPane tab="Terminate work relationship" key="my-request">
-              <div className={styles.paddingHR}>
-                <div className={styles.root}>
-                  <Spin spinning={loadingStatus}>
-                    {myRequest !== null ? (
-                      renderContent(status)
-                    ) : (
-                      <Row className={styles.content} gutter={[24, 24]}>
-                        <Col span={24} lg={16}>
-                          <Row gutter={[24, 24]}>
-                            <Col span={24}>
-                              <FirstSchedule
-                                data={myRequest}
-                                // fetchData={fetchData}
-                                employee={employee}
-                              />
-                            </Col>
-                            <Col span={24}>
-                              <OffboardingWorkFlow
-                                employee={employee}
-                                status={status}
-                                step={step}
-                              />
-                            </Col>
-                          </Row>
-                        </Col>
-                        <Col span={24} lg={8}>
-                          <Row gutter={[24, 24]}>
-                            <Col span={24}>
-                              <ThingToConsider />
-                            </Col>
-                            <Col span={24}>
-                              <QuickLinks />
-                            </Col>
-                          </Row>
-                        </Col>
-                      </Row>
-                    )}
-                  </Spin>
-                </div>
+          <Tabs activeKey="list">
+            <TabPane tab="Terminate work relationship" key="list">
+              <div className={styles.paddingContainer}>
+                <Spin spinning={loading}>
+                  <div className={styles.root}>{renderContent(status)}</div>
+                </Spin>
               </div>
             </TabPane>
           </Tabs>
@@ -196,5 +230,5 @@ const EmployeeView = (props) => {
 export default connect(({ offboarding, user, loading }) => ({
   offboarding,
   user,
-  loadingStatus: loading.effects['offboarding/getMyRequestEffect'],
-}))(EmployeeView);
+  loading: loading.effects['offboarding/getRequestByIdEffect'],
+}))(ResignationRequest);

@@ -11,11 +11,11 @@ const { STATUS } = OFFBOARDING;
 
 const YourRequest = (props) => {
   const {
-    status = '',
-    data: { ticketId = '', updatedAt = '', reason = '', createdAt = '', LWD = '', _id = '' } = {},
+    data: { ticketId = '', updatedAt = '', reason = '', LWD = '', _id = '', status = '' } = {},
     getMyRequest = () => {},
     dispatch,
   } = props;
+  console.log('🚀 ~ status', status);
 
   const renderTitle = (statusProps) => {
     switch (statusProps) {
@@ -101,7 +101,9 @@ const YourRequest = (props) => {
       case STATUS.IN_PROGRESS:
         return (
           <div className={styles.containerBtn}>
-            <div className={styles.btnWithdraw}>Withdraw </div>
+            <div className={styles.btnWithdraw} onClick={handleDelete}>
+              Withdraw
+            </div>
           </div>
         );
       case STATUS.ACCEPTED:
@@ -198,13 +200,13 @@ const YourRequest = (props) => {
                     Requested on
                   </Col>
                   <Col span={20} style={{ color: '#464646' }}>
-                    {createdAt}
+                    {moment(updatedAt).format(dateFormat)}
                   </Col>
                   <Col span={4} className={styles.title}>
                     Tentative LWD
                   </Col>
                   <Col span={20} style={{ color: '#464646' }}>
-                    {LWD}
+                    {moment(LWD).format(dateFormat)}
                   </Col>
                 </Row>
               </Col>

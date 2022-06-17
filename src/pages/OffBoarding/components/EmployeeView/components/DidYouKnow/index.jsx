@@ -1,10 +1,13 @@
-import { Button, Space, Typography } from 'antd';
+import { Space, Typography } from 'antd';
 import React from 'react';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import NoteIcon from './assets/NoteIcon.svg';
 import styles from './index.less';
 
 const DidYouKnow = () => {
+  const handleSchedule = () => {
+    window.open('https://calendar.google.com/', '_blank');
+  };
   return (
     <div className={styles.DidYouKnow}>
       <Space size="middle" className={styles.NoteHeader}>
@@ -29,7 +32,7 @@ const DidYouKnow = () => {
           </Typography.Text>
         </div>
         <div className={styles.btn}>
-          <CustomPrimaryButton>Schedule 1-on-1</CustomPrimaryButton>
+          <CustomPrimaryButton onClick={handleSchedule}>Schedule 1-on-1</CustomPrimaryButton>
         </div>
       </div>
     </div>
