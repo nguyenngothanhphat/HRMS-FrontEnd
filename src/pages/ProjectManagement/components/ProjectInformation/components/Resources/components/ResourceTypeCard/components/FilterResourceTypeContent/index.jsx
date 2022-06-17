@@ -15,7 +15,7 @@ const FilterResourceTypeContent = (props) => {
     needResetFilterForm = false,
     setNeedResetFilterForm = () => {},
     setApplied = () => {},
-    setIsFiltering = () => {}
+    setIsFiltering = () => {},
   } = props;
 
   const fetchDataList = () => {
@@ -63,7 +63,7 @@ const FilterResourceTypeContent = (props) => {
       form.resetFields();
       setNeedResetFilterForm(false);
       setIsFiltering(false);
-      setApplied(0)
+      setApplied(0);
     }
   }, [needResetFilterForm]);
 
@@ -80,7 +80,14 @@ const FilterResourceTypeContent = (props) => {
       className={styles.FilterResourceTypeContent}
     >
       <Form.Item label="By division" name="division">
-        <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
+        <Select
+          mode="multiple"
+          allowClear
+          style={{ width: '100%' }}
+          placeholder="Please select"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
           {divisionList.map((x) => (
             <Option value={x.name}>{x.name}</Option>
           ))}
@@ -88,7 +95,14 @@ const FilterResourceTypeContent = (props) => {
       </Form.Item>
 
       <Form.Item label="By resource type" name="resourceType">
-        <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
+        <Select
+          mode="multiple"
+          allowClear
+          style={{ width: '100%' }}
+          placeholder="Please select"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
           {titleList.map((x) => (
             <Option value={x._id}>{x.name}</Option>
           ))}
@@ -96,7 +110,14 @@ const FilterResourceTypeContent = (props) => {
       </Form.Item>
 
       <Form.Item label="By billing status" name="billingStatus">
-        <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
+        <Select
+          mode="multiple"
+          allowClear
+          style={{ width: '100%' }}
+          placeholder="Please select"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
           {billingStatusList.map((x) => (
             <Option value={x}>{x}</Option>
           ))}
