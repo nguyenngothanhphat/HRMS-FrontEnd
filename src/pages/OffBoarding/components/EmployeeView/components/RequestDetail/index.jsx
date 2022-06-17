@@ -41,13 +41,13 @@ const RequestDetail = (props) => {
     );
   };
 
-  const onFinish = (values) => {
+  const onFinish = (values = {}) => {
     dispatch({
       type: 'offboarding/updateRequestEffect',
       payload: {
         action: UPDATE_ACTION.EMPLOYEE_RESCHEDULE,
         meeting: {
-          employeeDate: moment(values?.date).format('YYYY-MM-DD'),
+          employeeDate: moment(values.time),
         },
         id: _id,
       },
