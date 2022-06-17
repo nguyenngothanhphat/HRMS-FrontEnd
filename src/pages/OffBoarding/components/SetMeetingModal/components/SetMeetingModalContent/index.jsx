@@ -1,6 +1,6 @@
 import { Col, DatePicker, Form, Row, Select } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import { dateFormat, getEmployeeName } from '@/utils/offboarding';
 import CustomEmployeeTag from '@/components/CustomEmployeeTag';
@@ -12,7 +12,7 @@ const SetMeetingModalContent = ({
   partnerRole = '',
   onFinish = () => {},
   offboarding = {},
-  selectedDate = null,
+  selectedDate = '',
 }) => {
   const [form] = Form.useForm();
   const { generalInfoInfo = {}, titleInfo = {} } = employee || {};
@@ -35,7 +35,7 @@ const SetMeetingModalContent = ({
   useEffect(() => {
     onDateChange(selectedDate || moment());
     form.setFieldsValue({
-      date: selectedDate ? moment(selectedDate) : moment(),
+      date: moment(selectedDate || moment()),
     });
   }, [selectedDate]);
 

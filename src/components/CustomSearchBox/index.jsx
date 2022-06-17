@@ -3,14 +3,12 @@ import { Input } from 'antd';
 import React from 'react';
 import styles from './index.less';
 
-const CustomSearchBox = (props) => {
-  const {
-    placeholder = 'Search by Name, Task...',
-    onSearch = () => {},
-    borderRadius = 33,
-    width = 250,
-  } = props;
-
+const CustomSearchBox = ({
+  placeholder = 'Search by Name, Task...',
+  onSearch = () => {},
+  borderRadius = 33,
+  width = 250,
+}) => {
   const searchPrefix = () => {
     return (
       <SearchOutlined

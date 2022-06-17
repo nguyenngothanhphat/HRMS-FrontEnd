@@ -84,7 +84,7 @@ const offboarding = {
         yield put({
           type: 'save',
           payload: {
-            myRequest: data || {},
+            viewingRequest: data || {},
           },
         });
       } catch (errors) {

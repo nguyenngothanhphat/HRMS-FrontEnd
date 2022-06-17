@@ -2,7 +2,7 @@ import { Affix, Col, Row, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-import { getEmployeeName } from '@/utils/offboarding';
+import { getEmployeeName, OFFBOARDING } from '@/utils/offboarding';
 import { goToTop } from '@/utils/utils';
 import Assignee from './components/Assignee';
 import ClosingComment from './components/ClosingComment';
@@ -17,13 +17,23 @@ const TicketDetails = (props) => {
     dispatch,
     match: { params: { id = '' } = {} },
     offboarding: {
-      viewingRequest: { ticketId = '', employee = {} } = {},
+      viewingRequest: { ticketId = '', employee = {}, status = '' } = {},
       viewingRequest = {},
     } = {},
     loadingFetchData = false,
   } = props;
 
+  const { status: meetingStatus = '' } = viewingRequest.meeting || {};
+
   const [isEnterClosingComment, setIsEnterClosingComment] = useState(false);
+
+  const getShowClosingComment = () => {
+    return (
+      isEnterClosingComment ||
+      status === OFFBOARDING.STATUS.REJECTED ||
+      meetingStatus === OFFBOARDING.MEETING_STATUS.DONE
+    );
+  };
 
   const fetchData = () => {
     dispatch({
@@ -64,7 +74,7 @@ const TicketDetails = (props) => {
                   <ResignationRequestDetail item={viewingRequest} />
                 </Col>
                 <Col span={24}>
-                  {isEnterClosingComment ? (
+                  {getShowClosingComment() ? (
                     <ClosingComment item={viewingRequest} />
                   ) : (
                     <WhatNext
