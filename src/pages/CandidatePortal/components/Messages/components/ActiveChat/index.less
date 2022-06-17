@@ -12,185 +12,182 @@
   flex-direction: column;
   justify-content: space-between;
   box-sizing: border-box;
-  height: 100%;
-  min-height: 70vh;
+  height: 70vh;
   background: #fff;
   border: 1px solid @borderColor;
   border-radius: 5px;
-  .chatContainer {
-    position: relative;
-    .senderContainer {
+
+  .senderContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: @commonPadding @inlinePadding;
+    border-bottom: 1px solid @borderColor;
+    .avatarBgOutline {
+      background: #00c3ff38 !important;
+    }
+    .avatarOutline {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      padding: @commonPadding @inlinePadding;
-      border-bottom: 1px solid @borderColor;
-      .avatarBgOutline {
-        background: #00c3ff38 !important;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      background: #d8e4fe;
+      border-radius: 50%;
+      .avatarBg {
+        background: #00c2ff !important;
       }
-      .avatarOutline {
-        width: 44px;
-        height: 44px;
-        background: #d8e4fe;
-        border-radius: 50%;
+      .avatar {
         display: flex;
-        justify-content: center;
         align-items: center;
-        .avatarBg {
-          background: #00C2FF !important;
-        }
-        .avatar {
-          width: 30px;
-          height: 30px;
-          background: #417bf9;
-          border-radius: 50%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          .avatarName {
-            font-size: 13px;
-            color: #fff;
-          }
-        }
-      }
-      .info {
-        padding-left: @commonPadding;
-        span {
-          display: block;
-          line-height: 30px;
-        }
-        .name {
-          color: @darkColor;
-          font-weight: 700;
-          font-size: 14px;
-          line-height: 16px;
-        }
-        .time {
-          color: @lightGrayColor;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        background: #417bf9;
+        border-radius: 50%;
+        .avatarName {
+          color: #fff;
           font-size: 13px;
-          line-height: 21px;
         }
       }
     }
-    .contentContainer {
-      position: relative;
-      z-index: 1;
-      min-height: 40vh;
-      max-height: 58vh;
-      overflow-y: auto;
-      padding-inline: @inlinePadding;
-      .senderMessage {
-        width: 100%;
-        max-width: 700px;
-        margin-block: @commonPadding;
-        .above {
+    .info {
+      padding-left: @commonPadding;
+      span {
+        display: block;
+        line-height: 30px;
+      }
+      .name {
+        color: @darkColor;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 16px;
+      }
+      .time {
+        color: @lightGrayColor;
+        font-size: 13px;
+        line-height: 21px;
+      }
+    }
+  }
+
+  .contentContainer {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    overflow-y: auto;
+    padding-inline: @inlinePadding;
+    .senderMessage {
+      width: fit-content;
+      max-width: 700px;
+      margin-block: @commonPadding;
+      .above {
+        display: flex;
+        align-items: flex-end;
+        .avatarBgOutline {
+          background: #00c3ff38 !important;
+        }
+        .avatarOutline {
           display: flex;
-          align-items: flex-end;
-          .avatarBgOutline {
-            background: #00c3ff38 !important;
+          align-items: center;
+          justify-content: center;
+          width: 44px;
+          height: 44px;
+          margin-right: @commonPadding;
+          background: #d8e4fe;
+          border-radius: 50%;
+          .avatarBg {
+            background: #00c2ff !important;
           }
-          .avatarOutline {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: #d8e4fe;
+          .avatar {
             display: flex;
-            justify-content: center;
             align-items: center;
-            margin-right: @commonPadding;
-            .avatarBg {
-              background: #00C2FF !important;
-            }
-            .avatar {
-              width: 30px;
-              height: 30px;
-              border-radius: 50%;
-              background: #417bf9;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              .avatarName {
-                font-size: 13px;
-                color: #fff;
-              }
-            }
-          }
-          .messageBody {
-            padding: @commonPadding;
-            background-color: @blueColor;
-            border-radius: 16px;
-            width: 90%;
-            span {
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: #417bf9;
+            border-radius: 50%;
+            .avatarName {
               color: #fff;
-              font-size: 14px;
-              line-height: 21px;
+              font-size: 13px;
             }
           }
         }
-        .seenDate {
-          display: flex;
-          align-items: center;
-          margin-top: 10px;
-          margin-left: 58px;
-          color: @lightGrayColor;
-          font-size: 11px;
-          letter-spacing: 0.1625px;
-          img {
-            margin-right: 10px;
+        .messageBody {
+          padding: @commonPadding;
+          background-color: @blueColor;
+          border-radius: 16px;
+          span {
+            color: #fff;
+            font-size: 14px;
+            line-height: 21px;
           }
         }
       }
-      .candidateMessage {
+      .seenDate {
         display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        margin-block: @commonPadding;
-        .above {
-          display: flex;
-          flex-direction: row-reverse;
-          align-items: flex-end;
-          .avatar {
-            display: flex;
-            justify-content: flex-end;
-            margin-left: @commonPadding;
-          }
-          .textAvatar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 44px;
-            height: 44px;
-            margin-left: @commonPadding;
-            color: @blueColor;
-            font-weight: 700;
-            font-size: 13px;
-            background-color: #e4edff;
-            border-radius: 50%;
-          }
-          .messageBody {
-            width: 100%;
-            max-width: 700px;
-            padding: @commonPadding;
-            background-color: @lightBlueColor;
-            border-radius: 16px;
-            span {
-              color: @darkColor;
-              font-size: 14px;
-              line-height: 21px;
-            }
-          }
+        align-items: center;
+        margin-top: 10px;
+        margin-left: 58px;
+        color: @lightGrayColor;
+        font-size: 11px;
+        letter-spacing: 0.1625px;
+        img {
+          margin-right: 10px;
         }
-        .seenDate {
+      }
+    }
+    .candidateMessage {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      margin-block: @commonPadding;
+      .above {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: flex-end;
+        .avatar {
+          display: flex;
+          justify-content: flex-end;
+          margin-left: @commonPadding;
+        }
+        .textAvatar {
           display: flex;
           align-items: center;
-          margin-top: 10px;
-          margin-right: 58px;
-          color: @lightGrayColor;
-          font-size: 11px;
-          letter-spacing: 0.1625px;
-          img {
-            margin-right: 10px;
+          justify-content: center;
+          min-width: 44px;
+          height: 44px;
+          margin-left: @commonPadding;
+          color: @blueColor;
+          font-weight: 700;
+          font-size: 13px;
+          background-color: #e4edff;
+          border-radius: 50%;
+        }
+        .messageBody {
+          width: fit-content;
+
+          max-width: 700px;
+          padding: @commonPadding;
+          background-color: @lightBlueColor;
+          border-radius: 16px;
+          span {
+            color: @darkColor;
+            font-size: 14px;
+            line-height: 21px;
           }
+        }
+      }
+      .seenDate {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+        margin-right: 58px;
+        color: @lightGrayColor;
+        font-size: 11px;
+        letter-spacing: 0.1625px;
+        img {
+          margin-right: 10px;
         }
       }
     }
