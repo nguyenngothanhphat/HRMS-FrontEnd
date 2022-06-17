@@ -6,7 +6,7 @@ import { connect } from 'umi';
 import DownArrowIcon from '@/assets/offboarding/downArrow.png';
 import CustomEmployeeTag from '@/components/CustomEmployeeTag';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
-import { getEmployeeName } from '@/utils/offboarding';
+import { getEmployeeName, OFFBOARDING } from '@/utils/offboarding';
 import styles from './index.less';
 
 function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
@@ -56,7 +56,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
 const Assignee = (props) => {
   const {
     dispatch,
-    item: { assigned = {} } = {},
+    item: { _id = '', employee = {}, assigned = {} } = {},
     offboarding: { employeeList = [] },
   } = props;
   const { hr = {}, manager = {} } = assigned || {};
@@ -90,21 +90,34 @@ const Assignee = (props) => {
     });
   };
 
-  const onDelegate = () => {
-    console.log('🚀  ~ done');
-    setDelegating(false);
+  const onDelegate = async () => {
+    const res = await dispatch({
+      type: 'offboarding/updateRequestEffect',
+      payload: {
+        id: _id,
+        employeeId: employee?._id,
+        action: OFFBOARDING.UPDATE_ACTION.MANAGER_DELEGATE,
+        assigned: {
+          delegateManager: managerAssignees[1]?._id,
+        },
+      },
+    });
+    if (res.statusCode === 200) {
+      setDelegating(false);
+    }
   };
 
   useEffect(() => {
     if (secondaryManager) {
       const newManagerAssignees = JSON.parse(JSON.stringify(managerAssignees));
-      const newManager = employeeList.find((employee) => employee._id === secondaryManager.value);
+      const newManager = employeeList.find((x) => x._id === secondaryManager.value);
       const newObj = {
         primary: false,
         name: getEmployeeName(newManager?.generalInfo),
         title: newManager?.title?.name,
         userId: newManager?.generalInfo?.userId,
         avatar: newManager?.generalInfo?.avatar,
+        _id: newManager?._id,
       };
       if (newManagerAssignees.length === 1) {
         newManagerAssignees.push(newObj);
@@ -124,6 +137,7 @@ const Assignee = (props) => {
         title: hr?.titleInfo?.name,
         userId: hr?.generalInfoInfo?.userId,
         avatar: hr?.generalInfoInfo?.avatar,
+        _id: hr?._id,
       },
     ]);
     setManagerAssignees([
@@ -133,6 +147,7 @@ const Assignee = (props) => {
         title: manager?.titleInfo?.name,
         userId: manager?.generalInfoInfo?.userId,
         avatar: manager?.generalInfoInfo?.avatar,
+        _id: manager?._id,
       },
     ]);
   }, [JSON.stringify(assigned)]);

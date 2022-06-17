@@ -1,11 +1,13 @@
 import { Card, Col, DatePicker, Form, Input, Row, Switch } from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
-import { Link } from 'umi';
+import React, { useEffect, useState } from 'react';
+import { Link, connect } from 'umi';
+import { isEmpty } from 'lodash';
 import SuccessIcon from '@/assets/offboarding/successIcon.png';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
-import { dateFormat } from '@/utils/offboarding';
+import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
+import NotificationModal from '@/components/NotificationModal';
 import styles from './index.less';
 
 const SmallNotice = ({ text }) => {
@@ -19,21 +21,103 @@ const SmallNotice = ({ text }) => {
 const ClosingComment = (props) => {
   const [form] = Form.useForm();
 
-  const { item = {} } = props;
+  const {
+    dispatch,
+    item: {
+      _id = '',
+      employee = {},
+      status = '',
+      meeting = {},
+      assigned = {},
+      closingComments = '',
+      isRehired = false,
+      isReplacement = false,
+      isHrRequired = false,
+      isRequestDifferent = false,
+      LWD = '',
+      notes = '',
+    } = {},
+    item = {},
+  } = props;
+
+  const { status: meetingStatus = '' } = meeting;
+  const { manager = {} } = assigned;
+
+  const [notificationModalVisible, setNotificationModalVisible] = useState(false);
+  const [action, setAction] = useState('');
+
+  // functionalities
+  const onDoneMeeting = async (action = '') => {
+    setAction(action);
+    const values = form.getFieldsValue();
+
+    let payload = {
+      id: _id,
+      employeeId: employee?._id,
+      closingComments: values.closingComments,
+      isRehired: values.isRehired,
+      isReplacement: values.isReplacement,
+      isHrRequired: values.isHrRequired,
+      isRequestDifferent: values.isRequestDifferent,
+      action:
+        action === 'reject'
+          ? OFFBOARDING.UPDATE_ACTION.MANAGER_REJECT
+          : OFFBOARDING.UPDATE_ACTION.MEETING_DONE,
+    };
+
+    if (values.isRequestDifferent) {
+      payload = {
+        ...payload,
+        LWD: values.LWD,
+        notes: values.notes,
+      };
+    }
+
+    const res = await dispatch({
+      type: 'offboarding/updateRequestEffect',
+      payload,
+    });
+    if (res.statusCode === 200) {
+      setNotificationModalVisible(true);
+    }
+  };
 
   const [isCommentInputted, setIsCommentInputted] = useState(false);
+  const [isNotesInputted, setIsNotesInputted] = useState(false);
   const [isLWDSelected, setIsLWDSelected] = useState(false);
   const [isRequestDifferentLWD, setIsRequestDifferentLWD] = useState(false);
 
   // functions
   const onValuesChange = (changedValues, allValues) => {
-    setIsRequestDifferentLWD(allValues.requestDifferentLWD);
-    setIsCommentInputted(!!allValues.comment);
-    setIsLWDSelected(!!allValues.lastWorkingDate);
+    setIsRequestDifferentLWD(!!allValues.isRequestDifferent);
+    setIsCommentInputted(!!allValues.closingComments);
+    setIsLWDSelected(!!allValues.LWD);
+    setIsNotesInputted(!!allValues.notes);
   };
+
+  useEffect(() => {
+    if (!isEmpty(item)) {
+      setIsRequestDifferentLWD(isRequestDifferent);
+      setIsCommentInputted(!!closingComments);
+      setIsLWDSelected(!!LWD);
+      setIsNotesInputted(!!notes);
+
+      form.setFieldsValue({
+        closingComments,
+        isRehired,
+        isReplacement,
+        isHrRequired,
+        isRequestDifferent,
+        LWD: LWD ? moment(LWD) : null,
+        notes,
+      });
+    }
+  }, [JSON.stringify(item)]);
 
   // render UI
   const renderContent = () => {
+    const disabled =
+      status === OFFBOARDING.STATUS.REJECTED || meetingStatus === OFFBOARDING.MEETING_STATUS.DONE;
     return (
       <div gutter={[24, 16]} className={styles.content}>
         <Form
@@ -44,24 +128,25 @@ const ClosingComment = (props) => {
           preserve={false}
           onValuesChange={onValuesChange}
         >
-          <Form.Item name="comment" rules={[{ required: true }]}>
+          <Form.Item name="closingComments" rules={[{ required: true }]}>
             <Input.TextArea
               placeholder="Enter Closing Comments"
               autoSize={{ minRows: 4, maxRows: 7 }}
+              disabled={disabled}
             />
           </Form.Item>
           <Row align="middle" gutter={[0, 16]}>
             <Col span={12}>
               <div className={styles.switchItem}>
                 <Form.Item
-                  name="canBeRehired"
+                  name="isRehired"
                   valuePropName="checked"
                   style={{
                     display: 'inline',
                     marginBottom: 0,
                   }}
                 >
-                  <Switch defaultChecked={false} />
+                  <Switch defaultChecked={false} disabled={disabled} />
                 </Form.Item>
                 <span className={styles.titleText}>Can be rehired</span>
               </div>
@@ -73,14 +158,14 @@ const ClosingComment = (props) => {
             <Col span={12}>
               <div className={styles.switchItem}>
                 <Form.Item
-                  name="requestPlacement"
+                  name="isReplacement"
                   valuePropName="checked"
                   style={{
                     display: 'inline',
                     marginBottom: 0,
                   }}
                 >
-                  <Switch defaultChecked={false} />
+                  <Switch defaultChecked={false} disabled={disabled} />
                 </Form.Item>
                 <span className={styles.titleText}>Request placement</span>
               </div>
@@ -92,14 +177,14 @@ const ClosingComment = (props) => {
             <Col span={12}>
               <div className={styles.switchItem}>
                 <Form.Item
-                  name="hr1On1Required"
+                  name="isHrRequired"
                   valuePropName="checked"
                   style={{
                     display: 'inline',
                     marginBottom: 0,
                   }}
                 >
-                  <Switch defaultChecked={false} />
+                  <Switch defaultChecked={false} disabled={disabled} />
                 </Form.Item>
                 <span className={styles.titleText}>HR 1 on 1 required</span>
               </div>
@@ -112,14 +197,14 @@ const ClosingComment = (props) => {
             <Col span={12}>
               <div className={styles.switchItem}>
                 <Form.Item
-                  name="requestDifferentLWD"
+                  name="isRequestDifferent"
                   valuePropName="checked"
                   style={{
                     display: 'inline',
                     marginBottom: 0,
                   }}
                 >
-                  <Switch defaultChecked={false} />
+                  <Switch defaultChecked={false} disabled={disabled} />
                 </Form.Item>
                 <span className={styles.titleText}>Request a different LWD</span>
               </div>
@@ -139,11 +224,11 @@ const ClosingComment = (props) => {
             >
               <Col span={12}>
                 <Form.Item
-                  name="lastWorkingDate"
+                  name="LWD"
                   label="Last working date (Manager requested)"
                   rules={[{ required: true }]}
                 >
-                  <DatePicker format={dateFormat} />
+                  <DatePicker format={dateFormat} disabled={disabled} />
                 </Form.Item>
               </Col>
               <Col span={12} />
@@ -155,6 +240,7 @@ const ClosingComment = (props) => {
                       minRows: 4,
                       maxRows: 7,
                     }}
+                    disabled={disabled}
                   />
                 </Form.Item>
               </Col>
@@ -174,7 +260,15 @@ const ClosingComment = (props) => {
   };
 
   const renderButtons = () => {
-    const disabled = !isCommentInputted || (!isLWDSelected && isRequestDifferentLWD);
+    if (
+      meetingStatus === OFFBOARDING.MEETING_STATUS.DONE ||
+      status === OFFBOARDING.STATUS.REJECTED
+    ) {
+      return null;
+    }
+    const disabled =
+      !isCommentInputted || ((!isLWDSelected || !isNotesInputted) && isRequestDifferentLWD);
+
     return (
       <Row className={styles.actions} align="middle">
         <Col span={12}>
@@ -185,8 +279,12 @@ const ClosingComment = (props) => {
         </Col>
         <Col span={12}>
           <div className={styles.actions__buttons}>
-            <CustomSecondaryButton disabled={disabled}>Reject</CustomSecondaryButton>
-            <CustomPrimaryButton disabled={disabled}>Accept Resignation</CustomPrimaryButton>
+            <CustomSecondaryButton disabled={disabled} onClick={() => onDoneMeeting('reject')}>
+              Reject
+            </CustomSecondaryButton>
+            <CustomPrimaryButton disabled={disabled} onClick={() => onDoneMeeting('accept')}>
+              Accept Resignation
+            </CustomPrimaryButton>
           </div>
         </Col>
       </Row>
@@ -194,15 +292,53 @@ const ClosingComment = (props) => {
   };
 
   const renderResult = () => {
+    if (status === OFFBOARDING.STATUS.REJECTED) {
+      return (
+        <div className={styles.result}>
+          <img src={SuccessIcon} alt="" />
+          <span>
+            The employee resignation request has been Rejected by{' '}
+            <Link to={`/directory/employee-profile/${manager?.generalInfoInfo?.userId}`}>
+              {manager?.generalInfoInfo?.legalName}
+            </Link>
+          </span>
+        </div>
+      );
+    }
+    if (meetingStatus === OFFBOARDING.MEETING_STATUS.DONE) {
+      return (
+        <div className={styles.result}>
+          <img src={SuccessIcon} alt="" />
+          <span>
+            The employee resignation request has been Accepted by{' '}
+            <Link to={`/directory/employee-profile/${manager?.generalInfoInfo?.userId}`}>
+              {manager?.generalInfoInfo?.legalName}
+            </Link>
+          </span>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  const renderModals = () => {
     return (
-      <div className={styles.result}>
-        <img src={SuccessIcon} alt="" />
-        <span>
-          The employee resignation request has been Accepted by <Link to="">Lewis Nguyen</Link>
-        </span>
+      <div>
+        <NotificationModal
+          visible={notificationModalVisible}
+          onClose={() => setNotificationModalVisible(false)}
+          description={
+            action === 'accept'
+              ? 'Your acceptance of the request has been recorded and all the concerned parties will be notified'
+              : 'Your rejection of the request has been recorded and all the concerned parties will be notified'
+          }
+          buttonText="Ok"
+        />
       </div>
     );
   };
+
   return (
     <Card
       title="Add Closing comments from your 1 on 1 with the employee"
@@ -212,8 +348,11 @@ const ClosingComment = (props) => {
       {renderContent()}
       {renderButtons()}
       {renderResult()}
+      {renderModals()}
     </Card>
   );
 };
 
-export default ClosingComment;
+export default connect(({ offboarding }) => ({
+  offboarding,
+}))(ClosingComment);

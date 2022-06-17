@@ -12,7 +12,7 @@ import styles from './index.less';
 const WhatNext = (props) => {
   const {
     dispatch,
-    item: { _id = '', employee = {}, status = '', step = '', meeting = {} } = {},
+    item: { _id = '', employee = {}, status = '', meeting = {} } = {},
     setIsEnterClosingComment = () => {},
   } = props;
 
@@ -24,11 +24,8 @@ const WhatNext = (props) => {
     id: meetingId = '',
   } = meeting;
 
-  console.log('🚀  ~ STATUS', status);
-  console.log('🚀  ~ STEP', step);
-  console.log('🚀  ~ MEETING STATUS', meetingStatus);
-
   const [oneOnOneMeetingModalVisible, setOneOnOneMeetingModalVisible] = useState(false);
+  const [isCommenting, setIsCommenting] = useState(false);
 
   // functionalities
   const onSetOneOnOneMeeting = async (values) => {
@@ -160,6 +157,13 @@ const WhatNext = (props) => {
   };
 
   const renderButtons = () => {
+    if (isCommenting) {
+      return (
+        <div className={styles.comment}>
+          <span onClick={setIsEnterClosingComment}>Enter Closing Comments</span>
+        </div>
+      );
+    }
     switch (meetingStatus) {
       case OFFBOARDING.MEETING_STATUS.NOT_START:
         return '';
@@ -172,9 +176,21 @@ const WhatNext = (props) => {
                 setOneOnOneMeetingModalVisible(true);
               }}
             >
-              Reschedule
+              <span
+                style={{
+                  color: '#2C6DF9',
+                }}
+              >
+                Reschedule
+              </span>
             </CustomSecondaryButton>
-            <CustomPrimaryButton onClick={() => onJoinMeeting(meetingId)}>
+            <CustomPrimaryButton
+              onClick={() => {
+                onJoinMeeting(meetingId);
+                setIsCommenting(true);
+                setIsEnterClosingComment(true);
+              }}
+            >
               Join with Google Meet
             </CustomPrimaryButton>
           </div>
@@ -189,22 +205,27 @@ const WhatNext = (props) => {
                 setOneOnOneMeetingModalVisible(true);
               }}
             >
-              Reschedule
+              <span
+                style={{
+                  color: '#2C6DF9',
+                }}
+              >
+                Reschedule
+              </span>
             </CustomSecondaryButton>
             {!isAccept ? (
               <CustomPrimaryButton onClick={onAcceptMeeting}>Accept meeting</CustomPrimaryButton>
             ) : (
-              <CustomPrimaryButton onClick={() => onJoinMeeting(meetingId)}>
+              <CustomPrimaryButton
+                onClick={() => {
+                  onJoinMeeting(meetingId);
+                  setIsCommenting(true);
+                  setIsEnterClosingComment(true);
+                }}
+              >
                 Join with Google Meet
               </CustomPrimaryButton>
             )}
-          </div>
-        );
-
-      case 4:
-        return (
-          <div className={styles.comment}>
-            <span onClick={setIsEnterClosingComment}>Enter Closing Comments</span>
           </div>
         );
 

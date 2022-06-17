@@ -11,6 +11,7 @@ import { OFFBOARDING } from '@/utils/offboarding';
 import Notes from '../Notes';
 import ModalImage from '@/assets/offboarding/modalImage1.png';
 import styles from './index.less';
+import NotificationModal from '@/components/NotificationModal';
 
 const { TextArea } = Input;
 const { TabPane } = Tabs;
@@ -169,32 +170,11 @@ const ReasonForm = (props) => {
           </Tabs>
         </div>
       </div>
-      <CommonModal
+      <NotificationModal
         visible={successModalVisible}
         onClose={() => setSuccessModalVisible(false)}
-        // onFinish={handleCloseModal}
-        buttonText="Close"
-        width={400}
-        hasCancelButton={false}
-        hasHeader={false}
-        hasFooter={false}
-        content={
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              padding: 24,
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <img src={ModalImage} alt="" />
-            <span style={{ textAlign: 'center', marginBottom: '24px' }}>
-              Your request has been submitted. Please set a 1-1 with your manager
-            </span>
-            <CustomPrimaryButton onClick={handleOk}>Ok</CustomPrimaryButton>
-          </div>
-        }
+        buttonText="Ok"
+        description="Your request has been submitted. Please set a 1-1 with your manager"
       />
     </PageContainer>
   );

@@ -1,8 +1,9 @@
-import { Avatar, Popover, Tabs } from 'antd';
-import { isEmpty } from 'lodash';
+import { Avatar, Popover, Tabs, Tag } from 'antd';
+import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
+import { CloseOutlined } from '@ant-design/icons';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import MenuIcon from '@/assets/offboarding/menuIcon.png';
 import CommonTable from '@/components/CommonTable';
@@ -10,10 +11,11 @@ import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { OFFBOARDING, OFFBOARDING_MANAGER_TABS } from '@/utils/offboarding';
-import { addZeroToNumber } from '@/utils/utils';
+import { dateFormat, OFFBOARDING, OFFBOARDING_MANAGER_TABS } from '@/utils/offboarding';
+import { addZeroToNumber, removeEmptyFields } from '@/utils/utils';
 import styles from './index.less';
 import SetMeetingModal from '../../../SetMeetingModal';
+import FilterContent from './components/FilterContent';
 
 const TeamRequest = (props) => {
   const {
@@ -29,50 +31,136 @@ const TeamRequest = (props) => {
   const [page, setPage] = useState(1);
   const [currentStatus, setCurrentStatus] = useState(OFFBOARDING.STATUS.IN_PROGRESS);
   const [handlingRequest, setHandlingRequest] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [filterValues, setFilterValues] = useState({});
+  const [filterForm, setFilterForm] = useState({});
 
-  const onScheduleMeeting = (values) => {
-    console.log('🚀  ~ values', values);
+  const fetchData = () => {
+    const payload = {
+      location: selectedLocations,
+      page,
+      limit: size,
+      status: currentStatus,
+      search: searchText,
+    };
+    if (!isEmpty(filterValues)) {
+      const { fromDate = '', toDate = '' } = filterValues;
+      if (fromDate) {
+        payload.fromDate = moment(fromDate).format('YYYY-MM-DD');
+      }
+      if (toDate) {
+        payload.toDate = moment(toDate).format('YYYY-MM-DD');
+      }
+    }
+    dispatch({
+      type: 'offboarding/fetchListEffect',
+      payload,
+    });
+  };
+
+  const onSetOneOnOneMeeting = async (values) => {
+    const res = await dispatch({
+      type: 'offboarding/updateRequestEffect',
+      payload: {
+        id: handlingRequest?._id,
+        employeeId: handlingRequest?.employee?._id,
+        action: OFFBOARDING.UPDATE_ACTION.MANAGER_RESCHEDULE,
+        meeting: {
+          managerDate: moment(values.time),
+        },
+      },
+    });
+    if (res.statusCode === 200) {
+      fetchData();
+      setHandlingRequest(null);
+    }
+  };
+
+  const onSearchDebounce = debounce((value) => {
+    setSearchText(value);
+  }, 1000);
+
+  const onChangeSearch = (e) => {
+    const formatValue = e.target.value.toLowerCase();
+    onSearchDebounce(formatValue);
+  };
+
+  const onFilter = (values) => {
+    setFilterValues(values);
   };
 
   useEffect(() => {
-    dispatch({
-      type: 'offboarding/fetchListEffect',
-      payload: {
-        location: selectedLocations,
-        page,
-        limit: size,
-        status: currentStatus,
-      },
-    });
-  }, [currentStatus, page, size, JSON.stringify(selectedLocations)]);
+    fetchData();
+  }, [
+    currentStatus,
+    page,
+    size,
+    searchText,
+    JSON.stringify(selectedLocations),
+    JSON.stringify(filterValues),
+  ]);
 
   const getTabName = (tab) => {
     return `${tab.label} (${addZeroToNumber(totalStatus.asObject?.[tab.id] || 0)})`;
   };
 
   const filterPane = () => {
+    let applied = Object.keys(removeEmptyFields(filterValues)).length;
+    if (filterValues.fromDate && filterValues.toDate) {
+      applied -= 1;
+    }
+
     return (
       <div className={styles.filterPane}>
-        <FilterPopover placement="bottomRight" realTime content={<p>Empty</p>}>
-          <FilterButton showDot={false} />
+        {applied > 0 && (
+          <Tag
+            className={styles.tagCountFilter}
+            closable
+            closeIcon={<CloseOutlined />}
+            onClose={() => {
+              setFilterValues({});
+              filterForm.resetFields();
+            }}
+          >
+            {applied} filters applied
+          </Tag>
+        )}
+        <FilterPopover
+          placement="bottomRight"
+          realTime
+          content={<FilterContent onFinish={onFilter} setFilterForm={setFilterForm} />}
+        >
+          <FilterButton showDot={applied > 0} />
         </FilterPopover>
         <CustomSearchBox
           placeholder="Search for Ticket number, resignee, request ..."
           width={350}
+          onSearch={onChangeSearch}
         />
       </div>
     );
   };
 
-  const renderMenuDropdown = () => {
+  const renderMenuDropdown = (row = {}) => {
     return (
       <div className={styles.containerDropdown}>
         <div className={styles.btn}>
-          <span>Change assigned</span>
+          <span>
+            <Link to={`/offboarding/list/review/${row._id}`}>Change assigned</Link>
+          </span>
         </div>
-        <div className={styles.btn}>
-          <span>Schedule 1 on 1</span>
-        </div>
+        {!row.meeting?.employeeDate && !row.meeting?.managerDate && (
+          <div
+            className={styles.btn}
+            onClick={() => {
+              setHandlingRequest(row);
+              setShowDropdown(false);
+            }}
+          >
+            <span>Schedule 1 on 1</span>
+          </div>
+        )}
       </div>
     );
   };
@@ -142,10 +230,10 @@ const TeamRequest = (props) => {
               generalInfo: assigned?.manager?.generalInfoInfo,
             }}
           >
-            <Avatar
-              src={<img alt="" src={avatar || DefaultAvatar} />}
-              style={{ width: 21, height: 21 }}
-            />
+            <div className={styles.user}>
+              <Avatar src={<img alt="" src={avatar || DefaultAvatar} />} />
+              <span>{assigned?.manager?.generalInfoInfo?.legalName}</span>
+            </div>
           </UserProfilePopover>
         );
       },
@@ -166,17 +254,32 @@ const TeamRequest = (props) => {
               generalInfo: assigned?.hr?.generalInfoInfo,
             }}
           >
-            <Avatar
-              src={<img alt="" src={assigned?.hr?.generalInfo?.avatar || DefaultAvatar} />}
-              style={{ width: 21, height: 21 }}
-            />
+            <div className={styles.user}>
+              <Avatar
+                src={<img alt="" src={assigned?.hr?.generalInfoInfo?.avatar || DefaultAvatar} />}
+              />
+              <span>{assigned?.hr?.generalInfoInfo?.legalName}</span>
+            </div>
           </UserProfilePopover>
         );
       },
     },
     {
       title: <span className={styles.title}>1-on-1 date</span>,
-      render: (_, row) => {
+      dataIndex: 'meeting',
+      render: (meeting = {}, row) => {
+        const { employeeDate = '', managerDate = '' } = meeting;
+        if (employeeDate || managerDate) {
+          return (
+            <span
+              style={{
+                textTransform: 'uppercase',
+              }}
+            >
+              {moment(managerDate || employeeDate).format(`${dateFormat} h:mm a`)}
+            </span>
+          );
+        }
         return (
           <span
             className={styles.title__value}
@@ -214,6 +317,8 @@ const TeamRequest = (props) => {
             overlayClassName={styles.dropdownPopover}
             content={renderMenuDropdown(row)}
             placement="bottomRight"
+            visible={showDropdown}
+            onVisibleChange={(visible) => setShowDropdown(visible)}
           >
             <img src={MenuIcon} alt="" style={{ cursor: 'pointer', padding: '4px 10px' }} />
           </Popover>
@@ -256,7 +361,8 @@ const TeamRequest = (props) => {
         onClose={() => setHandlingRequest(null)}
         partnerRole="Employee"
         employee={handlingRequest?.employee}
-        onFinish={onScheduleMeeting}
+        onFinish={onSetOneOnOneMeeting}
+        selectedDate={moment()}
       />
     </div>
   );

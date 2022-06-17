@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'umi';
+import moment from 'moment';
 import CommonModal from '@/components/CommonModal';
 import SetMeetingModalContent from './components/SetMeetingModalContent';
 
@@ -8,6 +10,7 @@ const SetMeetingModal = ({
   title = '',
   onFinish = () => {},
   selectedDate = '',
+  loadingSetMeeting = false,
   ...restProps
 }) => {
   return (
@@ -22,6 +25,7 @@ const SetMeetingModal = ({
       }
       title={title}
       width={500}
+      loading={loadingSetMeeting}
       firstText="Set"
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...restProps}
@@ -29,4 +33,7 @@ const SetMeetingModal = ({
   );
 };
 
-export default SetMeetingModal;
+export default connect(({ offboarding, loading }) => ({
+  offboarding,
+  loadingSetMeeting: loading.effects['offboarding/updateRequestEffect'],
+}))(SetMeetingModal);
