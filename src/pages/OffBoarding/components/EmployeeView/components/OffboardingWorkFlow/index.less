@@ -20,6 +20,10 @@
       line-height: 15px;
       text-align: center;
     }
+    .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after {
+      padding: 1px;
+      background-color: #00c598;
+    }
 
     .ant-steps-item-process
       > .ant-steps-item-container
@@ -27,11 +31,14 @@
       > .ant-steps-item-description {
       color: #2c6df9;
     }
-
-    .ant-steps-item-tail::after {
-      height: 0;
-      border-top: 3px solid #d6dce0;
+    .ant-steps-item-finish .ant-steps-item-icon {
+      background-color: #00c598;
+      border-color: #00c598;
     }
+    // .ant-steps-item-tail::after {
+    //   height: 0;
+    //   border-top: 3px solid #d6dce0;
+    // }
 
     .ant-steps-label-vertical .ant-steps-item-tail {
       margin-left: 78px;
@@ -55,6 +62,9 @@
       font-style: normal;
       line-height: 15px;
       text-align: center;
+    }
+    .anticon svg {
+      color: white;
     }
     .ant-btn {
       height: 40px;

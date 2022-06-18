@@ -1,8 +1,13 @@
 import { Card, Avatar, Col, Row } from 'antd';
 import React from 'react';
+import moment from 'moment';
+import { connect } from 'umi';
 import avtDefault from '@/assets/defaultAvatar.png';
 import styles from './index.less';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import { OFFBOARDING, onJoinMeeting } from '@/utils/offboarding';
+
+const { MEETING_STATUS = {}, UPDATE_ACTION = {} } = OFFBOARDING;
 
 const WhatNext = (props) => {
   const {
@@ -12,25 +17,66 @@ const WhatNext = (props) => {
         titleInfo: { name: titleName = '' } = {},
       } = {},
     } = {},
-    status = 1,
+    item: {
+      meeting: {
+        status: meetingStatus = '',
+        employeeDate = '',
+        managerDate,
+        id: meetingId = '',
+      } = {},
+      _id = '',
+    } = {},
+    getMyRequest = () => {},
+    dispatch,
   } = props;
 
-  const renderWithStatus = () => {
-    switch (status) {
-      case 1:
+  const handleAcceptMeeting = () => {
+    dispatch({
+      type: 'offboarding/updateRequestEffect',
+      payload: {
+        action: UPDATE_ACTION.EMPLOYEE_ACCEPT_MEETING,
+        meeting: {
+          employeeDate: moment(employeeDate || managerDate),
+        },
+        id: _id,
+      },
+    }).then((res) => {
+      const { statusCode = '' } = res;
+      if (statusCode === 200) {
+        getMyRequest();
+      }
+    });
+  };
+
+  const renderTimeMeeting = () => {
+    if (meetingStatus === MEETING_STATUS.EMPLOYEE_PICK_DATE || MEETING_STATUS.DATE_CONFIRMED) {
+      return moment(employeeDate).format('YY-MM-DD | hA');
+    }
+    if (meetingStatus === MEETING_STATUS.MANAGER_PICK_DATE) {
+      return moment(managerDate).format('YY-MM-DD | hA');
+    }
+
+    return '';
+  };
+
+  const renderWithStatus = (meetingStatusProp) => {
+    switch (meetingStatusProp) {
+      case MEETING_STATUS.EMPLOYEE_PICK_DATE:
         return (
           <div className={styles.labelStatus}>
-            Waiting for Aditya Venkatesan to Accept your meeting request.
+            Waiting for {managerName} to Accept your meeting request.
           </div>
         );
-      case 2:
+      case MEETING_STATUS.MANAGER_PICK_DATE:
+        return <div className={styles.labelStatus}>{managerName} has scheduled the meeting.</div>;
+      case MEETING_STATUS.DATE_CONFIRMED:
         return (
-          <div className={styles.labelStatus}>
-            Meeting request has been accepted by Aditya Venkatesan.
+          <div className={styles.labelStatus} style={{ background: 'rgb(0 197 152 / 13%)' }}>
+            Meeting request has been accepted by {managerName}.
           </div>
         );
-      case 3:
-        return <div className={styles.labelStatus}>Anil Reddy has rescheduled the meeting.</div>;
+      case MEETING_STATUS.MANAGER_REJECT_DATE:
+        return <div className={styles.labelStatus}>{managerName} has rescheduled the meeting.</div>;
       default:
         return '';
     }
@@ -55,31 +101,36 @@ const WhatNext = (props) => {
           <div className={styles.rightPart}>
             <span className={styles.label}>Scheduled on</span>
             <span className={styles.time}>
-              22.05.20 | 12 PM{' '}
+              {renderTimeMeeting()}{' '}
               <span style={{ color: '#2C6DF9', textDecoration: 'underline' }}>Modify</span>
             </span>
-
-            <div className={styles.notification}>{renderWithStatus(status)}</div>
+            <div className={styles.notification}>{renderWithStatus(meetingStatus)}</div>
           </div>
         </Col>
       </Row>
     );
   };
 
-  const renderButtons = () => {
-    switch (status) {
-      case 1:
-      case 2:
+  const renderButtons = (meetingStatusProp) => {
+    switch (meetingStatusProp) {
+      case MEETING_STATUS.DATE_CONFIRMED:
+      case MEETING_STATUS.EMPLOYEE_PICK_DATE:
         return (
           <div className={styles.actions}>
-            <CustomPrimaryButton disabled>Join with Google Meet</CustomPrimaryButton>
+            <CustomPrimaryButton
+              onClick={() => onJoinMeeting(meetingId)}
+              disabled={meetingStatusProp === MEETING_STATUS.EMPLOYEE_PICK_DATE}
+            >
+              Join with Google Meet
+            </CustomPrimaryButton>
           </div>
         );
 
-      case 3:
+      case MEETING_STATUS.MANAGER_REJECT_DATE:
+      case MEETING_STATUS.MANAGER_PICK_DATE:
         return (
           <div className={styles.actions}>
-            <CustomPrimaryButton className={styles.btn} type="link">
+            <CustomPrimaryButton className={styles.btn} onClick={handleAcceptMeeting}>
               Accept meeting
             </CustomPrimaryButton>
           </div>
@@ -94,10 +145,10 @@ const WhatNext = (props) => {
     <div className={styles.WhatNext}>
       <Card title="What's next?">
         {renderContent()}
-        {renderButtons()}
+        {renderButtons(meetingStatus)}
       </Card>
     </div>
   );
 };
 
-export default WhatNext;
+export default connect()(WhatNext);

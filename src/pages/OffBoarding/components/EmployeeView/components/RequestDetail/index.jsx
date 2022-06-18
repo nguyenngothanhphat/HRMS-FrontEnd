@@ -1,7 +1,7 @@
 import { Card, Col, Divider, Row } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
@@ -9,14 +9,22 @@ import SetMeetingModal from '../../../SetMeetingModal';
 
 import styles from './index.less';
 
-const { STATUS, UPDATE_ACTION } = OFFBOARDING;
+const { STATUS, UPDATE_ACTION, MEETING_STATUS } = OFFBOARDING;
 const RequestDetail = (props) => {
   const {
     loadingSchedule = false,
     loadingWithdraw = false,
     employee: { managerInfo = {} } = {},
     dispatch,
-    data: { ticketId = '', createdAt = '', LWD = '', reason = '', status = '', _id = '' } = {},
+    data: {
+      ticketId = '',
+      createdAt = '',
+      LWD = '',
+      reason = '',
+      status = '',
+      _id = '',
+      meeting: { status: meetingStatus = '' },
+    } = {},
     getMyRequest = () => {},
   } = props;
 
@@ -51,6 +59,12 @@ const RequestDetail = (props) => {
         },
         id: _id,
       },
+    }).then((res) => {
+      const { statusCode = '' } = res;
+      if (statusCode === 200) {
+        getMyRequest();
+        setVisible(false);
+      }
     });
   };
 
@@ -65,6 +79,33 @@ const RequestDetail = (props) => {
       }
     });
   };
+  const handleTicketDetail = () => {
+    history.push(`/offboarding/my-request/${_id}`);
+  };
+
+  const renderButton = (meetingStatusProp) => {
+    switch (meetingStatusProp) {
+      case MEETING_STATUS.DATE_CONFIRMED:
+        return (
+          <div style={{ width: '100%', textAlign: 'right' }}>
+            <CustomSecondaryButton onClick={handleWithdraw} loading={loadingWithdraw}>
+              Withdraw
+            </CustomSecondaryButton>
+          </div>
+        );
+      default:
+        return (
+          <div className={styles.containerBtn}>
+            <CustomSecondaryButton onClick={handleWithdraw} loading={loadingWithdraw}>
+              Withdraw
+            </CustomSecondaryButton>
+            <CustomPrimaryButton onClick={() => setVisible(true)} loading={loadingSchedule}>
+              Schedule 1 on 1
+            </CustomPrimaryButton>
+          </div>
+        );
+    }
+  };
 
   return (
     <div className={styles.RequestDetail}>
@@ -74,7 +115,9 @@ const RequestDetail = (props) => {
             <div className={styles.containerInfo}>
               <div>
                 <span className={styles.title}>Ticket ID:</span>
-                <span style={{ color: '#2c6df9' }}>{ticketId}</span>
+                <span onClick={handleTicketDetail} style={{ color: '#2c6df9', cursor: 'pointer' }}>
+                  {ticketId}
+                </span>
               </div>
               <div>
                 <span className={styles.title}>Assigned:</span>
@@ -94,14 +137,8 @@ const RequestDetail = (props) => {
           </Row>
         </div>
         <Divider />
-        <div className={styles.containerBtn}>
-          <CustomSecondaryButton onClick={handleWithdraw} loading={loadingWithdraw}>
-            Withdraw
-          </CustomSecondaryButton>
-          <CustomPrimaryButton onClick={() => setVisible(true)} loading={loadingSchedule}>
-            Schedule 1 on 1
-          </CustomPrimaryButton>
-        </div>
+
+        {renderButton(meetingStatus)}
       </Card>
       <SetMeetingModal
         visible={visible}
