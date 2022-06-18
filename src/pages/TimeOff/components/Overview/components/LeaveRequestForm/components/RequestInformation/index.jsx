@@ -567,8 +567,6 @@ const RequestInformation = (props) => {
 
   // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
   const fetchData = async () => {
-    fetchEmailsListByCompany();
-
     if (action === EDIT_LEAVE_REQUEST) {
       if (viewingStatus === DRAFTS) {
         setIsEditingDrafts(true);
@@ -670,6 +668,7 @@ const RequestInformation = (props) => {
     if (viewingId) {
       fetchData();
     }
+    fetchEmailsListByCompany();
   }, [viewingId, JSON.stringify(workingDays)]);
 
   const generateSecondNotice = () => {
