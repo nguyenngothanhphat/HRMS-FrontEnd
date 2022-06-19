@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Checkbox, Tooltip } from 'antd';
 import moment from 'moment';
+import { connect } from 'umi';
 import TooltipIcon from '@/assets/tooltip.svg';
 
-import { connect } from 'umi';
 import styles from '../../index.less';
 
 const JoiningFormalitiesModal = (props) => {

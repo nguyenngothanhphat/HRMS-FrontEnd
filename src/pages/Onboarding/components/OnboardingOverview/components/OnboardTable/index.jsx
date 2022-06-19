@@ -794,7 +794,7 @@ class OnboardTable extends Component {
           candidate={{ dateOfJoining: dateJoinCandidate, candidateId: selectedCandidateId }}
         />
         <CandidateUserName
-          visible={openModalName === 'username'}
+          visible
           onCancel={this.cancelCandidateUserName}
           onOk={this.onSubmitUserName}
           candidateId={selectedCandidateId}
@@ -803,6 +803,7 @@ class OnboardTable extends Component {
           visible={openModalName === 'detail'}
           onCancel={this.onMaybeLater}
           onOk={this.onMaybeLater}
+          onClose={this.cancelJoiningFormalities}
         />
       </>
     );
