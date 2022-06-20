@@ -46,7 +46,7 @@ const ReasonForm = (props) => {
       if (statusCode === 200 && statusState !== STATUS.DRAFT) {
         setSuccessModalVisible(true);
       } else if (statusCode === 200) {
-        notification.success({ message: `Withdraw successfully` });
+        notification.success({ message: `Save to Draft` });
         history.push('/offboarding');
       }
     });
@@ -115,7 +115,7 @@ const ReasonForm = (props) => {
 
                   <div className={styles.textTentacive}>
                     <p>
-                      The LWD is auto generated as per our{' '}
+                      The LWD is generated as per a 90 days period according to our{' '}
                       <span style={{ textDecoration: 'underline', fontWeight: 500 }}>
                         Standard Offboarding Policy
                       </span>

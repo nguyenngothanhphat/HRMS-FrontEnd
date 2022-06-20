@@ -3,9 +3,14 @@ import { Button } from 'antd';
 import React from 'react';
 import styles from './index.less';
 
-const CustomSecondaryButton = ({ children, ...props }) => {
+const CustomSecondaryButton = ({ children, paddingInline = 25, ...props }) => {
   return (
-    <div className={styles.CustomSecondaryButton}>
+    <div
+      className={styles.CustomSecondaryButton}
+      style={{
+        paddingInline,
+      }}
+    >
       <Button {...props} type="link">
         {children}
       </Button>

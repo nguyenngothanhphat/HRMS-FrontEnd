@@ -10,11 +10,8 @@ import ThingToConsider from '../ThingToConsider';
 import WhatNext from '../WhatNext';
 import ChainOfApproval from '../ChainOfApproval';
 import Notes from '../Notes';
-import RequestDetail from '../RequestDetail';
 import styles from './index.less';
 import WhatSteps from '../WhatSteps';
-import FirstSchedule from '../FirstSchedule';
-import QuickLinks from '@/components/QuickLinks';
 
 const { TabPane } = Tabs;
 const { STATUS = {}, MEETING_STATUS = {} } = OFFBOARDING;
@@ -27,10 +24,10 @@ const ResignationRequest = (props) => {
   const {
     loading = false,
     user: { currentUser: { employee = {} } = {} } = {},
-    offboarding: { myRequest = {} } = {},
+    offboarding: { viewingRequest = {} } = {},
   } = props;
 
-  const { status = '', step = '', meeting: { status: meetingStatus = '' } = {} } = myRequest;
+  const { status = '', step = '', meeting: { status: meetingStatus = '' } = {} } = viewingRequest;
 
   const getMyRequest = () => {
     dispatch({
@@ -39,19 +36,23 @@ const ResignationRequest = (props) => {
     });
   };
 
+  const getRequestById = () => {
+    dispatch({
+      type: 'offboarding/getRequestByIdEffect',
+      payload: {
+        offBoardingId: reId,
+      },
+    });
+  };
+
   useEffect(() => {
     if (reId) {
-      dispatch({
-        type: 'offboarding/getRequestByIdEffect',
-        payload: {
-          offBoardingId: reId,
-        },
-      });
+      getRequestById();
     }
-  }, [reId]);
+  }, [reId, status]);
 
-  const renderContent = (statusProps) => {
-    switch (statusProps) {
+  const renderContent = () => {
+    switch (status) {
       case STATUS.DRAFT:
         return (
           <Row className={styles.content} gutter={[24, 24]}>
@@ -59,14 +60,15 @@ const ResignationRequest = (props) => {
               <Row gutter={[24, 24]}>
                 <Col span={24}>
                   <YourRequest
-                    data={myRequest}
+                    data={viewingRequest}
                     employee={employee}
                     status={status}
                     getMyRequest={getMyRequest}
+                    getRequestById={getRequestById}
                   />
                 </Col>
                 <Col span={24}>
-                  <OffboardingWorkFlow employee={employee} step={step} status={status} />
+                  <OffboardingWorkFlow employee={employee} data={viewingRequest} />
                 </Col>
               </Row>
             </Col>
@@ -96,15 +98,16 @@ const ResignationRequest = (props) => {
                 <Row gutter={[24, 24]}>
                   <Col span={24}>
                     <YourRequest
-                      data={myRequest}
+                      data={viewingRequest}
                       getMyRequest={getMyRequest}
                       employee={employee}
                       step={step}
                       status={status}
+                      getRequestById={getRequestById}
                     />
                   </Col>
                   <Col span={24}>
-                    <WhatNext employee={employee} item={myRequest} />
+                    <WhatNext employee={employee} item={viewingRequest} />
                   </Col>
                 </Row>
               </Col>
@@ -126,15 +129,17 @@ const ResignationRequest = (props) => {
             <Col span={24} lg={16}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <RequestDetail
-                    data={myRequest}
-                    // fetchData={fetchData}
+                  <YourRequest
+                    data={viewingRequest}
                     getMyRequest={getMyRequest}
                     employee={employee}
+                    step={step}
+                    status={status}
+                    getRequestById={getRequestById}
                   />
                 </Col>
                 <Col span={24}>
-                  <OffboardingWorkFlow employee={employee} step={step} status={status} />
+                  <WhatNext employee={employee} item={viewingRequest} />
                 </Col>
               </Row>
             </Col>
@@ -157,7 +162,12 @@ const ResignationRequest = (props) => {
             <Col span={24} lg={16}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <YourRequest data={myRequest} employee={employee} getMyRequest={getMyRequest} />
+                  <YourRequest
+                    data={viewingRequest}
+                    employee={employee}
+                    getMyRequest={getMyRequest}
+                    getRequestById={getRequestById}
+                  />
                 </Col>
                 <Col span={24}>
                   <WhatSteps />
@@ -182,24 +192,26 @@ const ResignationRequest = (props) => {
             <Col span={24} lg={16}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <FirstSchedule
-                    data={myRequest}
-                    // fetchData={fetchData}
+                  <YourRequest
+                    data={viewingRequest}
                     employee={employee}
+                    status={status}
+                    getMyRequest={getMyRequest}
+                    getRequestById={getRequestById}
                   />
                 </Col>
                 <Col span={24}>
-                  <OffboardingWorkFlow employee={employee} status={status} step={step} />
+                  <OffboardingWorkFlow employee={employee} data={viewingRequest} />
                 </Col>
               </Row>
             </Col>
             <Col span={24} lg={8}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <ThingToConsider />
+                  <DidYouKnow employee={employee} />
                 </Col>
                 <Col span={24}>
-                  <QuickLinks />
+                  <ThingToConsider />
                 </Col>
               </Row>
             </Col>
@@ -216,7 +228,7 @@ const ResignationRequest = (props) => {
             <TabPane tab="Terminate work relationship" key="list">
               <div className={styles.paddingContainer}>
                 <Spin spinning={loading}>
-                  <div className={styles.root}>{renderContent(status)}</div>
+                  <div className={styles.root}>{renderContent()}</div>
                 </Spin>
               </div>
             </TabPane>

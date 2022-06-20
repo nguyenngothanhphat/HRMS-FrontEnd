@@ -5,18 +5,15 @@ import { OFFBOARDING } from '@/utils/offboarding';
 import { PageContainer } from '@/layouts/layout/src';
 import DidYouKnow from './components/DidYouKnow';
 import FirstSchedule from './components/FirstSchedule';
-import Notes from './components/Notes';
 import OffboardingWorkFlow from './components/OffboardingWorkFlow';
 import QuickLinks from './components/QuickLinks';
 import RequestDetail from './components/RequestDetail';
 import ThingToConsider from './components/ThingToConsider';
-import WhatSteps from './components/WhatSteps';
 import YourRequest from './components/YourRequest';
 import styles from './index.less';
-import WhatNext from './components/WhatNext';
 
 const { TabPane } = Tabs;
-const { STATUS = {}, MEETING_STATUS = {} } = OFFBOARDING;
+const { STATUS = {} } = OFFBOARDING;
 
 const EmployeeView = (props) => {
   const { tabName = '', dispatch } = props;
@@ -26,7 +23,7 @@ const EmployeeView = (props) => {
     offboarding: { myRequest = {} } = {},
   } = props;
 
-  const { status = '', step = '', meeting: { status: meetingStatus = '' } = {} } = myRequest;
+  const { status = '' } = myRequest;
 
   const getMyRequest = () => {
     dispatch({
@@ -41,8 +38,8 @@ const EmployeeView = (props) => {
     } else getMyRequest();
   }, []);
 
-  const renderContent = (statusProps) => {
-    switch (statusProps) {
+  const renderContent = () => {
+    switch (status) {
       case STATUS.DRAFT:
         return (
           <Row className={styles.content} gutter={[24, 24]}>
@@ -54,10 +51,11 @@ const EmployeeView = (props) => {
                     employee={employee}
                     status={status}
                     getMyRequest={getMyRequest}
+                    action="request-detail"
                   />
                 </Col>
                 <Col span={24}>
-                  <OffboardingWorkFlow employee={employee} step={step} status={status} />
+                  <OffboardingWorkFlow employee={employee} data={myRequest} />
                 </Col>
               </Row>
             </Col>
@@ -79,15 +77,33 @@ const EmployeeView = (props) => {
             <Col span={24} lg={16}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <RequestDetail
-                    data={myRequest}
-                    // fetchData={fetchData}
-                    getMyRequest={getMyRequest}
-                    employee={employee}
-                  />
+                  <RequestDetail data={myRequest} getMyRequest={getMyRequest} employee={employee} />
                 </Col>
                 <Col span={24}>
-                  <OffboardingWorkFlow employee={employee} step={step} status={status} />
+                  <OffboardingWorkFlow employee={employee} data={myRequest} />
+                </Col>
+              </Row>
+            </Col>
+            <Col span={24} lg={8}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <ThingToConsider />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        );
+      }
+      case STATUS.ACCEPTED: {
+        return (
+          <Row className={styles.content} gutter={[24, 24]}>
+            <Col span={24} lg={16}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <RequestDetail data={myRequest} getMyRequest={getMyRequest} employee={employee} />
+                </Col>
+                <Col span={24}>
+                  <OffboardingWorkFlow employee={employee} data={myRequest} />
                 </Col>
               </Row>
             </Col>
@@ -107,14 +123,10 @@ const EmployeeView = (props) => {
             <Col span={24} lg={16}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <FirstSchedule
-                    data={myRequest}
-                    // fetchData={fetchData}
-                    employee={employee}
-                  />
+                  <FirstSchedule data={myRequest} employee={employee} />
                 </Col>
                 <Col span={24}>
-                  <OffboardingWorkFlow employee={employee} status={status} step={step} />
+                  <OffboardingWorkFlow employee={employee} data={myRequest} />
                 </Col>
               </Row>
             </Col>
@@ -149,24 +161,16 @@ const EmployeeView = (props) => {
                 <div className={styles.root}>
                   <Spin spinning={loadingStatus}>
                     {myRequest !== null ? (
-                      renderContent(status)
+                      renderContent()
                     ) : (
                       <Row className={styles.content} gutter={[24, 24]}>
                         <Col span={24} lg={16}>
                           <Row gutter={[24, 24]}>
                             <Col span={24}>
-                              <FirstSchedule
-                                data={myRequest}
-                                // fetchData={fetchData}
-                                employee={employee}
-                              />
+                              <FirstSchedule data={myRequest} employee={employee} />
                             </Col>
                             <Col span={24}>
-                              <OffboardingWorkFlow
-                                employee={employee}
-                                status={status}
-                                step={step}
-                              />
+                              <OffboardingWorkFlow employee={employee} data={myRequest} />
                             </Col>
                           </Row>
                         </Col>

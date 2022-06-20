@@ -97,16 +97,17 @@ const WhatNext = (props) => {
             </div>
           </div>
         </Col>
-        <Col span={14}>
-          <div className={styles.rightPart}>
-            <span className={styles.label}>Scheduled on</span>
-            <span className={styles.time}>
-              {renderTimeMeeting()}{' '}
-              <span style={{ color: '#2C6DF9', textDecoration: 'underline' }}>Modify</span>
-            </span>
-            <div className={styles.notification}>{renderWithStatus(meetingStatus)}</div>
-          </div>
-        </Col>
+        {meetingStatus !== MEETING_STATUS.NOT_START ? (
+          <Col span={14}>
+            <div className={styles.rightPart}>
+              <span className={styles.label}>Scheduled on</span>
+              <span className={styles.time}>{renderTimeMeeting()} </span>
+              <div className={styles.notification}>{renderWithStatus(meetingStatus)}</div>
+            </div>
+          </Col>
+        ) : (
+          ''
+        )}
       </Row>
     );
   };

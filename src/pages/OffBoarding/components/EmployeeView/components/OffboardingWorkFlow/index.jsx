@@ -7,6 +7,7 @@ import { OFFBOARDING } from '@/utils/offboarding';
 const { Step } = Steps;
 const { STEP } = OFFBOARDING;
 const current = 0;
+
 const steps1 = [
   {
     step: 1,
@@ -42,17 +43,19 @@ const steps2 = [
 ];
 
 const OffboardingWorkFlow = (props) => {
-  const { step = '', status = '' } = props;
+  const { data: { status = '', step = '' } = {} } = props;
 
   const handleResignation = () => {
     history.push('/offboarding/my-request/new');
   };
+
   const renderCurrentStep = (stepProps) => {
     switch (stepProps) {
       case STEP.INIT_REQUEST:
         return 0;
-      case STEP.SUBMIT_REQUEST:
+      case STEP.SUBMIT_REQUEST: {
         return 1;
+      }
       case STEP.VS_MANAGER:
         return 2;
       case STEP.APPROVE:

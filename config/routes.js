@@ -671,7 +671,7 @@ const routes = [
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
-            path: '/offboarding/my-request/:reId',
+            path: '/offboarding/my-request/review-ticket/:reId',
             name: 'Resignation Request',
             hideInMenu: true,
             component: './OffBoarding/components/EmployeeView/components/ResignationRequest',

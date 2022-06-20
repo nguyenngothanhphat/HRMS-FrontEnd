@@ -1,21 +1,58 @@
 import { Card, Col, Row, Divider, Avatar, Tooltip, Popover } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
 import { history, connect } from 'umi';
 import avtDefault from '@/assets/defaultAvatar.png';
 import IconPopup from '@/assets/offboarding/popupIcon.svg';
 import styles from './index.less';
 import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import SetMeetingModal from '../../../SetMeetingModal';
 
-const { STATUS } = OFFBOARDING;
+const { STATUS, MEETING_STATUS, UPDATE_ACTION } = OFFBOARDING;
 
 const YourRequest = (props) => {
+  const [visible, setVisible] = useState(false);
   const {
-    data: { ticketId = '', updatedAt = '', reason = '', LWD = '', _id = '', status = '' } = {},
+    data: {
+      ticketId = '',
+      updatedAt = '',
+      reason = '',
+      LWD = '',
+      _id = '',
+      status = '',
+      meeting: { status: meetingStatus = '' } = {},
+    } = {},
+    employee: { managerInfo = {} } = {},
     getMyRequest = () => {},
+    action = '',
+    getRequestById = () => {},
     dispatch,
   } = props;
-  console.log('🚀 ~ status', status);
+
+  const onFinish = (values = {}) => {
+    dispatch({
+      type: 'offboarding/updateRequestEffect',
+      payload: {
+        action: UPDATE_ACTION.EMPLOYEE_RESCHEDULE,
+        meeting: {
+          employeeDate: moment(values.time),
+        },
+        id: _id,
+      },
+    }).then((res) => {
+      const { statusCode = '' } = res;
+      if (statusCode === 200) {
+        if (action === 'request-detail') {
+          getMyRequest();
+        } else {
+          getRequestById();
+        }
+        setVisible(false);
+      }
+    });
+  };
 
   const renderTitle = (statusProps) => {
     switch (statusProps) {
@@ -80,7 +117,11 @@ const YourRequest = (props) => {
     }).then((res) => {
       const { statusCode = '' } = res;
       if (statusCode === 200) {
-        getMyRequest();
+        if (action === 'request-detail') {
+          getMyRequest();
+        } else {
+          history.push('/offboarding');
+        }
       }
     });
   };
@@ -98,14 +139,29 @@ const YourRequest = (props) => {
             </div>
           </div>
         );
-      case STATUS.IN_PROGRESS:
+      case STATUS.IN_PROGRESS: {
+        if (
+          meetingStatus === MEETING_STATUS.DATE_CONFIRMED ||
+          meetingStatus === MEETING_STATUS.EMPLOYEE_PICK_DATE ||
+          meetingStatus === MEETING_STATUS.MANAGER_PICK_DATE
+        ) {
+          return (
+            <div className={styles.containerBtnWithdraw}>
+              <div className={styles.btnDelete} onClick={handleDelete}>
+                Withdraw
+              </div>
+            </div>
+          );
+        }
         return (
           <div className={styles.containerBtn}>
-            <div className={styles.btnWithdraw} onClick={handleDelete}>
-              Withdraw
-            </div>
+            <CustomSecondaryButton onClick={handleDelete}>Withdraw</CustomSecondaryButton>
+            <CustomPrimaryButton onClick={() => setVisible(true)}>
+              Schedule 1 on 1
+            </CustomPrimaryButton>
           </div>
         );
+      }
       case STATUS.ACCEPTED:
         return (
           <div className={styles.containerBtn}>
@@ -117,7 +173,7 @@ const YourRequest = (props) => {
             >
               <img src={IconPopup} alt="" />
             </Popover>
-            <div className={styles.btnWithdraw}>Withdraw </div>
+            <div className={styles.btnWithdrawDisable}>Withdraw </div>
           </div>
         );
       default:
@@ -233,6 +289,14 @@ const YourRequest = (props) => {
       {renderContent(status)}
       <Divider />
       {renderButton(status)}
+      <SetMeetingModal
+        visible={visible}
+        title="Set 1-on1 with Manager"
+        onClose={() => setVisible(false)}
+        partnerRole="Manager"
+        employee={managerInfo}
+        onFinish={onFinish}
+      />
     </Card>
   );
 };
