@@ -25,7 +25,6 @@ const WhatNext = (props) => {
   } = meeting;
 
   const [oneOnOneMeetingModalVisible, setOneOnOneMeetingModalVisible] = useState(false);
-  const [isCommenting, setIsCommenting] = useState(false);
 
   // functionalities
   const onSetOneOnOneMeeting = async (values) => {
@@ -157,13 +156,6 @@ const WhatNext = (props) => {
   };
 
   const renderButtons = () => {
-    if (isCommenting) {
-      return (
-        <div className={styles.comment}>
-          <span onClick={() => setIsEnterClosingComment(true)}>Enter Closing Comments</span>
-        </div>
-      );
-    }
     switch (meetingStatus) {
       case OFFBOARDING.MEETING_STATUS.NOT_START:
         return '';

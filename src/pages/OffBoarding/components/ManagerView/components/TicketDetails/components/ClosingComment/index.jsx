@@ -139,6 +139,7 @@ const ClosingComment = (props) => {
             <Input.TextArea
               placeholder="Enter Closing Comments"
               autoSize={{ minRows: 4, maxRows: 7 }}
+              maxLength={500}
               disabled={disabled}
             />
           </Form.Item>
@@ -247,6 +248,7 @@ const ClosingComment = (props) => {
                       minRows: 4,
                       maxRows: 7,
                     }}
+                    maxLength={500}
                     disabled={disabled}
                   />
                 </Form.Item>

@@ -20,6 +20,7 @@ const CommonTable = ({
   selectedRowKeys = [],
   setSelectedRowKeys = () => {},
   components,
+  width = '100%',
   ...props
 }) => {
   const [pageSelected, setPageSelected] = useState(1);
@@ -81,7 +82,7 @@ const CommonTable = ({
           loading={loading}
           // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
           pagination={showPagination ? pagination : { position: ['none', 'none'] }}
-          scroll={scrollable ? { x: '100%', y: '400px' } : {}}
+          scroll={scrollable ? { x: width, y: '400px' } : {}}
           rowKey={rowKey ? (record) => record[rowKey] : null}
         />
       </div>

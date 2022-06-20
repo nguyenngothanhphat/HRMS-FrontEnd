@@ -43,18 +43,16 @@ const array = [
 const ThingToConsider = () => {
   const renderItem = (render) => {
     return (
-      <div className={styles.rowInfo}>
-        <Row justify="space-between" gutter={[24, 24]}>
-          <Col span={4}>
-            <div className={styles.icon}>
-              <img src={render.icon} alt="iconCheck" />
-            </div>
-          </Col>
-          <Col span={20}>
-            <div className={styles.description}>{render.description} </div>
-          </Col>
-        </Row>
-      </div>
+      <>
+        <Col span={4}>
+          <div className={styles.icon}>
+            <img src={render.icon} alt="iconCheck" />
+          </div>
+        </Col>
+        <Col span={20}>
+          <div className={styles.description}>{render.description}</div>
+        </Col>
+      </>
     );
   };
 
@@ -65,7 +63,11 @@ const ThingToConsider = () => {
   return (
     <Card title="Few thing to consider" className={styles.ThingToConsider}>
       <div className={styles.container}>
-        <div className={styles.items}>{array.map((render) => renderItem(render))}</div>
+        <div className={styles.items}>
+          <Row justify="space-between" gutter={[24, 16]}>
+            {array.map((render) => renderItem(render))}
+          </Row>
+        </div>
         <div className={styles.bottom}>
           <CustomBlueButton onClick={handleSchedule}>Speak to manager</CustomBlueButton>
         </div>

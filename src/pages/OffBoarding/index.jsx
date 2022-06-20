@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { initViewOffboarding } from '@/utils/authority';
-import EmployeeView from './components/EmployeeView';
-import HRView from './components/HRView';
-import ManagerView from './components/ManagerView';
-import { goToTop } from '@/utils/utils';
 import WorkInProgress from '@/components/WorkInProgress';
+import { initViewOffboarding } from '@/utils/authority';
+import { goToTop } from '@/utils/utils';
+import EmployeeView from './components/EmployeeView';
+import ManagerView from './components/ManagerView';
+import styles from './index.less';
 
-const OffBoarding = (props) => {
+const Offboarding = (props) => {
   const {
     match: { params: { tabName = '', type = '' } = {} },
     location: { state: { isEmployeeMode = false } = {} } = {},
@@ -36,9 +36,11 @@ const OffBoarding = (props) => {
     goToTop();
   }, []);
 
-  return !isEmployeeMode && !initViewOffboarding()
-    ? renderComponent[role]
-    : renderComponent.employee;
+  return (
+    <div className={styles.Offboarding}>
+      {!isEmployeeMode && !initViewOffboarding() ? renderComponent[role] : renderComponent.employee}
+    </div>
+  );
 };
 
-export default OffBoarding;
+export default Offboarding;

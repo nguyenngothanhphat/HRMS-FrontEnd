@@ -13,21 +13,28 @@
   }
   :global {
     .ant-card {
-      border-radius: 5px;
-    }
-
-    .ant-card-head-title {
-      color: #161c29;
-      font-weight: 600;
-      font-size: 16px;
-      line-height: 19px;
-    }
-    .ant-card-body {
-      padding: 0;
-    }
-    .ant-card-bordered {
+      overflow: hidden;
       border: 1px solid #d6dce0;
       border-radius: 5px;
+      .ant-card-head {
+        display: flex;
+        align-items: center;
+        height: 75px;
+        border-bottom: 1px solid #d6dce0;
+        .ant-card-head-wrapper {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          .ant-card-head-title {
+            color: #161c29;
+            font-weight: 500;
+            font-size: 16px;
+          }
+        }
+      }
+      .ant-card-body {
+        padding: 0px !important;
+      }
     }
     .ant-btn-secondary {
       height: 16px;

@@ -127,7 +127,7 @@ const TeamRequest = (props) => {
           </Tag>
         )}
         <FilterPopover
-          placement="bottomRight"
+          placement="bottomLeft"
           realTime
           content={<FilterContent onFinish={onFilter} setFilterForm={setFilterForm} />}
         >
@@ -167,8 +167,10 @@ const TeamRequest = (props) => {
 
   const columns = [
     {
-      title: <span className={styles.title}>Ticket ID </span>,
+      title: <span className={styles.title}>Ticket ID</span>,
       dataIndex: 'ticketId',
+      ellipsis: true,
+      fixed: 'left',
       render: (ticketId, record) => {
         return (
           <Link to={`/offboarding/list/review/${record._id}`} className={styles.title__value}>
@@ -176,7 +178,6 @@ const TeamRequest = (props) => {
           </Link>
         );
       },
-      fixed: 'left',
     },
     {
       title: <span className={styles.title}>Created Date</span>,
@@ -200,7 +201,7 @@ const TeamRequest = (props) => {
         const { generalInfoInfo: { legalName = '', userId = '' } = {} } = obj;
         return (
           <UserProfilePopover
-            placement="bottomRight"
+            placement="bottomLeft"
             data={{
               ...obj,
               generalInfo: obj.generalInfoInfo,
@@ -219,12 +220,13 @@ const TeamRequest = (props) => {
     {
       title: 'Manager',
       dataIndex: 'assigned',
+      ellipsis: true,
       render: (assigned = {}) => {
         const { generalInfoInfo: { avatar = '' } = {} || {} } = assigned?.manager || {};
 
         return (
           <UserProfilePopover
-            placement="bottomRight"
+            placement="bottomLeft"
             data={{
               ...assigned?.manager,
               generalInfo: assigned?.manager?.generalInfoInfo,
@@ -241,6 +243,7 @@ const TeamRequest = (props) => {
     {
       title: <span className={styles.title}>HR POC</span>,
       dataIndex: 'assigned',
+      ellipsis: true,
       render: (assigned = {}) => {
         if (isEmpty(assigned?.hr)) {
           return '-';
@@ -248,7 +251,7 @@ const TeamRequest = (props) => {
 
         return (
           <UserProfilePopover
-            placement="bottomRight"
+            placement="bottomLeft"
             data={{
               ...assigned?.hr,
               generalInfo: assigned?.hr?.generalInfoInfo,
@@ -267,6 +270,7 @@ const TeamRequest = (props) => {
     {
       title: <span className={styles.title}>1-on-1 date</span>,
       dataIndex: 'meeting',
+      ellipsis: true,
       render: (meeting = {}, row) => {
         const { employeeDate = '', managerDate = '' } = meeting;
         if (employeeDate || managerDate) {
@@ -296,6 +300,7 @@ const TeamRequest = (props) => {
     {
       title: <span className={styles.title}>Action</span>,
       dataIndex: '_id',
+      fixed: 'right',
       render: (id) => {
         return (
           <div className={styles.rowAction}>
@@ -310,6 +315,7 @@ const TeamRequest = (props) => {
       title: '',
       align: 'right',
       width: '4%',
+      fixed: 'right',
       dataIndex: '_id',
       render: (_id, row) => {
         return (
@@ -317,7 +323,7 @@ const TeamRequest = (props) => {
             trigger="click"
             overlayClassName={styles.dropdownPopover}
             content={renderMenuDropdown(row)}
-            placement="bottomRight"
+            placement="bottomLeft"
             visible={_id === showDropdownId}
             onVisibleChange={(visible) => setShowDropdownId(visible ? _id : null)}
           >
@@ -351,7 +357,6 @@ const TeamRequest = (props) => {
               limit={size}
               page={page}
               onChangePage={onChangePagination}
-              // scrollable
             />
           </Tabs.TabPane>
         ))}

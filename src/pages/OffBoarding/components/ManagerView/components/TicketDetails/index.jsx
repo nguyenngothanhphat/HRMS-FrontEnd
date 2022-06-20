@@ -55,14 +55,14 @@ const TicketDetails = (props) => {
         <Affix offsetTop={42}>
           <div className={styles.titlePage}>
             <p className={styles.titlePage__text}>
-              [Ticket id: {ticketId}] Terminate work relationship with{' '}
+              [Ticket ID: {ticketId}] Terminate work relationship with{' '}
               {getEmployeeName(employee.generalInfoInfo)}
             </p>
           </div>
         </Affix>
         <Spin spinning={loadingFetchData}>
           <Row className={styles.content} gutter={[24, 24]}>
-            <Col span={14} xs={24} lg={14}>
+            <Col span={16} xs={24} lg={16}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
                   <RequesteeDetails item={viewingRequest} />
@@ -85,7 +85,7 @@ const TicketDetails = (props) => {
                 </Col>
               </Row>
             </Col>
-            <Col span={10} xs={24} lg={10}>
+            <Col span={8} xs={24} lg={8}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
                   <Assignee item={viewingRequest} />

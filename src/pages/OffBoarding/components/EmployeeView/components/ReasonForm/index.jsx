@@ -3,15 +3,14 @@ import { debounce } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import CommonModal from '@/components/CommonModal';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
-import { PageContainer } from '@/layouts/layout/src';
-import { OFFBOARDING } from '@/utils/offboarding';
-import Notes from '../Notes';
-import ModalImage from '@/assets/offboarding/modalImage1.png';
-import styles from './index.less';
 import NotificationModal from '@/components/NotificationModal';
+import { PageContainer } from '@/layouts/layout/src';
+import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
+import { goToTop } from '@/utils/utils';
+import Notes from '../Notes';
+import styles from './index.less';
 
 const { TextArea } = Input;
 const { TabPane } = Tabs;
@@ -74,6 +73,7 @@ const ReasonForm = (props) => {
         },
       });
     }
+    goToTop();
   }, [reId]);
 
   useEffect(() => {
@@ -105,27 +105,27 @@ const ReasonForm = (props) => {
                   />
                 </Form.Item>
 
-                <div className={styles.titleTentactive}>
+                <div className={styles.titleTentative}>
                   Tentative Last Working Date (System generated)
                 </div>
                 <div className={styles.lastWorkingDay}>
                   <Form.Item name="LWD">
-                    <DatePicker disabled />
+                    <DatePicker disabled format={dateFormat} />
                   </Form.Item>
 
-                  <div className={styles.textTentacive}>
-                    <p>
+                  <div className={styles.textTentative}>
+                    <span>
                       The LWD is generated as per a 90 days period according to our{' '}
                       <span style={{ textDecoration: 'underline', fontWeight: 500 }}>
                         Standard Offboarding Policy
                       </span>
-                    </p>
+                    </span>
                   </div>
                 </div>
               </div>
               <Divider />
               <div className={styles.footer}>
-                <div className={styles.titlefooter}>
+                <div className={styles.titleFooter}>
                   By default notifications will be sent to the HR, your manager and recursively loop
                   to your department head.
                 </div>
@@ -172,7 +172,7 @@ const ReasonForm = (props) => {
       </div>
       <NotificationModal
         visible={successModalVisible}
-        onClose={() => setSuccessModalVisible(false)}
+        onClose={handleOk}
         buttonText="Ok"
         description="Your request has been submitted. Please set a 1-1 with your manager"
       />

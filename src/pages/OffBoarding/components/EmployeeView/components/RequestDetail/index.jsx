@@ -165,37 +165,47 @@ const RequestDetail = (props) => {
   };
 
   return (
-    <div className={styles.RequestDetail}>
-      <Card title="Your Request" extra={renderStatus(status)}>
-        <div className={styles.container}>
-          <Row gutter={[24, 24]}>
-            <div className={styles.containerInfo}>
-              <div>
-                <span className={styles.title}>Ticket ID:</span>
-                <span onClick={handleTicketDetail} style={{ color: '#2c6df9', cursor: 'pointer' }}>
-                  {ticketId}
-                </span>
-              </div>
-              <div>
-                <span className={styles.title}>Assigned:</span>
-                <span style={{ color: '#464646' }}>{moment(createdAt).format(dateFormat)}</span>
-              </div>
-              <div>
-                <span className={styles.title}>Tentative Last Working Date:</span>
-                <span style={{ color: '#464646' }}>{moment(LWD).format(dateFormat)}</span>
-              </div>
-            </div>
-            <Col span={24} className={styles.title}>
-              Reason for leaving us?
-            </Col>
-            <Col span={24} style={{ color: '#707177' }}>
-              {reason}
-            </Col>
-          </Row>
-        </div>
+    <Card title="Your Request" extra={renderStatus(status)} className={styles.RequestDetail}>
+      <div style={{ margin: '24px', fontSize: '13px' }}>
+        <Row gutter={[24, 24]}>
+          <Col className={styles.containerInfo} span={24}>
+            <Row gutter={[24, 24]} justify="space-between">
+              <Col span={8} xs={24} md={8}>
+                <div className={styles.item}>
+                  <span className={styles.title}>Ticket ID:</span>
+                  <span
+                    onClick={handleTicketDetail}
+                    style={{ color: '#2c6df9', cursor: 'pointer' }}
+                  >
+                    {ticketId}
+                  </span>
+                </div>
+              </Col>
+              <Col span={8} xs={24} md={8}>
+                <div className={styles.item}>
+                  <span className={styles.title}>Assigned:</span>
+                  <span style={{ color: '#464646' }}>{moment(createdAt).format(dateFormat)}</span>
+                </div>
+              </Col>
+              <Col span={8} xs={24} md={8}>
+                <div className={styles.item}>
+                  <span className={styles.title}>Tentative Last Working Date:</span>
+                  <span style={{ color: '#464646' }}>{moment(LWD).format(dateFormat)}</span>
+                </div>
+              </Col>
+            </Row>
+          </Col>
+          <Col span={24} className={styles.title}>
+            Reason for leaving us?
+          </Col>
+          <Col span={24} style={{ color: '#707177' }}>
+            {reason}
+          </Col>
+        </Row>
+      </div>
 
-        {renderButton()}
-      </Card>
+      {renderButton(meetingStatus)}
+
       <SetMeetingModal
         visible={visible}
         title="Set 1-on1 with Manager"
@@ -204,7 +214,7 @@ const RequestDetail = (props) => {
         employee={managerInfo}
         onFinish={onFinish}
       />
-    </div>
+    </Card>
   );
 };
 
