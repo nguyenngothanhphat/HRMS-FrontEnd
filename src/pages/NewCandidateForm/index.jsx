@@ -15,6 +15,7 @@ import SalaryStructure from './components/SalaryStructure';
 import styles from './index.less';
 import { goToTop } from '@/utils/utils';
 import References from './components/References';
+import DocumentCheckList from './components/DocumentCheckList';
 
 @connect(({ newCandidateForm = {}, user, loading }) => ({
   newCandidateForm,
@@ -67,12 +68,14 @@ class NewCandidateForm extends PureComponent {
           },
         });
       });
-
       dispatch({
         type: 'newCandidateForm/fetchEmployeeTypeList',
       });
       dispatch({
         type: 'newCandidateForm/fetchDocumentList',
+      });
+      dispatch({
+        type: 'newCandidateForm/fetchDocumentsCheckList',
       });
       dispatch({
         type: 'newCandidateForm/fetchDefaultTemplateList',
@@ -199,6 +202,14 @@ class NewCandidateForm extends PureComponent {
         link: ONBOARDING_FORM_LINK.OFFER_LETTER,
 
         isOfferLetter: !!offerLetterId,
+      },
+      {
+        id: 9,
+        name: 'Documents Checklist',
+        key: 'documentsChecklist',
+        // key: 'eligibilityDocuments',
+        component: <DocumentCheckList />,
+        link: ONBOARDING_FORM_LINK.DOCUMENT_CHECKLIST_VERIFICATION,
       },
     ];
 

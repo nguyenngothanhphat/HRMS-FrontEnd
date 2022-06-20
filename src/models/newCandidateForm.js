@@ -35,6 +35,8 @@ import {
   getLocationCustomer,
   // new document verification
   getDocumentLayoutByCountry,
+  getDocumentsCheckList,
+  sendDocumentCheckList,
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
@@ -222,6 +224,7 @@ const defaultState = {
     documentTypeC: [],
     documentTypeD: [],
     documentTypeE: [],
+    documentChecklist: [],
   },
   data: {
     firstName: null,
@@ -1635,6 +1638,46 @@ const newCandidateForm = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *fetchDocumentsCheckList({ payload }, { call, put }) {
+      try {
+        const response = yield call(getDocumentsCheckList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          isFormat: true,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveTemp',
+          payload: { documentChecklist: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *sendCheckListEffect({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(sendDocumentCheckList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({
+        //   type: 'saveOrigin',
+        //   payload: {
+        //     processStatus: NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION,
+        //   },
+        // });
+        message.success('Send Succesfully');
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
 
