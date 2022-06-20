@@ -243,9 +243,9 @@ const resourceManagement = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { projectTable: data, payloadProject: payloadTemp },
+          payload: { projectTable: data?.items, statusProject: data?.totals || [], payloadProject: payloadTemp},
         });
-        const customerList = data.map((item) => {
+        const customerList = data?.items.map((item) => {
           return {
             customerId: item.customerId || '',
             customerName: item.customerName || '',
