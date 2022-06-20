@@ -116,6 +116,7 @@ const PreviewOffer = (props) => {
   const isRejectedOffer = processStatus === NEW_PROCESS_STATUS.OFFER_REJECTED;
   const isWithdrawnOffer = processStatus === NEW_PROCESS_STATUS.OFFER_WITHDRAWN;
   const isSentOffer = processStatus === NEW_PROCESS_STATUS.OFFER_RELEASED;
+  const isDocumentCheckList = processStatus === NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION;
 
   // MODALS
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
@@ -843,8 +844,8 @@ const PreviewOffer = (props) => {
       };
 
       const managerPrimaryButtonText = () => {
-        if (isSentOffer || isAcceptedOffer) {
-          return 'Withdraw';
+        if (isSentOffer || isAcceptedOffer || isNeedsChanges || isDocumentCheckList) {
+          return 'Next';
         }
         // if (isRejectedOffer) {
         //   return 'Rejected';
@@ -853,32 +854,29 @@ const PreviewOffer = (props) => {
         //   return 'Withdrawn';
         // }
 
-        if (isNeedsChanges) {
-          return 'Next';
-        }
-
         return 'Approve';
       };
 
       const onSecondaryButtonClick = () => {
         if (isAwaitingOffer || isNewOffer) {
           setRejectModalVisible(true);
-        } else if (isSentOffer) {
-          setExtendOfferModalVisible(true);
+          // } else if (isSentOffer) {
+          //   setExtendOfferModalVisible(true);
         } else {
           history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.OFFER_DETAILS}`);
         }
       };
 
       const onPrimaryButtonClick = () => {
-        if (isSentOffer || isAcceptedOffer) {
-          setWithdrawOfferModalVisible(true);
+        if (isSentOffer || isAcceptedOffer || isDocumentCheckList) {
+          history.push(
+            `/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.DOCUMENT_CHECKLIST_VERIFICATION}`,
+          );
         }
         if (isNewOffer || isAwaitingOffer) {
           // HR MANAGER APPROVES A TICKET HERE
           handleSendFinalOffer();
         }
-
         if (isNeedsChanges) {
           handleSentForApproval();
         }

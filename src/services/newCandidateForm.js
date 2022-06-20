@@ -269,6 +269,20 @@ export async function getLocationCustomer(payload) {
       data: payload,
     },
     false,
-    API_KEYS.CUSTOMER_API
-  )
+    API_KEYS.CUSTOMER_API,
+  );
+}
+
+export async function getDocumentsCheckList(params) {
+  return request('api/documenttenant/checklist', {
+    method: 'GET',
+    params,
+  });
+}
+
+export async function sendDocumentCheckList(data) {
+  return request('api/candidatetenant/add-documents-checklist', {
+    method: 'POST',
+    data,
+  });
 }

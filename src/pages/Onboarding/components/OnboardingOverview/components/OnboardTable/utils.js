@@ -26,8 +26,8 @@ const getColumnWidth = (columnName, tableType, arrLength) => {
     OFFER_ACCEPTED,
     OFFER_REJECTED,
     OFFER_WITHDRAWN,
+    DOCUMENT_CHECKLIST_VERIFICATION,
   } = TABLE_TYPE;
-
   if (arrLength > 0) {
     if (
       tableType === ALL ||
@@ -38,7 +38,8 @@ const getColumnWidth = (columnName, tableType, arrLength) => {
       tableType === OFFER_RELEASED ||
       tableType === OFFER_ACCEPTED ||
       tableType === OFFER_REJECTED ||
-      tableType === OFFER_WITHDRAWN
+      tableType === OFFER_WITHDRAWN ||
+      tableType === DOCUMENT_CHECKLIST_VERIFICATION
     ) {
       switch (columnName) {
         case 'candidateId':
