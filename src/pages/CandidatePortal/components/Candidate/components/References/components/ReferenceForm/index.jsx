@@ -138,7 +138,7 @@ const ReferenceForm = (props) => {
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
-              label="Relationship to Referee"
+              label="Referee's relationship to the Candidate"
               name={[name, 'relationship']}
               rules={[{ required: true, message: 'Required field' }]}
             >
