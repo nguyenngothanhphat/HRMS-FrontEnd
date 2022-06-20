@@ -1,10 +1,12 @@
-import { Card, Col, Divider, Row } from 'antd';
+import { Card, Col, Row, Popover } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect, history } from 'umi';
 import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import IconPopup from '@/assets/offboarding/popupIcon.svg';
+
 import SetMeetingModal from '../../../SetMeetingModal';
 
 import styles from './index.less';
@@ -29,25 +31,6 @@ const RequestDetail = (props) => {
   } = props;
 
   const [visible, setVisible] = useState(false);
-
-  const renderStatus = (statusProp) => {
-    if (statusProp === STATUS.DRAFT) {
-      return (
-        <div className={styles.containerStatus}>
-          <div>Status: </div>
-          <div className={styles.statusDraft} />
-          <div style={{ color: '#fd4546' }}>Draft</div>
-        </div>
-      );
-    }
-    return (
-      <div className={styles.containerStatus}>
-        <div>Status: </div>
-        <div className={styles.statusInProgress} />
-        <div style={{ color: '#ffa100' }}>In Progress</div>
-      </div>
-    );
-  };
 
   const onFinish = (values = {}) => {
     dispatch({
@@ -79,20 +62,94 @@ const RequestDetail = (props) => {
       }
     });
   };
+
   const handleTicketDetail = () => {
-    history.push(`/offboarding/my-request/${_id}`);
+    history.push(`/offboarding/my-request/review-ticket/${_id}`);
   };
 
-  const renderButton = (meetingStatusProp) => {
-    switch (meetingStatusProp) {
-      case MEETING_STATUS.DATE_CONFIRMED:
+  const renderStatus = (statusProp) => {
+    if (statusProp === STATUS.DRAFT) {
+      return (
+        <div className={styles.containerStatus}>
+          <div>Status: </div>
+          <div className={styles.statusDraft} />
+          <div style={{ color: '#fd4546' }}>Draft</div>
+        </div>
+      );
+    }
+    if (statusProp === STATUS.ACCEPTED) {
+      return (
+        <div className={styles.containerStatus}>
+          <div>Status: </div>
+          <div className={styles.statusAccepted} />
+          <div style={{ color: '#00C598' }}>Accepted</div>
+        </div>
+      );
+    }
+    return (
+      <div className={styles.containerStatus}>
+        <div>Status: </div>
+        <div className={styles.statusInProgress} />
+        <div style={{ color: '#ffa100' }}>In Progress</div>
+      </div>
+    );
+  };
+
+  const renderPopover = () => {
+    return (
+      <div>
+        Resignation requests cannot be Withdrawn after the Manager approves. Please talk to the HR
+        to make changes to your request.
+      </div>
+    );
+  };
+
+  const renderButton = () => {
+    switch (status) {
+      case STATUS.ACCEPTED:
         return (
-          <div style={{ width: '100%', textAlign: 'right' }}>
+          <div className={styles.containerBtn}>
+            <Popover
+              trigger="hover"
+              placement="left"
+              content={renderPopover()}
+              overlayClassName={styles.contentPopover}
+            >
+              <img src={IconPopup} alt="" />
+            </Popover>
+            <div className={styles.btnWithdrawDisable}>Withdraw </div>
+          </div>
+        );
+      case STATUS.IN_PROGRESS: {
+        if (
+          meetingStatus === MEETING_STATUS.DATE_CONFIRMED ||
+          meetingStatus === MEETING_STATUS.EMPLOYEE_PICK_DATE ||
+          meetingStatus === MEETING_STATUS.MANAGER_PICK_DATE
+        ) {
+          return (
+            <div className={styles.containerBtnWithdraw}>
+              <CustomSecondaryButton
+                paddingInline={0}
+                onClick={handleWithdraw}
+                loading={loadingWithdraw}
+              >
+                <span className={styles.labelBtn}> Withdraw</span>
+              </CustomSecondaryButton>
+            </div>
+          );
+        }
+        return (
+          <div className={styles.containerBtn}>
             <CustomSecondaryButton onClick={handleWithdraw} loading={loadingWithdraw}>
               Withdraw
             </CustomSecondaryButton>
+            <CustomPrimaryButton onClick={() => setVisible(true)} loading={loadingSchedule}>
+              Schedule 1 on 1
+            </CustomPrimaryButton>
           </div>
         );
+      }
+
       default:
         return (
           <div className={styles.containerBtn}>
@@ -110,7 +167,7 @@ const RequestDetail = (props) => {
   return (
     <div className={styles.RequestDetail}>
       <Card title="Your Request" extra={renderStatus(status)}>
-        <div style={{ margin: '24px', fontSize: '13px' }}>
+        <div className={styles.container}>
           <Row gutter={[24, 24]}>
             <div className={styles.containerInfo}>
               <div>
@@ -136,9 +193,8 @@ const RequestDetail = (props) => {
             </Col>
           </Row>
         </div>
-        <Divider />
 
-        {renderButton(meetingStatus)}
+        {renderButton()}
       </Card>
       <SetMeetingModal
         visible={visible}

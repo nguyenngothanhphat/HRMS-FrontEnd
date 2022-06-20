@@ -17,6 +17,10 @@
       margin-top: 5px;
     }
   }
+  .container {
+    margin: 24px;
+    font-size: 13px;
+  }
   .containerInfo {
     display: flex;
     align-items: center;
@@ -31,11 +35,20 @@
     font-size: 13px;
     line-height: 15px;
   }
+  .containerBtnWithdraw {
+    width: 100%;
+    text-align: right;
+    border-top: 1px solid #d6dce0;
+  }
+  .labelBtn {
+    text-decoration: underline;
+  }
   .containerBtn {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 0 24px 24px 24px;
+    padding: 24px;
+    border-top: 1px solid #d6dce0;
   }
   .containerStatus {
     display: flex;
@@ -62,5 +75,38 @@
     line-height: 8px;
     background-color: #ffa100;
     border-radius: 50%;
+  }
+  .statusAccepted {
+    width: 8px;
+    height: 8px;
+    margin: 0 5px;
+    line-height: 8px;
+    background-color: #00c598;
+    border-radius: 50%;
+  }
+  .btnWithdrawDisable {
+    color: #fd4546;
+    opacity: 0.5;
+    text-decoration-line: underline;
+  }
+}
+.contentPopover {
+  width: 326px;
+
+  :global {
+    .ant-popover-inner-content {
+      padding: 0 !important;
+      color: #808080;
+      font-weight: 400;
+      line-height: 16px;
+    }
+    .ant-popover-inner {
+      padding: 12px;
+      font-size: 10px;
+      line-height: 16px;
+      background: #fafdff;
+      border: 1px solid #2c6df9;
+      border-radius: 5px;
+    }
   }
 }
