@@ -1,14 +1,12 @@
-import { Card, Col, Row, Popover } from 'antd';
+import { Card, Col, Popover, Row } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect, history } from 'umi';
-import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
-import CustomSecondaryButton from '@/components/CustomSecondaryButton';
-import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import IconPopup from '@/assets/offboarding/popupIcon.svg';
-
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
 import SetMeetingModal from '../../../SetMeetingModal';
-
 import styles from './index.less';
 
 const { STATUS, UPDATE_ACTION, MEETING_STATUS } = OFFBOARDING;

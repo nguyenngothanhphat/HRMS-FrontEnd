@@ -84,10 +84,12 @@ const Assignee = (props) => {
       },
     }).then((res = {}) => {
       const { data = [] } = res;
-      return data.map((user) => ({
-        label: user.generalInfo?.legalName,
-        value: user._id,
-      }));
+      return data
+        .filter((x) => x._id !== employee?._id)
+        .map((user) => ({
+          label: user.generalInfo?.legalName,
+          value: user._id,
+        }));
     });
   };
 

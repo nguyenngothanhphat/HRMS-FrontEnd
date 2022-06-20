@@ -1,5 +1,5 @@
 import { Tabs } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { history, connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import TeamRequest from './components/TeamRequest';
@@ -19,10 +19,14 @@ const ManagerView = (props) => {
     dispatch,
     tabName = '',
     companyLocationList = [],
-    // offboarding: { selectedLocations: selectedLocationsProp = [] },
+    offboarding: { selectedLocations: selectedLocationsProp = [] },
   } = props;
 
   const [selectedLocations, setSelectedLocation] = useState([]);
+
+  useEffect(() => {
+    setSelectedLocation(selectedLocationsProp);
+  }, [JSON.stringify(selectedLocationsProp)]);
 
   const onLocationChange = (selection) => {
     dispatch({

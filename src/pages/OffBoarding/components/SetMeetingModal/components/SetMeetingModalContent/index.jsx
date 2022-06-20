@@ -24,6 +24,13 @@ const SetMeetingModalContent = ({
     return current && current < moment(customDate, 'YYYY-MM-DD');
   };
 
+  const disablePastHour = (obj) => {
+    return (
+      moment(obj.startTime).day() === moment().day() &&
+      moment(obj.startTime).hour() <= moment().hour()
+    );
+  };
+
   const onDateChange = (date) => {
     form.setFieldsValue({
       time: null,
@@ -83,11 +90,13 @@ const SetMeetingModalContent = ({
                 loading={loadingFetchTimeInDateEffect}
                 disabled={loadingFetchTimeInDateEffect}
               >
-                {hourList.map((x) => (
-                  <Select.Option value={x.startTime} disabled={x.disabled}>
-                    {x.time}
-                  </Select.Option>
-                ))}
+                {hourList
+                  .filter((x) => !disablePastHour(x))
+                  .map((x) => (
+                    <Select.Option value={x.startTime} disabled={x.disabled}>
+                      {x.time}
+                    </Select.Option>
+                  ))}
               </Select>
             </Form.Item>
           </Col>

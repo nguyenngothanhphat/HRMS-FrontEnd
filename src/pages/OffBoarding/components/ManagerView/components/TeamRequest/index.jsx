@@ -169,6 +169,7 @@ const TeamRequest = (props) => {
     {
       title: <span className={styles.title}>Ticket ID</span>,
       dataIndex: 'ticketId',
+      width: '12%',
       ellipsis: true,
       fixed: 'left',
       render: (ticketId, record) => {
@@ -181,6 +182,8 @@ const TeamRequest = (props) => {
     },
     {
       title: <span className={styles.title}>Created Date</span>,
+      width: '10%',
+      ellipsis: true,
       dataIndex: 'createdAt',
       render: (createdAt = '') => {
         return <span>{createdAt ? moment(createdAt).format('MM/DD/YYYY') : ''}</span>;
@@ -189,12 +192,15 @@ const TeamRequest = (props) => {
     {
       title: <span className={styles.title}>Employee ID</span>,
       dataIndex: 'employee',
+      ellipsis: true,
+      width: '8%',
       render: (obj = {}) => {
         return <span>{obj?.employeeId}</span>;
       },
     },
     {
       title: <span className={styles.title}>Requestee Name</span>,
+      width: '13%',
       dataIndex: 'employee',
       ellipsis: true,
       render: (obj = {}) => {
@@ -301,6 +307,8 @@ const TeamRequest = (props) => {
       title: <span className={styles.title}>Action</span>,
       dataIndex: '_id',
       fixed: 'right',
+      ellipsis: true,
+      width: '10%',
       render: (id) => {
         return (
           <div className={styles.rowAction}>
@@ -368,7 +376,6 @@ const TeamRequest = (props) => {
         partnerRole="Employee"
         employee={handlingRequest?.employee}
         onFinish={onSetOneOnOneMeeting}
-        selectedDate={moment()}
       />
     </div>
   );
