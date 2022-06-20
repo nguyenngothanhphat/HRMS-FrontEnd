@@ -35,9 +35,6 @@ const ProjectList = (props) => {
       type: 'resourceManagement/fetchProjectList',
       payload: tempPayload,
     });
-    dispatch({
-      type: 'resourceManagement/fetchStatusProjectList',
-    });
   };
 
   useEffect(() => {
