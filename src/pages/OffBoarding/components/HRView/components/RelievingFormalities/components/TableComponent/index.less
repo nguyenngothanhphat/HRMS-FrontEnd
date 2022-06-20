@@ -1,17 +1,17 @@
 .tableComponent {
   :global {
     .ant-table-pagination.ant-pagination {
-      margin-top: 112px!important;
-    } 
+      margin-top: 112px !important;
+    }
     .ant-table-thead > tr > th {
-      background-color: #2c6df9;
       padding: 7px 16px;
+      background-color: #2c6df9;
     }
     .ant-table-tbody > tr > td {
-      border-bottom: solid 1px #d6dce0;
+      padding: 1px 16px;
       color: #464646;
       font-size: 13px;
-      padding: 1px 16px;
+      border-bottom: solid 1px #d6dce0;
     }
     .ant-table-tbody > tr {
       height: 50px;
@@ -21,166 +21,162 @@
       height: 20px !important;
     }
 
-    .ant-checkbox-inner{
-      border: 1.4px solid #B9BAC2;
+    .ant-checkbox-inner {
       box-sizing: border-box;
+      border: 1.4px solid #b9bac2;
       border-radius: 3px;
     }
 
     .ant-table-thead > tr > th:first-child > div > label > span > .ant-checkbox-inner {
-      border: 1.4px solid #FFFFFF;
+      border: 1.4px solid #ffffff;
     }
   }
-  
-  .requteeName, .ticketId{
-    color: #2C6DF9;
-    font-style: normal;
+
+  .requteeName,
+  .ticketId {
+    color: #2c6df9;
     font-weight: 500;
     font-size: 13px;
+    font-style: normal;
     line-height: 15px;
     cursor: pointer;
   }
 
-  .requteeName{
+  .requteeName {
     text-decoration: underline;
   }
 
   .textEmpty {
+    color: black;
     font-weight: 400;
     font-size: 16px;
     line-height: 18.75px;
-    color: black;
   }
 
   .title {
     color: #fff;
+    font-weight: 400;
     font-size: 13px;
     line-height: 15.23px;
-    font-weight: 400;
   }
 
   .tableText {
+    color: #464646;
     font-size: 13px;
     line-height: 15px;
-    color: #464646;
   }
   .rowAction {
-    cursor: pointer;
     text-decoration: underline;
+    cursor: pointer;
 
-    &__link{
-      color: #FFA100;
-      font-style: normal;
+    &__link {
+      color: #ffa100;
       font-weight: 500;
       font-size: 12px;
+      font-style: normal;
       line-height: 14px;
     }
   }
 }
 
 :global {
-  .ant-popover-inner{
+  .ant-popover-inner {
     border-radius: 8px;
   }
 
-  .ant-divider{
-    border-top: 0.2px solid #B6B6B6;
+  .ant-divider {
+    border-top: 0.2px solid #b6b6b6;
     opacity: 0.3;
   }
 
-  .ant-divider-horizontal{
+  .ant-divider-horizontal {
     margin: 18px 0;
   }
-}  
+}
 
-.popupContent{
-  width: 346px; 
+.popupContent {
+  width: 346px;
 
-  .generalInfo{
-    width: 100%;
+  .generalInfo {
     display: flex;
-    justify-content: flex-start;
     align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
 
-    .employeeInfo{
-      text-align: left;
+    .employeeInfo {
       padding-left: 16px;
+      text-align: left;
 
-      &__name{
+      &__name {
         margin-bottom: 0;
-        font-family: Roboto;
-        font-style: normal;
+
+        padding-bottom: 6px;
+        color: #161c29;
         font-weight: 500;
         font-size: 18px;
-        line-height: 21px;
-        color: #161C29;
 
-        padding-bottom: 6px;
-      }
-  
-      &__department, &__emplId{
-        font-family: Roboto;
         font-style: normal;
+        line-height: 21px;
+      }
+
+      &__department,
+      &__emplId {
+        padding-bottom: 6px;
+        color: #707177;
         font-weight: normal;
         font-size: 13px;
-        line-height: 15px;
-        color: #707177;
 
-        padding-bottom: 6px;
+        font-style: normal;
+        line-height: 15px;
       }
     }
 
-
-    .avatar{
-      
+    .avatar {
     }
   }
 
-  .contact{
+  .contact {
     &__title {
-      font-family: Roboto;
-      font-style: normal;
+      color: #707177;
       font-weight: 500;
       font-size: 13px;
-      line-height: 15px;
 
-      color: #707177;
+      font-style: normal;
+      line-height: 15px;
     }
 
-    &__value{
-      font-style: normal;
+    &__value {
+      color: #161c29;
       font-weight: normal;
       font-size: 14px;
+      font-style: normal;
       line-height: 16px;
-
-      color: #161C29;
 
       opacity: 0.91;
     }
   }
 
-  .popupActions{
+  .popupActions {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     width: 100%;
 
-    &__link{
+    &__link {
       color: #2c6df9;
       font-weight: 500;
       font-size: 13px;
       font-style: normal;
       line-height: 15px;
-      text-decoration-line: underline;
       cursor: pointer;
+      text-decoration-line: underline;
     }
 
     &__actions {
-      width: 106px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      width: 106px;
     }
   }
 }
-

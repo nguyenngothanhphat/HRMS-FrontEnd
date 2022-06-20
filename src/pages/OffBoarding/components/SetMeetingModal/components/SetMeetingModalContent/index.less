@@ -1,0 +1,55 @@
+.SetMeetingModalContent {
+  padding: 24px;
+  .employeeName {
+    margin-bottom: 24px;
+    color: #161c29;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 15px;
+  }
+  :global {
+    .ant-select-disabled {
+      .ant-select-selection-item {
+        color: #161c2980;
+      }
+    }
+    .ant-form-item-explain {
+      div {
+        font-size: 13px;
+      }
+    }
+    .ant-form-item-label
+      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      display: none;
+    }
+    .ant-form-item-label label {
+      height: 0;
+      color: #161c29;
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 15px;
+    }
+    .ant-form-item-explain {
+      display: none;
+    }
+    .ant-select-selector,
+    .ant-input {
+      width: 100%;
+      height: 42px !important;
+      padding: 5px 11px !important;
+      // background: transparent !important;
+      border-radius: 5px !important;
+    }
+    .ant-select-selection-search-input {
+      height: 42px !important;
+      //   border-radius: 5px;
+    }
+    .ant-picker {
+      width: 100%;
+      max-width: 250px;
+      min-height: 42px !important;
+      font-size: 13px;
+      border-radius: 5px;
+    }
+  }
+}
