@@ -1,0 +1,25 @@
+@blue: #2c6df9;
+
+.CustomBlueButton {
+  :global {
+    .ant-btn {
+      height: 34px;
+      padding-right: 12px;
+      padding-left: 12px;
+      background-color: #568afa1f;
+      border: none;
+      border-radius: 5px;
+      box-shadow: none;
+      span {
+        color: @blue;
+        font-weight: 500;
+        font-size: 14px;
+      }
+      &:hover,
+      &:disabled {
+        background-color: #568afa1f;
+        opacity: 0.8;
+      }
+    }
+  }
+}

@@ -1,13 +1,12 @@
 import { Tabs } from 'antd';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { PageContainer } from '@/layouts/layout/src';
-import CheckboxMenu from '@/components/CheckboxMenu';
-import AllTicket from './components/AllTickets';
-import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
-import styles from './index.less';
+import CustomDropdownSelector from '@/components/CustomDropdownSelector';
 import WorkInProgress from '@/components/WorkInProgress';
+import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentLocation } from '@/utils/authority';
+import AllTicket from './components/AllTickets';
+import styles from './index.less';
 
 const ManagerTicket = (props) => {
   const { TabPane } = Tabs;
@@ -22,22 +21,6 @@ const ManagerTicket = (props) => {
     });
   };
 
-  const getSelectedLocationName = () => {
-    if (selectedLocationsState.length === 1) {
-      return companyLocationList.find((x) => x._id === selectedLocationsState[0])?.name || '';
-    }
-    if (
-      selectedLocationsState.length > 0 &&
-      selectedLocationsState.length < companyLocationList.length
-    ) {
-      return `${selectedLocationsState.length} locations selected`;
-    }
-    if (selectedLocationsState.length === companyLocationList.length) {
-      return 'All';
-    }
-    return 'None';
-  };
-
   const onLocationChange = (selection) => {
     dispatch({
       type: 'ticketManagement/save',
@@ -49,7 +32,6 @@ const ManagerTicket = (props) => {
   };
 
   const renderFilterLocation = () => {
-    const selectedLocationName = getSelectedLocationName();
     const locationOptions = companyLocationList.map((x) => {
       return {
         _id: x._id,
@@ -57,20 +39,14 @@ const ManagerTicket = (props) => {
       };
     });
     return (
-      <div className={styles.item}>
-        <span className={styles.label}>Location</span>
-
-        <CheckboxMenu
+      <div className={styles.options}>
+        <CustomDropdownSelector
           options={locationOptions}
           onChange={onLocationChange}
-          list={companyLocationList}
-          default={selectedLocationsState}
-        >
-          <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
-            <span>{selectedLocationName}</span>
-            <img src={SmallDownArrow} alt="" />
-          </div>
-        </CheckboxMenu>
+          disabled={locationOptions.length < 2}
+          label="Location"
+          selectedList={selectedLocationsState}
+        />
       </div>
     );
   };
