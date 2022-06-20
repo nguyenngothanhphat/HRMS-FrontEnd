@@ -70,7 +70,7 @@ const ClosingComment = (props) => {
     if (values.isRequestDifferent) {
       payload = {
         ...payload,
-        LWD: values.managerPickLWD,
+        LWD: values.LWD,
         notes: values.notes,
       };
     }
@@ -93,8 +93,13 @@ const ClosingComment = (props) => {
   const onValuesChange = (changedValues, allValues) => {
     setIsRequestDifferentLWD(!!allValues.isRequestDifferent);
     setIsCommentInputted(!!allValues.closingComments);
-    setIsLWDSelected(!!allValues.managerPickLWD);
+    setIsLWDSelected(!!allValues.LWD);
     setIsNotesInputted(!!allValues.notes);
+  };
+
+  const disabledLWD = (current) => {
+    const customDate = moment().format(dateFormat);
+    return current && current < moment(customDate, dateFormat);
   };
 
   useEffect(() => {
@@ -226,11 +231,11 @@ const ClosingComment = (props) => {
             >
               <Col span={12}>
                 <Form.Item
-                  name="managerPickLWD"
+                  name="LWD"
                   label="Last working date (Manager requested)"
                   rules={[{ required: true }]}
                 >
-                  <DatePicker format={dateFormat} disabled={disabled} />
+                  <DatePicker format={dateFormat} disabled={disabled} disabledDate={disabledLWD} />
                 </Form.Item>
               </Col>
               <Col span={12} />

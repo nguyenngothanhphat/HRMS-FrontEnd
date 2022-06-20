@@ -56,7 +56,7 @@ const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
 const Assignee = (props) => {
   const {
     dispatch,
-    item: { _id = '', employee = {}, assigned = {} } = {},
+    item: { _id = '', employee = {}, assigned = {}, status = '' } = {},
     offboarding: { employeeList = [] },
   } = props;
   const { hr = {}, manager = {}, delegateManager = {} } = assigned || {};
@@ -256,6 +256,9 @@ const Assignee = (props) => {
   };
 
   const renderButtons = () => {
+    if (status !== OFFBOARDING.STATUS.IN_PROGRESS) {
+      return null;
+    }
     return (
       <div className={styles.actions}>
         <p>

@@ -160,7 +160,7 @@ const WhatNext = (props) => {
     if (isCommenting) {
       return (
         <div className={styles.comment}>
-          <span onClick={setIsEnterClosingComment}>Enter Closing Comments</span>
+          <span onClick={() => setIsEnterClosingComment(true)}>Enter Closing Comments</span>
         </div>
       );
     }
@@ -171,28 +171,33 @@ const WhatNext = (props) => {
       case OFFBOARDING.MEETING_STATUS.MANAGER_PICK_DATE:
         return (
           <div className={styles.actions}>
-            <CustomSecondaryButton
-              onClick={() => {
-                setOneOnOneMeetingModalVisible(true);
-              }}
-            >
-              <span
-                style={{
-                  color: '#2C6DF9',
+            <div className={styles.comment}>
+              {isAccept && (
+                <span onClick={() => setIsEnterClosingComment(true)}>Enter Closing Comments</span>
+              )}
+            </div>
+            <div>
+              <CustomSecondaryButton
+                onClick={() => {
+                  setOneOnOneMeetingModalVisible(true);
                 }}
               >
-                Reschedule
-              </span>
-            </CustomSecondaryButton>
-            <CustomPrimaryButton
-              onClick={() => {
-                onJoinMeeting(meetingId);
-                setIsCommenting(true);
-                setIsEnterClosingComment(true);
-              }}
-            >
-              Join with Google Meet
-            </CustomPrimaryButton>
+                <span
+                  style={{
+                    color: '#2C6DF9',
+                  }}
+                >
+                  Reschedule
+                </span>
+              </CustomSecondaryButton>
+              <CustomPrimaryButton
+                onClick={() => {
+                  onJoinMeeting(meetingId);
+                }}
+              >
+                Join with Google Meet
+              </CustomPrimaryButton>
+            </div>
           </div>
         );
 
@@ -200,32 +205,37 @@ const WhatNext = (props) => {
       case OFFBOARDING.MEETING_STATUS.DATE_CONFIRMED:
         return (
           <div className={styles.actions}>
-            <CustomSecondaryButton
-              onClick={() => {
-                setOneOnOneMeetingModalVisible(true);
-              }}
-            >
-              <span
-                style={{
-                  color: '#2C6DF9',
-                }}
-              >
-                Reschedule
-              </span>
-            </CustomSecondaryButton>
-            {!isAccept ? (
-              <CustomPrimaryButton onClick={onAcceptMeeting}>Accept meeting</CustomPrimaryButton>
-            ) : (
-              <CustomPrimaryButton
+            <div className={styles.comment}>
+              {isAccept && (
+                <span onClick={() => setIsEnterClosingComment(true)}>Enter Closing Comments</span>
+              )}
+            </div>
+            <div>
+              <CustomSecondaryButton
                 onClick={() => {
-                  onJoinMeeting(meetingId);
-                  setIsCommenting(true);
-                  setIsEnterClosingComment(true);
+                  setOneOnOneMeetingModalVisible(true);
                 }}
               >
-                Join with Google Meet
-              </CustomPrimaryButton>
-            )}
+                <span
+                  style={{
+                    color: '#2C6DF9',
+                  }}
+                >
+                  Reschedule
+                </span>
+              </CustomSecondaryButton>
+              {!isAccept ? (
+                <CustomPrimaryButton onClick={onAcceptMeeting}>Accept meeting</CustomPrimaryButton>
+              ) : (
+                <CustomPrimaryButton
+                  onClick={() => {
+                    onJoinMeeting(meetingId);
+                  }}
+                >
+                  Join with Google Meet
+                </CustomPrimaryButton>
+              )}
+            </div>
           </div>
         );
 
