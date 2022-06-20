@@ -75,8 +75,9 @@ const HeaderProjectRM = (props) => {
     document.body.removeChild(downloadLink);
   };
 
-  const allProject = data.filter((obj) => obj.statusId === undefined);
+  const allProject = data.filter((obj) => obj.statusId === undefined || obj.statusId === 0);
   const listStatus = data.filter((obj) => obj.statusName !== 'All Projects');
+
   const clearTagFilter = () => {
     setApplied(0);
     setNeedResetFilterForm(true);
