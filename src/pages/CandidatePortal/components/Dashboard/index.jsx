@@ -1,9 +1,7 @@
 import { Col, Row } from 'antd';
 import React, { PureComponent } from 'react';
-import Joyride from 'react-joyride';
 import { connect } from 'umi';
-import { NEW_COMER_STEPS } from '@/utils/candidatePortal';
-import { getIsFirstLogin, setIsFirstLogin } from '@/utils/authority';
+import { NEW_COMER_CLASS } from '@/utils/candidatePortal';
 import CompanyProfile from './components/CompanyProfile';
 import ApplicationStatus from './components/NewApplicationStatus';
 import PendingTasks from './components/PendingTasks';
@@ -33,16 +31,8 @@ class Dashboard extends PureComponent {
     }
   };
 
-  handleJoyrideCallback = (data) => {
-    const { status } = data;
-    if (status === 'finished') {
-      setIsFirstLogin(false);
-    }
-  };
-
   render() {
     const { loadingFetchCandidate, data = {} } = this.props;
-    const isFirstLogin = getIsFirstLogin();
 
     return (
       <div className={styles.Dashboard}>
@@ -54,41 +44,25 @@ class Dashboard extends PureComponent {
             style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
           >
             <Row span={24} gutter={[24, 24]} style={{ marginBottom: '24px' }}>
-              <Col xs={24} className="applicationStatus">
+              <Col xs={24} className={NEW_COMER_CLASS.APPLICATION_STATUS}>
                 <ApplicationStatus loading={loadingFetchCandidate} data={data} />
               </Col>
             </Row>
 
             <Row span={24} gutter={[24, 24]} style={{ height: '100%' }}>
-              <Col xs={24} lg={14} className="yourActivity">
+              <Col xs={24} lg={14} className={NEW_COMER_CLASS.YOUR_ACTIVITY}>
                 <YourActivity />
               </Col>
-              <Col xs={24} lg={10} className="pendingTasks">
+              <Col xs={24} lg={10} className={NEW_COMER_CLASS.PENDING_TASKS}>
                 <PendingTasks />
               </Col>
             </Row>
           </Col>
 
-          <Col sm={24} lg={8} className="companyProfile">
+          <Col sm={24} lg={8} className={NEW_COMER_CLASS.COMPANY_PROFILE}>
             <CompanyProfile />
           </Col>
         </Row>
-        <Joyride
-          steps={NEW_COMER_STEPS}
-          continuous
-          showProgress
-          showSkipButton
-          run={isFirstLogin}
-          callback={this.handleJoyrideCallback}
-          close
-          styles={{
-            options: {
-              primaryColor: '#ffa100',
-              width: 300,
-              zIndex: 2023,
-            },
-          }}
-        />
       </div>
     );
   }

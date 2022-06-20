@@ -13,7 +13,13 @@ import HandleChanges from './components/HandleChanges';
 import styles from './index.less';
 
 const EmploymentTab = (props) => {
-  const { dispatch, listEmployeeActive, permissions = {}, employeeProfile = {} } = props;
+  const {
+    dispatch,
+    listEmployeeActive,
+    permissions = {},
+    employeeProfile = {},
+    dataOrgChart: { employees: reportees = [], manager = {} },
+  } = props;
 
   const {
     originData: { generalData = {}, employmentData = {}, compensationData = {} } = {},
@@ -22,13 +28,7 @@ const EmploymentTab = (props) => {
     isProfileOwner = false,
   } = employeeProfile;
 
-  const {
-    title = {},
-    location = {},
-    department = {},
-    manager = {},
-    employeeType = {},
-  } = employmentData || {};
+  const { title = {}, location = {}, department = {}, employeeType = {} } = employmentData || {};
 
   const { firstName = '', legalName = '' } = generalData || {};
   const { compensationType = '', currentAnnualCTC = '' } = compensationData || {};
@@ -49,6 +49,10 @@ const EmploymentTab = (props) => {
     dispatch({
       type: 'employeeProfile/fetchDepartments',
     });
+    dispatch({
+      type: 'employee/fetchDataOrgChart',
+      payload: { employee },
+    });
   };
 
   useEffect(() => {
@@ -60,6 +64,12 @@ const EmploymentTab = (props) => {
   useEffect(() => {
     if (employee) {
       fetchData();
+    }
+  }, [employee]);
+
+  useEffect(() => {
+    if (employee) {
+      const listIdEmployees = reportees.map((emp) => emp._id);
       setCurrentData({
         name: legalName || firstName || null,
         title: title?._id || null,
@@ -67,12 +77,12 @@ const EmploymentTab = (props) => {
         location: location?._id || null,
         department: department?._id || null,
         manager: manager?._id || null,
-        reportees: manager?.reportees || [],
+        reportees: listIdEmployees || [],
         employeeType: employeeType?._id || null,
         currentAnnualCTC: currentAnnualCTC || null,
       });
     }
-  }, [employee]);
+  }, [employee, reportees]);
 
   const handleMakeChanges = async () => {
     setCurrent(0);
@@ -93,6 +103,7 @@ const EmploymentTab = (props) => {
     const payload = {
       title: data.stepThree.title || null,
       manager: data.stepThree.reportTo || null,
+      managerBefore: data.stepThree.reportToBefore || null,
       reasonChange: data.stepSeven.reasonChange || '',
       reportees: data.stepThree.reportees || null,
       location: data.stepTwo.wLocation || null,
@@ -104,6 +115,7 @@ const EmploymentTab = (props) => {
       effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
       changeDate: new Date(),
       takeEffect,
+      id: data.employee,
       employee: data.employee,
       changedBy: data.changedBy,
       tenantId: getCurrentTenant(),
@@ -112,7 +124,11 @@ const EmploymentTab = (props) => {
     for (let i = 0; i < array.length; i += 1) {
       if (payload[array[i]] === null || payload[array[i]] === undefined) delete payload[array[i]];
     }
-    dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
+    await dispatch({
+      type: 'employeeProfile/updateEmployment',
+      payload,
+    });
+    await dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
   };
 
   const nextTab = (msg) => {
@@ -253,8 +269,15 @@ const EmploymentTab = (props) => {
   );
 };
 
-export default connect(({ employeeProfile, user: { permissions, currentUser = {} } }) => ({
-  employeeProfile,
-  currentUser,
-  permissions,
-}))(EmploymentTab);
+export default connect(
+  ({
+    employeeProfile,
+    employee: { dataOrgChart = {} },
+    user: { permissions, currentUser = {} },
+  }) => ({
+    employeeProfile,
+    currentUser,
+    permissions,
+    dataOrgChart,
+  }),
+)(EmploymentTab);
