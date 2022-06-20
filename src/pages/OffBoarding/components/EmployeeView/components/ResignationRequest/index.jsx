@@ -186,6 +186,38 @@ const ResignationRequest = (props) => {
             </Col>
           </Row>
         );
+      case STATUS.REJECTED:
+        return (
+          <Row className={styles.content} gutter={[24, 24]}>
+            <Col span={24} lg={16}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <YourRequest
+                    data={viewingRequest}
+                    getMyRequest={getMyRequest}
+                    employee={employee}
+                    step={step}
+                    status={status}
+                    getRequestById={getRequestById}
+                  />
+                </Col>
+                <Col span={24}>
+                  <WhatNext employee={employee} item={viewingRequest} />
+                </Col>
+              </Row>
+            </Col>
+            <Col span={24} lg={8}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <ThingToConsider employee={employee} status={status} />
+                </Col>
+                <Col span={24}>
+                  <Notes status={status} />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        );
       default:
         return (
           <Row className={styles.content} gutter={[24, 24]}>

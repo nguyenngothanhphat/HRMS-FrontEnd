@@ -5,7 +5,7 @@ import styles from './index.less';
 import { OFFBOARDING } from '@/utils/offboarding';
 
 const { Step } = Steps;
-const { STEP } = OFFBOARDING;
+const { STEP, STATUS } = OFFBOARDING;
 const current = 0;
 
 const steps1 = [
@@ -70,7 +70,7 @@ const OffboardingWorkFlow = (props) => {
       className={styles.OffboardingWorkFlow}
       title="Offboarding Workflow"
       extra={
-        !status ? (
+        !status || status === STATUS.REJECTED ? (
           <Button onClick={handleResignation} className={styles.stepAction__btn}>
             Initiate resignation request
           </Button>

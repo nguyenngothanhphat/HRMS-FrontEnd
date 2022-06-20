@@ -7,7 +7,7 @@ import styles from './index.less';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import { OFFBOARDING, onJoinMeeting } from '@/utils/offboarding';
 
-const { MEETING_STATUS = {}, UPDATE_ACTION = {} } = OFFBOARDING;
+const { MEETING_STATUS = {}, UPDATE_ACTION = {}, STATUS } = OFFBOARDING;
 
 const WhatNext = (props) => {
   const {
@@ -25,6 +25,7 @@ const WhatNext = (props) => {
         id: meetingId = '',
       } = {},
       _id = '',
+      status = '',
     } = {},
     getMyRequest = () => {},
     dispatch,
@@ -97,7 +98,7 @@ const WhatNext = (props) => {
             </div>
           </div>
         </Col>
-        {meetingStatus !== MEETING_STATUS.NOT_START ? (
+        {meetingStatus !== MEETING_STATUS.NOT_START || status !== STATUS.REJECTED ? (
           <Col span={14}>
             <div className={styles.rightPart}>
               <span className={styles.label}>Scheduled on</span>
