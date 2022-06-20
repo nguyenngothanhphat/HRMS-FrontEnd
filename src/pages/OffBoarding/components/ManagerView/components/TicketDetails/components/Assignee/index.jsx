@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { Card, Col, Empty, Row, Select, Spin } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { connect } from 'umi';
 import DownArrowIcon from '@/assets/offboarding/downArrow.png';
@@ -159,7 +159,7 @@ const Assignee = (props) => {
         _id: manager?._id,
       },
     ];
-    if (delegateManager) {
+    if (!isEmpty(delegateManager)) {
       managerTemp.push({
         primary: false,
         name: getEmployeeName(delegateManager?.generalInfoInfo),
