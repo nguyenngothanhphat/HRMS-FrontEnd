@@ -239,13 +239,14 @@ const resourceManagement = {
       };
       try {
         response = yield call(fetchProjectListTable, payloadTemp);
-        const { statusCode, data = [] } = response;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
+        const { items = [], totals = [] } = data;
         yield put({
           type: 'save',
-          payload: { projectTable: data?.items, statusProject: data?.totals || [], payloadProject: payloadTemp},
+          payload: { projectTable: items, statusProject: totals, payloadProject: payloadTemp },
         });
-        const customerList = data?.items.map((item) => {
+        const customerList = items.map((item) => {
           return {
             customerId: item.customerId || '',
             customerName: item.customerName || '',
