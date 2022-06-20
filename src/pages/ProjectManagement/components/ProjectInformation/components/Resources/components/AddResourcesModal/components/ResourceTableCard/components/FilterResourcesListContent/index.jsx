@@ -10,7 +10,7 @@ const FilterResourcesListContent = (props) => {
   const [form] = Form.useForm();
   const {
     dispatch,
-    projectDetails: { divisionList = [], projectId = '' } = {},
+    projectDetails: { divisionList = [], projectId = '',titleList=[] } = {},
     projectManagement: { projectList = [] },
     onFilter = () => {},
     needResetFilterForm = false,
@@ -96,7 +96,20 @@ const FilterResourcesListContent = (props) => {
           ))}
         </Select>
       </Form.Item>
-
+      <Form.Item label="By designation" name="title">
+        <Select
+          mode="multiple"
+          allowClear
+          style={{ width: '100%' }}
+          placeholder="Please select"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {titleList.map((x) => (
+            <Option value={x._id}>{x.name}</Option>
+          ))}
+        </Select>
+      </Form.Item>
       <Form.Item
         label="By Experience"
         name="expYearBegin"
