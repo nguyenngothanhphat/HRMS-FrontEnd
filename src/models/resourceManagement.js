@@ -13,7 +13,6 @@ import {
   updateProjectDetail,
   fetchResourceStatus,
   fetchTitleList,
-  fetchStatusProject,
   fetchProjectListTable,
   addAndUpdateComments,
   exportProject,
@@ -276,24 +275,6 @@ const resourceManagement = {
         yield put({
           type: 'save',
           payload: { resourceUtilizationChartData: data },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-    },
-    *fetchStatusProjectList({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(fetchStatusProject, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { statusProject: data?.statuses || [] },
         });
       } catch (error) {
         dialog(error);
