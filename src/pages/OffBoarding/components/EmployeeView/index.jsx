@@ -117,6 +117,29 @@ const EmployeeView = (props) => {
           </Row>
         );
       }
+      case STATUS.REJECTED: {
+        return (
+          <Row className={styles.content} gutter={[24, 24]}>
+            <Col span={24} lg={16}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <RequestDetail data={myRequest} getMyRequest={getMyRequest} employee={employee} />
+                </Col>
+                <Col span={24}>
+                  <OffboardingWorkFlow employee={employee} data={myRequest} />
+                </Col>
+              </Row>
+            </Col>
+            <Col span={24} lg={8}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <ThingToConsider />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        );
+      }
       default:
         return (
           <Row className={styles.content} gutter={[24, 24]}>

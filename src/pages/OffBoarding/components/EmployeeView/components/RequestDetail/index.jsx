@@ -1,11 +1,13 @@
-import { Card, Col, Popover, Row } from 'antd';
+import { Avatar, Card, Col, Popover, Row, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect, history } from 'umi';
+import avtDefault from '@/assets/defaultAvatar.png';
 import IconPopup from '@/assets/offboarding/popupIcon.svg';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
-import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
+import { dateFormat, OFFBOARDING, onJoinMeeting } from '@/utils/offboarding';
+
 import SetMeetingModal from '../../../SetMeetingModal';
 import styles from './index.less';
 
@@ -18,12 +20,17 @@ const RequestDetail = (props) => {
     dispatch,
     data: {
       ticketId = '',
-      createdAt = '',
       LWD = '',
       reason = '',
       status = '',
       _id = '',
       meeting: { status: meetingStatus = '' },
+      assigned: {
+        hr: { generalInfo: { avatar: avatarHr = '', legalName: hrName = '' } = {} } = {},
+        manager: {
+          generalInfo: { avatar: avatarManager = '', legalName: managerName = '' } = {},
+        } = {},
+      } = {},
     } = {},
     getMyRequest = () => {},
   } = props;
@@ -66,31 +73,40 @@ const RequestDetail = (props) => {
   };
 
   const renderStatus = (statusProp) => {
-    if (statusProp === STATUS.DRAFT) {
-      return (
-        <div className={styles.containerStatus}>
-          <div>Status: </div>
-          <div className={styles.statusDraft} />
-          <div style={{ color: '#fd4546' }}>Draft</div>
-        </div>
-      );
+    switch (statusProp) {
+      case STATUS.DRAFT:
+        return (
+          <div className={styles.containerStatus}>
+            <div>Status: </div>
+            <div className={styles.statusDraft} />
+            <div style={{ color: '#fd4546' }}>Draft</div>
+          </div>
+        );
+      case STATUS.ACCEPTED:
+        return (
+          <div className={styles.containerStatus}>
+            <div>Status: </div>
+            <div className={styles.statusAccepted} />
+            <div style={{ color: '#00C598' }}>Accepted</div>
+          </div>
+        );
+      case STATUS.REJECTED:
+        return (
+          <div className={styles.containerStatus}>
+            <div>Status: </div>
+            <div className={styles.statusDraft} />
+            <div style={{ color: '#fd4546' }}>Rejected</div>
+          </div>
+        );
+      default:
+        return (
+          <div className={styles.containerStatus}>
+            <div>Status: </div>
+            <div className={styles.statusInProgress} />
+            <div style={{ color: '#ffa100' }}>In Progress</div>
+          </div>
+        );
     }
-    if (statusProp === STATUS.ACCEPTED) {
-      return (
-        <div className={styles.containerStatus}>
-          <div>Status: </div>
-          <div className={styles.statusAccepted} />
-          <div style={{ color: '#00C598' }}>Accepted</div>
-        </div>
-      );
-    }
-    return (
-      <div className={styles.containerStatus}>
-        <div>Status: </div>
-        <div className={styles.statusInProgress} />
-        <div style={{ color: '#ffa100' }}>In Progress</div>
-      </div>
-    );
   };
 
   const renderPopover = () => {
@@ -120,7 +136,6 @@ const RequestDetail = (props) => {
         );
       case STATUS.IN_PROGRESS: {
         if (
-          meetingStatus === MEETING_STATUS.DATE_CONFIRMED ||
           meetingStatus === MEETING_STATUS.EMPLOYEE_PICK_DATE ||
           meetingStatus === MEETING_STATUS.MANAGER_PICK_DATE
         ) {
@@ -136,6 +151,18 @@ const RequestDetail = (props) => {
             </div>
           );
         }
+        if (meetingStatus === MEETING_STATUS.DATE_CONFIRMED) {
+          return (
+            <div className={styles.containerBtn}>
+              <CustomSecondaryButton onClick={handleWithdraw} loading={loadingWithdraw}>
+                Withdraw
+              </CustomSecondaryButton>
+              <CustomPrimaryButton onClick={() => onJoinMeeting(123)}>
+                Join with Google Meet
+              </CustomPrimaryButton>
+            </div>
+          );
+        }
         return (
           <div className={styles.containerBtn}>
             <CustomSecondaryButton onClick={handleWithdraw} loading={loadingWithdraw}>
@@ -147,6 +174,20 @@ const RequestDetail = (props) => {
           </div>
         );
       }
+      case STATUS.REJECTED:
+        return (
+          <div className={styles.containerBtn}>
+            <Popover
+              trigger="hover"
+              placement="left"
+              content={renderPopover()}
+              overlayClassName={styles.contentPopover}
+            >
+              <img src={IconPopup} alt="" />
+            </Popover>
+            <div className={styles.btnWithdrawDisable}>Withdraw </div>
+          </div>
+        );
 
       default:
         return (
@@ -160,6 +201,19 @@ const RequestDetail = (props) => {
           </div>
         );
     }
+  };
+
+  const renderAvatar = () => {
+    return (
+      <>
+        <Tooltip placement="top" title={hrName}>
+          <Avatar size={21} src={avatarHr || avtDefault} />
+        </Tooltip>
+        <Tooltip placement="top" title={managerName}>
+          <Avatar size={21} src={avatarManager || avtDefault} />
+        </Tooltip>
+      </>
+    );
   };
 
   return (
@@ -180,9 +234,20 @@ const RequestDetail = (props) => {
                 </div>
               </Col>
               <Col span={8} xs={24} md={8}>
-                <div className={styles.item}>
+                <div className={styles.item} style={{ display: 'flex' }}>
                   <span className={styles.title}>Assigned:</span>
-                  <span style={{ color: '#464646' }}>{moment(createdAt).format(dateFormat)}</span>
+                  <span>
+                    <div style={{ alignItem: 'center', display: 'flex' }}>
+                      <Avatar.Group
+                        maxStyle={{
+                          color: '#f56a00',
+                          backgroundColor: '#fde3cf',
+                        }}
+                      >
+                        {renderAvatar()}
+                      </Avatar.Group>
+                    </div>
+                  </span>
                 </div>
               </Col>
               <Col span={8} xs={24} md={8}>

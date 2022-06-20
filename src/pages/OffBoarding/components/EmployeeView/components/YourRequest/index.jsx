@@ -23,6 +23,12 @@ const YourRequest = (props) => {
       _id = '',
       status = '',
       meeting: { status: meetingStatus = '' } = {},
+      assigned: {
+        hr: { generalInfo: { avatar: avatarHr = '', legalName: hrName = '' } = {} } = {},
+        manager: {
+          generalInfo: { avatar: avatarManager = '', legalName: managerName = '' } = {},
+        } = {},
+      } = {},
     } = {},
     employee: { managerInfo = {} } = {},
     getMyRequest = () => {},
@@ -90,6 +96,14 @@ const YourRequest = (props) => {
             <div>Status: </div>
             <div className={styles.statusAccepted} />
             <div style={{ color: '#00C598' }}>Accepted</div>
+          </div>
+        );
+      case STATUS.REJECTED:
+        return (
+          <div className={styles.containerStatus}>
+            <div>Status: </div>
+            <div className={styles.statusDraft} />
+            <div style={{ color: '#fd4546' }}>Rejected</div>
           </div>
         );
       default:
@@ -176,6 +190,20 @@ const YourRequest = (props) => {
             <div className={styles.btnWithdrawDisable}>Withdraw </div>
           </div>
         );
+      case STATUS.REJECTED:
+        return (
+          <div className={styles.containerBtn}>
+            <Popover
+              trigger="hover"
+              placement="left"
+              content={renderPopover()}
+              overlayClassName={styles.contentPopover}
+            >
+              <img src={IconPopup} alt="" />
+            </Popover>
+            <div className={styles.btnWithdrawDisable}>Withdraw </div>
+          </div>
+        );
       default:
         return '';
     }
@@ -183,9 +211,14 @@ const YourRequest = (props) => {
 
   const renderAvatar = () => {
     return (
-      <Tooltip placement="top" title="legalName">
-        <Avatar size={21} src={avtDefault} />
-      </Tooltip>
+      <>
+        <Tooltip placement="top" title={hrName}>
+          <Avatar size={21} src={avatarHr || avtDefault} />
+        </Tooltip>
+        <Tooltip placement="top" title={managerName}>
+          <Avatar size={21} src={avatarManager || avtDefault} />
+        </Tooltip>
+      </>
     );
   };
 
@@ -226,6 +259,7 @@ const YourRequest = (props) => {
         );
       case STATUS.IN_PROGRESS:
       case STATUS.ACCEPTED:
+      case STATUS.REJECTED:
         return (
           <div className={styles.containerContent}>
             <Row gutter={[24, 24]}>
