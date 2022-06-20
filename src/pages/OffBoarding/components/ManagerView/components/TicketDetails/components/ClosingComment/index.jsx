@@ -29,13 +29,15 @@ const ClosingComment = (props) => {
       status = '',
       meeting = {},
       assigned = {},
-      closingComments = '',
-      isRehired = false,
-      isReplacement = false,
-      isHrRequired = false,
-      isRequestDifferent = false,
-      LWD = '',
-      notes = '',
+      managerNote: {
+        closingComments = '',
+        isRehired = false,
+        isReplacement = false,
+        isHrRequired = false,
+        isRequestDifferent = false,
+        notes = '',
+      } = {},
+      managerPickLWD = '',
     } = {},
     item = {},
   } = props;
@@ -47,8 +49,8 @@ const ClosingComment = (props) => {
   const [action, setAction] = useState('');
 
   // functionalities
-  const onDoneMeeting = async (action = '') => {
-    setAction(action);
+  const onDoneMeeting = async (actionTemp = '') => {
+    setAction(actionTemp);
     const values = form.getFieldsValue();
 
     let payload = {
@@ -60,7 +62,7 @@ const ClosingComment = (props) => {
       isHrRequired: values.isHrRequired,
       isRequestDifferent: values.isRequestDifferent,
       action:
-        action === 'reject'
+        actionTemp === 'reject'
           ? OFFBOARDING.UPDATE_ACTION.MANAGER_REJECT
           : OFFBOARDING.UPDATE_ACTION.MEETING_DONE,
     };
@@ -68,7 +70,7 @@ const ClosingComment = (props) => {
     if (values.isRequestDifferent) {
       payload = {
         ...payload,
-        LWD: values.LWD,
+        LWD: values.managerPickLWD,
         notes: values.notes,
       };
     }
@@ -91,7 +93,7 @@ const ClosingComment = (props) => {
   const onValuesChange = (changedValues, allValues) => {
     setIsRequestDifferentLWD(!!allValues.isRequestDifferent);
     setIsCommentInputted(!!allValues.closingComments);
-    setIsLWDSelected(!!allValues.LWD);
+    setIsLWDSelected(!!allValues.managerPickLWD);
     setIsNotesInputted(!!allValues.notes);
   };
 
@@ -99,7 +101,7 @@ const ClosingComment = (props) => {
     if (!isEmpty(item)) {
       setIsRequestDifferentLWD(isRequestDifferent);
       setIsCommentInputted(!!closingComments);
-      setIsLWDSelected(!!LWD);
+      setIsLWDSelected(!!managerPickLWD);
       setIsNotesInputted(!!notes);
 
       form.setFieldsValue({
@@ -108,7 +110,7 @@ const ClosingComment = (props) => {
         isReplacement,
         isHrRequired,
         isRequestDifferent,
-        LWD: LWD ? moment(LWD) : null,
+        LWD: managerPickLWD ? moment(managerPickLWD) : null,
         notes,
       });
     }
@@ -224,7 +226,7 @@ const ClosingComment = (props) => {
             >
               <Col span={12}>
                 <Form.Item
-                  name="LWD"
+                  name="managerPickLWD"
                   label="Last working date (Manager requested)"
                   rules={[{ required: true }]}
                 >

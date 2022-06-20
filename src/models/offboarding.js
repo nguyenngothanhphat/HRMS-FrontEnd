@@ -69,7 +69,7 @@ const offboarding = {
       }
       return response;
     },
-    *updateRequestEffect({ payload }, { call, put }) {
+    *updateRequestEffect({ payload, replaceState = true }, { call, put }) {
       let response;
       try {
         response = yield call(updateRequest, {
@@ -80,12 +80,14 @@ const offboarding = {
         const { statusCode, message = '', data = {} } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message });
-        yield put({
-          type: 'save',
-          payload: {
-            viewingRequest: data || {},
-          },
-        });
+        if (replaceState) {
+          yield put({
+            type: 'save',
+            payload: {
+              viewingRequest: data || {},
+            },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }

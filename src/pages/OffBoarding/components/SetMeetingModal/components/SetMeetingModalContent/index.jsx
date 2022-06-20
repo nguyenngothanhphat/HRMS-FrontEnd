@@ -13,6 +13,7 @@ const SetMeetingModalContent = ({
   onFinish = () => {},
   offboarding = {},
   selectedDate = '',
+  loadingFetchTimeInDateEffect = false,
 }) => {
   const [form] = Form.useForm();
   const { generalInfoInfo = {}, titleInfo = {} } = employee || {};
@@ -24,6 +25,9 @@ const SetMeetingModalContent = ({
   };
 
   const onDateChange = (date) => {
+    form.setFieldsValue({
+      time: null,
+    });
     dispatch({
       type: 'offboarding/getTimeInDateEffect',
       payload: {
@@ -33,10 +37,12 @@ const SetMeetingModalContent = ({
   };
 
   useEffect(() => {
-    onDateChange(selectedDate || moment());
-    form.setFieldsValue({
-      date: moment(selectedDate || moment()),
-    });
+    if (selectedDate) {
+      onDateChange(selectedDate || moment());
+      form.setFieldsValue({
+        date: moment(selectedDate || moment()),
+      });
+    }
   }, [selectedDate]);
 
   return (
@@ -72,7 +78,11 @@ const SetMeetingModalContent = ({
           </Col>
           <Col span={12}>
             <Form.Item name="time" label="Time" rules={[{ required: true }]}>
-              <Select placeholder="Select the time">
+              <Select
+                placeholder="Select the time"
+                loading={loadingFetchTimeInDateEffect}
+                disabled={loadingFetchTimeInDateEffect}
+              >
                 {hourList.map((x) => (
                   <Select.Option value={x.startTime} disabled={x.disabled}>
                     {x.time}
@@ -87,4 +97,7 @@ const SetMeetingModalContent = ({
   );
 };
 
-export default connect(({ offboarding }) => ({ offboarding }))(SetMeetingModalContent);
+export default connect(({ offboarding, loading }) => ({
+  offboarding,
+  loadingFetchTimeInDateEffect: loading.effects['offboarding/getTimeInDateEffect'],
+}))(SetMeetingModalContent);

@@ -31,7 +31,7 @@ const TeamRequest = (props) => {
   const [page, setPage] = useState(1);
   const [currentStatus, setCurrentStatus] = useState(OFFBOARDING.STATUS.IN_PROGRESS);
   const [handlingRequest, setHandlingRequest] = useState(null);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDropdownId, setShowDropdownId] = useState(null);
   const [searchText, setSearchText] = useState('');
   const [filterValues, setFilterValues] = useState({});
   const [filterForm, setFilterForm] = useState({});
@@ -155,7 +155,7 @@ const TeamRequest = (props) => {
             className={styles.btn}
             onClick={() => {
               setHandlingRequest(row);
-              setShowDropdown(false);
+              setShowDropdownId(null);
             }}
           >
             <span>Schedule 1 on 1</span>
@@ -310,15 +310,16 @@ const TeamRequest = (props) => {
       title: '',
       align: 'right',
       width: '4%',
-      render: (_, row) => {
+      dataIndex: '_id',
+      render: (_id, row) => {
         return (
           <Popover
             trigger="click"
             overlayClassName={styles.dropdownPopover}
             content={renderMenuDropdown(row)}
             placement="bottomRight"
-            visible={showDropdown}
-            onVisibleChange={(visible) => setShowDropdown(visible)}
+            visible={_id === showDropdownId}
+            onVisibleChange={(visible) => setShowDropdownId(visible ? _id : null)}
           >
             <img src={MenuIcon} alt="" style={{ cursor: 'pointer', padding: '4px 10px' }} />
           </Popover>

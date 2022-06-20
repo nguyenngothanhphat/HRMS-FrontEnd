@@ -9,7 +9,7 @@ import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import { getEmployeeName, OFFBOARDING } from '@/utils/offboarding';
 import styles from './index.less';
 
-function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
+const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
   const [fetching, setFetching] = useState(false);
   const [options, setOptions] = useState([]);
   const fetchRef = useRef(0);
@@ -51,7 +51,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
       ))}
     </Select>
   );
-}
+};
 
 const Assignee = (props) => {
   const {
@@ -59,7 +59,7 @@ const Assignee = (props) => {
     item: { _id = '', employee = {}, assigned = {} } = {},
     offboarding: { employeeList = [] },
   } = props;
-  const { hr = {}, manager = {} } = assigned || {};
+  const { hr = {}, manager = {}, delegateManager = {} } = assigned || {};
 
   const [hrAssignees, setHrAssignees] = useState([]);
   const [managerAssignees, setManagerAssignees] = useState([]);
@@ -80,6 +80,7 @@ const Assignee = (props) => {
       type: 'offboarding/fetchEmployeeListEffect',
       payload: {
         name: value,
+        status: ['ACTIVE'],
       },
     }).then((res = {}) => {
       const { data = [] } = res;
@@ -91,18 +92,26 @@ const Assignee = (props) => {
   };
 
   const onDelegate = async () => {
-    const res = await dispatch({
-      type: 'offboarding/updateRequestEffect',
-      payload: {
-        id: _id,
-        employeeId: employee?._id,
-        action: OFFBOARDING.UPDATE_ACTION.MANAGER_DELEGATE,
-        assigned: {
-          delegateManager: managerAssignees[1]?._id,
+    if (
+      managerAssignees.length > 1 &&
+      managerAssignees?.[managerAssignees.length - 1]?._id !== delegateManager?._id
+    ) {
+      const res = await dispatch({
+        type: 'offboarding/updateRequestEffect',
+        payload: {
+          id: _id,
+          employeeId: employee?._id,
+          action: OFFBOARDING.UPDATE_ACTION.MANAGER_DELEGATE,
+          assigned: {
+            delegateManager: managerAssignees[1]?._id,
+          },
         },
-      },
-    });
-    if (res.statusCode === 200) {
+        replaceState: false,
+      });
+      if (res.statusCode === 200) {
+        setDelegating(false);
+      }
+    } else {
       setDelegating(false);
     }
   };
@@ -140,7 +149,7 @@ const Assignee = (props) => {
         _id: hr?._id,
       },
     ]);
-    setManagerAssignees([
+    const managerTemp = [
       {
         primary: true,
         name: getEmployeeName(manager?.generalInfoInfo),
@@ -149,7 +158,18 @@ const Assignee = (props) => {
         avatar: manager?.generalInfoInfo?.avatar,
         _id: manager?._id,
       },
-    ]);
+    ];
+    if (delegateManager) {
+      managerTemp.push({
+        primary: false,
+        name: getEmployeeName(delegateManager?.generalInfoInfo),
+        title: delegateManager?.titleInfo?.name,
+        userId: delegateManager?.generalInfoInfo?.userId,
+        avatar: delegateManager?.generalInfoInfo?.avatar,
+        _id: delegateManager?._id,
+      });
+    }
+    setManagerAssignees(managerTemp);
   }, [JSON.stringify(assigned)]);
 
   useEffect(() => {
