@@ -26,9 +26,9 @@ const RequestDetail = (props) => {
       _id = '',
       meeting: { status: meetingStatus = '' },
       assigned: {
-        hr: { generalInfo: { avatar: avatarHr = '', legalName: hrName = '' } = {} } = {},
+        hr: { generalInfoInfo: { avatar: avatarHr = '', legalName: hrName = '' } = {} } = {},
         manager: {
-          generalInfo: { avatar: avatarManager = '', legalName: managerName = '' } = {},
+          generalInfoInfo: { avatar: avatarManager = '', legalName: managerName = '' } = {},
         } = {},
       } = {},
     } = {},
