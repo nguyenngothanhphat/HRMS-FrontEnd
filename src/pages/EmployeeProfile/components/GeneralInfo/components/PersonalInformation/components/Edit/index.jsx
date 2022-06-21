@@ -133,11 +133,11 @@ const Edit = (props) => {
   const processDataChanges = (values) => {
     const payloadChanges = {
       id,
-      personalNumber,
-      personalEmail,
-      Blood,
-      maritalStatus,
-      nationality,
+      personalNumber:values.personalNumber,
+      personalEmail:values.personalEmail,
+      Blood:values.Blood,
+      maritalStatus:values.maritalStatus,
+      nationality:values.nationality,
       residentAddress: {
         addressLine1: values.r_addressLine1,
         addressLine2: values.r_addressLine2,
