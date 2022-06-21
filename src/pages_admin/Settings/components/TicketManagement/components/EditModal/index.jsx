@@ -71,13 +71,13 @@ class EditModal extends PureComponent {
     if (value) {
       const { selectedQueryTypes } = this.state;
       let listTypeNameTemp = JSON.parse(JSON.stringify(selectedQueryTypes));
-      listTypeNameTemp.push({name: value});
+      listTypeNameTemp.push({ name: value });
       listTypeNameTemp = [...new Set(listTypeNameTemp)];
       this.setState({
         selectedQueryTypes: listTypeNameTemp,
       });
       this.formRef.current.setFieldsValue({
-        queryType: listTypeNameTemp.map(x => x.name),
+        queryType: listTypeNameTemp.map((x) => x.name),
       });
     }
   };
@@ -91,7 +91,7 @@ class EditModal extends PureComponent {
       selectedQueryTypes: listTypeNameTemp,
     });
     this.formRef.current.setFieldsValue({
-      queryType: listTypeNameTemp.map(x => x.name),
+      queryType: listTypeNameTemp.map((x) => x.name),
     });
   };
 
@@ -176,10 +176,7 @@ class EditModal extends PureComponent {
     } = this.props;
 
     const { selectedQueryTypes } = this.state;
-    const {
-      queryType: queryTypeProp = [],
-      name: nameProp = ''
-    } = viewingSettingTicket || {}
+    const { queryType: queryTypeProp = [], name: nameProp = '' } = viewingSettingTicket || {};
 
     return (
       <>
@@ -219,7 +216,7 @@ class EditModal extends PureComponent {
                 action === 'edit'
                   ? {
                       name: nameProp,
-                      queryType: queryTypeProp.map(x => x.name),
+                      queryType: queryTypeProp.map((x) => x.name),
                     }
                   : {}
               }
