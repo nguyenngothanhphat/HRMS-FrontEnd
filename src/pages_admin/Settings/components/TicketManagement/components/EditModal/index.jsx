@@ -71,13 +71,13 @@ class EditModal extends PureComponent {
     if (value) {
       const { selectedQueryTypes } = this.state;
       let listTypeNameTemp = JSON.parse(JSON.stringify(selectedQueryTypes));
-      listTypeNameTemp.push(value);
+      listTypeNameTemp.push({name: value});
       listTypeNameTemp = [...new Set(listTypeNameTemp)];
       this.setState({
         selectedQueryTypes: listTypeNameTemp,
       });
       this.formRef.current.setFieldsValue({
-        queryType: listTypeNameTemp,
+        queryType: listTypeNameTemp.map(x => x.name),
       });
     }
   };
@@ -86,12 +86,12 @@ class EditModal extends PureComponent {
     const { selectedQueryTypes } = this.state;
     let listTypeNameTemp = JSON.parse(JSON.stringify(selectedQueryTypes));
 
-    listTypeNameTemp = listTypeNameTemp.filter((item) => item !== queryTypeName);
+    listTypeNameTemp = listTypeNameTemp.filter((item) => item.name !== queryTypeName);
     this.setState({
       selectedQueryTypes: listTypeNameTemp,
     });
     this.formRef.current.setFieldsValue({
-      queryType: listTypeNameTemp,
+      queryType: listTypeNameTemp.map(x => x.name),
     });
   };
 
@@ -105,12 +105,12 @@ class EditModal extends PureComponent {
           return (
             <Tag
               closable
-              key={item}
+              key={item.name}
               className={styles.nameTag}
               onClose={() => this.onRemoveOption(item)}
               closeIcon={<img alt="close-tag" src={CloseTagIcon} />}
             >
-              {item}
+              {item.name}
             </Tag>
           );
         })}
@@ -176,6 +176,10 @@ class EditModal extends PureComponent {
     } = this.props;
 
     const { selectedQueryTypes } = this.state;
+    const {
+      queryType: queryTypeProp = [],
+      name: nameProp = ''
+    } = viewingSettingTicket || {}
 
     return (
       <>
@@ -214,8 +218,8 @@ class EditModal extends PureComponent {
               initialValues={
                 action === 'edit'
                   ? {
-                      name: viewingSettingTicket?.name,
-                      queryType: viewingSettingTicket?.queryType,
+                      name: nameProp,
+                      queryType: queryTypeProp.map(x => x.name),
                     }
                   : {}
               }
@@ -251,11 +255,11 @@ class EditModal extends PureComponent {
                     return (
                       <Option
                         className={styles.optionSelect}
-                        value={type}
-                        key={type}
+                        value={type.name}
+                        key={type.name}
                         disabled={loadingUpsert}
                       >
-                        {type}
+                        {type.name}
                       </Option>
                     );
                   })}
