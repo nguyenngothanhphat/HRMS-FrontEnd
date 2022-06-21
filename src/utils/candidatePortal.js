@@ -4,6 +4,7 @@ export const CANDIDATE_TASK_LINK = {
   SALARY_NEGOTIATION: 'salary-negotiation',
   ACCEPT_OFFER: 'accept-offer',
   REFERENCES: 'references',
+  DOCUMENTS_CHECKLIST: 'pre-joining-checklist'
 };
 export const PORTAL_TAB_NAME = {
   DASHBOARD: 'dashboard',

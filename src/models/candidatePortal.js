@@ -14,6 +14,7 @@ import {
   updateByCandidate,
   upsertCandidateDocument,
   getSalaryStructureByGrade,
+  getDocumentsChecklist,
 } from '@/services/candidatePortal';
 import {
   CANDIDATE_TASK_LINK,
@@ -58,6 +59,13 @@ const pendingTaskDefault = [
     name: 'Accept Offer',
     dueDate: '',
     link: CANDIDATE_TASK_LINK.ACCEPT_OFFER,
+    status: CANDIDATE_TASK_STATUS.UPCOMING,
+  },
+  {
+    id: CANDIDATE_TASK_LINK.DOCUMENTS_CHECKLIST,
+    name: 'Pre-Joining Checklist',
+    dueDate: '',
+    link: CANDIDATE_TASK_LINK.DOCUMENTS_CHECKLIST,
     status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
 ];
@@ -428,6 +436,11 @@ const candidatePortal = {
             tempPendingTasks[4].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';
             break;
 
+          case NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST:
+            tempPendingTasks[5].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+            tempPendingTasks[5].dueDate = dueDate;
+            break;
+
           default:
             break;
         }
@@ -510,6 +523,17 @@ const candidatePortal = {
             data,
           },
         });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *getDocumentsChecklist({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(getDocumentsChecklist, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
       }
