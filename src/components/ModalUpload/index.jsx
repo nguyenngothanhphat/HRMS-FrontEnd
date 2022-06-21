@@ -155,15 +155,11 @@ class ModalUpload extends Component {
     canvas.height = crop.height;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(
-      image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
+      image,  
       0,
       0,
-      crop.width,
-      crop.height,
+      canvas.width,
+      canvas.height,
     );
     return new Promise((resolve, reject) => {
       canvas.toBlob((blob) => {
