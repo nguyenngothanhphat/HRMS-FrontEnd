@@ -11,7 +11,15 @@ import SixthStep from './components/SixthStep';
 import SeventhStep from './components/SeventhStep';
 
 const HandleChanges = (props) => {
-  const { user, current, data, employeeProfile, companyLocationList } = props;
+  const {
+    user,
+    current,
+    data,
+    employeeProfile,
+    companyLocationList = [],
+    setIsModified = () => {},
+    isModified = false,
+  } = props;
   const { currentUser } = user || {};
   const [radio, setRadio] = useState(2);
   const [changeData, setChangeData] = useState({
@@ -262,7 +270,13 @@ const HandleChanges = (props) => {
         />
       ) : null}
       {current === 5 ? (
-        <SixthStep name={data.name} currentData={data} changeData={changeData} />
+        <SixthStep
+          name={data.name}
+          currentData={data}
+          changeData={changeData}
+          isModified={isModified}
+          setIsModified={setIsModified}
+        />
       ) : null}
       {current === 6 ? (
         <SeventhStep changeData={changeData} onChange={onChange} fetchedState={employeeProfile} />

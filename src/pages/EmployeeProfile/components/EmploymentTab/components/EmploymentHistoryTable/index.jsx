@@ -73,7 +73,7 @@ class EmploymentHistory extends PureComponent {
         title: 'Change Type',
         dataIndex: 'changedInfomation',
         key: 'changedInfomation',
-        render: (changedInfomation) => {
+        render: (changedInfomation = {}) => {
           const info = changedInfomation;
           const keys = Object.keys(info);
           for (let i = 0; i < keys.length; i += 1) {

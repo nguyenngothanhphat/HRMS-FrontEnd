@@ -35,6 +35,7 @@ const EmploymentTab = (props) => {
 
   const [isChanging, setIsChanging] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [isModified, setIsModified] = useState(false);
   const [current, setCurrent] = useState(0);
   const [currentData, setCurrentData] = useState({});
   const [changedData, setChangedData] = useState({});
@@ -222,6 +223,8 @@ const EmploymentTab = (props) => {
             data={currentData}
             current={current}
             setChangedData={setChangedData}
+            isModified={isModified}
+            setIsModified={setIsModified}
           />
         ) : (
           <EmploymentHistoryTable />
@@ -233,7 +236,7 @@ const EmploymentTab = (props) => {
               <Button onClick={previousTab} type="text">
                 {current > 0 ? 'Back' : null}
               </Button>
-              <Button onClick={nextTab} type="primary">
+              <Button onClick={nextTab} type="primary" disabled={!isModified && current === 5}>
                 {current === 6 ? 'Submit' : 'Continue'}
               </Button>
             </div>
