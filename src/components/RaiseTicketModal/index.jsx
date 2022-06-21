@@ -186,7 +186,7 @@ const RaiseTicketModal = (props) => {
         employeeRaise: myEmployeeID,
         employeeAssignee: '',
         status: value.status,
-        queryType: value.queryType,
+        queryTypeId: value.queryType,
         subject: value.subject,
         description: value.description,
         priority: value.priority,
@@ -256,7 +256,7 @@ const RaiseTicketModal = (props) => {
               >
                 <Select showSearch placeholder="Select the query type">
                   {queryTypeList.map((val) => (
-                    <Option value={val}>{val}</Option>
+                    <Option value={val._id}>{val.name}</Option>
                   ))}
                 </Select>
               </Form.Item>
