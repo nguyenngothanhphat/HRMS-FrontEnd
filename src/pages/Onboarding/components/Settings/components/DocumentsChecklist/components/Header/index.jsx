@@ -1,6 +1,7 @@
 import { Button, Col, Row, Select } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import { getCurrentLocation } from '@/utils/authority';
 import UploadDocument from '../UploadDocument';
 import styles from './index.less';
 
@@ -11,75 +12,14 @@ const Header = (props) => {
     handleUploadDocument = () => {},
     handleCancelUploadDocument = () => {},
   } = props;
-  const {
-    user: {
-      currentUser: {
-        location: { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = {},
-      } = {},
-    } = {},
-    location: { companyLocationList: locationList = [] } = {},
-  } = props;
-
+  const { location: { companyLocationList: locationList = [] } = {} } = props;
+  const currentLocation = getCurrentLocation();
+  console.log('🚀 ~ locationList', locationList);
   const removeDuplicate = (array, key) => {
     return [...new Map(array.map((x) => [key(x), x])).values()];
   };
 
-  const renderCountry = () => {
-    let countryArr = [];
-    if (locationList.length > 0) {
-      countryArr = locationList.map((item) => {
-        return item.headQuarterAddress?.country;
-      });
-    }
-    const newArr = removeDuplicate(countryArr, (item) => item?._id);
-
-    let flagUrl = '';
-
-    const flagItem = (id) => {
-      newArr.forEach((item) => {
-        if (item?._id === id) {
-          flagUrl = item?.flag;
-        }
-        return flagUrl;
-      });
-
-      return (
-        <div
-          style={{
-            maxWidth: '16px',
-            height: '16px',
-            display: 'inline-flex',
-            alignItems: 'center',
-            marginRight: '12px',
-          }}
-        >
-          <img
-            src={flagUrl}
-            alt="flag"
-            style={{
-              width: '100%',
-              borderRadius: '50%',
-              height: '100%',
-            }}
-          />
-        </div>
-      );
-    };
-    return (
-      <>
-        {newArr.map((item) => (
-          <Option key={item?._id} value={item?._id} className={styles.optionCountry}>
-            <div className={styles.labelText}>
-              {flagItem(item?._id)}
-              <span style={{ fontSize: '12px', fontWeight: '500' }}>{item?.name}</span>
-            </div>
-          </Option>
-        ))}
-      </>
-    );
-  };
-
-  const changeCountry = async (value) => {};
+  const changeLocation = async (value) => {};
 
   return (
     <Row className={styles.Header} gutter={[24, 24]}>
@@ -93,7 +33,7 @@ const Header = (props) => {
         <Row gutter={[24, 0]}>
           <Col>
             <Select
-              defaultValue={countryID}
+              defaultValue={currentLocation}
               size="large"
               placeholder="Please select country"
               showArrow
@@ -101,9 +41,15 @@ const Header = (props) => {
                 return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
               }}
               className={styles.selectCountry}
-              onChange={(value) => changeCountry(value)}
+              onChange={(value) => changeLocation(value)}
             >
-              {renderCountry()}
+              {locationList.map((item) => {
+                return (
+                  <Select.Option value={item._id} key={item.name}>
+                    {item.name}
+                  </Select.Option>
+                );
+              })}
             </Select>
           </Col>
           <Col className={styles.rightPart}>

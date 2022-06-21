@@ -54,3 +54,38 @@ export async function changeSalaryStructureOption(payload) {
     data: payload,
   });
 }
+
+export async function getListDocumentType(payload) {
+  return request('api/categorychildren/get-document-checklist', {
+    method: 'GET',
+    params: payload,
+  });
+}
+
+export async function getListDocumentChecklist(payload) {
+  return request('api/documenttenant/checklist', {
+    method: 'GET',
+    params: payload,
+  });
+}
+
+export async function addDocumentChecklist(payload) {
+  return request('/api/documenttenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function uploadFile(data) {
+  return request('/api/attachments/upload', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function getListEmployeeSingleCompany(payload) {
+  return request('/api/employeetenant/list-by-single-company', {
+    method: 'POST',
+    data: payload,
+  });
+}

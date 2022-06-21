@@ -23,6 +23,7 @@ import PDFIcon from '@/assets/onboarding/pdf-2.svg';
 import ImageIcon from '@/assets/onboarding/image_icon.png';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import DocIcon from '@/assets/onboarding/fileDocIcon.svg';
+import { getCurrentLocation } from '@/utils/authority';
 
 const { Dragger } = Upload;
 const UploadDocument = (props) => {
@@ -37,18 +38,28 @@ const UploadDocument = (props) => {
     user: {
       currentUser: { employee: { generalInfo: { legalName: author = '' } = {} } = {} } = {},
     } = {},
+    location: { companyLocationList: locationList = [] } = {},
     loadingUploadAttachment = false,
+    onboardingSettings: { employeeList = [], documentTypeList = [] } = {},
+    getListDocumentType = false,
   } = props;
+  const currentDate = moment();
+  const currentLocation = getCurrentLocation();
   const [uploadedFile, setUploadedFile] = useState({});
   const [fileName, setFileName] = useState('');
   const [isViewDocument, setIsViewDocument] = useState(false);
 
-  // useEffect(() => {
-  //   if (name !== '') {
-  //     setFileName(name);
-  //   }
-  // }, []);
-  const currentDate = moment();
+  useEffect(() => {
+    dispatch({
+      type: 'onboardingSettings/fetchEmployeeListEffect',
+      payload: {},
+    });
+    dispatch({
+      type: 'onboardingSettings/getListDocumentType',
+      payload: {},
+    });
+  }, []);
+
   const identifyImageOrPdf = (file) => {
     const parts = file.split('.');
     const ext = parts[parts.length - 1];
@@ -83,15 +94,13 @@ const UploadDocument = (props) => {
     if (!checkType) {
       message.error('Invalid file type!');
     }
-    const isLt5M = file.size / 1024 / 1024 < 5;
+    const isLt5M = file.size / 1024 / 1024 < 25;
     if (!isLt5M) {
-      message.error('Image must smaller than 5MB!');
+      message.error('File must smaller than 25MB!');
       setSizeImageMatch(isLt5M);
-      // this.setState({ check: isLt5M });
     }
     setTimeout(() => {
       setSizeImageMatch(isLt5M);
-      // this.setState({ check: isLt5M });
     }, 2000);
     return checkType && isLt5M;
   };
@@ -100,7 +109,7 @@ const UploadDocument = (props) => {
     const formData = new FormData();
     formData.append('uri', file);
     dispatch({
-      type: 'upload/uploadFile',
+      type: 'onboardingSettings/uploadFileAttachments',
       payload: formData,
     }).then((resp) => {
       const { data = [] } = resp;
@@ -128,6 +137,27 @@ const UploadDocument = (props) => {
     }
   };
 
+  const jsLcfirst = (string) => {
+    return string.charAt(0).toLowerCase() + string.slice(1);
+  };
+
+  const onFinish = (values) => {
+    const { employee = '', displayName = '' } = values;
+    const obj = employeeList.find((item) => item?.generalInfo?.legalName === employee);
+    const key = displayName.replace(/\s/g, '');
+    const payload = {
+      ...values,
+      employee: obj._id,
+      attachment: uploadedFile.id,
+      key: jsLcfirst(key),
+    };
+
+    dispatch({
+      type: 'onboardingSettings/uploadDocumentChecklist',
+      payload,
+    });
+  };
+
   return (
     <Row className={styles.UploadDocument}>
       <Col span={16}>
@@ -135,31 +165,68 @@ const UploadDocument = (props) => {
           <Form
             initialValues={{
               dateCreated: moment(currentDate).format('YYYY-MM-DD'),
-              author,
+              employee: author,
+              location: currentLocation,
             }}
+            onFinish={onFinish}
           >
-            <Row className={styles.formContent}>
+            <Row className={styles.formContent} gutter={[24, 24]}>
               <Col span={8}>Document Type</Col>
               <Col span={16}>
-                <Form.Item>
-                  <Select placeholder="Select type of document">
-                    <Select.Option>Eletronically Sign</Select.Option>
-                    <Select.Option>Scan and Upload</Select.Option>
-                    <Select.Option>Hard Coppy</Select.Option>
+                <Form.Item name="category" rules={[{ required: true }]}>
+                  <Select
+                    placeholder="Select type of document"
+                    allowClear
+                    showArrow
+                    showSearch
+                    loading={getListDocumentType}
+                    disabled={getListDocumentType}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >
+                    {documentTypeList.map((item) => (
+                      <Select.Option key={item._id} value={item._id}>
+                        {item.name}
+                      </Select.Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </Col>
 
               <Col span={8}>Title</Col>
               <Col span={16}>
-                <Form.Item>
+                <Form.Item name="displayName" rules={[{ required: true }]}>
                   <Input placeholder="Title" />
+                </Form.Item>
+              </Col>
+
+              <Col span={8}>Location</Col>
+              <Col span={16}>
+                <Form.Item name="location" rules={[{ required: true }]}>
+                  <Select
+                    size="large"
+                    placeholder="Please select country"
+                    showArrow
+                    mode="multiple"
+                    allowClear
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    className={styles.selectCountry}
+                  >
+                    {locationList.map((item) => {
+                      return (
+                        <Select.Option value={item._id} key={item.name}>
+                          {item.name}
+                        </Select.Option>
+                      );
+                    })}
+                  </Select>
                 </Form.Item>
               </Col>
 
               <Col span={8}>Author</Col>
               <Col span={16}>
-                <Form.Item name="author">
+                <Form.Item name="employee">
                   <Input placeholder="Author" disabled />
                 </Form.Item>
               </Col>
@@ -171,8 +238,8 @@ const UploadDocument = (props) => {
                 </Form.Item>
               </Col>
             </Row>
-            <Row className={styles.fileUploadForm}>
-              <Col span={8}>Attacth Document</Col>
+            <Row className={styles.fileUploadForm} rules={[{ required: true }]}>
+              <Col span={8}>Upload Document</Col>
               <Col span={16}>
                 <Dragger
                   beforeUpload={beforeUpload}
@@ -227,7 +294,9 @@ const UploadDocument = (props) => {
               <Button type="secondary" onClick={handleCancelUploadDocument}>
                 Cancle
               </Button>
-              <Button type="primary">Submit</Button>
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
             </div>
           </Form>
         </Card>
@@ -242,7 +311,10 @@ const UploadDocument = (props) => {
   );
 };
 
-export default connect(({ loading, user }) => ({
+export default connect(({ loading, user, location, onboardingSettings }) => ({
   user,
-  loadingUploadAttachment: loading.effects['upload/uploadFile'],
+  location,
+  onboardingSettings,
+  loadingUploadAttachment: loading.effects['onboardingSettings/uploadFileAttachments'],
+  getListDocumentType: loading.effects['onboardingSettings/getListDocumentType'],
 }))(UploadDocument);

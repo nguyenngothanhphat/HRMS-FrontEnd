@@ -109,7 +109,7 @@ const FilterResourcesContent = (props) => {
       <Form.Item label="By Start Date">
         <Row>
           <Col span={11}>
-            <Form.Item name="s_fromDate">
+            <Form.Item name="startFromDate">
               <DatePicker format="MMM DD, YYYY" />
             </Form.Item>
           </Col>
@@ -117,7 +117,7 @@ const FilterResourcesContent = (props) => {
             <span>to</span>
           </Col>
           <Col span={11}>
-            <Form.Item name="s_toDate">
+            <Form.Item name="startToDate">
               <DatePicker format="MMM DD, YYYY" />
             </Form.Item>
           </Col>
@@ -127,7 +127,7 @@ const FilterResourcesContent = (props) => {
       <Form.Item label="By End Date">
         <Row style={{ width: '100%' }}>
           <Col span={11}>
-            <Form.Item name="e_fromDate">
+            <Form.Item name="endFromDate">
               <DatePicker format="MMM DD, YYYY" />
             </Form.Item>
           </Col>
@@ -135,7 +135,7 @@ const FilterResourcesContent = (props) => {
             <span>to</span>
           </Col>
           <Col span={11}>
-            <Form.Item name="e_toDate">
+            <Form.Item name="endToDate">
               <DatePicker format="MMM DD, YYYY" />
             </Form.Item>
           </Col>
@@ -145,7 +145,7 @@ const FilterResourcesContent = (props) => {
       <Form.Item label="By Revised Date">
         <Row>
           <Col span={11}>
-            <Form.Item name="r_fromDate">
+            <Form.Item name="revisedFromDate">
               <DatePicker format="MMM DD, YYYY" />
             </Form.Item>
           </Col>
@@ -153,7 +153,7 @@ const FilterResourcesContent = (props) => {
             <span>to</span>
           </Col>
           <Col span={11}>
-            <Form.Item name="r_toDate">
+            <Form.Item name="revisedToDate">
               <DatePicker format="MMM DD, YYYY" />
             </Form.Item>
           </Col>
