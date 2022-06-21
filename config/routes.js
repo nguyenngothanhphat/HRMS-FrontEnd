@@ -344,7 +344,8 @@ const routes = [
             name: 'offboarding',
             icon: '/assets/images/menuIcons/offboarding.svg',
             component: './OffBoarding',
-            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
+            authority: ['P_OFFBOARDING_VIEW','M_OFFBOARDING_VIEW'],
+            hideInMenu: true,
           },
           {
             path: '/offboarding/:tabName',
@@ -352,12 +353,12 @@ const routes = [
             authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
             hideInMenu: true,
           },
-          // {
-          //   path: '/offboarding/:tabName/:type',
-          //   component: './OffBoarding',
-          //   authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
-          //   hideInMenu: true,
-          // },
+          {
+            path: '/offboarding/:tabName/:type',
+            component: './OffBoarding',
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
+            hideInMenu: true,
+          },
           {
             path: '/time-off',
             name: 'timeOff',

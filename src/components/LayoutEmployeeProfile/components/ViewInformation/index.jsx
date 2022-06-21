@@ -256,8 +256,8 @@ class ViewInformation extends Component {
   };
 
   getAvatarUrl = (avatar, isShowAvatar) => {
-    const { permissions = {}, profileOwner = false } = this.props;
-    if (isShowAvatar || permissions.viewAvatarEmployee !== -1 || profileOwner)
+    const { permissions = {}, isProfileOwner = false } = this.props;
+    if (isShowAvatar || permissions.viewAvatarEmployee !== -1 || isProfileOwner)
       return avatar || avtDefault;
     return avtDefault;
   };
@@ -286,7 +286,7 @@ class ViewInformation extends Component {
     }
   };
 
-  btnAction = (permissions, profileOwner) => {
+  btnAction = (permissions, isProfileOwner) => {
     const { loading, loadingFetchEmployee } = this.props;
     const { placementText } = this.state;
 
@@ -310,12 +310,12 @@ class ViewInformation extends Component {
         onClick={this.handleClickMenu}
         disabled={loading || loadingFetchEmployee}
       >
-        {profileOwner && (
+        {isProfileOwner && (
           <Menu.Item key="editBio" className={s.menuItem} onClick={this.handleEditBio}>
             Edit Bio
           </Menu.Item>
         )}
-        {profileOwner && subDropdown}
+        {isProfileOwner && subDropdown}
         {permissions.viewAdvancedActions !== -1 && (
           <>
             <Menu.Item key="0" className={s.menuItem}>
@@ -369,7 +369,7 @@ class ViewInformation extends Component {
       originGeneralData: { bioInfo = '', isShowAvatar = true } = {},
       // employeeLocation = '',
       permissions = {},
-      profileOwner = false,
+      isProfileOwner = false,
       manager = {},
       location: { name: locationName = '' } = {},
       department: { name: departmentName = '' } = {},
@@ -378,7 +378,7 @@ class ViewInformation extends Component {
       loadingFetchEmployee = false,
     } = this.props;
 
-    // const checkVisible = profileOwner || permissions.viewOtherInformation !== -1;
+    // const checkVisible = isProfileOwner || permissions.viewOtherInformation !== -1;
 
     const {
       legalName = '',
@@ -432,7 +432,7 @@ class ViewInformation extends Component {
           className={s.infoEmployee__imgCover}
         />
         <img src={avatarUrl} alt="img-avt" className={s.infoEmployee__imgAvt} />
-        {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
+        {(permissions.updateAvatarEmployee !== -1 || isProfileOwner) && (
           <img
             src="/assets/images/iconUploadImage.svg"
             onClick={this.openModalUpload}
@@ -457,7 +457,7 @@ class ViewInformation extends Component {
           <p className={s.infoEmployee__viewBottom__description} style={{ marginTop: '10px' }}>
             {bioInfo}
           </p>
-          {(permissions.editShowAvatarEmployee !== -1 || profileOwner) && (
+          {(permissions.editShowAvatarEmployee !== -1 || isProfileOwner) && (
             <>
               <Divider />
               <div className={s.infoEmployee__viewBottom__row}>
@@ -561,8 +561,8 @@ class ViewInformation extends Component {
               </a>
             </Tooltip>
           </div>
-          {(profileOwner || permissions.viewAdvancedActions !== -1) && (
-            <div className={s.viewBtnAction}>{this.btnAction(permissions, profileOwner)}</div>
+          {(isProfileOwner || permissions.viewAdvancedActions !== -1) && (
+            <div className={s.viewBtnAction}>{this.btnAction(permissions, isProfileOwner)}</div>
           )}
         </div>
         <ModalUpload
