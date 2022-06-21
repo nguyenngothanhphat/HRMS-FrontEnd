@@ -50,13 +50,15 @@ const WhatNext = (props) => {
   };
 
   const renderTimeMeeting = () => {
-    if (meetingStatus === MEETING_STATUS.EMPLOYEE_PICK_DATE || MEETING_STATUS.DATE_CONFIRMED) {
+    if (
+      meetingStatus === MEETING_STATUS.EMPLOYEE_PICK_DATE ||
+      meetingStatus === MEETING_STATUS.DATE_CONFIRMED
+    ) {
       return moment(employeeDate).format('YY-MM-DD | hA');
     }
     if (meetingStatus === MEETING_STATUS.MANAGER_PICK_DATE) {
       return moment(managerDate).format('YY-MM-DD | hA');
     }
-
     return '';
   };
 
@@ -98,7 +100,7 @@ const WhatNext = (props) => {
             </div>
           </div>
         </Col>
-        {meetingStatus !== MEETING_STATUS.NOT_START || status !== STATUS.REJECTED ? (
+        {meetingStatus !== MEETING_STATUS.NOT_START && status !== STATUS.REJECTED ? (
           <Col span={14}>
             <div className={styles.rightPart}>
               <span className={styles.label}>Scheduled on</span>

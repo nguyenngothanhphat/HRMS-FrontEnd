@@ -17,6 +17,7 @@ const YourRequest = (props) => {
   const {
     data: {
       ticketId = '',
+      createdAt = '',
       updatedAt = '',
       reason = '',
       LWD = '',
@@ -24,9 +25,9 @@ const YourRequest = (props) => {
       status = '',
       meeting: { status: meetingStatus = '' } = {},
       assigned: {
-        hr: { generalInfo: { avatar: avatarHr = '', legalName: hrName = '' } = {} } = {},
+        hr: { generalInfoInfo: { avatar: avatarHr = '', legalName: hrName = '' } = {} } = {},
         manager: {
-          generalInfo: { avatar: avatarManager = '', legalName: managerName = '' } = {},
+          generalInfoInfo: { avatar: avatarManager = '', legalName: managerName = '' } = {},
         } = {},
       } = {},
     } = {},
@@ -290,7 +291,7 @@ const YourRequest = (props) => {
                     Requested on
                   </Col>
                   <Col span={20} style={{ color: '#464646' }}>
-                    {moment(updatedAt).format(dateFormat)}
+                    {moment(createdAt).format(dateFormat)}
                   </Col>
                   <Col span={4} className={styles.title}>
                     Tentative LWD
