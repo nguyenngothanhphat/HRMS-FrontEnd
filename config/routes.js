@@ -352,12 +352,6 @@ const routes = [
             authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
             hideInMenu: true,
           },
-          // {
-          //   path: '/offboarding/:tabName/:type',
-          //   component: './OffBoarding',
-          //   authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
-          //   hideInMenu: true,
-          // },
           {
             path: '/time-off',
             name: 'timeOff',

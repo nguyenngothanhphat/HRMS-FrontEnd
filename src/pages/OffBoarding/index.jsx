@@ -8,7 +8,7 @@ import styles from './index.less';
 
 const Offboarding = (props) => {
   const {
-    match: { params: { tabName = '', type = '' } = {} },
+    match: { params: { tabName = '' } = {} },
     location: { state: { isEmployeeMode = false } = {} } = {},
   } = props;
 
