@@ -9,21 +9,21 @@ export async function getList(payload) {
 }
 
 export async function createRequest(payload) {
-  return request('/api/offboardingtenant/create', {
+  return request('/api/offboardingtenant', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function updateRequest(payload) {
-  return request('/api/offboardingtenant/update', {
-    method: 'POST',
+  return request('/api/offboardingtenant', {
+    method: 'PATCH',
     data: payload,
   });
 }
 
 export async function getMyRequest(params) {
-  return request('/api/offboardingtenant/get', {
+  return request('/api/offboardingtenant', {
     method: 'GET',
     params,
   });
@@ -37,8 +37,8 @@ export async function getRequestById(params) {
 }
 
 export async function withdrawRequest(payload) {
-  return request('/api/offboardingtenant/withdraw', {
-    method: 'POST',
+  return request('/api/offboardingtenant', {
+    method: 'DELETE',
     data: payload,
   });
 }

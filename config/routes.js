@@ -344,17 +344,10 @@ const routes = [
             name: 'offboarding',
             icon: '/assets/images/menuIcons/offboarding.svg',
             component: './OffBoarding',
-            authority: ['P_OFFBOARDING_VIEW','M_OFFBOARDING_VIEW'],
-            hideInMenu: true,
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/:tabName',
-            component: './OffBoarding',
-            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
-            hideInMenu: true,
-          },
-          {
-            path: '/offboarding/:tabName/:type',
             component: './OffBoarding',
             authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
             hideInMenu: true,
