@@ -25,6 +25,8 @@ const PoliciesCertification = (props) => {
       location: { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = {},
     } = {},
   } = props;
+  
+  const urlSignatureAttachment = employee.signaturePolicyAttachment ? employee.signaturePolicyAttachment.url : ''
 
   const [data, setData] = useState([]);
   const [activeCategoryID, setActiveCategoryID] = useState('');
@@ -287,7 +289,7 @@ const PoliciesCertification = (props) => {
                 <Col sm={24} lg={14} xl={16}>
                   <div>
                     <div className={styles.viewFileContainer}>
-                      <FileContent url={showingFiles[showingFiles.length - 1]?.attachment?.url} />
+                      <FileContent url={urlSignatureAttachment || showingFiles[showingFiles.length - 1]?.attachment?.url} />
                     </div>
                     {renderFinalStep()}
                   </div>

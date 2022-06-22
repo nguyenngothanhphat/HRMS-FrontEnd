@@ -10,6 +10,12 @@ import {
   deleteBenefit,
   addDocument,
   changeSalaryStructureOption,
+  // DOCUMENT CHECKLIST
+  getListDocumentType,
+  getListDocumentChecklist,
+  addDocumentChecklist,
+  uploadFile,
+  getListEmployeeSingleCompany,
 } from '../services/onboardingSettings';
 
 const onboardingSettings = {
@@ -18,7 +24,10 @@ const onboardingSettings = {
     listInsurances: {},
     uploadedInsurance: {},
     listBenefitDefault: [],
+    lisDocumentCheckList: [],
     listBenefit: [],
+    employeeList: [],
+    documentTypeList: [],
   },
   effects: {
     *fetchListInsurances({ payload = {} }, { call, put }) {
@@ -193,6 +202,95 @@ const onboardingSettings = {
         if (statusCode !== 200) throw response;
         notification.success({
           message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *getListDocumentType({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getListDocumentType, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data: documentTypeList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { documentTypeList } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *getListDocumentCheckList({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getListDocumentChecklist, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data: lisDocumentCheckList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { lisDocumentCheckList } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *uploadDocumentChecklist({ payload }, { call }) {
+      try {
+        const response = yield call(addDocumentChecklist, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    // UPLOAD FILE
+    *uploadFileAttachments({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(uploadFile, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Upload File Successfully',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchEmployeeListEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getListEmployeeSingleCompany, {
+          company: getCurrentCompany(),
+          ...payload,
+          tenantId: getCurrentTenant(),
+          status: ['ACTIVE'],
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            employeeList: data,
+          },
         });
       } catch (errors) {
         dialog(errors);

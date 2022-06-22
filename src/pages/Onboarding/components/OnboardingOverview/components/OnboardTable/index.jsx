@@ -11,6 +11,7 @@ import {
 import { getAuthority, getCurrentTenant } from '@/utils/authority';
 import { getTimezoneViaCity } from '@/utils/times';
 import AcceptIcon from '@/assets/Accept-icon-onboarding.svg';
+import MessageIcon from '@/assets/message.svg';
 
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 import { getActionText, getColumnWidth } from './utils';
@@ -155,6 +156,22 @@ class OnboardTable extends Component {
     );
   };
 
+  renderNotice = (selectedPerson) => {
+    const { activeConversationUnseen } = this.props;
+
+    const isNotice = activeConversationUnseen.some(
+      (item) => item.candidateId === selectedPerson.candidateId.replace('#', ''),
+    );
+
+    return (
+      isNotice && (
+        <span className={styles.notice}>
+          <img alt="message-icon" src={MessageIcon} />
+        </span>
+      )
+    );
+  };
+
   renderName = (id) => {
     const { list } = this.props;
     const selectedPerson = list.find((item) => item.candidateId === id);
@@ -171,6 +188,7 @@ class OnboardTable extends Component {
         <p>
           {name && <span className={styles.name}>{name}</span>}
           <span className={styles.expired}>Expired</span>
+          {this.renderNotice(selectedPerson)}
         </p>
       );
     }
@@ -185,6 +203,7 @@ class OnboardTable extends Component {
           <span className={styles.new}>
             {formatMessage({ id: 'component.onboardingOverview.new' })}
           </span>
+          {this.renderNotice(selectedPerson)}
         </p>
       );
     }
@@ -199,11 +218,17 @@ class OnboardTable extends Component {
           <span>
             <img alt="accepted-icon" src={AcceptIcon} />
           </span>
+          {this.renderNotice(selectedPerson)}
         </p>
       );
     }
 
-    return <p>{name || '-'}</p>;
+    return (
+      <p>
+        {name || '-'}
+        {this.renderNotice(selectedPerson)}
+      </p>
+    );
   };
 
   initiateBackgroundCheck = (id) => {
@@ -832,10 +857,12 @@ export default connect(
     loading,
     user: { currentUser = {} } = {},
     location: { companyLocationList = [] },
+    conversation: { activeConversationUnseen = [] },
   }) => ({
     isAddNewMember: newCandidateForm.isAddNewMember,
     loading: loading.effects['onboard/fetchOnboardList'],
     currentUser,
     companyLocationList,
+    activeConversationUnseen,
   }),
 )(OnboardTable);
