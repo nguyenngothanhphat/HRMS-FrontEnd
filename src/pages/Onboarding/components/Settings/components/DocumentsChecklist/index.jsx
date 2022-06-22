@@ -16,11 +16,9 @@ const DocumentsChecklist = (props) => {
   const [size, setSize] = useState(10);
   const [page, setPage] = useState(1);
 
-  const onChangePage = (p, l) => {
-    console.log('🚀 ~ p', p, l);
-
+  const onChangePage = (p, s) => {
     setPage(p);
-    setSize(l || size);
+    setSize(s || size);
   };
 
   const handleUploadDocument = () => {

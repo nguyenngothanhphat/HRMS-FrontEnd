@@ -129,6 +129,7 @@ const TableDocuments = (props) => {
         onChangePage={onChangePage}
         limit={size}
         page={page}
+        isBackendPaging
       />
       <ViewDocumentModal
         url={link}

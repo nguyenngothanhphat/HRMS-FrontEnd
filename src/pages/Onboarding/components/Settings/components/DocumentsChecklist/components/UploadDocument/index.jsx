@@ -1,29 +1,23 @@
 import {
-  Card,
-  Col,
-  Form,
-  Input,
-  Row,
-  Select,
-  Divider,
-  Button,
-  message,
-  Tooltip,
-  Upload,
-  Spin,
+  Button, Card,
+  Col, Divider, Form,
+  Input, message, Row,
+  Select, Spin, Tooltip,
+  Upload
 } from 'antd';
-import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
+import _ from 'lodash';
 import moment from 'moment';
-import styles from './index.less';
-import UploadIcon from '@/assets/onboarding/upload.svg';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
 import TrashIcon from '@/assets/onboarding/delete.svg';
-import ViewIcon from '@/assets/onboarding/viewIcon.svg';
-import PDFIcon from '@/assets/onboarding/pdf-2.svg';
-import ImageIcon from '@/assets/onboarding/image_icon.png';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
 import DocIcon from '@/assets/onboarding/fileDocIcon.svg';
+import ImageIcon from '@/assets/onboarding/image_icon.png';
+import PDFIcon from '@/assets/onboarding/pdf-2.svg';
+import UploadIcon from '@/assets/onboarding/upload.svg';
+import ViewIcon from '@/assets/onboarding/viewIcon.svg';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { getCurrentLocation } from '@/utils/authority';
+import styles from './index.less';
 
 const { Dragger } = Upload;
 const UploadDocument = (props) => {
@@ -38,12 +32,11 @@ const UploadDocument = (props) => {
     onboardingSettings: {
       employeeList = [],
       documentTypeList = [],
-      // lisDocumentCheckList = [],
       recordEdit: {
         _id = '',
         location = [],
         displayName: displayNameProps = '',
-        category: { _id: idCategory = '' } = {},
+        category: { name: categoryName = '' } = {},
         attachment: { name: attachmentName = '', _id: idAttchment = '' } = {},
       } = {},
       action = '',
@@ -159,20 +152,26 @@ const UploadDocument = (props) => {
   };
 
   const onFinish = (values) => {
-    const { employee = '', displayName = '' } = values;
+    const { employee = '', displayName = '', category = '' } = values;
     const obj = employeeList.find((item) => item?.generalInfo?.legalName === employee);
     const key = displayName.replace(/\s/g, '');
-    const payload = {
+    const filterCategory = documentTypeList.find((item) => item.name === category);
+    let payload = {
       ...values,
+      category: filterCategory._id || '',
       employee: obj._id,
       attachment: uploadedFile.id || idAttchment,
       key: jsLcfirst(key),
     };
+
+    payload = _.pickBy(payload, _.identity);
     if (action === 'edit') {
       payload.id = _id;
     }
 
-    if (action === 'add') {
+    if (category === 'Electronically Sign') {
+      message.error('Document is required field!');
+    } else if (action === 'add') {
       dispatch({
         type: 'onboardingSettings/uploadDocumentChecklist',
         payload,
@@ -208,7 +207,7 @@ const UploadDocument = (props) => {
           <Form
             form={form}
             initialValues={{
-              category: action === 'edit' ? idCategory : '',
+              category: action === 'edit' ? categoryName : '',
               displayName: action === 'edit' ? displayNameProps : '',
               dateCreated: moment(currentDate).format('YYYY-MM-DD'),
               employee: author,
@@ -217,7 +216,10 @@ const UploadDocument = (props) => {
             onFinish={onFinish}
           >
             <Row className={styles.formContent} gutter={[24, 24]}>
-              <Col span={8}>Document Type</Col>
+              <Col span={8}>
+                Document Type <span style={{ color: 'red' }}> *</span>
+              </Col>
+
               <Col span={16}>
                 <Form.Item name="category" rules={[{ required: true }]}>
                   <Select
@@ -231,7 +233,7 @@ const UploadDocument = (props) => {
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {documentTypeList.map((item) => (
-                      <Select.Option key={item._id} value={item._id}>
+                      <Select.Option key={item._id} value={item.name}>
                         {item.name}
                       </Select.Option>
                     ))}
@@ -239,32 +241,18 @@ const UploadDocument = (props) => {
                 </Form.Item>
               </Col>
 
-              <Col span={8}>Title</Col>
+              <Col span={8}>
+                Title<span style={{ color: 'red' }}> *</span>
+              </Col>
               <Col span={16}>
-                <Form.Item
-                  name="displayName"
-                  rules={[
-                    { required: true },
-                    // () => ({
-                    //   validator(_, value) {
-                    //     const duplicate = lisDocumentCheckList.find(
-                    //       (val) => val.displayName.replace(/\s/g, '') === value.replace(/\s/g, ''),
-                    //     );
-                    //     if (duplicate) {
-                    //       // eslint-disable-next-line prefer-promise-reject-errors
-                    //       return Promise.reject('Title is exist ');
-                    //     }
-                    //     // eslint-disable-next-line compat/compat
-                    //     return Promise.resolve();
-                    //   },
-                    // }),
-                  ]}
-                >
+                <Form.Item name="displayName" rules={[{ required: true }]}>
                   <Input placeholder="Title" />
                 </Form.Item>
               </Col>
 
-              <Col span={8}>Location</Col>
+              <Col span={8}>
+                Location <span style={{ color: 'red' }}> *</span>
+              </Col>
               <Col span={16}>
                 <Form.Item name="location" rules={[{ required: true }]}>
                   <Select
@@ -358,7 +346,7 @@ const UploadDocument = (props) => {
               <Button type="secondary" onClick={handleCancelUploadDocument}>
                 Cancle
               </Button>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" disabled={loadingUploadAttachment}>
                 {action === 'add' ? 'Add' : 'Edit'}
               </Button>
             </div>
