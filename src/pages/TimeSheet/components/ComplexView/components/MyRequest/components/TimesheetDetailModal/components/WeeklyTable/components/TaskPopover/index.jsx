@@ -15,10 +15,17 @@ import { convertMsToTime } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const TaskPopover = (props) => {
-  const { children, dispatch, tasks = [], date = '', projectName = '', placement = 'top' } = props;
+  const {
+    children,
+    dispatch,
+    tasks = [],
+    date = '',
+    projectName = '',
+    placement = 'top',
+    setIsEdited = () => {},
+  } = props;
   const [showPopover, setShowPopover] = useState(false);
   const [showingTasks, setShowingTasks] = useState([]);
-  console.log('hihi', typeof props.setIsEdited);
   // modals
   const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
   const [editTaskModalVisible, setEditTaskModalVisible] = useState(false);
@@ -52,7 +59,7 @@ const TaskPopover = (props) => {
       setRemoveModalVisible(false);
       refreshData();
       // eslint-disable-next-line react/destructuring-assignment
-      props.setIsEdited();
+      setIsEdited(true);
     }
   };
 
@@ -172,18 +179,18 @@ const TaskPopover = (props) => {
         visible={addTaskModalVisible}
         onClose={() => {
           setAddTaskModalVisible(false);
+          setIsEdited(true);
         }}
         mode="multiple"
         date={date}
         projectName={projectName}
-        setIsEdited={props.setIsEdited}
       />
       <EditTaskModal
         visible={editTaskModalVisible}
         onClose={() => {
           setEditTaskModalVisible(false);
           setHandlingPackage({});
-          props.setIsEdited;
+          setIsEdited(true);
         }}
         date={date}
         task={handlingPackage}

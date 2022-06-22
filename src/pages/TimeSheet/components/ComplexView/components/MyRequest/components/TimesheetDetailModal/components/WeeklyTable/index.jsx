@@ -22,10 +22,12 @@ const WeeklyTable = (props) => {
     timeoffList = [],
     setSelectedDate = () => {},
     setSelectedView = () => {},
+    callback = () => {},
   } = props;
   const [dateList, setDateList] = useState([]);
   const [formattedData, setFormattedData] = useState([]);
   const [popup, setPopup] = useState({ visible: false, x: 0, y: 0 });
+  const [isEdited, setIsEdited] = useState(false);
 
   // FUNCTIONS
   // get dates between two dates
@@ -70,6 +72,11 @@ const WeeklyTable = (props) => {
 
   useEffect(() => {
     formatData();
+    // eslint-disable-next-line no-unused-expressions
+    loadingFetchMyTimesheetByType && isEdited && callback(loadingFetchMyTimesheetByType);
+    return () => {
+      callback(false);
+    };
   }, [JSON.stringify(data), JSON.stringify(timeoffList)]);
 
   // RENDER UI
@@ -140,6 +147,7 @@ const WeeklyTable = (props) => {
                 date={date}
                 tasks={value?.dailyProjectTask}
                 placement="bottomLeft"
+                setIsEdited={(v) => setIsEdited(v)}
               >
                 {!value ? (
                   <span className={styles.hourValue}>
@@ -216,7 +224,7 @@ const WeeklyTable = (props) => {
         key: 'totalProjectTime',
         align: 'center',
         width: `${100 / 9}%`,
-        render: (value, row) => {
+        render: (_, row) => {
           return (
             <span className={styles.totalValue}>
               {convertMsToTime(row.totalProjectTime || row.totalTimeOffTime)}
@@ -257,9 +265,8 @@ const WeeklyTable = (props) => {
           <span className={styles.text}>Total</span>
         </div>
         {durationByDate.map((item) => {
-          console.log(typeof props.setIsEdited);
           return (
-            <TaskPopover date={item.date} tasks={item.tasks} setIsEdited={props.setIsEdited}>
+            <TaskPopover date={item.date} tasks={item.tasks}>
               {item.tasks.length > 0 ? (
                 <div className={styles.item}>
                   <span className={styles.value}>{convertMsToTime(item.duration)}</span>
@@ -288,7 +295,7 @@ const WeeklyTable = (props) => {
           dataSource={formattedData}
           bordered
           pagination={false}
-          // scroll={{ y: 440 }}
+          scroll={{ y: 500 }}
           footer={data.length === 0 ? null : renderFooter}
           loading={loadingFetchMyTimesheetByType}
           locale={{

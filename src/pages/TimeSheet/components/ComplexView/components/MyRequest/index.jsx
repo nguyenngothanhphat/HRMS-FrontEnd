@@ -5,119 +5,34 @@ import moment from 'moment';
 import ViewIcon from '@/assets/dashboard/open.svg';
 import styles from './index.less';
 import EmptyComponent from '@/components/Empty';
-import { getTimezoneViaCity } from '@/utils/times';
 import TimesheetDetailModal from './components/TimesheetDetailModal';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import img from '@/assets/dashboard/sampleAvatar2.png';
 
 const MyRequest = (props) => {
-  const timezoneList = [];
-  const { companyLocationList = [] } = props;
-  const [currentTime, setCurrentTime] = useState(moment());
-  const fetchTimezone = () => {
-    companyLocationList.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id = '',
-      } = location;
-      timezoneList.push({
-        locationId: _id,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    // setTimezoneList({
-    //   timezoneList,
-    // });
-  };
-  useEffect(() => {
-    fetchTimezone();
-  });
-
   const {
     dispatch,
-    data = [
-      {
-        key: 0,
-        ticketId: 100,
-        dateRange: {
-          startDate: '2022-05-30',
-          endDate: '2022-06-05',
-        },
-        manager: {
-          legalName: 'John Doe',
-          userId: '12345',
-          avatar: img,
-          workEmail: '',
-          workNumber: '',
-          skills: [
-            { name: 'gold digger', id: 1 },
-            { name: 'eating', id: 2 },
-            { name: 'drinking', id: 3 },
-          ],
-        },
-        comments: 'hihi',
-        totalHours: '8.00',
-        status: 'pending',
-      },
-      {
-        key: 1,
-        ticketId: 200,
-        dateRange: {
-          startDate: '2022-06-06',
-          endDate: '2022-06-12',
-        },
-        manager: {
-          legalName: 'John Doe',
-          userId: '12345',
-          avatar: img,
-          workEmail: '',
-          workNumber: '',
-          skills: [
-            { name: 'gold digger', id: 1 },
-            { name: 'eating', id: 2 },
-            { name: 'drinking', id: 3 },
-          ],
-        },
-        comments: '',
-        totalHours: '8.00',
-        status: 'approved',
-      },
-      {
-        key: 2,
-        ticketId: 300,
-        dateRange: {
-          startDate: '2022-06-13',
-          endDate: '2022-06-19',
-        },
-        manager: {
-          legalName: 'John Doe',
-          userId: '12345',
-          avatar: img,
-          workEmail: '',
-          workNumber: '',
-          skills: [
-            { name: 'gold digger', id: 1 },
-            { name: 'eating', id: 2 },
-            { name: 'drinking', id: 3 },
-          ],
-        },
-        comments:
-          'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam, adipisci. Eaque eum, temporibus quisquam excepturi debitis explicabo perferendis? In repellendus odit rerum quos sit. Id vero rerum veniam facere quisquam \n Perspiciatis, labore tempora ipsam odit veritatis quaerat commodi quasi esse modi quod beatae repellendus accusantium velit officiis fuga id eos nobis excepturi corporis quibusdam qui optio accusamus porro deleniti Doloremque \n  Ab dicta cumque temporibus corrupti deleniti placeat alias deserunt omnis, consectetur hic, rem a error, vel cum perferendis debitis sapiente fuga delectus ad Veritatis cumque voluptate ex, aliquid est quia.',
-        totalHours: '8.00',
-        status: 'rejected',
-      },
-    ],
-    selectedEmployees = [],
     loadingFetch = false,
+    employee: { _id: employeeId = '' } = {},
+    myRequest = [],
   } = props;
+
   const [pageSelected, setPageSelected] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [handlingWeek, setHandlingWeek] = useState(0);
   const [openModal, setOpenModal] = useState(false);
+
+  // fetch list
+  const fetchList = async () => {
+    await dispatch({
+      type: 'timeSheet/fetchMyRequest',
+      payload: {
+        employeeId,
+      },
+    });
+  };
+  useEffect(() => {
+    fetchList();
+  }, [pageSize, pageSelected]);
 
   const generateColumns = () => {
     const columns = [
@@ -133,45 +48,45 @@ const MyRequest = (props) => {
       },
       {
         title: 'Date Range',
-        dataIndex: 'dateRange',
+        dataIndex: ['fromDate', 'toDate'],
         key: 'dateRange',
         fixed: 'left',
         width: '20%',
-        render: (row) => {
-          const { startDate = '', endDate = '' } = row;
+        render: (_, row) => {
+          const { fromDate, toDate } = row;
           return (
             <div className={styles.dateRangeText}>
-              {startDate} to {endDate}
+              {moment(fromDate).format('DD-MM-YYYY')} to {moment(toDate).format('DD-MM-YYYY')}
             </div>
           );
         },
-        sorter: (a, b) => moment(a.dateRange.startDate) - moment(b.dateRange.startDate),
+        sorter: (a, b) => moment(a.fromDate) - moment(b.fromDate),
         sortDirections: ['descend', 'ascend'],
       },
       {
         title: 'Approved By',
-        dataIndex: 'manager',
-        key: 'manager',
+        dataIndex: 'employeeInfo',
+        key: 'employeeInfo',
         fixed: 'left',
         width: '15%',
-        render: (manager) => {
+        render: (row) => {
           return (
-            <UserProfilePopover placement="rightTop" data={manager}>
-              {manager.legalName}
+            <UserProfilePopover placement="rightTop" data={row?.manager}>
+              {row?.manager.legalName}
             </UserProfilePopover>
           );
         },
-        sorter: (a, b) => a.manager - b.manager,
+        sorter: (a, b) => a.manager.legalName - b.manager.legalName,
         sortDirections: [],
       },
       {
         title: 'Comments',
-        dataIndex: 'comments',
-        key: 'comments',
+        dataIndex: 'comment',
+        key: 'comment',
         fixed: 'left',
         width: '25%',
         render: (comment) => {
-          return <div className={styles.comment}>{comment?.length > 0 ? comment : '-'}</div>;
+          return <p className={styles.comment}>{comment?.length > 0 ? comment : '-'}</p>;
         },
 
         sorter: (a, b) => a.comment - b.comment,
@@ -179,8 +94,8 @@ const MyRequest = (props) => {
       },
       {
         title: 'Total Hours',
-        dataIndex: 'totalHours',
-        key: 'totalHours',
+        dataIndex: 'totalHour',
+        key: 'totalHour',
         align: 'left',
         width: '10%',
         render: (totalHours) => `${totalHours} hours`,
@@ -197,14 +112,15 @@ const MyRequest = (props) => {
           return (
             <div
               className={
-                status === 'pending'
+                // eslint-disable-next-line no-nested-ternary
+                status.toLowerCase() === 'pending'
                   ? styles.status__Pending
-                  : status === 'approved'
+                  : status.toLowerCase() === 'approved'
                   ? styles.status__Approved
                   : styles.status__Rejected
               }
             >
-              {status.charAt(0).toUpperCase() + status.slice(1)}
+              {status.charAt(0) + status.slice(1).toLowerCase()}
             </div>
           );
         },
@@ -218,7 +134,7 @@ const MyRequest = (props) => {
         key: 'action',
         align: 'center',
         width: '10%',
-        render: (_, row) => {
+        render: (_, row, index) => {
           return (
             <div className={styles.action}>
               <div className={styles.actionText}>
@@ -226,7 +142,7 @@ const MyRequest = (props) => {
                   <div
                     className={styles.actionButtonText}
                     onClick={() => {
-                      setHandlingWeek(row.key);
+                      setHandlingWeek(index);
                       setOpenModal(true);
                     }}
                   >
@@ -253,7 +169,7 @@ const MyRequest = (props) => {
 
   const pagination = {
     position: ['bottomLeft'],
-    total: data.length,
+    total: myRequest?.length,
     showTotal: (total, range) => (
       <span>
         {' '}
@@ -277,23 +193,31 @@ const MyRequest = (props) => {
     <div className={styles.MyRequest}>
       <Table
         columns={generateColumns()}
-        dataSource={data}
+        dataSource={myRequest}
         locale={{
           emptyText: <EmptyComponent />,
         }}
         rowKey={(record) => record.id}
-        scroll={selectedEmployees.length > 0 ? { y: 600, x: 1100 } : { x: 1100 }}
         loading={loadingFetch}
         pagination={pagination}
       />
       <TimesheetDetailModal
         visible={openModal}
-        onClose={() => setOpenModal(false)}
+        onClose={() => {
+          setOpenModal(false);
+          fetchList();
+        }}
         rowKey={handlingWeek}
-        dataSource={data}
+        dataSource={myRequest}
       />
     </div>
   );
 };
 
-export default connect(() => ({}))(MyRequest);
+export default connect(
+  ({ user: { currentUser: { employee = {} } = {} }, loading, timeSheet: { myRequest = {} } }) => ({
+    employee,
+    loadingFetch: loading.effects['timeSheet/fetchMyRequest'],
+    myRequest,
+  }),
+)(MyRequest);

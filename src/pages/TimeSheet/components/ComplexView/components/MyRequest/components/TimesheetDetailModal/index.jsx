@@ -12,7 +12,6 @@ const TimesheetDetailModal = (props) => {
     visible = false,
     title = 'Timesheet Details',
     onClose = () => {},
-    projectId = '',
     dataSource = [],
     dispatch,
     myTimesheetByWeek = [],
@@ -20,24 +19,20 @@ const TimesheetDetailModal = (props) => {
     employee: { _id: employeeId = '' } = {},
     rowKey = 0,
     currentDateProp = '',
-    temp = [],
-  } = props;
-  const {
-    status = '',
-    dateRange: { startDate: startDateWeek = '', endDate: endDateWeek = '' } = {},
-    comments = '',
-  } = dataSource[rowKey] || {};
-
-  const {
     user: {
       currentUser: {
         location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
       } = {},
     } = {},
   } = props;
+  const {
+    status = '',
+    fromDate: startDateWeek = '',
+    toDate: endDateWeek = '',
+    comment = '',
+    ticketId = '',
+  } = dataSource[rowKey] || {};
   const [selectedDate, setSelectedDate] = useState(moment());
-  // const [startDateWeek, setStartDateWeek] = useState('2022-06-06');
-  // const [endDateWeek, setEndDateWeek] = useState('2022-06-12');
   const [selectedView, setSelectedView] = useState('W');
   const [isEdited, setIsEdited] = useState(false);
 
@@ -55,10 +50,6 @@ const TimesheetDetailModal = (props) => {
   };
 
   useLayoutEffect(() => {
-    setIsEdited(true);
-  }, [myTimesheetByWeek]);
-
-  useLayoutEffect(() => {
     if (startDateWeek && selectedView === 'W') {
       fetchMyTimesheetEffectByType(startDateWeek, endDateWeek);
     }
@@ -73,20 +64,31 @@ const TimesheetDetailModal = (props) => {
   const handleCancel = () => {
     onClose();
   };
+  const handelResubmit = async () => {
+    await dispatch({
+      type: 'timeSheet/resubmitMyRequest',
+      payload: {
+        ticketId,
+      },
+    });
+    onClose();
+  };
+
   // RENDER UI
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
         <span
           className={
-            status === 'pending'
+            // eslint-disable-next-line no-nested-ternary
+            status.toLowerCase() === 'pending'
               ? styles.status__Pending
-              : status === 'approved'
+              : status.toLowerCase() === 'approved'
               ? styles.status__Approved
               : styles.status__Rejected
           }
         >
-          {status.charAt(0).toUpperCase() + status.slice(1)}
+          {status.charAt(0) + status.slice(1).toLowerCase()}
         </span>
         <span className={styles.header__text}>{title}</span>
       </div>
@@ -104,14 +106,16 @@ const TimesheetDetailModal = (props) => {
             timeoffList={timeoffList}
             setSelectedDate={setSelectedDate}
             setSelectedView={setSelectedView}
-            setIsEdited={() => setIsEdited(true)}
+            callback={(value) => {
+              setIsEdited(value);
+            }}
           />
-          {comments && (
+          {comment && (
             <>
               <Divider />
               <div>
                 Manager&apos;s Comment
-                <div className={styles.content__comments}>{comments}</div>
+                <div className={styles.content__comments}>{comment}</div>
               </div>
             </>
           )}
@@ -119,31 +123,14 @@ const TimesheetDetailModal = (props) => {
       </>
     );
   };
-  console.log(isEdited);
-
-  const disabledBtn = () => {
-    // if (!data?.projectDetail) return true;
-    // if (Array.isArray(data?.projectDetail)) {
-    //   if (data?.projectDetail.length === 0) {
-    //     return true;
-    //   }
-    // }
-
-    return false;
-  };
 
   const renderModalFooter = () => {
     return (
       <>
-        <Button className={styles.btnCancel}>Cancel</Button>
-        <Button
-          disabled={disabledBtn()}
-          className={styles.btnSubmit}
-          type="primary"
-          onClick={() => {
-            onClose();
-          }}
-        >
+        <Button className={styles.btnCancel} onClick={handleCancel}>
+          Cancel
+        </Button>
+        <Button className={styles.btnSubmit} type="primary" onClick={handelResubmit}>
           Re-Submit
         </Button>
       </>
@@ -154,7 +141,7 @@ const TimesheetDetailModal = (props) => {
     <>
       <Modal
         className={`${styles.TimesheetDetailModal} ${styles.noPadding}`}
-        onCancel={handleCancel}
+        onCancel={isEdited ? handelResubmit : handleCancel}
         destroyOnClose
         width={750}
         footer={isEdited ? renderModalFooter() : <div />}
