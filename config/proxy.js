@@ -10,7 +10,7 @@ export const API_KEYS = {
 
 export const proxy = {
   // [API_KEYS.BASE_API]: BASE_API,
-  [API_KEYS.BASE_API]: ' https://186c-27-65-193-6.ngrok.io',
+  [API_KEYS.BASE_API]: 'https://a0ef-27-65-193-6.ngrok.io',
   [API_KEYS.TIMESHEET_API]: BASE_API + '/timesheet',
   [API_KEYS.PROJECT_API]: BASE_API,
   [API_KEYS.TICKET_API]: BASE_API,

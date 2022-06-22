@@ -27,12 +27,7 @@ import { getCurrentLocation } from '@/utils/authority';
 
 const { Dragger } = Upload;
 const UploadDocument = (props) => {
-  const {
-    dispatch,
-    setSizeImageMatch = () => {},
-
-    handleCancelUploadDocument = () => {},
-  } = props;
+  const { dispatch, setSizeImageMatch = () => {}, handleCancelUploadDocument = () => {} } = props;
 
   const {
     user: {
@@ -40,9 +35,24 @@ const UploadDocument = (props) => {
     } = {},
     location: { companyLocationList: locationList = [] } = {},
     loadingUploadAttachment = false,
-    onboardingSettings: { employeeList = [], documentTypeList = [] } = {},
+    onboardingSettings: {
+      employeeList = [],
+      documentTypeList = [],
+      // lisDocumentCheckList = [],
+      recordEdit: {
+        _id = '',
+        location = [],
+        displayName: displayNameProps = '',
+        category: { _id: idCategory = '' } = {},
+        attachment: { name: attachmentName = '', _id: idAttchment = '' } = {},
+      } = {},
+      action = '',
+    } = {},
+
     getListDocumentType = false,
   } = props;
+
+  const [form] = Form.useForm();
   const currentDate = moment();
   const currentLocation = getCurrentLocation();
   const [uploadedFile, setUploadedFile] = useState({});
@@ -141,6 +151,13 @@ const UploadDocument = (props) => {
     return string.charAt(0).toLowerCase() + string.slice(1);
   };
 
+  const reFreshGetListDocument = () => {
+    dispatch({
+      type: 'onboardingSettings/getListDocumentCheckList',
+      payload: {},
+    });
+  };
+
   const onFinish = (values) => {
     const { employee = '', displayName = '' } = values;
     const obj = employeeList.find((item) => item?.generalInfo?.legalName === employee);
@@ -148,25 +165,54 @@ const UploadDocument = (props) => {
     const payload = {
       ...values,
       employee: obj._id,
-      attachment: uploadedFile.id,
+      attachment: uploadedFile.id || idAttchment,
       key: jsLcfirst(key),
     };
+    if (action === 'edit') {
+      payload.id = _id;
+    }
 
-    dispatch({
-      type: 'onboardingSettings/uploadDocumentChecklist',
-      payload,
-    });
+    if (action === 'add') {
+      dispatch({
+        type: 'onboardingSettings/uploadDocumentChecklist',
+        payload,
+      }).then((res) => {
+        const { statusCode = '' } = res;
+        if (statusCode === 200) {
+          reFreshGetListDocument();
+          handleCancelUploadDocument();
+        }
+      });
+    } else {
+      dispatch({
+        type: 'onboardingSettings/edit',
+        payload,
+      }).then((res) => {
+        const { statusCode = '' } = res;
+        if (statusCode === 200) {
+          reFreshGetListDocument();
+          handleCancelUploadDocument();
+        }
+      });
+    }
   };
+
+  useEffect(() => {
+    setFileName(attachmentName);
+  }, [action]);
 
   return (
     <Row className={styles.UploadDocument}>
       <Col span={16}>
         <Card title="Upload Document" className={styles.container}>
           <Form
+            form={form}
             initialValues={{
+              category: action === 'edit' ? idCategory : '',
+              displayName: action === 'edit' ? displayNameProps : '',
               dateCreated: moment(currentDate).format('YYYY-MM-DD'),
               employee: author,
-              location: currentLocation,
+              location: action === 'edit' ? location.map((item) => item._id) : currentLocation,
             }}
             onFinish={onFinish}
           >
@@ -195,7 +241,25 @@ const UploadDocument = (props) => {
 
               <Col span={8}>Title</Col>
               <Col span={16}>
-                <Form.Item name="displayName" rules={[{ required: true }]}>
+                <Form.Item
+                  name="displayName"
+                  rules={[
+                    { required: true },
+                    // () => ({
+                    //   validator(_, value) {
+                    //     const duplicate = lisDocumentCheckList.find(
+                    //       (val) => val.displayName.replace(/\s/g, '') === value.replace(/\s/g, ''),
+                    //     );
+                    //     if (duplicate) {
+                    //       // eslint-disable-next-line prefer-promise-reject-errors
+                    //       return Promise.reject('Title is exist ');
+                    //     }
+                    //     // eslint-disable-next-line compat/compat
+                    //     return Promise.resolve();
+                    //   },
+                    // }),
+                  ]}
+                >
                   <Input placeholder="Title" />
                 </Form.Item>
               </Col>
@@ -295,7 +359,7 @@ const UploadDocument = (props) => {
                 Cancle
               </Button>
               <Button type="primary" htmlType="submit">
-                Submit
+                {action === 'add' ? 'Add' : 'Edit'}
               </Button>
             </div>
           </Form>

@@ -76,6 +76,20 @@ export async function addDocumentChecklist(payload) {
   });
 }
 
+export async function editDocument(payload) {
+  return request('api/documenttenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function deleteDocument(payload) {
+  return request('api/documenttenant/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function uploadFile(data) {
   return request('/api/attachments/upload', {
     method: 'POST',

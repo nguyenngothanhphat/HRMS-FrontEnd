@@ -1,4 +1,4 @@
-import { Tooltip } from 'antd';
+import { Popconfirm, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import DeleteIcon from '@/assets/onboarding/deleteIcon.svg';
@@ -11,7 +11,15 @@ import ViewDocumentModal from '@/components/ViewDocumentModal';
 import styles from './index.less';
 
 const TableDocuments = (props) => {
-  const { data = [], loading = false } = props;
+  const {
+    data = [],
+    loading = false,
+    onDelete = () => {},
+    onEdit = () => {},
+    onChangePage = () => {},
+    size = 10,
+    page = 1,
+  } = props;
   const [viewDocumentModal, setViewDocumentModal] = useState(false);
   const [link, setLink] = useState('');
 
@@ -98,11 +106,13 @@ const TableDocuments = (props) => {
         dataIndex: 'action',
         key: 'action',
         align: 'center',
-        render: (action, row) => {
+        render: (_, record) => {
           return (
             <div className={styles.containerAction}>
-              <img src={EditIcon} alt="" />
-              <img src={DeleteIcon} alt="" />
+              <img src={EditIcon} alt="" onClick={() => onEdit(record)} />
+              <Popconfirm placement="left" title="Are you sure?" onConfirm={() => onDelete(record)}>
+                <img src={DeleteIcon} alt="" />
+              </Popconfirm>
             </div>
           );
         },
@@ -112,7 +122,14 @@ const TableDocuments = (props) => {
   };
   return (
     <div className={styles.TableDocuments}>
-      <CommonTable list={data} columns={getColumns()} loading={loading} />
+      <CommonTable
+        list={data}
+        columns={getColumns()}
+        loading={loading}
+        onChangePage={onChangePage}
+        limit={size}
+        page={page}
+      />
       <ViewDocumentModal
         url={link}
         visible={viewDocumentModal}
