@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import WorkInProgress from '@/components/WorkInProgress';
 import { initViewOffboarding } from '@/utils/authority';
+import { goToTop } from '@/utils/utils';
 import EmployeeView from './components/EmployeeView';
-import HRView from './components/HRView';
 import ManagerView from './components/ManagerView';
+import styles from './index.less';
 
-const OffBoarding = (props) => {
+const Offboarding = (props) => {
   const {
-    match: { params: { tabName = '', type = '' } = {} },
+    match: { params: { tabName = '' } = {} },
     location: { state: { isEmployeeMode = false } = {} } = {},
   } = props;
 
@@ -20,8 +22,9 @@ const OffBoarding = (props) => {
   };
 
   const renderComponent = {
-    'hr-manager': <HRView tabName={tabName} type={type} />,
-    hr: <HRView tabName={tabName} type={type} />,
+    'hr-manager': <WorkInProgress />,
+    // hr: <HRView tabName={tabName} type={type} />,
+    hr: <WorkInProgress />,
     manager: <ManagerView tabName={tabName} />,
     employee: <EmployeeView tabName={tabName} />,
   };
@@ -29,9 +32,15 @@ const OffBoarding = (props) => {
   const listRole = localStorage.getItem('antd-pro-authority');
   const role = findRole(JSON.parse(listRole));
 
-  return !isEmployeeMode && !initViewOffboarding()
-    ? renderComponent[role]
-    : renderComponent.employee;
+  useEffect(() => {
+    goToTop();
+  }, []);
+
+  return (
+    <div className={styles.Offboarding}>
+      {!isEmployeeMode && !initViewOffboarding() ? renderComponent[role] : renderComponent.employee}
+    </div>
+  );
 };
 
-export default OffBoarding;
+export default Offboarding;

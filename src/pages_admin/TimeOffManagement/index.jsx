@@ -1,11 +1,10 @@
+import { Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { Tabs } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
+import CustomDropdownSelector from '@/components/CustomDropdownSelector';
 import TableContainer from './components/TableContainer';
-import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 import styles from './index.less';
-import CheckboxMenu from '@/components/CheckboxMenu';
 
 const { TabPane } = Tabs;
 
@@ -34,19 +33,6 @@ const TimeOffManagement = (props) => {
     };
   }, []);
 
-  const getSelectedLocationName = () => {
-    if (selectedLocations.length === 1) {
-      return companyLocationList.find((x) => x._id === selectedLocations[0])?.name || '';
-    }
-    if (selectedLocations.length > 0 && selectedLocations.length < companyLocationList.length) {
-      return `${selectedLocations.length} locations selected`;
-    }
-    if (selectedLocations.length === companyLocationList.length) {
-      return 'All';
-    }
-    return 'None';
-  };
-
   const renderLocationOptions = () => {
     return companyLocationList.map((x) => {
       return {
@@ -57,32 +43,15 @@ const TimeOffManagement = (props) => {
   };
 
   const renderFilterBar = () => {
-    // if only one selected
-    const selectedLocationName = getSelectedLocationName();
-
     return (
       <div className={styles.options}>
-        <div className={styles.item}>
-          <span className={styles.label}>Location</span>
-
-          <CheckboxMenu
-            options={renderLocationOptions()}
-            onChange={onLocationChange}
-            list={companyLocationList}
-            default={selectedLocations}
-            disabled={renderLocationOptions().length < 2}
-          >
-            <div
-              className={`${
-                renderLocationOptions().length < 2 ? styles.noDropdown : styles.dropdown
-              }`}
-              onClick={(e) => e.preventDefault()}
-            >
-              <span>{selectedLocationName}</span>
-              {renderLocationOptions().length < 2 ? null : <img src={SmallDownArrow} alt="" />}
-            </div>
-          </CheckboxMenu>
-        </div>
+        <CustomDropdownSelector
+          options={renderLocationOptions()}
+          onChange={onLocationChange}
+          disabled={renderLocationOptions().length < 2}
+          label="Location"
+          selectedList={selectedLocations}
+        />
       </div>
     );
   };

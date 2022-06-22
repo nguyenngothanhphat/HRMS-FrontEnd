@@ -1,10 +1,19 @@
 @title-color: #161c29;
 @blue-color: #2c6df9;
+@red-color: #ff6c6c;
+@green-color: #47c97f;
 
 .panelItem {
   margin-right: -6px !important;
   margin-bottom: 20px;
   margin-left: 0 !important;
+
+  .commons {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+  }
+
   .card {
     .title {
       color: @title-color;
@@ -26,5 +35,27 @@
     font-weight: 500;
     text-align: right;
     cursor: pointer;
+  }
+  .verified {
+    .commons();
+    color: @green-color;
+    font-weight: 500;
+    img {
+      margin-left: 8px;
+    }
+  }
+  .resubmit {
+    .commons();
+    span {
+      color: @red-color;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    img {
+      margin-left: 8px;
+      color: @red-color;
+      width: 15px;
+      height: 15px;
+    }
   }
 }

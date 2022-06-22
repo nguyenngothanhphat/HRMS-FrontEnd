@@ -1,6 +1,8 @@
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import CustomPrimaryButton from '../CustomPrimaryButton';
+import CustomSecondaryButton from '../CustomSecondaryButton';
 import styles from './index.less';
 
 const CommonModal = (props) => {
@@ -46,10 +48,6 @@ const CommonModal = (props) => {
     return `${styles.CommonModal} ${styles.noPadding}`;
   };
 
-  const handleFinish = () => {
-    onFinish();
-  };
-
   return (
     <>
       <Modal
@@ -59,34 +57,31 @@ const CommonModal = (props) => {
         width={width}
         footer={
           hasFooter ? (
-            <>
+            <div className={styles.footer}>
               {hasCancelButton && (
-                <Button className={styles.btnCancel} onClick={handleCancel}>
-                  {cancelText}
-                </Button>
+                <CustomSecondaryButton onClick={handleCancel}>{cancelText}</CustomSecondaryButton>
               )}
               {hasSecondButton && (
-                <Button className={styles.btnCancel} onClick={onSecondButtonClick}>
+                <CustomSecondaryButton onClick={onSecondButtonClick}>
                   {secondText}
-                </Button>
+                </CustomSecondaryButton>
               )}
-              <Button
-                className={styles.btnSubmit}
-                type="primary"
+              <CustomPrimaryButton
                 form="myForm"
                 key="submit"
                 htmlType="submit"
                 loading={loading}
-                onClick={handleFinish}
+                onClick={onFinish}
               >
                 {firstText}
-              </Button>
-            </>
+              </CustomPrimaryButton>
+            </div>
           ) : null
         }
         title={hasHeader ? renderModalHeader() : null}
         centered
         visible={visible}
+        maskClosable={false}
       >
         {renderModalContent()}
       </Modal>

@@ -14,7 +14,6 @@ import {
   updateByCandidate,
   upsertCandidateDocument,
   getSalaryStructureByGrade,
-  getDocumentsChecklist,
 } from '@/services/candidatePortal';
 import {
   CANDIDATE_TASK_LINK,
@@ -523,17 +522,6 @@ const candidatePortal = {
             data,
           },
         });
-      } catch (error) {
-        dialog(error);
-      }
-      return response;
-    },
-    *getDocumentsChecklist({ payload }, { call }) {
-      let response = {};
-      try {
-        response = yield call(getDocumentsChecklist, payload);
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
       }

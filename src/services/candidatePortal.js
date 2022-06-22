@@ -90,10 +90,3 @@ export async function upsertCandidateDocument(payload) {
     data: payload,
   });
 }
-
-export async function getDocumentsChecklist(payload) {
-  return request('api/documenttenant/checklist', {
-    method: 'GET',
-    params: payload,
-  });
-}

@@ -1,47 +1,103 @@
-import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
 import { Col, Collapse, Row } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
+import { connect, history } from 'umi';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
 import PanelItem from './components/PanelItem';
 import DocumentButton from './components/DocumentButton';
-// import ViewDocumentModal from '@/components/ViewDocumentModal';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
+import ModalUpload from '@/components/ModalUpload';
+import SignatureModal from '@/components/SignatureModal';
+import { DOCUMENT_KEYS, DOCUMENT_TYPES } from '@/utils/candidatePortal';
 
 const { Panel } = Collapse;
 
+const initCurrentFile = {
+  fileName: '',
+  url: '',
+};
+
 const DocumentsChecklist = (props) => {
-  const { dispatch } = props;
-  const [documentsChecklist, setDocumentsChecklist] = useState([]);
-  // const [currentFileName, setCurrentFileName] = useState('');
+  const { dispatch, candidatePortal } = props;
+  const [documentModal, setDocumentModal] = useState(false);
+  const [uploadModal, setUploadModal] = useState(false);
+  const [signatureModal, setSignatureModal] = useState(false);
+  const [currentFile, setCurrentFile] = useState(initCurrentFile);
+  const [documentKey, setDocumentKey] = useState('');
+  const documentsChecklist = candidatePortal?.data?.documentChecklist || [];
 
-  useEffect(() => {
-    let componentMounted = true;
-    const getDocumentsChecklist = async () => {
-      const response = await dispatch({
-        type: 'candidatePortal/getDocumentsChecklist',
-        payload: {
-          tenantId: getCurrentTenant(),
-          isFormat: true,
-        },
+  const handleClickFile = (document) => {
+    const attachment = document?.attachment;
+    setCurrentFile({
+      fileName: attachment?.fileName,
+      url: attachment?.url,
+    });
+    setDocumentModal(true);
+  };
+
+  const handleClickAction = (type, documentsKey) => {
+    setDocumentKey(documentsKey);
+    if (type === DOCUMENT_KEYS.UPLOAD) {
+      setUploadModal(true);
+      return;
+    }
+    if (type === DOCUMENT_KEYS.SIGN) setSignatureModal(true);
+  };
+
+  const updateDocuments = async (attachmentId, attachment) => {
+    const response = await dispatch({
+      type: 'candidatePortal/upsertCandidateDocumentEffect',
+      payload: { attachment: attachmentId },
+    });
+
+    const updateDocument = {
+      document: { ...response.data, attachment },
+      status: DOCUMENT_TYPES.VERIFYING,
+    };
+    const newDocumentsChecklist = [...documentsChecklist];
+
+    // Find and update Document item
+    newDocumentsChecklist.every((list, index) => {
+      list.documents.every((doc, idx) => {
+        if (doc.key === documentKey) {
+          newDocumentsChecklist[index].documents[idx] = { ...doc, ...updateDocument };
+          return false;
+        }
+        return true;
       });
-      if (componentMounted && response) setDocumentsChecklist(response.data);
-    };
-    getDocumentsChecklist();
-    return () => {
-      componentMounted = false;
-    };
-  }, []);
+      return true;
+    });
 
-  const handleSelectFile = () => {};
+    await dispatch({
+      type: 'candidatePortal/updateByCandidateEffect',
+      payload: {
+        documentChecklist: newDocumentsChecklist,
+      },
+    });
+  };
+
+  const handleUpdateDocument = async (attachmentRes) => {
+    setUploadModal(false);
+    const attachment = attachmentRes?.data?.length && attachmentRes?.data[0];
+    updateDocuments(attachment?.id, attachment);
+  };
+
+  const handleSubmitSignature = async (attachmentId, attachment) => {
+    setSignatureModal(false);
+    updateDocuments(attachmentId, attachment);
+  };
+
+  const handleGoBack = () => {
+    history.push('/candidate-portal/dashboard');
+  };
 
   const getActionText = (type) => {
     switch (type) {
-      case 'Scan & Upload':
+      case DOCUMENT_KEYS.UPLOAD:
         return 'Upload';
-      case 'Electronically Sign':
+      case DOCUMENT_KEYS.SIGN:
         return 'Sign';
       default:
         return '';
@@ -87,14 +143,19 @@ const DocumentsChecklist = (props) => {
                     }
                     key={type}
                   >
-                    {documents.map((document) => (
-                      <PanelItem
-                        onSelectFile={handleSelectFile}
-                        document={document}
-                        actionText={actionText}
-                        key={document._id}
-                      />
-                    ))}
+                    {documents.length
+                      ? documents.map((document) => {
+                          return (
+                            <PanelItem
+                              onClickFile={() => handleClickFile(document?.document)}
+                              onClickAction={() => handleClickAction(type, document.key)}
+                              document={{ ...document, type }}
+                              actionText={actionText}
+                              key={document._id}
+                            />
+                          );
+                        })
+                      : null}
                   </Panel>
                 </Collapse>
               );
@@ -108,8 +169,10 @@ const DocumentsChecklist = (props) => {
   const renderBottomBar = () => {
     return (
       <div className={styles.bottomBar}>
-        <DocumentButton primary={false}> Previous </DocumentButton>
-        <DocumentButton>Complete </DocumentButton>
+        <DocumentButton onClick={handleGoBack} primary={false}>
+          Previous
+        </DocumentButton>
+        <DocumentButton onClick={handleGoBack}>Complete </DocumentButton>
       </div>
     );
   };
@@ -132,12 +195,25 @@ const DocumentsChecklist = (props) => {
           <MessageBox />
         </Row>
       </Col>
-      {/* <ViewDocumentModal
-        visible={true}
-        fileName={displayDocumentName}
-        url={urlDocument}
-        onClose={() => setVisiable(false)}
-      /> */}
+      <ViewDocumentModal
+        visible={documentModal}
+        fileName="View Document"
+        url={currentFile.url}
+        onClose={() => setDocumentModal(false)}
+      />
+      <ModalUpload
+        titleModal="Upload file"
+        visible={uploadModal}
+        handleCancel={() => setUploadModal(false)}
+        widthImage="40%"
+        getResponse={handleUpdateDocument}
+      />
+      <SignatureModal
+        visible={signatureModal}
+        onClose={() => setSignatureModal(false)}
+        onFinish={handleSubmitSignature}
+        titleModal="Signature of the candidate"
+      />
     </Row>
   );
 };
