@@ -1,10 +1,10 @@
 import { Checkbox, Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 import ModalImage from '@/assets/timeSheet/modalImage1.png';
-import CheckboxMenu from '@/components/CheckboxMenu';
 import CommonModal from '@/components/CommonModal';
+import CustomBlueButton from '@/components/CustomBlueButton';
+import CustomDropdownSelector from '@/components/CustomDropdownSelector';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentLocation } from '@/utils/authority';
 import { TAB_NAME } from '@/utils/timeSheet';
@@ -62,32 +62,6 @@ const ComplexView = (props) => {
     setSelectedDivisions([...selection]);
   };
 
-  const getSelectedLocationName = () => {
-    if (selectedLocations.length === 1) {
-      return companyLocationList.find((x) => x._id === selectedLocations[0])?.name || '';
-    }
-    if (selectedLocations.length > 0 && selectedLocations.length < companyLocationList.length) {
-      return `${selectedLocations.length} locations selected`;
-    }
-    if (selectedLocations.length === companyLocationList.length) {
-      return 'All';
-    }
-    return 'None';
-  };
-
-  const getSelectedDivisionName = () => {
-    if (selectedDivisions.length === 1) {
-      return divisionList.find((x) => x._id === selectedDivisions[0])?.name || '';
-    }
-    if (selectedDivisions.length > 0 && selectedDivisions.length < divisionList.length) {
-      return `${selectedDivisions.length} divisions selected`;
-    }
-    if (selectedDivisions.length === divisionList.length) {
-      return 'All';
-    }
-    return 'None';
-  };
-
   const onChangeIncompleteTimeSheet = (e) => {
     const value = e.target.checked;
     setIsIncompleteTimeSheet(value);
@@ -142,9 +116,6 @@ const ComplexView = (props) => {
 
   const renderFilterBar = (isHRTab) => {
     // if only one selected
-    const selectedLocationName = getSelectedLocationName();
-    const selectedDivisionName = getSelectedDivisionName();
-
     const divisionOptions = divisionList.map((x) => {
       return {
         _id: x._id,
@@ -160,43 +131,22 @@ const ComplexView = (props) => {
             </Checkbox>
           </div>
         )}
-        <div className={styles.item}>
-          <span className={styles.label}>Location</span>
+        <CustomDropdownSelector
+          options={renderLocationOptions()}
+          onChange={onLocationChange}
+          disabled={renderLocationOptions().length < 2}
+          selectedList={selectedLocations}
+          label="Location"
+        />
 
-          <CheckboxMenu
-            options={renderLocationOptions()}
-            onChange={onLocationChange}
-            list={companyLocationList}
-            default={selectedLocations}
-            disabled={renderLocationOptions().length < 2}
-          >
-            <div
-              className={`${
-                renderLocationOptions().length < 2 ? styles.noDropdown : styles.dropdown
-              }`}
-              onClick={(e) => e.preventDefault()}
-            >
-              <span>{selectedLocationName}</span>
-              {renderLocationOptions().length < 2 ? null : <img src={SmallDownArrow} alt="" />}
-            </div>
-          </CheckboxMenu>
-        </div>
         {renderDivisionOptions() && (
-          <div className={styles.item}>
-            <span className={styles.label}>Division</span>
-
-            <CheckboxMenu
-              options={divisionOptions}
-              onChange={onDivisionChange}
-              default={selectedDivisions}
-              disabled
-            >
-              <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
-                <span>{selectedDivisionName}</span>
-                <img src={SmallDownArrow} alt="" />
-              </div>
-            </CheckboxMenu>
-          </div>
+          <CustomDropdownSelector
+            options={divisionOptions}
+            onChange={onDivisionChange}
+            disabled
+            label="Division"
+            selectedList={selectedDivisions}
+          />
         )}
       </div>
     );
@@ -213,8 +163,10 @@ const ComplexView = (props) => {
       case TAB_NAME.MY:
       case TAB_NAME.MY_REQUESTS:
         return (
-          <div className={styles.requestLeave} onClick={() => setNavToTimeoffModalVisible(true)}>
-            <span className={styles.title}>Request Leave</span>
+          <div className={styles.options}>
+            <CustomBlueButton onClick={() => setNavToTimeoffModalVisible(true)}>
+              Request Leave
+            </CustomBlueButton>
           </div>
         );
 

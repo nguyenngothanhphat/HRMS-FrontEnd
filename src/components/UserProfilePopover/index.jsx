@@ -1,8 +1,8 @@
 import { Col, Popover, Row, Tag } from 'antd';
 import React, { useState } from 'react';
-import { connect } from 'umi';
+import { connect, Link } from 'umi';
 import CloseX from '@/assets/dashboard/closeX.svg';
-import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 
 import styles from './index.less';
 import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
@@ -29,7 +29,11 @@ const UserProfilePopover = (props) => {
   } = data;
 
   const {
-    headQuarterAddress: { state: state1 = '', country: { name: countryName1 = '' } = {} } = {},
+    headQuarterAddress: {
+      state: state1 = '',
+      country = {},
+      country: { name: countryName1 = '' } = {},
+    } = {},
   } = locationInfo || {};
 
   const { avatar = '', personalNumber = '' } = generalInfo || {};
@@ -86,11 +90,12 @@ const UserProfilePopover = (props) => {
     return (
       <div className={styles.header}>
         <div className={styles.avatar}>
-          <img src={avatar || avatar1 || MockAvatar} alt="" />
+          <img src={avatar || avatar1 || DefaultAvatar} alt="" />
         </div>
         <div className={styles.information}>
           <span className={styles.name}>
-            {legalName} {userId ? `(${userId})` : ''}
+            {legalName || generalInfo?.legalName}{' '}
+            {userId || generalInfo?.userId ? `(${userId || generalInfo?.userId})` : ''}
           </span>
           <span className={styles.position}>{department?.name || departmentInfo?.name}</span>
           <span className={styles.department}>{title?.name || titleInfo?.name}</span>
@@ -98,9 +103,21 @@ const UserProfilePopover = (props) => {
       </div>
     );
   };
+
+  const getCountry = () => {
+    let result = '';
+    if (typeof country === 'string') result = country;
+    result = countryName || countryName1 || '';
+    return `, ${result}`;
+  };
+
   const userInfo = () => {
     const getTimezone =
-      getTimezoneViaCity(state || state1) || getTimezoneViaCity(countryName || countryName1) || '';
+      getTimezoneViaCity(state || state1) ||
+      getTimezoneViaCity(
+        countryName || countryName1 || typeof country === 'string' ? country : '',
+      ) ||
+      '';
     const timezone =
       getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone;
     const time = getCurrentTimeOfTimezoneOption(new Date(), timezone);
@@ -117,15 +134,15 @@ const UserProfilePopover = (props) => {
       },
       {
         label: 'Mobile',
-        value: personalNumber || workNumber,
+        value: generalInfo?.workNumber || workNumber,
       },
       {
         label: 'Email id',
-        value: workEmail,
+        value: generalInfo?.workEmail || workEmail,
       },
       {
         label: 'Location',
-        value: location || locationInfo ? `${state || state1}, ${countryName || countryName1}` : '',
+        value: location || locationInfo ? `${state || state1}${getCountry()}` : '',
       },
       {
         label: 'Local Time',
@@ -181,8 +198,10 @@ const UserProfilePopover = (props) => {
         <div className={styles.divider} />
         {userInfo()}
         <div className={styles.divider} />
-        <div className={styles.viewFullProfile} onClick={() => onViewProfile(userId)}>
-          View full profile
+        <div className={styles.viewFullProfile}>
+          <Link to={`/directory/employee-profile/${userId || generalInfo?.userId}`}>
+            View full profile
+          </Link>
         </div>
       </div>
     );
