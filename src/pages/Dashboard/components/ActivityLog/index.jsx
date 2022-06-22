@@ -18,6 +18,7 @@ const ActivityLog = (props) => {
   const {
     dispatch,
     listTicket: listPendingApprovals = [],
+    listTimeSheetTicket = [],
     permissions = {},
     employee: { _id = '' } = {},
     listMyTicket = [],
@@ -33,6 +34,12 @@ const ActivityLog = (props) => {
   useEffect(() => {
     dispatch({
       type: 'dashboard/fetchListTicket',
+    });
+    dispatch({
+      type: 'dashboard/fetchListTimeSheetTicket',
+      payload: {
+        employeeId: _id,
+      },
     });
   }, [statusApproval]);
 
@@ -54,6 +61,13 @@ const ActivityLog = (props) => {
   const fetchListTicket = () => {
     dispatch({
       type: 'dashboard/fetchListTicket',
+    });
+    dispatch({
+      type: 'dashboard/fetchListTimeSheetTicket',
+      payload: {
+        roles: ['MANAGER'],
+        employeeId: _id,
+      },
     });
   };
 
@@ -145,7 +159,7 @@ const ActivityLog = (props) => {
         return '';
     }
   };
-
+  const data = listPendingApprovals.concat(listTimeSheetTicket);
   // MAIN
   return (
     <div className={styles.ActivityLog}>
@@ -157,8 +171,11 @@ const ActivityLog = (props) => {
           <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
             {/* only manager / hr manager see this tab */}
             {viewPendingApprovalDashboard && (
-              <TabPane tab={renderTabName('1', listPendingApprovals.length)} key="1">
-                <CommonTab type="1" data={listPendingApprovals} refreshData={fetchListTicket} />
+              <TabPane
+                tab={renderTabName('1', listPendingApprovals.length + listTimeSheetTicket.length)}
+                key="1"
+              >
+                <CommonTab type="1" data={data} refreshData={fetchListTicket} />
               </TabPane>
             )}
             <TabPane
@@ -222,6 +239,7 @@ export default connect(
       status = '',
       statusApproval = '',
       leaveRequests = [],
+      listTimeSheetTicket = [],
     } = {},
     loading,
     conversation: { activeConversationUnseen = [] },
@@ -231,6 +249,7 @@ export default connect(
     statusApproval,
     listTicket,
     listMyTicket,
+    listTimeSheetTicket,
     leaveRequests,
     permissions,
     employee,

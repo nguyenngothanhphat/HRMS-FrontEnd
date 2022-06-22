@@ -23,11 +23,13 @@ const ApprovalPage = (props) => {
   const {
     dispatch,
     loadingTable,
-    listTicket,
+    allTicket,
     isLoadData,
     loadingReject,
     loadingApproval,
     companyLocationList,
+    loadingApprovalTimeSheet,
+    employee: { _id: idEmployee = '' } = {},
   } = props;
   const [openModal, setOpenModal] = useState(false);
   const [ticket, setTicket] = useState({});
@@ -45,14 +47,19 @@ const ApprovalPage = (props) => {
   const [viewedDetail, setViewedDetail] = useState(false);
   const [form, setForm] = useState(null);
 
-  const fetchListTicket = () => {
+  const fetchListTicket = (searchKey = '', filterPayload = {}) => {
     dispatch({
-      type: 'dashboard/fetchListTicket',
+      type: 'dashboard/fetchAllListTicket',
+      payload: {
+        employeeId: idEmployee,
+        search: searchKey,
+        ...filterPayload,
+      },
     });
   };
 
   useEffect(() => {
-    fetchListTicket();
+    fetchListTicket(keySearch);
     const tenantId = getCurrentTenant();
     const company = getCurrentCompany();
     dispatch({
@@ -62,7 +69,7 @@ const ApprovalPage = (props) => {
         tenantId,
       },
     });
-  }, []);
+  }, [keySearch]);
   useEffect(() => {
     if (isLoadData) fetchListTicket();
   }, [isLoadData]);
@@ -91,14 +98,9 @@ const ApprovalPage = (props) => {
   }, [companyLocationList]);
 
   useEffect(() => {
-    const arr = filter(
-      listTicket,
-      (item) =>
-        item.employee.generalInfo.legalName.toLowerCase().indexOf(keySearch.toLowerCase()) >= 0,
-    );
-    setListData(arr);
-    setTotal(arr.length);
-  }, [keySearch, listTicket]);
+    setListData(allTicket);
+    setTotal(allTicket.length);
+  }, [keySearch, allTicket]);
 
   const viewDetail = (record) => {
     setOpenModal(true);
@@ -106,33 +108,68 @@ const ApprovalPage = (props) => {
     setTicket(record);
   };
 
-  const approvalTicket = (record) => {
-    const { typeTicket = '', _id = '' } = record;
-    dispatch({
-      type: 'dashboard/approveRequest',
-      payload: {
-        typeTicket,
-        _id,
-      },
-    });
+  const approvalTicket = async (record) => {
+    const { typeReport = '', leaveId = '', ticketId = '' } = record;
+    let response = {};
+    if (typeReport === TYPE_TICKET_APPROVAL.TIMEOFF) {
+      response = await dispatch({
+        type: 'dashboard/approveRequest',
+        payload: {
+          typeTicket: TYPE_TICKET_APPROVAL.LEAVE_REQUEST,
+          _id: leaveId,
+        },
+        statusTimeoff: 'approval',
+      });
+      const { statusCode = '' } = response;
+      if (statusCode === 200) {
+        fetchListTicket();
+      }
+    } else {
+      response = await dispatch({
+        type: 'dashboard/approveTimeSheetRequest',
+        payload: {
+          status: TYPE_TICKET_APPROVAL.APPROVED,
+          ticketId,
+        },
+      });
+      const { code = '' } = response;
+      if (code === 200) {
+        fetchListTicket();
+      }
+    }
   };
 
   const rejectTicket = async (comment) => {
-    const { typeTicket = '', _id = '' } = recordDetail;
-    const res = await dispatch({
-      type: 'dashboard/rejectRequest',
-      payload: {
-        typeTicket,
-        _id,
-        comment,
-      },
-    });
-    const { statusCode = 0 } = res;
-    if (statusCode === 200) {
-      setCommentModalVisible(false);
-      dispatch({
-        type: 'dashboard/fetchListTicket',
+    const { typeReport = '', leaveId = '', ticketId = '' } = recordDetail;
+    let response = {};
+    if (typeReport === TYPE_TICKET_APPROVAL.TIMEOFF) {
+      response = await dispatch({
+        type: 'dashboard/rejectRequest',
+        payload: {
+          typeTicket: TYPE_TICKET_APPROVAL.LEAVE_REQUEST,
+          _id: leaveId,
+          comment,
+        },
       });
+      const { statusCode = '' } = response;
+      if (statusCode === 200) {
+        setCommentModalVisible(false);
+        fetchListTicket();
+      }
+    } else {
+      response = await dispatch({
+        type: 'dashboard/rejectTimeSheetRequest',
+        payload: {
+          status: TYPE_TICKET_APPROVAL.REJECTED,
+          ticketId,
+          comment,
+        },
+      });
+      const { code = '' } = response;
+      if (code === 200) {
+        setCommentModalVisible(false);
+        fetchListTicket();
+      }
     }
   };
 
@@ -190,18 +227,18 @@ const ApprovalPage = (props) => {
       key: 'ticketID',
       dataIndex: 'ticketID',
       width: 150,
-      render: (ticketID) => (
+      render: (ticketID, { ticketId = '' }) => (
         <span className={styles.blueText} style={{ paddingLeft: '10px' }}>
-          #{ticketID}
+          #{ticketID || ticketId || ''}
         </span>
       ),
     },
     {
       title: 'Employee ID',
-      dataIndex: 'employee',
-      key: 'employee',
+      dataIndex: 'employeeInfo',
+      key: 'employeeID',
       width: 250,
-      render: ({ employeeId = '' } = {}) => <span>{employeeId || ''}</span>,
+      render: ({ employeeCode = '' } = {}) => <span>{employeeCode || ''}</span>,
     },
     // {
     //   title: 'Name',
@@ -212,8 +249,8 @@ const ApprovalPage = (props) => {
     // },
     {
       title: 'Name',
-      dataIndex: 'employee',
-      key: 'employee',
+      dataIndex: 'employeeInfo',
+      key: 'name',
       width: 250,
       render: (employee) => (
         <Popover
@@ -227,8 +264,8 @@ const ApprovalPage = (props) => {
           placement="bottomRight"
           trigger="hover"
         >
-          {!isEmpty(employee?.generalInfo) ? (
-            <span className={styles.employeeName}>{employee?.generalInfo?.legalName}</span>
+          {!isEmpty(employee) ? (
+            <span className={styles.employeeName}>{employee?.legalName}</span>
           ) : (
             ''
           )}
@@ -237,42 +274,51 @@ const ApprovalPage = (props) => {
     },
     {
       title: 'Manager',
-      dataIndex: 'assignee',
-      key: 'assignee',
+      dataIndex: 'employeeInfo',
+      key: 'manager',
       width: 250,
-      render: ({ generalInfoInfo: { legalName = '' } = {} } = {}) => <span>{legalName || ''}</span>,
+      render: ({ manager: { legalName = '' } = {} }) => <span>{legalName || ''}</span>,
       align: 'left',
     },
     {
       title: 'Department',
-      dataIndex: 'employee',
+      dataIndex: 'employeeInfo',
       key: 'department',
       width: 200,
-      render: ({ departmentInfo: { name } = {} } = {}) => (
+      render: ({ department: { name = '' } = {} } = {}) => (
         <span className={styles.directoryTable_deparmentText}>{name || ''}</span>
       ),
       align: 'left',
     },
     {
       title: 'Date Range',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      width: 300,
-      render: (createdAt) => <span>{moment(createdAt).locale('en').format('DD-MM-YYYY')}</span>,
-      align: 'left',
+      dataIndex: ['fromDate', 'toDate'],
+      key: 'dateRange',
+      fixed: 'left',
+      width: '20%',
+      render: (_, row) => {
+        const { fromDate, toDate } = row;
+        return (
+          <span>
+            {moment(fromDate).format('DD-MM-YYYY')} to {moment(toDate).format('DD-MM-YYYY')}
+          </span>
+        );
+      },
+      // sorter: (a, b) => moment(a.fromDate) - moment(b.fromDate),
+      // sortDirections: ['descend', 'ascend'],
     },
     {
       title: 'Type',
-      dataIndex: 'typeTicket',
-      key: 'typeTicket',
+      dataIndex: 'typeReport',
+      key: 'typeReport',
       width: 250,
-      render: (typeTicket = '') => (
+      render: (typeReport = '') => (
         <span
           className={
-            typeTicket === TYPE_TICKET_APPROVAL.TIMEOFF ? styles.yellowText : styles.blueText
+            typeReport === TYPE_TICKET_APPROVAL.TIMEOFF ? styles.yellowText : styles.blueText
           }
         >
-          {typeTicket === TYPE_TICKET_APPROVAL.TIMEOFF ? 'TimeOff' : 'TimeSheet'}
+          {typeReport === TYPE_TICKET_APPROVAL.TIMEOFF ? 'TimeOff' : 'TimeSheet'}
         </span>
       ),
       align: 'left',
@@ -313,6 +359,8 @@ const ApprovalPage = (props) => {
     } else {
       setIsFiltering(false);
       setApplied(0);
+      fetchListTicket();
+      setPage(1);
     }
   };
 
@@ -330,6 +378,7 @@ const ApprovalPage = (props) => {
         // setNeedResetFilterForm={setNeedResetFilterForm}
         setApplied={setApplied}
         setIsFiltering={setIsFiltering}
+        fetchListTicket={fetchListTicket}
       />
     );
     return (
@@ -361,7 +410,7 @@ const ApprovalPage = (props) => {
           <Table
             columns={columns}
             dataSource={listData}
-            loading={loadingTable || loadingReject || loadingApproval}
+            loading={loadingTable || loadingReject || loadingApproval || loadingApprovalTimeSheet}
             size="small"
             pagination={pagination}
           />
@@ -372,6 +421,8 @@ const ApprovalPage = (props) => {
         viewedDetail={viewedDetail}
         ticket={ticket}
         onCancel={() => setOpenModal(false)}
+        setViewedDetail={setViewedDetail}
+        refreshData={fetchListTicket}
       />
       <RejectCommentModal
         visible={commentModalVisible}
@@ -387,13 +438,16 @@ export default connect(
   ({
     loading,
     location: { companyLocationList = [] },
-    dashboard: { listTicket = [], totalTicket, isLoadData },
+    dashboard: { allTicket = [], totalTicket, isLoadData },
+    user: { currentUser: { employee = {} } = {} },
   }) => ({
-    loadingTable: loading.effects['dashboard/fetchListTicket'],
+    loadingTable: loading.effects['dashboard/fetchAllListTicket'],
     loadingReject: loading.effects['dashboard/rejectTicket'],
     loadingApproval: loading.effects['dashboard/approvalTicket'],
+    loadingApprovalTimeSheet: loading.effects['dashboard/approveTimeSheetRequest'],
     companyLocationList,
-    listTicket,
+    allTicket,
+    employee,
     totalTicket,
     isLoadData,
   }),

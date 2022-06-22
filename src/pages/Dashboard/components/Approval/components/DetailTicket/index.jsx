@@ -1,35 +1,45 @@
-import { Modal, Button, Row, Col, Input, Popover, Divider } from 'antd';
-import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { DownOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import { DownOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Col, Divider, Input, Modal, Popover, Row } from 'antd';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { getTimezoneViaCity } from '@/utils/times';
-import CommonModal from '@/components/CommonModal';
 import ModalImage from '@/assets/projectManagement/modalImage1.png';
-import PopoverInfo from '../PopoverInfo';
-import { TIMESHEET_DATE_FORMAT, TYPE_TICKET_APPROVAL } from '@/utils/dashboard';
-import styles from './index.less';
-import WeeklyTable from './components/WeeklyTable';
+import CommonModal from '@/components/CommonModal';
 import { getCurrentCompany } from '@/utils/authority';
-import { dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
+import { TYPE_TICKET_APPROVAL } from '@/utils/dashboard';
+import { getTimezoneViaCity } from '@/utils/times';
+import { dateFormatAPI } from '@/utils/timeSheet';
+import PopoverInfo from '../PopoverInfo';
+import WeeklyTable from './components/WeeklyTable';
+import styles from './index.less';
 
 const DetailTicket = (props) => {
   const {
     openModal,
     onCancel,
     viewedDetail = false,
+    setViewedDetail = () => {},
+    refreshData = () => {},
     ticket: {
       _id,
       ticketID = '',
+      ticketId = '',
       assignee: {
         generalInfoInfo: { legalName: legalNameManager = '', userIdManager = '' } = {},
       } = {},
       employee: {
-        _id: idEmployee = '',
+        // _id: idEmployee = '',
         generalInfo: { legalName: nameInfo = '', userId = '' } = {},
-        employeeId = '',
+        // employeeId = '',
         departmentInfo: { name: departmentName = '' } = {},
-      } = {},
+      } = {} || {},
+      employeeInfo: {
+        employeeId: idEmployeeTimeSheet = '',
+        legalName: nameInfoTimeSheet = '',
+        employeeCode: employeeIdTimeSheet = '',
+        department: { name: departmentNameTimeSheet = '' } = {},
+        manager: { legalName: legalNameManagerTimeSheet = '' } = {},
+      } = {} || {},
       employee = {},
       status = '',
       createdAt = '',
@@ -39,6 +49,7 @@ const DetailTicket = (props) => {
       subject = '',
       description = '',
       typeTicket = '',
+      typeReport = '',
     },
     dispatch,
     loadingApprovel,
@@ -56,37 +67,85 @@ const DetailTicket = (props) => {
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
   // const [selectedDate, setSelectedDate] = useState(moment());
   // const [selectedView, setSelectedView] = useState(VIEW_TYPE.W);
+  const [checkType, setCheckType] = useState(false);
+
+  useEffect(() => {
+    if (
+      typeTicket === TYPE_TICKET_APPROVAL.LEAVE_REQUEST ||
+      typeReport === TYPE_TICKET_APPROVAL.TIMEOFF
+    ) {
+      setCheckType(true);
+    }
+  }, []);
 
   // const currentDateProp = moment(currentDateProps, TIMESHEET_DATE_FORMAT);
-
   const onApproval = async () => {
-    const response = await dispatch({
-      type: 'dashboard/approveRequest',
-      payload: {
-        typeTicket,
-        _id,
-        comment,
-      },
-      statusTimeoff: 'approval',
-    });
-    const { statusCode = '' } = response;
-    if (statusCode === 200) onCancel();
+    let response = {};
+    if (checkType) {
+      response = await dispatch({
+        type: 'dashboard/approveRequest',
+        payload: {
+          typeTicket,
+          _id,
+          comment,
+        },
+        statusTimeoff: 'approval',
+      });
+      const { statusCode = '' } = response;
+      if (statusCode === 200) {
+        onCancel();
+        refreshData();
+      }
+    } else {
+      response = await dispatch({
+        type: 'dashboard/approveTimeSheetRequest',
+        payload: {
+          status: TYPE_TICKET_APPROVAL.APPROVED,
+          ticketId,
+          comment,
+        },
+      });
+      const { code = '' } = response;
+      if (code === 200) {
+        refreshData();
+        onCancel();
+      }
+    }
   };
 
   const onReject = async () => {
-    const response = await dispatch({
-      type: 'dashboard/rejectRequest',
-      payload: {
-        typeTicket,
-        _id,
-        comment,
-      },
-      statusTimeoff: 'reject',
-    });
-    const { statusCode = '' } = response;
-    if (statusCode === 200) {
-      onCancel();
-      setOpenModalConfirm(false);
+    let response = {};
+    if (checkType) {
+      response = await dispatch({
+        type: 'dashboard/rejectRequest',
+        payload: {
+          typeTicket,
+          _id,
+          comment,
+        },
+        statusTimeoff: 'reject',
+      });
+      const { statusCode = '' } = response;
+      if (statusCode === 200) {
+        setOpenModalConfirm(false);
+        onCancel();
+        refreshData();
+      }
+    } else {
+      response = await dispatch({
+        type: 'dashboard/rejectTimeSheetRequest',
+        payload: {
+          status: TYPE_TICKET_APPROVAL.REJECTED,
+          ticketId,
+          comment,
+        },
+      });
+      const { code = '' } = response;
+      if (code === 200) {
+        setOpenModalConfirm(false);
+        onCancel();
+        refreshData();
+      }
     }
   };
 
@@ -95,7 +154,7 @@ const DetailTicket = (props) => {
       type: 'timeSheet/fetchMyTimesheetByTypeEffect',
       payload: {
         companyId: getCurrentCompany(),
-        employeeId: idEmployee,
+        employeeId: idEmployeeTimeSheet,
         fromDate: moment(startDate).format(dateFormatAPI),
         toDate: moment(endDate).format(dateFormatAPI),
         viewType: 'W',
@@ -104,16 +163,13 @@ const DetailTicket = (props) => {
   };
 
   useEffect(() => {
-    if (viewedDetail) {
-      fetchMyTimesheetEffectByType('2022-06-06', '2022-06-12');
+    if (viewedDetail && !checkType) {
+      fetchMyTimesheetEffectByType(fromDate, toDate);
     }
-  }, [idEmployee, viewedDetail]);
-
-  // useEffect(() => {
-  //   if (moment(currentDateProp).isValid() === true) {
-  //     setSelectedDate(moment(currentDateProp));
-  //   }
-  // }, [currentDateProp]);
+    return () => {
+      setViewedDetail(false);
+    };
+  }, [idEmployeeTimeSheet, viewedDetail, employeeIdTimeSheet, checkType]);
 
   const viewDetail = () => {
     setShowDetail(!showDetail);
@@ -189,7 +245,7 @@ const DetailTicket = (props) => {
             Request Type:
           </Col>
           <Col span={16} className={styles.contain}>
-            {typeName && typeTicket === TYPE_TICKET_APPROVAL.TIMEOFF ? 'Timeoff' : 'Comoff'}
+            {typeName && typeTicket === TYPE_TICKET_APPROVAL.LEAVE_REQUEST ? 'Timeoff' : 'Comoff'}
           </Col>
         </Row>
         {subject && (
@@ -212,27 +268,27 @@ const DetailTicket = (props) => {
         <Row gutter={[0, 12]}>
           <Col span={6}>
             <span>Employee Name:</span>
-            <span className={styles.titleText}>{nameInfo}</span>
+            <span className={styles.titleText}>{nameInfoTimeSheet}</span>
           </Col>
           <Col span={6}>
             <span>Department:</span>
-            <span className={styles.titleText}>{departmentName}</span>
+            <span className={styles.titleText}>{departmentNameTimeSheet}</span>
           </Col>
         </Row>
         <Row style={{ marginTop: 24 }} gutter={[0, 12]}>
           <Col span={6}>
             <span>EmployeeID:</span>
-            <span className={styles.titleText}>{employeeId}</span>
+            <span className={styles.titleText}>{employeeIdTimeSheet}</span>
           </Col>
           <Col span={6}>
             <span>Manager:</span>
-            <span className={styles.titleText}>{legalNameManager}</span>
+            <span className={styles.titleText}>{legalNameManagerTimeSheet}</span>
           </Col>
         </Row>
         <Divider />
         <WeeklyTable
-          startDate="2022-06-06"
-          endDate="2022-06-12"
+          startDate={fromDate}
+          endDate={toDate}
           data={myTimesheetByWeek}
           timeoffList={timeoffList}
           // setSelectedDate={setSelectedDate}
@@ -252,7 +308,7 @@ const DetailTicket = (props) => {
       visible={openModal}
       onCancel={onCancel}
       destroyOnClose
-      title={`${typeTicket === TYPE_TICKET_APPROVAL.TIMEOFF ? 'Timeoff' : 'Timesheet'} Detail`}
+      title={`${checkType ? 'Timeoff' : 'Timesheet'} Detail`}
       maskClosable={false}
       width={600}
       footer={[
@@ -277,15 +333,9 @@ const DetailTicket = (props) => {
       ]}
     >
       <>
-        <div
-          className={
-            typeTicket === TYPE_TICKET_APPROVAL.TIMEOFF
-              ? styles.ticketTimeoffInfo
-              : styles.ticketTimesheetInfo
-          }
-        >
-          {typeTicket === TYPE_TICKET_APPROVAL.TIMEOFF ? renderUITimeOff() : renderUITimeSheet()}
-          {showDetail && typeTicket === TYPE_TICKET_APPROVAL.TIMEOFF && (
+        <div className={checkType ? styles.ticketTimeoffInfo : styles.ticketTimesheetInfo}>
+          {checkType ? renderUITimeOff() : renderUITimeSheet()}
+          {showDetail && checkType && (
             <div className={styles.ticketTimeoffInfo__more}>
               <Row className={styles.ticketTimeoffInfo__row}>
                 <Col span={8} className={styles.title}>
@@ -340,7 +390,7 @@ const DetailTicket = (props) => {
               </Row>
             </div>
           )}
-          {typeTicket === TYPE_TICKET_APPROVAL.TIMEOFF && (
+          {checkType && (
             <Row className={styles.ticketTimeoffInfo__detail} onClick={viewDetail}>
               Request Details <DownOutlined rotate={showDetail ? 180 : 0} />
             </Row>
@@ -377,9 +427,7 @@ const DetailTicket = (props) => {
             <img src={ModalImage} alt="" />
             <br />
             <div style={{ textAlign: 'center' }}>Are you sure you want reject </div>
-            <div style={{ fontWeight: 500 }}>
-              This {typeTicket === TYPE_TICKET_APPROVAL.TIMEOFF ? 'Timeoff' : 'Timesheet'} Ticket
-            </div>
+            <div style={{ fontWeight: 500 }}>This {checkType ? 'Timeoff' : 'Timesheet'} Ticket</div>
           </div>
         }
       />

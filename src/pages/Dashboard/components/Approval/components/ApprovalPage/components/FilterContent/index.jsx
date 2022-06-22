@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import SearchIcon from '@/assets/directory/search.svg';
 import styles from './index.less';
+import { TYPE_TICKET_APPROVAL } from '@/utils/dashboard';
 
 const FilterContent = (props) => {
   const [form] = Form.useForm();
@@ -14,12 +15,13 @@ const FilterContent = (props) => {
     employee: {
       employeeIDList = [],
       employeeNameList = [],
-      filterList: { listDepartmentName = [], listTitle = [] } = {},
+      filterList: { listDepartmentName = [] } = {},
     } = {},
     loadingFetchEmployeeIDList = false,
     loadingFetchEmployeeNameList = false,
     // handleFilterCounts = () => {},
     setForm = () => {},
+    fetchListTicket = () => {},
   } = props;
 
   const dateFormat = 'MMM DD, YYYY';
@@ -84,13 +86,15 @@ const FilterContent = (props) => {
     if (filterTemp.toDate) {
       filterTemp.toDate = moment(filterTemp.toDate).format('YYYY-MM-DD');
     }
+    if (filterTemp.employeeCode) {
+      filterTemp.employeeCode = [filterTemp.employeeCode];
+    }
+    if (filterTemp.legalName) {
+      filterTemp.legalName = [filterTemp.legalName];
+    }
 
-    dispatch({
-      type: 'employee/save',
-      payload: { filter: filterTemp },
-    });
     onFilter(filterTemp);
-    console.log(filterTemp);
+    fetchListTicket('', filterTemp);
   };
 
   const onFinishDebounce = debounce((values) => {
@@ -156,37 +160,18 @@ const FilterContent = (props) => {
     onSearchEmployeeDebounce(type, value);
   };
 
-  // const onChangeDate = (currentDate, type) => {
-  //   switch (type) {
-  //     case 'fromDate':
-  //       if (currentDate === null) {
-  //         this.setState({
-  //           durationFrom: '',
-  //         });
-  //       } else {
-  //         this.setState({
-  //           durationFrom: currentDate,
-  //         });
-  //       }
-  //       break;
-
-  //     case 'toDate':
-  //       if (currentDate === null) {
-  //         this.setState({
-  //           durationTo: '',
-  //         });
-  //       } else {
-  //         this.setState({
-  //           durationTo: currentDate,
-  //         });
-  //       }
-  //       break;
-
-  //     default:
-  //       break;
-  //   }
-  //   // this.onFinish({ [type]: currentDate });
-  // };
+  const listTypes = [
+    {
+      _id: 1,
+      value: TYPE_TICKET_APPROVAL.TIMEOFF,
+      name: 'Time Off',
+    },
+    {
+      _id: 2,
+      value: TYPE_TICKET_APPROVAL.TIMESHEET,
+      name: 'Time Sheet',
+    },
+  ];
 
   return (
     <Form
@@ -197,7 +182,7 @@ const FilterContent = (props) => {
       form={form}
       className={styles.FilterContent}
     >
-      <Form.Item label="by employee id" name="employeeId">
+      <Form.Item label="by employee id" name="employeeCode">
         <AutoComplete
           dropdownMatchSelectWidth={252}
           notFoundContent={loadingFetchEmployeeIDList ? <Spin /> : 'No Data'}
@@ -214,7 +199,7 @@ const FilterContent = (props) => {
         </AutoComplete>
       </Form.Item>
 
-      <Form.Item label="By name/user id" name="name">
+      <Form.Item label="By name" name="legalName">
         <AutoComplete
           dropdownMatchSelectWidth={252}
           notFoundContent={loadingFetchEmployeeNameList ? <Spin /> : 'No Data'}
@@ -224,14 +209,14 @@ const FilterContent = (props) => {
           onBlur={() => setSearchIcons({ ...searchIcons, name: false })}
         >
           <Input
-            placeholder="Search by Name/User ID"
+            placeholder="Search by Name"
             prefix={searchIcons.name ? <img src={SearchIcon} alt="search" /> : null}
             allowClear
           />
         </AutoComplete>
       </Form.Item>
 
-      <Form.Item label="By department id/name" name="department">
+      <Form.Item label="By department name" name="departmentNames">
         <Select
           allowClear
           showSearch
@@ -253,7 +238,7 @@ const FilterContent = (props) => {
         </Select>
       </Form.Item>
 
-      <Form.Item label="by request type" name="type">
+      <Form.Item label="by request type" name="types">
         <Select
           allowClear
           showSearch
@@ -265,9 +250,9 @@ const FilterContent = (props) => {
           }
           showArrow
         >
-          {listTitle.map((x) => {
+          {listTypes.map((x) => {
             return (
-              <Select.Option value={x._id} key={x._id}>
+              <Select.Option value={x.value} key={x._id}>
                 {x.name}
               </Select.Option>
             );

@@ -109,8 +109,11 @@ const CALENDAR_COLORS = {
 };
 
 const TYPE_TICKET_APPROVAL = {
-  TIMEOFF: 'sleaveRequest',
-  TIMESHEET: 'Timesheet',
+  LEAVE_REQUEST: 'leaveRequest',
+  TIMEOFF: 'timeoff',
+  TIMESHEET: 'timesheet',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
 };
 
 export {
