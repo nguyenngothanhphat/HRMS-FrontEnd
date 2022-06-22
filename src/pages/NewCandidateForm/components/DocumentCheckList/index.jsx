@@ -19,7 +19,7 @@ const DocumentsCheckList = (props) => {
     return <Skeleton />;
   }
   if (
-    processStatus !== NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION &&
+    processStatus !== NEW_PROCESS_STATUS.OFFER_ACCEPTED &&
     processStatus !== NEW_PROCESS_STATUS.DRAFT
   ) {
     return <BackgroundRecheck />;

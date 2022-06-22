@@ -25,8 +25,8 @@ import CandidateUserName from './components/CandidateUserName/index';
 import ConfirmModal from './components/ConfirmModal/index';
 
 import EyeIcon from '@/assets/eyes.svg';
-import JoiningIcon from '@/assets/Vector.svg';
-import LaunchIcon from '@/assets/launchIcon.svg';
+// import JoiningIcon from '@/assets/Vector.svg';
+// import LaunchIcon from '@/assets/launchIcon.svg';
 import DeleteIcon from '@/assets/bin.svg';
 
 const compare = (dateTimeA, dateTimeB) => {
@@ -256,7 +256,7 @@ class OnboardTable extends Component {
     return check;
   };
 
-  getColorClassName = (type) => {
+  getColorClassName = (type = 'A') => {
     const tempType = type.toLowerCase().replace(/ +/g, '');
     if (tempType === 'draft' || tempType === 'needchanges') {
       return styles.blueTag;
@@ -533,7 +533,7 @@ class OnboardTable extends Component {
           <>
             <Menu.Item>
               <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
-                <img className={styles.actionIcon} src={JoiningIcon} alt="joiningIcon" />
+                <img className={styles.actionIcon} src="JoiningIcon" alt="joiningIcon" />
                 <span>Send Pre-Joining Documents</span>
               </Link>
             </Menu.Item>
@@ -544,11 +544,10 @@ class OnboardTable extends Component {
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <img className={styles.actionIcon} src={LaunchIcon} alt="launchIcon" />
+              <img className={styles.actionIcon} src="LaunchIcon" alt="launchIcon" />
               <span
                 onClick={() =>
-                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)
-                }
+                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)}
               >
                 Initiate joining formalities
               </span>
@@ -581,8 +580,7 @@ class OnboardTable extends Component {
                   id,
                   processStatusId,
                   type,
-                )
-              }
+                )}
               className={styles.actionText}
             >
               Re-assign

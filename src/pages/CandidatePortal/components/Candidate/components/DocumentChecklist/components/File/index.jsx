@@ -5,7 +5,7 @@ import DoneIcon from '@/assets/candidatePortal/doneSign.svg';
 // import WarningGrayIcon from '@/assets/candidatePortal/warningGrayIcon.png';
 import WarningIcon from '@/assets/candidatePortal/warningIcon.svg';
 import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
-import { mapType } from '@/utils/newCandidateForm';
+import { DOCUMENTS_CHECKLIST_TYPE, mapType } from '@/utils/newCandidateForm';
 import UploadComponent from '../UploadComponent';
 import styles from './index.less';
 
@@ -23,24 +23,24 @@ const File = (props) => {
     dispatch,
     item = {},
     type = '',
-    candidatePortal: { data = {} } = {},
+    candidatePortal: { data: { documentChecklist = [] } } = {},
     onNotAvailableClick = () => {},
     onViewCommentClick = () => {},
     onViewDocumentClick = () => {},
     blockIndex = 0, // for type E
   } = props;
 
+  console.log('type', type);
   const onSaveRedux = (result) => {
     dispatch({
       type: 'candidatePortal/saveOrigin',
       payload: {
-        [mapType[type]]: result,
+        documentChecklist: result,
       },
     });
   };
 
   const getResponse = async (key, res) => {
-    console.log('key', key);
     const [attachment] = res.data;
     const documentRes = await dispatch({
       type: 'candidatePortal/upsertCandidateDocumentEffect',
@@ -53,7 +53,6 @@ const File = (props) => {
     if (documentRes.statusCode === 200) {
       const { data: fetchedDocument = {} } = documentRes;
       const onAddFetchedDocToRedux = (arr) => {
-        console.log('arr', arr);
         return arr.map((x) => {
           if (x.key === key) {
             return {
@@ -67,19 +66,14 @@ const File = (props) => {
       };
 
       if (fetchedDocument) {
-        let items = [...data[mapType[type]]];
-        console.log('items', items);
+        let items = documentChecklist;
 
-        if (type !== 'E') {
-          items = onAddFetchedDocToRedux(items);
-        } else {
-          items = items.map((x) => {
-            return {
-              ...x,
-              data: onAddFetchedDocToRedux(x.data),
-            };
-          });
-        }
+        items = items.map((x) => {
+          return {
+            ...x,
+            documents: onAddFetchedDocToRedux(x.documents),
+          };
+        });
         onSaveRedux(items);
       }
     }
@@ -254,7 +248,7 @@ const File = (props) => {
           {item.required && <span className={styles.starSymbol}>*</span>}
         </span>
       </Col>
-      <Col span={12}>{renderFileStatus()}</Col>
+      <Col span={12}>{type !== DOCUMENTS_CHECKLIST_TYPE.H && renderFileStatus()}</Col>
     </Row>
   );
 };

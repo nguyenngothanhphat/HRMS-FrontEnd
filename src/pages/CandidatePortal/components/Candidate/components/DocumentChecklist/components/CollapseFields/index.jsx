@@ -8,7 +8,7 @@ const CollapseField = (props) => {
   const {
     layout = {},
     items = [],
-    onVerifyDocument = () => {},
+    onNotAvailableClick = () => {},
     onViewCommentClick = () => {},
     onViewDocumentClick = () => {},
   } = props;
@@ -37,7 +37,7 @@ const CollapseField = (props) => {
                 item={item}
                 index={i}
                 type={layout.type}
-                onVerifyDocument={onVerifyDocument}
+                onNotAvailableClick={onNotAvailableClick}
                 onViewCommentClick={onViewCommentClick}
                 onViewDocumentClick={onViewDocumentClick}
               />

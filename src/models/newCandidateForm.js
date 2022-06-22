@@ -1647,11 +1647,12 @@ const newCandidateForm = {
           company: getCurrentCompany(),
           isFormat: true,
         });
-        const { statusCode, data } = response;
+        const { statusCode, data: documentChecklist } = response;
+        console.log(documentChecklist)
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveTemp',
-          payload: { documentChecklist: data },
+          payload: { documentChecklist },
         });
       } catch (errors) {
         dialog(errors);
@@ -1673,7 +1674,7 @@ const newCandidateForm = {
         //     processStatus: NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION,
         //   },
         // });
-        message.success('Send Succesfully');
+        message.success('Send Successfully');
       } catch (errors) {
         dialog(errors);
       }

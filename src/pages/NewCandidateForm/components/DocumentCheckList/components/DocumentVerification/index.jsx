@@ -115,7 +115,9 @@ const DocumentVerification = (props) => {
 
   useEffect(() => {
     setListDocsTypeH(documentChecklist.find((x) => x.type === DOCUMENTS_CHECKLIST_TYPE.H));
+    console.log(documentChecklist)
   }, [documentChecklist]);
+
 
   const getItemByType = (types) => {
     return documentChecklist.find((x) => x.type === types);

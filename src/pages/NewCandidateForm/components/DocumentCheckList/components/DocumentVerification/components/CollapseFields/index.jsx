@@ -12,6 +12,8 @@ const CollapseFields = (props) => {
   const { items = [] } = props;
 
   const [openModal, setOpenModal] = useState(false);
+  const [urlFile, setUrlFile] = useState('');
+  const [fileName, setFileName] = useState('');
 
   const renderHeader = () => {
     return (
@@ -23,6 +25,8 @@ const CollapseFields = (props) => {
 
   const handleViewFile = (record) => {
     console.log(record);
+    setUrlFile(record?.attachment?.url);
+    setFileName(record?.attachment?.name);
     setOpenModal(true);
   };
 
@@ -62,8 +66,8 @@ const CollapseFields = (props) => {
       </div>
       <ViewDocumentModal
         visible={openModal}
-        // fileName={displayDocumentName}
-        // url={urlDocument}
+        fileName={fileName}
+        url={urlFile}
         onClose={() => setOpenModal(false)}
       />
     </Col>

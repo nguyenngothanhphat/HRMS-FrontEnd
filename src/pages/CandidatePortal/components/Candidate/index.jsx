@@ -11,6 +11,7 @@ import JobDetails from './components/JobDetails';
 import OfferDetails from './components/OfferDetails';
 import OfferLetter from './components/OfferLetter';
 import SalaryStructure from './components/SalaryStructure';
+import DocumentChecklist from './components/DocumentChecklist';
 
 // list:
 // 1: BasicInformation
@@ -57,6 +58,9 @@ const Candidate = (props) => {
         break;
       case CANDIDATE_TASK_LINK.REFERENCES:
         setScreen(7);
+        break;
+      case CANDIDATE_TASK_LINK.PREJOINING_CHECKLIST:
+        setScreen(8);
         break;
       default:
         setScreen(1);
@@ -119,6 +123,8 @@ const Candidate = (props) => {
         return <OfferLetter />;
       case 7:
         return <References />;
+      case 8:
+        return <DocumentChecklist />;
       default:
         return <div />;
     }
@@ -144,6 +150,8 @@ const Candidate = (props) => {
         return [{ id: 6, title: 'Offer Letter', disabled: true }];
       case CANDIDATE_TASK_LINK.REFERENCES:
         return [{ id: 7, title: 'References', disabled: true }];
+      case CANDIDATE_TASK_LINK.PREJOINING_CHECKLIST:
+        return [{ id: 8, title: 'Pre-joining Checklist', disabled: true }];
       default:
         return defaultSet;
     }

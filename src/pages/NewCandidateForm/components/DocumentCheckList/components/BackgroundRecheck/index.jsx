@@ -12,27 +12,18 @@ import styles from './index.less';
 import CollapseField from './components/CollapseFields';
 import CommonModal from '@/components/CommonModal';
 import VerifyDocumentModalContent from './components/VerifyDocumentModalContent';
-import { mapType } from '@/utils/newCandidateForm';
+import { DOCUMENTS_CHECKLIST_TYPE, mapType } from '@/utils/newCandidateForm';
 import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
 import ViewCommentModalContent from './components/ViewCommentModalContent';
 import TechnicalCertification from './components/TechnicalCertification';
 import PreviousEmployment from './components/PreviousEmployment';
+import CollapseFieldsTypeH from './components/CollapseFieldsTypeH';
 
 const BackgroundRecheck = (props) => {
   const {
     newCandidateForm: {
       tempData = {},
-      tempData: {
-        documentTypeA = [],
-        documentTypeB = [],
-        documentTypeC = [],
-        documentTypeD = [],
-        documentTypeE = [],
-        ticketID = '',
-        candidate,
-        processStatus = '',
-        documentLayout = [],
-      },
+      tempData: { ticketID = '', candidate, processStatus = '', documentChecklist = [] },
       currentStep = '',
     } = {},
     // loadingUpdateByHR = false,
@@ -43,6 +34,16 @@ const BackgroundRecheck = (props) => {
   const [viewCommentModalVisible, setViewCommentModalVisible] = useState(false);
   const [selectingFile, setSelectingFile] = useState(null);
   const [action, setAction] = useState('');
+
+  const documentTypeS = documentChecklist.find(
+    (x) => x.type === DOCUMENTS_CHECKLIST_TYPE.S,
+  ).documents;
+  const documentTypeE = documentChecklist.find(
+    (x) => x.type === DOCUMENTS_CHECKLIST_TYPE.E,
+  ).documents;
+  const documentTypeH = documentChecklist.find(
+    (x) => x.type === DOCUMENTS_CHECKLIST_TYPE.H,
+  ).documents;
 
   const [validated, setValidated] = useState(false);
 
@@ -59,23 +60,17 @@ const BackgroundRecheck = (props) => {
         );
     };
     // for type E
-    const checkDocumentUploadedTypeE = (arr) => {
-      if (arr.length === 0) return true;
-      let check = false;
-      arr.forEach((x) => {
-        const { data: dataArr = [] } = x;
-        check = checkDocumentUploaded(dataArr);
-      });
-      return check;
-    };
+    // const checkDocumentUploadedTypeE = (arr) => {
+    //   if (arr.length === 0) return true;
+    //   let check = false;
+    //   arr.forEach((x) => {
+    //     const { data: dataArr = [] } = x;
+    //     check = checkDocumentUploaded(dataArr);
+    //   });
+    //   return check;
+    // };
 
-    return (
-      checkDocumentUploaded(documentTypeA) &&
-      checkDocumentUploaded(documentTypeB) &&
-      checkDocumentUploaded(documentTypeC) &&
-      checkDocumentUploaded(documentTypeD) &&
-      checkDocumentUploadedTypeE(documentTypeE)
-    );
+    return checkDocumentUploaded(documentTypeS) && checkDocumentUploaded(documentTypeE);
   };
 
   useEffect(() => {
@@ -83,34 +78,18 @@ const BackgroundRecheck = (props) => {
   }, []);
 
   useLayoutEffect(() => {
-    if (
-      documentTypeA.length > 0 ||
-      documentTypeB.length > 0 ||
-      documentTypeC.length > 0 ||
-      documentTypeD.length > 0 ||
-      documentTypeE.length > 0
-    ) {
+    if (documentTypeS.length > 0 || documentTypeE.length > 0 || documentTypeH.length > 0) {
       dispatch({
         type: 'newCandidateForm/updateByHR',
         payload: {
           candidate,
-          documentTypeA,
-          documentTypeB,
-          documentTypeC,
-          documentTypeD,
-          documentTypeE,
+          documentChecklist,
         },
       });
       const check = validateFiles();
       setValidated(check);
     }
-  }, [
-    JSON.stringify(documentTypeA),
-    JSON.stringify(documentTypeB),
-    JSON.stringify(documentTypeC),
-    JSON.stringify(documentTypeD),
-    JSON.stringify(documentTypeE),
-  ]);
+  }, [JSON.stringify(documentChecklist)]);
 
   const onVerifyDocument = (typeProp, itemProp) => {
     setSelectingFile({
@@ -138,60 +117,32 @@ const BackgroundRecheck = (props) => {
   };
 
   const _renderItems = () => {
-    const dataA = documentTypeA.filter((x) => x.value || x.required);
-    const dataB = documentTypeB.filter((x) => x.value || x.required);
-    const dataC = documentTypeC.filter((x) => x.value || x.required);
+    const dataS = documentTypeS.filter((x) => x.value || x.required);
+    const dataE = documentTypeE.filter((x) => x.value || x.required);
 
     const items = [
       {
-        component: dataA.length > 0 && (
+        component: dataS.length > 0 && (
           <CollapseField
-            items={dataA || []}
-            layout={documentLayout.find((x) => x.type === 'A')}
+            items={dataS || []}
+            layout={documentChecklist.find((x) => x.type === DOCUMENTS_CHECKLIST_TYPE.S)}
             onVerifyDocument={onVerifyDocument}
             onViewCommentClick={onViewCommentClick}
           />
         ),
       },
       {
-        component: dataB.length > 0 && (
+        component: dataE.length > 0 && (
           <CollapseField
-            items={dataB || []}
-            layout={documentLayout.find((x) => x.type === 'B')}
+            items={dataE || []}
+            layout={documentChecklist.find((x) => x.type === DOCUMENTS_CHECKLIST_TYPE.E)}
             onVerifyDocument={onVerifyDocument}
             onViewCommentClick={onViewCommentClick}
           />
         ),
       },
       {
-        component: dataC.length > 0 && (
-          <CollapseField
-            items={dataC || []}
-            layout={documentLayout.find((x) => x.type === 'C')}
-            onVerifyDocument={onVerifyDocument}
-            onViewCommentClick={onViewCommentClick}
-          />
-        ),
-      },
-      {
-        component: documentTypeD.length > 0 && (
-          <TechnicalCertification
-            items={documentTypeD || []}
-            layout={documentLayout.find((x) => x.type === 'D')}
-            onVerifyDocument={onVerifyDocument}
-            onViewCommentClick={onViewCommentClick}
-          />
-        ),
-      },
-      {
-        component: documentTypeE.length > 0 && (
-          <PreviousEmployment
-            items={documentTypeE}
-            layout={documentLayout.find((x) => x.type === 'E')}
-            onVerifyDocument={onVerifyDocumentTypeE}
-            onViewCommentClick={onViewCommentClick}
-          />
-        ),
+        component: documentTypeH.length > 0 && <CollapseFieldsTypeH items={documentTypeH} />,
       },
     ];
     return items.map((x) => x.component && <Col span={24}>{x.component}</Col>);
@@ -265,11 +216,11 @@ const BackgroundRecheck = (props) => {
     );
   };
 
-  const onSaveRedux = (result, type) => {
+  const onSaveRedux = (result) => {
     dispatch({
       type: 'newCandidateForm/saveTemp',
       payload: {
-        [mapType[type]]: result,
+        documentChecklist: result,
       },
     });
   };
@@ -282,10 +233,10 @@ const BackgroundRecheck = (props) => {
   };
 
   const assignPayloadToData = (payload) => {
-    let items = [...tempData[mapType[selectingFile?.type]]];
+    let items = documentChecklist;
 
-    const func = (arr1) => {
-      return arr1.map((x) => {
+    const func = (arr) => {
+      return arr.map((x) => {
         if (x.key === selectingFile?.item?.key) {
           return {
             ...x,
@@ -296,20 +247,17 @@ const BackgroundRecheck = (props) => {
       });
     };
 
-    if (selectingFile?.type !== 'E') {
-      items = func(items);
-    } else {
-      items = items.map((x, i) => {
-        if (i === selectingFile?.index) {
-          return {
-            ...x,
-            data: func(x.data),
-          };
-        }
-        return x;
-      });
-    }
-    onSaveRedux(items, selectingFile?.type);
+    items = items.map((x) => {
+      if (x.type === selectingFile?.type) {
+        return {
+          ...x,
+          documents: func(x.documents),
+        };
+      }
+      return x;
+    });
+
+    onSaveRedux(items);
   };
 
   const onVerified = () => {
