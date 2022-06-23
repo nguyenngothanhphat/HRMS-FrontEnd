@@ -10,22 +10,22 @@ import {
   notification,
   Row,
   Select,
-  // TimePicker,
 } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import AddIcon from '@/assets/timeSheet/add.svg';
 import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
-import styles from './index.less';
 import CustomTimePicker from '@/components/CustomTimePicker';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
+import styles from './index.less';
 
 const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
 const countryIdUS = 'US';
 const TASKS = [];
+const { RangePicker } = DatePicker;
 
 const AddTaskModal = (props) => {
   const [form] = Form.useForm();
@@ -52,6 +52,9 @@ const AddTaskModal = (props) => {
   const { _id: employeeId = '' } = employee;
   const { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = location;
   const viewUS = countryID === countryIdUS;
+
+  // state
+  const [dates, setDates] = useState(null);
 
   const fetchProjectList = () => {
     dispatch({
@@ -113,8 +116,26 @@ const AddTaskModal = (props) => {
     setDisabledHourBefore(disabledHourBeforeTemp);
   };
 
+  const disabledDate = (current) => {
+    if (!dates) {
+      return false;
+    }
+    const tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
+    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
+    return !!tooEarly || !!tooLate;
+  };
+
+  const onOpenChange = (open) => {
+    if (open) {
+      form.setFieldsValue({
+        dates: [null, null],
+      });
+      setDates([null, null]);
+    }
+  };
+
   // main function
-  const addMultipleActivityEffect = (submitDate, tasks) => {
+  const addMultipleActivityEffect = (submitDates, tasks) => {
     if (!employee?.managerInfo) {
       notification.error({ message: 'User does not have manager' });
       return {};
@@ -129,7 +150,6 @@ const AddTaskModal = (props) => {
         endTime: moment(item.endTime, hourFormat).format(hourFormatAPI),
         breakTime: item.breakTime || 0,
         overTime: item.overTime || 0,
-        date: moment(submitDate).locale('en').format(dateFormatAPI),
         clientLocation: item.clientLocation || false,
         project: {
           projectName: findPrj?.projectName,
@@ -165,13 +185,15 @@ const AddTaskModal = (props) => {
         employeeId,
         companyId: getCurrentCompany(),
         data,
+        fromDate: moment(submitDates[0], hourFormat).format(dateFormatAPI),
+        toDate: moment(submitDates[1], hourFormat).format(dateFormatAPI),
       },
     });
   };
 
   const handleFinish = async (values) => {
-    const { date: submitDate, tasks = [] } = values;
-    const res = await addMultipleActivityEffect(submitDate, tasks);
+    const { dates: submitDates = [], tasks = [] } = values;
+    const res = await addMultipleActivityEffect(submitDates, tasks);
     if (res.code === 200) {
       onClose();
       form.resetFields();
@@ -380,11 +402,21 @@ const AddTaskModal = (props) => {
               <Form.Item
                 rules={[{ required: true, message: 'Please select Timesheet Period' }]}
                 label="Select Timesheet Period"
-                name="date"
-                fieldKey="date"
+                name="dates"
+                fieldKey="dates"
                 labelCol={{ span: 24 }}
               >
-                <DatePicker format={dateFormat} />
+                <RangePicker
+                  format={dateFormat}
+                  ranges={{
+                    Today: [moment(), moment()],
+                    'This Week': [moment().startOf('week'), moment().endOf('week')],
+                  }}
+                  disabledDate={disabledDate}
+                  onCalendarChange={(val) => setDates(val)}
+                  onOpenChange={onOpenChange}
+                  allowClear={false}
+                />
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>

@@ -185,7 +185,7 @@ const EditTaskModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Please select Timesheet Period' }]}
-                label="Select Timesheet Period"
+                label="Select Timesheet Date"
                 name="date"
                 fieldKey="date"
                 labelCol={{ span: 24 }}
