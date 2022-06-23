@@ -37,8 +37,8 @@ const DocumentsChecklist = (props) => {
     setDocumentModal(true);
   };
 
-  const handleClickAction = (type, documentsKey) => {
-    setDocumentKey(documentsKey);
+  const handleClickAction = (type, key) => {
+    setDocumentKey(key);
     if (type === DOCUMENT_KEYS.UPLOAD) {
       setUploadModal(true);
       return;

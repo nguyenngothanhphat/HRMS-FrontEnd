@@ -435,7 +435,7 @@ const candidatePortal = {
             tempPendingTasks[4].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';
             break;
 
-          case NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST:
+          case NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION:
             tempPendingTasks[5].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
             tempPendingTasks[5].dueDate = dueDate;
             break;
