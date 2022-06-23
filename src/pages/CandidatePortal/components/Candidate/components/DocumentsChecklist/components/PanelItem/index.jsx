@@ -57,7 +57,7 @@ const PanelItem = ({ document, actionText, onClickFile, onClickAction }) => {
   };
 
   return (
-    <Row gutter={[24, 24]} className={styles.panelItem}>
+    <Row gutter={[24, 24]} className={styles.PanelItem}>
       <Col span={12} style={{ paddingLeft: 8 }}>
         {alias}
       </Col>

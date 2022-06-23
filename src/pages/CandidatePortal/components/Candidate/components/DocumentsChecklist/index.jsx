@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import { Col, Collapse, Row } from 'antd';
-import { connect, history } from 'umi';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import MessageBox from '../MessageBox';
-import NoteComponent from '../NoteComponent';
-import styles from './index.less';
-import PanelItem from './components/PanelItem';
-import DocumentButton from './components/DocumentButton';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
+import { Col, Collapse, Row } from 'antd';
+import React, { useState } from 'react';
+import { connect, history } from 'umi';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import ModalUpload from '@/components/ModalUpload';
 import SignatureModal from '@/components/SignatureModal';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { DOCUMENT_KEYS, DOCUMENT_TYPES } from '@/utils/candidatePortal';
+import MessageBox from '../MessageBox';
+import NoteComponent from '../NoteComponent';
+import PanelItem from './components/PanelItem';
+import styles from './index.less';
 
 const { Panel } = Collapse;
 
@@ -169,16 +170,16 @@ const DocumentsChecklist = (props) => {
   const renderBottomBar = () => {
     return (
       <div className={styles.bottomBar}>
-        <DocumentButton onClick={handleGoBack} primary={false}>
-          Previous
-        </DocumentButton>
-        <DocumentButton onClick={handleGoBack}>Complete </DocumentButton>
+        <CustomSecondaryButton onClick={handleGoBack}>
+          <span className={styles.previousBtn}>Previous</span>
+        </CustomSecondaryButton>
+        <CustomPrimaryButton onClick={handleGoBack}>Complete </CustomPrimaryButton>
       </div>
     );
   };
 
   return (
-    <Row gutter={[24, 24]} className={styles.documentsChecklist}>
+    <Row gutter={[24, 24]} className={styles.DocumentsChecklist}>
       <Col xs={24} sm={24} md={16} xl={16}>
         {renderHeader()}
         {documentsChecklist.length ? renderContent() : null}

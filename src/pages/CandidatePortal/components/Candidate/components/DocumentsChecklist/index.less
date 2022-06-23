@@ -1,9 +1,11 @@
-@title-color: #161c29;
-@description-color: #707177;
 @blue-color: #2c6df9;
 @white-color: #fff;
+@orange-color: #FFA100;
+@title-color: #161c29;
+@description-color: #707177;
+@border-color: #d6dce0;
 
-.documentsChecklist {
+.DocumentsChecklist {
   .header {
     .title {
       margin-bottom: 10px;
@@ -43,13 +45,16 @@
 
   .bottomBar {
     padding: 16px;
-    background-color: #ffffff;
-    border: solid 1px #d6dce0;
+    background-color: @white-color;
+    border: solid 1px @border-color;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
     display: flex;
     justify-content: flex-end;
     align-items: center;
     gap: 16px;
+    .previousBtn {
+      color: @orange-color;
+    }
   }
 }
