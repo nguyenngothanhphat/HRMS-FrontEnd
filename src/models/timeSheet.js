@@ -257,6 +257,8 @@ const TimeSheet = {
         const params = {
           companyId: payload.companyId,
           employeeId: payload.employeeId,
+          fromDate: payload.fromDate,
+          toDate: payload.toDate,
         };
         response = yield call(addMultipleActivity, payload.data, params);
         const { code, msg = '', errors = [] } = response;
