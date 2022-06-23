@@ -43,7 +43,6 @@ const EmploymentTab = (props) => {
   const visibleSuccess = employeeProfile ? employeeProfile.visibleSuccess : false;
 
   const fetchData = () => {
-    dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: { employee } });
     dispatch({
       type: 'employeeProfile/fetchEmployeeTypes',
     });
@@ -83,7 +82,7 @@ const EmploymentTab = (props) => {
         currentAnnualCTC: currentAnnualCTC || null,
       });
     }
-  }, [employee, reportees]);
+  }, [employee, JSON.stringify(reportees)]);
 
   const handleMakeChanges = async () => {
     setCurrent(0);
@@ -92,6 +91,42 @@ const EmploymentTab = (props) => {
 
   const handleEditCurrentInfo = () => {
     setIsEdit(!isEdit);
+  };
+
+  const getChangesText = () => {
+    const oldValues = {
+      location: location.name,
+      department: department.name,
+      title: title.name,
+      employeeType: employeeType.name,
+      currentAnnualCTC,
+      compensationType,
+      manager: manager.generalInfo?.legalName,
+      reportees: currentData.reportees.length,
+    };
+
+    const newValues = {
+      location: changedData.newLocation,
+      department: changedData.newDepartment,
+      title: changedData.newTitle,
+      employeeType: changedData.newEmploymentType,
+      currentAnnualCTC: changedData.stepFour.currentAnnualCTC,
+      compensationType: changedData.stepFour.compensationType,
+      manager: changedData.newManager,
+      reportees: changedData.stepThree.reportees.length,
+    };
+
+    let obj = Object.keys(oldValues).map((x) => {
+      if (oldValues[x] !== newValues[x] && newValues[x] && x !== 'reportees') {
+        return `${x}: ${oldValues[x] || 'None'} => ${newValues[x]}`;
+      }
+      return null;
+    });
+    if (JSON.stringify(currentData.reportees) !== JSON.stringify(changedData.stepThree.reportees)) {
+      obj.push(` ${currentData.reportees.length} => ${changedData.stepThree.reportees.length}`);
+    }
+    obj = obj.filter((x) => x);
+    return obj;
   };
 
   const handleSubmit = async (data) => {
@@ -120,6 +155,9 @@ const EmploymentTab = (props) => {
       employee: data.employee,
       changedBy: data.changedBy,
       tenantId: getCurrentTenant(),
+
+      // changed text
+      ...getChangesText(),
     };
     const array = Object.keys(payload);
     for (let i = 0; i < array.length; i += 1) {

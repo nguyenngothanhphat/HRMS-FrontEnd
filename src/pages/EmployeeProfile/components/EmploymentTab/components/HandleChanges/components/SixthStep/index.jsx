@@ -75,7 +75,6 @@ export default function SixthStep(props) {
       newVal: compensationType,
     },
   ];
-  console.log('🚀  ~ items', items);
 
   const checkIfChanged = (arr) => {
     return arr.some((x) => JSON.stringify(x.oldVal) !== JSON.stringify(x.newVal) && x.newVal);

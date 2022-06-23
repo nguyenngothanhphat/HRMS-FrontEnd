@@ -95,18 +95,44 @@ const HandleChanges = (props) => {
       case 3:
         setChangeData({ ...changeData, stepOne: 'Later' });
         break;
-      case 4:
+      case 4: {
+        let notifyToTemp = JSON.parse(JSON.stringify(changeData.stepFive.notifyTo));
+        const email = employeeProfile?.originData?.employmentData?.generalInfo?.workEmail;
+        const checked = !changeData.stepFive.toEmployee;
+        if (checked) {
+          notifyToTemp.push(email);
+        } else {
+          notifyToTemp = notifyToTemp.filter((x) => x !== email);
+        }
         setChangeData({
           ...changeData,
-          stepFive: { ...changeData.stepFive, toEmployee: !changeData.stepFive.toEmployee },
+          stepFive: {
+            ...changeData.stepFive,
+            toEmployee: !!checked,
+            notifyTo: notifyToTemp,
+          },
         });
         break;
-      case 5:
+      }
+      case 5: {
+        let notifyToTemp = [...changeData.stepFive.notifyTo];
+        const email = employeeProfile.originData?.employmentData?.manager?.generalInfo?.workEmail;
+        const checked = !changeData.stepFive.toManager;
+        if (checked) {
+          notifyToTemp.push(email);
+        } else {
+          notifyToTemp = notifyToTemp.filter((x) => x !== email);
+        }
         setChangeData({
           ...changeData,
-          stepFive: { ...changeData.stepFive, toManager: !changeData.stepFive.toManager },
+          stepFive: {
+            ...changeData.stepFive,
+            toManager: !!checked,
+            notifyTo: notifyToTemp,
+          },
         });
         break;
+      }
 
       default:
         break;
@@ -213,7 +239,10 @@ const HandleChanges = (props) => {
       case 'notifyTo': // fifth step
         changeDataTemp = {
           ...changeData,
-          stepFive: { ...changeData.stepThree, notifyTo: value },
+          stepFive: {
+            ...changeData.stepThree,
+            notifyTo: [...changeData.stepFive.notifyTo, ...value],
+          },
         };
         break;
 
