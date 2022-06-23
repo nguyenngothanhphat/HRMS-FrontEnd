@@ -8,7 +8,7 @@ import styles from './index.less';
 
 const DocumentsChecklist = (props) => {
   const {
-    onboardingSettings: { lisDocumentCheckList = [], selectedLocations = [] } = {},
+    onboardingSettings: { listDocumentCheckList = [], selectedLocations = [] } = {},
     loading = false,
     dispatch,
   } = props;
@@ -84,7 +84,7 @@ const DocumentsChecklist = (props) => {
       </Col>
       <Col span={24}>
         <TableDocuments
-          data={lisDocumentCheckList}
+          data={listDocumentCheckList}
           loading={loading}
           onDelete={onDelete}
           onEdit={onEdit}
