@@ -1,9 +1,16 @@
 import {
-  Button, Card,
-  Col, Divider, Form,
-  Input, message, Row,
-  Select, Spin, Tooltip,
-  Upload
+  Button,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Input,
+  message,
+  Row,
+  Select,
+  Spin,
+  Tooltip,
+  Upload,
 } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
@@ -20,9 +27,10 @@ import { getCurrentLocation } from '@/utils/authority';
 import styles from './index.less';
 
 const { Dragger } = Upload;
+const ELECTRONICALLY_SIGN = 'Electronically Sign';
+
 const UploadDocument = (props) => {
   const { dispatch, setSizeImageMatch = () => {}, handleCancelUploadDocument = () => {} } = props;
-
   const {
     user: {
       currentUser: { employee: { generalInfo: { legalName: author = '' } = {} } = {} } = {},
@@ -41,7 +49,6 @@ const UploadDocument = (props) => {
       } = {},
       action = '',
     } = {},
-
     getListDocumentType = false,
   } = props;
 
@@ -169,7 +176,7 @@ const UploadDocument = (props) => {
       payload.id = _id;
     }
 
-    if (category === 'Electronically Sign') {
+    if (category === ELECTRONICALLY_SIGN) {
       message.error('Document is required field!');
     } else if (action === 'add') {
       dispatch({
