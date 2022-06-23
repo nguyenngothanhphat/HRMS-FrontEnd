@@ -1,5 +1,5 @@
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { Checkbox, Col, Collapse, Input } from 'antd';
+import { Col, Collapse } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -36,14 +36,8 @@ const CollapseFieldsTypeH = (props) => {
             {items.documents?.map((val) => {
               return (
                 <div className={styles.nameDocument}>
-                  <Checkbox style={{ display: 'flex' }}>
-                    {val.displayName}
-                    <span className={styles.starSymbol}>*</span>
-                  </Checkbox>
-                  <Input.TextArea
-                    // style={{ display: 'block', resize: 'none' }}
-                    placeholder="Type your note here"
-                  />
+                  {val.displayName}
+                  <span className={styles.starSymbol}>*</span>
                 </div>
               );
             })}

@@ -1648,7 +1648,6 @@ const newCandidateForm = {
           isFormat: true,
         });
         const { statusCode, data: documentChecklist } = response;
-        console.log(documentChecklist)
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveTemp',
@@ -1658,7 +1657,7 @@ const newCandidateForm = {
         dialog(errors);
       }
     },
-    *sendCheckListEffect({ payload = {} }, { call, put }) {
+    *sendCheckListEffect({ payload = {} }, { call }) {
       let response = {};
       try {
         response = yield call(sendDocumentCheckList, {
@@ -1674,7 +1673,7 @@ const newCandidateForm = {
         //     processStatus: NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION,
         //   },
         // });
-        message.success('Send Successfully');
+        notification.success({ message: 'Send Successfully' });
       } catch (errors) {
         dialog(errors);
       }

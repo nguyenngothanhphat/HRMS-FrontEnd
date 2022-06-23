@@ -24,7 +24,6 @@ const CollapseFields = (props) => {
   };
 
   const handleViewFile = (record) => {
-    console.log(record);
     setUrlFile(record?.attachment?.url);
     setFileName(record?.attachment?.name);
     setOpenModal(true);

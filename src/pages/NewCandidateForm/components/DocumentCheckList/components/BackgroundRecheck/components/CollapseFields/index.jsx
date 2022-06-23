@@ -12,7 +12,6 @@ const CollapseField = (props) => {
     onViewCommentClick = () => {},
     onViewDocumentClick = () => {},
   } = props;
-
   return (
     <div className={styles.CollapseField}>
       <Collapse
@@ -27,7 +26,7 @@ const CollapseField = (props) => {
           key="1"
           header={
             <span style={{ display: 'inline-block', marginRight: '20px' }}>
-              {layout.type}: {layout.name}
+              {layout.type} {layout.name}
             </span>
           }
         >

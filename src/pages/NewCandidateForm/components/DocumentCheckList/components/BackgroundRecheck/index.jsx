@@ -34,6 +34,8 @@ const BackgroundRecheck = (props) => {
   const [viewCommentModalVisible, setViewCommentModalVisible] = useState(false);
   const [selectingFile, setSelectingFile] = useState(null);
   const [action, setAction] = useState('');
+  const [commnet, setComment] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
 
   const documentTypeS = documentChecklist.find(
     (x) => x.type === DOCUMENTS_CHECKLIST_TYPE.S,
@@ -59,18 +61,17 @@ const BackgroundRecheck = (props) => {
             x.status === DOCUMENT_TYPES.NOT_AVAILABLE_ACCEPTED,
         );
     };
-    // for type E
-    // const checkDocumentUploadedTypeE = (arr) => {
-    //   if (arr.length === 0) return true;
-    //   let check = false;
-    //   arr.forEach((x) => {
-    //     const { data: dataArr = [] } = x;
-    //     check = checkDocumentUploaded(dataArr);
-    //   });
-    //   return check;
-    // };
 
-    return checkDocumentUploaded(documentTypeS) && checkDocumentUploaded(documentTypeE);
+    const checkHardCopy = (arr = []) => {
+      if (arr.length === 0) return true;
+      return arr.filter((x) => x.required || x.value).every((x) => x.resubmitComment.length > 0);
+    };
+
+    return (
+      checkDocumentUploaded(documentTypeS) &&
+      checkDocumentUploaded(documentTypeE) &&
+      checkHardCopy(documentTypeH)
+    );
   };
 
   useEffect(() => {
@@ -99,14 +100,13 @@ const BackgroundRecheck = (props) => {
     setVerifyModalVisible(true);
   };
 
-  const onVerifyDocumentTypeE = (typeProp, itemProp, indexProp) => {
-    setSelectingFile({
-      type: typeProp,
-      item: itemProp,
-      index: indexProp,
-    });
-    setVerifyModalVisible(true);
-  };
+  // const onCommentDocumentClick = (typeProp, itemProp) => {
+  //   setSelectingFile({
+  //     type: typeProp,
+  //     item: itemProp,
+  //   });
+  //   console.log(typeProp, itemProp);
+  // };
 
   const onViewCommentClick = (typeProp, itemProp) => {
     setSelectingFile({
@@ -116,6 +116,68 @@ const BackgroundRecheck = (props) => {
     setViewCommentModalVisible(true);
   };
 
+  const onSaveRedux = (result) => {
+    dispatch({
+      type: 'newCandidateForm/saveTemp',
+      payload: {
+        documentChecklist: result,
+      },
+    });
+  };
+
+  const assignPayloadToData = (payload) => {
+    let items = documentChecklist;
+    console.log(payload);
+    console.log(selectingFile);
+    const func = (arr) => {
+      return arr.map((x) => {
+        if (x.key === selectingFile?.item?.key) {
+          return {
+            ...x,
+            ...payload,
+          };
+        }
+        return x;
+      });
+    };
+    items = items.map((x) => {
+      if (x.type === selectingFile?.type) {
+        return {
+          ...x,
+          documents: func(x.documents),
+        };
+      }
+      return x;
+    });
+
+    onSaveRedux(items);
+  };
+
+  const onComment = (values) => {
+    assignPayloadToData({
+      resubmitComment: values,
+      status: DOCUMENT_TYPES.RESUBMIT_PENDING,
+    });
+  };
+
+  const onCheckVerify = (value) => {
+    if (value) {
+      assignPayloadToData({
+        value,
+        status: DOCUMENT_TYPES.VERIFIED,
+      });
+    } else {
+      assignPayloadToData({
+        value,
+        status: DOCUMENT_TYPES.RESUBMIT_PENDING,
+      });
+    }
+  };
+
+  useEffect(() => {
+    onCheckVerify(isChecked);
+  }, [isChecked, selectingFile]);
+
   const _renderItems = () => {
     const dataS = documentTypeS.filter((x) => x.value || x.required);
     const dataE = documentTypeE.filter((x) => x.value || x.required);
@@ -124,7 +186,7 @@ const BackgroundRecheck = (props) => {
       {
         component: dataS.length > 0 && (
           <CollapseField
-            items={dataS || []}
+            items={documentTypeS || []}
             layout={documentChecklist.find((x) => x.type === DOCUMENTS_CHECKLIST_TYPE.S)}
             onVerifyDocument={onVerifyDocument}
             onViewCommentClick={onViewCommentClick}
@@ -142,7 +204,17 @@ const BackgroundRecheck = (props) => {
         ),
       },
       {
-        component: documentTypeH.length > 0 && <CollapseFieldsTypeH items={documentTypeH} />,
+        component: documentTypeH.length > 0 && (
+          <CollapseFieldsTypeH
+            setIsChecked={setIsChecked}
+            onComment={onComment}
+            setSelectingFile={setSelectingFile}
+            setComment={setComment}
+            onCheckVerify={onCheckVerify}
+            items={documentChecklist.find((x) => x.type === DOCUMENTS_CHECKLIST_TYPE.H)}
+            selectingFile={selectingFile}
+          />
+        ),
       },
     ];
     return items.map((x) => x.component && <Col span={24}>{x.component}</Col>);
@@ -153,14 +225,13 @@ const BackgroundRecheck = (props) => {
   };
 
   const onClickNext = async () => {
-    const nextStep = currentStep;
-    const nextStatus = processStatus;
+    const nextStatus = NEW_PROCESS_STATUS.JOINED;
 
     await dispatch({
       type: 'newCandidateForm/updateByHR',
       payload: {
         candidate,
-        currentStep: nextStep,
+        currentStep,
         processStatus: nextStatus,
       },
     }).then(({ statusCode }) => {
@@ -168,7 +239,7 @@ const BackgroundRecheck = (props) => {
         dispatch({
           type: 'newCandidateForm/save',
           payload: {
-            currentStep: nextStep,
+            currentStep,
           },
         });
         dispatch({
@@ -216,48 +287,11 @@ const BackgroundRecheck = (props) => {
     );
   };
 
-  const onSaveRedux = (result) => {
-    dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload: {
-        documentChecklist: result,
-      },
-    });
-  };
-
   const onCloseModal = () => {
     setVerifyModalVisible(false);
     setViewCommentModalVisible(false);
     setSelectingFile(null);
     setAction('');
-  };
-
-  const assignPayloadToData = (payload) => {
-    let items = documentChecklist;
-
-    const func = (arr) => {
-      return arr.map((x) => {
-        if (x.key === selectingFile?.item?.key) {
-          return {
-            ...x,
-            ...payload,
-          };
-        }
-        return x;
-      });
-    };
-
-    items = items.map((x) => {
-      if (x.type === selectingFile?.type) {
-        return {
-          ...x,
-          documents: func(x.documents),
-        };
-      }
-      return x;
-    });
-
-    onSaveRedux(items);
   };
 
   const onVerified = () => {

@@ -33,6 +33,7 @@ const DocumentVerification = (props) => {
   const { DRAFT, DOCUMENT_CHECKLIST_VERIFICATION, OFFER_ACCEPTED } = NEW_PROCESS_STATUS;
 
   const [listDocsTypeH, setListDocsTypeH] = useState([]);
+  const [isSendCheckList, setIsSendCheckList] = useState(false);
 
   const validateFields = () => {
     dispatch({
@@ -49,6 +50,7 @@ const DocumentVerification = (props) => {
   };
 
   const onClickNext = () => {
+    setIsSendCheckList(true);
     dispatch({
       type: 'newCandidateForm/sendCheckListEffect',
       payload: {
@@ -60,6 +62,12 @@ const DocumentVerification = (props) => {
       },
     });
   };
+
+  useEffect(() => {
+    dispatch({
+      type: 'newCandidateForm/fetchDocumentsCheckList',
+    });
+  }, []);
 
   const _renderBottomBar = () => {
     return (
@@ -80,11 +88,11 @@ const DocumentVerification = (props) => {
                     type="primary"
                     onClick={onClickNext}
                     className={`${styles.bottomBar__button__primary} ${
-                      !filledDocumentVerification ? styles.bottomBar__button__disabled : ''
+                      isSendCheckList ? styles.bottomBar__button__disabled : ''
                     }`}
-                    disabled={!filledDocumentVerification}
+                    disabled={isSendCheckList}
                   >
-                    {processStatus === DOCUMENT_CHECKLIST_VERIFICATION ? 'Resend' : 'Send'}
+                    {isSendCheckList ? 'Sent' : 'Send'}
                   </Button>
                 </Space>
                 <RenderAddQuestion page={Page.Eligibility_documents} />
@@ -115,9 +123,7 @@ const DocumentVerification = (props) => {
 
   useEffect(() => {
     setListDocsTypeH(documentChecklist.find((x) => x.type === DOCUMENTS_CHECKLIST_TYPE.H));
-    console.log(documentChecklist)
   }, [documentChecklist]);
-
 
   const getItemByType = (types) => {
     return documentChecklist.find((x) => x.type === types);

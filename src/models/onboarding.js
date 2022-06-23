@@ -1028,6 +1028,7 @@ const onboarding = {
           newTotalNumber.rejectedOffers +
           newTotalNumber.withdrawnOffers +
           newTotalNumber.referenceVerification +
+          newTotalNumber.joined +
           newTotalNumber.checkListVerification;
       });
 

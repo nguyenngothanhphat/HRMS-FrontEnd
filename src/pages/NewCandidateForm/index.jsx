@@ -74,9 +74,7 @@ class NewCandidateForm extends PureComponent {
       dispatch({
         type: 'newCandidateForm/fetchDocumentList',
       });
-      dispatch({
-        type: 'newCandidateForm/fetchDocumentsCheckList',
-      });
+
       dispatch({
         type: 'newCandidateForm/fetchDefaultTemplateList',
         payload: {
