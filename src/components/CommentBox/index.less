@@ -1,0 +1,48 @@
+.CommentBox {
+  position: relative;
+  :global {
+    .ant-input-affix-wrapper {
+      padding-right: 6px !important;
+      padding-left: 12px !important;
+    }
+    .ant-input-affix-wrapper:focus,
+    .ant-input-affix-wrapper-focused {
+      box-shadow: none !important;
+    }
+    .ant-input {
+      min-height: 42px !important;
+      // padding-right: 80px;
+      padding-block: 9px !important;
+    }
+  }
+  .commentInput {
+    box-sizing: border-box;
+    border: 1px solid #e3e8ef;
+    border-radius: 23px;
+  }
+  .buttons {
+    position: absolute;
+    right: 4px;
+    bottom: 5px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    .commentBtn {
+      padding: 0 16px;
+      object-fit: contain;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      text-shadow: none;
+      background-color: #ffa100;
+      border: none;
+      border-radius: 25px;
+      box-shadow: none;
+      &:hover {
+        color: #ffffff;
+        background-color: #ffa100;
+      }
+    }
+  }
+}

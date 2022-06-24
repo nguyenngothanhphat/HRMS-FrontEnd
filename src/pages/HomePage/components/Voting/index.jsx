@@ -155,18 +155,20 @@ const Voting = (props) => {
     return 0;
   };
 
-  if (loadingFetchPollResult || loadingFetchPostList || loading) {
-    return (
-      <div className={styles.Voting}>
-        <div
-          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 210 }}
-        >
-          <Spin />
-        </div>
-      </div>
-    );
-  }
-  if (!activePoll) {
+  // if (loadingFetchPollResult || loadingFetchPostList || loading) {
+  //   return (
+  //     <div className={styles.Voting}>
+  //       <div
+  //         style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 210 }}
+  //       >
+  //         <Spin />
+  //       </div>
+  //     </div>
+  //   );
+  // }
+  const loadingMain = loadingFetchPollResult || loadingFetchPostList || loading;
+
+  if (!activePoll && !loadingMain) {
     return (
       <div className={styles.Voting}>
         <EmptyComponent description="No polls" />
@@ -175,25 +177,28 @@ const Voting = (props) => {
   }
   return (
     <div className={styles.Voting}>
-      {isVoted || isExpired ? (
-        <BarGraph
-          options={options}
-          activePoll={activePoll}
-          votedOption={votedOption}
-          countVotes={countVotes}
-          timeLeft={timeLeft}
-        />
-      ) : (
-        <Options
-          setIsVoted={setIsVoted}
-          options={options}
-          activePoll={activePoll}
-          refreshPoll={fetchSelectedPollOptionByEmployee}
-          countVotes={countVotes}
-          setVotedOption={setVotedOption}
-          timeLeft={timeLeft}
-        />
-      )}
+      <Spin spinning={loadingMain}>
+        {isVoted || isExpired ? (
+          <BarGraph
+            options={options}
+            activePoll={activePoll}
+            votedOption={votedOption}
+            countVotes={countVotes}
+            timeLeft={timeLeft}
+          />
+        ) : (
+          <Options
+            setIsVoted={setIsVoted}
+            options={options}
+            activePoll={activePoll}
+            refreshPoll={fetchSelectedPollOptionByEmployee}
+            countVotes={countVotes}
+            setVotedOption={setVotedOption}
+            timeLeft={timeLeft}
+            previewing={loadingMain}
+          />
+        )}
+      </Spin>
     </div>
   );
 };
@@ -201,6 +206,6 @@ const Voting = (props) => {
 export default connect(({ loading, homePage, user }) => ({
   homePage,
   user,
-  loadingFetchPostList: loading.effects['homePage/fetchPollsEffect1'],
-  loadingFetchPollResult: loading.effects['homePage/fetchPollResultEffect1'],
+  loadingFetchPostList: loading.effects['homePage/fetchPollsEffect'],
+  loadingFetchPollResult: loading.effects['homePage/fetchPollResultEffect'],
 }))(Voting);

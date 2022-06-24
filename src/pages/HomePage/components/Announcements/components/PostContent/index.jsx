@@ -10,9 +10,7 @@ const PostContent = (props) => {
 
   const onPreviewImage = (index) => {
     setCurrent(index);
-    setTimeout(() => {
-      setVisible(true);
-    }, 50);
+    setVisible(!visible);
   };
 
   const renderImageLayout = (images) => {
@@ -86,7 +84,9 @@ const PostContent = (props) => {
         <Image.PreviewGroup
           preview={{
             visible,
-            onVisibleChange: (vis) => setVisible(vis),
+            onVisibleChange: (vis) => {
+              setVisible(vis);
+            },
             current,
           }}
         >

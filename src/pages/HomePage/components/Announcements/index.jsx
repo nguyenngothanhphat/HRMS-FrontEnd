@@ -1,14 +1,15 @@
-import { Col, Row, Spin } from 'antd';
+import { Col, Row, Skeleton, Spin } from 'antd';
 import React, { useEffect } from 'react';
 import LazyLoad from 'react-lazyload';
 import { connect } from 'umi';
 import { TAB_IDS } from '@/utils/homePage';
+import { getCurrentLocation } from '@/utils/authority';
 import EmptyComponent from '@/components/Empty';
 import EmbedPost from './components/EmbedPost';
 import EmployeeTag from './components/EmployeeTag';
+import LikeComment from './components/LikeComment';
 import PostContent from './components/PostContent';
 import styles from './index.less';
-import { getCurrentLocation } from '@/utils/authority';
 
 const Announcements = (props) => {
   const { dispatch, loadingFetchAnnouncementList = false } = props;
@@ -29,18 +30,18 @@ const Announcements = (props) => {
   useEffect(() => {
     fetchData();
   }, []);
-  // RENDER UI
 
+  // RENDER UI
   return (
     <div className={styles.Announcements}>
       <p className={styles.title}>Announcements</p>
-      {announcements.length === 0 ? (
+      {!loadingFetchAnnouncementList && announcements.length === 0 ? (
         <div className={styles.card}>
           <EmptyComponent description="No Announcements" />
         </div>
       ) : (
-        <Spin spinning={loadingFetchAnnouncementList}>
-          <Row gutter={[24, 24]} style={{ minHeight: 300 }}>
+        <Row gutter={[24, 24]} style={{ minHeight: 300 }}>
+          <Skeleton active loading={loadingFetchAnnouncementList}>
             {[...announcements].reverse().map((x) => (
               <LazyLoad key={x._id} placeholder={<Spin active />}>
                 <Col span={24}>
@@ -50,13 +51,14 @@ const Announcements = (props) => {
                     <div className={styles.card}>
                       <EmployeeTag employee={x.createdBy} createDate={x.createdAt} />
                       <PostContent post={x} />
+                      <LikeComment />
                     </div>
                   )}
                 </Col>
               </LazyLoad>
             ))}
-          </Row>
-        </Spin>
+          </Skeleton>
+        </Row>
       )}
     </div>
   );
@@ -65,5 +67,5 @@ const Announcements = (props) => {
 export default connect(({ homePage, loading, user }) => ({
   homePage,
   user,
-  loadingFetchAnnouncementList: loading.effects['homePage/fetchAnnouncementsEffect1'],
+  loadingFetchAnnouncementList: loading.effects['homePage/fetchAnnouncementsEffect'],
 }))(Announcements);
