@@ -248,7 +248,7 @@ const File = (props) => {
           {item.required && <span className={styles.starSymbol}>*</span>}
         </span>
       </Col>
-      <Col span={12}>{type !== DOCUMENTS_CHECKLIST_TYPE.H && renderFileStatus()}</Col>
+      <Col span={12}>{type !== DOCUMENTS_CHECKLIST_TYPE.HARD_COPY && renderFileStatus()}</Col>
     </Row>
   );
 };

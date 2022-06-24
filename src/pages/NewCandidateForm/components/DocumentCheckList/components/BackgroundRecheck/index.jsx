@@ -1,29 +1,26 @@
 import { Button, Col, Row, Space } from 'antd';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect, history } from 'umi';
+import CommonModal from '@/components/CommonModal';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import { getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
+import { DOCUMENTS_CHECKLIST_TYPE } from '@/utils/newCandidateForm';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import { goToTop } from '@/utils/utils';
 import { Page } from '../../../../utils';
 import MessageBox from '../../../MessageBox';
 import NoteComponent from '../../../NewNoteComponent';
-import styles from './index.less';
 import CollapseField from './components/CollapseFields';
-import CommonModal from '@/components/CommonModal';
-import VerifyDocumentModalContent from './components/VerifyDocumentModalContent';
-import { DOCUMENTS_CHECKLIST_TYPE, mapType } from '@/utils/newCandidateForm';
-import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
-import ViewCommentModalContent from './components/ViewCommentModalContent';
-import TechnicalCertification from './components/TechnicalCertification';
-import PreviousEmployment from './components/PreviousEmployment';
 import CollapseFieldsTypeH from './components/CollapseFieldsTypeH';
+import VerifyDocumentModalContent from './components/VerifyDocumentModalContent';
+import ViewCommentModalContent from './components/ViewCommentModalContent';
+import NotiIcon from '@/assets/notice-icon.svg';
+import styles from './index.less';
 
 const BackgroundRecheck = (props) => {
   const {
     newCandidateForm: {
-      tempData = {},
-      tempData: { ticketID = '', candidate, processStatus = '', documentChecklist = [] },
+      tempData: { ticketID = '', candidate, documentChecklist = [] },
       currentStep = '',
     } = {},
     // loadingUpdateByHR = false,
@@ -34,17 +31,17 @@ const BackgroundRecheck = (props) => {
   const [viewCommentModalVisible, setViewCommentModalVisible] = useState(false);
   const [selectingFile, setSelectingFile] = useState(null);
   const [action, setAction] = useState('');
-  const [commnet, setComment] = useState('');
-  const [isChecked, setIsChecked] = useState(false);
+  const [comment, setComment] = useState('');
+  const [modalChangeStatus, setModalChangeStatus] = useState(false);
 
   const documentTypeS = documentChecklist.find(
-    (x) => x.type === DOCUMENTS_CHECKLIST_TYPE.S,
+    (x) => x.type === DOCUMENTS_CHECKLIST_TYPE.SCAN_UPLOAD,
   ).documents;
   const documentTypeE = documentChecklist.find(
-    (x) => x.type === DOCUMENTS_CHECKLIST_TYPE.E,
+    (x) => x.type === DOCUMENTS_CHECKLIST_TYPE.ELECTRONICALLY,
   ).documents;
   const documentTypeH = documentChecklist.find(
-    (x) => x.type === DOCUMENTS_CHECKLIST_TYPE.H,
+    (x) => x.type === DOCUMENTS_CHECKLIST_TYPE.HARD_COPY,
   ).documents;
 
   const [validated, setValidated] = useState(false);
@@ -64,7 +61,9 @@ const BackgroundRecheck = (props) => {
 
     const checkHardCopy = (arr = []) => {
       if (arr.length === 0) return true;
-      return arr.filter((x) => x.required || x.value).every((x) => x.resubmitComment.length > 0);
+      return arr
+        .filter((x) => x.required || x.value)
+        .every((x) => x.status === DOCUMENT_TYPES.RECEIVED || x.resubmitComment?.length > 0);
     };
 
     return (
@@ -100,13 +99,13 @@ const BackgroundRecheck = (props) => {
     setVerifyModalVisible(true);
   };
 
-  // const onCommentDocumentClick = (typeProp, itemProp) => {
-  //   setSelectingFile({
-  //     type: typeProp,
-  //     item: itemProp,
-  //   });
-  //   console.log(typeProp, itemProp);
-  // };
+  const onChangeStatusHardCopy = (typeProp, itemProp) => {
+    setSelectingFile({
+      type: typeProp,
+      item: itemProp,
+    });
+    setModalChangeStatus(true);
+  };
 
   const onViewCommentClick = (typeProp, itemProp) => {
     setSelectingFile({
@@ -127,8 +126,7 @@ const BackgroundRecheck = (props) => {
 
   const assignPayloadToData = (payload) => {
     let items = documentChecklist;
-    console.log(payload);
-    console.log(selectingFile);
+
     const func = (arr) => {
       return arr.map((x) => {
         if (x.key === selectingFile?.item?.key) {
@@ -156,27 +154,8 @@ const BackgroundRecheck = (props) => {
   const onComment = (values) => {
     assignPayloadToData({
       resubmitComment: values,
-      status: DOCUMENT_TYPES.RESUBMIT_PENDING,
     });
   };
-
-  const onCheckVerify = (value) => {
-    if (value) {
-      assignPayloadToData({
-        value,
-        status: DOCUMENT_TYPES.VERIFIED,
-      });
-    } else {
-      assignPayloadToData({
-        value,
-        status: DOCUMENT_TYPES.RESUBMIT_PENDING,
-      });
-    }
-  };
-
-  useEffect(() => {
-    onCheckVerify(isChecked);
-  }, [isChecked, selectingFile]);
 
   const _renderItems = () => {
     const dataS = documentTypeS.filter((x) => x.value || x.required);
@@ -187,7 +166,7 @@ const BackgroundRecheck = (props) => {
         component: dataS.length > 0 && (
           <CollapseField
             items={documentTypeS || []}
-            layout={documentChecklist.find((x) => x.type === DOCUMENTS_CHECKLIST_TYPE.S)}
+            layout={documentChecklist.find((x) => x.type === DOCUMENTS_CHECKLIST_TYPE.SCAN_UPLOAD)}
             onVerifyDocument={onVerifyDocument}
             onViewCommentClick={onViewCommentClick}
           />
@@ -197,7 +176,9 @@ const BackgroundRecheck = (props) => {
         component: dataE.length > 0 && (
           <CollapseField
             items={dataE || []}
-            layout={documentChecklist.find((x) => x.type === DOCUMENTS_CHECKLIST_TYPE.E)}
+            layout={documentChecklist.find(
+              (x) => x.type === DOCUMENTS_CHECKLIST_TYPE.ELECTRONICALLY,
+            )}
             onVerifyDocument={onVerifyDocument}
             onViewCommentClick={onViewCommentClick}
           />
@@ -206,13 +187,13 @@ const BackgroundRecheck = (props) => {
       {
         component: documentTypeH.length > 0 && (
           <CollapseFieldsTypeH
-            setIsChecked={setIsChecked}
+            onChangeStatusHardCopy={onChangeStatusHardCopy}
             onComment={onComment}
             setSelectingFile={setSelectingFile}
             setComment={setComment}
-            onCheckVerify={onCheckVerify}
-            items={documentChecklist.find((x) => x.type === DOCUMENTS_CHECKLIST_TYPE.H)}
+            items={documentChecklist.find((x) => x.type === DOCUMENTS_CHECKLIST_TYPE.HARD_COPY)}
             selectingFile={selectingFile}
+            comment={comment}
           />
         ),
       },
@@ -248,6 +229,7 @@ const BackgroundRecheck = (props) => {
             processStatus: nextStatus,
           },
         });
+        history.push('/onboarding/list');
       }
     });
   };
@@ -290,6 +272,7 @@ const BackgroundRecheck = (props) => {
   const onCloseModal = () => {
     setVerifyModalVisible(false);
     setViewCommentModalVisible(false);
+    setModalChangeStatus(false);
     setSelectingFile(null);
     setAction('');
   };
@@ -319,6 +302,11 @@ const BackgroundRecheck = (props) => {
     assignPayloadToData({
       status: DOCUMENT_TYPES.NOT_AVAILABLE_ACCEPTED,
     });
+    onCloseModal();
+  };
+
+  const verifiedHardCopy = () => {
+    assignPayloadToData({ status: DOCUMENT_TYPES.RECEIVED });
     onCloseModal();
   };
 
@@ -392,6 +380,22 @@ const BackgroundRecheck = (props) => {
         firstText={action ? 'Add' : 'Approve'}
         secondText={action ? 'Cancel' : 'Reject'}
         onFinish={action ? () => {} : onAcceptNotAvailable}
+      />
+
+      <CommonModal
+        visible={modalChangeStatus}
+        hasHeader={false}
+        width={500}
+        onClose={onCloseModal}
+        content={
+          <div className={styles.contentModal}>
+            <img src={NotiIcon} alt="noti" />
+            <p>Did you recive the document from candidate?</p>
+          </div>
+        }
+        hasCancelButton
+        firstText="Received"
+        onFinish={verifiedHardCopy}
       />
     </div>
   );

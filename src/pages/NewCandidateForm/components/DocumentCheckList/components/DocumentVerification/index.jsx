@@ -17,20 +17,13 @@ const DocumentVerification = (props) => {
   const {
     newCandidateForm: {
       rookieId = '',
-      checkMandatory: { filledDocumentVerification = false } = {},
-      tempData: {
-        _id,
-        processStatus = '',
-        ticketID = '',
-        documentChecklist = [],
-        candidate = '',
-      } = {} || {},
+      tempData: { _id, ticketID = '', documentChecklist = [], candidate = '' } = {} || {},
     },
     dispatch,
     loadingFetchCandidate,
   } = props;
 
-  const { DRAFT, DOCUMENT_CHECKLIST_VERIFICATION, OFFER_ACCEPTED } = NEW_PROCESS_STATUS;
+  const { DOCUMENT_CHECKLIST_VERIFICATION } = NEW_PROCESS_STATUS;
 
   const [listDocsTypeH, setListDocsTypeH] = useState([]);
   const [isSendCheckList, setIsSendCheckList] = useState(false);
@@ -122,7 +115,7 @@ const DocumentVerification = (props) => {
   // H - Hard Copy
 
   useEffect(() => {
-    setListDocsTypeH(documentChecklist.find((x) => x.type === DOCUMENTS_CHECKLIST_TYPE.H));
+    setListDocsTypeH(documentChecklist.find((x) => x.type === DOCUMENTS_CHECKLIST_TYPE.HARD_COPY));
   }, [documentChecklist]);
 
   const getItemByType = (types) => {
@@ -138,13 +131,15 @@ const DocumentVerification = (props) => {
 
             {documentChecklist
               .filter((x) =>
-                [DOCUMENTS_CHECKLIST_TYPE.S, DOCUMENTS_CHECKLIST_TYPE.E].includes(x.type),
+                [
+                  DOCUMENTS_CHECKLIST_TYPE.SCAN_UPLOAD,
+                  DOCUMENTS_CHECKLIST_TYPE.ELECTRONICALLY,
+                ].includes(x.type),
               )
               .map((x) => {
                 return <CollapseFields layout={x} items={getItemByType(x.type)} />;
               })}
 
-            {/* <CollapseFieldsTypeE items={listDocsTypeE} /> */}
             <CollapseFieldsTypeH items={listDocsTypeH} />
 
             {_renderBottomBar()}

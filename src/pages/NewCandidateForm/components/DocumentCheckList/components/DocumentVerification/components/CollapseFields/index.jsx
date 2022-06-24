@@ -52,7 +52,7 @@ const CollapseFields = (props) => {
                     {val.displayName}
                     <span className={styles.starSymbol}>*</span>
                   </div>
-                  {items.type === DOCUMENTS_CHECKLIST_TYPE.E && (
+                  {items.type === DOCUMENTS_CHECKLIST_TYPE.ELECTRONICALLY && (
                     <div className={styles.file} onClick={() => handleViewFile(val)}>
                       {val.attachment?.name}
                     </div>

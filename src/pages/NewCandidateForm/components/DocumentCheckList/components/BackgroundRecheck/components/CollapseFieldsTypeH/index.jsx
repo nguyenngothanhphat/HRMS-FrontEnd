@@ -1,5 +1,5 @@
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { Checkbox, Col, Collapse, Input } from 'antd';
+import { Collapse } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import HardCopy from './HardCopy';
@@ -11,9 +11,9 @@ const CollapseFieldsTypeH = (props) => {
   const {
     items = [],
     setComment = () => {},
-    setIsChecked = () => {},
     setSelectingFile = () => {},
     onComment,
+    onChangeStatusHardCopy = {},
   } = props;
   const renderHeader = () => {
     return (
@@ -43,12 +43,12 @@ const CollapseFieldsTypeH = (props) => {
               <HardCopy
                 item={val}
                 resubmitComment={val.resubmitComment}
-                value={val.value}
                 type={items.type}
                 setSelectingFile={setSelectingFile}
                 setComment={setComment}
-                setIsChecked={setIsChecked}
                 onComment={onComment}
+                status={val.status}
+                onChangeStatusHardCopy={onChangeStatusHardCopy}
               />
             );
           })}

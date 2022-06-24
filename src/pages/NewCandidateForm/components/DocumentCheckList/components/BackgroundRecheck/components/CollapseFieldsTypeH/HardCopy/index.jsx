@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { Checkbox, Input } from 'antd';
+import { Input } from 'antd';
 import { debounce } from 'lodash';
+import React from 'react';
+import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
+import ResubmitIcon from '@/assets/candidatePortal/resubmitIcon.svg';
+import DoneIcon from '@/assets/candidatePortal/doneSign.svg';
 import styles from './index.less';
 
 export default function HardCopy(props) {
   const {
-    setIsChecked = () => {},
     setSelectingFile = () => {},
     onComment = () => {},
     setComment = () => {},
     item: val = {},
     type = '',
-    value = false,
     resubmitComment = '',
+    status = '',
+    onChangeStatusHardCopy = () => {},
   } = props;
 
   const onFinishDebounce = debounce((values) => {
@@ -24,24 +27,36 @@ export default function HardCopy(props) {
     onFinishDebounce(values);
   };
 
+  const renderWaiting = () => {
+    return (
+      <div className={styles.waiting} onClick={() => onChangeStatusHardCopy(type, val)}>
+        <span>Waiting</span>
+        <img src={ResubmitIcon} alt="waiting" />
+      </div>
+    );
+  };
+
+  const renderReceived = () => {
+    return (
+      <div className={styles.received}>
+        <span>Received</span>
+        <img src={DoneIcon} alt="waiting" />
+      </div>
+    );
+  };
+
   return (
     <div className={styles.nameDocument}>
-      <Checkbox
-        onChange={(e) => {
-          setIsChecked(e.target.checked);
-          setSelectingFile({ type, item: val });
-          //   onCheckVerify(e.target.checked);
-        }}
-        defaultChecked={value}
-        style={{ display: 'flex' }}
-      >
-        {val.alias}
-        <span className={styles.starSymbol}>*</span>
-      </Checkbox>
+      <div className={styles.title}>
+        <div>
+          {val.alias}
+          <span className={styles.starSymbol}>*</span>
+        </div>
+        {status === DOCUMENT_TYPES.RECEIVED ? renderReceived() : renderWaiting()}
+      </div>
       <Input.TextArea
         name="resubmitComment"
         defaultValue={resubmitComment}
-        // style={{ display: 'block', resize: 'none' }}
         placeholder="Type your note here"
         onClick={() => {
           setSelectingFile({ type, item: val });
