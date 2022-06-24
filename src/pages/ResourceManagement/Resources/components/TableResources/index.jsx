@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table, Popover } from 'antd';
+import { Table, Tag } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
@@ -11,11 +11,11 @@ import historyIcon from '@/assets/resource-management-edit1.svg';
 import addAction from '@/assets/resource-action-add1.svg';
 import styles from './index.less';
 import ProjectProfile from '../ComplexView/components/PopoverProfiles/components/ProjectProfile';
-import PopoverInfo from '../ComplexView/components/PopoverProfiles/components/UserProfile';
 import CommentModal from './components/Comment';
 import CommentOverlay from '../ComplexView/components/Overlay';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import EmptyComponent from '@/components/Empty';
+import UserProfilePopover from '@/components/UserProfilePopover';
 
 @connect(
   ({
@@ -23,11 +23,13 @@ import EmptyComponent from '@/components/Empty';
     offboarding: { approvalflow = [] } = {},
     user: { permissions = {} },
     location: { companyLocationList = [] },
+    resourceManagement: { resourceList = [] },
   }) => ({
     loadingTerminateReason: loading.effects['offboarding/terminateReason'],
     approvalflow,
     permissions,
     companyLocationList,
+    resourceList,
   }),
 )
 class TableResources extends PureComponent {
@@ -138,6 +140,22 @@ class TableResources extends PureComponent {
     }
   };
 
+  formatListSkill = (skills, colors) => {
+    let temp = 0;
+    const listFormat = skills.map((item) => {
+      if (temp >= 5) {
+        temp -= 5;
+      }
+      temp += 1;
+      return {
+        color: colors[temp - 1],
+        name: item.name,
+        id: item._id,
+      };
+    });
+    return [...listFormat];
+  };
+
   render() {
     const {
       data = [],
@@ -152,6 +170,7 @@ class TableResources extends PureComponent {
     } = this.props;
 
     const { visible, dataPassRow, visibleHistory, visibleAdd } = this.state;
+
     const pagination = {
       position: ['bottomLeft'],
       total, // totalAll,
@@ -174,18 +193,29 @@ class TableResources extends PureComponent {
       },
     };
 
-    // const localCompare = (a, b) => {
-    //   if (!a && !b) {
-    //     return 0;
-    //   }
-    //   if (!a && b) {
-    //     return -1;
-    //   }
-    //   if (a && !b) {
-    //     return 1;
-    //   }
-    //   return a.localeCompare(b);
-    // };
+    const listColors = [
+      {
+        bg: '#E0F4F0',
+        colorText: '#00c598',
+      },
+      {
+        bg: '#ffefef',
+        colorText: '#fd4546',
+      },
+      {
+        bg: '#f1edff',
+        colorText: '#6236ff',
+      },
+      {
+        bg: '#f1f8ff',
+        colorText: '#006bec',
+      },
+      {
+        bg: '#fff7fa',
+        colorText: '#ff6ca1',
+      },
+    ];
+
     const resourceStatusClass = (resourceStatus) => {
       try {
         if (resourceStatus && resourceStatus.includes('Now')) {
@@ -219,6 +249,12 @@ class TableResources extends PureComponent {
       return obj;
     };
 
+    const dataHover = (employeeId) => {
+      const { resourceList = [] } = this.props;
+      const obj = resourceList.find((x) => x._id === employeeId) || {};
+      return { ...obj, ...obj?.generalInfo };
+    };
+
     const columns = () => {
       return [
         {
@@ -234,13 +270,7 @@ class TableResources extends PureComponent {
                     <span className={styles[statusClass]}>{row.availableStatus}</span>
                   </div>
                 </div>
-
-                <Popover
-                  placement="leftTop"
-                  overlayClassName={styles.UserProfilePopover}
-                  content={<PopoverInfo employeeId={row.employeeId} />}
-                  trigger="hover"
-                >
+                <UserProfilePopover data={dataHover(row.employeeId)} placement="topLeft">
                   <div className={styles.userProfile}>
                     <div className={styles.avatar}>
                       <img
@@ -251,7 +281,7 @@ class TableResources extends PureComponent {
                     </div>
                     <div className={styles.employeeName}>{value}</div>
                   </div>
-                </Popover>
+                </UserProfilePopover>
               </div>
             );
             return getRowSpan(div, row, index);
@@ -431,6 +461,33 @@ class TableResources extends PureComponent {
               );
             }
             return getRowSpan(text, row, index);
+          },
+        },
+        {
+          title: `Employee's Skills`,
+          dataIndex: 'employeeSkills',
+          key: 'employeeSkills',
+          width: '15%',
+          align: 'center',
+          render: (employeeSkills = [], row, index) => {
+            const formatListSkill = this.formatListSkill(employeeSkills, listColors) || [];
+            const div = (
+              <>
+                {formatListSkill.map((item) => (
+                  <Tag
+                    style={{
+                      color: `${item.color.colorText}`,
+                      fontWeight: 500,
+                    }}
+                    key={item.id}
+                    color={item.color.bg}
+                  >
+                    {item.name}
+                  </Tag>
+                ))}
+              </>
+            );
+            return getRowSpan(div, row, index);
           },
         },
         {

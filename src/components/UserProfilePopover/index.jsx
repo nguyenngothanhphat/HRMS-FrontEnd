@@ -7,6 +7,29 @@ import DefaultAvatar from '@/assets/defaultAvatar.png';
 import styles from './index.less';
 import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
 
+const listColors = [
+  {
+    bg: '#E0F4F0',
+    colorText: '#00c598',
+  },
+  {
+    bg: '#ffefef',
+    colorText: '#fd4546',
+  },
+  {
+    bg: '#f1edff',
+    colorText: '#6236ff',
+  },
+  {
+    bg: '#f1f8ff',
+    colorText: '#006bec',
+  },
+  {
+    bg: '#fff7fa',
+    colorText: '#ff6ca1',
+  },
+];
+
 const UserProfilePopover = (props) => {
   const { children, placement = 'top', data = {} } = props;
   const {
@@ -25,7 +48,7 @@ const UserProfilePopover = (props) => {
     titleInfo = {},
     departmentInfo = {},
     avatar: avatar1 = '',
-    // skills = [],
+    skills = [],
   } = data;
 
   const {
@@ -36,7 +59,7 @@ const UserProfilePopover = (props) => {
     } = {},
   } = locationInfo || {};
 
-  const { avatar = '', personalNumber = '' } = generalInfo || {};
+  const { avatar = '' } = generalInfo || {};
 
   const [showPopover, setShowPopover] = useState(false);
 
@@ -111,6 +134,22 @@ const UserProfilePopover = (props) => {
     return `, ${result}`;
   };
 
+  const formatListSkill = (skillsProps, colors) => {
+    let temp = 0;
+    const listFormat = skills.map((item) => {
+      if (temp >= 5) {
+        temp -= 5;
+      }
+      temp += 1;
+      return {
+        color: colors[temp - 1],
+        name: item.name,
+        id: item._id,
+      };
+    });
+    return [...listFormat];
+  };
+
   const userInfo = () => {
     const getTimezone =
       getTimezoneViaCity(state || state1) ||
@@ -121,6 +160,7 @@ const UserProfilePopover = (props) => {
     const timezone =
       getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone;
     const time = getCurrentTimeOfTimezoneOption(new Date(), timezone);
+    const skilList = formatListSkill(skills, listColors) || [];
 
     const items = [
       {
@@ -148,21 +188,21 @@ const UserProfilePopover = (props) => {
         label: 'Local Time',
         value: time,
       },
-      // {
-      //   label: 'Skills',
-      //   value: formatedListSkill.map((item) => (
-      //     <Tag
-      //       style={{
-      //         color: `${item.color.colorText}`,
-      //         fontWeight: 500,
-      //       }}
-      //       key={item.id}
-      //       color={item.color.bg}
-      //     >
-      //       {item.name}
-      //     </Tag>
-      //   )),
-      // },
+      {
+        label: 'Skill',
+        value: skilList.map((item) => (
+          <Tag
+            style={{
+              color: `${item.color.colorText}`,
+              fontWeight: 500,
+            }}
+            key={item.id}
+            color={item.color.bg}
+          >
+            {item.name}
+          </Tag>
+        )),
+      },
     ];
 
     return (
