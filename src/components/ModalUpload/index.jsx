@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
 import { Modal, Button, Upload, message } from 'antd';
@@ -5,6 +6,7 @@ import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { connect } from 'umi';
 import { InboxOutlined } from '@ant-design/icons';
+import { Document, Page } from 'react-pdf';
 import styles from './index.less';
 
 const { Dragger } = Upload;
@@ -14,8 +16,18 @@ const propsUpload = {
   showUploadList: false,
 };
 
-// Component has 5 props:  handleCancel =()=>{}, getResponse = () => {}, titleModal = "", visible= boolean, widthImage =""
+const PNG_TYPE = 'image/png';
+const JPEG_TYPE = 'image/jpeg';
+const PDF_TYPE = 'application/pdf';
 
+/* Component has 6 props:  
+  handleCancel = () => {}, 
+  getResponse = () => {}, 
+  formatType = [],
+  titleModal = "", 
+  visible= boolean, 
+  widthImage =""
+ */
 @connect(({ loading }) => ({
   loading: loading.effects['upload/uploadFile'],
 }))
@@ -25,6 +37,8 @@ class ModalUpload extends Component {
     this.state = {
       fileUploaded: {},
       imageUrl: '',
+      fileType: '',
+      fileData: '',
       crop: {
         unit: '%',
         x: 5,
@@ -43,13 +57,15 @@ class ModalUpload extends Component {
   };
 
   beforeUpload = (file) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    const { formatType = [PNG_TYPE, JPEG_TYPE, PDF_TYPE] } = this.props;
+    this.setState({ fileType: file.type });
+    const isJpgOrPng = formatType.includes(file.type);
     if (!isJpgOrPng) {
       message.error('You can only upload JPG/PNG file!');
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
+    const isLt2M = file.size / 1024 / 1024 < 5;
     if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
+      message.error('Image must smaller than 5MB!');
     }
     return isJpgOrPng && isLt2M;
   };
@@ -90,9 +106,10 @@ class ModalUpload extends Component {
 
   handleUploadToServer = () => {
     const { dispatch, getResponse = () => {} } = this.props;
-    const { croppedImage } = this.state;
+    const { croppedImage, fileType, fileData } = this.state;
     const formData = new FormData();
-    formData.append('uri', croppedImage);
+    const dataUri = fileType === PDF_TYPE ? fileData : croppedImage;
+    formData.append('uri', dataUri);
     dispatch({
       type: 'upload/uploadFile',
       payload: formData,
@@ -149,22 +166,10 @@ class ModalUpload extends Component {
   getCroppedImg = (image, crop) => {
     const { fileUploaded: { name = '', type = '' } = {} } = this.state;
     const canvas = document.createElement('canvas');
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
     canvas.width = crop.width;
     canvas.height = crop.height;
     const ctx = canvas.getContext('2d');
-    ctx.drawImage(
-      image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
-      0,
-      0,
-      crop.width,
-      crop.height,
-    );
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
     return new Promise((resolve, reject) => {
       canvas.toBlob((blob) => {
         if (!blob) {
@@ -179,7 +184,7 @@ class ModalUpload extends Component {
   render() {
     const { visible = false, widthImage = '', loading } = this.props;
     const width = widthImage || 'auto';
-    const { imageUrl, crop } = this.state;
+    const { imageUrl, crop, fileType } = this.state;
     return (
       <Modal
         className={styles.modalUpload}
@@ -206,24 +211,37 @@ class ModalUpload extends Component {
       >
         <div className={styles.viewImg}>
           {imageUrl ? (
-            <ReactCrop
-              className={styles.viewImg__img}
-              style={{ width }}
-              src={imageUrl}
-              crop={crop}
-              ruleOfThirds
-              onImageLoaded={this.onImageLoaded}
-              onComplete={this.onCropComplete}
-              onChange={this.onCropChange}
-            />
+            <>
+              {fileType === PDF_TYPE ? (
+                <Document file={imageUrl}>
+                  <Page pageNumber={1} />
+                </Document>
+              ) : (
+                <ReactCrop
+                  className={styles.viewImg__img}
+                  style={{ width }}
+                  src={imageUrl}
+                  crop={crop}
+                  ruleOfThirds
+                  onImageLoaded={this.onImageLoaded}
+                  onComplete={this.onCropComplete}
+                  onChange={this.onCropChange}
+                />
+              )}
+            </>
           ) : (
-            <Dragger {...propsUpload} onChange={this.onChange} beforeUpload={this.beforeUpload}>
+            <Dragger
+              {...propsUpload}
+              onChange={this.onChange}
+              beforeUpload={this.beforeUpload}
+              action={(data) => this.setState({ fileData: data })}
+            >
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
               </p>
               <p className="ant-upload-text">Click or drag file to this area to upload</p>
-              <div className={styles.uploadText}>Type of file: PNG/JPG/JPEG</div>
-              <div className={styles.uploadText}>Size of image must be smaller than 2MB!</div>
+              <div className={styles.uploadText}>Type of file: PDF/PNG/JPEG</div>
+              <div className={styles.uploadText}>Size of image must be smaller than 5MB!</div>
             </Dragger>
           )}
         </div>

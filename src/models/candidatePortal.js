@@ -61,10 +61,10 @@ const pendingTaskDefault = [
     status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
   {
-    id: CANDIDATE_TASK_LINK.PREJOINING_CHECKLIST,
+    id: CANDIDATE_TASK_LINK.DOCUMENTS_CHECKLIST,
     name: 'Pre-Joining Checklist',
     dueDate: '',
-    link: CANDIDATE_TASK_LINK.PREJOINING_CHECKLIST,
+    link: CANDIDATE_TASK_LINK.DOCUMENTS_CHECKLIST,
     status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
 ];
@@ -371,7 +371,6 @@ const candidatePortal = {
           documentTypeC = [],
           documentTypeD = [],
           documentTypeE = [],
-          documentChecklist = [],
           isVerifiedJobDetail,
           isVerifiedBasicInfo,
           salaryStructure: { status: salaryStatus = '', settings: salarySettings } = {},
@@ -438,10 +437,8 @@ const candidatePortal = {
             break;
 
           case NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION:
-            if (documentChecklist.length > 0) {
-              tempPendingTasks[5].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
-              tempPendingTasks[5].dueDate = dueDate;
-            }
+            tempPendingTasks[5].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+            tempPendingTasks[5].dueDate = dueDate;
             break;
 
           default:
