@@ -298,7 +298,7 @@ const TableTickets = (props) => {
               trigger="hover"
               data={{ ...employeeRaise, ...generalInfo }}
             >
-              <span className={styles.userID} onClick={() => viewProfile(userId || '')}>
+              <div className={styles.userID} onClick={() => viewProfile(userId || '')}>
                 {!isEmpty(generalInfo)
                   ? `${
                       legalName.length > 20
@@ -307,9 +307,10 @@ const TableTickets = (props) => {
                             legalName.length,
                           )}`
                         : legalName
-                    } (${userId})`
+                    }`
                   : ''}
-              </span>
+              </div>
+              <div className={styles.userID}>{`(${userId})`}</div>
             </UserProfilePopover>
           );
         },
