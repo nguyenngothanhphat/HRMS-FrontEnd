@@ -73,6 +73,7 @@ const QuickLinkTimeOffContent = (props) => {
           className={styles.fileUploadForm}
           defaultFileList={[...defaultFileList]}
           multiple
+          maxCount={1}
         >
           <div className={styles.drapperBlock}>
             <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" />
