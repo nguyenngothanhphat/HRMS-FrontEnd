@@ -210,12 +210,13 @@ const employeeProfile = {
             });
             // if (updates.statusCode !== 200) throw updates;
             yield put({ type: 'saveOrigin', payload: { changeHistories: updates.data } });
-            const employment = yield call(getEmploymentInfo, {
-              id: payload.employee,
-            });
 
-            yield put({ type: 'saveOrigin', payload: { employmentData: employment.data } });
-            if (employment.statusCode !== 200) throw response;
+            // const employment = yield call(getEmploymentInfo, {
+            //   id: payload.employee,
+            // });
+            // yield put({ type: 'saveOrigin', payload: { employmentData: employment.data } });
+
+            // if (employment.statusCode !== 200) throw response;
             const compensation = yield call(getCompensation, {
               employee: payload.employee,
             });
@@ -810,7 +811,7 @@ const employeeProfile = {
       }
     },
     *fetchEmploymentInfo({ payload }, { call, put }) {
-      let response = '';
+      let response = {};
       try {
         response = yield call(getEmploymentInfo, {
           ...payload,
