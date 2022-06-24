@@ -176,7 +176,7 @@ const UploadDocument = (props) => {
       payload.id = _id;
     }
 
-    if (category === ELECTRONICALLY_SIGN) {
+    if (category === ELECTRONICALLY_SIGN && !fileName) {
       message.error('Document is required field!');
     } else if (action === 'add') {
       dispatch({
@@ -187,6 +187,12 @@ const UploadDocument = (props) => {
         if (statusCode === 200) {
           refreshGetListDocument();
           handleCancelUploadDocument();
+          dispatch({
+            type: 'onboardingSettings/save',
+            payload: {
+              recordEdit: {},
+            },
+          });
         }
       });
     } else {
@@ -198,6 +204,12 @@ const UploadDocument = (props) => {
         if (statusCode === 200) {
           refreshGetListDocument();
           handleCancelUploadDocument();
+          dispatch({
+            type: 'onboardingSettings/save',
+            payload: {
+              recordEdit: {},
+            },
+          });
         }
       });
     }

@@ -22,6 +22,12 @@ const DocumentsChecklist = (props) => {
   };
 
   const handleUploadDocument = () => {
+    dispatch({
+      type: 'onboardingSettings/save',
+      payload: {
+        recordEdit: {},
+      },
+    });
     setUploadDocument(true);
     dispatch({
       type: 'onboardingSettings/save',
