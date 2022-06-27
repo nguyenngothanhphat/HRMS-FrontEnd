@@ -19,6 +19,7 @@
     font-family: Inter;
     font-style: normal;
     line-height: 24px;
+    white-space: pre-line;
     p {
       margin: 0;
     }
@@ -32,73 +33,35 @@
       width: 100%;
     }
   }
-  .previewLink {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
+  .previewContainer {
     margin: 0 24px 24px;
-    padding: 14px 20px;
-    background: #ffffff;
-    border: 1px solid #d8dde9;
-    border-radius: 8px;
-    .left {
+
+    .previewLink {
       display: flex;
       flex-direction: row;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
       box-sizing: border-box;
-      width: 100%;
-      cursor: pointer;
-      &:hover {
-        opacity: 0.8;
-      }
-      .avatar {
-        img {
-          width: 42px;
-          height: 42px;
-          object-fit: cover;
-          border-radius: 50%;
+      background: #ffffff;
+      border: 1px solid #d8dde9;
+      :global {
+        .Image {
+          width: 200px !important;
+          border-radius: 8px 0 0 8px !important;
         }
-        margin-right: 10px;
-      }
-      .information {
-        .name {
-          color: #212020;
-          font-weight: 500;
-          font-size: 14px;
-          font-family: Inter;
-          font-style: normal;
-          line-height: 17px;
+        .LowerContainer,
+        .Title {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
-        .title {
-          display: block;
-          color: #707177;
-          font-weight: 500;
-          font-size: 12px;
-          font-family: Inter;
-          font-style: normal;
-          line-height: 15px;
-        }
-      }
-    }
-    .right {
-      .viewJobBtn {
-        box-sizing: border-box;
-        background-color: #fff;
-        border: 1px solid #2c6df9;
-        border-radius: 32px;
-        span {
-          color: #2c6df9;
-          font-weight: normal;
-          font-size: 14px;
-          font-family: Roboto;
-          font-style: normal;
-          line-height: 16px;
+        .SiteDetails {
+          display: none;
         }
       }
     }
   }
+
   .countTag {
     position: absolute;
     right: 0;

@@ -1,27 +1,34 @@
 import { notification } from 'antd';
 import { dialog } from '@/utils/utils';
 import {
-  // portal
-  getCelebrationList,
-  upsertCelebrationConversation,
+  addComment,
   // setting page
   addPost,
-  deletePost,
-  getPostsByType,
-  getTotalPostsOfType,
-  getPostTypeList,
-  updatePost,
-  votePoll,
-  getSelectedPollOptionByEmployee,
-  getPollResult,
-  updateBannerPosition,
-  getQuickLinkList,
-  getTotalQuickLink,
   addQuickLink,
-  updateQuickLink,
+  deletePost,
   deleteQuickLink,
+  editComment,
+  // portal
+  getCelebrationList,
+  getPollResult,
+  // social activities
+  getPostComments,
+  getPostReactionList,
+  getPostsByType,
+  getPostTypeList,
+  getQuickLinkList,
+  getSelectedPollOptionByEmployee,
+  getTotalPostsOfType,
+  getTotalQuickLink,
+  reactPost,
+  removeComment,
+  updateBannerPosition,
+  updatePost,
+  updateQuickLink,
+  upsertCelebrationConversation,
+  votePoll,
 } from '../services/homePage';
-import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '../utils/authority';
 // import { TAB_IDS } from '@/utils/homePage';
 
 const defaultState = {
@@ -37,6 +44,9 @@ const defaultState = {
   images: [],
   totalPostsOfType: [],
   selectedPollOption: {},
+
+  // social activities
+  postComments: [],
 };
 
 const homePage = {
@@ -286,6 +296,26 @@ const homePage = {
       }
       return response;
     },
+    *fetchPostByIdEffect({ payload }, { call, put }) {
+      let response = {};
+      console.log('🚀  ~ response', response);
+      try {
+        response = yield call(getPostsByType, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'refreshPost',
+          payload: { data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
     // POLL
     *votePollEffect({ payload }, { call }) {
       let response = {};
@@ -340,6 +370,149 @@ const homePage = {
       }
       return response;
     },
+    *fetchPostCommentsEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        const { post } = payload;
+
+        response = yield call(getPostComments, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'saveCommentToPost',
+          payload: {
+            postId: post,
+            comments: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
+    *addCommentEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        const { post } = payload;
+        response = yield call(addComment, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'updateCommentTotal',
+          payload: {
+            postId: post,
+            length: 1,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *editCommentEffect({ payload, params, postId }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(
+          editComment,
+          {
+            ...payload,
+            tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
+          },
+          params,
+        );
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'updateCommentInPost',
+          payload: {
+            postId,
+            comment: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *removeCommentEffect({ params, postId }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(removeComment, {
+          ...params,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        const { commentId } = params;
+        yield put({
+          type: 'removeCommentFromPost',
+          payload: {
+            postId,
+            commentId,
+          },
+        });
+        yield put({
+          type: 'updateCommentTotal',
+          payload: {
+            postId,
+            length: -1,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *reactPostEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(reactPost, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *fetchPostReactionListEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(getPostReactionList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
+    // QUICK LINKS
     *fetchQuickLinkHomePageEffect({ payload }, { call, put }) {
       let response = {};
       try {
@@ -352,6 +525,24 @@ const homePage = {
         yield put({
           type: 'save',
           payload: { quickLinkListHomePage: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchAllQuickLinkHomePageEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getQuickLinkList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { quickLinkListAllHomePage: data },
         });
       } catch (errors) {
         dialog(errors);
@@ -449,6 +640,113 @@ const homePage = {
         ...action.payload,
       };
     },
+    refreshPost(state, action) {
+      const { data = {} } = action.payload;
+      const announcementsTemp = state.announcements.map((item) => {
+        if (item._id === data?._id) {
+          return data;
+        }
+        return item;
+      });
+      return {
+        ...state,
+        announcements: announcementsTemp,
+      };
+    },
+    saveCommentToPost(state, action) {
+      let newPostComments = [...state.postComments];
+      const { postId, comments = [] } = action.payload;
+
+      const find = newPostComments.find((item) => item._id === postId);
+      if (find) {
+        newPostComments = newPostComments.map((item) => {
+          if (item._id === postId) {
+            return {
+              ...item,
+              data: comments,
+            };
+          }
+          return item;
+        });
+      } else {
+        newPostComments = [
+          {
+            _id: postId,
+            data: comments,
+          },
+          ...newPostComments,
+        ];
+      }
+
+      return {
+        ...state,
+        postComments: newPostComments,
+      };
+    },
+    updateCommentInPost(state, action) {
+      let newPostComments = [...state.postComments];
+      const { postId, comment = {} } = action.payload;
+
+      const find = newPostComments.find((item) => item._id === postId);
+      if (find) {
+        newPostComments = newPostComments.map((item) => {
+          if (item._id === postId) {
+            return {
+              ...item,
+              data: item.data.map((x) => {
+                if (x._id === comment._id) {
+                  return { ...x, content: comment.content };
+                }
+                return x;
+              }),
+            };
+          }
+          return item;
+        });
+      }
+
+      return {
+        ...state,
+        postComments: newPostComments,
+      };
+    },
+    removeCommentFromPost(state, action) {
+      const { postId = '', commentId = '' } = action.payload;
+
+      const newPostComments = state.postComments.map((x) => {
+        if (x._id === postId) {
+          return {
+            ...x,
+            data: x.data.filter((y) => y._id !== commentId),
+          };
+        }
+        return x;
+      });
+
+      return {
+        ...state,
+        postComments: newPostComments,
+      };
+    },
+    updateCommentTotal(state, action) {
+      const { postId = '', length = 0 } = action.payload;
+
+      const newAnnouncements = state.announcements.map((item) => {
+        if (item._id === postId) {
+          return {
+            ...item,
+            totalComment: item.totalComment + length,
+          };
+        }
+        return item;
+      });
+
+      return {
+        ...state,
+        announcements: newAnnouncements,
+      };
+    },
+
     clearState() {
       return defaultState;
     },

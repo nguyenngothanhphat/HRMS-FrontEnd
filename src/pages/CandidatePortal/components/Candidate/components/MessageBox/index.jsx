@@ -39,6 +39,8 @@ class MessageBox extends PureComponent {
 
   formRefEmptyChat = React.createRef();
 
+  componentMount = false;
+
   constructor(props) {
     super(props);
     this.state = { activeId: '' };
@@ -46,6 +48,7 @@ class MessageBox extends PureComponent {
   }
 
   componentDidMount = async () => {
+    this.componentMount = true;
     this.scrollToBottom();
     const { dispatch, candidate: { _id: candidate = '' } = {} } = this.props;
 
@@ -62,7 +65,7 @@ class MessageBox extends PureComponent {
       const res = await getConversationList();
       const { statusCode, data = [] } = res || {};
       if (statusCode === 200) {
-        if (data.length > 0) {
+        if (data.length > 0 && this.componentMount) {
           this.setState({
             activeId: res.data[data.length - 1]._id,
           });
@@ -83,6 +86,7 @@ class MessageBox extends PureComponent {
   };
 
   componentWillUnmount = () => {
+    this.componentMount = false;
     const { dispatch } = this.props;
     dispatch({
       type: 'conversation/clearState',

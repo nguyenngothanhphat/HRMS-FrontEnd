@@ -13,6 +13,7 @@ export async function addPost(payload) {
     data: payload,
   });
 }
+
 export async function updatePost(payload) {
   return request('/api/posttenant/update', {
     method: 'POST',
@@ -27,10 +28,10 @@ export async function deletePost(payload) {
   });
 }
 
-export async function getPostsByType(payload) {
-  return request('/api/posttenant/get-by-type', {
-    method: 'POST',
-    data: payload,
+export async function getPostsByType(params) {
+  return request('/api/posttenant', {
+    method: 'GET',
+    params,
   });
 }
 
@@ -86,34 +87,78 @@ export async function upsertCelebrationConversation(data) {
 }
 
 export async function getQuickLinkList(params) {
-  return request('api/quicklinktenant/list', {
+  return request('/api/quicklinktenant/list', {
     method: 'GET',
     params,
   });
 }
 
 export async function getTotalQuickLink(params) {
-  return request('api/quicklinktenant/get-total-by-type', {
+  return request('/api/quicklinktenant/get-total-by-type', {
     method: 'GET',
     params,
   });
 }
 
 export async function addQuickLink(data) {
-  return request('api/quicklinktenant/add', {
+  return request('/api/quicklinktenant/add', {
     method: 'POST',
     data,
   });
 }
 export async function updateQuickLink(data) {
-  return request('api/quicklinktenant/update', {
+  return request('/api/quicklinktenant/update', {
     method: 'POST',
     data,
   });
 }
 export async function deleteQuickLink(data) {
-  return request('api/quicklinktenant/delete', {
+  return request('/api/quicklinktenant/delete', {
     method: 'POST',
     data,
+  });
+}
+
+// SOCIAL ACTIVITIES
+export async function getPostComments(params) {
+  return request('/api/commenttenant', {
+    method: 'GET',
+    params,
+  });
+}
+
+export async function addComment(data) {
+  return request('/api/commenttenant', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function editComment(data, params) {
+  return request('/api/commenttenant', {
+    method: 'PUT',
+    data,
+    params,
+  });
+}
+
+export async function removeComment(params) {
+  return request('/api/commenttenant', {
+    method: 'DELETE',
+    params,
+  });
+}
+
+export async function reactPost(data) {
+  return request('/api/reactposttenant/', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function getPostReactionList(params) {
+  return request('/api/reactposttenant/', {
+    method: 'GET',
+    params,
   });
 }

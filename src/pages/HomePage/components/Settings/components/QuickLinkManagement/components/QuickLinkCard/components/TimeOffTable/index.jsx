@@ -15,6 +15,8 @@ const TimeOffTable = (props) => {
     loading = false,
     refreshData = () => {},
     onEditQuickLink = () => {},
+    totalQuickLink = {},
+    selectedTab = '',
   } = props;
 
   const onDeleteQuickLink = async (record) => {
@@ -124,7 +126,14 @@ const TimeOffTable = (props) => {
 
   return (
     <div className={styles.TimeOffTable}>
-      <CommonTable list={data} columns={getColumns()} loading={loading} />
+      <CommonTable
+        list={data}
+        columns={getColumns()}
+        selectedTab={selectedTab}
+        refreshData={refreshData}
+        totalQuickLink={totalQuickLink}
+        loading={loading}
+      />
     </div>
   );
 };

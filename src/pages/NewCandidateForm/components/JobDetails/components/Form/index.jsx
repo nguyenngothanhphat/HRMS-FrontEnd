@@ -192,11 +192,11 @@ const JobDetailForm = (props) => {
 
   const positions = [
     {
-      value: 'EMPLOYEE',
-      label: 'Employee',
+      value: 'Regular',
+      label: 'Regular Worker',
     },
     {
-      value: 'CONTINGENT-WORKER',
+      value: 'Contingent Worker',
       label: 'Contingent Worker',
     },
   ];
@@ -204,7 +204,7 @@ const JobDetailForm = (props) => {
   const renderCheckboxes = () => {
     const arr = [
       {
-        label: 'Position',
+        label: 'Employee Type',
         name: 'position',
         options: positions,
         rules: [
@@ -215,7 +215,7 @@ const JobDetailForm = (props) => {
         ],
       },
       {
-        label: 'Employee Type',
+        label: 'Employment Type',
         name: 'employeeType',
         options: employeeTypeList.map((x) => {
           return {
