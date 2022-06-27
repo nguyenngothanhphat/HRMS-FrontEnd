@@ -14,6 +14,7 @@ import ManagerReport from './components/ManagerReport';
 import MyTimeSheet from './components/MyTimeSheet';
 import Settings from './components/Settings';
 import styles from './index.less';
+import MyRequest from './components/MyRequest';
 
 const { TabPane } = Tabs;
 
@@ -160,6 +161,7 @@ const ComplexView = (props) => {
         return renderFilterBar();
 
       case TAB_NAME.MY:
+      case TAB_NAME.MY_REQUESTS:
         return (
           <div className={styles.options}>
             <CustomBlueButton onClick={() => setNavToTimeoffModalVisible(true)}>
@@ -183,6 +185,7 @@ const ComplexView = (props) => {
     permissions?.viewReportProjectViewTimesheet === 1 ||
     permissions?.viewReportTeamViewTimesheet === 1;
   const viewSettingTimesheet = permissions.viewSettingTimesheet === 1;
+  const viewMyRequest = 1;
 
   const getActiveKey = () => {
     if (showMyTimeSheet) return tabName || TAB_NAME.MY;
@@ -190,6 +193,7 @@ const ComplexView = (props) => {
     if (viewFinanceReport) return TAB_NAME.FINANCE_REPORTS;
     if (viewPeopleManagerReport || viewPMReport) return TAB_NAME.PM_REPORTS;
     if (viewSettingTimesheet) return TAB_NAME.SETTINGS;
+    if (viewMyRequest) return TAB_NAME.MY_REQUESTS;
     return tabName;
   };
 
@@ -250,6 +254,11 @@ const ComplexView = (props) => {
         {viewSettingTimesheet && (
           <TabPane tab="Settings" key={TAB_NAME.SETTINGS}>
             <Settings />
+          </TabPane>
+        )}
+        {viewMyRequest && (
+          <TabPane tab="My Requests" key={TAB_NAME.MY_REQUESTS}>
+            <MyRequest />
           </TabPane>
         )}
       </>

@@ -298,3 +298,27 @@ export async function getEmployeeScheduleByLocation(payload) {
     data: payload,
   });
 }
+
+export async function getMyRequest(params) {
+  return request(
+    '/api/listReport',
+    {
+      method: 'GET',
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
+export async function resubmitMyRequest(payload) {
+  return request(
+    '/api/updateReport',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
