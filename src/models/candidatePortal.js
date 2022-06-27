@@ -60,6 +60,13 @@ const pendingTaskDefault = [
     link: CANDIDATE_TASK_LINK.ACCEPT_OFFER,
     status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
+  {
+    id: CANDIDATE_TASK_LINK.DOCUMENTS_CHECKLIST,
+    name: 'Pre-Joining Checklist',
+    dueDate: '',
+    link: CANDIDATE_TASK_LINK.DOCUMENTS_CHECKLIST,
+    status: CANDIDATE_TASK_STATUS.UPCOMING,
+  },
 ];
 
 const steps = [];
@@ -426,6 +433,11 @@ const candidatePortal = {
             // offer letter
             tempPendingTasks[4].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
             tempPendingTasks[4].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';
+            break;
+
+          case NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION:
+            tempPendingTasks[5].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+            tempPendingTasks[5].dueDate = dueDate;
             break;
 
           default:

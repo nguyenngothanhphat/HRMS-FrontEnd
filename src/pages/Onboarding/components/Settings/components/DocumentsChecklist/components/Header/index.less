@@ -1,0 +1,79 @@
+.Header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f6f7f9;
+  .leftPart {
+    .title {
+      height: 21px;
+      margin-bottom: 17px;
+      color: #161c29;
+      font-weight: 700;
+      font-size: 18px;
+
+      line-height: 1.17;
+      letter-spacing: 0.3px;
+    }
+
+    .subTitle {
+      color: #707177;
+      font-size: 13px;
+      line-height: 20px;
+      letter-spacing: 0.12px;
+      text-align: left;
+    }
+  }
+  .location {
+    :global {
+      .ant-select .ant-select-arrow {
+        color: #2c6df9;
+        transition: transform 0.2s ease-in;
+      }
+      .ant-select-open .ant-select-arrow {
+        color: #2c6df9;
+        transform: rotate(180deg);
+      }
+      .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+        border-radius: 5px;
+      }
+    }
+    .selectCountry {
+      width: 200px;
+
+      color: #161c29;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 16px;
+    }
+    .optionCountry {
+      display: flex;
+      height: 20px;
+    }
+    .labelText {
+      display: flex;
+      align-items: center;
+      span {
+        font-weight: 500;
+        font-size: 12px;
+      }
+      .nameCountry {
+        font-weight: 500;
+        font-size: 12px;
+      }
+    }
+  }
+  .rightPart {
+    .addButton {
+      display: block;
+      height: 40px;
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 16px;
+      background: #f6f7f9;
+      border: 1px solid #ffa100;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+  }
+}
