@@ -54,6 +54,7 @@
     "@ant-design/pro-table": "2.5.13",
     "@ctrl/tinycolor": "^3.3.1",
     "@dabeng/react-orgchart": "^1.0.0",
+    "@dhaiwat10/react-link-preview": "^1.14.0",
     "@tinymce/tinymce-react": "^3.9.0",
     "antd": "4.17.1",
     "axios": "^0.21.1",
@@ -102,6 +103,7 @@
     "react-select": "^5.2.2",
     "react-signature-canvas": "^1.0.3",
     "react-sortable-hoc": "^2.0.0",
+    "react-tiny-link": "^3.6.1",
     "react-to-print": "^2.12.3",
     "recharts": "^2.1.6",
     "recharts-to-png": "2.0.0",
@@ -146,7 +148,7 @@
     "mockjs": "^1.0.1-beta3",
     "pro-download": "1.0.1",
     "puppeteer-core": "^5.0.0",
-    "stylelint": "^13.0.0",
+    "stylelint": "^14.9.1",
     "typescript": "^3.9.7"
   },
   "engines": {
