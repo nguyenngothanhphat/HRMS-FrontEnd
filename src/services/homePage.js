@@ -13,6 +13,7 @@ export async function addPost(payload) {
     data: payload,
   });
 }
+
 export async function updatePost(payload) {
   return request('/api/posttenant/update', {
     method: 'POST',
@@ -152,5 +153,12 @@ export async function reactPost(data) {
   return request('/api/reactposttenant/', {
     method: 'POST',
     data,
+  });
+}
+
+export async function getPostReactionList(params) {
+  return request('/api/reactposttenant/', {
+    method: 'GET',
+    params,
   });
 }

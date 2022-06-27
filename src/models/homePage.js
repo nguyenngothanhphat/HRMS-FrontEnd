@@ -1,34 +1,34 @@
 import { notification } from 'antd';
 import { dialog } from '@/utils/utils';
 import {
-  // portal
-  getCelebrationList,
-  upsertCelebrationConversation,
+  addComment,
   // setting page
   addPost,
-  deletePost,
-  getPostsByType,
-  getTotalPostsOfType,
-  getPostTypeList,
-  updatePost,
-  votePoll,
-  getSelectedPollOptionByEmployee,
-  getPollResult,
-  updateBannerPosition,
-  getQuickLinkList,
-  getTotalQuickLink,
   addQuickLink,
-  updateQuickLink,
+  deletePost,
   deleteQuickLink,
-
+  editComment,
+  // portal
+  getCelebrationList,
+  getPollResult,
   // social activities
   getPostComments,
-  addComment,
-  editComment,
-  removeComment,
+  getPostReactionList,
+  getPostsByType,
+  getPostTypeList,
+  getQuickLinkList,
+  getSelectedPollOptionByEmployee,
+  getTotalPostsOfType,
+  getTotalQuickLink,
   reactPost,
+  removeComment,
+  updateBannerPosition,
+  updatePost,
+  updateQuickLink,
+  upsertCelebrationConversation,
+  votePoll,
 } from '../services/homePage';
-import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '../utils/authority';
 // import { TAB_IDS } from '@/utils/homePage';
 
 const defaultState = {
@@ -296,6 +296,26 @@ const homePage = {
       }
       return response;
     },
+    *fetchPostByIdEffect({ payload }, { call, put }) {
+      let response = {};
+      console.log('🚀  ~ response', response);
+      try {
+        response = yield call(getPostsByType, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'refreshPost',
+          payload: { data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
     // POLL
     *votePollEffect({ payload }, { call }) {
       let response = {};
@@ -475,6 +495,23 @@ const homePage = {
       return response;
     },
 
+    *fetchPostReactionListEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(getPostReactionList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
     // QUICK LINKS
     *fetchQuickLinkHomePageEffect({ payload }, { call, put }) {
       let response = {};
@@ -585,6 +622,19 @@ const homePage = {
         ...action.payload,
       };
     },
+    refreshPost(state, action) {
+      const { data = {} } = action.payload;
+      const announcementsTemp = state.announcements.map((item) => {
+        if (item._id === data?._id) {
+          return data;
+        }
+        return item;
+      });
+      return {
+        ...state,
+        announcements: announcementsTemp,
+      };
+    },
     saveCommentToPost(state, action) {
       let newPostComments = [...state.postComments];
       const { postId, comments = [] } = action.payload;
@@ -627,7 +677,7 @@ const homePage = {
               ...item,
               data: item.data.map((x) => {
                 if (x._id === comment._id) {
-                  return comment;
+                  return { ...x, content: comment.content };
                 }
                 return x;
               }),
@@ -678,6 +728,7 @@ const homePage = {
         announcements: newAnnouncements,
       };
     },
+
     clearState() {
       return defaultState;
     },

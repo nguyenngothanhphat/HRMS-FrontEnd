@@ -34,8 +34,6 @@ const LikeComment = ({
 }) => {
   const [activeKey, setActiveKey] = useState('');
   const [commentValue, setCommentValue] = useState('');
-  const [likes, setLikes] = useState([]);
-  const [dislikes, setDislikes] = useState([]);
   const [action, setAction] = useState(ACTION.ADD);
   const [handlingCommentId, setHandlingCommentId] = useState('');
   const [comments, setComments] = useState([]);
@@ -60,6 +58,19 @@ const LikeComment = ({
         limit: loadType ? newLimit : limit,
       },
     });
+  };
+
+  const refreshThisPost = () => {
+    return dispatch({
+      type: 'homePage/fetchPostByIdEffect',
+      payload: {
+        post: post?._id,
+      },
+    });
+  };
+
+  const refreshComments = () => {
+    getPostCommentsEffect(post?._id);
   };
 
   const addNewCommentEffect = (content) => {
@@ -118,24 +129,11 @@ const LikeComment = ({
 
   // function
   // likes
-  const onLikePost = () => {
-    if (likes.includes(employee?._id)) {
-      setLikes(likes.filter((id) => id !== employee?._id));
-    } else {
-      setLikes([...likes, employee?._id]);
-      setDislikes(dislikes.filter((id) => id !== employee?._id));
+  const onLikePost = async (type) => {
+    const res = await reactPostEffect(post?._id, type);
+    if (res.statusCode === 200) {
+      refreshThisPost();
     }
-    reactPostEffect(post?._id, LIKE_ACTION.LIKE);
-  };
-
-  const onDislikePost = () => {
-    if (dislikes.includes(employee?._id)) {
-      setDislikes(dislikes.filter((id) => id !== employee?._id));
-    } else {
-      setDislikes([...dislikes, employee?._id]);
-      setLikes(likes.filter((id) => id !== employee?._id));
-    }
-    reactPostEffect(post?._id, LIKE_ACTION.DISLIKE);
   };
 
   // add comment
@@ -208,16 +206,22 @@ const LikeComment = ({
   };
 
   const renderLikeBtn = () => {
-    const liked = likes.includes(employee?._id);
-    const disliked = dislikes.includes(employee?._id);
+    const liked = post.react === LIKE_ACTION.LIKE;
+    const disliked = post.react === LIKE_ACTION.DISLIKE;
 
     return (
       <div className={styles.likes}>
-        <div onClick={onLikePost} className={liked ? styles.likes__pressed : null}>
+        <div
+          onClick={() => onLikePost(LIKE_ACTION.LIKE)}
+          className={liked ? styles.likes__pressed : null}
+        >
           <img src={liked ? LikedIcon : LikeIcon} alt="" />
           <span>{post.totalReact?.asObject?.[LIKE_ACTION.LIKE] || 0}</span>
         </div>
-        <div onClick={onDislikePost} className={disliked ? styles.likes__pressed : null}>
+        <div
+          onClick={() => onLikePost(LIKE_ACTION.DISLIKE)}
+          className={disliked ? styles.likes__pressed : null}
+        >
           <img src={disliked ? DislikedIcon : DislikeIcon} alt="" />
           <span>{post.totalReact?.asObject?.[LIKE_ACTION.DISLIKE] || 0}</span>
         </div>
@@ -276,7 +280,7 @@ const LikeComment = ({
                 </Col>
               )}
               {comments.map((x) => {
-                const isMe = employee?._id === x.employee;
+                const isMe = employee?._id === x.employee?._id;
                 return (
                   <Col
                     span={24}
@@ -303,6 +307,7 @@ const LikeComment = ({
                         isEdit={action === ACTION.EDIT && handlingCommentId === x._id}
                         onEditSubmit={onEdit}
                         onEditCancel={onEditCancel}
+                        refreshComments={refreshComments}
                       />
                     </Spin>
                   </Col>

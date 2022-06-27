@@ -9,7 +9,7 @@ import LikedIcon from '@/assets/homePage/liked.svg';
 import MenuIcon from '@/assets/homePage/menuDots.svg';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import CommentBox from '@/components/CommentBox';
-import { dateFormat, LIKE_ACTION, urlify } from '@/utils/homePage';
+import { dateFormat, hashtagify, LIKE_ACTION, urlify } from '@/utils/homePage';
 import styles from './index.less';
 
 const UserComment = ({
@@ -18,16 +18,13 @@ const UserComment = ({
   onEditComment = () => {},
   onRemoveComment = () => {},
   isMe = false,
-  currentUser = {},
   isEdit = false,
   onEditSubmit = () => {},
   onEditCancel = () => {},
+  refreshComments = () => {},
 }) => {
-  const { employee = {} } = currentUser;
   const { _id: commentId = '', content = '', employee: owner = {}, totalReact = {} } = item;
 
-  const [likes, setLikes] = useState([]);
-  const [dislikes, setDislikes] = useState([]);
   const [dropDownVisible, setDropDownVisible] = useState(false);
   const [commentValue, setCommentValue] = useState('');
   const [time, setTime] = useState('');
@@ -97,29 +94,23 @@ const UserComment = ({
   };
 
   // function
-  const onLikeComment = () => {
-    if (likes.includes(employee?._id)) {
-      setLikes(likes.filter((x) => x !== employee?._id));
-    } else {
-      setLikes([...likes, employee?._id]);
-      setDislikes(dislikes.filter((x) => x !== employee?._id));
+  const onLikeComment = async () => {
+    const res = await reactCommentEffect(commentId, LIKE_ACTION.LIKE);
+    if (res.statusCode === 200) {
+      refreshComments();
     }
-    reactCommentEffect(commentId, LIKE_ACTION.LIKE);
   };
 
-  const onDislikeComment = () => {
-    if (dislikes.includes(employee?._id)) {
-      setDislikes(dislikes.filter((x) => x !== employee?._id));
-    } else {
-      setDislikes([...dislikes, employee?._id]);
-      setLikes(likes.filter((x) => x !== employee?._id));
+  const onDislikeComment = async () => {
+    const res = await reactCommentEffect(commentId, LIKE_ACTION.DISLIKE);
+    if (res.statusCode === 200) {
+      refreshComments();
     }
-    reactCommentEffect(commentId, LIKE_ACTION.DISLIKE);
   };
 
   const renderLikeBtn = () => {
-    const liked = likes.includes(employee?._id);
-    const disliked = dislikes.includes(employee?._id);
+    const liked = item.react === LIKE_ACTION.LIKE;
+    const disliked = item.react === LIKE_ACTION.DISLIKE;
 
     return (
       <div className={styles.likes} style={{ pointerEvents: isEdit ? 'none' : 'auto' }}>
@@ -133,6 +124,11 @@ const UserComment = ({
         </div>
       </div>
     );
+  };
+
+  const renderContent = (text) => {
+    const temp = urlify(text);
+    return hashtagify(temp);
   };
 
   return (
@@ -155,7 +151,7 @@ const UserComment = ({
         <div className={styles.top}>
           <div className={styles.authorName}>
             <Link to={`/directory/employee-profile/${owner?.generalInfoInfo?.userId}`}>
-              {owner?.generalInfoInfo?.legalName || 'Lewis Doe'}
+              {owner?.generalInfoInfo?.legalName || 'Unknown'}
             </Link>
 
             <Tooltip
@@ -164,7 +160,7 @@ const UserComment = ({
             >
               <span className={styles.time}>{time}</span>
             </Tooltip>
-            <span className={styles.title}>{owner?.titleInfo?.name || 'Frontend Developer'}</span>
+            <span className={styles.title}>{owner?.titleInfo?.name || 'Unknown'}</span>
           </div>
           {!isEdit && isMe && (
             <div className={styles.menu}>
@@ -191,7 +187,7 @@ const UserComment = ({
             isEdit={isEdit}
           />
         ) : (
-          <p>{urlify(content)}</p>
+          <p>{renderContent(content)}</p>
         )}
 
         {renderLikeBtn()}

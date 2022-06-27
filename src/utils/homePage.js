@@ -33,6 +33,13 @@ export const urlify = (text) => {
   });
 };
 
+export const hashtagify = (text) => {
+  const urlRegex = /(?<=[\s>]|^)#(\w*[A-Za-z_]+\w*)/g;
+  return text.replace(urlRegex, (url) => {
+    return `<a href="#">${url}</a>`;
+  });
+};
+
 export const getUrlFromString = (text) => {
   const expression = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/gi;
   return text.match(expression);
