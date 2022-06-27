@@ -648,7 +648,7 @@ const TimeSheet = {
           companyId: getCurrentCompany(),
           types: ['timesheet'],
         });
-        const { code, data: { reports: myRequest } = {} } = response;
+        const { code, data: { reports: myRequest = [] } = {} } = response;
         if (code !== 200) throw response;
         yield put({
           type: 'save',
