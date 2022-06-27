@@ -32,6 +32,9 @@ import {
   getDivisionList,
   // common
   getEmployeeScheduleByLocation,
+  // my request
+  getMyRequest,
+  resubmitMyRequest,
 } from '@/services/timeSheet';
 import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
@@ -50,6 +53,7 @@ const pushError = (errors) => {
 const initialState = {
   myTimesheet: [],
   managerTimesheet: [],
+  myRequest: [],
   // myTotalHours: '',
   managerTotalHours: 0,
   employeeList: [],
@@ -257,6 +261,8 @@ const TimeSheet = {
         const params = {
           companyId: payload.companyId,
           employeeId: payload.employeeId,
+          fromDate: payload.fromDate,
+          toDate: payload.toDate,
         };
         response = yield call(addMultipleActivity, payload.data, params);
         const { code, msg = '', errors = [] } = response;
@@ -626,6 +632,48 @@ const TimeSheet = {
         yield put({
           type: 'save',
           payload: { employeeSchedule },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchMyRequest({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getMyRequest, {
+          ...payload,
+          roles: ['EMPLOYEE'],
+          tenantId: getCurrentTenant(),
+          companyId: getCurrentCompany(),
+          types: ['timesheet'],
+        });
+        const { code, data: { reports: myRequest } = {} } = response;
+        if (code !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { myRequest },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *resubmitMyRequest({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(resubmitMyRequest, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          companyId: getCurrentCompany(),
+          status: 'PENDING',
+        });
+        const { code, msg, myRequest } = response;
+        if (code !== 200) throw response;
+        notification.success({ message: msg });
+        yield put({
+          type: 'save',
+          payload: { ...myRequest },
         });
       } catch (errors) {
         dialog(errors);

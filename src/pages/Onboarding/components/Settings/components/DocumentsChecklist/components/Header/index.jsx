@@ -1,25 +1,34 @@
-import { Button, Col, Row, Select } from 'antd';
-import React from 'react';
+import { Button, Col, Row } from 'antd';
+import React, { useState } from 'react';
 import { connect } from 'umi';
 import { getCurrentLocation } from '@/utils/authority';
-import UploadDocument from '../UploadDocument';
 import styles from './index.less';
+import CustomDropdownSelector from '@/components/CustomDropdownSelector';
 
-const { Option } = Select;
 const Header = (props) => {
-  const {
-    dispatch,
-    handleUploadDocument = () => {},
-    handleCancelUploadDocument = () => {},
-  } = props;
-  const { location: { companyLocationList: locationList = [] } = {} } = props;
-  const currentLocation = getCurrentLocation();
-  console.log('🚀 ~ locationList', locationList);
-  const removeDuplicate = (array, key) => {
-    return [...new Map(array.map((x) => [key(x), x])).values()];
+  const { dispatch, handleUploadDocument = () => {} } = props;
+  const [selectedLocations, setSelectedLocation] = useState([getCurrentLocation()]);
+  const { location: { companyLocationList = [] } = {} } = props;
+
+  const onLocationChange = (value) => {
+    dispatch({
+      type: 'onboardingSettings/save',
+      payload: {
+        selectedLocations: [...value],
+      },
+    });
+    setSelectedLocation([...value]);
   };
 
-  const changeLocation = async (value) => {};
+  const renderLocationOptions = () => {
+    const locationOptions = companyLocationList.map((x) => {
+      return {
+        _id: x._id,
+        name: x.name,
+      };
+    });
+    return locationOptions;
+  };
 
   return (
     <Row className={styles.Header} gutter={[24, 24]}>
@@ -32,25 +41,13 @@ const Header = (props) => {
       <Col className={styles.location}>
         <Row gutter={[24, 0]}>
           <Col>
-            <Select
-              defaultValue={currentLocation}
-              size="large"
-              placeholder="Please select country"
-              showArrow
-              filterOption={(input, option) => {
-                return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-              }}
-              className={styles.selectCountry}
-              onChange={(value) => changeLocation(value)}
-            >
-              {locationList.map((item) => {
-                return (
-                  <Select.Option value={item._id} key={item.name}>
-                    {item.name}
-                  </Select.Option>
-                );
-              })}
-            </Select>
+            <CustomDropdownSelector
+              options={renderLocationOptions()}
+              onChange={onLocationChange}
+              disabled={renderLocationOptions().length < 2}
+              selectedList={selectedLocations}
+              label="Location"
+            />
           </Col>
           <Col className={styles.rightPart}>
             <div onClick={() => handleUploadDocument()}>

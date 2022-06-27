@@ -1,6 +1,6 @@
 import { notification } from 'antd';
 import { dialog } from '@/utils/utils';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import {
   addInsurance,
   addBenefit,
@@ -14,6 +14,8 @@ import {
   getListDocumentType,
   getListDocumentChecklist,
   addDocumentChecklist,
+  editDocument,
+  deleteDocument,
   uploadFile,
   getListEmployeeSingleCompany,
 } from '../services/onboardingSettings';
@@ -24,10 +26,13 @@ const onboardingSettings = {
     listInsurances: {},
     uploadedInsurance: {},
     listBenefitDefault: [],
-    lisDocumentCheckList: [],
+    listDocumentCheckList: [],
     listBenefit: [],
     employeeList: [],
     documentTypeList: [],
+    action: '',
+    recordEdit: {},
+    selectedLocations: [getCurrentLocation()],
   },
   effects: {
     *fetchListInsurances({ payload = {} }, { call, put }) {
@@ -231,9 +236,9 @@ const onboardingSettings = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data: lisDocumentCheckList = {} } = response;
+        const { statusCode, data: listDocumentCheckList = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { lisDocumentCheckList } });
+        yield put({ type: 'save', payload: { listDocumentCheckList } });
         return response;
       } catch (errors) {
         dialog(errors);
@@ -243,6 +248,45 @@ const onboardingSettings = {
     *uploadDocumentChecklist({ payload }, { call }) {
       try {
         const response = yield call(addDocumentChecklist, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+
+    *edit({ payload }, { call }) {
+      try {
+        const response = yield call(editDocument, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *delete({ payload }, { call }) {
+      try {
+        const response = yield call(deleteDocument, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),

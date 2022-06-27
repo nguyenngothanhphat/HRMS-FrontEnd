@@ -21,6 +21,7 @@ const CommonTable = ({
   setSelectedRowKeys = () => {},
   components,
   width = '100%',
+  pageSizeOptions = ['10', '25', '50', '100'],
   ...props
 }) => {
   const [pageSelected, setPageSelected] = useState(1);
@@ -54,7 +55,7 @@ const CommonTable = ({
     ),
     defaultPageSize: 10,
     showSizeChanger: true,
-    pageSizeOptions: ['10', '25', '50', '100'],
+    pageSizeOptions,
     pageSize: isBackendPaging ? limit : rowSize,
     current: isBackendPaging ? page : pageSelected,
     onChange: onChangePagination,

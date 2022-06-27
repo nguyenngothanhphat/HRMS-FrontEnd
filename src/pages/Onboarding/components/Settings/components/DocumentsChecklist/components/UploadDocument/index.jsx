@@ -1,48 +1,58 @@
 import {
+  Button,
   Card,
   Col,
+  Divider,
   Form,
   Input,
+  message,
   Row,
   Select,
-  Divider,
-  Button,
-  message,
+  Spin,
   Tooltip,
   Upload,
-  Spin,
 } from 'antd';
-import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
+import _ from 'lodash';
 import moment from 'moment';
-import styles from './index.less';
-import UploadIcon from '@/assets/onboarding/upload.svg';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
 import TrashIcon from '@/assets/onboarding/delete.svg';
-import ViewIcon from '@/assets/onboarding/viewIcon.svg';
-import PDFIcon from '@/assets/onboarding/pdf-2.svg';
-import ImageIcon from '@/assets/onboarding/image_icon.png';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
 import DocIcon from '@/assets/onboarding/fileDocIcon.svg';
+import ImageIcon from '@/assets/onboarding/image_icon.png';
+import PDFIcon from '@/assets/onboarding/pdf-2.svg';
+import UploadIcon from '@/assets/onboarding/upload.svg';
+import ViewIcon from '@/assets/onboarding/viewIcon.svg';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { getCurrentLocation } from '@/utils/authority';
+import styles from './index.less';
 
 const { Dragger } = Upload;
+const ELECTRONICALLY_SIGN = 'Electronically Sign';
+
 const UploadDocument = (props) => {
-  const {
-    dispatch,
-    setSizeImageMatch = () => {},
-
-    handleCancelUploadDocument = () => {},
-  } = props;
-
+  const { dispatch, setSizeImageMatch = () => {}, handleCancelUploadDocument = () => {} } = props;
   const {
     user: {
       currentUser: { employee: { generalInfo: { legalName: author = '' } = {} } = {} } = {},
     } = {},
     location: { companyLocationList: locationList = [] } = {},
     loadingUploadAttachment = false,
-    onboardingSettings: { employeeList = [], documentTypeList = [] } = {},
+    onboardingSettings: {
+      employeeList = [],
+      documentTypeList = [],
+      recordEdit: {
+        _id = '',
+        location = [],
+        displayName: displayNameProps = '',
+        category: { name: categoryName = '' } = {},
+        attachment: { name: attachmentName = '', _id: idAttachment = '' } = {},
+      } = {},
+      action = '',
+    } = {},
     getListDocumentType = false,
   } = props;
+
+  const [form] = Form.useForm();
   const currentDate = moment();
   const currentLocation = getCurrentLocation();
   const [uploadedFile, setUploadedFile] = useState({});
@@ -141,37 +151,94 @@ const UploadDocument = (props) => {
     return string.charAt(0).toLowerCase() + string.slice(1);
   };
 
+  const refreshGetListDocument = () => {
+    dispatch({
+      type: 'onboardingSettings/getListDocumentCheckList',
+      payload: {},
+    });
+  };
+
   const onFinish = (values) => {
-    const { employee = '', displayName = '' } = values;
+    const { employee = '', displayName = '', category = '' } = values;
     const obj = employeeList.find((item) => item?.generalInfo?.legalName === employee);
     const key = displayName.replace(/\s/g, '');
-    const payload = {
+    const filterCategory = documentTypeList.find((item) => item.name === category);
+    let payload = {
       ...values,
+      category: filterCategory._id || '',
       employee: obj._id,
-      attachment: uploadedFile.id,
+      attachment: uploadedFile.id || idAttachment,
       key: jsLcfirst(key),
     };
 
-    dispatch({
-      type: 'onboardingSettings/uploadDocumentChecklist',
-      payload,
-    });
+    payload = _.pickBy(payload, _.identity);
+    if (action === 'edit') {
+      payload.id = _id;
+    }
+
+    if (category === ELECTRONICALLY_SIGN && !fileName) {
+      message.error('Document is required field!');
+    } else if (action === 'add') {
+      dispatch({
+        type: 'onboardingSettings/uploadDocumentChecklist',
+        payload,
+      }).then((res) => {
+        const { statusCode = '' } = res;
+        if (statusCode === 200) {
+          refreshGetListDocument();
+          handleCancelUploadDocument();
+          dispatch({
+            type: 'onboardingSettings/save',
+            payload: {
+              recordEdit: {},
+            },
+          });
+        }
+      });
+    } else {
+      dispatch({
+        type: 'onboardingSettings/edit',
+        payload,
+      }).then((res) => {
+        const { statusCode = '' } = res;
+        if (statusCode === 200) {
+          refreshGetListDocument();
+          handleCancelUploadDocument();
+          dispatch({
+            type: 'onboardingSettings/save',
+            payload: {
+              recordEdit: {},
+            },
+          });
+        }
+      });
+    }
   };
+
+  useEffect(() => {
+    setFileName(attachmentName);
+  }, [action]);
 
   return (
     <Row className={styles.UploadDocument}>
       <Col span={16}>
         <Card title="Upload Document" className={styles.container}>
           <Form
+            form={form}
             initialValues={{
+              category: action === 'edit' ? categoryName : '',
+              displayName: action === 'edit' ? displayNameProps : '',
               dateCreated: moment(currentDate).format('YYYY-MM-DD'),
               employee: author,
-              location: currentLocation,
+              location: action === 'edit' ? location.map((item) => item._id) : currentLocation,
             }}
             onFinish={onFinish}
           >
             <Row className={styles.formContent} gutter={[24, 24]}>
-              <Col span={8}>Document Type</Col>
+              <Col span={8}>
+                Document Type <span style={{ color: 'red' }}> *</span>
+              </Col>
+
               <Col span={16}>
                 <Form.Item name="category" rules={[{ required: true }]}>
                   <Select
@@ -185,7 +252,7 @@ const UploadDocument = (props) => {
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {documentTypeList.map((item) => (
-                      <Select.Option key={item._id} value={item._id}>
+                      <Select.Option key={item._id} value={item.name}>
                         {item.name}
                       </Select.Option>
                     ))}
@@ -193,14 +260,18 @@ const UploadDocument = (props) => {
                 </Form.Item>
               </Col>
 
-              <Col span={8}>Title</Col>
+              <Col span={8}>
+                Title<span style={{ color: 'red' }}> *</span>
+              </Col>
               <Col span={16}>
                 <Form.Item name="displayName" rules={[{ required: true }]}>
                   <Input placeholder="Title" />
                 </Form.Item>
               </Col>
 
-              <Col span={8}>Location</Col>
+              <Col span={8}>
+                Location <span style={{ color: 'red' }}> *</span>
+              </Col>
               <Col span={16}>
                 <Form.Item name="location" rules={[{ required: true }]}>
                   <Select
@@ -274,7 +345,7 @@ const UploadDocument = (props) => {
                               <img src={UploadIcon} alt="upload" />
                             </div>
                             <div className={styles.uploadText}> Drag & drop file here</div>
-                            <div className={styles.uploadbrowseText}>
+                            <div className={styles.uploadBrowseText}>
                               or <span className={styles.browseText}>browse</span> to upload file
                             </div>
                           </div>
@@ -294,8 +365,8 @@ const UploadDocument = (props) => {
               <Button type="secondary" onClick={handleCancelUploadDocument}>
                 Cancle
               </Button>
-              <Button type="primary" htmlType="submit">
-                Submit
+              <Button type="primary" htmlType="submit" disabled={loadingUploadAttachment}>
+                {action === 'add' ? 'Add' : 'Edit'}
               </Button>
             </div>
           </Form>
