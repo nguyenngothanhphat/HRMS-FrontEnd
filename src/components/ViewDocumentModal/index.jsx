@@ -142,12 +142,17 @@ class ViewDocumentModal extends PureComponent {
   };
 
   _renderStickyFooter = () => {
-    const { emailDomain } = this.props;
+    const {
+      emailDomain,
+      location: { headQuarterAddress: { country: { _id = '' } = {} } = {} } = {},
+    } = this.props;
     return (
       <div className={styles.stickyFooter}>
         <span>
           For any queries, email at{' '}
-          <span style={{ fontWeight: 'bold' }}>{`hr@${emailDomain}`}</span>
+          <span style={{ fontWeight: 'bold' }}>
+            {`hr-${_id.toLowerCase()}@${emailDomain || 'terralogic.com'}`}
+          </span>
         </span>
       </div>
     );
@@ -185,6 +190,12 @@ class ViewDocumentModal extends PureComponent {
     );
   }
 }
-export default connect(({ adminSetting: { originData: { emailDomain = '' } = {} } = {} }) => ({
-  emailDomain,
-}))(ViewDocumentModal);
+export default connect(
+  ({
+    adminSetting: { originData: { emailDomain = '' } = {} } = {},
+    user: { currentUser: { location = {} } = {} } = {},
+  }) => ({
+    emailDomain,
+    location,
+  }),
+)(ViewDocumentModal);
