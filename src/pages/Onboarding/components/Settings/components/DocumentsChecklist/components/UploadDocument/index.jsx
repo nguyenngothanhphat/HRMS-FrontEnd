@@ -45,7 +45,7 @@ const UploadDocument = (props) => {
         location = [],
         displayName: displayNameProps = '',
         category: { name: categoryName = '' } = {},
-        attachment: { name: attachmentName = '', _id: idAttchment = '' } = {},
+        attachment: { name: attachmentName = '', _id: idAttachment = '' } = {},
       } = {},
       action = '',
     } = {},
@@ -151,7 +151,7 @@ const UploadDocument = (props) => {
     return string.charAt(0).toLowerCase() + string.slice(1);
   };
 
-  const reFreshGetListDocument = () => {
+  const refreshGetListDocument = () => {
     dispatch({
       type: 'onboardingSettings/getListDocumentCheckList',
       payload: {},
@@ -167,7 +167,7 @@ const UploadDocument = (props) => {
       ...values,
       category: filterCategory._id || '',
       employee: obj._id,
-      attachment: uploadedFile.id || idAttchment,
+      attachment: uploadedFile.id || idAttachment,
       key: jsLcfirst(key),
     };
 
@@ -176,7 +176,7 @@ const UploadDocument = (props) => {
       payload.id = _id;
     }
 
-    if (category === ELECTRONICALLY_SIGN) {
+    if (category === ELECTRONICALLY_SIGN && !fileName) {
       message.error('Document is required field!');
     } else if (action === 'add') {
       dispatch({
@@ -185,8 +185,14 @@ const UploadDocument = (props) => {
       }).then((res) => {
         const { statusCode = '' } = res;
         if (statusCode === 200) {
-          reFreshGetListDocument();
+          refreshGetListDocument();
           handleCancelUploadDocument();
+          dispatch({
+            type: 'onboardingSettings/save',
+            payload: {
+              recordEdit: {},
+            },
+          });
         }
       });
     } else {
@@ -196,8 +202,14 @@ const UploadDocument = (props) => {
       }).then((res) => {
         const { statusCode = '' } = res;
         if (statusCode === 200) {
-          reFreshGetListDocument();
+          refreshGetListDocument();
           handleCancelUploadDocument();
+          dispatch({
+            type: 'onboardingSettings/save',
+            payload: {
+              recordEdit: {},
+            },
+          });
         }
       });
     }
@@ -333,7 +345,7 @@ const UploadDocument = (props) => {
                               <img src={UploadIcon} alt="upload" />
                             </div>
                             <div className={styles.uploadText}> Drag & drop file here</div>
-                            <div className={styles.uploadbrowseText}>
+                            <div className={styles.uploadBrowseText}>
                               or <span className={styles.browseText}>browse</span> to upload file
                             </div>
                           </div>

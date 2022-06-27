@@ -26,7 +26,7 @@ const onboardingSettings = {
     listInsurances: {},
     uploadedInsurance: {},
     listBenefitDefault: [],
-    lisDocumentCheckList: [],
+    listDocumentCheckList: [],
     listBenefit: [],
     employeeList: [],
     documentTypeList: [],
@@ -236,9 +236,9 @@ const onboardingSettings = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data: lisDocumentCheckList = {} } = response;
+        const { statusCode, data: listDocumentCheckList = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { lisDocumentCheckList } });
+        yield put({ type: 'save', payload: { listDocumentCheckList } });
         return response;
       } catch (errors) {
         dialog(errors);
