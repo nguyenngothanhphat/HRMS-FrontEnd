@@ -18,6 +18,7 @@ const CommonTab = (props) => {
     refreshData = () => {},
     loadingReject = false,
     loadingApprove = false,
+    loadingFetchTimesheet = false,
     loadingFetchTimeoff = false,
   } = props;
 
@@ -58,7 +59,9 @@ const CommonTab = (props) => {
   if (data.length === 0) return <Empty image={Icon} />;
   return (
     <div className={styles.CommonTab} style={getCss()}>
-      <Spin spinning={loadingReject || loadingFetchTimeoff || loadingApprove}>
+      <Spin
+        spinning={loadingReject || loadingFetchTimeoff || loadingApprove || loadingFetchTimesheet}
+      >
         <Row gutter={[16, 16]}>{renderTagByType(typeProp)}</Row>
       </Spin>
     </div>
@@ -69,4 +72,5 @@ export default connect(({ loading }) => ({
   loadingReject: loading.effects['dashboard/rejectRequest'],
   loadingApprove: loading.effects['dashboard/approveRequest'],
   loadingFetchTimeoff: loading.effects['dashboard/fetchLeaveRequestOfEmployee'],
+  loadingFetchTimesheet: loading.effects['dashboard/fetchListTimeSheetTicket'],
 }))(CommonTab);

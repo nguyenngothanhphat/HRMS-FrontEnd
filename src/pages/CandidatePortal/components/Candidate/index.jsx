@@ -11,6 +11,7 @@ import JobDetails from './components/JobDetails';
 import OfferDetails from './components/OfferDetails';
 import OfferLetter from './components/OfferLetter';
 import SalaryStructure from './components/SalaryStructure';
+import DocumentsChecklist from './components/DocumentsChecklist';
 
 // list:
 // 1: BasicInformation
@@ -29,7 +30,6 @@ const Candidate = (props) => {
   const {
     dispatch,
     loadingFetchCandidate,
-    listPage,
     localStep,
     candidate,
     data: { title = {} } = {},
@@ -57,6 +57,9 @@ const Candidate = (props) => {
         break;
       case CANDIDATE_TASK_LINK.REFERENCES:
         setScreen(7);
+        break;
+      case CANDIDATE_TASK_LINK.DOCUMENTS_CHECKLIST:
+        setScreen(8);
         break;
       default:
         setScreen(1);
@@ -119,6 +122,8 @@ const Candidate = (props) => {
         return <OfferLetter />;
       case 7:
         return <References />;
+      case 8:
+        return <DocumentsChecklist />;
       default:
         return <div />;
     }
@@ -144,6 +149,8 @@ const Candidate = (props) => {
         return [{ id: 6, title: 'Offer Letter', disabled: true }];
       case CANDIDATE_TASK_LINK.REFERENCES:
         return [{ id: 7, title: 'References', disabled: true }];
+      case CANDIDATE_TASK_LINK.DOCUMENTS_CHECKLIST:
+        return [{ id: 8, title: 'Pre Joining Documents', disabled: true }];
       default:
         return defaultSet;
     }

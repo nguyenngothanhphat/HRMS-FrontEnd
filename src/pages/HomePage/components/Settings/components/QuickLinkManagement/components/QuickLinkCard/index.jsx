@@ -17,7 +17,7 @@ const QuickLinkCard = (props) => {
   // redux
   const {
     homePage: {
-      quickLinkListHomePage = [],
+      quickLinkListAllHomePage = [],
       quickLinkListTimeOff = [],
       totalQuickLinkType = [],
     } = {},
@@ -39,12 +39,12 @@ const QuickLinkCard = (props) => {
     });
   };
 
-  const fetchData = () => {
+  const fetchData = (page = 1, limit = 10) => {
     let type = '';
 
     switch (selectedTab) {
       case TAB_IDS_QUICK_LINK.GENERAL:
-        type = 'homePage/fetchQuickLinkHomePageEffect';
+        type = 'homePage/fetchAllQuickLinkHomePageEffect';
         break;
       case TAB_IDS_QUICK_LINK.TIMEOFF:
         type = 'homePage/fetchQuickLinkTimeOffEffect';
@@ -56,6 +56,8 @@ const QuickLinkCard = (props) => {
       type,
       payload: {
         type: selectedTab.toLowerCase(),
+        page,
+        limit,
       },
     });
     fetchTotalQuickLinkType();
@@ -86,9 +88,11 @@ const QuickLinkCard = (props) => {
       name: TAB_IDS_QUICK_LINK.GENERALTABNAME,
       component: (
         <QuickLinkTable
-          data={quickLinkListHomePage}
+          data={quickLinkListAllHomePage}
           loading={loadingFetchQuickLinkList}
           refreshData={fetchData}
+          selectedTab={selectedTab}
+          totalQuickLink={totalQuickLinkType}
           onEditQuickLink={onEditQuickLink}
         />
       ),
@@ -101,6 +105,8 @@ const QuickLinkCard = (props) => {
           data={quickLinkListTimeOff}
           loading={loadingFetchQuickLinkList}
           refreshData={fetchData}
+          selectedTab={selectedTab}
+          totalQuickLink={totalQuickLinkType}
           onEditQuickLink={onEditQuickLink}
         />
       ),
@@ -145,7 +151,7 @@ export default connect(
     homePage,
     companyLocationList,
     loadingFetchQuickLinkList:
-      loading.effects['homePage/fetchQuickLinkHomePageEffect'] ||
+      loading.effects['homePage/fetchAllQuickLinkHomePageEffect'] ||
       loading.effects['homePage/fetchQuickLinkTimeOffEffect'],
   }),
 )(QuickLinkCard);
