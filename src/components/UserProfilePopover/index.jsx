@@ -1,6 +1,7 @@
 import { Col, Popover, Row, Tag } from 'antd';
 import React, { useState } from 'react';
 import { connect, Link } from 'umi';
+import { isEmpty } from 'lodash';
 import CloseX from '@/assets/dashboard/closeX.svg';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 
@@ -39,8 +40,7 @@ const UserProfilePopover = (props) => {
     title = {},
     workEmail = '',
     workNumber = '',
-    location: { state = '', countryName = '' } = {},
-    location,
+    location = {},
     locationInfo,
     generalInfo = {},
     manager = {},
@@ -51,6 +51,7 @@ const UserProfilePopover = (props) => {
     skills = [],
   } = data;
 
+  const { state = '', countryName = '' } = location || {};
   const {
     headQuarterAddress: {
       state: state1 = '',
@@ -67,47 +68,6 @@ const UserProfilePopover = (props) => {
     const url = `/directory/employee-profile/${id}`;
     window.open(url, '_blank');
   };
-
-  // const formatListSkill = (skill, colors) => {
-  //   let temp = 0;
-  //   const listFormat = skill.map((item) => {
-  //     if (temp >= 5) {
-  //       temp -= 5;
-  //     }
-  //     temp += 1;
-  //     return {
-  //       color: colors[temp - 1],
-  //       name: item.name,
-  //       id: item._id || item.id,
-  //     };
-  //   });
-  //   return [...listFormat];
-  // };
-
-  // const listColors = [
-  //   {
-  //     bg: '#E0F4F0',
-  //     colorText: '#00c598',
-  //   },
-  //   {
-  //     bg: '#ffefef',
-  //     colorText: '#fd4546',
-  //   },
-  //   {
-  //     bg: '#f1edff',
-  //     colorText: '#6236ff',
-  //   },
-  //   {
-  //     bg: '#f1f8ff',
-  //     colorText: '#006bec',
-  //   },
-  //   {
-  //     bg: '#fff7fa',
-  //     colorText: '#ff6ca1',
-  //   },
-  // ];
-
-  // const formatedListSkill = formatListSkill(skills, listColors) || [];
 
   const renderHeader = () => {
     return (
@@ -136,7 +96,7 @@ const UserProfilePopover = (props) => {
 
   const formatListSkill = (skillsProps, colors) => {
     let temp = 0;
-    const listFormat = skills.map((item) => {
+    const listFormat = skillsProps.map((item) => {
       if (temp >= 5) {
         temp -= 5;
       }
@@ -160,9 +120,10 @@ const UserProfilePopover = (props) => {
     const timezone =
       getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone;
     const time = getCurrentTimeOfTimezoneOption(new Date(), timezone);
-    const skilList = formatListSkill(skills, listColors) || [];
+    const skilList =
+      skills !== null && skills !== undefined ? formatListSkill(skills, listColors) || [] : [];
 
-    const items = [
+    let items = [
       {
         label: 'Reporting Manager',
         value: (
@@ -188,25 +149,28 @@ const UserProfilePopover = (props) => {
         label: 'Local Time',
         value: time,
       },
-      {
-        label: skilList.lengh > 0 ? 'Skill' : '',
-        value:
-          skilList.lengh > 0
-            ? skilList.map((item) => (
-              <Tag
-                style={{
-                    color: `${item.color.colorText}`,
-                    fontWeight: 500,
-                  }}
-                key={item.id}
-                color={item.color.bg}
-              >
-                {item.name}
-              </Tag>
-              ))
-            : '',
-      },
     ];
+    const listSkills = {
+      label: !isEmpty(skilList) ? 'Skill' : '',
+      value: !isEmpty(skilList)
+        ? skilList.map((item) => (
+          <Tag
+            style={{
+                color: `${item?.color?.colorText}`,
+                fontWeight: 500,
+              }}
+            key={item?.id}
+            color={item?.color?.bg}
+          >
+            {item?.name}
+          </Tag>
+          ))
+        : '',
+    };
+
+    if (!isEmpty(skills)) {
+      items = [...items, listSkills];
+    }
 
     return (
       <div className={styles.userInfo}>

@@ -5,8 +5,8 @@ const cityTimezones = require('city-timezones');
 
 export const getTimezoneViaCity = (city) => {
   // check if city is empty return the current timezone
-  if(!city) {
-    return ''
+  if (!city || isEmpty(city)) {
+    return '';
   }
   const cityWords = city.split(' ');
   let cityLookup = [];

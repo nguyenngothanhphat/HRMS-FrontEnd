@@ -468,7 +468,6 @@ class TableResources extends PureComponent {
           dataIndex: 'employeeSkills',
           key: 'employeeSkills',
           width: '15%',
-          align: 'center',
           render: (employeeSkills = [], row, index) => {
             const formatListSkill = this.formatListSkill(employeeSkills, listColors) || [];
             const div = (
