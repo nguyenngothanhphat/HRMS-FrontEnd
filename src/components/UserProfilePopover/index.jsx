@@ -189,19 +189,22 @@ const UserProfilePopover = (props) => {
         value: time,
       },
       {
-        label: 'Skill',
-        value: skilList.map((item) => (
-          <Tag
-            style={{
-              color: `${item.color.colorText}`,
-              fontWeight: 500,
-            }}
-            key={item.id}
-            color={item.color.bg}
-          >
-            {item.name}
-          </Tag>
-        )),
+        label: skilList.lengh > 0 ? 'Skill' : '',
+        value:
+          skilList.lengh > 0
+            ? skilList.map((item) => (
+              <Tag
+                style={{
+                    color: `${item.color.colorText}`,
+                    fontWeight: 500,
+                  }}
+                key={item.id}
+                color={item.color.bg}
+              >
+                {item.name}
+              </Tag>
+              ))
+            : '',
       },
     ];
 
