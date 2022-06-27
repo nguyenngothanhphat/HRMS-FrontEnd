@@ -1,6 +1,10 @@
 .approvalPage {
   margin: 24px;
-
+  :global {
+    .ant-card-extra {
+      padding: 0 !important;
+    }
+  }
   &__table {
     background: #ffffff;
     border: 1px solid #d6dce0;
@@ -11,6 +15,10 @@
     }
     .employeeName {
       cursor: pointer;
+    }
+    .tagCountFilter {
+      padding: 5px;
+      border-radius: 15px;
     }
     .searchFilter {
       display: flex;
@@ -53,14 +61,14 @@
       }
     }
 
-    .btnDetail {
-      color: #ffa100;
-      font-weight: 500;
-      font-size: 12px;
-      span {
-        text-decoration: underline;
-      }
-    }
+    // .btnDetail {
+    //   color: #ffa100;
+    //   font-weight: 500;
+    //   font-size: 12px;
+    //   span {
+    //     text-decoration: underline;
+    //   }
+    // }
     .containerBtn {
       display: flex;
       align-items: center;
@@ -73,6 +81,11 @@
 
     .blueText {
       color: #2c6df9;
+      font-weight: 500;
+      font-size: 13px;
+    }
+    .yellowText {
+      color: #ffa100;
       font-weight: 500;
       font-size: 13px;
     }

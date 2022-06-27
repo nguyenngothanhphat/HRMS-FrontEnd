@@ -2,11 +2,14 @@ import { notification } from 'antd';
 import { dialog } from '@/utils/utils';
 import {
   getListTicket,
+  getListTimeSheetTicket,
+  getAllListTicket,
   getListMyTicket,
   getLeaveRequestOfEmployee,
   aprovalCompoffRequest,
   approveRequest,
   rejectRequest,
+  approveTimeSheetRequest,
   rejectCompoffRequest,
   getListEmployee,
   updateTicket,
@@ -31,6 +34,7 @@ import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 const defaultState = {
   listTicket: [],
   listMyTicket: {},
+  listTimeSheetTicket: [],
   totalMyTicket: 0,
   isLoadData: false,
   totalTicket: 0,
@@ -47,6 +51,7 @@ const defaultState = {
   birthdayInWeekList: [],
   teamLeaveRequestList: [],
   timeOffTypesByCountry: [],
+  allTicket: [],
 };
 const dashboard = {
   namespace: 'dashboard',
@@ -72,6 +77,50 @@ const dashboard = {
         leaveRequest.forEach((item) => listTicket.push({ typeTicket: 'leaveRequest', ...item }));
 
         yield put({ type: 'save', payload: { listTicket, isLoadData: false, totalTicket: total } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchListTimeSheetTicket({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getListTimeSheetTicket, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          companyId: getCurrentCompany(),
+        });
+
+        const {
+          code,
+          data: { reports, total = 0 },
+        } = response;
+        if (code !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { listTimeSheetTicket: reports, totalTimeSheetTicket: total },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchAllListTicket({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getAllListTicket, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          companyId: getCurrentCompany(),
+          roles: ['MANAGER'],
+          status: ['PENDING', 'IN-PROGRESS'],
+        });
+
+        const {
+          code,
+          data: { reports },
+        } = response;
+        if (code !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { allTicket: reports },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -184,6 +233,44 @@ const dashboard = {
           type: 'save',
           payload: { isLoadData: true, statusApproval: statusTimeoff },
         });
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+      return response;
+    },
+
+    *approveTimeSheetRequest({ payload = {} }, { call }) {
+      let response;
+      try {
+        response = yield call(approveTimeSheetRequest, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          companyId: getCurrentCompany(),
+        });
+
+        const { code } = response;
+        if (code !== 200) throw response;
+        notification.success({ message: 'Timesheet has been approved.' });
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+      return response;
+    },
+
+    *rejectTimeSheetRequest({ payload = {} }, { call }) {
+      let response;
+      try {
+        response = yield call(approveTimeSheetRequest, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          companyId: getCurrentCompany(),
+        });
+
+        const { code } = response;
+        if (code !== 200) throw response;
+        notification.success({ message: 'Timesheet has been rejected' });
       } catch (errors) {
         dialog(errors);
         return {};
