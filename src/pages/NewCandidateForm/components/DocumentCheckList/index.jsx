@@ -12,7 +12,6 @@ const DocumentsCheckList = (props) => {
 
   useEffect(() => {
     goToTop();
-    console.log(processStatus);
   }, []);
 
   if (loadingFetchCandidate) {

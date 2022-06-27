@@ -476,7 +476,6 @@ class OnboardTable extends Component {
 
   handleSendPreJoining = (ticketId, candidate, processStatus) => {
     const { dispatch, documentChecklist, type } = this.props;
-    console.log(type, processStatus);
     dispatch({
       type: 'newCandidateForm/sendCheckListEffect',
       payload: {

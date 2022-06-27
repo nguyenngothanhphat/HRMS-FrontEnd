@@ -40,7 +40,6 @@ const File = (props) => {
   };
 
   const getResponse = async (key, res) => {
-    console.log('key', key);
     const [attachment] = res.data;
     const documentRes = await dispatch({
       type: 'candidatePortal/upsertCandidateDocumentEffect',
@@ -53,7 +52,6 @@ const File = (props) => {
     if (documentRes.statusCode === 200) {
       const { data: fetchedDocument = {} } = documentRes;
       const onAddFetchedDocToRedux = (arr) => {
-        console.log('arr', arr);
         return arr.map((x) => {
           if (x.key === key) {
             return {
@@ -68,7 +66,6 @@ const File = (props) => {
 
       if (fetchedDocument) {
         let items = [...data[mapType[type]]];
-        console.log('items', items);
 
         if (type !== 'E') {
           items = onAddFetchedDocToRedux(items);

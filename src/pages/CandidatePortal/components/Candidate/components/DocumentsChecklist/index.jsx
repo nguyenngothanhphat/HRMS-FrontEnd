@@ -21,7 +21,7 @@ const initCurrentFile = {
 };
 
 const DocumentsChecklist = (props) => {
-  const { dispatch, candidatePortal, candidatePortal: { checkMandatory = {} } = {} } = props;
+  const { dispatch, candidatePortal } = props;
   const [documentModal, setDocumentModal] = useState(false);
   const [uploadModal, setUploadModal] = useState(false);
   const [signatureModal, setSignatureModal] = useState(false);

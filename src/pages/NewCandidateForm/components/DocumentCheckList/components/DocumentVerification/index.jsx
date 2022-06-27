@@ -34,15 +34,6 @@ const DocumentVerification = (props) => {
   const [listDocsTypeH, setListDocsTypeH] = useState([]);
   const [isSendCheckList, setIsSendCheckList] = useState(false);
 
-  const validateFields = () => {
-    dispatch({
-      type: 'newCandidateForm/saveCheckMandatory',
-      payload: {
-        filledDocumentVerification: true,
-      },
-    });
-  };
-
   // // bottom bar
   const onClickPrev = () => {
     history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.OFFER_LETTER}`);
@@ -106,15 +97,8 @@ const DocumentVerification = (props) => {
     );
   };
 
-  const firstInit = () => {
-    validateFields();
-  };
-
   useEffect(() => {
     window.scrollTo({ top: 77, behavior: 'smooth' });
-    if (_id) {
-      firstInit();
-    }
   }, [_id]);
 
   if (loadingFetchCandidate) return <Skeleton />;
