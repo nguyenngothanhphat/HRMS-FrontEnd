@@ -1,6 +1,6 @@
 import { Button, Divider, Modal } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { connect } from 'umi';
 import { dateFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
@@ -18,12 +18,6 @@ const TimesheetDetailModal = (props) => {
     timeoffList = [],
     employee: { _id: employeeId = '' } = {},
     rowKey = 0,
-    currentDateProp = '',
-    user: {
-      currentUser: {
-        location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
-      } = {},
-    } = {},
   } = props;
   const {
     status = '',
@@ -32,7 +26,6 @@ const TimesheetDetailModal = (props) => {
     comment = '',
     ticketId = '',
   } = dataSource[rowKey] || {};
-  const [selectedDate, setSelectedDate] = useState(moment());
   const [selectedView, setSelectedView] = useState('W');
   const [isEdited, setIsEdited] = useState(false);
 
@@ -44,7 +37,7 @@ const TimesheetDetailModal = (props) => {
         employeeId,
         fromDate: moment(startDate).format(dateFormatAPI),
         toDate: moment(endDate).format(dateFormatAPI),
-        viewType: selectedView,
+        viewType: 'W',
       },
     });
   };
@@ -55,16 +48,10 @@ const TimesheetDetailModal = (props) => {
     }
   }, [startDateWeek, selectedView]);
 
-  useEffect(() => {
-    if (moment(currentDateProp).isValid() === true) {
-      setSelectedDate(moment(currentDateProp));
-    }
-  }, [currentDateProp]);
-
   const handleCancel = () => {
     onClose();
   };
-  const handelResubmit = async () => {
+  const handleResubmit = async () => {
     await dispatch({
       type: 'timeSheet/resubmitMyRequest',
       payload: {
@@ -104,7 +91,6 @@ const TimesheetDetailModal = (props) => {
             endDate={endDateWeek}
             data={myTimesheetByWeek}
             timeoffList={timeoffList}
-            setSelectedDate={setSelectedDate}
             setSelectedView={setSelectedView}
             callback={(value) => {
               setIsEdited(value);
@@ -130,7 +116,7 @@ const TimesheetDetailModal = (props) => {
         <Button className={styles.btnCancel} onClick={handleCancel}>
           Cancel
         </Button>
-        <Button className={styles.btnSubmit} type="primary" onClick={handelResubmit}>
+        <Button className={styles.btnSubmit} type="primary" onClick={handleResubmit}>
           Re-Submit
         </Button>
       </>
@@ -141,7 +127,7 @@ const TimesheetDetailModal = (props) => {
     <>
       <Modal
         className={`${styles.TimesheetDetailModal} ${styles.noPadding}`}
-        onCancel={isEdited ? handelResubmit : handleCancel}
+        onCancel={isEdited ? handleResubmit : handleCancel}
         destroyOnClose
         width={750}
         footer={isEdited ? renderModalFooter() : <div />}
@@ -155,9 +141,7 @@ const TimesheetDetailModal = (props) => {
   );
 };
 
-export default connect(
-  ({
-    user: { currentUser: { employee = {} } = {} },
-    timeSheet: { myTimesheetByWeek = [], timeoffList = [] },
-  }) => ({ employee, myTimesheetByWeek, timeoffList }),
-)(TimesheetDetailModal);
+export default connect(({ timeSheet: { myTimesheetByWeek = [], timeoffList = [] } }) => ({
+  myTimesheetByWeek,
+  timeoffList,
+}))(TimesheetDetailModal);

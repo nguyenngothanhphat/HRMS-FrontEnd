@@ -11,10 +11,10 @@ import { TAB_NAME } from '@/utils/timeSheet';
 import FinanceReport from './components/FinanceReport';
 import HumanResourceReport from './components/HumanResourceReport';
 import ManagerReport from './components/ManagerReport';
+import MyRequest from './components/MyRequest';
 import MyTimeSheet from './components/MyTimeSheet';
 import Settings from './components/Settings';
 import styles from './index.less';
-import MyRequest from './components/MyRequest';
 
 const { TabPane } = Tabs;
 
@@ -250,15 +250,15 @@ const ComplexView = (props) => {
             <ManagerReport />
           </TabPane>
         )}
+        {viewMyRequest && (
+          <TabPane tab="My Requests" key={TAB_NAME.MY_REQUESTS}>
+            <MyRequest />
+          </TabPane>
+        )}
 
         {viewSettingTimesheet && (
           <TabPane tab="Settings" key={TAB_NAME.SETTINGS}>
             <Settings />
-          </TabPane>
-        )}
-        {viewMyRequest && (
-          <TabPane tab="My Requests" key={TAB_NAME.MY_REQUESTS}>
-            <MyRequest />
           </TabPane>
         )}
       </>

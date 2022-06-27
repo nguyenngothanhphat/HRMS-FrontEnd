@@ -1,12 +1,12 @@
+import { Tooltip } from 'antd';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { Table, Tooltip } from 'antd';
-import moment from 'moment';
-import ViewIcon from '@/assets/dashboard/open.svg';
-import styles from './index.less';
-import EmptyComponent from '@/components/Empty';
-import TimesheetDetailModal from './components/TimesheetDetailModal';
 import UserProfilePopover from '@/components/UserProfilePopover';
+import CommonTable from '@/components/CommonTable';
+import ViewIcon from '@/assets/dashboard/open.svg';
+import TimesheetDetailModal from './components/TimesheetDetailModal';
+import styles from './index.less';
 
 const MyRequest = (props) => {
   const {
@@ -16,8 +16,6 @@ const MyRequest = (props) => {
     myRequest = [],
   } = props;
 
-  const [pageSelected, setPageSelected] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
   const [handlingWeek, setHandlingWeek] = useState(0);
   const [openModal, setOpenModal] = useState(false);
 
@@ -32,7 +30,7 @@ const MyRequest = (props) => {
   };
   useEffect(() => {
     fetchList();
-  }, [pageSize, pageSelected]);
+  }, []);
 
   const generateColumns = () => {
     const columns = [
@@ -162,44 +160,15 @@ const MyRequest = (props) => {
     return columns;
   };
 
-  const onChangePagination = (pageNumber, pageSizeTemp) => {
-    setPageSelected(pageNumber);
-    setPageSize(pageSizeTemp);
-  };
-
-  const pagination = {
-    position: ['bottomLeft'],
-    total: myRequest?.length,
-    showTotal: (total, range) => (
-      <span>
-        {' '}
-        Showing{' '}
-        <b>
-          {range[0]} - {range[1]}
-        </b>{' '}
-        of {total}{' '}
-      </span>
-    ),
-    defaultPageSize: pageSize,
-    showSizeChanger: true,
-    pageSize,
-    pageSizeOptions: ['10', '25', '50', '100'],
-    current: pageSelected,
-    onChange: onChangePagination,
-  };
-
   // MAIN AREA
   return (
     <div className={styles.MyRequest}>
-      <Table
+      <CommonTable
         columns={generateColumns()}
         dataSource={myRequest}
-        locale={{
-          emptyText: <EmptyComponent />,
-        }}
         rowKey={(record) => record.id}
         loading={loadingFetch}
-        pagination={pagination}
+        list={myRequest}
       />
       <TimesheetDetailModal
         visible={openModal}
