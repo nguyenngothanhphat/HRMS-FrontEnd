@@ -18,8 +18,14 @@ const CommentBox = ({
     <div className={styles.CommentBox}>
       <Input.TextArea
         placeholder={placeholder}
+        autoFocus
+        onFocus={(e) => {
+          const tempValue = e.target.value;
+          e.target.value = '';
+          e.target.value = tempValue;
+        }}
         autoSize={{
-          minRows: 1,
+          minRows: isEdit ? 2 : 1,
           maxRows: 4,
         }}
         maxLength={144}
@@ -27,16 +33,23 @@ const CommentBox = ({
         className={styles.commentInput}
         value={value}
         onKeyDown={(e) => {
-          if (e.keyCode === 27) {
+          if (e.key === 'Escape') {
             onCancel();
+          }
+          if (e.key === 'Enter' && !e.shiftKey) {
+            if (e.preventDefault) {
+              e.preventDefault();
+            }
+            onSubmit();
           }
         }}
         style={{
           borderRadius: isEdit ? 8 : 23,
           paddingRight: isEdit ? 11 : 90,
         }}
+        disabled={disabled}
       />
-      <div className={styles.buttons} style={{ marginBottom: isEdit ? '-50px' : '0px' }}>
+      <div className={styles.buttons} style={{ marginBottom: isEdit ? '-54px' : '0px' }}>
         {isEdit && (
           <CustomSecondaryButton paddingInline={4} onClick={onCancel}>
             Cancel

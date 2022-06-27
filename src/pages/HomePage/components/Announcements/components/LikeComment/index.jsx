@@ -1,13 +1,16 @@
-import { Col, Collapse, Row, Spin } from 'antd';
-import React, { useState } from 'react';
+import { Button, Col, Collapse, Row, Spin } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CommentIcon from '@/assets/homePage/comment.svg';
 import DislikeIcon from '@/assets/homePage/dislike.svg';
 import DislikedIcon from '@/assets/homePage/disliked.svg';
 import LikeIcon from '@/assets/homePage/like.svg';
 import LikedIcon from '@/assets/homePage/liked.svg';
+import ShowMoreIcon from '@/assets/homePage/downArrow.svg';
+import ShowLessIcon from '@/assets/homePage/upArrow.svg';
 import CommentBox from '@/components/CommentBox';
 import UserComment from '@/components/UserComment';
+import { LIKE_ACTION } from '@/utils/homePage';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -15,34 +18,106 @@ const ACTION = {
   ADD: 'ADD',
   EDIT: 'EDIT',
 };
-const LikeComment = ({ user: { currentUser: { employee = {} } = {} } = {} }) => {
+const DEFAULT_COMMENT_LIMIT = 5;
+
+const LikeComment = ({
+  dispatch,
+  user: { currentUser: { employee = {} } = {} } = {},
+  homePage: { postComments = [] } = {},
+  post = {},
+  loadingFetchComments = false,
+  loadingAddComment = false,
+  loadingEditComment = false,
+  loadingRemoveComment = false,
+  activePostID = '',
+  setActivePostID = () => {},
+}) => {
   const [activeKey, setActiveKey] = useState('');
   const [commentValue, setCommentValue] = useState('');
   const [likes, setLikes] = useState([]);
   const [dislikes, setDislikes] = useState([]);
   const [action, setAction] = useState(ACTION.ADD);
-  const [handlingId, setHandlingId] = useState('');
+  const [handlingCommentId, setHandlingCommentId] = useState('');
+  const [comments, setComments] = useState([]);
+  const [limit, setLimit] = useState(DEFAULT_COMMENT_LIMIT);
 
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      owner: {
-        _id: employee?._id,
-        generalInfoInfo: {
-          legalName: employee?.generalInfo?.legalName,
-        },
-        titleInfo: {
-          name: employee?.title?.name,
-        },
+  // API
+  const getPostCommentsEffect = (postIdProp, loadType) => {
+    let newLimit = limit;
+    if (loadType === 'more') {
+      newLimit =
+        Math.floor(comments.length / DEFAULT_COMMENT_LIMIT) * DEFAULT_COMMENT_LIMIT +
+        DEFAULT_COMMENT_LIMIT;
+    }
+    if (loadType === 'less') {
+      newLimit = DEFAULT_COMMENT_LIMIT;
+    }
+    setLimit(newLimit);
+    return dispatch({
+      type: 'homePage/fetchPostCommentsEffect',
+      payload: {
+        post: postIdProp,
+        limit: loadType ? newLimit : limit,
       },
-      comment: {
-        content:
-          'Great opportunity, consectetur adipiscing elit. Sollicitudin quis mauris elementum dictum malesuada lorem pellentesque iaculis morbi.',
+    });
+  };
+
+  const addNewCommentEffect = (content) => {
+    return dispatch({
+      type: 'homePage/addCommentEffect',
+      payload: {
+        post: post?._id,
+        content,
       },
-    },
-  ]);
+    }).then((res) => {
+      if (res.statusCode === 200) {
+        getPostCommentsEffect(post?._id);
+      }
+    });
+  };
+
+  const editCommentEffect = (commentId, content) => {
+    return dispatch({
+      type: 'homePage/editCommentEffect',
+      payload: {
+        content,
+      },
+      params: {
+        commentId,
+      },
+      postId: post?._id,
+    });
+  };
+
+  const removeCommentEffect = (commentId) => {
+    return dispatch({
+      type: 'homePage/removeCommentEffect',
+      params: {
+        commentId,
+      },
+      postId: post?._id,
+    });
+  };
+
+  const reactPostEffect = (postIdProp, type) => {
+    return dispatch({
+      type: 'homePage/reactPostEffect',
+      payload: {
+        post: postIdProp,
+        type,
+      },
+    });
+  };
+
+  useEffect(() => {
+    const find = postComments.find((x) => x._id === post?._id);
+    if (find) {
+      setComments(find.data);
+    }
+  }, [JSON.stringify(postComments)]);
 
   // function
+  // likes
   const onLikePost = () => {
     if (likes.includes(employee?._id)) {
       setLikes(likes.filter((id) => id !== employee?._id));
@@ -50,6 +125,7 @@ const LikeComment = ({ user: { currentUser: { employee = {} } = {} } = {} }) => 
       setLikes([...likes, employee?._id]);
       setDislikes(dislikes.filter((id) => id !== employee?._id));
     }
+    reactPostEffect(post?._id, LIKE_ACTION.LIKE);
   };
 
   const onDislikePost = () => {
@@ -59,63 +135,54 @@ const LikeComment = ({ user: { currentUser: { employee = {} } = {} } = {} }) => 
       setDislikes([...dislikes, employee?._id]);
       setLikes(likes.filter((id) => id !== employee?._id));
     }
+    reactPostEffect(post?._id, LIKE_ACTION.DISLIKE);
   };
 
+  // add comment
   const onComment = () => {
     if (!commentValue) return;
-    const newComment = {
-      id: comments.length + 1,
-      owner: {
-        _id: employee?._id,
-        generalInfoInfo: {
-          legalName: employee?.generalInfo?.legalName,
-        },
-        titleInfo: {
-          name: employee?.title?.name,
-        },
-      },
-      comment: {
-        content: commentValue,
-      },
-    };
+    setActivePostID(post?._id);
+    addNewCommentEffect(commentValue);
     setCommentValue('');
-    setComments([newComment, ...comments]);
   };
 
-  const onEdit = (value) => {
+  // edit comment
+  const onEdit = async (value) => {
     if (!value) return;
-    const temp = comments.map((comment) => {
-      if (comment.id === handlingId) {
+    const temp = comments.map((x) => {
+      if (x._id === handlingCommentId) {
         return {
-          ...comment,
-          comment: {
-            ...comment.comment,
-            content: value,
-          },
+          ...x,
+          content: value,
         };
       }
-      return comment;
+      return x;
     });
     setComments(temp);
     setAction(ACTION.ADD);
-    setHandlingId('');
     setCommentValue('');
+    await editCommentEffect(handlingCommentId, value);
+    setHandlingCommentId('');
   };
 
   const onEditCancel = () => {
     setAction(ACTION.ADD);
-    setHandlingId('');
+    setHandlingCommentId('');
     setCommentValue('');
   };
 
   const onEditComment = (id) => {
     setAction(ACTION.EDIT);
-    setHandlingId(id);
+    setActivePostID(post?._id);
+    setHandlingCommentId(id);
     setCommentValue(comments.find((comment) => comment.id === id)?.comment?.content);
   };
 
-  const onRemoveComment = (id) => {
-    setComments(comments.filter((comment) => comment.id !== id));
+  // remove comment
+  const onRemoveComment = (commentId) => {
+    removeCommentEffect(commentId);
+    setActivePostID(post?._id);
+    setHandlingCommentId(commentId);
   };
 
   // render UI
@@ -123,13 +190,18 @@ const LikeComment = ({ user: { currentUser: { employee = {} } = {} } = {} }) => 
     return (
       <div
         className={styles.comments}
-        onClick={() => {
+        onClick={async () => {
+          setActivePostID(post?._id);
           setActiveKey(!isActive ? '1' : '');
+          setLimit(DEFAULT_COMMENT_LIMIT);
+          if (!isActive) {
+            getPostCommentsEffect(post?._id);
+          }
         }}
       >
         <div>
           <img src={CommentIcon} alt="" />
-          <span>{comments.length} Comments</span>
+          <span>{post.totalComment} Comments</span>
         </div>
       </div>
     );
@@ -143,12 +215,34 @@ const LikeComment = ({ user: { currentUser: { employee = {} } = {} } = {} }) => 
       <div className={styles.likes}>
         <div onClick={onLikePost} className={liked ? styles.likes__pressed : null}>
           <img src={liked ? LikedIcon : LikeIcon} alt="" />
-          <span>{likes.length}</span>
+          <span>{post.totalReact?.asObject?.[LIKE_ACTION.LIKE] || 0}</span>
         </div>
         <div onClick={onDislikePost} className={disliked ? styles.likes__pressed : null}>
           <img src={disliked ? DislikedIcon : DislikeIcon} alt="" />
-          <span>{dislikes.length}</span>
+          <span>{post.totalReact?.asObject?.[LIKE_ACTION.DISLIKE] || 0}</span>
         </div>
+      </div>
+    );
+  };
+
+  const renderShowMoreLessBtn = () => {
+    const x = post.totalComment; // total comments of post
+    const y = comments.length; // total showing comments on the frontend
+
+    const showMore = x > y;
+    const notShow =
+      (x === y && x <= DEFAULT_COMMENT_LIMIT) ||
+      (x === 0 && y === 0) ||
+      (y === 0 && loadingFetchComments);
+
+    if (notShow) return null;
+
+    return (
+      <div className={styles.loadMoreLess}>
+        <Button onClick={() => getPostCommentsEffect(post?._id, showMore ? 'more' : 'less')}>
+          {showMore ? 'Show more' : 'Show less'}
+          <img src={showMore ? ShowMoreIcon : ShowLessIcon} alt="" />
+        </Button>
       </div>
     );
   };
@@ -170,36 +264,64 @@ const LikeComment = ({ user: { currentUser: { employee = {} } = {} } = {} }) => 
             onSubmit={onComment}
             disabled={action === ACTION.EDIT}
           />
-          <Row className={styles.commentContainer} gutter={[24, 16]}>
-            {comments.length === 0 && (
-              <Col span={24}>
-                <div className={styles.noComment}>
-                  <span>No comment</span>
-                </div>
-              </Col>
-            )}
-            {comments.map((x) => (
-              <Col span={24} key={x.id}>
-                {/* <Spin spinning={handlingId === x.id}> */}
-                <UserComment
-                  id={x.id}
-                  comment={x.comment}
-                  owner={x.owner}
-                  onEditComment={onEditComment}
-                  onRemoveComment={onRemoveComment}
-                  isMe={employee?._id === x.owner?._id}
-                  isEdit={action === ACTION.EDIT && handlingId === x.id}
-                  onEditSubmit={onEdit}
-                  onEditCancel={onEditCancel}
-                />
-                {/* </Spin> */}
-              </Col>
-            ))}
-          </Row>
+          <Spin
+            spinning={(loadingFetchComments || loadingAddComment) && activePostID === post?._id}
+          >
+            <Row className={styles.commentContainer} gutter={[24, 16]}>
+              {post.totalComment === 0 && (
+                <Col span={24}>
+                  <div className={styles.noComment}>
+                    <span>No comment</span>
+                  </div>
+                </Col>
+              )}
+              {comments.map((x) => {
+                const isMe = employee?._id === x.employee;
+                return (
+                  <Col
+                    span={24}
+                    key={x._id}
+                    onClick={(e) => {
+                      if (e.detail === 2 && isMe) {
+                        onEditComment(x._id);
+                      }
+                    }}
+                  >
+                    <Spin
+                      spinning={
+                        (loadingEditComment || loadingRemoveComment) &&
+                        post._id === activePostID &&
+                        handlingCommentId === x._id
+                      }
+                      indicator={null}
+                    >
+                      <UserComment
+                        item={x}
+                        onEditComment={onEditComment}
+                        onRemoveComment={onRemoveComment}
+                        isMe={isMe}
+                        isEdit={action === ACTION.EDIT && handlingCommentId === x._id}
+                        onEditSubmit={onEdit}
+                        onEditCancel={onEditCancel}
+                      />
+                    </Spin>
+                  </Col>
+                );
+              })}
+              {renderShowMoreLessBtn()}
+            </Row>
+          </Spin>
         </Panel>
       </Collapse>
     </div>
   );
 };
 
-export default connect(({ user }) => ({ user }))(LikeComment);
+export default connect(({ user, homePage, loading }) => ({
+  user,
+  homePage,
+  loadingFetchComments: loading.effects['homePage/fetchPostCommentsEffect'],
+  loadingAddComment: loading.effects['homePage/addCommentEffect'],
+  loadingEditComment: loading.effects['homePage/editCommentEffect'],
+  loadingRemoveComment: loading.effects['homePage/removeCommentEffect'],
+}))(LikeComment);

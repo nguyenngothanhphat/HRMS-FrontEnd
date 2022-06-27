@@ -90,8 +90,8 @@ const Voting = (props) => {
   const findActivePoll = () => {
     return polls.find(
       (x) =>
-        moment.utc(x.pollDetail.endDate).isSameOrAfter(moment.utc()) &&
-        moment.utc(x.pollDetail.startDate).isSameOrBefore(moment.utc()),
+        moment.utc(x.pollDetail?.endDate).isSameOrAfter(moment.utc()) &&
+        moment.utc(x.pollDetail?.startDate).isSameOrBefore(moment.utc()),
     );
   };
 

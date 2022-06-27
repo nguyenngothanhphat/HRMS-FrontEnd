@@ -1,6 +1,8 @@
 import { Col, Image, Row } from 'antd';
 import Parser from 'html-react-parser';
+import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import React, { useState } from 'react';
+import { urlify, getUrlFromString } from '@/utils/homePage';
 import styles from './index.less';
 
 const PostContent = (props) => {
@@ -117,32 +119,34 @@ const PostContent = (props) => {
       )
     );
   };
-  // const renderPreviewLink = () => {
-  //   return (
-  //     <div className={styles.previewLink}>
-  //       <div className={styles.left}>
-  //         <div className={styles.image}>
-  //           <img src={Lollypop} alt="" />
-  //         </div>
-  //         <div className={styles.information}>
-  //           <span className={styles.name}>Associate Lead User Experience Designer</span>
-  //           <span className={styles.title}>Mumbai, Maharashtra, India</span>
-  //         </div>
-  //       </div>
 
-  //       <div className={styles.right}>
-  //         <Button className={styles.viewJobBtn}>view job</Button>
-  //       </div>
-  //     </div>
-  //   );
-  // };
+  const renderPreviewLink = () => {
+    if (attachments.length > 0) return null;
+
+    const url = getUrlFromString(description) || [];
+    if (url.length === 0) return null;
+    return (
+      <div className={styles.previewContainer}>
+        <LinkPreview
+          url={url[0]}
+          className={styles.previewLink}
+          borderRadius={8}
+          height={100}
+          imageHeight={100}
+          openInNewTab
+          descriptionLength={80}
+          showLoader={false}
+        />
+      </div>
+    );
+  };
 
   return (
     <div className={styles.PostContent}>
-      <div className={styles.content}>{description ? Parser(description) : ''}</div>
+      <div className={styles.content}>{description ? Parser(urlify(description)) : ''}</div>
       {renderPreviewImage()}
       {renderImageCountTag()}
-      {/* {type === 1 && renderPreviewLink()} */}
+      {renderPreviewLink()}
     </div>
   );
 };

@@ -50,7 +50,7 @@ const ImageTable = (props) => {
         dataIndex: 'description',
         key: 'description',
         render: (description = '') => (
-          <div style={{ lineHeight: '22px' }}>{Parser(description)}</div>
+          <div style={{ lineHeight: '22px', whiteSpace: 'pre-line' }}>{Parser(description)}</div>
         ),
       },
       {

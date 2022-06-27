@@ -1,18 +1,23 @@
 .CommentBox {
   position: relative;
   :global {
+    .ant-input {
+      font-size: 12px;
+    }
     .ant-input-affix-wrapper {
       padding-right: 6px !important;
       padding-left: 12px !important;
     }
     .ant-input-affix-wrapper:focus,
-    .ant-input-affix-wrapper-focused {
+    .ant-input-affix-wrapper-focused,
+    .ant-input:focus,
+    .ant-input-focused {
       box-shadow: none !important;
     }
     .ant-input {
       min-height: 42px !important;
       // padding-right: 80px;
-      padding-block: 9px !important;
+      padding-block: 11px !important;
     }
   }
   .commentInput {
@@ -22,12 +27,17 @@
   }
   .buttons {
     position: absolute;
-    right: 4px;
+    right: 6px;
     bottom: 5px;
     z-index: 10;
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    :global {
+      .ant-btn[disabled] {
+        opacity: 0.5;
+      }
+    }
     .commentBtn {
       padding: 0 16px;
       object-fit: contain;

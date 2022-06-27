@@ -40,6 +40,7 @@ const Card = (props) => {
   const [celebratingDetailModalVisible, setCelebratingDetailModalVisible] = useState(false);
   const [viewingItem, setViewingItem] = useState('');
   const [likedModalVisible, setLikedModalVisible] = useState(false);
+  const [data, setData] = useState([]);
 
   // functions
   const onViewProfileClick = (userId) => {
@@ -60,10 +61,18 @@ const Card = (props) => {
   };
 
   const onLikeClick = async (item) => {
-    const { likesComments: { likes = [] } = {} } = item;
+    const { likes = [] } = item;
 
     const employeeId = employee?._id;
     if (!likes.includes(employeeId)) {
+      setData((prevData) => {
+        const newData = [...prevData];
+        const index = newData.findIndex((x) => x._id === item._id);
+        if (index > -1) {
+          newData[index].likes.push({ _id: employeeId });
+        }
+        return newData;
+      });
       const payload = {
         employee: item._id,
         likes: [employeeId],
@@ -76,28 +85,40 @@ const Card = (props) => {
     }
   };
 
+  const formatData = (arr) => {
+    return arr.map((x) => {
+      return {
+        ...x,
+        likes: x.likesComments?.likes || [],
+        comments: x.likesComments?.comments || [],
+      };
+    });
+  };
+
   useEffect(() => {
+    const dataTemp = formatData(list);
+    setData(dataTemp);
     if (viewingItem) {
-      const find = list.find((item) => item._id === viewingItem._id);
+      const find = dataTemp.find((item) => item._id === viewingItem._id);
       setViewingItem(find);
     }
   }, [JSON.stringify(list)]);
 
   // render UI
-  const renderEmployeeName = (data) => {
+  const renderEmployeeName = (emp) => {
     return (
       <UserProfilePopover
         placement="left"
         data={{
-          ...data,
-          ...data.generalInfoInfo,
+          ...emp,
+          ...emp.generalInfoInfo,
         }}
       >
         <span
           className={styles.employeeName}
-          onClick={() => onViewProfileClick(data?.generalInfoInfo?.userId)}
+          onClick={() => onViewProfileClick(emp?.generalInfoInfo?.userId)}
         >
-          {data?.generalInfoInfo.legalName}
+          {emp?.generalInfoInfo.legalName}
         </span>
       </UserProfilePopover>
     );
@@ -113,11 +134,11 @@ const Card = (props) => {
         return 'his/her';
     }
   };
-  const renderCardContent = (data = {}) => {
-    const employeeName = renderEmployeeName(data);
+  const renderCardContent = (emp = {}) => {
+    const employeeName = renderEmployeeName(emp);
 
-    if (data.type === CELEBRATE_TYPE.BIRTHDAY) {
-      const { DOB = '', gender = '' } = data?.generalInfoInfo || {};
+    if (emp.type === CELEBRATE_TYPE.BIRTHDAY) {
+      const { DOB = '', gender = '' } = emp?.generalInfoInfo || {};
       const isToday = isTheSameDay(moment(), moment(DOB));
       const birthday = moment.utc(DOB).locale('en').format('MMM Do');
       if (isToday)
@@ -132,8 +153,8 @@ const Card = (props) => {
         </span>
       );
     }
-    if (data.type === CELEBRATE_TYPE.ANNIVERSARY) {
-      const { joinDate = '' } = data;
+    if (emp.type === CELEBRATE_TYPE.ANNIVERSARY) {
+      const { joinDate = '' } = emp;
       return (
         <span>
           {employeeName} joined our company on{' '}
@@ -141,14 +162,14 @@ const Card = (props) => {
         </span>
       );
     }
-    if (data.type === CELEBRATE_TYPE.NEWJOINEE) {
+    if (emp.type === CELEBRATE_TYPE.NEWJOINEE) {
       return <span>Welcome to new member: {employeeName}.</span>;
     }
     return '';
   };
 
   const renderCard = (card) => {
-    const { likesComments: { likes = [], comments = [] } = {} } = card;
+    const { likes = [], comments = [] } = card;
     const likedIds = likes.map((x) => x._id);
     return (
       <div className={styles.cardContainer}>
@@ -233,8 +254,8 @@ const Card = (props) => {
           prevArrow={<PrevArrow />}
         >
           {!previewing
-            ? list.length > 0
-              ? list.map((x) => renderCard(x))
+            ? data.length > 0
+              ? data.map((x) => renderCard(x))
               : renderEmpty()
             : renderPreview()}
           {/* FOR PREVIEWING IN SETTINGS PAGE */}
@@ -243,7 +264,11 @@ const Card = (props) => {
       <CommonModal
         visible={celebratingDetailModalVisible}
         onClose={() => setCelebratingDetailModalVisible(false)}
-        title="Say Happy Birthday!"
+        title={
+          viewingItem.type === CELEBRATE_TYPE.BIRTHDAY
+            ? 'Say Happy Birthday!'
+            : 'Say Congratulations!'
+        }
         content={<CelebratingDetailModalContent item={viewingItem} refreshData={refreshData} />}
         width={500}
         hasFooter={false}
@@ -252,7 +277,7 @@ const Card = (props) => {
         visible={likedModalVisible}
         onClose={() => setLikedModalVisible(false)}
         title="Likes"
-        content={<LikedModalContent list={viewingItem?.likesComments?.likes || []} />}
+        content={<LikedModalContent list={viewingItem?.likes || []} />}
         width={500}
         hasFooter={false}
       />

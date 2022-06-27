@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { TAB_IDS } from '@/utils/homePage';
+import { TAB_IDS, beforeUpload } from '@/utils/homePage';
 import AnnouncementContent from './components/AnnouncementContent';
 import BannerContent from './components/BannerContent';
 import BirthdayContent from './components/BirthdayContent';
@@ -97,7 +97,7 @@ const AddPost = (props) => {
             status: 'done',
             url: x.url,
             thumbUrl: x.url,
-            id: x.id,
+            id: x.id || x._id,
           };
         });
       };
@@ -172,14 +172,61 @@ const AddPost = (props) => {
     setFormValues(values);
   }, 1000);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    setFormValuesDebounce(values);
+  // const checkUploadFiles = (allValues) => {
+  //   let { fileList: fileListTemp = [] } = allValues;
+  //   fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
+
+  //   switch (mode) {
+  //     case TAB_IDS.ANNOUNCEMENTS: {
+  //       form.setFieldsValue({
+  //         uploadFilesA: fileListTemp,
+  //       });
+  //       return {
+  //         ...allValues,
+  //         uploadFilesA: fileListTemp,
+  //       };
+  //     }
+  //     case TAB_IDS.ANNIVERSARY: {
+  //       form.setFieldsValue({
+  //         uploadFilesB: fileListTemp,
+  //       });
+  //       return {
+  //         ...allValues,
+  //         uploadFilesB: fileListTemp,
+  //       };
+  //     }
+  //     case TAB_IDS.IMAGES: {
+  //       form.setFieldsValue({
+  //         uploadFilesI: fileListTemp,
+  //       });
+  //       return {
+  //         ...allValues,
+  //         uploadFilesI: fileListTemp,
+  //       };
+  //     }
+  //     case TAB_IDS.BANNER: {
+  //       form.setFieldsValue({
+  //         uploadFilesBN: fileListTemp,
+  //       });
+  //       return {
+  //         ...allValues,
+  //         uploadFilesBN: fileListTemp,
+  //       };
+  //     }
+
+  //     default:
+  //       return allValues;
+  //   }
+  // };
+
+  const onValuesChange = (changedValues, allValues) => {
+    // const newValues = checkUploadFiles(JSON.parse(JSON.stringify(allValues)));
+    setFormValuesDebounce(allValues);
   };
 
   const onUploadFiles = async (files) => {
     if (Array.isArray(files)) {
-      return files.map((x) => x.id);
+      return files.map((x) => x.id || x._id);
     }
     const list = [];
     if (Array.isArray(files?.fileList)) {
@@ -188,7 +235,7 @@ const AddPost = (props) => {
         await Promise.all(
           files.fileList.map(async (x) => {
             if (x.url) {
-              list.push({ id: x.id });
+              list.push({ id: x.id || x._id });
             } else {
               const formData = new FormData();
               formData.append('uri', x.originFileObj);

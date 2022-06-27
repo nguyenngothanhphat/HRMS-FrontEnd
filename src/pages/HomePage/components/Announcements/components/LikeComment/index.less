@@ -7,14 +7,25 @@
       background-color: #fff;
     }
     .ant-collapse-header {
-      padding: 4px 14px 6px !important;
+      padding: 6px 14px 8px !important;
+      cursor: default !important;
     }
     .ant-collapse-content-box {
       padding-block: 0 !important;
     }
   }
 
+  .disableSelect {
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+    -webkit-touch-callout: none; /* iOS Safari */
+  }
   .likes {
+    .disableSelect();
     display: flex !important;
     justify-content: flex-start;
     cursor: pointer;
@@ -58,6 +69,7 @@
     }
   }
   .comments {
+    .disableSelect();
     display: flex;
     justify-content: flex-end;
     border-radius: 8px;
@@ -88,11 +100,41 @@
   }
 
   .commentContainer {
+    min-height: 70px;
     padding: 16px 0;
     .noComment {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
       color: #707177;
       font-size: 12px;
-      text-align: center;
+    }
+    .loadMoreLess {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      :global {
+        .ant-btn {
+          height: 32px;
+          padding-right: 25px;
+          padding-left: 25px;
+          background-color: transparent;
+          border: none;
+          box-shadow: none;
+          span {
+            color: #2c6df9;
+            font-weight: 500;
+            font-size: 13px;
+            font-style: normal;
+            line-height: 19px;
+          }
+          img {
+            margin-left: 10px;
+          }
+        }
+      }
     }
   }
 }

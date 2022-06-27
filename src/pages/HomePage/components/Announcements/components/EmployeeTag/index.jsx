@@ -4,6 +4,7 @@ import React from 'react';
 import { connect, history } from 'umi';
 import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
 import styles from './index.less';
+import { dateFormat } from '@/utils/homePage';
 
 const EmployeeTag = (props) => {
   const {
@@ -23,7 +24,7 @@ const EmployeeTag = (props) => {
   };
 
   const Timestamp = () => {
-    const date = moment(createDate).locale('en').format('MMMM DD YYYY, HH:mm A');
+    const date = moment(createDate).locale('en').format(dateFormat);
     return <span className={styles.timestamp}>{date}</span>;
   };
 
