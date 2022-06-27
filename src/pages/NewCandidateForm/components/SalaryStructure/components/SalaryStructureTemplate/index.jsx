@@ -775,7 +775,7 @@ const SalaryStructureTemplate = (props) => {
               <div className={styles.noteField}>
                 1. As a part of this offer the candidate shall be entitled to a Joining Bonus of INR{' '}
                 {convertValue(joining_bonus.value)}. Post Joining 50% of this amount shall be paid
-                along with the second month's salary (or the applicable first payroll). And on
+                along with the second month&apos;s salary (or the applicable first payroll). And on
                 completion of three months of service the balance 50% shall be paid along with the
                 immediate next payroll.
               </div>
