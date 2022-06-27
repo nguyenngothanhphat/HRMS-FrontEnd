@@ -4,6 +4,7 @@ import React from 'react';
 import { connect, history } from 'umi';
 import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
 import styles from './index.less';
+import { dateFormat } from '@/utils/homePage';
 
 const EmployeeTag = (props) => {
   const {
@@ -23,12 +24,12 @@ const EmployeeTag = (props) => {
   };
 
   const Timestamp = () => {
-    const date = moment(createDate).locale('en').format('MMMM DD YYYY, HH:mm A');
+    const date = moment(createDate).locale('en').format(dateFormat);
     return <span className={styles.timestamp}>{date}</span>;
   };
 
   return (
-    <Col className={styles.EmployeeTag} span={24} onClick={onViewProfileClick}>
+    <div className={styles.EmployeeTag} onClick={onViewProfileClick}>
       <div className={styles.container}>
         <div className={styles.avatar}>
           <img src={avatar || MockAvatar} alt="" />
@@ -39,7 +40,7 @@ const EmployeeTag = (props) => {
           <Timestamp />
         </div>
       </div>
-    </Col>
+    </div>
   );
 };
 

@@ -35,14 +35,15 @@ const EmploymentTab = (props) => {
 
   const [isChanging, setIsChanging] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [isModified, setIsModified] = useState(false);
   const [current, setCurrent] = useState(0);
   const [currentData, setCurrentData] = useState({});
   const [changedData, setChangedData] = useState({});
+  const [currentPayload, setCurrentPayload] = useState({});
 
   const visibleSuccess = employeeProfile ? employeeProfile.visibleSuccess : false;
 
   const fetchData = () => {
-    dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: { employee } });
     dispatch({
       type: 'employeeProfile/fetchEmployeeTypes',
     });
@@ -52,6 +53,14 @@ const EmploymentTab = (props) => {
     dispatch({
       type: 'employee/fetchDataOrgChart',
       payload: { employee },
+    });
+  };
+
+  const fetchChangeHistories = (payload) => {
+    setCurrentPayload(payload);
+    dispatch({
+      type: 'employeeProfile/fetchChangeHistories',
+      payload,
     });
   };
 
@@ -82,7 +91,7 @@ const EmploymentTab = (props) => {
         currentAnnualCTC: currentAnnualCTC || null,
       });
     }
-  }, [employee, reportees]);
+  }, [employee, JSON.stringify(reportees)]);
 
   const handleMakeChanges = async () => {
     setCurrent(0);
@@ -91,6 +100,60 @@ const EmploymentTab = (props) => {
 
   const handleEditCurrentInfo = () => {
     setIsEdit(!isEdit);
+  };
+
+  const getChangesText = () => {
+    const oldValues = {
+      location: location.name,
+      department: department.name,
+      title: title.name,
+      employeeType: employeeType.name,
+      currentAnnualCTC,
+      compensationType,
+      manager: manager.generalInfo?.legalName,
+      reportees: currentData.reportees.length,
+    };
+
+    const newValues = {
+      location: changedData.newLocation,
+      department: changedData.newDepartment,
+      title: changedData.newTitle,
+      employeeType: changedData.newEmploymentType,
+      currentAnnualCTC: changedData.stepFour.currentAnnualCTC,
+      compensationType: changedData.stepFour.compensationType,
+      manager: changedData.newManager,
+      reportees: changedData.stepThree.reportees.length,
+    };
+
+    const getText = (oldValue, newValue) => {
+      if (oldValue !== newValue && newValue) {
+        return `${oldValue || 'None'} => ${newValue}`;
+      }
+      return '';
+    };
+
+    const compensationTypeDetail = getText(oldValues.compensationType, newValues.compensationType);
+    const departmentDetail = getText(oldValues.department, newValues.department);
+    const managerDetail = getText(oldValues.manager, newValues.manager);
+    const titleDetail = getText(oldValues.title, newValues.title);
+    const reporteesDetail = getText(
+      currentData.reportees.length,
+      changedData.stepThree.reportees.length,
+    );
+    const locationDetail = getText(oldValues.location, newValues.location);
+    const employeeTypeDetail = getText(oldValues.employeeType, newValues.employeeType);
+    const annualCTCDetail = getText(oldValues.currentAnnualCTC, newValues.currentAnnualCTC);
+
+    return {
+      compensationTypeDetail,
+      departmentDetail,
+      managerDetail,
+      titleDetail,
+      reporteesDetail,
+      locationDetail,
+      employeeTypeDetail,
+      annualCTCDetail,
+    };
   };
 
   const handleSubmit = async (data) => {
@@ -119,6 +182,9 @@ const EmploymentTab = (props) => {
       employee: data.employee,
       changedBy: data.changedBy,
       tenantId: getCurrentTenant(),
+
+      // changed text
+      ...getChangesText(),
     };
     const array = Object.keys(payload);
     for (let i = 0; i < array.length; i += 1) {
@@ -128,7 +194,11 @@ const EmploymentTab = (props) => {
       type: 'employeeProfile/updateEmployment',
       payload,
     });
-    await dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
+    await dispatch({ type: 'employeeProfile/addNewChangeHistory', payload }).then((res) => {
+      if (res.statusCode === 200) {
+        fetchChangeHistories(currentPayload);
+      }
+    });
   };
 
   const nextTab = (msg) => {
@@ -222,9 +292,11 @@ const EmploymentTab = (props) => {
             data={currentData}
             current={current}
             setChangedData={setChangedData}
+            isModified={isModified}
+            setIsModified={setIsModified}
           />
         ) : (
-          <EmploymentHistoryTable />
+          <EmploymentHistoryTable fetchChangeHistories={fetchChangeHistories} />
         )}
         {isChanging ? (
           <div className={styles.footer}>
@@ -233,7 +305,7 @@ const EmploymentTab = (props) => {
               <Button onClick={previousTab} type="text">
                 {current > 0 ? 'Back' : null}
               </Button>
-              <Button onClick={nextTab} type="primary">
+              <Button onClick={nextTab} type="primary" disabled={!isModified && current === 5}>
                 {current === 6 ? 'Submit' : 'Continue'}
               </Button>
             </div>

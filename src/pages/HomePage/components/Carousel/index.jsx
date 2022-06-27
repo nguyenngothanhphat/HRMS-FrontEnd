@@ -67,7 +67,7 @@ const Carousel = (props) => {
   }, [JSON.stringify(banners)]);
 
   // RENDER UI
-  if (!previewing && bannerState.length === 0) {
+  if (!loadingFetchBanners && !previewing && bannerState.length === 0) {
     return (
       <div className={styles.Carousel}>
         <EmptyComponent description="No banners" />
@@ -123,5 +123,5 @@ const Carousel = (props) => {
 
 export default connect(({ homePage, loading }) => ({
   homePage,
-  loadingFetchBanners: loading.effects['homePage/fetchBannersEffect1'],
+  loadingFetchBanners: loading.effects['homePage/fetchBannersEffect'],
 }))(Carousel);

@@ -11,11 +11,19 @@ import SixthStep from './components/SixthStep';
 import SeventhStep from './components/SeventhStep';
 
 const HandleChanges = (props) => {
-  const { user, current, data, employeeProfile, companyLocationList } = props;
+  const {
+    user,
+    current,
+    data,
+    employeeProfile,
+    companyLocationList = [],
+    setIsModified = () => {},
+    isModified = false,
+  } = props;
   const { currentUser } = user || {};
   const [radio, setRadio] = useState(2);
   const [changeData, setChangeData] = useState({
-    changedBy: currentUser ? currentUser.employee._id : '',
+    changedBy: currentUser ? currentUser.employee?._id : '',
     employee: employeeProfile.employee,
     newTitle: '',
     newLocation: '',
@@ -87,18 +95,44 @@ const HandleChanges = (props) => {
       case 3:
         setChangeData({ ...changeData, stepOne: 'Later' });
         break;
-      case 4:
+      case 4: {
+        let notifyToTemp = JSON.parse(JSON.stringify(changeData.stepFive.notifyTo));
+        const email = employeeProfile?.originData?.employmentData?.generalInfo?.workEmail;
+        const checked = !changeData.stepFive.toEmployee;
+        if (checked) {
+          notifyToTemp.push(email);
+        } else {
+          notifyToTemp = notifyToTemp.filter((x) => x !== email);
+        }
         setChangeData({
           ...changeData,
-          stepFive: { ...changeData.stepFive, toEmployee: !changeData.stepFive.toEmployee },
+          stepFive: {
+            ...changeData.stepFive,
+            toEmployee: !!checked,
+            notifyTo: notifyToTemp,
+          },
         });
         break;
-      case 5:
+      }
+      case 5: {
+        let notifyToTemp = [...changeData.stepFive.notifyTo];
+        const email = employeeProfile.originData?.employmentData?.manager?.generalInfo?.workEmail;
+        const checked = !changeData.stepFive.toManager;
+        if (checked) {
+          notifyToTemp.push(email);
+        } else {
+          notifyToTemp = notifyToTemp.filter((x) => x !== email);
+        }
         setChangeData({
           ...changeData,
-          stepFive: { ...changeData.stepFive, toManager: !changeData.stepFive.toManager },
+          stepFive: {
+            ...changeData.stepFive,
+            toManager: !!checked,
+            notifyTo: notifyToTemp,
+          },
         });
         break;
+      }
 
       default:
         break;
@@ -205,7 +239,10 @@ const HandleChanges = (props) => {
       case 'notifyTo': // fifth step
         changeDataTemp = {
           ...changeData,
-          stepFive: { ...changeData.stepThree, notifyTo: value },
+          stepFive: {
+            ...changeData.stepThree,
+            notifyTo: [...changeData.stepFive.notifyTo, ...value],
+          },
         };
         break;
 
@@ -262,7 +299,13 @@ const HandleChanges = (props) => {
         />
       ) : null}
       {current === 5 ? (
-        <SixthStep name={data.name} currentData={data} changeData={changeData} />
+        <SixthStep
+          name={data.name}
+          currentData={data}
+          changeData={changeData}
+          isModified={isModified}
+          setIsModified={setIsModified}
+        />
       ) : null}
       {current === 6 ? (
         <SeventhStep changeData={changeData} onChange={onChange} fetchedState={employeeProfile} />

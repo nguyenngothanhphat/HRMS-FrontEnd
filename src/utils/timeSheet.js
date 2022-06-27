@@ -7,6 +7,7 @@ export const TAB_NAME = {
   FINANCE_REPORTS: 'finance-reports',
   HR_REPORTS: 'hr-reports',
   SETTINGS: 'settings',
+  MY_REQUESTS: 'my-requests',
 };
 
 export const VIEW_TYPE = {

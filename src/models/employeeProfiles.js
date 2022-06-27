@@ -190,9 +190,10 @@ const employeeProfile = {
       }
     },
     *addNewChangeHistory({ payload }, { call, put }) {
+      let response = {};
       try {
         if (payload.employee && payload.changedBy) {
-          const response = yield call(addChangeHistory, {
+          response = yield call(addChangeHistory, {
             tenantId: getCurrentTenant(),
             company: getCurrentCompany(),
             ...payload,
@@ -204,18 +205,25 @@ const employeeProfile = {
             // payload.takeEffect === 'UPDATED' &&
             statusCode === 200
           ) {
-            const updates = yield call(getChangeHistories, {
-              employee: payload.employee,
-              tenantId: getCurrentTenant(),
-            });
+            // const updates = yield call(getChangeHistories, {
+            //   employee: payload.employee,
+            //   tenantId: getCurrentTenant(),
+            // });
             // if (updates.statusCode !== 200) throw updates;
-            yield put({ type: 'saveOrigin', payload: { changeHistories: updates.data } });
-            const employment = yield call(getEmploymentInfo, {
-              id: payload.employee,
-            });
+            // yield put({
+            //   type: 'saveOrigin',
+            //   payload: {
+            //     changeHistories: updates.data?.data || [],
+            //     changeHistoriesTotal: updates.data?.total || 0,
+            //   },
+            // });
 
-            yield put({ type: 'saveOrigin', payload: { employmentData: employment.data } });
-            if (employment.statusCode !== 200) throw response;
+            // const employment = yield call(getEmploymentInfo, {
+            //   id: payload.employee,
+            // });
+            // yield put({ type: 'saveOrigin', payload: { employmentData: employment.data } });
+
+            // if (employment.statusCode !== 200) throw response;
             const compensation = yield call(getCompensation, {
               employee: payload.employee,
             });
@@ -233,6 +241,7 @@ const employeeProfile = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *fetchCompensation({ payload }, { call, put }) {
       try {
@@ -810,7 +819,7 @@ const employeeProfile = {
       }
     },
     *fetchEmploymentInfo({ payload }, { call, put }) {
-      let response = '';
+      let response = {};
       try {
         response = yield call(getEmploymentInfo, {
           ...payload,
@@ -955,9 +964,12 @@ const employeeProfile = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode, data: { data = [], total = 0 } = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveOrigin', payload: { changeHistories: data } });
+        yield put({
+          type: 'saveOrigin',
+          payload: { changeHistories: data, changeHistoriesTotal: total },
+        });
       } catch (errors) {
         dialog(errors);
       }
