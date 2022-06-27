@@ -4,13 +4,12 @@ import { Table } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { projectColor, convertMsToTime, VIEW_TYPE } from '@/utils/timeSheet';
 import AirPlanIcon from '@/assets/timeSheet/airplanIcon.svg';
-import TaskPopover from './components/TaskPopover';
-import TimeoffPopover from './components/TimeoffPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import EmptyComponent from '@/components/Empty';
-import CellMenu from './components/CellMenu';
+import { convertMsToTime, projectColor } from '@/utils/timeSheet';
+import TaskPopover from './components/TaskPopover';
+import TimeoffPopover from './components/TimeoffPopover';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
@@ -20,13 +19,11 @@ const WeeklyTable = (props) => {
     loadingFetchMyTimesheetByType = false,
     data = [],
     timeoffList = [],
-    setSelectedDate = () => {},
     setSelectedView = () => {},
     callback = () => {},
   } = props;
   const [dateList, setDateList] = useState([]);
   const [formattedData, setFormattedData] = useState([]);
-  const [popup, setPopup] = useState({ visible: false, x: 0, y: 0 });
   const [isEdited, setIsEdited] = useState(false);
 
   // FUNCTIONS
@@ -103,30 +100,6 @@ const WeeklyTable = (props) => {
     return renderDateHeaderItem(title);
   };
 
-  const onViewDetail = (date) => {
-    setSelectedDate(moment(date, 'MM/DD/YYYY'));
-    setSelectedView(VIEW_TYPE.D);
-  };
-
-  const onCell = (onClick) => ({
-    // temporarily disable the cell menu
-    onContextMenu: (event) => {
-      event.preventDefault();
-      if (!popup.visible) {
-        document.addEventListener(`click`, function onClickOutside() {
-          setPopup({ visible: false });
-          document.removeEventListener(`click`, onClickOutside);
-        });
-      }
-      setPopup({
-        onClick,
-        visible: true,
-        x: event.clientX - 60,
-        y: event.clientY - document.body.scrollTop,
-      });
-    },
-  });
-
   const columns = () => {
     const dateColumns = dateList.map((date) => {
       return {
@@ -135,7 +108,6 @@ const WeeklyTable = (props) => {
         key: date,
         align: 'center',
         width: `${100 / 9}%`,
-        onCell: () => onCell(() => onViewDetail(date)),
         render: (_, row) => {
           const { projectName = '', days = [] } = row;
 
@@ -302,7 +274,6 @@ const WeeklyTable = (props) => {
             emptyText: <EmptyComponent />,
           }}
         />
-        <CellMenu {...popup} />
       </div>
     </div>
   );
