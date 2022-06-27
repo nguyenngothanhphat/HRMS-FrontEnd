@@ -8,7 +8,7 @@ import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
 import EditIcon from '@/assets/projectManagement/edit2.svg';
 import CancelXIcon from '@/assets/projectManagement/cancelX.svg';
 import ApproveCheckIcon from '@/assets/projectManagement/approveCheck.svg';
-import CommonTable from '../../../CommonTable';
+import CommonTable from '@/components/CommonTable';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import OrangeAddButton from '../../../OrangeAddButton';
@@ -172,7 +172,7 @@ const ResourcesCard = (props) => {
       type: 'projectDetails/fetchResourceOfProjectEffect',
       payload: {
         project: [id],
-        name,
+        ...name,
         page: p,
         limit: l,
         adminMode: true,

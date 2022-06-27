@@ -1,21 +1,19 @@
-import { Table, Popover } from 'antd';
+import { Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import moment from 'moment';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
-import { employeeColor } from '@/utils/timeSheet';
 import EmptyComponent from '@/components/Empty';
+import { employeeColor } from '@/utils/timeSheet';
 import EmployeeDetailModal from '../../../EmployeeDetailModal';
 import styles from './index.less';
-import UserPopover from './components/UserPopover';
-import { isOwner } from '@/utils/authority';
-import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
+// import UserPopover from './components/UserPopover';
+import UserProfilePopover from '@/components/UserProfilePopover';
+import { getTimezoneViaCity } from '@/utils/times';
 
 const WeeklyTable = (props) => {
   // const [timezoneList, setTimezoneList] = useState([]);
   const timezoneList = [];
   const { companyLocationList = [] } = props;
-  const [currentTime, setCurrentTime] = useState(moment());
   const fetchTimezone = () => {
     companyLocationList.forEach((location) => {
       const {
@@ -117,24 +115,11 @@ const WeeklyTable = (props) => {
         dataIndex: 'manager',
         key: 'manager',
         render: (manager = {}) => (
-          <Popover
-            content={
-              <UserPopover
-                companyLocationList={companyLocationList}
-                propsState={{ currentTime, timezoneList }}
-                data={manager}
-              />
-            }
-            placement="bottomRight"
-            trigger="hover"
-          >
-            <Link
-              className={styles.managerName}
-              to={() => handleProfileEmployee(manager.tenantId, manager.userId)}
-            >
+          <UserProfilePopover data={manager} placement="bottomRight" trigger="hover">
+            <Link className={styles.managerName} to={handleProfileEmployee(manager.userId)}>
               {manager?.employeeId ? manager.legalName : ''}
             </Link>
-          </Popover>
+          </UserProfilePopover>
         ),
         sorter: (a, b) => {
           return a.manager?.legalName && b.manager?.legalName
@@ -180,8 +165,7 @@ const WeeklyTable = (props) => {
         dataIndex: 'leaveTaken',
         key: 'leaveTaken',
         align: 'center',
-        render: (leaveTaken, row) => {
-          const { totalLeave = 0 } = row;
+        render: (leaveTaken) => {
           return leaveTaken;
         },
         sorter: (a, b) => {

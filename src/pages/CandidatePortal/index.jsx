@@ -1,8 +1,9 @@
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
-import { PORTAL_TAB_NAME } from '@/utils/candidatePortal';
-import { getCurrentTenant } from '@/utils/authority';
+import ReactJoyride from 'react-joyride';
+import { NEW_COMER_CLASS, NEW_COMER_STEPS, PORTAL_TAB_NAME } from '@/utils/candidatePortal';
+import { getCurrentTenant, getIsFirstLogin, setIsFirstLogin } from '@/utils/authority';
 import Dashboard from './components/Dashboard';
 import Messages from './components/Messages';
 import WelcomeModal from './components/WelcomeModal';
@@ -76,7 +77,7 @@ class CandidatePortal extends PureComponent {
     });
     if (conversations.statusCode === 200) {
       dispatch({
-        type: 'conversation/getNumberUnseenConversationEffect',
+        type: 'conversation/getConversationUnSeenEffect',
         payload: {
           userId: candidate._id,
         },
@@ -130,23 +131,58 @@ class CandidatePortal extends PureComponent {
     this.fetchCandidate();
   };
 
+  handleJoyrideCallback = (data) => {
+    const { status } = data;
+    if (status === 'finished') {
+      setIsFirstLogin(false);
+    }
+  };
+
   render() {
     const { openWelcomeModal } = this.state;
     const {
       match: { params: { tabName = '' } = {} },
     } = this.props;
+    const isFirstLogin = getIsFirstLogin();
 
     return (
       <div className={styles.CandidatePortal}>
         <Tabs activeKey={tabName || 'dashboard'} onChange={this.onChangeTab} destroyInactiveTabPane>
-          <TabPane tab="Dashboard" key={DASHBOARD}>
+          <TabPane
+            tab={<span className={NEW_COMER_CLASS.DASHBOARD_TAB}>Dashboard</span>}
+            key={DASHBOARD}
+          >
             <Dashboard />
           </TabPane>
-          <TabPane tab={this.renderMessageTitle()} key={MESSAGES}>
+          <TabPane
+            tab={<span className={NEW_COMER_CLASS.MESSAGES_TAB}>{this.renderMessageTitle()}</span>}
+            key={MESSAGES}
+          >
             <Messages />
           </TabPane>
         </Tabs>
-        <WelcomeModal visible={openWelcomeModal} onClose={() => this.handleWelcomeModal(false)} />
+        <WelcomeModal
+          visible={openWelcomeModal}
+          onClose={() => {
+            this.handleWelcomeModal(false);
+          }}
+        />
+        <ReactJoyride
+          steps={NEW_COMER_STEPS}
+          continuous
+          showProgress
+          showSkipButton
+          run={isFirstLogin}
+          callback={this.handleJoyrideCallback}
+          close
+          styles={{
+            options: {
+              primaryColor: '#ffa100',
+              width: 300,
+              zIndex: 2023,
+            },
+          }}
+        />
       </div>
     );
   }

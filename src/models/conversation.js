@@ -3,7 +3,7 @@ import {
   addNewConversation,
   getConversation,
   getUserConversations,
-  getNumberUnseenConversation,
+  // getNumberUnseenConversation,
   setStatusSeenConversation,
   addNewMessage,
   getConversationMessage,
@@ -61,7 +61,7 @@ const country = {
         });
         // if (payload.userId) {
         //   yield put({
-        //     type: 'conversation/getNumberUnseenConversationEffect',
+        //     type: 'conversation/getConversationUnSeenEffect',
         //     payload: {
         //       userId: payload.userId,
         //     },
@@ -140,30 +140,19 @@ const country = {
       }
       return response;
     },
-    *getNumberUnseenConversationEffect({ payload }, { put, call }) {
-      let response = {};
-      try {
-        response = yield call(getNumberUnseenConversation, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: {
-            unseenTotal: data,
-          },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response;
-    },
 
     // MESSAGE
     *addNewMessageEffect({ payload, preventSaveToRedux = false }, { call, put }) {
+      if (!preventSaveToRedux) {
+        yield put({
+          type: 'saveNewMessage',
+          payload: {
+            conversationId: payload.conversationId,
+            sender: payload.sender,
+            text: payload.text,
+          },
+        });
+      }
       let response = {};
       try {
         response = yield call(addNewMessage, {
@@ -171,14 +160,8 @@ const country = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data = {} } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        if (!preventSaveToRedux) {
-          yield put({
-            type: 'saveNewMessage',
-            payload: data,
-          });
-        }
       } catch (errors) {
         dialog(errors);
       }
@@ -212,12 +195,6 @@ const country = {
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        // yield put({
-        //   type: 'save',
-        //   payload: {
-        //     lastMessage: data,
-        //   },
-        // });
       } catch (errors) {
         dialog(errors);
       }

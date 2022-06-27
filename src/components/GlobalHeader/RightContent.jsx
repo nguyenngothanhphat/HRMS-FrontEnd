@@ -1,17 +1,16 @@
 import { BuildOutlined } from '@ant-design/icons';
-import { Tooltip, Badge } from 'antd';
-import React, { useState, useEffect } from 'react';
+import { Badge, Tooltip } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { io } from 'socket.io-client';
-import { isOwner } from '@/utils/authority';
+import BellIcon from '@/assets/homePage/Bell-icon.svg';
 import ActivityLogModalContent from '@/pages/Dashboard/components/ActivityLog/components/ActivityLogModalContent';
+import { isOwner } from '@/utils/authority';
+import { ChatEvent, socket, disconnectSocket } from '@/utils/socket';
 import CommonModal from '../CommonModal';
 import AvatarDropdown from './AvatarDropdown';
-import { ChatEvent, SOCKET_URL } from '@/utils/chatSocket';
 import GlobalSearchNew from './components/GlobalSearchNew/index';
 import SelectCompanyModal from './components/SelectCompanyModal';
 import styles from './index.less';
-import BellIcon from '@/assets/homePage/Bell-icon.svg';
 import QuestionDropdown from './QuestionDropdown';
 
 const GlobalHeaderRight = (props) => {
@@ -24,23 +23,6 @@ const GlobalHeaderRight = (props) => {
     unseenTotal,
     activeConversationUnseen,
   } = props;
-
-  const socket = React.createRef();
-  socket.current = io(SOCKET_URL);
-
-  socket.current.emit(ChatEvent.ADD_USER, currentUser?.employee?._id || '');
-
-  const [isSwitchCompanyVisible, setIsSwitchCompanyVisible] = useState(false);
-  const [notification, setNotification] = useState(unseenTotal);
-  const checkIsOwner =
-    isOwner() && currentUser.signInRole.map((role) => role.toLowerCase()).includes('owner');
-  const [modalVisible, setModalVisible] = useState(false);
-
-  let className = styles.right;
-
-  if (theme === 'dark' && layout === 'top') {
-    className = `${styles.right}  ${styles.dark}`;
-  }
 
   const saveNewMessage = async (message) => {
     await dispatch({
@@ -58,13 +40,32 @@ const GlobalHeaderRight = (props) => {
     });
   };
 
-  socket.current.on(ChatEvent.GET_MESSAGE, async (data) => {
-    await saveNewMessage(data);
-    await fetchNotificationList();
-  });
+  const initialSocket = () => {
+    socket.emit(ChatEvent.ADD_USER, currentUser?.employee?._id || '');
+    socket.on(ChatEvent.GET_MESSAGE, async (data) => {
+      saveNewMessage(data);
+      fetchNotificationList();
+    });
+  };
+
+  const [isSwitchCompanyVisible, setIsSwitchCompanyVisible] = useState(false);
+  const [notification, setNotification] = useState(unseenTotal);
+  const checkIsOwner =
+    isOwner() && currentUser.signInRole.map((role) => role.toLowerCase()).includes('owner');
+  const [modalVisible, setModalVisible] = useState(false);
+
+  let className = styles.right;
+
+  if (theme === 'dark' && layout === 'top') {
+    className = `${styles.right}  ${styles.dark}`;
+  }
 
   useEffect(() => {
     fetchNotificationList();
+    initialSocket();
+    return () => {
+      disconnectSocket();
+    };
   }, []);
 
   useEffect(() => {

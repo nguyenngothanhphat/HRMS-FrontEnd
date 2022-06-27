@@ -12,7 +12,7 @@ import CustomSearchBox from '@/components/CustomSearchBox';
 import CommonModal from '@/components/CommonModal';
 import AddContent from './components/AddContent';
 import FilterContent from './components/FilterContent';
-import CommonTable from '../CommonTable';
+import CommonTable from '@/components/CommonTable';
 import ViewIcon from '@/assets/projectManagement/view.svg';
 import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';

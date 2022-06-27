@@ -6,7 +6,7 @@ import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
 import EditIcon from '@/assets/projectManagement/edit2.svg';
 import DeleteIcon from '@/assets/projectManagement/delete.svg';
-import CommonTable from './components/CommonTable';
+import CommonTable from '@/components/CommonTable';
 import Header from './components/Header';
 import CommonModal from '@/components/CommonModal';
 import EditProjectStatusModalContent from '../EditProjectStatusModalContent';
@@ -22,16 +22,17 @@ const Projects = (props) => {
     loadingUpdateProject = false,
     loadingDeleteProject = false,
     permissions = {},
-    filter = {},
   } = props;
   const [projectStatus, setProjectStatus] = useState('All');
 
   const [isEditProjectStatus, setIsEditProjectStatus] = useState(false);
   const [isDeleteProject, setIsDeleteProject] = useState(false);
   const [selectedProject, setSelectedProject] = useState('');
+  const [size, setSize] = useState(10);
+  const [page, setPage] = useState(1);
 
   const fetchProjectList = async (payload) => {
-    let tempPayload = payload;
+    let tempPayload = { ...payload, limit: size, page };
     if (projectStatus !== 'All') {
       tempPayload = {
         ...payload,
@@ -64,9 +65,14 @@ const Projects = (props) => {
     history.push(`/project-management/list/${id}/resources`);
   };
 
+  const onChangePage = (p, l) => {
+    setPage(p);
+    setSize(l || size);
+  };
+
   useEffect(() => {
     fetchProjectList();
-  }, [projectStatus]);
+  }, [projectStatus, size, page]);
 
   useEffect(() => {
     dispatch({
@@ -266,6 +272,10 @@ const Projects = (props) => {
           columns={generateColumns()}
           list={projectList}
           loading={loadingFetchProjectList}
+          onChangePage={onChangePage}
+          isBackendPaging
+          limit={size}
+          page={page}
         />
       </div>
 
