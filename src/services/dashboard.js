@@ -7,6 +7,30 @@ export async function getListTicket(payload) {
     data: payload,
   });
 }
+
+export async function getListTimeSheetTicket(params) {
+  return request(
+    '/api/notify',
+    {
+      method: 'GET',
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
+export async function getAllListTicket(params) {
+  return request(
+    '/api/listReport',
+    {
+      method: 'GET',
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
 export async function getListMyTicket(payload) {
   return request(
     '/api-ticket/tickettenant/list',
@@ -18,6 +42,7 @@ export async function getListMyTicket(payload) {
     API_KEYS.TICKET_API,
   );
 }
+
 export async function getLeaveRequestOfEmployee(payload) {
   return request('/api/leaverequesttenant/get-my-request', {
     method: 'POST',
@@ -32,6 +57,18 @@ export async function approveRequest(data) {
     method: 'POST',
     data,
   });
+}
+
+export async function approveTimeSheetRequest(data) {
+  return request(
+    '/api/updateReport',
+    {
+      method: 'POST',
+      data,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
 }
 
 export async function rejectRequest(data) {
