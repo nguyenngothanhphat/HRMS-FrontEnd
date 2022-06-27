@@ -23,7 +23,7 @@ const HandleChanges = (props) => {
   const { currentUser } = user || {};
   const [radio, setRadio] = useState(2);
   const [changeData, setChangeData] = useState({
-    changedBy: currentUser ? currentUser.employee._id : '',
+    changedBy: currentUser ? currentUser.employee?._id : '',
     employee: employeeProfile.employee,
     newTitle: '',
     newLocation: '',
