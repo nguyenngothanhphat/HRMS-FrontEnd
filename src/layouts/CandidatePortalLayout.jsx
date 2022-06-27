@@ -9,7 +9,7 @@ import Footer from '@/components/Footer';
 import CommonModal from '@/pages/CandidatePortal/components/Dashboard/components/CommonModal';
 import { getCurrentCompany, getFirstChangePassword } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
-import { CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
+import { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
 import { ChatEvent, socket, disconnectSocket } from '@/utils/socket';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import s from './CandidatePortalLayout.less';
@@ -117,6 +117,12 @@ const CandidatePortalLayout = React.memo((props) => {
     });
   };
 
+  const getViewingTask = () => {
+    const currentLink = window.location.href;
+    return pendingTasks.find((task) => currentLink.includes(task.id));
+  } 
+  const viewingTask = getViewingTask()
+  
   useEffect(() => {
     if (candidate) {
       dispatch({
@@ -136,8 +142,6 @@ const CandidatePortalLayout = React.memo((props) => {
   }, [window.location.href]);
 
   useEffect(() => {
-    const currentLink = window.location.href;
-    const viewingTask = pendingTasks.find((task) => currentLink.includes(task.id));
     if (
       viewingTask &&
       [CANDIDATE_TASK_STATUS.DONE, CANDIDATE_TASK_STATUS.UPCOMING].includes(viewingTask?.status)
@@ -174,6 +178,15 @@ const CandidatePortalLayout = React.memo((props) => {
     return currentCompany.name || '';
   };
 
+  const getBreadcrumbName = () => {
+    switch (viewingTask?.id) {
+      case CANDIDATE_TASK_LINK.DOCUMENTS_CHECKLIST:
+        return 'Upload Documents'
+      default:
+        return 'Employee Onboarding'
+    }
+  }
+  
   const avatarMenu = (
     <Menu
       className={s.dropdownMenu}
@@ -307,7 +320,7 @@ const CandidatePortalLayout = React.memo((props) => {
                     <a href="/candidate-portal">Home</a>
                   </Breadcrumb.Item>
                   <Breadcrumb.Item>
-                    <a href="">Employee Onboarding</a>
+                    <a href="">{getBreadcrumbName()}</a>
                   </Breadcrumb.Item>
                 </Breadcrumb>
               </div>
