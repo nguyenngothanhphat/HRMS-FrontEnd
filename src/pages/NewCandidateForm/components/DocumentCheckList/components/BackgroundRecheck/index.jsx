@@ -36,13 +36,13 @@ const BackgroundRecheck = (props) => {
 
   const documentTypeS = documentChecklist.find(
     (x) => x.type === DOCUMENTS_CHECKLIST_TYPE.SCAN_UPLOAD,
-  ).documents;
+  )?.documents;
   const documentTypeE = documentChecklist.find(
     (x) => x.type === DOCUMENTS_CHECKLIST_TYPE.ELECTRONICALLY,
-  ).documents;
+  )?.documents;
   const documentTypeH = documentChecklist.find(
     (x) => x.type === DOCUMENTS_CHECKLIST_TYPE.HARD_COPY,
-  ).documents;
+  )?.documents;
 
   const [validated, setValidated] = useState(false);
 
@@ -78,7 +78,7 @@ const BackgroundRecheck = (props) => {
   }, []);
 
   useLayoutEffect(() => {
-    if (documentTypeS.length > 0 || documentTypeE.length > 0 || documentTypeH.length > 0) {
+    if (documentTypeS?.length > 0 || documentTypeE?.length > 0 || documentTypeH?.length > 0) {
       dispatch({
         type: 'newCandidateForm/updateByHR',
         payload: {
@@ -158,12 +158,12 @@ const BackgroundRecheck = (props) => {
   };
 
   const _renderItems = () => {
-    const dataS = documentTypeS.filter((x) => x.value || x.required);
-    const dataE = documentTypeE.filter((x) => x.value || x.required);
+    const dataS = documentTypeS?.filter((x) => x.value || x.required);
+    const dataE = documentTypeE?.filter((x) => x.value || x.required);
 
     const items = [
       {
-        component: dataS.length > 0 && (
+        component: dataS?.length > 0 && (
           <CollapseField
             items={documentTypeS || []}
             layout={documentChecklist.find((x) => x.type === DOCUMENTS_CHECKLIST_TYPE.SCAN_UPLOAD)}
@@ -173,7 +173,7 @@ const BackgroundRecheck = (props) => {
         ),
       },
       {
-        component: dataE.length > 0 && (
+        component: dataE?.length > 0 && (
           <CollapseField
             items={dataE || []}
             layout={documentChecklist.find(
@@ -185,7 +185,7 @@ const BackgroundRecheck = (props) => {
         ),
       },
       {
-        component: documentTypeH.length > 0 && (
+        component: documentTypeH?.length > 0 && (
           <CollapseFieldsTypeH
             onChangeStatusHardCopy={onChangeStatusHardCopy}
             onComment={onComment}

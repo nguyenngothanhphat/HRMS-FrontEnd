@@ -17,7 +17,13 @@ const DocumentVerification = (props) => {
   const {
     newCandidateForm: {
       rookieId = '',
-      tempData: { _id, ticketID = '', documentChecklist = [], candidate = '' } = {} || {},
+      tempData: {
+        _id,
+        ticketID = '',
+        documentChecklist = [],
+        candidate = '',
+        workLocation: { _id: location = '' } = {},
+      } = {} || {},
     },
     dispatch,
     loadingFetchCandidate,
@@ -59,6 +65,9 @@ const DocumentVerification = (props) => {
   useEffect(() => {
     dispatch({
       type: 'newCandidateForm/fetchDocumentsCheckList',
+      payload: {
+        location,
+      },
     });
   }, []);
 
