@@ -956,7 +956,7 @@ const employeeProfile = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode, data: { data = [] } = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { changeHistories: data } });
       } catch (errors) {
