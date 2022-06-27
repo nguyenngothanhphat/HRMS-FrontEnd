@@ -1,45 +1,13 @@
-import { Form, message, Upload } from 'antd';
+import { Form, Upload } from 'antd';
 import React from 'react';
 import AttachmentIcon from '@/assets/attachment.svg';
+import { beforeUpload } from '@/utils/homePage';
 import styles from './index.less';
 
 const { Dragger } = Upload;
 
 const BannerContent = (props) => {
   const { defaultFileList = [] } = props;
-
-  const identifyImage = (fileName) => {
-    const parts = fileName.split('.');
-    const ext = parts[parts.length - 1];
-    switch (ext.toLowerCase()) {
-      case 'jpg':
-      case 'jpeg':
-      case 'png':
-        return 1;
-
-      default:
-        return 0;
-    }
-  };
-
-  const beforeUpload = (file) => {
-    const { setSizeImageMatch = () => {} } = props;
-    const checkType = identifyImage(file.name) === 1;
-    if (!checkType) {
-      message.error('You can only upload png, jpeg image files!');
-    }
-    const isLt3M = file.size / 1024 / 1024 < 3;
-    if (!isLt3M) {
-      message.error('Image must smaller than 3MB!');
-      setSizeImageMatch(isLt3M);
-      // this.setState({ check: isLt3M });
-    }
-    setTimeout(() => {
-      setSizeImageMatch(isLt3M);
-      // this.setState({ check: isLt3M });
-    }, 2000);
-    return checkType && isLt3M;
-  };
 
   return (
     <div className={styles.BannerContent}>
