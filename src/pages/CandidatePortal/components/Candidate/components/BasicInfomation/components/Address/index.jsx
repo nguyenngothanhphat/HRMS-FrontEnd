@@ -180,7 +180,7 @@ const Address = (props) => {
         <Row gutter={[24, 0]}>
           {fields.map((x) => (
             // eslint-disable-next-line react/jsx-props-no-spreading
-            <Col {...x.span}>
+            <Col {...x.span} key={x.label}>
               <Form.Item
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
@@ -206,7 +206,7 @@ const Address = (props) => {
         <Row gutter={[24, 0]}>
           {fields.map((x) => (
             // eslint-disable-next-line react/jsx-props-no-spreading
-            <Col {...x.span}>
+            <Col {...x.span} key={x.label}>
               <Form.Item
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
