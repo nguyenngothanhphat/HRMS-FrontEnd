@@ -3,7 +3,8 @@ import { debounce } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { TAB_IDS, beforeUpload } from '@/utils/homePage';
+import { TAB_IDS } from '@/utils/homePage';
+import { beforeUpload } from '@/utils/upload';
 import AnnouncementContent from './components/AnnouncementContent';
 import BannerContent from './components/BannerContent';
 import BirthdayContent from './components/BirthdayContent';
@@ -92,6 +93,7 @@ const AddPost = (props) => {
       const fileListTemp = () => {
         return attachments.map((x, i) => {
           return {
+            ...x,
             uid: i,
             name: x.name,
             status: 'done',
@@ -172,56 +174,39 @@ const AddPost = (props) => {
     setFormValues(values);
   }, 1000);
 
-  // const checkUploadFiles = (allValues) => {
-  //   let { fileList: fileListTemp = [] } = allValues;
-  //   fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
+  const checkUploadFiles = (allValues) => {
+    const tempAllValues = { ...allValues };
 
-  //   switch (mode) {
-  //     case TAB_IDS.ANNOUNCEMENTS: {
-  //       form.setFieldsValue({
-  //         uploadFilesA: fileListTemp,
-  //       });
-  //       return {
-  //         ...allValues,
-  //         uploadFilesA: fileListTemp,
-  //       };
-  //     }
-  //     case TAB_IDS.ANNIVERSARY: {
-  //       form.setFieldsValue({
-  //         uploadFilesB: fileListTemp,
-  //       });
-  //       return {
-  //         ...allValues,
-  //         uploadFilesB: fileListTemp,
-  //       };
-  //     }
-  //     case TAB_IDS.IMAGES: {
-  //       form.setFieldsValue({
-  //         uploadFilesI: fileListTemp,
-  //       });
-  //       return {
-  //         ...allValues,
-  //         uploadFilesI: fileListTemp,
-  //       };
-  //     }
-  //     case TAB_IDS.BANNER: {
-  //       form.setFieldsValue({
-  //         uploadFilesBN: fileListTemp,
-  //       });
-  //       return {
-  //         ...allValues,
-  //         uploadFilesBN: fileListTemp,
-  //       };
-  //     }
+    const commonFunc = (name) => {
+      let { fileList: fileListTemp = [] } = tempAllValues[name];
+      fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
+      setFileList([...fileListTemp]);
+      tempAllValues[name].fileList = fileListTemp;
+      return tempAllValues;
+    };
 
-  //     default:
-  //       return allValues;
-  //   }
-  // };
+    switch (mode) {
+      case TAB_IDS.ANNOUNCEMENTS: {
+        return commonFunc('uploadFilesA');
+      }
+      case TAB_IDS.ANNIVERSARY: {
+        return commonFunc('uploadFilesB');
+      }
+      case TAB_IDS.IMAGES: {
+        return commonFunc('uploadFilesI');
+      }
+      case TAB_IDS.BANNER: {
+        return commonFunc('uploadFilesBN');
+      }
+
+      default:
+        return tempAllValues;
+    }
+  };
 
   const onValuesChange = (changedValues, allValues) => {
-    // const newValues = checkUploadFiles(JSON.parse(JSON.stringify(allValues)));
-    setFormValuesDebounce(allValues);
+    const newValues = checkUploadFiles(allValues);
+    setFormValuesDebounce(newValues);
   };
 
   const onUploadFiles = async (files) => {
@@ -242,6 +227,7 @@ const AddPost = (props) => {
               const upload = await dispatch({
                 type: 'upload/uploadFile',
                 payload: formData,
+                showNotification: false
               });
               if (upload.statusCode === 200) {
                 list.push(upload.data[0]);

@@ -12,15 +12,6 @@ const PostContent = (props) => {
     const number = images.length;
     const restImages = images.slice(1, 4);
 
-    const renderRestImage = () => {
-      return restImages.map((x) => {
-        return (
-          <Col span={24}>
-            <Image preview={{ visible: false }} src={x} />
-          </Col>
-        );
-      });
-    };
     switch (number) {
       case 0:
         return null;
@@ -28,7 +19,7 @@ const PostContent = (props) => {
         return (
           <Row gutter={[4, 4]}>
             <Col span={24}>
-              <Image preview={{ visible: false }} src={images[0]} />
+              <Image src={images[0]} />
             </Col>
           </Row>
         );
@@ -36,10 +27,10 @@ const PostContent = (props) => {
         return (
           <Row gutter={[4, 4]}>
             <Col span={12}>
-              <Image preview={{ visible: false }} src={images[0]} />
+              <Image src={images[0]} />
             </Col>
             <Col span={12}>
-              <Image preview={{ visible: false }} src={images[1]} />
+              <Image src={images[1]} />
             </Col>
           </Row>
         );
@@ -47,10 +38,18 @@ const PostContent = (props) => {
         return (
           <Row gutter={[4, 4]}>
             <Col span={14}>
-              <Image preview={{ visible: false }} src={images[0]} />
+              <Image src={images[0]} />
             </Col>
             <Col span={10}>
-              <Row gutter={[4, 4]}>{renderRestImage()}</Row>
+              <Row gutter={[4, 4]}>
+                {restImages.map((x) => {
+                  return (
+                    <Col span={24}>
+                      <Image src={x} />
+                    </Col>
+                  );
+                })}
+              </Row>
             </Col>
           </Row>
         );

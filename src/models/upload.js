@@ -24,7 +24,7 @@ export default {
   },
 
   effects: {
-    *uploadFile({ payload, name, index, isUploadAvatar = false }, { call, put }) {
+    *uploadFile({ payload, name, index, showNotification = true }, { call, put }) {
       let response = {};
       switch (name) {
         case 'passport':
@@ -51,7 +51,7 @@ export default {
         response = yield call(uploadFile, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        if (!isUploadAvatar) {
+        if (showNotification) {
           notification.success({
             message: 'Upload File Successfully',
           });

@@ -99,6 +99,14 @@ const MENU_DATA = [
   },
   {
     id: 11,
+    name: 'Document Checklist Verification',
+    key: 'checkList',
+    component: 'DocumentCheckList',
+    quantity: 0,
+    link: 'document-checklist',
+  },
+  {
+    id: 12,
     name: 'Joined',
     key: 'joined',
     component: 'Joined',
@@ -106,7 +114,7 @@ const MENU_DATA = [
     link: 'joined',
   },
   {
-    id: 12,
+    id: 13,
     name: 'Rejected Offers',
     key: 'rejectedOffers',
     component: 'RejectedOffers',
@@ -114,7 +122,7 @@ const MENU_DATA = [
     link: 'rejected-offer',
   },
   {
-    id: 13,
+    id: 14,
     name: 'Withdrawn Offers',
     key: 'withdrawnOffers',
     component: 'WithdrawnOffers',
@@ -215,7 +223,9 @@ const formatData = (list = []) => {
       department: department.name || '',
       reportees: reporteesData,
       reportingManager: reportingManagerData,
-      location: workLocation ? workLocation.name : clientLocation || workFromHome && 'Work From Home',
+      location: workLocation
+        ? workLocation.name
+        : clientLocation || (workFromHome && 'Work From Home'),
       comments: comments || '',
       dateSent: dateSent || '',
       dateReceived: dateReceived || '',
@@ -262,6 +272,7 @@ const onboarding = {
       joinedOffers: [],
       currentStatus: '',
       referenceVerification: [],
+      checkListVerification: [],
     },
     searchOnboarding: {
       jobTitleList: [],
@@ -353,6 +364,7 @@ const onboarding = {
           OFFER_WITHDRAWN,
           JOINED,
           REFERENCE_VERIFICATION,
+          DOCUMENT_CHECKLIST_VERIFICATION,
         } = NEW_PROCESS_STATUS;
 
         const { processStatus = [], page, limit } = payload;
@@ -481,6 +493,15 @@ const onboarding = {
             });
             return response;
           }
+          case DOCUMENT_CHECKLIST_VERIFICATION: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: {
+                checkListVerification: returnedData,
+              },
+            });
+            return response;
+          }
           case JOINED: {
             yield put({
               type: 'saveOnboardingOverview',
@@ -516,6 +537,7 @@ const onboarding = {
           OFFER_WITHDRAWN,
           JOINED,
           REFERENCE_VERIFICATION,
+          DOCUMENT_CHECKLIST_VERIFICATION,
         } = NEW_PROCESS_STATUS;
 
         const response = yield call(getOnboardingList, {
@@ -630,6 +652,15 @@ const onboarding = {
               type: 'saveOnboardingOverview',
               payload: {
                 referenceVerification: returnedData,
+              },
+            });
+            break;
+          }
+          case DOCUMENT_CHECKLIST_VERIFICATION: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: {
+                checkListVerification: returnedData,
               },
             });
             break;
@@ -917,6 +948,7 @@ const onboarding = {
         OFFER_WITHDRAWN,
         JOINED,
         REFERENCE_VERIFICATION,
+        DOCUMENT_CHECKLIST_VERIFICATION,
       } = NEW_PROCESS_STATUS;
       const { listMenu } = state.menu.onboardingOverviewTab;
       const { totalNumber } = action.payload;
@@ -935,6 +967,7 @@ const onboarding = {
         withdrawnOffers: 0,
         joined: 0,
         referenceVerification: 0,
+        checkListVerification: 0,
       };
 
       totalNumber.forEach((status) => {
@@ -976,6 +1009,9 @@ const onboarding = {
           case REFERENCE_VERIFICATION:
             newTotalNumber.referenceVerification += count;
             break;
+          case DOCUMENT_CHECKLIST_VERIFICATION:
+            newTotalNumber.checkListVerification += count;
+            break;
           default:
             break;
         }
@@ -991,7 +1027,9 @@ const onboarding = {
           newTotalNumber.offerAccepted +
           newTotalNumber.rejectedOffers +
           newTotalNumber.withdrawnOffers +
-          newTotalNumber.referenceVerification;
+          newTotalNumber.referenceVerification +
+          newTotalNumber.joined +
+          newTotalNumber.checkListVerification;
       });
 
       const newListMenu = listMenu.map((item) => {
@@ -1031,6 +1069,9 @@ const onboarding = {
         }
         if (key === 'withdrawnOffers') {
           dataLength = newTotalNumber.withdrawnOffers;
+        }
+        if (key === 'checkList') {
+          dataLength = newTotalNumber.checkListVerification;
         }
         if (key === 'joined') {
           dataLength = newTotalNumber.joined;

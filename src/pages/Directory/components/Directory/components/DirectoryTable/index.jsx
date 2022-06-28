@@ -8,8 +8,8 @@ import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { isOwner } from '@/utils/authority';
 import avtDefault from '@/assets/defaultAvatar.png';
 import ModalTerminate from './components/ModalTerminate';
-import PopoverInfo from './components/ModalTerminate/PopoverInfo';
 import styles from './index.less';
+import UserProfilePopover from '@/components/UserProfilePopover';
 
 const departmentTag = [
   { name: 'IT support', color: 'magenta' },
@@ -195,6 +195,37 @@ class DirectoryTable extends Component {
   //   this.setState({ valueReason: value });
   // };
 
+  dataHover = (manager = {}) => {
+    const {
+      generalInfo: {
+        legalName = '',
+        avatar: avatar1 = '',
+        userId = '',
+        workEmail = '',
+        workNumber = '',
+        skills = [],
+      } = {},
+      generalInfo = {},
+      department = {},
+      location: locationInfo = {},
+      managerInfo = {},
+      title = {},
+    } = manager;
+    return {
+      legalName,
+      userId,
+      department,
+      workEmail,
+      workNumber,
+      locationInfo,
+      generalInfo,
+      managerInfo,
+      title,
+      avatar1,
+      skills,
+    };
+  };
+
   generateColumns = (sortedName, keyTab) => {
     const { permissions = {}, companyLocationList } = this.props;
     const { currentTime, timezoneList } = this.state;
@@ -345,17 +376,7 @@ class DirectoryTable extends Component {
         dataIndex: 'manager',
         key: 'manager',
         render: (manager) => (
-          <Popover
-            content={
-              <PopoverInfo
-                companyLocationList={companyLocationList}
-                propsState={{ currentTime, timezoneList }}
-                data={manager}
-              />
-            }
-            placement="bottomRight"
-            trigger="hover"
-          >
+          <UserProfilePopover data={this.dataHover(manager)}>
             <Link
               className={styles.managerName}
               to={() =>
@@ -363,7 +384,7 @@ class DirectoryTable extends Component {
             >
               {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
             </Link>
-          </Popover>
+          </UserProfilePopover>
         ),
         align: 'left',
         width: '14%',

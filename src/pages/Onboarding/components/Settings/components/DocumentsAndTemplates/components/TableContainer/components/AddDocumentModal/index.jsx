@@ -1,9 +1,9 @@
 // import AttachmentIcon from '@/assets/attachment.svg';
-import ImageIcon from '@/assets/image_icon.png';
-import PDFIcon from '@/assets/pdf_icon.png';
 import { Button, Form, Input, message, Modal, Spin, Tooltip, Upload } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import PDFIcon from '@/assets/pdf_icon.png';
+import ImageIcon from '@/assets/image_icon.png';
 import TrashIcon from '@/assets/trash.svg';
 import styles from './index.less';
 
@@ -54,7 +54,9 @@ class AddDocumentModal extends PureComponent {
   beforeUpload = (file) => {
     const { setSizeImageMatch = () => {} } = this.props;
     const checkType =
-      this.identifyImageOrPdf(file.name) === 0 || this.identifyImageOrPdf(file.name) === 1;
+      this.identifyImageOrPdf(file.name) === 0 ||
+      this.identifyImageOrPdf(file.name) === 1 ||
+      this.identifyImageOrPdf(file.name) === 2;
     if (!checkType) {
       message.error('You can only upload image and PDF file!');
     }
@@ -73,9 +75,11 @@ class AddDocumentModal extends PureComponent {
 
   handleUpload = (file) => {
     const { dispatch } = this.props;
+    console.log('file', file);
 
     const formData = new FormData();
-    formData.append('uri', file);
+    formData.append('uri', new Blob([file], { type: file.type }));
+    // formData.append('uri', file);
     dispatch({
       type: 'upload/uploadFile',
       payload: formData,

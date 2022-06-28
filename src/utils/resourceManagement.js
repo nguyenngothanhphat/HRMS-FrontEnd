@@ -50,6 +50,7 @@ export function formatData(rawData, projectList) {
     const employeeName = `${generalInfo.legalName} ${userName ? `(${userName})` : ''}`;
     const newObj = {
       avatar: generalInfo.avatar,
+      employeeSkills: generalInfo?.skills,
       employeeId: obj?._id,
       employeeName: handleLongText(employeeName.trim(), 25),
       availableStatus,
