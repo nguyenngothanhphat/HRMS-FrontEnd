@@ -31,18 +31,40 @@ export const OFFBOARDING = {
   },
 };
 
+export const OFFBOARDING_TABS = {
+  MY: 'my',
+  TEAM: 'team',
+  COMPANY_WIDE: 'company-wide',
+};
+
+export const PROGRESS_NAME = {
+  [OFFBOARDING.STATUS.DRAFT]: 'Draft',
+  [OFFBOARDING.STATUS.IN_PROGRESS]: 'In Progress',
+  [OFFBOARDING.STATUS.ACCEPTED]: 'Accepted',
+  [OFFBOARDING.STATUS.REJECTED]: 'Rejected',
+  [OFFBOARDING.STATUS.DELETED]: 'Deleted',
+};
+
+export const OFFBOARDING_COLOR = {
+  [OFFBOARDING.STATUS.DRAFT]: '#13c2c2',
+  [OFFBOARDING.STATUS.IN_PROGRESS]: '#ffa100',
+  [OFFBOARDING.STATUS.ACCEPTED]: '#00C598',
+  [OFFBOARDING.STATUS.REJECTED]: '#fd4546',
+  [OFFBOARDING.STATUS.DELETED]: '#000000',
+};
+
 export const OFFBOARDING_MANAGER_TABS = [
   {
     id: OFFBOARDING.STATUS.IN_PROGRESS,
-    label: 'In Progress',
+    label: PROGRESS_NAME[OFFBOARDING.STATUS.IN_PROGRESS],
   },
   {
     id: OFFBOARDING.STATUS.ACCEPTED,
-    label: 'Accepted',
+    label: PROGRESS_NAME[OFFBOARDING.STATUS.ACCEPTED],
   },
   {
     id: OFFBOARDING.STATUS.REJECTED,
-    label: 'Rejected',
+    label: PROGRESS_NAME[OFFBOARDING.STATUS.REJECTED],
   },
 ];
 

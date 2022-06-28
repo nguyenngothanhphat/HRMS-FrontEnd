@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import TicketManager from '../ManagerView/components/TicketDetails';
-import TicketHr from '../HRView/components/HrRequestTable/Ticket';
+import TicketHR from '../HRView/components/TicketDetails';
 
 @connect()
 class OffBoarding extends PureComponent {
@@ -28,8 +28,8 @@ class OffBoarding extends PureComponent {
 
   render() {
     const renderComponent = {
-      'hr-manager': <TicketHr {...this.props} />,
-      owner: <TicketHr {...this.props} />,
+      'hr-manager': <TicketHR {...this.props} />,
+      owner: <TicketHR {...this.props} />,
       manager: <TicketManager {...this.props} />,
       // employee: <TicketEmployee {...this.props} />,
     };

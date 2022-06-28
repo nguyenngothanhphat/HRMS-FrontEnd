@@ -1,9 +1,9 @@
+import { CloseOutlined } from '@ant-design/icons';
 import { Avatar, Popover, Tabs, Tag } from 'antd';
 import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import { CloseOutlined } from '@ant-design/icons';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import MenuIcon from '@/assets/offboarding/menuIcon.png';
 import CommonTable from '@/components/CommonTable';
@@ -11,11 +11,16 @@ import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { dateFormat, OFFBOARDING, OFFBOARDING_MANAGER_TABS } from '@/utils/offboarding';
+import {
+  dateFormat,
+  OFFBOARDING,
+  OFFBOARDING_MANAGER_TABS,
+  OFFBOARDING_TABS,
+} from '@/utils/offboarding';
 import { addZeroToNumber, removeEmptyFields } from '@/utils/utils';
-import styles from './index.less';
 import SetMeetingModal from '../../../SetMeetingModal';
 import FilterContent from './components/FilterContent';
+import styles from './index.less';
 
 const TeamRequest = (props) => {
   const {
@@ -25,6 +30,7 @@ const TeamRequest = (props) => {
       selectedLocations = [],
     } = {},
     loadingFetchList = false,
+    type = OFFBOARDING_TABS.TEAM,
   } = props;
 
   const [size, setSize] = useState(10);
@@ -105,6 +111,13 @@ const TeamRequest = (props) => {
     return `${tab.label} (${addZeroToNumber(totalStatus.asObject?.[tab.id] || 0)})`;
   };
 
+  const getViewDetailURL = (id) => {
+    if (type === OFFBOARDING_TABS.COMPANY_WIDE) {
+      return `/offboarding/list/hr-review/${id}`;
+    }
+    return `/offboarding/list/review/${id}`;
+  };
+
   const filterPane = () => {
     let applied = Object.keys(removeEmptyFields(filterValues)).length;
     if (filterValues.fromDate && filterValues.toDate) {
@@ -145,11 +158,20 @@ const TeamRequest = (props) => {
   const renderMenuDropdown = (row = {}) => {
     return (
       <div className={styles.containerDropdown}>
-        <div className={styles.btn}>
-          <span>
-            <Link to={`/offboarding/list/review/${row._id}`}>Change assigned</Link>
-          </span>
-        </div>
+        {type === OFFBOARDING_TABS.TEAM && (
+          <div className={styles.btn}>
+            <span>
+              <Link to={getViewDetailURL(row._id)}>Change assigned</Link>
+            </span>
+          </div>
+        )}
+        {type === OFFBOARDING_TABS.COMPANY_WIDE && (
+          <div className={styles.btn}>
+            <span>
+              <Link to={getViewDetailURL(row._id)}>Re-assign</Link>
+            </span>
+          </div>
+        )}
         {!row.meeting?.employeeDate && !row.meeting?.managerDate && (
           <div
             className={styles.btn}
@@ -174,7 +196,7 @@ const TeamRequest = (props) => {
       fixed: 'left',
       render: (ticketId, record) => {
         return (
-          <Link to={`/offboarding/list/review/${record._id}`} className={styles.title__value}>
+          <Link to={getViewDetailURL(record._id)} className={styles.title__value}>
             {ticketId}
           </Link>
         );
@@ -312,7 +334,7 @@ const TeamRequest = (props) => {
       render: (id) => {
         return (
           <div className={styles.rowAction}>
-            <Link to={`/offboarding/list/review/${id}`} className={styles.title__value}>
+            <Link to={getViewDetailURL(id)} className={styles.title__value}>
               View Request
             </Link>
           </div>
