@@ -14,6 +14,7 @@ const Footer = (props) => {
         location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
       } = {},
     } = {},
+    timeSheet: { isIncompleteTimesheet = false } = {},
   } = props;
 
   const locationUser = countryID === 'US';
@@ -64,16 +65,25 @@ const Footer = (props) => {
     exportToCSV(processData(result), 'HumanResourceReportData.xlsx');
   };
 
+  const remindEmployee = () => {};
+
   return (
     <div className={styles.Footer}>
       <div className={styles.left}>{selectedEmployees.length} Employees selected</div>
       <div className={styles.right}>
-        <Button icon={<img src={DownloadIcon} alt="" />} onClick={downloadTemplate}>
-          Download
-        </Button>
+        {isIncompleteTimesheet ? (
+          <div className={styles.downloadIcon} onClick={remindEmployee}>
+            <Button>Remind Employee</Button>
+          </div>
+        ) : (
+          <div className={styles.downloadIcon} onClick={downloadTemplate}>
+            <img src={DownloadIcon} alt="Icon Download" />
+            <Button>Download</Button>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default connect(({ user }) => ({ user }))(Footer);
+export default connect(({ user, timeSheet }) => ({ user, timeSheet }))(Footer);

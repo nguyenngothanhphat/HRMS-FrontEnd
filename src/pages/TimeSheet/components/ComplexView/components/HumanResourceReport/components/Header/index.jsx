@@ -84,9 +84,9 @@ const Header = (props) => {
         projects = [],
         userSpentInDay = 0,
         userSpentInHours = 0,
-        totalLeave = '',
-        totalWorkingDay = '',
-        totalWorkingDayInHours = '',
+        // totalLeave = '',
+        // totalWorkingDay = '',
+        // totalWorkingDayInHours = '',
         overTime = '',
         breakTime = '',
         department: { name = '' } = {},
@@ -101,8 +101,8 @@ const Header = (props) => {
         'Employee ID': employeeCode,
         Department: name,
         Project: projectName,
-        'Working Days': `${userSpentInDay}/${totalWorkingDay} ( ${totalWorkingDayInHours} hours)`,
-        'Leave Taken ': `${leaveTaken}/${totalLeave}`,
+        'Working Days': `${userSpentInDay} hours)`,
+        'Leave Taken ': leaveTaken,
         'Total Hours': `${userSpentInHours} hours`,
       };
       if (locationUser) {
