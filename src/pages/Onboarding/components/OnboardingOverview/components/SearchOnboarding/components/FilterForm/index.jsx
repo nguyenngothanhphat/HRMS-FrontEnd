@@ -53,6 +53,14 @@ const arrStatus = [
     label: 'Offer Withdraw',
     value: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
   },
+  {
+    label: 'Reference Verification',
+    value: NEW_PROCESS_STATUS.REFERENCE_VERIFICATION,
+  },
+  {
+    label: 'Document Checklist',
+    value: NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION,
+  },
 ];
 
 @connect(

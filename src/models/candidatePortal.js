@@ -97,6 +97,7 @@ const initialState = {
     filledSalaryStructure: false,
     filledDocumentVerification: false,
     isCandidateAcceptDOJ: true,
+    filledDocumentChecklistVerification: false,
   },
   data: {
     _id: '',
@@ -111,6 +112,7 @@ const initialState = {
     dateOfJoining: '',
     processStatus: '',
     documentList: [],
+    documentChecklist: [],
     attachments: {},
     documentListToRender: [],
     workLocation: {},
@@ -185,6 +187,7 @@ const candidatePortal = {
         filledSalaryStructure: false,
         filledDocumentVerification: true,
         isCandidateAcceptDOJ: true,
+        filledDocumentChecklistVerification: true,
       };
       try {
         response = yield call(getById, payload);
@@ -376,6 +379,7 @@ const candidatePortal = {
           // isAcceptedJoiningDate,
           sentDate = '',
           isFilledReferences = false,
+          isFilledDocumentChecklistVerification = false,
           numReferences = null,
         } = data || {};
 
@@ -436,8 +440,10 @@ const candidatePortal = {
             break;
 
           case NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION:
-            tempPendingTasks[5].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
-            tempPendingTasks[5].dueDate = dueDate;
+            if (!isFilledDocumentChecklistVerification) {
+              tempPendingTasks[5].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+              tempPendingTasks[5].dueDate = dueDate;
+            }
             break;
 
           default:

@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { Table, Empty, Dropdown, Menu, Popover } from 'antd';
 import { formatMessage, Link, connect, history } from 'umi';
 import moment from 'moment';
-import MenuIcon from '@/assets/menuDots.svg';
+import MenuIcon from '@/assets/projectManagement/actionIcon.svg';
 import {
   NEW_PROCESS_STATUS,
   ONBOARDING_FORM_LINK,
   ONBOARDING_FORM_STEP_LINK,
 } from '@/utils/onboarding';
-import { getAuthority, getCurrentTenant } from '@/utils/authority';
+import { getAuthority, getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { getTimezoneViaCity } from '@/utils/times';
 import AcceptIcon from '@/assets/Accept-icon-onboarding.svg';
 import MessageIcon from '@/assets/message.svg';
@@ -23,6 +23,11 @@ import JoiningFormalitiesModal from './components/JoiningFormalitiesModal';
 import styles from './index.less';
 import CandidateUserName from './components/CandidateUserName/index';
 import ConfirmModal from './components/ConfirmModal/index';
+
+import EyeIcon from '@/assets/eyes.svg';
+// import JoiningIcon from '@/assets/Vector.svg';
+// import LaunchIcon from '@/assets/launchIcon.svg';
+import DeleteIcon from '@/assets/bin.svg';
 
 const compare = (dateTimeA, dateTimeB) => {
   const momentA = moment(dateTimeA, 'DD/MM/YYYY');
@@ -251,7 +256,7 @@ class OnboardTable extends Component {
     return check;
   };
 
-  getColorClassName = (type) => {
+  getColorClassName = (type = 'A') => {
     const tempType = type.toLowerCase().replace(/ +/g, '');
     if (tempType === 'draft' || tempType === 'needchanges') {
       return styles.blueTag;
@@ -469,6 +474,39 @@ class OnboardTable extends Component {
     return newColumns;
   };
 
+  handleSendPreJoining = (ticketId, candidate, processStatus) => {
+    const { dispatch, documentChecklist, type } = this.props;
+    dispatch({
+      type: 'newCandidateForm/sendCheckListEffect',
+      payload: {
+        processStatus: NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION,
+        currentStep: 8,
+        documentChecklist,
+        rookieId: ticketId,
+        candidate,
+      },
+    }).then((data) => {
+      const { statusCode } = data;
+      if (statusCode === 200) {
+        if (type === processStatus) {
+          dispatch({
+            type: 'onboarding/fetchOnboardList',
+            payload: {
+              processStatus: [processStatus],
+            },
+          });
+        } else {
+          dispatch({
+            type: 'onboarding/fetchOnboardListAll',
+            payload: {
+              processStatus: '',
+            },
+          });
+        }
+      }
+    });
+  };
+
   actionMenu = (payload = {}, candidate) => {
     const {
       id = '',
@@ -527,17 +565,29 @@ class OnboardTable extends Component {
         menuItem = (
           <>
             <Menu.Item>
+              <Link
+                className={styles.actionText}
+                onClick={() => this.handleSendPreJoining(id, candidate, processStatusId)}
+              >
+                <img className={styles.actionIcon} src="JoiningIcon" alt="joiningIcon" />
+                <span>Send Pre-Joining Documents</span>
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
               <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
+                <img className={styles.actionIcon} src={EyeIcon} alt="eyesIcon" />
                 <span>{actionText}</span>
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <div
+              <img className={styles.actionIcon} src="LaunchIcon" alt="launchIcon" />
+              <span
                 onClick={() =>
-                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)}
+                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)
+                }
               >
                 Initiate joining formalities
-              </div>
+              </span>
             </Menu.Item>
           </>
         );
@@ -567,7 +617,8 @@ class OnboardTable extends Component {
                   id,
                   processStatusId,
                   type,
-                )}
+                )
+              }
               className={styles.actionText}
             >
               Re-assign
@@ -586,7 +637,8 @@ class OnboardTable extends Component {
         )}
         {!isRemovable && processStatusId !== JOINED && (
           <Menu.Item>
-            <div
+            <img className={styles.actionIcon} src={DeleteIcon} alt="deleteIcon" />
+            <span
               onClick={
                 !isRemovable
                   ? () => this.handleActionWithDraw(candidate, processStatusId)
@@ -595,7 +647,7 @@ class OnboardTable extends Component {
               className={styles.actionText}
             >
               Withdraw
-            </div>
+            </span>
           </Menu.Item>
         )}
       </Menu>
@@ -754,8 +806,17 @@ class OnboardTable extends Component {
       },
     };
 
-    const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch, loadingSearch } =
-      this.props;
+    const {
+      columnArr,
+      type,
+      inTab,
+      hasCheckbox,
+      loading,
+      loading2,
+      loading3,
+      loadingFetch,
+      loadingSearch,
+    } = this.props;
     const { openModalName, currentEmpName } = this.state;
 
     return (
@@ -781,7 +842,7 @@ class OnboardTable extends Component {
             }}
             columns={this.generateColumns(columnArr, type)}
             dataSource={list}
-            loading={loading || loadingFetch || loadingSearch}
+            loading={loading || loadingFetch || loadingSearch || loading2 || loading3}
             pagination={pagination}
             scroll={list.length > 0 ? { x: '90vw', y: 'max-content' } : {}}
           />
@@ -842,10 +903,14 @@ export default connect(
     user: { currentUser = {} } = {},
     location: { companyLocationList = [] },
     conversation: { activeConversationUnseen = [] },
+    newCandidateForm: { tempData: { documentChecklist = [] } = {} } = {},
   }) => ({
     isAddNewMember: newCandidateForm.isAddNewMember,
     loading: loading.effects['onboard/fetchOnboardList'],
+    loading2: loading.effects['onboarding/fetchOnboardList'],
+    loading3: loading.effects['onboarding/fetchOnboardListAll'],
     currentUser,
+    documentChecklist,
     companyLocationList,
     activeConversationUnseen,
   }),
