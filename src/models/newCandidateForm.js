@@ -106,6 +106,7 @@ const defaultState = {
     workLocation: null,
     workFromHome: null,
     clientLocation: null,
+    location: null,
     currentAddress: {},
     reportees: [],
     title: null,
