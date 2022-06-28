@@ -58,6 +58,33 @@ const WeeklyTable = (props) => {
   const getColorByIndex = (index) => {
     return employeeColor[index % employeeColor.length];
   };
+  const dataHover = (values) => {
+    const {
+      legalName = '',
+      avatar: avatar1 = '',
+      userId = '',
+      workEmail = '',
+      workNumber = '',
+      skills = [],
+      department = {},
+      location = {},
+      manager = {},
+      title = {},
+    } = values;
+    return {
+      legalName,
+      userId,
+      department,
+      workEmail,
+      workNumber,
+      location,
+      manager,
+      title,
+      avatar1,
+      skills,
+    };
+  };
+
   const generateColumns = () => {
     const columns = [
       {
@@ -115,7 +142,7 @@ const WeeklyTable = (props) => {
         dataIndex: 'manager',
         key: 'manager',
         render: (manager = {}) => (
-          <UserProfilePopover data={manager} placement="bottomRight" trigger="hover">
+          <UserProfilePopover data={dataHover(manager)} placement="bottomRight" trigger="hover">
             <Link className={styles.managerName} to={handleProfileEmployee(manager.userId)}>
               {manager?.employeeId ? manager.legalName : ''}
             </Link>

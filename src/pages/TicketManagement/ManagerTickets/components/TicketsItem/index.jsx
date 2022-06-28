@@ -5,14 +5,14 @@ import { connect } from 'umi';
 import DeleteIcon from '@/assets/customerManagement/delete.svg';
 import EditIcon from '@/assets/customerManagement/edit2.svg';
 import CloseIcon from '@/assets/ticketManagement-trashIcon.svg';
-import UserProfilePopover from '@/pages/TicketManagement/components/UserProfilePopover';
+import UserProfilePopover from '@/components/UserProfilePopover';
 import styles from './index.less';
 
 function TicketsItem(props) {
   const {
     dispatch,
     employeeAssignee = {},
-    employeeAssignee: { generalInfo = {}, generalInfo: { userId = '', legalName = '' } = {} } = {},
+    employeeAssignee: { generalInfo: { userIdProps = '', legalNameProps = '' } = {} } = {},
     renderMenuDropdown = () => {},
     viewProfile = () => {},
     handleClickSelect = () => {},
@@ -45,6 +45,37 @@ function TicketsItem(props) {
     });
   };
 
+  const dataHover = (values) => {
+    const {
+      generalInfo: {
+        legalName = '',
+        avatar: avatar1 = '',
+        userId = '',
+        workEmail = '',
+        workNumber = '',
+        skills = [],
+      } = {},
+      generalInfo = {},
+      department = {},
+      location: locationInfo = {},
+      manager: managerInfo = {},
+      title = {},
+    } = values;
+    return {
+      legalName,
+      userId,
+      department,
+      workEmail,
+      workNumber,
+      locationInfo,
+      generalInfo,
+      managerInfo,
+      title,
+      avatar1,
+      skills,
+    };
+  };
+
   useEffect(() => {
     if (selected) {
       setIsEdit(false);
@@ -53,22 +84,18 @@ function TicketsItem(props) {
 
   return (
     <div className={styles.TicketsItem}>
-      <UserProfilePopover
-        placement="top"
-        trigger="hover"
-        data={{ ...employeeAssignee, ...generalInfo }}
-      >
+      <UserProfilePopover placement="top" trigger="hover" data={dataHover(employeeAssignee)}>
         <span
           className={styles.userID}
           style={{ color: '#2c6df9', width: '200px' }}
-          onClick={() => viewProfile(userId || '')}
+          onClick={() => viewProfile(userIdProps || '')}
         >
-          {legalName.length > 15
-            ? `${legalName.substr(0, 4)}...${legalName.substr(
-                legalName.length - 8,
-                legalName.length,
+          {legalNameProps.length > 15
+            ? `${legalNameProps.substr(0, 4)}...${legalNameProps.substr(
+                legalNameProps.length - 8,
+                legalNameProps.length,
               )}`
-            : legalName}{' '}
+            : legalNameProps}{' '}
           {isEdit && <UpOutlined />}
         </span>
       </UserProfilePopover>
@@ -85,7 +112,7 @@ function TicketsItem(props) {
               type="link"
               shape="circle"
               onClick={() => {
-                handleEdit(row.id, legalName);
+                handleEdit(row.id, legalNameProps);
               }}
             >
               <img width={32} height={32} src={EditIcon} alt="edit" />

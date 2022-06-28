@@ -88,6 +88,33 @@ const WeeklyTable = (props) => {
     );
   };
 
+  const dataHover = (values) => {
+    const {
+      legalName = '',
+      avatar: avatar1 = '',
+      userId = '',
+      workEmail = '',
+      workNumber = '',
+      skills = [],
+      department = {},
+      location = {},
+      manager = {},
+      title = {},
+    } = values;
+    return {
+      legalName,
+      userId,
+      department: department || {},
+      workEmail,
+      workNumber,
+      location: location || {},
+      manager,
+      title,
+      avatar1,
+      skills,
+    };
+  };
+
   const columns = () => {
     const dateColumns = dateList.map((date) => {
       return {
@@ -173,7 +200,7 @@ const WeeklyTable = (props) => {
         render: (employee, _, index) => {
           const { legalName = '', userId = '', avatar } = employee;
           return (
-            <UserProfilePopover placement="rightTop" data={employee}>
+            <UserProfilePopover placement="rightTop" data={dataHover(employee)}>
               <div className={styles.member}>
                 <div className={styles.renderEmployee}>
                   <div className={styles.avatar}>

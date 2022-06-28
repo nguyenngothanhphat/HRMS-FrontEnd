@@ -45,5 +45,5 @@ export default {
   'page.signUp.step2.next': 'next',
   //   - Step 3
   'page.signUp.step3.phoneError': 'Please input your Phone number',
-  'page.signUp.step3.phoneError2': 'Phone number must be contain digits!',
+  'page.signUp.step3.phoneError2': 'The phone number is invalid!',
 };

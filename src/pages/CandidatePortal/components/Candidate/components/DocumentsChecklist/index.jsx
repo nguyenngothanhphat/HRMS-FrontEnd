@@ -37,7 +37,6 @@ const DocumentsChecklist = (props) => {
     });
     setDocumentModal(true);
   };
-
   const handleClickAction = (type, key) => {
     setDocumentKey(key);
     if (type === DOCUMENT_KEYS.UPLOAD) {
@@ -57,6 +56,7 @@ const DocumentsChecklist = (props) => {
       document: { ...response.data, attachment },
       status: DOCUMENT_TYPES.VERIFYING,
     };
+
     const newDocumentsChecklist = [...documentsChecklist];
 
     // Find and update Document item
@@ -79,6 +79,24 @@ const DocumentsChecklist = (props) => {
     });
   };
 
+  const checkDocumentUpload = () => {
+    const documentTypeS = documentsChecklist.find((item) => item.type === DOCUMENT_KEYS.UPLOAD);
+    const documentTypeE = documentsChecklist.find((item) => item.type === DOCUMENT_KEYS.SIGN);
+    if (documentTypeS) {
+      return documentTypeS?.documents.every((item) => item.status !== DOCUMENT_TYPES.VERIFYING);
+    }
+    if (documentTypeE) {
+      return documentTypeE?.documents.every((item) => item.status !== DOCUMENT_TYPES.VERIFYING);
+    }
+    if (documentTypeS && documentTypeE) {
+      return (
+        documentTypeS?.documents.every((item) => item.status !== DOCUMENT_TYPES.VERIFYING) &&
+        documentTypeE?.documents.every((item) => item.status !== DOCUMENT_TYPES.VERIFYING)
+      );
+    }
+    return false;
+  };
+
   const handleUpdateDocument = async (attachmentRes) => {
     setUploadModal(false);
     const attachment = attachmentRes?.data?.length && attachmentRes?.data[0];
@@ -92,6 +110,12 @@ const DocumentsChecklist = (props) => {
 
   const handleGoBack = () => {
     history.push('/candidate-portal/dashboard');
+    dispatch({
+      type: 'candidatePortal/saveOrigin',
+      payload: {
+        isFilledDocumentChecklistVerification: true,
+      },
+    });
   };
 
   const getActionText = (type) => {
@@ -173,7 +197,9 @@ const DocumentsChecklist = (props) => {
         <CustomSecondaryButton onClick={handleGoBack}>
           <span className={styles.previousBtn}>Previous</span>
         </CustomSecondaryButton>
-        <CustomPrimaryButton onClick={handleGoBack}>Complete </CustomPrimaryButton>
+        <CustomPrimaryButton onClick={handleGoBack} disabled={checkDocumentUpload()}>
+          Complete{' '}
+        </CustomPrimaryButton>
       </div>
     );
   };

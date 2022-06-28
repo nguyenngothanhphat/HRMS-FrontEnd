@@ -29,6 +29,7 @@ const LikeComment = ({
   loadingAddComment = false,
   loadingEditComment = false,
   loadingRemoveComment = false,
+  loadingFetchOnePost = false,
   activePostID = '',
   setActivePostID = () => {},
 }) => {
@@ -130,6 +131,7 @@ const LikeComment = ({
   // function
   // likes
   const onLikePost = async (type) => {
+    setActivePostID(post?._id);
     const res = await reactPostEffect(post?._id, type);
     if (res.statusCode === 200) {
       refreshThisPost();
@@ -210,22 +212,24 @@ const LikeComment = ({
     const disliked = post.react === LIKE_ACTION.DISLIKE;
 
     return (
-      <div className={styles.likes}>
-        <div
-          onClick={() => onLikePost(LIKE_ACTION.LIKE)}
-          className={liked ? styles.likes__pressed : null}
-        >
-          <img src={liked ? LikedIcon : LikeIcon} alt="" />
-          <span>{post.totalReact?.asObject?.[LIKE_ACTION.LIKE] || 0}</span>
+      <Spin spinning={loadingFetchOnePost && activePostID === post._id} indicator={null}>
+        <div className={styles.likes}>
+          <div
+            onClick={() => onLikePost(LIKE_ACTION.LIKE)}
+            className={liked ? styles.likes__pressed : null}
+          >
+            <img src={liked ? LikedIcon : LikeIcon} alt="" />
+            <span>{post.totalReact?.asObject?.[LIKE_ACTION.LIKE] || 0}</span>
+          </div>
+          <div
+            onClick={() => onLikePost(LIKE_ACTION.DISLIKE)}
+            className={disliked ? styles.likes__pressed : null}
+          >
+            <img src={disliked ? DislikedIcon : DislikeIcon} alt="" />
+            <span>{post.totalReact?.asObject?.[LIKE_ACTION.DISLIKE] || 0}</span>
+          </div>
         </div>
-        <div
-          onClick={() => onLikePost(LIKE_ACTION.DISLIKE)}
-          className={disliked ? styles.likes__pressed : null}
-        >
-          <img src={disliked ? DislikedIcon : DislikeIcon} alt="" />
-          <span>{post.totalReact?.asObject?.[LIKE_ACTION.DISLIKE] || 0}</span>
-        </div>
-      </div>
+      </Spin>
     );
   };
 
@@ -301,6 +305,7 @@ const LikeComment = ({
                     >
                       <UserComment
                         item={x}
+                        postId={post._id}
                         onEditComment={onEditComment}
                         onRemoveComment={onRemoveComment}
                         isMe={isMe}
@@ -308,6 +313,7 @@ const LikeComment = ({
                         onEditSubmit={onEdit}
                         onEditCancel={onEditCancel}
                         refreshComments={refreshComments}
+                        setActivePostID={setActivePostID}
                       />
                     </Spin>
                   </Col>
@@ -329,4 +335,6 @@ export default connect(({ user, homePage, loading }) => ({
   loadingAddComment: loading.effects['homePage/addCommentEffect'],
   loadingEditComment: loading.effects['homePage/editCommentEffect'],
   loadingRemoveComment: loading.effects['homePage/removeCommentEffect'],
+  loadingFetchOnePost: loading.effects['homePage/fetchPostByIdEffect'],
+  loadingReactPost: loading.effects['homePage/reactPostEffect'],
 }))(LikeComment);
