@@ -14,6 +14,7 @@ import {
   updateProject,
   deleteProject,
   getCustomerInfo,
+  getSkillList,
   getListProjectToExport,
 } from '@/services/projectManagement';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -30,6 +31,7 @@ const initialState = {
   projectTypeList: [],
   projectStatusList: [],
   tagList: [],
+  skillList: [],
   divisionList: [],
   employeeList: [],
   filter: {},
@@ -214,6 +216,16 @@ const ProjectManagement = {
       }
       return response;
     },
+    *fetchSkillListEffect(_, { call, put }) {
+      try {
+        const response = yield call(getSkillList);
+        const { statusCode, data: skillList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { skillList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchTagListEffect({ payload }, { call, put }) {
       let response = {};
       try {
@@ -357,7 +369,7 @@ const ProjectManagement = {
       }
     },
     *fetchProjectToExport({ payload }, { call }) {
-      let response = {}
+      let response = {};
       const hide = message.loading('Exporting data projects...', 0);
       try {
         response = yield call(getListProjectToExport, {
@@ -369,10 +381,10 @@ const ProjectManagement = {
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
-        return null
+        return null;
       }
-      hide()
-      return response
+      hide();
+      return response;
     },
   },
   reducers: {
