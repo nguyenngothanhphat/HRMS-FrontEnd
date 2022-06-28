@@ -531,6 +531,24 @@ const homePage = {
       }
       return response;
     },
+    *fetchAllQuickLinkHomePageEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getQuickLinkList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { quickLinkListAllHomePage: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
     *fetchQuickLinkTimeOffEffect({ payload }, { call, put }) {
       let response = {};
       try {

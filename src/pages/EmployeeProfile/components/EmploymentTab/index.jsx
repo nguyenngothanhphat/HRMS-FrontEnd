@@ -39,6 +39,7 @@ const EmploymentTab = (props) => {
   const [current, setCurrent] = useState(0);
   const [currentData, setCurrentData] = useState({});
   const [changedData, setChangedData] = useState({});
+  const [currentPayload, setCurrentPayload] = useState({});
 
   const visibleSuccess = employeeProfile ? employeeProfile.visibleSuccess : false;
 
@@ -52,6 +53,14 @@ const EmploymentTab = (props) => {
     dispatch({
       type: 'employee/fetchDataOrgChart',
       payload: { employee },
+    });
+  };
+
+  const fetchChangeHistories = (payload) => {
+    setCurrentPayload(payload);
+    dispatch({
+      type: 'employeeProfile/fetchChangeHistories',
+      payload,
     });
   };
 
@@ -116,17 +125,35 @@ const EmploymentTab = (props) => {
       reportees: changedData.stepThree.reportees.length,
     };
 
-    let obj = Object.keys(oldValues).map((x) => {
-      if (oldValues[x] !== newValues[x] && newValues[x] && x !== 'reportees') {
-        return `${x}: ${oldValues[x] || 'None'} => ${newValues[x]}`;
+    const getText = (oldValue, newValue) => {
+      if (oldValue !== newValue && newValue) {
+        return `${oldValue || 'None'} => ${newValue}`;
       }
-      return null;
-    });
-    if (JSON.stringify(currentData.reportees) !== JSON.stringify(changedData.stepThree.reportees)) {
-      obj.push(` ${currentData.reportees.length} => ${changedData.stepThree.reportees.length}`);
-    }
-    obj = obj.filter((x) => x);
-    return obj;
+      return '';
+    };
+
+    const compensationTypeDetail = getText(oldValues.compensationType, newValues.compensationType);
+    const departmentDetail = getText(oldValues.department, newValues.department);
+    const managerDetail = getText(oldValues.manager, newValues.manager);
+    const titleDetail = getText(oldValues.title, newValues.title);
+    const reporteesDetail = getText(
+      currentData.reportees.length,
+      changedData.stepThree.reportees.length,
+    );
+    const locationDetail = getText(oldValues.location, newValues.location);
+    const employeeTypeDetail = getText(oldValues.employeeType, newValues.employeeType);
+    const annualCTCDetail = getText(oldValues.currentAnnualCTC, newValues.currentAnnualCTC);
+
+    return {
+      compensationTypeDetail,
+      departmentDetail,
+      managerDetail,
+      titleDetail,
+      reporteesDetail,
+      locationDetail,
+      employeeTypeDetail,
+      annualCTCDetail,
+    };
   };
 
   const handleSubmit = async (data) => {
@@ -167,7 +194,11 @@ const EmploymentTab = (props) => {
       type: 'employeeProfile/updateEmployment',
       payload,
     });
-    await dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
+    await dispatch({ type: 'employeeProfile/addNewChangeHistory', payload }).then((res) => {
+      if (res.statusCode === 200) {
+        fetchChangeHistories(currentPayload);
+      }
+    });
   };
 
   const nextTab = (msg) => {
@@ -265,7 +296,7 @@ const EmploymentTab = (props) => {
             setIsModified={setIsModified}
           />
         ) : (
-          <EmploymentHistoryTable />
+          <EmploymentHistoryTable fetchChangeHistories={fetchChangeHistories} />
         )}
         {isChanging ? (
           <div className={styles.footer}>

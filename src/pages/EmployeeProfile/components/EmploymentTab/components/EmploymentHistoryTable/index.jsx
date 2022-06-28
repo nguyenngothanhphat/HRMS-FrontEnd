@@ -6,11 +6,15 @@ import styles from './index.less';
 
 const EmploymentHistory = (props) => {
   const {
-    dispatch,
     loading,
     employeeProfile: {
-      originData: { generalData: { employee: employeeId = '' } = {}, changeHistories = [] } = {},
+      originData: {
+        generalData: { employee: employeeId = '' } = {},
+        changeHistories = [],
+        changeHistoriesTotal = 0,
+      } = {},
     } = {},
+    fetchChangeHistories = () => {},
   } = props;
 
   const [expandData, setExpandData] = useState([]);
@@ -32,16 +36,9 @@ const EmploymentHistory = (props) => {
     setExpandData(newData);
   };
 
-  const fetchChangeHistories = () => {
-    dispatch({
-      type: 'employeeProfile/fetchChangeHistories',
-      payload: { employee: employeeId, limit, page },
-    });
-  };
-
   useEffect(() => {
     if (employeeId) {
-      fetchChangeHistories();
+      fetchChangeHistories({ employee: employeeId, limit, page });
     }
   }, [page, limit, employeeId]);
 
@@ -142,6 +139,7 @@ const EmploymentHistory = (props) => {
         page={page}
         onChangePage={onChangePage}
         pageSizeOptions={['5', '10', '25', '50', '100']}
+        total={changeHistoriesTotal}
       />
     </div>
   );
