@@ -178,10 +178,12 @@ const AddPost = (props) => {
     const tempAllValues = { ...allValues };
 
     const commonFunc = (name) => {
-      let { fileList: fileListTemp = [] } = tempAllValues[name];
-      fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
-      setFileList([...fileListTemp]);
-      tempAllValues[name].fileList = fileListTemp;
+      let { fileList: fileListTemp = [] } = tempAllValues[name] || {};
+      if (fileListTemp.length > 0) {
+        fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
+        setFileList([...fileListTemp]);
+        tempAllValues[name].fileList = fileListTemp;
+      }
       return tempAllValues;
     };
 
@@ -227,7 +229,7 @@ const AddPost = (props) => {
               const upload = await dispatch({
                 type: 'upload/uploadFile',
                 payload: formData,
-                showNotification: false
+                showNotification: false,
               });
               if (upload.statusCode === 200) {
                 list.push(upload.data[0]);
