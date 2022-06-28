@@ -298,7 +298,6 @@ const homePage = {
     },
     *fetchPostByIdEffect({ payload }, { call, put }) {
       let response = {};
-      console.log('🚀  ~ response', response);
       try {
         response = yield call(getPostsByType, {
           ...payload,
