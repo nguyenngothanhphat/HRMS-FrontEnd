@@ -15,6 +15,8 @@ const QuickLinkTable = (props) => {
     loading = false,
     refreshData = () => {},
     onEditQuickLink = () => {},
+    totalQuickLink = {},
+    selectedTab = '',
   } = props;
 
   const onDeleteAttachment = async (record) => {
@@ -124,10 +126,16 @@ const QuickLinkTable = (props) => {
     ];
     return columns;
   };
-
   return (
     <div className={styles.QuickLinkTable}>
-      <CommonTable list={data} loading={loading} columns={getColumns()} />
+      <CommonTable
+        list={data}
+        totalQuickLink={totalQuickLink}
+        refreshData={refreshData}
+        selectedTab={selectedTab}
+        loading={loading}
+        columns={getColumns()}
+      />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import { dialog } from '@/utils/utils';
 import styles from './styles.less';
@@ -10,64 +10,66 @@ import FifthStep from './components/FifthStep';
 import SixthStep from './components/SixthStep';
 import SeventhStep from './components/SeventhStep';
 
-@connect(({ employeeProfile, user, location: { companyLocationList = [] } = {} }) => ({
-  employeeProfile,
-  companyLocationList,
-  user,
-}))
-class HandleChanges extends PureComponent {
-  constructor(props) {
-    super(props);
-    const { user, employeeProfile } = this.props;
-    const { currentUser } = user || {};
-    this.state = {
-      radio: 2,
-      changeData: {
-        changedBy: currentUser ? currentUser.employee._id : '',
-        employee: employeeProfile.employee,
-        newTitle: '',
-        newLocation: '',
-        newDepartment: '',
-        newEmploymentType: '',
-        newManager: '',
-        newReportees: [],
-        stepOne: 'Now',
-        stepTwo: {
-          wLocation: '',
-          employment: '',
-          department: '',
-        },
-        stepThree: {
-          title: '',
-          reportTo: '',
-          reportees: [],
-        },
-        stepFour: {
-          currentAnnualCTC: '',
-          compensationType: null,
-        },
-        stepFive: {
-          toEmployee: false,
-          toManager: false,
-          notifyTo: [],
-        },
-        stepSeven: {
-          reasonChange: '',
-        },
-      },
-    };
-  }
+const HandleChanges = (props) => {
+  const {
+    user,
+    current,
+    data,
+    employeeProfile,
+    companyLocationList = [],
+    setIsModified = () => {},
+    isModified = false,
+  } = props;
+  const { currentUser } = user || {};
+  const [radio, setRadio] = useState(2);
+  const [changeData, setChangeData] = useState({
+    changedBy: currentUser ? currentUser.employee?._id : '',
+    employee: employeeProfile.employee,
+    newTitle: '',
+    newLocation: '',
+    newDepartment: '',
+    newEmploymentType: '',
+    newManager: '',
+    newReportees: [],
+    stepOne: 'Now',
+    stepTwo: {
+      wLocation: '',
+      employment: '',
+      department: '',
+    },
+    stepThree: {
+      title: '',
+      reportToBefore: data.manager || '',
+      reportTo: data.manager || '',
+      reportees: data.reportees || [],
+    },
+    stepFour: {
+      currentAnnualCTC: '',
+      compensationType: null,
+    },
+    stepFive: {
+      toEmployee: false,
+      toManager: false,
+      notifyTo: [],
+    },
+    stepSeven: {
+      reasonChange: '',
+    },
+  });
 
-  componentDidMount = () => {
-    const { dispatch } = this.props;
+  useEffect(() => {
+    const { dispatch } = props;
+    dispatch({
+      type: 'employee/fetchDataOrgChart',
+      payload: { employee: employeeProfile.employee },
+    });
     dispatch({
       type: 'employeeProfile/fetchEmployeeListSingleCompanyEffect',
     });
-  };
+  }, []);
 
-  componentDidUpdate() {
-    const { current, nextTab } = this.props;
-    const { changeData } = this.state;
+  useEffect(() => {
+    const { nextTab } = props;
     if (changeData.stepOne === 'Before' || changeData.stepOne === 'Later') {
       if (current > 0) {
         nextTab('STOP');
@@ -80,64 +82,78 @@ class HandleChanges extends PureComponent {
         dialog({ message: 'Please choose a job title corresponds with the selected department' });
       }
     }
-  }
+  }, [changeData]);
 
-  onRadioChange = (e) => {
-    const { changeData } = this.state;
+  const onRadioChange = (e) => {
     switch (Number(e.target.value)) {
       case 1:
-        this.setState({ changeData: { ...changeData, stepOne: 'Before' } });
+        setChangeData({ ...changeData, stepOne: 'Before' });
         break;
       case 2:
-        this.setState({ changeData: { ...changeData, stepOne: 'Now' } });
+        setChangeData({ ...changeData, stepOne: 'Now' });
         break;
       case 3:
-        this.setState({ changeData: { ...changeData, stepOne: 'Later' } });
+        setChangeData({ ...changeData, stepOne: 'Later' });
         break;
-      case 4:
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepFive: { ...changeData.stepFive, toEmployee: !changeData.stepFive.toEmployee },
+      case 4: {
+        let notifyToTemp = JSON.parse(JSON.stringify(changeData.stepFive.notifyTo));
+        const email = employeeProfile?.originData?.employmentData?.generalInfo?.workEmail;
+        const checked = !changeData.stepFive.toEmployee;
+        if (checked) {
+          notifyToTemp.push(email);
+        } else {
+          notifyToTemp = notifyToTemp.filter((x) => x !== email);
+        }
+        setChangeData({
+          ...changeData,
+          stepFive: {
+            ...changeData.stepFive,
+            toEmployee: !!checked,
+            notifyTo: notifyToTemp,
           },
         });
         break;
-      case 5:
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepFive: { ...changeData.stepFive, toManager: !changeData.stepFive.toManager },
+      }
+      case 5: {
+        let notifyToTemp = [...changeData.stepFive.notifyTo];
+        const email = employeeProfile.originData?.employmentData?.manager?.generalInfo?.workEmail;
+        const checked = !changeData.stepFive.toManager;
+        if (checked) {
+          notifyToTemp.push(email);
+        } else {
+          notifyToTemp = notifyToTemp.filter((x) => x !== email);
+        }
+        setChangeData({
+          ...changeData,
+          stepFive: {
+            ...changeData.stepFive,
+            toManager: !!checked,
+            notifyTo: notifyToTemp,
           },
         });
         break;
+      }
 
       default:
         break;
     }
-    if (e.target.value <= 3) this.setState({ radio: Number(e.target.value) });
+    if (e.target.value <= 3) setRadio(Number(e.target.value));
   };
 
-  onDateChange = (value, msg) => {
-    const { changeData } = this.state;
+  const onDateChange = (value, msg) => {
     if (msg === 'Before') {
       if (Date.parse(value) < Date.now()) {
-        this.setState({ changeData: { ...changeData, stepOne: value._d } });
+        setChangeData({ ...changeData, stepOne: value._ });
       } else dialog({ message: 'Please enter an appropriate date' });
     } else if (msg === 'Later') {
       if (Date.parse(value) > Date.now()) {
-        this.setState({ changeData: { ...changeData, stepOne: value._d } });
+        setChangeData({ ...changeData, stepOne: value._ });
       } else dialog({ message: 'Please enter an appropriate date' });
     }
   };
 
-  onChange = (value, type) => {
-    const { changeData } = this.state;
-    const {
-      dispatch,
-      employeeProfile,
-      companyLocationList = [],
-      setChangedData = () => {},
-    } = this.props;
+  const onChange = (value, type) => {
+    const { dispatch, setChangedData = () => {} } = props;
     let changeDataTemp = {};
     switch (type) {
       case 'title':
@@ -223,7 +239,10 @@ class HandleChanges extends PureComponent {
       case 'notifyTo': // fifth step
         changeDataTemp = {
           ...changeData,
-          stepFive: { ...changeData.stepThree, notifyTo: value },
+          stepFive: {
+            ...changeData.stepThree,
+            notifyTo: [...changeData.stepFive.notifyTo, ...value],
+          },
         };
         break;
 
@@ -237,70 +256,74 @@ class HandleChanges extends PureComponent {
       default:
         break;
     }
-    this.setState({
-      changeData: changeDataTemp,
-    });
+    setChangeData(changeDataTemp);
     setChangedData(changeDataTemp);
   };
 
-  render() {
-    const { current, data, employeeProfile, companyLocationList } = this.props;
-    const { radio, changeData } = this.state;
-    return (
-      <div className={styles.handleChanges}>
-        {current === 0 ? (
-          <FirstStep
-            changeData={changeData}
-            onRadioChange={this.onRadioChange}
-            onDateChange={this.onDateChange}
-            radio={radio}
-          />
-        ) : null}
-        {current === 1 ? (
-          <SecondStep
-            fetchedState={employeeProfile}
-            companyLocationList={companyLocationList}
-            changeData={changeData}
-            onChange={this.onChange}
-          />
-        ) : null}
-        {current === 2 ? (
-          <ThirdStep
-            fetchedState={employeeProfile}
-            changeData={changeData}
-            onChange={this.onChange}
-          />
-        ) : null}
-        {current === 3 ? (
-          <FourthStep
-            fetchedState={employeeProfile}
-            changeData={changeData}
-            onChange={this.onChange}
-            onRadioChange={this.onRadioChange}
-          />
-        ) : null}
-        {current === 4 ? (
-          <FifthStep
-            changeData={changeData}
-            onChange={this.onChange}
-            onRadioChange={this.onRadioChange}
-            radio={changeData.stepFour}
-            fetchedState={employeeProfile}
-          />
-        ) : null}
-        {current === 5 ? (
-          <SixthStep name={data.name} currentData={data} changeData={changeData} />
-        ) : null}
-        {current === 6 ? (
-          <SeventhStep
-            changeData={changeData}
-            onChange={this.onChange}
-            fetchedState={employeeProfile}
-          />
-        ) : null}
-      </div>
-    );
-  }
-}
+  return (
+    <div className={styles.handleChanges}>
+      {current === 0 ? (
+        <FirstStep
+          changeData={changeData}
+          onRadioChange={onRadioChange}
+          onDateChange={onDateChange}
+          radio={radio}
+        />
+      ) : null}
+      {current === 1 ? (
+        <SecondStep
+          fetchedState={employeeProfile}
+          companyLocationList={companyLocationList}
+          changeData={changeData}
+          onChange={onChange}
+        />
+      ) : null}
+      {current === 2 ? (
+        <ThirdStep fetchedState={employeeProfile} changeData={changeData} onChange={onChange} />
+      ) : null}
+      {current === 3 ? (
+        <FourthStep
+          fetchedState={employeeProfile}
+          changeData={changeData}
+          onChange={onChange}
+          onRadioChange={onRadioChange}
+        />
+      ) : null}
+      {current === 4 ? (
+        <FifthStep
+          changeData={changeData}
+          onChange={onChange}
+          onRadioChange={onRadioChange}
+          radio={changeData.stepFour}
+          fetchedState={employeeProfile}
+        />
+      ) : null}
+      {current === 5 ? (
+        <SixthStep
+          name={data.name}
+          currentData={data}
+          changeData={changeData}
+          isModified={isModified}
+          setIsModified={setIsModified}
+        />
+      ) : null}
+      {current === 6 ? (
+        <SeventhStep changeData={changeData} onChange={onChange} fetchedState={employeeProfile} />
+      ) : null}
+    </div>
+  );
+};
 
-export default HandleChanges;
+export default connect(
+  ({
+    // employee: { dataOrgChart = {} },
+    employeeProfile,
+    user,
+    location: { companyLocationList = [] } = {},
+  }) => ({
+    employeeProfile,
+    companyLocationList,
+    user,
+    // dataOrgChart,
+  }),
+)(HandleChanges);

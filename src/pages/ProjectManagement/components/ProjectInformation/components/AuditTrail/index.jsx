@@ -2,7 +2,7 @@ import { Card } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
-import CommonTable from '../CommonTable';
+import CommonTable from '@/components/CommonTable';
 import styles from './index.less';
 
 const AuditTrail = (props) => {

@@ -11,7 +11,7 @@ class HRView extends PureComponent {
   componentDidMount = () => {
     const { tabName = '' } = this.props;
     if (!tabName) {
-      history.replace(`/offboarding/list`);
+      history.replace(`/offboarding`);
     }
   };
 

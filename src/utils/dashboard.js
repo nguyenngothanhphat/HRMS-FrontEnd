@@ -108,6 +108,14 @@ const CALENDAR_COLORS = {
   },
 };
 
+const TYPE_TICKET_APPROVAL = {
+  LEAVE_REQUEST: 'leaveRequest',
+  TIMEOFF: 'timeoff',
+  TIMESHEET: 'timesheet',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+};
+
 export {
   WIDGET_IDS,
   WIDGETS,
@@ -117,4 +125,5 @@ export {
   EMP_ROW_HEIGHT,
   DEFAULT_MARGIN_CALENDAR,
   CALENDAR_COLORS,
+  TYPE_TICKET_APPROVAL,
 };

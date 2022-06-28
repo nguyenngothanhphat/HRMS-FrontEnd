@@ -8,8 +8,9 @@
 .MessageList {
   position: relative;
   box-sizing: border-box;
+  height: 70vh;
   background: #fff;
-  height: 100%;
+
   border: 1px solid @borderColor;
   border-radius: 5px;
   .header {
@@ -48,8 +49,8 @@
   .content {
     position: relative;
     z-index: 1;
-    overflow-y: auto;
     max-height: 60vh;
+    overflow-y: auto;
     // -moz-box-shadow: inset 0 -20px 20px -20px #00000013;
     // -webkit-box-shadow: inset 0 -20px 20px -20px #00000013;
     // box-shadow: inset 0 -20px 20px -20px #00000013;
@@ -72,28 +73,28 @@
         background: #00c3ff38 !important;
       }
       .messageIconOutline {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 44px;
         height: 44px;
-        border-radius: 50%;
-        background: #d8e4fe;
-        display: flex;
-        justify-content: center;
-        align-items: center;
         margin-right: 10px;
+        background: #d8e4fe;
+        border-radius: 50%;
         .messageBgIcon {
-          background: #00C2FF !important;
+          background: #00c2ff !important;
         }
         .messageIcon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
           width: 30px;
           height: 30px;
-          border-radius: 50%;
           background: #417bf9;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          border-radius: 50%;
           .iconName {
-            font-size: 13px;
             color: #fff;
+            font-size: 13px;
           }
         }
       }

@@ -93,6 +93,20 @@ const BasicInfo = (props) => {
                 pattern: /^\d{1,2}$|^\d+\.\d{0,2}$/,
                 message: 'Only digit!',
               },
+              ({ getFieldValue }) => ({
+                validator(rule, value) {
+                  const previousExperience = getFieldValue('previousExperience');
+                  if (value && value < previousExperience) {
+                    return Promise.reject(
+                      new Error(
+                        'Relevant Experience should be less than or equal to the Total Experience.',
+                      ),
+                    );
+                  }
+                  // eslint-disable-next-line compat/compat
+                  return Promise.resolve();
+                },
+              }),
             ]}
           >
             <Input
@@ -119,6 +133,20 @@ const BasicInfo = (props) => {
                 pattern: /^\d{1,2}$|^\d+\.\d{0,2}$/,
                 message: 'Only digit!',
               },
+              ({ getFieldValue }) => ({
+                validator(rule, value) {
+                  const totalExperience = getFieldValue('totalExperience');
+                  if (value && value > totalExperience) {
+                    return Promise.reject(
+                      new Error(
+                        'Relevant Experience should be less than or equal to the Total Experience.',
+                      ),
+                    );
+                  }
+                  // eslint-disable-next-line compat/compat
+                  return Promise.resolve();
+                },
+              }),
             ]}
           >
             <Input

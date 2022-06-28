@@ -82,7 +82,7 @@ const ReferenceForm = (props) => {
       ],
     },
     {
-      label: 'Company',
+      label: 'Organization Name',
       name: [name, 'company'],
       span: {
         xs: 24,
@@ -138,7 +138,7 @@ const ReferenceForm = (props) => {
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
-              label="Relationship to Referee"
+              label="Referee's relationship to the Candidate"
               name={[name, 'relationship']}
               rules={[{ required: true, message: 'Required field' }]}
             >
@@ -151,7 +151,7 @@ const ReferenceForm = (props) => {
                 <Select.Option value="colleague">Colleague</Select.Option>
                 <Select.Option value="managedDirectly">Managed Directly</Select.Option>
                 <Select.Option value="reportedDirectly">Reported Directly</Select.Option>
-                <Select.Option value="professor">Professor</Select.Option>
+                <Select.Option value="professor">Teacher / Professor</Select.Option>
                 <Select.Option value="other">Other</Select.Option>
               </Select>
             </Form.Item>
