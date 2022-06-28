@@ -17,7 +17,7 @@
 .MyRequest {
   width: 100%;
   min-width: 700px;
-  padding: 24px 24px 0;
+  padding: 24px 24px;
   background-color: #ffffff;
   border-radius: 5px;
 
@@ -42,6 +42,9 @@
     &__Rejected {
       color: @red !important;
     }
+  }
+  .action{
+    cursor: pointer;
   }
   :global {
     .ant-table-thead > tr > th {
