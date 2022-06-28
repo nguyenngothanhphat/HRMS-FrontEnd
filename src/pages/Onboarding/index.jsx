@@ -51,6 +51,7 @@ class Onboarding extends PureComponent {
         joinedOffers = [],
         currentStatus,
         referenceVerification = [],
+        checkListVerification = [],
       } = {},
     } = this.props;
 
@@ -93,6 +94,9 @@ class Onboarding extends PureComponent {
       case NEW_PROCESS_STATUS.REFERENCE_VERIFICATION:
         data = referenceVerification;
         break;
+      case NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION:
+        data = checkListVerification;
+        break;
       default:
         // all
         data = dataAll;
@@ -117,26 +121,26 @@ class Onboarding extends PureComponent {
         generalInfo: { firstName: name },
       } = item.assigneeManager;
       return {
-//      'Candidate Id': item.candidateId,
+        //      'Candidate Id': item.candidateId,
         Candidate: item.candidate,
-//      'Candidate Name': item.candidateName,
+        //      'Candidate Name': item.candidateName,
         'First Name': item.firstName,
         'Middle Name': item.middleName,
         'Last Name': item.lastName,
         'Person Email': item.personEmail,
         Position: item.position,
         Location: item.location,
-        'Classification': item.employeeType,
-        'Grade': item.grade,
-        'Department': item.department,
+        Classification: item.employeeType,
+        Grade: item.grade,
+        Department: item.department,
         'Previous years of experience': item.previousExperience,
         'Reporting Manager': item.reportingManager,
-        'Reportees': item.reportees,
+        Reportees: item.reportees,
         'Date of Join': item.dateJoin,
         'Assign to': firstName,
         'HR Manager': name,
         Status: item.processStatus,
-      }
+      };
     });
 
     // Get keys, header csv
