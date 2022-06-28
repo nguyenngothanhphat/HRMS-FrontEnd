@@ -141,17 +141,30 @@ class ViewDocumentModal extends PureComponent {
     );
   };
 
+  getCountryName = () => {
+    const { location: { headQuarterAddress: { country: { _id = '' } = {} } = {} } = {} } =
+      this.props;
+    switch (_id) {
+      case 'VN':
+        return 'vn';
+      case 'US':
+        return 'us';
+      case 'IN':
+        return 'ind';
+
+      default:
+        return '';
+    }
+  };
+
   _renderStickyFooter = () => {
-    const {
-      emailDomain,
-      location: { headQuarterAddress: { country: { _id = '' } = {} } = {} } = {},
-    } = this.props;
+    const { emailDomain } = this.props;
     return (
       <div className={styles.stickyFooter}>
         <span>
           For any queries, email at{' '}
           <span style={{ fontWeight: 'bold' }}>
-            {`hr-${_id.toLowerCase()}@${emailDomain || 'terralogic.com'}`}
+            {`hr-${this.getCountryName()}@${emailDomain || 'terralogic.com'}`}
           </span>
         </span>
       </div>
