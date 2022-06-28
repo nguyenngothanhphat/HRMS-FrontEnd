@@ -105,6 +105,12 @@ const ResourceList = (props) => {
     });
   };
 
+  const fetchListSkill = async () => {
+    dispatch({
+      type: 'resourceManagement/fetchListSkill',
+    });
+  };
+
   const getPageAndSize = (page, pageSize) => {
     setPageSelected(page);
     setSize(pageSize);
@@ -180,6 +186,7 @@ const ResourceList = (props) => {
     fetchStatusList();
     fetchDivisions();
     fetchTitleList();
+    fetchListSkill();
   }, []);
 
   useEffect(() => {

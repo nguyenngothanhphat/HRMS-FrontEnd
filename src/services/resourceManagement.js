@@ -198,3 +198,9 @@ export async function exportResource(payload) {
     API_KEYS.PROJECT_API,
   );
 }
+
+export async function getListSkill() {
+  return request('/api/skilltype/list', {
+    method: 'POST',
+  });
+}
