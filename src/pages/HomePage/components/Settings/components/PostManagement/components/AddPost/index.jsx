@@ -179,11 +179,11 @@ const AddPost = (props) => {
 
     const commonFunc = (name) => {
       let { fileList: fileListTemp = [] } = tempAllValues[name] || {};
-      if (fileListTemp.length > 0) {
-        fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
-        setFileList([...fileListTemp]);
-        tempAllValues[name].fileList = fileListTemp;
-      }
+
+      fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
+      setFileList([...fileListTemp]);
+      tempAllValues[name].fileList = fileListTemp;
+
       return tempAllValues;
     };
 

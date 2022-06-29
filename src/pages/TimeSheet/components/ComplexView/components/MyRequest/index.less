@@ -6,8 +6,8 @@
 @checkbox-border: #707177;
 @gray: #707177;
 @red: #ff5252;
-@blue: #2C6DF9;
-@yellow: #E58F17;
+@blue: #2c6df9;
+@yellow: #e58f17;
 @cell-padding: 8px 16px;
 
 .mixin-border-bottom-row {
@@ -17,20 +17,20 @@
 .MyRequest {
   width: 100%;
   min-width: 700px;
-  padding: 24px 24px 0;
+  padding: 24px;
   background-color: #ffffff;
   border-radius: 5px;
 
   .ticketIdText {
-    font-size: 14px;
-    font-weight: 500;
     color: #202226;
+    font-weight: 500;
+    font-size: 14px;
   }
-  .status{
-    font-family: 'Roboto';
-    font-style: normal;
+  .status {
     font-weight: 400;
     font-size: 14px;
+    font-family: 'Roboto';
+    font-style: normal;
     line-height: 20px;
 
     &__Pending {
@@ -42,6 +42,9 @@
     &__Rejected {
       color: @red !important;
     }
+  }
+  .action {
+    cursor: pointer;
   }
   :global {
     .ant-table-thead > tr > th {

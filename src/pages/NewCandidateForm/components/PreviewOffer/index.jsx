@@ -844,6 +844,9 @@ const PreviewOffer = (props) => {
             return true;
           }
         }
+        if (isSentOffer) {
+          return true;
+        }
 
         return false;
       };
