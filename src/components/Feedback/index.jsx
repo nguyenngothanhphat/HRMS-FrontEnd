@@ -3,6 +3,7 @@ import { Button, Affix } from 'antd';
 import FeedbackIcon from '@/assets/feedbackIcon.svg';
 import ModalFeedback from '@/components/ModalFeedback';
 import styles from './index.less';
+import RaiseTicketModal from '../RaiseTicketModal';
 
 export default class Feedback extends Component {
   constructor(props) {
@@ -38,11 +39,12 @@ export default class Feedback extends Component {
             </Button>
           </div>
         </Affix>
-        <ModalFeedback
+        {/* <ModalFeedback
           visible={visible}
           handleCancelModal={this.handleCancelModal}
           openFeedback={this.openFeedback}
-        />
+        /> */}
+        <RaiseTicketModal visible={visible} onClose={this.handleCancelModal} isFeedback />
       </>
     );
   }
