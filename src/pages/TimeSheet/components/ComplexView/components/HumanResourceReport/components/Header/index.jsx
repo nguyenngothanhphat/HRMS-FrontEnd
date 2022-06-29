@@ -84,6 +84,7 @@ const Header = (props) => {
         projects = [],
         userSpentInDay = 0,
         userSpentInHours = 0,
+        incompleteDates = [],
         // totalLeave = '',
         // totalWorkingDay = '',
         // totalWorkingDayInHours = '',
@@ -96,6 +97,12 @@ const Header = (props) => {
         projectName += el;
         if (index + 1 < projects.length) projectName += ', ';
       });
+      let incompleteTimeSheetDates = '';
+      incompleteDates.forEach((el, index) => {
+        const { date = '' } = el;
+        incompleteTimeSheetDates += date;
+        if (index + 1 < incompleteDates.length) incompleteTimeSheetDates += ', ';
+      });
       const dataExport = {
         Employee: legalName,
         'Employee ID': employeeCode,
@@ -104,6 +111,7 @@ const Header = (props) => {
         'Working Days': `${userSpentInDay} hours)`,
         'Leave Taken ': leaveTaken,
         'Total Hours': `${userSpentInHours} hours`,
+        'Incomplete TimeSheet Dates': incompleteTimeSheetDates,
       };
       if (locationUser) {
         dataExport['Break Time'] = breakTime;

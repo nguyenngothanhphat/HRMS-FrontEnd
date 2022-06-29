@@ -37,12 +37,19 @@ const Footer = (props) => {
         totalWorkingDayInHours = '',
         breakTime = 0,
         overTime = 0,
+        incompleteDates=[],
         department: { name = '' } = {},
       } = item;
       let projectName = '';
       project.forEach((el, index) => {
         projectName += el;
         if (index + 1 < project.length) projectName += ', ';
+      });
+      let incompleteTimeSheetDates = '';
+      incompleteDates.forEach((el, index) => {
+        const { date = '' } = el;
+        incompleteTimeSheetDates += date;
+        if (index + 1 < incompleteDates.length) incompleteTimeSheetDates += ', ';
       });
       const dataExport = {
         Employee: legalName,
@@ -51,6 +58,7 @@ const Footer = (props) => {
         'Working Days': `${userSpentInDay}/${totalWorkingDay} ( ${totalWorkingDayInHours} hours) `,
         'Leave Taken ': `${leaveTaken}/${totalLeave}`,
         'Total Hours': `${userSpentInHours} hours`,
+        'Incomplete TimeSheet Dates': incompleteTimeSheetDates,
       };
       if (locationUser) {
         dataExport['Break Time'] = breakTime;
