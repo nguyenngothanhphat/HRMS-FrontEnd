@@ -138,7 +138,7 @@ class ControlPanel extends Component {
     const res = await dispatch({
       type: 'upload/uploadFile',
       payload: formData,
-      isUploadAvatar: true,
+      showNotification: false,
     });
     const { statusCode, data = [] } = res;
     if (statusCode === 200 && data.length > 0) {

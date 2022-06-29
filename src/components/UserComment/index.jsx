@@ -14,6 +14,7 @@ import styles from './index.less';
 
 const UserComment = ({
   dispatch,
+  postId = '',
   item = {},
   onEditComment = () => {},
   onRemoveComment = () => {},
@@ -22,6 +23,7 @@ const UserComment = ({
   onEditSubmit = () => {},
   onEditCancel = () => {},
   refreshComments = () => {},
+  setActivePostID = () => {},
 }) => {
   const { _id: commentId = '', content = '', employee: owner = {}, totalReact = {} } = item;
 
@@ -94,15 +96,9 @@ const UserComment = ({
   };
 
   // function
-  const onLikeComment = async () => {
-    const res = await reactCommentEffect(commentId, LIKE_ACTION.LIKE);
-    if (res.statusCode === 200) {
-      refreshComments();
-    }
-  };
-
-  const onDislikeComment = async () => {
-    const res = await reactCommentEffect(commentId, LIKE_ACTION.DISLIKE);
+  const onLikeComment = async (type) => {
+    setActivePostID(postId);
+    const res = await reactCommentEffect(commentId, type);
     if (res.statusCode === 200) {
       refreshComments();
     }
@@ -114,11 +110,17 @@ const UserComment = ({
 
     return (
       <div className={styles.likes} style={{ pointerEvents: isEdit ? 'none' : 'auto' }}>
-        <div onClick={onLikeComment} className={liked ? styles.likes__pressed : null}>
+        <div
+          onClick={() => onLikeComment(LIKE_ACTION.LIKE)}
+          className={liked ? styles.likes__pressed : null}
+        >
           <img src={liked ? LikedIcon : LikeIcon} alt="" />
           <span>{totalReact?.asObject?.[LIKE_ACTION.LIKE] || 0}</span>
         </div>
-        <div onClick={onDislikeComment} className={disliked ? styles.likes__pressed : null}>
+        <div
+          onClick={() => onLikeComment(LIKE_ACTION.DISLIKE)}
+          className={disliked ? styles.likes__pressed : null}
+        >
           <img src={disliked ? DislikedIcon : DislikeIcon} alt="" />
           <span>{totalReact?.asObject?.[LIKE_ACTION.DISLIKE] || 0}</span>
         </div>
