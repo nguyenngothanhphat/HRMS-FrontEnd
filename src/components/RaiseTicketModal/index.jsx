@@ -35,7 +35,7 @@ const RaiseTicketModal = (props) => {
   const formRef = React.createRef();
   const {
     visible = false,
-    title = '',
+    title = 'Raise Ticket',
     onClose = () => {},
     currentUser: {
       employee: {
@@ -54,7 +54,6 @@ const RaiseTicketModal = (props) => {
 
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
-  const [attachment, setAttachment] = useState('');
   const support = supportTeamList.find((x) => x.name === 'H.R.M.S Support');
 
   // permission setting
@@ -69,26 +68,17 @@ const RaiseTicketModal = (props) => {
   const handleCancel = () => {
     onClose();
   };
-  useEffect(() => {
-    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
-    dispatch({
-      type: 'ticketManagement/fetchSupportTeamList',
-      payload: {
-        permissions,
-        country,
-      },
-    });
-  }, []);
+
   useEffect(() => {
     if (visible) {
-      // const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
-      // dispatch({
-      //   type: 'ticketManagement/fetchSupportTeamList',
-      //   payload: {
-      //     permissions,
-      //     country,
-      //   },
-      // });
+      const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
+      dispatch({
+        type: 'ticketManagement/fetchSupportTeamList',
+        payload: {
+          permissions,
+          country,
+        },
+      });
       dispatch({
         type: 'ticketManagement/fetchListEmployee',
         payload: {
@@ -98,15 +88,21 @@ const RaiseTicketModal = (props) => {
       });
     }
   }, [visible]);
+
   useEffect(() => {
-    if (isFeedback) setQueryTypeList(support?.queryType || []);
-  }, [support]);
+    if (isFeedback && visible) {
+      form.setFieldsValue({
+        supportTeam: support?._id,
+      });
+      setQueryTypeList(support?.queryType || []);
+    }
+  }, [visible, JSON.stringify(support)]);
 
   const handleReset = () => {
     form.resetFields();
     setUploadedAttachments([]);
-    setAttachment('');
   };
+
   const beforeUpload = (file) => {
     const checkType =
       file.type === 'application/pdf' ||
@@ -138,8 +134,6 @@ const RaiseTicketModal = (props) => {
     });
     if (res.statusCode === 200) {
       const { data = [] } = res;
-      const idUpload = data[0].id;
-      setAttachment(idUpload);
       if (data.length > 0) {
         const uploadedAttachmentsTemp = JSON.parse(JSON.stringify(uploadedAttachments));
         uploadedAttachmentsTemp.push(data[0]);
@@ -216,7 +210,6 @@ const RaiseTicketModal = (props) => {
         onClose();
         form.resetFields();
         setUploadedAttachments([]);
-        setAttachment('');
         refreshData();
       }
     });
@@ -234,7 +227,6 @@ const RaiseTicketModal = (props) => {
           initialValues={{
             status: 'New',
             requestDate: moment(),
-            supportTeam: isFeedback && support?._id,
           }}
         >
           <Row gutter={[24, 0]}>
