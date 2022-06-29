@@ -10,8 +10,6 @@ const CommonTable = (props) => {
     list = [],
     columns,
     loading = false,
-    page = 1,
-    limit = 10,
     selectable = false,
     rowKey = '',
     scrollable = false,
@@ -22,12 +20,14 @@ const CommonTable = (props) => {
     refreshData = () => {},
     totalQuickLink = 0,
     selectedTab,
+    pageSize = 10,
+    setPageSize = () => {},
+    currentPage = 1,
+    setCurrentPage = () => {},
   } = props;
-  const [pageSelected, setPageSelected] = useState(page);
-  const [pageSize, setPageSize] = useState(limit);
 
   const onChangePagination = (pageNumber, pageSizes) => {
-    setPageSelected(pageNumber);
+    setCurrentPage(pageNumber);
     setPageSize(pageSizes);
     refreshData(pageNumber, pageSizes);
   };
@@ -72,7 +72,7 @@ const CommonTable = (props) => {
     showSizeChanger: true,
     pageSizeOptions: ['10', '25', '50', '100'],
     pageSize,
-    current: pageSelected,
+    current: currentPage,
     onChange: onChangePagination,
   };
 

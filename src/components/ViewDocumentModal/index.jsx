@@ -10,6 +10,7 @@ import PrintIcon from '@/assets/printIconTimeOff.svg';
 import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
 import CloseIcon from '@/assets/closeIconTimeOff.svg';
 import styles from './index.less';
+import { getCountryId } from '@/utils/utils';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -142,9 +143,14 @@ class ViewDocumentModal extends PureComponent {
   };
 
   getCountryName = () => {
-    const { location: { headQuarterAddress: { country: { _id = '' } = {} } = {} } = {} } =
-      this.props;
-    switch (_id) {
+    const { location = {}, candidatePortal: { data: { workLocation = {} } } = {} } = this.props;
+
+    const employeeLocation = getCountryId(location);
+    const candidateLocation = getCountryId(workLocation);
+
+    const id = employeeLocation || candidateLocation;
+
+    switch (id) {
       case 'VN':
         return 'vn';
       case 'US':
@@ -207,8 +213,10 @@ export default connect(
   ({
     adminSetting: { originData: { emailDomain = '' } = {} } = {},
     user: { currentUser: { location = {} } = {} } = {},
+    candidatePortal,
   }) => ({
     emailDomain,
     location,
+    candidatePortal,
   }),
 )(ViewDocumentModal);
