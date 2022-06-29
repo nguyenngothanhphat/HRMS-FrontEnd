@@ -13,54 +13,18 @@ const QuickLinkCard = (props) => {
     selectedTab = '',
     setSelectedTab = () => {},
     onEditQuickLink = () => {},
-  } = props;
-  // redux
-  const {
-    homePage: {
-      quickLinkListAllHomePage = [],
-      quickLinkListTimeOff = [],
-      totalQuickLinkType = [],
-    } = {},
+    fetchData = () => {},
+    quickLinkListAllHomePage = [],
+    quickLinkListTimeOff = [],
     loadingFetchQuickLinkList = false,
+    totalQuickLinkType = {},
   } = props;
-
   // redux
-  const { dispatch } = props;
 
   // functions
   const addZeroToNumber = (number) => {
     if (number < 10 && number > 0) return `0${number}`.slice(-2);
     return number;
-  };
-
-  const fetchTotalQuickLinkType = () => {
-    dispatch({
-      type: 'homePage/fetchTotalQuickLinkTypeEffect',
-    });
-  };
-
-  const fetchData = (page = 1, limit = 10) => {
-    let type = '';
-
-    switch (selectedTab) {
-      case TAB_IDS_QUICK_LINK.GENERAL:
-        type = 'homePage/fetchAllQuickLinkHomePageEffect';
-        break;
-      case TAB_IDS_QUICK_LINK.TIMEOFF:
-        type = 'homePage/fetchQuickLinkTimeOffEffect';
-        break;
-      default:
-        break;
-    }
-    dispatch({
-      type,
-      payload: {
-        type: selectedTab.toLowerCase(),
-        page,
-        limit,
-      },
-    });
-    fetchTotalQuickLinkType();
   };
 
   const getTabName = (tab) => {
@@ -141,17 +105,11 @@ const QuickLinkCard = (props) => {
 
 export default connect(
   ({
-    homePage = {},
     location: { companyLocationList = [] } = {},
-    loading,
     user: { currentUser = {}, permissions = {} } = {},
   }) => ({
     currentUser,
     permissions,
-    homePage,
     companyLocationList,
-    loadingFetchQuickLinkList:
-      loading.effects['homePage/fetchAllQuickLinkHomePageEffect'] ||
-      loading.effects['homePage/fetchQuickLinkTimeOffEffect'],
   }),
 )(QuickLinkCard);
