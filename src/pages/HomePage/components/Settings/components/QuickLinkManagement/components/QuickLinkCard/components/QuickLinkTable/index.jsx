@@ -1,7 +1,7 @@
 import { Popconfirm } from 'antd';
 import Parser from 'html-react-parser';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect, Link } from 'umi';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import EditIcon from '@/assets/homePage/editIcon.svg';
@@ -19,6 +19,9 @@ const QuickLinkTable = (props) => {
     selectedTab = '',
   } = props;
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
   const onDeleteAttachment = async (record) => {
     if (record?._id) {
       const res = await dispatch({
@@ -28,7 +31,7 @@ const QuickLinkTable = (props) => {
         },
       });
       if (res.statusCode === 200) {
-        refreshData();
+        refreshData(currentPage, pageSize);
       }
     }
   };
@@ -134,6 +137,10 @@ const QuickLinkTable = (props) => {
         refreshData={refreshData}
         selectedTab={selectedTab}
         loading={loading}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
         columns={getColumns()}
       />
     </div>
