@@ -1,13 +1,9 @@
-import { Card, Col, DatePicker, Form, Input, Row, Switch } from 'antd';
-import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { Link, connect } from 'umi';
+import { Card, Col, Form, Input, Row, Switch } from 'antd';
 import { isEmpty } from 'lodash';
-import SuccessIcon from '@/assets/offboarding/successIcon.png';
-import CustomPrimaryButton from '@/components/CustomPrimaryButton';
-import CustomSecondaryButton from '@/components/CustomSecondaryButton';
-import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
-import NotificationModal from '@/components/NotificationModal';
+import moment from 'moment';
+import React, { useEffect } from 'react';
+import { connect } from 'umi';
+import { dateFormat, getEmployeeName, OFFBOARDING } from '@/utils/offboarding';
 import styles from './index.less';
 
 const SmallNotice = ({ text }) => {
@@ -18,7 +14,7 @@ const SmallNotice = ({ text }) => {
   );
 };
 
-const ClosingComment = (props) => {
+const ManagerClosingComment = (props) => {
   const [form] = Form.useForm();
 
   const {
@@ -44,32 +40,8 @@ const ClosingComment = (props) => {
 
   const { status: meetingStatus = '' } = meeting;
 
-  const [action, setAction] = useState('');
-  const [isCommentInputted, setIsCommentInputted] = useState(false);
-  const [isNotesInputted, setIsNotesInputted] = useState(false);
-  const [isLWDSelected, setIsLWDSelected] = useState(false);
-  const [isRequestDifferentLWD, setIsRequestDifferentLWD] = useState(false);
-
-  // functions
-  const onValuesChange = (changedValues, allValues) => {
-    setIsRequestDifferentLWD(!!allValues.isRequestDifferent);
-    setIsCommentInputted(!!allValues.closingComments);
-    setIsLWDSelected(!!allValues.LWD);
-    setIsNotesInputted(!!allValues.notes);
-  };
-
-  const disabledLWD = (current) => {
-    const customDate = moment().format(dateFormat);
-    return current && current < moment(customDate, dateFormat);
-  };
-
   useEffect(() => {
     if (!isEmpty(item)) {
-      setIsRequestDifferentLWD(isRequestDifferent);
-      setIsCommentInputted(!!closingComments);
-      setIsLWDSelected(!!managerPickLWD);
-      setIsNotesInputted(!!notes);
-
       form.setFieldsValue({
         closingComments,
         isRehired,
@@ -88,14 +60,7 @@ const ClosingComment = (props) => {
       status === OFFBOARDING.STATUS.REJECTED || meetingStatus === OFFBOARDING.MEETING_STATUS.DONE;
     return (
       <div gutter={[24, 16]} className={styles.content}>
-        <Form
-          layout="vertical"
-          name="basic"
-          form={form}
-          id="myForm"
-          preserve={false}
-          onValuesChange={onValuesChange}
-        >
+        <Form layout="vertical" name="basic" form={form} id="myForm" preserve={false}>
           <Form.Item name="closingComments" rules={[{ required: true }]}>
             <Input.TextArea
               placeholder="Enter Closing Comments"
@@ -144,39 +109,6 @@ const ClosingComment = (props) => {
             </Col>
             <Col span={2} />
           </Row>
-          {isRequestDifferentLWD && (
-            <Row
-              align="middle"
-              gutter={[0, 0]}
-              style={{
-                marginTop: 24,
-              }}
-            >
-              <Col span={12}>
-                <Form.Item
-                  name="LWD"
-                  label="Last working date (Manager requested)"
-                  rules={[{ required: true }]}
-                >
-                  <DatePicker format={dateFormat} disabled={disabled} disabledDate={disabledLWD} />
-                </Form.Item>
-              </Col>
-              <Col span={12} />
-              <Col span={24}>
-                <Form.Item name="notes" label="Notes" rules={[{ required: true }]}>
-                  <Input.TextArea
-                    placeholder="Reason for requesting a different LWD"
-                    autoSize={{
-                      minRows: 4,
-                      maxRows: 7,
-                    }}
-                    maxLength={500}
-                    disabled={disabled}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-          )}
         </Form>
       </div>
     );
@@ -192,8 +124,10 @@ const ClosingComment = (props) => {
 
   return (
     <Card
-      title="Sandeep Gupta’s Closing Comments from 1-on-1"
-      className={styles.ClosingComment}
+      title={`${getEmployeeName(
+        assigned?.manager?.generalInfoInfo,
+      )}’s Closing Comments from 1-on-1`}
+      className={styles.ManagerClosingComment}
       extra={renderCurrentTime()}
     >
       {renderContent()}
@@ -203,4 +137,4 @@ const ClosingComment = (props) => {
 
 export default connect(({ offboarding }) => ({
   offboarding,
-}))(ClosingComment);
+}))(ManagerClosingComment);

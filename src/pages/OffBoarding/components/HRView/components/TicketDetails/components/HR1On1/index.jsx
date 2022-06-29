@@ -26,7 +26,7 @@ const HR1On1 = (props) => {
 
   const [oneOnOneMeetingModalVisible, setOneOnOneMeetingModalVisible] = useState(false);
 
-  const type = 1;
+  const type = 2;
 
   // functionalities
   const onSetOneOnOneMeeting = async (values) => {
@@ -88,33 +88,34 @@ const HR1On1 = (props) => {
           </Row>
         );
 
+      case 2:
+        return (
+          <Row gutter={[24, 16]} className={styles.content} align="top">
+            <Col span={10} lg={8}>
+              <div className={styles.leftPart}>
+                <span className={styles.label}>1-on-1 meeting with</span>
+                <CustomEmployeeTag
+                  title={employee?.titleInfo?.name}
+                  name={getEmployeeName(employee?.generalInfoInfo)}
+                  avatar={employee?.generalInfoInfo?.avatar}
+                  userId={employee?.generalInfoInfo?.userId}
+                />
+              </div>
+            </Col>
+            <Col span={14} lg={16}>
+              <div className={styles.rightPart}>
+                <span className={styles.label}>Scheduled on</span>
+                <span className={styles.time}>
+                  {moment(managerDate).format(`${dateFormat} | h:mm a`)}
+                </span>
+              </div>
+            </Col>
+          </Row>
+        );
+
       default:
         return '';
     }
-
-    // return (
-    //   <Row gutter={[24, 16]} className={styles.content} align="top">
-    //     <Col span={10} lg={8}>
-    //       <div className={styles.leftPart}>
-    //         <span className={styles.label}>1-on-1 meeting with</span>
-    //         <CustomEmployeeTag
-    //           title={employee?.titleInfo?.name}
-    //           name={getEmployeeName(employee?.generalInfoInfo)}
-    //           avatar={employee?.generalInfoInfo?.avatar}
-    //           userId={employee?.generalInfoInfo?.userId}
-    //         />
-    //       </div>
-    //     </Col>
-    //     <Col span={14} lg={16}>
-    //       <div className={styles.rightPart}>
-    //         <span className={styles.label}>Scheduled on</span>
-    //         <span className={styles.time}>
-    //           {moment(managerDate).format(`${dateFormat} | h:mm a`)}
-    //         </span>
-    //       </div>
-    //     </Col>
-    //   </Row>
-    // );
 
     // return (
     //   <Row gutter={[24, 16]} className={styles.content} align="top">
@@ -151,13 +152,11 @@ const HR1On1 = (props) => {
       case 1:
         return '';
 
-      case OFFBOARDING.MEETING_STATUS.MANAGER_PICK_DATE:
+      case 2:
         return (
           <div className={styles.actions}>
             <div className={styles.comment}>
-              {isAccept && (
-                <span onClick={() => setIsEnterClosingComment(true)}>Enter Closing Comments</span>
-              )}
+              <span onClick={() => setIsEnterClosingComment(true)}>Enter Closing Comments</span>
             </div>
             <div>
               <CustomSecondaryButton

@@ -3,13 +3,13 @@ import { Card, Col, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { getEmployeeName } from '@/utils/offboarding';
+import { getEmployeeName, OFFBOARDING } from '@/utils/offboarding';
 import CustomEmployeeTag from '@/components/CustomEmployeeTag';
 import DownArrowIcon from '@/assets/offboarding/downArrow.png';
 import styles from './index.less';
 
 const Assignee = (props) => {
-  const { item: { assigned = {} } = {}, user: { currentUser = {} } = {} } = props;
+  const { item: { status = '', assigned = {} } = {}, user: { currentUser = {} } = {} } = props;
   const { hr = {}, manager = {}, delegateManager = {} } = assigned || {};
 
   const [hrAssignees, setHrAssignees] = useState([]);
@@ -38,6 +38,7 @@ const Assignee = (props) => {
         avatar: manager?.generalInfoInfo?.avatar,
         _id: manager?._id,
         isYou: currentUser?.employee?._id === manager?._id,
+        highlight: status === OFFBOARDING.STATUS.ACCEPTED,
       },
     ];
     if (!isEmpty(delegateManager)) {
@@ -70,6 +71,8 @@ const Assignee = (props) => {
                       title={y.title}
                       avatar={y.avatar}
                       userId={y.userId}
+                      isYou={y.isYou}
+                      highlight={y.highlight}
                     />
                   </Col>
                   <Col span={5}>
@@ -98,6 +101,7 @@ const Assignee = (props) => {
                       title={y.title}
                       avatar={y.avatar}
                       userId={y.userId}
+                      isYou={y.isYou}
                     />
                   </Col>
                   <Col span={5}>
