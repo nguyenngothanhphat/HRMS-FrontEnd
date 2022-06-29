@@ -47,6 +47,7 @@ const RaiseTicketModal = (props) => {
     loadingFetchSupportTeam = false,
     loadingAddTicket = false,
     supportTeamList = [],
+    isFeedback = false,
   } = props;
   const { listEmployee, loadingUploadAttachment = false } = props;
   const { maxFileSize = 2, dispatch } = props;
@@ -54,6 +55,7 @@ const RaiseTicketModal = (props) => {
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
   const [attachment, setAttachment] = useState('');
+  const support = supportTeamList.find((x) => x.name === 'H.R.M.S Support');
 
   // permission setting
 
@@ -68,15 +70,25 @@ const RaiseTicketModal = (props) => {
     onClose();
   };
   useEffect(() => {
+    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
+    dispatch({
+      type: 'ticketManagement/fetchSupportTeamList',
+      payload: {
+        permissions,
+        country,
+      },
+    });
+  }, []);
+  useEffect(() => {
     if (visible) {
-      const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
-      dispatch({
-        type: 'ticketManagement/fetchSupportTeamList',
-        payload: {
-          permissions,
-          country,
-        },
-      });
+      // const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
+      // dispatch({
+      //   type: 'ticketManagement/fetchSupportTeamList',
+      //   payload: {
+      //     permissions,
+      //     country,
+      //   },
+      // });
       dispatch({
         type: 'ticketManagement/fetchListEmployee',
         payload: {
@@ -86,6 +98,9 @@ const RaiseTicketModal = (props) => {
       });
     }
   }, [visible]);
+  useEffect(() => {
+    if (isFeedback) setQueryTypeList(support?.queryType || []);
+  }, [support]);
 
   const handleReset = () => {
     form.resetFields();
@@ -219,6 +234,7 @@ const RaiseTicketModal = (props) => {
           initialValues={{
             status: 'New',
             requestDate: moment(),
+            supportTeam: isFeedback && support?._id,
           }}
         >
           <Row gutter={[24, 0]}>
