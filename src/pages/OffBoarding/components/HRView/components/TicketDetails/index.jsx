@@ -9,7 +9,8 @@ import ClosingComment from './components/ClosingComment';
 import ProcessStatus from './components/ProcessStatus';
 import RequesteeDetails from './components/RequesteeDetails';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
-import WhatNext from './components/WhatNext';
+import HRApproval from './components/HRApproval';
+import HR1On1 from './components/HR1On1';
 import styles from './index.less';
 
 const TicketDetails = (props) => {
@@ -65,6 +66,12 @@ const TicketDetails = (props) => {
             <Col span={16} xs={24} lg={16}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
+                  <HR1On1 item={viewingRequest} />
+                </Col>
+                <Col span={24}>
+                  <ClosingComment item={viewingRequest} />
+                </Col>
+                <Col span={24}>
                   <ProcessStatus item={viewingRequest} />
                 </Col>
                 <Col span={24}>
@@ -74,14 +81,7 @@ const TicketDetails = (props) => {
                   <ResignationRequestDetail item={viewingRequest} />
                 </Col>
                 <Col span={24}>
-                  {getShowClosingComment() ? (
-                    <ClosingComment item={viewingRequest} />
-                  ) : (
-                    <WhatNext
-                      item={viewingRequest}
-                      setIsEnterClosingComment={setIsEnterClosingComment}
-                    />
-                  )}
+                  <HRApproval item={viewingRequest} />
                 </Col>
               </Row>
             </Col>

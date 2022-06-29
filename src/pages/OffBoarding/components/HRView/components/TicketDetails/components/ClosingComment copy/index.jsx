@@ -43,8 +43,47 @@ const ClosingComment = (props) => {
   } = props;
 
   const { status: meetingStatus = '' } = meeting;
+  const { manager = {} } = assigned;
 
+  const [notificationModalVisible, setNotificationModalVisible] = useState(false);
   const [action, setAction] = useState('');
+
+  // functionalities
+  const onDoneMeeting = async (actionTemp = '') => {
+    setAction(actionTemp);
+    const values = form.getFieldsValue();
+
+    let payload = {
+      id: _id,
+      employeeId: employee?._id,
+      closingComments: values.closingComments,
+      isRehired: values.isRehired,
+      isReplacement: values.isReplacement,
+      isHrRequired: values.isHrRequired,
+      isRequestDifferent: values.isRequestDifferent,
+      action:
+        actionTemp === 'reject'
+          ? OFFBOARDING.UPDATE_ACTION.MANAGER_REJECT
+          : OFFBOARDING.UPDATE_ACTION.MEETING_DONE,
+    };
+
+    if (values.isRequestDifferent) {
+      payload = {
+        ...payload,
+        LWD: values.LWD,
+        notes: values.notes,
+      };
+    }
+
+    const res = await dispatch({
+      type: 'offboarding/updateRequestEffect',
+      payload,
+    });
+    if (res.statusCode === 200) {
+      setNotificationModalVisible(true);
+    }
+  };
+
   const [isCommentInputted, setIsCommentInputted] = useState(false);
   const [isNotesInputted, setIsNotesInputted] = useState(false);
   const [isLWDSelected, setIsLWDSelected] = useState(false);
@@ -101,7 +140,7 @@ const ClosingComment = (props) => {
               placeholder="Enter Closing Comments"
               autoSize={{ minRows: 4, maxRows: 7 }}
               maxLength={500}
-              disabled
+              disabled={disabled}
             />
           </Form.Item>
           <Row align="middle" gutter={[0, 16]}>
@@ -141,6 +180,45 @@ const ClosingComment = (props) => {
             </Col>
             <Col span={10}>
               <SmallNotice text="Please select Yes if you want the HR to discuss the resignation decision with the employee." />
+            </Col>
+            <Col span={2} />
+            <Col span={12}>
+              <div className={styles.switchItem}>
+                <Form.Item
+                  name="isHrRequired"
+                  valuePropName="checked"
+                  style={{
+                    display: 'inline',
+                    marginBottom: 0,
+                  }}
+                >
+                  <Switch defaultChecked={false} disabled={disabled} />
+                </Form.Item>
+                <span className={styles.titleText}>HR 1 on 1 required</span>
+              </div>
+            </Col>
+            <Col span={10}>
+              <SmallNotice text="Please select Yes if you want the HR to discuss the resignation decision with the employee." />
+            </Col>
+            <Col span={2} />
+
+            <Col span={12}>
+              <div className={styles.switchItem}>
+                <Form.Item
+                  name="isRequestDifferent"
+                  valuePropName="checked"
+                  style={{
+                    display: 'inline',
+                    marginBottom: 0,
+                  }}
+                >
+                  <Switch defaultChecked={false} disabled={disabled} />
+                </Form.Item>
+                <span className={styles.titleText}>Request a different LWD</span>
+              </div>
+            </Col>
+            <Col span={10}>
+              <SmallNotice text="Preferred LWD must be vetted by your reporting manager & approved by the HR manager to come into effective." />
             </Col>
             <Col span={2} />
           </Row>
@@ -190,13 +268,96 @@ const ClosingComment = (props) => {
     );
   };
 
+  const renderButtons = () => {
+    if (
+      meetingStatus === OFFBOARDING.MEETING_STATUS.DONE ||
+      status === OFFBOARDING.STATUS.REJECTED
+    ) {
+      return null;
+    }
+    const disabled =
+      !isCommentInputted || ((!isLWDSelected || !isNotesInputted) && isRequestDifferentLWD);
+
+    return (
+      <Row className={styles.actions} align="middle">
+        <Col span={12}>
+          <span className={styles.description}>
+            By default notifications will be sent to HR, your manager and recursively loop to your
+            department head.
+          </span>
+        </Col>
+        <Col span={12}>
+          <div className={styles.actions__buttons}>
+            <CustomSecondaryButton disabled={disabled} onClick={() => onDoneMeeting('reject')}>
+              Reject
+            </CustomSecondaryButton>
+            <CustomPrimaryButton disabled={disabled} onClick={() => onDoneMeeting('accept')}>
+              Accept Resignation
+            </CustomPrimaryButton>
+          </div>
+        </Col>
+      </Row>
+    );
+  };
+
+  const renderResult = () => {
+    if (status === OFFBOARDING.STATUS.REJECTED) {
+      return (
+        <div className={styles.result}>
+          <img src={SuccessIcon} alt="" />
+          <span>
+            The employee resignation request has been Rejected by{' '}
+            <Link to={`/directory/employee-profile/${manager?.generalInfoInfo?.userId}`}>
+              {manager?.generalInfoInfo?.legalName}
+            </Link>
+          </span>
+        </div>
+      );
+    }
+    if (meetingStatus === OFFBOARDING.MEETING_STATUS.DONE) {
+      return (
+        <div className={styles.result}>
+          <img src={SuccessIcon} alt="" />
+          <span>
+            The employee resignation request has been Accepted by{' '}
+            <Link to={`/directory/employee-profile/${manager?.generalInfoInfo?.userId}`}>
+              {manager?.generalInfoInfo?.legalName}
+            </Link>
+          </span>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  const renderModals = () => {
+    return (
+      <div>
+        <NotificationModal
+          visible={notificationModalVisible}
+          onClose={() => setNotificationModalVisible(false)}
+          description={
+            action === 'accept'
+              ? 'Your acceptance of the request has been recorded and all the concerned parties will be notified'
+              : 'Your rejection of the request has been recorded and all the concerned parties will be notified'
+          }
+          buttonText="Ok"
+        />
+      </div>
+    );
+  };
+
   return (
     <Card
-      title="Sandeep Gupta’s Closing Comments from 1-on-1"
+      title="Add Closing comments from your 1 on 1 with the employee"
       className={styles.ClosingComment}
       extra={renderCurrentTime()}
     >
       {renderContent()}
+      {renderButtons()}
+      {renderResult()}
+      {renderModals()}
     </Card>
   );
 };

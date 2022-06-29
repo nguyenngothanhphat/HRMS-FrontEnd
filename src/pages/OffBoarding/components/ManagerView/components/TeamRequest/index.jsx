@@ -28,6 +28,7 @@ const TeamRequest = (props) => {
     offboarding: {
       teamRequests: { list = [], totalStatus = {} } = {},
       selectedLocations = [],
+      selectedDivisions = [],
     } = {},
     loadingFetchList = false,
     type = OFFBOARDING_TABS.TEAM,
@@ -45,6 +46,7 @@ const TeamRequest = (props) => {
   const fetchData = () => {
     const payload = {
       location: selectedLocations,
+      selectedDivisions,
       page,
       limit: size,
       status: currentStatus,
@@ -104,6 +106,7 @@ const TeamRequest = (props) => {
     size,
     searchText,
     JSON.stringify(selectedLocations),
+    JSON.stringify(selectedDivisions),
     JSON.stringify(filterValues),
   ]);
 

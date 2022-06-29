@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, connect } from 'umi';
 import { isEmpty } from 'lodash';
 import SuccessIcon from '@/assets/offboarding/successIcon.png';
+import FailedIcon from '@/assets/offboarding/failedIcon.svg';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
@@ -304,7 +305,7 @@ const ClosingComment = (props) => {
     if (status === OFFBOARDING.STATUS.REJECTED) {
       return (
         <div className={styles.result}>
-          <img src={SuccessIcon} alt="" />
+          <img src={FailedIcon} alt="" />
           <span>
             The employee resignation request has been Rejected by{' '}
             <Link to={`/directory/employee-profile/${manager?.generalInfoInfo?.userId}`}>

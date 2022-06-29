@@ -9,7 +9,7 @@ import DownArrowIcon from '@/assets/offboarding/downArrow.png';
 import styles from './index.less';
 
 const Assignee = (props) => {
-  const { item: { assigned = {} } = {} } = props;
+  const { item: { assigned = {} } = {}, user: { currentUser = {} } = {} } = props;
   const { hr = {}, manager = {}, delegateManager = {} } = assigned || {};
 
   const [hrAssignees, setHrAssignees] = useState([]);
@@ -26,6 +26,7 @@ const Assignee = (props) => {
         userId: hr?.generalInfoInfo?.userId,
         avatar: hr?.generalInfoInfo?.avatar,
         _id: hr?._id,
+        isYou: currentUser?.employee?._id === hr?._id,
       },
     ]);
     const managerTemp = [
@@ -36,6 +37,7 @@ const Assignee = (props) => {
         userId: manager?.generalInfoInfo?.userId,
         avatar: manager?.generalInfoInfo?.avatar,
         _id: manager?._id,
+        isYou: currentUser?.employee?._id === manager?._id,
       },
     ];
     if (!isEmpty(delegateManager)) {
@@ -46,6 +48,7 @@ const Assignee = (props) => {
         userId: delegateManager?.generalInfoInfo?.userId,
         avatar: delegateManager?.generalInfoInfo?.avatar,
         _id: delegateManager?._id,
+        isYou: currentUser?.employee?._id === delegateManager?._id,
       });
     }
     setManagerAssignees(managerTemp);
@@ -54,31 +57,6 @@ const Assignee = (props) => {
   const renderContent = () => {
     return (
       <div className={styles.container}>
-        <div className={styles.block}>
-          <p className={styles.block__title}>HR Approval</p>
-          <div className={styles.block__members}>
-            <Row align="middle" gutter={[0, 24]}>
-              {hrAssignees.map((y) => (
-                <>
-                  <Col span={19}>
-                    <CustomEmployeeTag
-                      name={y.name}
-                      title={y.title}
-                      avatar={y.avatar}
-                      userId={y.userId}
-                    />
-                  </Col>
-                  <Col span={5}>
-                    <div className={styles.options}>
-                      <span className={styles.type}>{getType(y.primary)}</span>
-                    </div>
-                  </Col>
-                </>
-              ))}
-            </Row>
-          </div>
-        </div>
-
         <div className={styles.block}>
           <p className={styles.block__title}>Manager approval</p>
 
@@ -107,6 +85,31 @@ const Assignee = (props) => {
             </Row>
           </div>
         </div>
+
+        <div className={styles.block}>
+          <p className={styles.block__title}>HR Approval</p>
+          <div className={styles.block__members}>
+            <Row align="middle" gutter={[0, 24]}>
+              {hrAssignees.map((y) => (
+                <>
+                  <Col span={19}>
+                    <CustomEmployeeTag
+                      name={y.name}
+                      title={y.title}
+                      avatar={y.avatar}
+                      userId={y.userId}
+                    />
+                  </Col>
+                  <Col span={5}>
+                    <div className={styles.options}>
+                      <span className={styles.type}>{getType(y.primary)}</span>
+                    </div>
+                  </Col>
+                </>
+              ))}
+            </Row>
+          </div>
+        </div>
       </div>
     );
   };
@@ -118,6 +121,7 @@ const Assignee = (props) => {
   );
 };
 
-export default connect(({ offboarding }) => ({
+export default connect(({ offboarding, user }) => ({
   offboarding,
+  user,
 }))(Assignee);

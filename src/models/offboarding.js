@@ -19,6 +19,7 @@ const offboarding = {
   namespace: 'offboarding',
   state: {
     selectedLocations: [getCurrentLocation()],
+    selectedDivisions: [],
     teamRequests: {
       list: [],
       totalStatus: {},

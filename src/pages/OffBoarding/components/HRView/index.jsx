@@ -21,6 +21,7 @@ const HRView = (props) => {
   } = props;
 
   const [selectedLocations, setSelectedLocation] = useState([]);
+  const [selectedDivisions, setSelectedDivisions] = useState('');
 
   useEffect(() => {
     setSelectedLocation(selectedLocationsProp);
@@ -34,6 +35,16 @@ const HRView = (props) => {
       },
     });
     setSelectedLocation([...selection]);
+  };
+
+  const onDivisionChange = (selection) => {
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        selectedDivisions: [...selection],
+      },
+    });
+    setSelectedDivisions([...selection]);
   };
 
   const renderLocationOptions = () => {
@@ -54,6 +65,13 @@ const HRView = (props) => {
           disabled={renderLocationOptions().length < 2}
           label="Location"
           selectedList={selectedLocations}
+        />
+        <CustomDropdownSelector
+          options={[]}
+          onChange={onDivisionChange}
+          disabled={[].length < 2}
+          label="Division"
+          selectedList={selectedDivisions}
         />
         <CustomBlueButton>Generate Report</CustomBlueButton>
       </div>

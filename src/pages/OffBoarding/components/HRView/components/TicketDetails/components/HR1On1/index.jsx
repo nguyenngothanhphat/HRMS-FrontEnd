@@ -9,7 +9,7 @@ import SetMeetingModal from '@/pages/OffBoarding/components/SetMeetingModal';
 import { dateFormat, getEmployeeName, OFFBOARDING, onJoinMeeting } from '@/utils/offboarding';
 import styles from './index.less';
 
-const WhatNext = (props) => {
+const HR1On1 = (props) => {
   const {
     dispatch,
     item: { _id = '', employee = {}, status = '', meeting = {} } = {},
@@ -25,6 +25,8 @@ const WhatNext = (props) => {
   } = meeting;
 
   const [oneOnOneMeetingModalVisible, setOneOnOneMeetingModalVisible] = useState(false);
+
+  const type = 1;
 
   // functionalities
   const onSetOneOnOneMeeting = async (values) => {
@@ -57,23 +59,23 @@ const WhatNext = (props) => {
 
   // render UI
   const renderTitle = () => {
-    switch (status) {
-      case 4:
-        return '1 -on- 1 Meeting Completed';
+    switch (type) {
+      case 1:
+        return 'HR 1 on 1 Requested';
       default:
-        return 'What next?';
+        return 'HR 1 on 1 Requested';
     }
   };
 
   const renderContent = () => {
-    switch (meetingStatus) {
-      case OFFBOARDING.MEETING_STATUS.NOT_START:
+    switch (type) {
+      case 1:
         return (
           <Row gutter={[24, 16]} className={styles.content} align="middle">
             <Col span={16} className={styles.text1}>
               <span>
-                Schedule a 1-on-1 call with {getEmployeeName(employee.generalInfoInfo)} and provide
-                your closing comments for the same
+                The reporting manager has requested that the HR speak to the employee about their
+                decision.
               </span>
             </Col>
             <Col span={8}>
@@ -83,81 +85,70 @@ const WhatNext = (props) => {
                 </CustomPrimaryButton>
               </div>
             </Col>
-            <Col span={16}>
-              <span className={styles.text2}>
-                <span style={{ fontWeight: 500 }}>Note: </span>
-                The one on one needs to be completed within 10 days from the date the request was
-                created.
-              </span>
-            </Col>
-            <Col span={8} />
-          </Row>
-        );
-
-      case OFFBOARDING.MEETING_STATUS.MANAGER_PICK_DATE:
-        return (
-          <Row gutter={[24, 16]} className={styles.content} align="top">
-            <Col span={10} lg={8}>
-              <div className={styles.leftPart}>
-                <span className={styles.label}>1-on-1 meeting with</span>
-                <CustomEmployeeTag
-                  title={employee?.titleInfo?.name}
-                  name={getEmployeeName(employee?.generalInfoInfo)}
-                  avatar={employee?.generalInfoInfo?.avatar}
-                  userId={employee?.generalInfoInfo?.userId}
-                />
-              </div>
-            </Col>
-            <Col span={14} lg={16}>
-              <div className={styles.rightPart}>
-                <span className={styles.label}>Scheduled on</span>
-                <span className={styles.time}>
-                  {moment(managerDate).format(`${dateFormat} | h:mm a`)}
-                </span>
-              </div>
-            </Col>
-          </Row>
-        );
-
-      case OFFBOARDING.MEETING_STATUS.EMPLOYEE_PICK_DATE:
-      case OFFBOARDING.MEETING_STATUS.DATE_CONFIRMED:
-        return (
-          <Row gutter={[24, 16]} className={styles.content} align="top">
-            <Col span={10} lg={8}>
-              <div className={styles.leftPart}>
-                <span className={styles.label}>1-on-1 meeting with</span>
-                <CustomEmployeeTag
-                  title={employee?.titleInfo?.name}
-                  name={getEmployeeName(employee?.generalInfoInfo)}
-                  avatar={employee?.generalInfoInfo?.avatar}
-                  userId={employee?.generalInfoInfo?.userId}
-                />
-              </div>
-            </Col>
-            <Col span={14} lg={16}>
-              <div className={styles.rightPart}>
-                <span className={styles.label}>Scheduled on</span>
-                <span className={styles.time}>
-                  {moment(employeeDate).format(`${dateFormat} | h:mm a`)}
-                </span>
-                {!isAccept && (
-                  <div className={styles.notification}>
-                    <span>Requestee scheduled 1-on-1 meeting with you</span>
-                  </div>
-                )}
-              </div>
-            </Col>
           </Row>
         );
 
       default:
         return '';
     }
+
+    // return (
+    //   <Row gutter={[24, 16]} className={styles.content} align="top">
+    //     <Col span={10} lg={8}>
+    //       <div className={styles.leftPart}>
+    //         <span className={styles.label}>1-on-1 meeting with</span>
+    //         <CustomEmployeeTag
+    //           title={employee?.titleInfo?.name}
+    //           name={getEmployeeName(employee?.generalInfoInfo)}
+    //           avatar={employee?.generalInfoInfo?.avatar}
+    //           userId={employee?.generalInfoInfo?.userId}
+    //         />
+    //       </div>
+    //     </Col>
+    //     <Col span={14} lg={16}>
+    //       <div className={styles.rightPart}>
+    //         <span className={styles.label}>Scheduled on</span>
+    //         <span className={styles.time}>
+    //           {moment(managerDate).format(`${dateFormat} | h:mm a`)}
+    //         </span>
+    //       </div>
+    //     </Col>
+    //   </Row>
+    // );
+
+    // return (
+    //   <Row gutter={[24, 16]} className={styles.content} align="top">
+    //     <Col span={10} lg={8}>
+    //       <div className={styles.leftPart}>
+    //         <span className={styles.label}>1-on-1 meeting with</span>
+    //         <CustomEmployeeTag
+    //           title={employee?.titleInfo?.name}
+    //           name={getEmployeeName(employee?.generalInfoInfo)}
+    //           avatar={employee?.generalInfoInfo?.avatar}
+    //           userId={employee?.generalInfoInfo?.userId}
+    //         />
+    //       </div>
+    //     </Col>
+    //     <Col span={14} lg={16}>
+    //       <div className={styles.rightPart}>
+    //         <span className={styles.label}>Scheduled on</span>
+    //         <span className={styles.time}>
+    //           {moment(employeeDate).format(`${dateFormat} | h:mm a`)}
+    //         </span>
+    //         {!isAccept && (
+    //           <div className={styles.notification}>
+    //             <span>Requestee scheduled 1-on-1 meeting with you</span>
+    //           </div>
+    //         )}
+    //       </div>
+    //     </Col>
+    //   </Row>
+    // );
   };
 
   const renderButtons = () => {
-    switch (meetingStatus) {
-      case OFFBOARDING.MEETING_STATUS.NOT_START:
+    switch (type) {
+      case 1:
         return '';
 
       case OFFBOARDING.MEETING_STATUS.MANAGER_PICK_DATE:
@@ -251,7 +242,7 @@ const WhatNext = (props) => {
   };
 
   return (
-    <Card title={renderTitle()} className={styles.WhatNext}>
+    <Card title={renderTitle()} className={styles.HR1On1}>
       {renderContent()}
       {renderButtons()}
       {renderModal()}
@@ -259,4 +250,4 @@ const WhatNext = (props) => {
   );
 };
 
-export default connect(({ offboarding }) => ({ offboarding }))(WhatNext);
+export default connect(({ offboarding }) => ({ offboarding }))(HR1On1);
