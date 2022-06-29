@@ -23,6 +23,7 @@ import {
   getResourceUtilization,
   getNewJoineesList,
   exportResource,
+  getListSkill,
 } from '@/services/resourceManagement';
 
 import { handlingResourceAvailableStatus } from '@/utils/resourceManagement';
@@ -408,6 +409,16 @@ const resourceManagement = {
       }
       hide();
       return response;
+    },
+    *fetchListSkill(_, { call, put }) {
+      try {
+        const response = yield call(getListSkill);
+        const { statusCode, data: listSkill = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listSkill } });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
   reducers: {

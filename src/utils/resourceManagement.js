@@ -54,7 +54,7 @@ export function formatData(rawData, projectList) {
       employeeId: obj?._id,
       employeeName: handleLongText(employeeName.trim(), 25),
       availableStatus,
-      division: obj?.tagDivision,
+      division: obj?.departmentInfo?.name,
       designation: titleInfo?.name,
       experience: generalInfo?.totalExp,
       comment: obj?.commentResource,
