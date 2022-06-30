@@ -24,19 +24,27 @@ const ComplexView = (props) => {
     tabName = '',
     showMyTimeSheet = true,
     companyLocationList = [],
-    timeSheet: { divisionList = [] } = {},
+    timeSheet: { divisionList = [], selectedLocations: selectedLocationsProp = [] } = {},
     currentDateProp = '',
     dispatch,
   } = props;
 
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
   const [selectedDivisions, setSelectedDivisions] = useState([]);
-  const [selectedLocations, setSelectedLocation] = useState([getCurrentLocation()]);
+  const [selectedLocations, setSelectedLocation] = useState([]);
   const [isIncompleteTimeSheet, setIsIncompleteTimeSheet] = useState(false);
 
   // PERMISSIONS TO VIEW LOCATION
   const viewLocationHR = permissions.viewLocationHRTimesheet === 1;
   const viewLocationFinance = permissions.viewLocationFinanceTimesheet === 1;
+
+  useEffect(() => {
+    let location = [getCurrentLocation()];
+    if (selectedLocationsProp.length) {
+      location = selectedLocationsProp;
+    }
+    setSelectedLocation(location);
+  }, [JSON.stringify(selectedLocationsProp)]);
 
   const requestLeave = () => {
     history.push('/time-off/overview/personal-timeoff/new');

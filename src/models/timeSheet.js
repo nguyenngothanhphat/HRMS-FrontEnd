@@ -89,7 +89,7 @@ const initialState = {
 
   // common
   selectedDivisions: [],
-  selectedLocations: [getCurrentLocation()],
+  selectedLocations: [],
   isIncompleteTimesheet: false,
   employeeSchedule: {},
 };

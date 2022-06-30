@@ -18,7 +18,12 @@ import {
 const offboarding = {
   namespace: 'offboarding',
   state: {
+<<<<<<< Updated upstream
     selectedLocations: [getCurrentLocation()],
+=======
+    selectedLocations: [],
+    selectedDivisions: [],
+>>>>>>> Stashed changes
     teamRequests: {
       list: [],
       totalStatus: {},

@@ -2,7 +2,12 @@ import { Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { history, connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
+<<<<<<< Updated upstream
 import TeamRequest from './components/TeamRequest';
+=======
+import { getCurrentLocation } from '@/utils/authority';
+import RequestTable from '../RequestTable';
+>>>>>>> Stashed changes
 import styles from './index.less';
 import CustomBlueButton from '@/components/CustomBlueButton';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
@@ -25,7 +30,11 @@ const ManagerView = (props) => {
   const [selectedLocations, setSelectedLocation] = useState([]);
 
   useEffect(() => {
-    setSelectedLocation(selectedLocationsProp);
+    let location = [getCurrentLocation()];
+    if (selectedLocationsProp.length) {
+      location = selectedLocationsProp;
+    }
+    setSelectedLocation(location);
   }, [JSON.stringify(selectedLocationsProp)]);
 
   const onLocationChange = (selection) => {
