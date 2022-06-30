@@ -5,7 +5,7 @@ import CustomBlueButton from '@/components/CustomBlueButton';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentLocation } from '@/utils/authority';
-import TeamRequest from './components/TeamRequest';
+import RequestTable from '../RequestTable';
 import styles from './index.less';
 
 const TABS = {
@@ -32,6 +32,15 @@ const ManagerView = (props) => {
     }
     setSelectedLocation(location);
   }, [JSON.stringify(selectedLocationsProp)]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        viewingRequest: {},
+      },
+    });
+  }, []);
 
   const onLocationChange = (selection) => {
     dispatch({
@@ -79,7 +88,7 @@ const ManagerView = (props) => {
           destroyInactiveTabPane
         >
           <TabPane tab="Team Request" key={TABS.TEAM}>
-            <TeamRequest />
+            <RequestTable />
           </TabPane>
         </Tabs>
       </PageContainer>
