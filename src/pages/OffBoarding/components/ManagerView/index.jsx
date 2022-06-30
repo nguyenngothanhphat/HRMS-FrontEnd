@@ -1,16 +1,12 @@
 import { Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { history, connect } from 'umi';
-import { PageContainer } from '@/layouts/layout/src';
-<<<<<<< Updated upstream
-import TeamRequest from './components/TeamRequest';
-=======
-import { getCurrentLocation } from '@/utils/authority';
-import RequestTable from '../RequestTable';
->>>>>>> Stashed changes
-import styles from './index.less';
+import { connect, history } from 'umi';
 import CustomBlueButton from '@/components/CustomBlueButton';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
+import { PageContainer } from '@/layouts/layout/src';
+import { getCurrentLocation } from '@/utils/authority';
+import TeamRequest from './components/TeamRequest';
+import styles from './index.less';
 
 const TABS = {
   MY: 'my',
