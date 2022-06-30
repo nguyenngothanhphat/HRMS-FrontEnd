@@ -4,6 +4,7 @@ import { connect, history } from 'umi';
 import CustomBlueButton from '@/components/CustomBlueButton';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
 import { PageContainer } from '@/layouts/layout/src';
+import { getCurrentLocation } from '@/utils/authority';
 import RequestTable from '../RequestTable';
 import styles from './index.less';
 
@@ -29,12 +30,15 @@ const ManagerView = (props) => {
   }, [JSON.stringify(selectedLocationsProp)]);
 
   useEffect(() => {
-    dispatch({
-      type: 'offboarding/save',
-      payload: {
-        viewingRequest: {},
-      },
-    });
+    const currentLocation = getCurrentLocation();
+    if (currentLocation) {
+      dispatch({
+        type: 'offboarding/save',
+        payload: {
+          selectedLocations: [currentLocation],
+        },
+      });
+    }
   }, []);
 
   const onLocationChange = (selection) => {

@@ -32,7 +32,7 @@ const onboardingSettings = {
     documentTypeList: [],
     action: '',
     recordEdit: {},
-    selectedLocations: [getCurrentLocation()],
+    selectedLocations: [],
   },
   effects: {
     *fetchListInsurances({ payload = {} }, { call, put }) {
