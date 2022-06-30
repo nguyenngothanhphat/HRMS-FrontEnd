@@ -26,20 +26,19 @@ const ManagerView = (props) => {
   const [selectedLocations, setSelectedLocation] = useState([]);
 
   useEffect(() => {
-    let location = [getCurrentLocation()];
-    if (selectedLocationsProp.length) {
-      location = selectedLocationsProp;
-    }
-    setSelectedLocation(location);
+    setSelectedLocation(selectedLocationsProp);
   }, [JSON.stringify(selectedLocationsProp)]);
 
   useEffect(() => {
-    dispatch({
-      type: 'offboarding/save',
-      payload: {
-        viewingRequest: {},
-      },
-    });
+    const currentLocation = getCurrentLocation();
+    if (currentLocation) {
+      dispatch({
+        type: 'offboarding/save',
+        payload: {
+          selectedLocations: [currentLocation],
+        },
+      });
+    }
   }, []);
 
   const onLocationChange = (selection) => {

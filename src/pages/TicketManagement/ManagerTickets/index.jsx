@@ -22,12 +22,20 @@ const ManagerTicket = (props) => {
   const [selectedLocationsState, setSelectedLocationsState] = useState([]);
 
   useEffect(() => {
-    let location = [getCurrentLocation()];
-    if (selectedLocationsProp.length) {
-      location = selectedLocationsProp;
-    }
-    setSelectedLocationsState(location);
+    setSelectedLocationsState(selectedLocationsProp);
   }, [JSON.stringify(selectedLocationsProp)]);
+
+  useEffect(() => {
+    const currentLocation = getCurrentLocation();
+    if (currentLocation) {
+      dispatch({
+        type: 'ticketManagement/save',
+        payload: {
+          selectedLocations: [currentLocation],
+        },
+      });
+    }
+  }, []);
 
   const fetchLocationList = () => {
     dispatch({

@@ -48,6 +48,17 @@ const TicketDetails = (props) => {
     fetchData();
   }, [id]);
 
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: 'offboarding/save',
+        payload: {
+          viewingRequest: {},
+        },
+      });
+    };
+  }, []);
+
   return (
     <PageContainer>
       <div className={styles.TicketDetails}>

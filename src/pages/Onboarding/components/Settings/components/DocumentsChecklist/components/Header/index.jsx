@@ -16,12 +16,20 @@ const Header = (props) => {
   const [selectedLocations, setSelectedLocations] = useState([]);
 
   useEffect(() => {
-    let location = [getCurrentLocation()];
-    if (selectedLocationsProp.length) {
-      location = selectedLocationsProp;
-    }
-    setSelectedLocations(location);
+    setSelectedLocations(selectedLocationsProp);
   }, [JSON.stringify(selectedLocationsProp)]);
+
+  useEffect(() => {
+    const currentLocation = getCurrentLocation();
+    if (currentLocation) {
+      dispatch({
+        type: 'onboardingSettings/save',
+        payload: {
+          selectedLocations: [currentLocation],
+        },
+      });
+    }
+  }, []);
 
   const onLocationChange = (value) => {
     dispatch({

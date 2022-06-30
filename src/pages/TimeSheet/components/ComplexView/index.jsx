@@ -31,7 +31,7 @@ const ComplexView = (props) => {
 
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
   const [selectedDivisions, setSelectedDivisions] = useState([]);
-  const [selectedLocations, setSelectedLocation] = useState([]);
+  const [selectedLocations, setSelectedLocations] = useState([]);
   const [isIncompleteTimeSheet, setIsIncompleteTimeSheet] = useState(false);
 
   // PERMISSIONS TO VIEW LOCATION
@@ -39,12 +39,20 @@ const ComplexView = (props) => {
   const viewLocationFinance = permissions.viewLocationFinanceTimesheet === 1;
 
   useEffect(() => {
-    let location = [getCurrentLocation()];
-    if (selectedLocationsProp.length) {
-      location = selectedLocationsProp;
-    }
-    setSelectedLocation(location);
+    setSelectedLocations(selectedLocationsProp);
   }, [JSON.stringify(selectedLocationsProp)]);
+
+  useEffect(() => {
+    const currentLocation = getCurrentLocation();
+    if (currentLocation) {
+      dispatch({
+        type: 'timeSheet/save',
+        payload: {
+          selectedLocations: [currentLocation],
+        },
+      });
+    }
+  }, []);
 
   const requestLeave = () => {
     history.push('/time-off/overview/personal-timeoff/new');
@@ -57,7 +65,7 @@ const ComplexView = (props) => {
         selectedLocations: [...selection],
       },
     });
-    setSelectedLocation([...selection]);
+    setSelectedLocations([...selection]);
   };
 
   const onDivisionChange = (selection) => {
