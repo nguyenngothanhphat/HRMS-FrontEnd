@@ -79,6 +79,7 @@ const ClosingComment = (props) => {
     const res = await dispatch({
       type: 'offboarding/updateRequestEffect',
       payload,
+      showNotification: false,
     });
     if (res.statusCode === 200) {
       setNotificationModalVisible(true);

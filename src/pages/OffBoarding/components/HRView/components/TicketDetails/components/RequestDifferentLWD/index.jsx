@@ -1,14 +1,12 @@
-import { Card, Col, DatePicker, Form, Input, Row, Switch } from 'antd';
+import { Card, Col, DatePicker, Form, Row } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { Link, connect } from 'umi';
-import { isEmpty } from 'lodash';
+import React, { useEffect } from 'react';
+import { connect, Link } from 'umi';
 import CheckIcon from '@/assets/offboarding/check.svg';
-import FailedIcon from '@/assets/offboarding/failedIcon.svg';
+import FailedIcon from '@/assets/offboarding/fail.svg';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
-import NotificationModal from '@/components/NotificationModal';
 import styles from './index.less';
 
 const RequestDifferentLWD = (props) => {
@@ -19,20 +17,14 @@ const RequestDifferentLWD = (props) => {
     item: {
       _id = '',
       employee = {},
-      status = '',
-      meeting = {},
       assigned = {},
       managerNote: {
-        closingComments = '',
-        isRehired = false,
-        isReplacement = false,
-        isHrRequired = false,
-        isRequestDifferent = false,
         notes = '',
       } = {},
+      hrNote = {},
+      hrNote: { closingComments: hrClosingComments = '', isAcceptLWD = false } = {},
       managerPickLWD = '',
     } = {},
-    item = {},
   } = props;
 
   useEffect(() => {
@@ -43,11 +35,57 @@ const RequestDifferentLWD = (props) => {
     }
   }, [managerPickLWD]);
 
+  const onActionLWD = (action = '') => {
+    const payload = {
+      id: _id,
+      employeeId: employee?._id,
+      action:
+        action === 'accept'
+          ? OFFBOARDING.UPDATE_ACTION.ACCEPT_MANAGER_LWD
+          : OFFBOARDING.UPDATE_ACTION.REJECT_MANAGER_LWD,
+    };
+
+    dispatch({
+      type: 'offboarding/updateRequestEffect',
+      payload,
+    });
+  };
+
   // render UI
+  const renderResult = () => {
+    if (hrNote.isAcceptLWD === undefined) {
+      return null;
+    }
+    if (isAcceptLWD) {
+      return (
+        <div className={styles.lwdApproved}>
+          <img src={CheckIcon} alt="" />
+          <span>
+            LWD Approved by{' '}
+            <Link to={`/directory/employee-profile/${assigned.hr?.generalInfoInfo?.userId}`}>
+              {assigned.hr?.generalInfoInfo?.legalName}
+            </Link>
+          </span>
+        </div>
+      );
+    }
+    return (
+      <div className={styles.lwdApproved}>
+        <img src={FailedIcon} alt="" />
+        <span>
+          LWD Rejected by{' '}
+          <Link to={`/directory/employee-profile/${assigned.hr?.generalInfoInfo?.userId}`}>
+            {assigned.hr?.generalInfoInfo?.legalName}
+          </Link>
+        </span>
+      </div>
+    );
+  };
+
   const renderContent = () => {
     return (
       <div gutter={[24, 16]} className={styles.content}>
-        <Form layout="vertical" name="basic" form={form} id="myForm" preserve={false}>
+        <Form layout="vertical" name="basic" form={form} id="lwdForm" preserve={false}>
           <Row align="middle" gutter={[0, 0]}>
             <Col span={12}>
               <Form.Item name="LWD" label="Last working date">
@@ -61,27 +99,28 @@ const RequestDifferentLWD = (props) => {
           <span className={styles.title}>Reason for requesting a different LWD</span>
           <p>{notes || 'None'}</p>
         </div>
-        <div className={styles.lwdApproved}>
-          <img src={CheckIcon} alt="" />
-          <span>
-            LWD Approved by{' '}
-            <Link to={`/directory/employee-profile/${assigned.hr?.generalInfoInfo?.userId}`}>
-              {assigned.hr?.generalInfoInfo?.legalName}
-            </Link>
-          </span>
-        </div>
+        {renderResult()}
       </div>
     );
   };
 
   const renderButtons = () => {
+    const disabled = !hrClosingComments;
+
+    if (hrNote.isAcceptLWD !== undefined) {
+      return null;
+    }
     return (
       <Row className={styles.actions} align="middle">
         <Col span={12} />
         <Col span={12}>
           <div className={styles.actions__buttons}>
-            <CustomSecondaryButton>Reject</CustomSecondaryButton>
-            <CustomPrimaryButton>Accept</CustomPrimaryButton>
+            <CustomSecondaryButton disabled={disabled} onClick={() => onActionLWD('reject')}>
+              Reject
+            </CustomSecondaryButton>
+            <CustomPrimaryButton disabled={disabled} onClick={() => onActionLWD('accept')}>
+              Accept
+            </CustomPrimaryButton>
           </div>
         </Col>
       </Row>

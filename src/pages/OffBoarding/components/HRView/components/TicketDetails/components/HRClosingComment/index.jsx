@@ -1,66 +1,76 @@
-import { Card, Col, DatePicker, Form, Input, Row, Switch } from 'antd';
+import { Card, Col, Form, Input, Row } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { Link, connect } from 'umi';
-import { isEmpty } from 'lodash';
-import SuccessIcon from '@/assets/offboarding/successIcon.png';
+import React from 'react';
+import { connect } from 'umi';
+import LikeIcon from '@/assets/offboarding/like.svg';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
-import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
-import LikeIcon from '@/assets/offboarding/like.svg';
-import styles from './index.less';
 import EditButton from '@/components/EditButton';
+import { dateFormat, getEmployeeName, OFFBOARDING } from '@/utils/offboarding';
+import styles from './index.less';
 
 const HRClosingComment = (props) => {
   const [form] = Form.useForm();
 
   const {
     dispatch,
-    item: {
-      _id = '',
-      employee = {},
-      status = '',
-      meeting = {},
-      assigned = {},
-      managerNote: {
-        closingComments = '',
-        isRehired = false,
-        isReplacement = false,
-        isHrRequired = false,
-        isRequestDifferent = false,
-        notes = '',
-      } = {},
-      managerPickLWD = '',
-    } = {},
-    item = {},
+    item: { _id = '', employee = {}, hrNote: { closingComments = '' } = {} } = {},
+    isEnterClosingComment = false,
     setIsEnterClosingComment = () => {},
   } = props;
 
-  const { status: meetingStatus = '' } = meeting;
-  const { manager = {} } = assigned;
+  // functionalities
+  const onEnterComment = async (values) => {
+    const payload = {
+      id: _id,
+      employeeId: employee?._id,
+      closingComments: values.closingComments,
+      action: OFFBOARDING.UPDATE_ACTION.HR_COMMENT,
+    };
 
-  const type = 2;
+    const res = await dispatch({
+      type: 'offboarding/updateRequestEffect',
+      payload,
+    });
+    if (res.statusCode === 200) {
+      setIsEnterClosingComment(false);
+    }
+  };
 
   // render UI
   const renderContent = () => {
+    const employeeName = getEmployeeName(employee.generalInfoInfo);
     return (
       <div gutter={[24, 16]} className={styles.content}>
-        <Form layout="vertical" name="basic" form={form} id="myForm" preserve={false}>
+        <Form
+          layout="vertical"
+          name="basic"
+          form={form}
+          id="closingForm"
+          preserve={false}
+          onFinish={onEnterComment}
+          initialValues={{
+            closingComments,
+          }}
+        >
           <Form.Item name="closingComments" rules={[{ required: true }]}>
             <Input.TextArea
               placeholder="Enter Closing Comments"
               autoSize={{ minRows: 4, maxRows: 7 }}
               maxLength={500}
+              disabled={!isEnterClosingComment}
             />
           </Form.Item>
         </Form>
-        <div className={styles.notice}>
-          <img src={LikeIcon} alt="like" />
-          <span>
-            Your comment for the 1-on-1 with Venkat has been recorded. Venkat and the HR manager
-            will be able to view this comment.
-          </span>
-        </div>
+        {closingComments && (
+          <div className={styles.notice}>
+            <img src={LikeIcon} alt="like" />
+            <span>
+              Your comment for the 1-on-1 with {employeeName} has been recorded. {employeeName} and
+              the HR manager will be able to view this comment.
+            </span>
+          </div>
+        )}
       </div>
     );
   };
@@ -68,7 +78,7 @@ const HRClosingComment = (props) => {
   const renderOptions = () => {
     return (
       <div className={styles.options}>
-        <EditButton />
+        {!isEnterClosingComment && <EditButton onClick={() => setIsEnterClosingComment(true)} />}
         <div className={styles.currentTime}>
           <span>{moment().format(`${dateFormat} | h:mm a`)}</span>
         </div>
@@ -77,6 +87,7 @@ const HRClosingComment = (props) => {
   };
 
   const renderButtons = () => {
+    if (!isEnterClosingComment) return null;
     return (
       <Row className={styles.actions} align="middle">
         <Col span={12} />
@@ -85,7 +96,9 @@ const HRClosingComment = (props) => {
             <CustomSecondaryButton onClick={() => setIsEnterClosingComment(false)}>
               Cancel
             </CustomSecondaryButton>
-            <CustomPrimaryButton>Submit</CustomPrimaryButton>
+            <CustomPrimaryButton form="closingForm" htmlType="submit">
+              Submit
+            </CustomPrimaryButton>
           </div>
         </Col>
       </Row>

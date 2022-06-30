@@ -1,7 +1,7 @@
 import { Card, Col, Row } from 'antd';
+import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
 import CustomEmployeeTag from '@/components/CustomEmployeeTag';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
@@ -12,21 +12,13 @@ import styles from './index.less';
 const HR1On1 = (props) => {
   const {
     dispatch,
-    item: { _id = '', employee = {}, status = '', meeting = {} } = {},
+    item: { _id = '', employee = {}, meetingHR = {} } = {},
     setIsEnterClosingComment = () => {},
   } = props;
 
-  const {
-    status: meetingStatus = '',
-    managerDate = '',
-    employeeDate = '',
-    isAccept = false,
-    id: meetingId = '',
-  } = meeting;
+  const { status: meetingStatus = '', date: hrDate = '', id: meetingId = '' } = meetingHR;
 
   const [oneOnOneMeetingModalVisible, setOneOnOneMeetingModalVisible] = useState(false);
-
-  const type = 2;
 
   // functionalities
   const onSetOneOnOneMeeting = async (values) => {
@@ -35,9 +27,9 @@ const HR1On1 = (props) => {
       payload: {
         id: _id,
         employeeId: employee?._id,
-        action: OFFBOARDING.UPDATE_ACTION.MANAGER_RESCHEDULE,
+        action: OFFBOARDING.UPDATE_ACTION.HR_RESCHEDULE,
         meeting: {
-          managerDate: moment(values.time),
+          hrDate: moment(values.time),
         },
       },
     });
@@ -46,30 +38,15 @@ const HR1On1 = (props) => {
     }
   };
 
-  const onAcceptMeeting = async () => {
-    dispatch({
-      type: 'offboarding/updateRequestEffect',
-      payload: {
-        id: _id,
-        employeeId: employee?._id,
-        action: OFFBOARDING.UPDATE_ACTION.MANAGER_ACCEPT_MEETING,
-      },
-    });
-  };
-
   // render UI
   const renderTitle = () => {
-    switch (type) {
-      case 1:
-        return 'HR 1 on 1 Requested';
-      default:
-        return 'HR 1 on 1 Requested';
-    }
+    return 'HR 1 on 1 Requested';
   };
 
   const renderContent = () => {
-    switch (type) {
-      case 1:
+    switch (meetingStatus) {
+      case OFFBOARDING.MEETING_STATUS.NOT_START:
+      case '':
         return (
           <Row gutter={[24, 16]} className={styles.content} align="middle">
             <Col span={16} className={styles.text1}>
@@ -88,7 +65,9 @@ const HR1On1 = (props) => {
           </Row>
         );
 
-      case 2:
+      case OFFBOARDING.MEETING_STATUS.HR_PICK_DATE:
+      case OFFBOARDING.MEETING_STATUS.EMPLOYEE_ACCEPT_HR_DATE:
+      case OFFBOARDING.MEETING_STATUS.DATE_CONFIRMED:
         return (
           <Row gutter={[24, 16]} className={styles.content} align="top">
             <Col span={10} lg={8}>
@@ -106,7 +85,7 @@ const HR1On1 = (props) => {
               <div className={styles.rightPart}>
                 <span className={styles.label}>Scheduled on</span>
                 <span className={styles.time}>
-                  {moment(managerDate).format(`${dateFormat} | h:mm a`)}
+                  {moment(hrDate).format(`${dateFormat} | h:mm a`)}
                 </span>
               </div>
             </Col>
@@ -116,43 +95,16 @@ const HR1On1 = (props) => {
       default:
         return '';
     }
-
-    // return (
-    //   <Row gutter={[24, 16]} className={styles.content} align="top">
-    //     <Col span={10} lg={8}>
-    //       <div className={styles.leftPart}>
-    //         <span className={styles.label}>1-on-1 meeting with</span>
-    //         <CustomEmployeeTag
-    //           title={employee?.titleInfo?.name}
-    //           name={getEmployeeName(employee?.generalInfoInfo)}
-    //           avatar={employee?.generalInfoInfo?.avatar}
-    //           userId={employee?.generalInfoInfo?.userId}
-    //         />
-    //       </div>
-    //     </Col>
-    //     <Col span={14} lg={16}>
-    //       <div className={styles.rightPart}>
-    //         <span className={styles.label}>Scheduled on</span>
-    //         <span className={styles.time}>
-    //           {moment(employeeDate).format(`${dateFormat} | h:mm a`)}
-    //         </span>
-    //         {!isAccept && (
-    //           <div className={styles.notification}>
-    //             <span>Requestee scheduled 1-on-1 meeting with you</span>
-    //           </div>
-    //         )}
-    //       </div>
-    //     </Col>
-    //   </Row>
-    // );
   };
 
   const renderButtons = () => {
-    switch (type) {
-      case 1:
+    switch (meetingStatus) {
+      case OFFBOARDING.MEETING_STATUS.NOT_START:
         return '';
 
-      case 2:
+      case OFFBOARDING.MEETING_STATUS.HR_PICK_DATE:
+      case OFFBOARDING.MEETING_STATUS.EMPLOYEE_ACCEPT_HR_DATE:
+      case OFFBOARDING.MEETING_STATUS.DATE_CONFIRMED:
         return (
           <div className={styles.actions}>
             <div className={styles.comment}>
@@ -183,44 +135,6 @@ const HR1On1 = (props) => {
           </div>
         );
 
-      case OFFBOARDING.MEETING_STATUS.EMPLOYEE_PICK_DATE:
-      case OFFBOARDING.MEETING_STATUS.DATE_CONFIRMED:
-        return (
-          <div className={styles.actions}>
-            <div className={styles.comment}>
-              {isAccept && (
-                <span onClick={() => setIsEnterClosingComment(true)}>Enter Closing Comments</span>
-              )}
-            </div>
-            <div>
-              <CustomSecondaryButton
-                onClick={() => {
-                  setOneOnOneMeetingModalVisible(true);
-                }}
-              >
-                <span
-                  style={{
-                    color: '#2C6DF9',
-                  }}
-                >
-                  Reschedule
-                </span>
-              </CustomSecondaryButton>
-              {!isAccept ? (
-                <CustomPrimaryButton onClick={onAcceptMeeting}>Accept meeting</CustomPrimaryButton>
-              ) : (
-                <CustomPrimaryButton
-                  onClick={() => {
-                    onJoinMeeting(meetingId);
-                  }}
-                >
-                  Join with Google Meet
-                </CustomPrimaryButton>
-              )}
-            </div>
-          </div>
-        );
-
       default:
         return '';
     }
@@ -235,7 +149,7 @@ const HR1On1 = (props) => {
         title={`Set 1-on-1 with ${getEmployeeName(employee.generalInfoInfo)}`}
         partnerRole="Employee"
         onFinish={onSetOneOnOneMeeting}
-        selectedDate={managerDate || employeeDate || null}
+        selectedDate={hrDate || null}
       />
     );
   };

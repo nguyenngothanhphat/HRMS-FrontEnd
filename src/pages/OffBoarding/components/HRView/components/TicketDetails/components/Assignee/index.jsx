@@ -9,7 +9,10 @@ import DownArrowIcon from '@/assets/offboarding/downArrow.png';
 import styles from './index.less';
 
 const Assignee = (props) => {
-  const { item: { status = '', assigned = {} } = {}, user: { currentUser = {} } = {} } = props;
+  const {
+    item: { status = '', hrStatus = '', assigned = {} } = {},
+    user: { currentUser = {} } = {},
+  } = props;
   const { hr = {}, manager = {}, delegateManager = {} } = assigned || {};
 
   const [hrAssignees, setHrAssignees] = useState([]);
@@ -27,6 +30,8 @@ const Assignee = (props) => {
         avatar: hr?.generalInfoInfo?.avatar,
         _id: hr?._id,
         isYou: currentUser?.employee?._id === hr?._id,
+        highlight:
+          hrStatus === OFFBOARDING.STATUS.ACCEPTED || hrStatus === OFFBOARDING.STATUS.REJECTED,
       },
     ]);
     const managerTemp = [
@@ -50,6 +55,7 @@ const Assignee = (props) => {
         avatar: delegateManager?.generalInfoInfo?.avatar,
         _id: delegateManager?._id,
         isYou: currentUser?.employee?._id === delegateManager?._id,
+        highlight: status === OFFBOARDING.STATUS.ACCEPTED,
       });
     }
     setManagerAssignees(managerTemp);
@@ -102,6 +108,7 @@ const Assignee = (props) => {
                       avatar={y.avatar}
                       userId={y.userId}
                       isYou={y.isYou}
+                      highlight={y.highlight}
                     />
                   </Col>
                   <Col span={5}>

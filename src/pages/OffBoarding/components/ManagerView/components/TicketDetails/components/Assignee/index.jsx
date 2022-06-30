@@ -56,8 +56,9 @@ const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
 const Assignee = (props) => {
   const {
     dispatch,
-    item: { _id = '', employee = {}, assigned = {}, status = '' } = {},
+    item: { _id = '', employee = {}, assigned = {}, status = '', hrStatus = '' } = {},
     offboarding: { employeeList = [] },
+    user: { currentUser = {} } = {},
   } = props;
   const { hr = {}, manager = {}, delegateManager = {} } = assigned || {};
 
@@ -149,6 +150,9 @@ const Assignee = (props) => {
         userId: hr?.generalInfoInfo?.userId,
         avatar: hr?.generalInfoInfo?.avatar,
         _id: hr?._id,
+        isYou: currentUser?.employee?._id === hr?._id,
+        highlight:
+          hrStatus === OFFBOARDING.STATUS.ACCEPTED || hrStatus === OFFBOARDING.STATUS.REJECTED,
       },
     ]);
     const managerTemp = [
@@ -159,6 +163,8 @@ const Assignee = (props) => {
         userId: manager?.generalInfoInfo?.userId,
         avatar: manager?.generalInfoInfo?.avatar,
         _id: manager?._id,
+        isYou: currentUser?.employee?._id === manager?._id,
+        highlight: status === OFFBOARDING.STATUS.ACCEPTED,
       },
     ];
     if (!isEmpty(delegateManager)) {
@@ -169,6 +175,8 @@ const Assignee = (props) => {
         userId: delegateManager?.generalInfoInfo?.userId,
         avatar: delegateManager?.generalInfoInfo?.avatar,
         _id: delegateManager?._id,
+        isYou: currentUser?.employee?._id === manager?._id,
+        highlight: status === OFFBOARDING.STATUS.ACCEPTED,
       });
     }
     setManagerAssignees(managerTemp);
@@ -200,6 +208,8 @@ const Assignee = (props) => {
                       title={y.title}
                       avatar={y.avatar}
                       userId={y.userId}
+                      isYou={y.isYou}
+                      highlight={y.highlight}
                     />
                   </Col>
                   <Col span={5}>
@@ -238,6 +248,8 @@ const Assignee = (props) => {
                       title={y.title}
                       avatar={y.avatar}
                       userId={y.userId}
+                      isYou={y.isYou}
+                      highlight={y.highlight}
                     />
                   </Col>
                   <Col span={5}>
@@ -283,6 +295,7 @@ const Assignee = (props) => {
   );
 };
 
-export default connect(({ offboarding }) => ({
+export default connect(({ offboarding, user }) => ({
   offboarding,
+  user,
 }))(Assignee);

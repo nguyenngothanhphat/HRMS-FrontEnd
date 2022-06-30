@@ -24,31 +24,15 @@ const TicketDetails = (props) => {
         ticketId = '',
         employee = {},
         status = '',
-        managerNote: {
-          closingComments = '',
-          isRehired = false,
-          isReplacement = false,
-          isHrRequired = false,
-          isRequestDifferent = false,
-          notes = '',
-        } = {},
+        managerNote: { isHrRequired = false, isRequestDifferent = false } = {},
+        hrNote: { closingComments: hrClosingComments = '' } = {},
       } = {},
       viewingRequest = {},
     } = {},
     loadingFetchData = false,
   } = props;
 
-  const { status: meetingStatus = '' } = viewingRequest.meeting || {};
-
   const [isEnterClosingComment, setIsEnterClosingComment] = useState(false);
-
-  const getShowClosingComment = () => {
-    return (
-      isEnterClosingComment ||
-      status === OFFBOARDING.STATUS.REJECTED ||
-      meetingStatus === OFFBOARDING.MEETING_STATUS.DONE
-    );
-  };
 
   const fetchData = () => {
     dispatch({
@@ -95,9 +79,10 @@ const TicketDetails = (props) => {
                 )}
                 {isHrRequired && (
                   <Col span={24}>
-                    {isEnterClosingComment ? (
+                    {hrClosingComments || isEnterClosingComment ? (
                       <HRClosingComment
                         item={viewingRequest}
+                        isEnterClosingComment={isEnterClosingComment}
                         setIsEnterClosingComment={setIsEnterClosingComment}
                       />
                     ) : (

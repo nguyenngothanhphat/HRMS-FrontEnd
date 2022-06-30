@@ -1,4 +1,4 @@
-import { Card, Form } from 'antd';
+import { Card } from 'antd';
 import React, { useState } from 'react';
 import { connect, Link } from 'umi';
 import FailedIcon from '@/assets/offboarding/failedIcon.svg';
@@ -12,34 +12,66 @@ import styles from './index.less';
 const HRApproval = (props) => {
   const {
     dispatch,
-    item: {
-      _id = '',
-      employee = {},
-      status = '',
-      meeting = {},
-      assigned = {},
-      managerNote: {
-        closingComments = '',
-        isRehired = false,
-        isReplacement = false,
-        isHrRequired = false,
-        isRequestDifferent = false,
-        notes = '',
-      } = {},
-      managerPickLWD = '',
-    } = {},
-    item = {},
+    item: { _id = '', employee = {}, hrNote = {}, hrStatus = '', assigned = {} } = {},
+    loadingButton = false,
   } = props;
 
-  const { status: meetingStatus = '' } = meeting;
   const { hr = {} } = assigned;
 
   const [notificationModalVisible, setNotificationModalVisible] = useState(false);
   const [action, setAction] = useState('');
 
+  const onFinalAction = async (actionProp = '') => {
+    setAction(actionProp);
+    const payload = {
+      id: _id,
+      employeeId: employee?._id,
+      action:
+        actionProp === 'accept'
+          ? OFFBOARDING.UPDATE_ACTION.HR_ACCEPT
+          : OFFBOARDING.UPDATE_ACTION.HR_REJECT,
+    };
+
+    const res = await dispatch({
+      type: 'offboarding/updateRequestEffect',
+      payload,
+      showNotification: false,
+    });
+    if (res.statusCode === 200) {
+      setNotificationModalVisible(true);
+    }
+  };
+
   // render UI
   const renderContent = () => {
-    const disabled = [OFFBOARDING.STATUS.IN_PROGRESS].includes(status);
+    const disabled = hrNote.isAcceptLWD === undefined;
+
+    if (hrStatus === OFFBOARDING.STATUS.REJECTED) {
+      return (
+        <div className={styles.result}>
+          <img src={FailedIcon} alt="" />
+          <span>
+            The employee resignation request has been Rejected by{' '}
+            <Link to={`/directory/employee-profile/${hr?.generalInfoInfo?.userId}`}>
+              {hr?.generalInfoInfo?.legalName}
+            </Link>
+          </span>
+        </div>
+      );
+    }
+    if (hrStatus === OFFBOARDING.STATUS.ACCEPTED) {
+      return (
+        <div className={styles.result}>
+          <img src={SuccessIcon} alt="" />
+          <span>
+            The employee resignation request has been Accepted by{' '}
+            <Link to={`/directory/employee-profile/${hr?.generalInfoInfo?.userId}`}>
+              {hr?.generalInfoInfo?.legalName}
+            </Link>
+          </span>
+        </div>
+      );
+    }
 
     return (
       <div className={styles.actions}>
@@ -47,40 +79,23 @@ const HRApproval = (props) => {
           <span>Please Accept or Reject the resignation request.</span>
         </div>
         <div>
-          <CustomSecondaryButton disabled={disabled}>Reject</CustomSecondaryButton>
-          <CustomPrimaryButton disabled={disabled}>Accept</CustomPrimaryButton>
+          <CustomSecondaryButton
+            disabled={disabled}
+            onClick={() => onFinalAction('reject')}
+            loading={loadingButton && action === 'reject'}
+          >
+            Reject
+          </CustomSecondaryButton>
+          <CustomPrimaryButton
+            disabled={disabled}
+            onClick={() => onFinalAction('accept')}
+            loading={loadingButton && action === 'accept'}
+          >
+            Accept
+          </CustomPrimaryButton>
         </div>
       </div>
     );
-
-    // if (true) {
-    //   return (
-    //     <div className={styles.result}>
-    //       <img src={FailedIcon} alt="" />
-    //       <span>
-    //         The employee resignation request has been Rejected by{' '}
-    //         <Link to={`/directory/employee-profile/${hr?.generalInfoInfo?.userId}`}>
-    //           {hr?.generalInfoInfo?.legalName}
-    //         </Link>
-    //       </span>
-    //     </div>
-    //   );
-    // }
-    // if (meetingStatus === OFFBOARDING.MEETING_STATUS.DONE) {
-    //   return (
-    //     <div className={styles.result}>
-    //       <img src={SuccessIcon} alt="" />
-    //       <span>
-    //         The employee resignation request has been Accepted by{' '}
-    //         <Link to={`/directory/employee-profile/${manager?.generalInfoInfo?.userId}`}>
-    //           {manager?.generalInfoInfo?.legalName}
-    //         </Link>
-    //       </span>
-    //     </div>
-    //   );
-    // }
-
-    // return null;
   };
 
   const renderModals = () => {
@@ -108,4 +123,7 @@ const HRApproval = (props) => {
   );
 };
 
-export default connect(({ offboarding }) => ({ offboarding }))(HRApproval);
+export default connect(({ offboarding, loading }) => ({
+  offboarding,
+  loadingButton: loading.effects['offboarding/updateRequestEffect'],
+}))(HRApproval);

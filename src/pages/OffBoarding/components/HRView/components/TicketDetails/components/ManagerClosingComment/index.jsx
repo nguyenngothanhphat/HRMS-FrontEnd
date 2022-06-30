@@ -18,11 +18,8 @@ const ManagerClosingComment = (props) => {
   const [form] = Form.useForm();
 
   const {
-    dispatch,
     item: {
-      _id = '',
-      employee = {},
-      status = '',
+      hrStatus = '',
       meeting = {},
       assigned = {},
       managerNote: {
@@ -57,10 +54,10 @@ const ManagerClosingComment = (props) => {
   // render UI
   const renderContent = () => {
     const disabled =
-      status === OFFBOARDING.STATUS.REJECTED || meetingStatus === OFFBOARDING.MEETING_STATUS.DONE;
+      hrStatus === OFFBOARDING.STATUS.REJECTED || meetingStatus === OFFBOARDING.MEETING_STATUS.DONE;
     return (
       <div gutter={[24, 16]} className={styles.content}>
-        <Form layout="vertical" name="basic" form={form} id="myForm" preserve={false}>
+        <Form layout="vertical" name="basic" form={form} id="managerClosingForm" preserve={false}>
           <Form.Item name="closingComments" rules={[{ required: true }]}>
             <Input.TextArea
               placeholder="Enter Closing Comments"
