@@ -141,7 +141,13 @@ const TimesheetDetailModal = (props) => {
   );
 };
 
-export default connect(({ timeSheet: { myTimesheetByWeek = [], timeoffList = [] } }) => ({
-  myTimesheetByWeek,
-  timeoffList,
-}))(TimesheetDetailModal);
+export default connect(
+  ({
+    user: { currentUser: { employee = {} } = {} },
+    timeSheet: { myTimesheetByWeek = [], timeoffList = [] },
+  }) => ({
+    myTimesheetByWeek,
+    timeoffList,
+    employee,
+  }),
+)(TimesheetDetailModal);
