@@ -196,3 +196,14 @@ export const generateAllWeeks = (fromDate, toDate) => {
   }
   return weeks;
 };
+
+export const TIMESHEET_ADD_TASK_ALERT = {
+  DEFAULT: {
+    type: 'info',
+    content: 'The same tasks will be updated for the selected date range',
+  },
+  WARNING: {
+    type: 'warning',
+    content: 'You are allowed to select only one date if you have multiple tasks',
+  },
+};
