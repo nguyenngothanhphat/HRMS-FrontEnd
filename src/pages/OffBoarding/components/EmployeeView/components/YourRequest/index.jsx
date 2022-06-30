@@ -326,7 +326,7 @@ const YourRequest = (props) => {
       {renderButton(status)}
       <SetMeetingModal
         visible={visible}
-        title="Set 1-on1 with Manager"
+        title="Set 1-on-1 with Manager"
         onClose={() => setVisible(false)}
         partnerRole="Manager"
         employee={managerInfo}
