@@ -1,29 +1,24 @@
 import { notification } from 'antd';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   createRequest,
-  updateRequest,
+  getEmployeeList,
   getList,
   getMyRequest,
-  getRequestById,
-  withdrawRequest,
-  getTimeInDate,
-
   // helpers
   getProjectByEmployee,
-  getEmployeeList,
+  getRequestById,
+  getTimeInDate,
+  updateRequest,
+  withdrawRequest,
 } from '../services/offboarding';
 
 const offboarding = {
   namespace: 'offboarding',
   state: {
-<<<<<<< Updated upstream
-    selectedLocations: [getCurrentLocation()],
-=======
     selectedLocations: [],
     selectedDivisions: [],
->>>>>>> Stashed changes
     teamRequests: {
       list: [],
       totalStatus: {},
