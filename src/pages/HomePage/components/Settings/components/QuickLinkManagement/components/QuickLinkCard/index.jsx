@@ -13,52 +13,18 @@ const QuickLinkCard = (props) => {
     selectedTab = '',
     setSelectedTab = () => {},
     onEditQuickLink = () => {},
-  } = props;
-  // redux
-  const {
-    homePage: {
-      quickLinkListHomePage = [],
-      quickLinkListTimeOff = [],
-      totalQuickLinkType = [],
-    } = {},
+    fetchData = () => {},
+    quickLinkListAllHomePage = [],
+    quickLinkListTimeOff = [],
     loadingFetchQuickLinkList = false,
+    totalQuickLinkType = {},
   } = props;
-
   // redux
-  const { dispatch } = props;
 
   // functions
   const addZeroToNumber = (number) => {
     if (number < 10 && number > 0) return `0${number}`.slice(-2);
     return number;
-  };
-
-  const fetchTotalQuickLinkType = () => {
-    dispatch({
-      type: 'homePage/fetchTotalQuickLinkTypeEffect',
-    });
-  };
-
-  const fetchData = () => {
-    let type = '';
-
-    switch (selectedTab) {
-      case TAB_IDS_QUICK_LINK.GENERAL:
-        type = 'homePage/fetchQuickLinkHomePageEffect';
-        break;
-      case TAB_IDS_QUICK_LINK.TIMEOFF:
-        type = 'homePage/fetchQuickLinkTimeOffEffect';
-        break;
-      default:
-        break;
-    }
-    dispatch({
-      type,
-      payload: {
-        type: selectedTab.toLowerCase(),
-      },
-    });
-    fetchTotalQuickLinkType();
   };
 
   const getTabName = (tab) => {
@@ -86,9 +52,11 @@ const QuickLinkCard = (props) => {
       name: TAB_IDS_QUICK_LINK.GENERALTABNAME,
       component: (
         <QuickLinkTable
-          data={quickLinkListHomePage}
+          data={quickLinkListAllHomePage}
           loading={loadingFetchQuickLinkList}
           refreshData={fetchData}
+          selectedTab={selectedTab}
+          totalQuickLink={totalQuickLinkType}
           onEditQuickLink={onEditQuickLink}
         />
       ),
@@ -101,6 +69,8 @@ const QuickLinkCard = (props) => {
           data={quickLinkListTimeOff}
           loading={loadingFetchQuickLinkList}
           refreshData={fetchData}
+          selectedTab={selectedTab}
+          totalQuickLink={totalQuickLinkType}
           onEditQuickLink={onEditQuickLink}
         />
       ),
@@ -135,17 +105,11 @@ const QuickLinkCard = (props) => {
 
 export default connect(
   ({
-    homePage = {},
     location: { companyLocationList = [] } = {},
-    loading,
     user: { currentUser = {}, permissions = {} } = {},
   }) => ({
     currentUser,
     permissions,
-    homePage,
     companyLocationList,
-    loadingFetchQuickLinkList:
-      loading.effects['homePage/fetchQuickLinkHomePageEffect'] ||
-      loading.effects['homePage/fetchQuickLinkTimeOffEffect'],
   }),
 )(QuickLinkCard);

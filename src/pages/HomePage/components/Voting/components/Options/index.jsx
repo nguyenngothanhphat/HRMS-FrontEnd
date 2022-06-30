@@ -22,7 +22,7 @@ const Options = (props) => {
   const {
     previewing = false,
     contentPreview: {
-      previewQuestion = '',
+      previewQuestion = 'Question',
       previewOptions = [],
       // previewStartDate = '',
       // previewEndDate = '',

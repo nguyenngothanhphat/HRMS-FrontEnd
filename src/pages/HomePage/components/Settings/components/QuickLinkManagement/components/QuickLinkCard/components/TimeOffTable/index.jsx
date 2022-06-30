@@ -1,7 +1,7 @@
 import { Popconfirm } from 'antd';
 import Parser from 'html-react-parser';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect, Link } from 'umi';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import EditIcon from '@/assets/homePage/editIcon.svg';
@@ -15,7 +15,12 @@ const TimeOffTable = (props) => {
     loading = false,
     refreshData = () => {},
     onEditQuickLink = () => {},
+    totalQuickLink = {},
+    selectedTab = '',
   } = props;
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const onDeleteQuickLink = async (record) => {
     if (record?._id) {
@@ -26,7 +31,7 @@ const TimeOffTable = (props) => {
         },
       });
       if (res.statusCode === 200) {
-        refreshData();
+        refreshData(currentPage, pageSize);
       }
     }
   };
@@ -124,7 +129,18 @@ const TimeOffTable = (props) => {
 
   return (
     <div className={styles.TimeOffTable}>
-      <CommonTable list={data} columns={getColumns()} loading={loading} />
+      <CommonTable
+        list={data}
+        columns={getColumns()}
+        selectedTab={selectedTab}
+        refreshData={refreshData}
+        totalQuickLink={totalQuickLink}
+        loading={loading}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
     </div>
   );
 };

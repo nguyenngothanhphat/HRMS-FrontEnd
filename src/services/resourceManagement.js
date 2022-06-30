@@ -105,18 +105,6 @@ export async function fetchTitleList(payload) {
   });
 }
 
-export async function fetchStatusProject(payload) {
-  return request(
-    '/api-project/projecttenant/get-status-summary',
-    {
-      method: 'POST',
-      data: payload,
-    },
-    false,
-    API_KEYS.PROJECT_API,
-  );
-}
-
 // UTILIZATION
 export async function getUtilizationOverviewDivision(payload) {
   return request('/api/employeetenant/utilization-overview-division', {
@@ -209,4 +197,10 @@ export async function exportResource(payload) {
     false,
     API_KEYS.PROJECT_API,
   );
+}
+
+export async function getListSkill() {
+  return request('/api/skilltype/list', {
+    method: 'POST',
+  });
 }

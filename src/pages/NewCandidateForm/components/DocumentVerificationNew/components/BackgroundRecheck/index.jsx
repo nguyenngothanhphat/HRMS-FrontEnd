@@ -42,6 +42,7 @@ const BackgroundRecheck = (props) => {
   const [verifyModalVisible, setVerifyModalVisible] = useState(false);
   const [viewCommentModalVisible, setViewCommentModalVisible] = useState(false);
   const [selectingFile, setSelectingFile] = useState(null);
+
   const [action, setAction] = useState('');
 
   const [validated, setValidated] = useState(false);
@@ -103,6 +104,8 @@ const BackgroundRecheck = (props) => {
       });
       const check = validateFiles();
       setValidated(check);
+    } else {
+      setValidated(true);
     }
   }, [
     JSON.stringify(documentTypeA),

@@ -5,7 +5,7 @@ import moment from 'moment';
 import { history, connect } from 'umi';
 import { isEmpty } from 'lodash';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
-import UserProfilePopover from '@/pages/TicketManagement/components/UserProfilePopover';
+import UserProfilePopover from '@/components/UserProfilePopover';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import TicketsItem from '../TicketsItem';
 import styles from './index.less';
@@ -256,6 +256,37 @@ class TableTickets extends PureComponent {
 
     const { locationsList } = this.props;
 
+    const dataHover = (values) => {
+      const {
+        generalInfo: {
+          legalName = '',
+          avatar: avatar1 = '',
+          userId = '',
+          workEmail = '',
+          workNumber = '',
+          skills = [],
+        } = {},
+        generalInfo = {},
+        department = {},
+        location: locationInfo = {},
+        manager: managerInfo = {},
+        title = {},
+      } = values;
+      return {
+        legalName,
+        userId,
+        department,
+        workEmail,
+        workNumber,
+        locationInfo,
+        generalInfo,
+        managerInfo,
+        title,
+        avatar1,
+        skills,
+      };
+    };
+
     const columns = [
       {
         title: 'Ticket ID',
@@ -331,20 +362,26 @@ class TableTickets extends PureComponent {
         dataIndex: 'employeeRaise',
         key: 'requesterName',
         render: (employeeRaise = {}) => {
+          const { generalInfo = {}, generalInfo: { legalName = '', userId = '' } = {} } =
+            employeeRaise;
           return (
-            <UserProfilePopover
-              placement="top"
-              trigger="hover"
-              data={{ ...employeeRaise, ...employeeRaise.generalInfo }}
-            >
+            <UserProfilePopover placement="top" trigger="hover" data={dataHover(employeeRaise)}>
               <span
                 className={styles.userID}
                 onClick={() => this.viewProfile(employeeRaise?.generalInfo?.userId || '')}
               >
-                {!isEmpty(employeeRaise?.generalInfo)
-                  ? `${employeeRaise?.generalInfo?.legalName} (${employeeRaise?.generalInfo?.userId})`
+                {!isEmpty(generalInfo)
+                  ? `${
+                      legalName.length > 20
+                        ? `${legalName.substr(0, 4)}...${legalName.substr(
+                            legalName.length - 8,
+                            legalName.length,
+                          )}`
+                        : legalName
+                    }`
                   : ''}
               </span>
+              <div className={styles.userID}>{`(${userId})`}</div>
             </UserProfilePopover>
           );
         },

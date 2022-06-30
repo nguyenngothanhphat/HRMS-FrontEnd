@@ -2,6 +2,7 @@ import { Table } from 'antd';
 import React, { useState } from 'react';
 import { connect, formatMessage } from 'umi';
 import styles from './index.less';
+import { TAB_IDS_QUICK_LINK } from '@/utils/homePage';
 import EmptyComponent from '@/components/Empty';
 
 const CommonTable = (props) => {
@@ -9,8 +10,6 @@ const CommonTable = (props) => {
     list = [],
     columns,
     loading = false,
-    page = 1,
-    limit = 4,
     selectable = false,
     rowKey = '',
     scrollable = false,
@@ -18,20 +17,47 @@ const CommonTable = (props) => {
     selectedRowKeys = [],
     setSelectedRowKeys = () => {},
     components,
+    refreshData = () => {},
+    totalQuickLink = 0,
+    selectedTab,
+    pageSize = 10,
+    setPageSize = () => {},
+    currentPage = 1,
+    setCurrentPage = () => {},
   } = props;
-  const [pageSelected, setPageSelected] = useState(page);
 
-  const onChangePagination = (pageNumber) => {
-    setPageSelected(pageNumber);
+  const onChangePagination = (pageNumber, pageSizes) => {
+    setCurrentPage(pageNumber);
+    setPageSize(pageSizes);
+    refreshData(pageNumber, pageSizes);
   };
 
   const onSelectChange = (values) => {
     setSelectedRowKeys(values);
   };
 
+  const getTotal = () => {
+    let count = 0;
+    switch (selectedTab) {
+      case TAB_IDS_QUICK_LINK.GENERAL:
+        count =
+          totalQuickLink.find((x) => x._id === TAB_IDS_QUICK_LINK.GENERAL.toLowerCase())?.count ||
+          0;
+        break;
+      case TAB_IDS_QUICK_LINK.TIMEOFF:
+        count =
+          totalQuickLink.find((x) => x._id === TAB_IDS_QUICK_LINK.TIMEOFF.toLowerCase())?.count ||
+          0;
+        break;
+      default:
+        break;
+    }
+    return count;
+  };
+
   const pagination = {
     position: ['bottomLeft'],
-    total: list.length,
+    total: getTotal(),
     showTotal: (total, range) => (
       <span>
         {' '}
@@ -42,8 +68,11 @@ const CommonTable = (props) => {
         {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
       </span>
     ),
-    pageSize: limit,
-    current: pageSelected,
+    defaultPageSize: 10,
+    showSizeChanger: true,
+    pageSizeOptions: ['10', '25', '50', '100'],
+    pageSize,
+    current: currentPage,
     onChange: onChangePagination,
   };
 

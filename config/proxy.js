@@ -17,5 +17,5 @@ export const proxy = {
   [API_KEYS.CUSTOMER_API]: BASE_API,
 };
 
-export const SOCKET_URL = BASE_API
+export const SOCKET_URL = BASE_API;
 // export const SOCKET_URL = 'http://localhost:8900';

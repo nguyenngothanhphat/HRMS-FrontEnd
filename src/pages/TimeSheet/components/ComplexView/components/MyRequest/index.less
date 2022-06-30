@@ -1,0 +1,96 @@
+@border-color: #d6dce0;
+@orange: #fe5d27;
+@new-background: #fff4f1;
+@border-color: #d6dce0;
+@checkbox-background: #e7eaee;
+@checkbox-border: #707177;
+@gray: #707177;
+@red: #ff5252;
+@blue: #2c6df9;
+@yellow: #e58f17;
+@cell-padding: 8px 16px;
+
+.mixin-border-bottom-row {
+  border-bottom: solid 1px #d6dce0;
+}
+
+.MyRequest {
+  width: 100%;
+  min-width: 700px;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 5px;
+
+  .ticketIdText {
+    color: #202226;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  .status {
+    font-weight: 400;
+    font-size: 14px;
+    font-family: 'Roboto';
+    font-style: normal;
+    line-height: 20px;
+
+    &__Pending {
+      color: @yellow !important;
+    }
+    &__Approved {
+      color: @blue !important;
+    }
+    &__Rejected {
+      color: @red !important;
+    }
+  }
+  .action {
+    cursor: pointer;
+  }
+  :global {
+    .ant-table-thead > tr > th {
+      background-color: @blue !important;
+      opacity: 1 !important;
+    }
+    .ant-table-cell {
+      padding: 8px !important;
+    }
+
+    // .ant-table-pagination.ant-pagination {
+    //   margin: 24px 0 0 !important;
+    //   border-top: 1px solid #707177;
+    // }
+    .ant-checkbox-inner {
+      background-color: @checkbox-background;
+
+      &:after {
+        border-color: blue;
+      }
+    }
+
+    .ant-checkbox-wrapper {
+      border-color: @checkbox-border;
+    }
+
+    .ant-table-selection,
+    .ant-table-selection-column {
+      height: fit-content;
+    }
+
+    thead {
+      tr {
+        height: 35px;
+      }
+
+      .ant-table-selection {
+        height: 18px;
+      }
+    }
+
+    .ant-tabs-nav {
+      height: 56px;
+    }
+  }
+  .ant-table-body {
+    transition: 0.3s;
+  }
+}

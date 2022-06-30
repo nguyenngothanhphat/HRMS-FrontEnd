@@ -105,7 +105,7 @@ const AddNewQuickLink = (props) => {
 
   const onUploadFiles = async (files) => {
     if (Array.isArray(files)) {
-      return files.map((x) => x.id);
+      return files.map((x) => x.id || x._id);
     }
     const list = [];
     if (Array.isArray(files?.fileList)) {
@@ -114,7 +114,7 @@ const AddNewQuickLink = (props) => {
         await Promise.all(
           files.fileList.map(async (x) => {
             if (x.url) {
-              list.push({ id: x.id });
+              list.push({ id: x.id || x._id });
             } else {
               const formData = new FormData();
               formData.append('uri', x.originFileObj);
@@ -165,14 +165,11 @@ const AddNewQuickLink = (props) => {
       default:
         break;
     }
-
-    const res = await dispatch({
+    onBack();
+    dispatch({
       type: 'homePage/addQuickLinkEffect',
       payload,
     });
-    if (res?.statusCode === 200) {
-      onBack();
-    }
   };
 
   const onEdit = async (values) => {
@@ -201,17 +198,14 @@ const AddNewQuickLink = (props) => {
       default:
         break;
     }
-
-    const res = await dispatch({
+    onBack();
+    dispatch({
       type: 'homePage/updateQuickLinkEffect',
       payload: {
         ...payload,
         id: record._id,
       },
     });
-    if (res?.statusCode === 200) {
-      onBack();
-    }
   };
 
   const renderTypeContent = () => {
@@ -277,6 +271,7 @@ const AddNewQuickLink = (props) => {
             key="submit"
             htmlType="submit"
             loading={loadingAddQuickLink || loadingEditQuickLink}
+            disabled={loadingAddQuickLink || loadingEditQuickLink}
           >
             {editing ? 'Update' : 'Save'}
           </Button>

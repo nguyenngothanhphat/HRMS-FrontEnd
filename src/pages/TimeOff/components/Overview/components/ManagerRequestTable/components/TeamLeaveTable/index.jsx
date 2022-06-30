@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table, Tag, Tooltip, Spin, Popover } from 'antd';
+import { Table, Tag, Tooltip, Spin } from 'antd';
 import { history, connect, Link } from 'umi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -12,7 +12,7 @@ import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import RejectCommentModal from '../RejectCommentModal';
 
 import styles from './index.less';
-import UserProfile from '../UserProfile';
+import UserProfilePopover from '@/components/UserProfilePopover';
 
 const { IN_PROGRESS, REJECTED, ON_HOLD } = TIMEOFF_STATUS;
 
@@ -66,6 +66,37 @@ class TeamLeaveTable extends PureComponent {
     });
   };
 
+  dataHover = (employee) => {
+    const {
+      generalInfo: {
+        legalName = '',
+        avatar: avatar1 = '',
+        userId = '',
+        workEmail = '',
+        workNumber = '',
+        skills = [],
+      } = {},
+      generalInfo = {},
+      department = {},
+      locationInfo = {},
+      managerInfo = {},
+      titleInfo = {},
+    } = employee;
+    return {
+      legalName,
+      userId,
+      department,
+      workEmail,
+      workNumber,
+      locationInfo,
+      generalInfo,
+      managerInfo,
+      titleInfo,
+      avatar1,
+      skills,
+    };
+  };
+
   getColumns = (TYPE) => {
     const { category } = this.props;
     return [
@@ -98,14 +129,9 @@ class TeamLeaveTable extends PureComponent {
         align: 'left',
         render: (employee) => {
           return (
-            <Popover
-              placement="bottomRight"
-              overlayClassName={styles.UserProfilePopover}
-              content={<UserProfile category={category} employeeId={employee.employeeId} />}
-              trigger="hover"
-            >
+            <UserProfilePopover data={this.dataHover(employee)}>
               <span style={{ cursor: 'pointer' }}>{employee?.generalInfo?.legalName}</span>
-            </Popover>
+            </UserProfilePopover>
           );
         },
       },

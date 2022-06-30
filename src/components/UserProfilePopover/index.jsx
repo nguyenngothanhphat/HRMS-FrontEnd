@@ -1,11 +1,35 @@
-import { Col, Popover, Row } from 'antd';
+import { Col, Popover, Row, Tag } from 'antd';
 import React, { useState } from 'react';
-import { connect } from 'umi';
+import { connect, Link } from 'umi';
+import { isEmpty } from 'lodash';
 import CloseX from '@/assets/dashboard/closeX.svg';
-import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 
 import styles from './index.less';
 import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
+
+const listColors = [
+  {
+    bg: '#E0F4F0',
+    colorText: '#00c598',
+  },
+  {
+    bg: '#ffefef',
+    colorText: '#fd4546',
+  },
+  {
+    bg: '#f1edff',
+    colorText: '#6236ff',
+  },
+  {
+    bg: '#f1f8ff',
+    colorText: '#006bec',
+  },
+  {
+    bg: '#fff7fa',
+    colorText: '#ff6ca1',
+  },
+];
 
 const UserProfilePopover = (props) => {
   const { children, placement = 'top', data = {} } = props;
@@ -16,8 +40,7 @@ const UserProfilePopover = (props) => {
     title = {},
     workEmail = '',
     workNumber = '',
-    location: { state = '', countryName = '' } = {},
-    location,
+    location = {},
     locationInfo,
     generalInfo = {},
     manager = {},
@@ -25,13 +48,19 @@ const UserProfilePopover = (props) => {
     titleInfo = {},
     departmentInfo = {},
     avatar: avatar1 = '',
+    skills = [],
   } = data;
 
+  const { state = '', countryName = '' } = location || {};
   const {
-    headQuarterAddress: { state: state1 = '', country: { name: countryName1 = '' } = {} } = {},
+    headQuarterAddress: {
+      state: state1 = '',
+      country = {},
+      country: { name: countryName1 = '' } = {},
+    } = {},
   } = locationInfo || {};
 
-  const { avatar = '', personalNumber = '' } = generalInfo || {};
+  const { avatar = '' } = generalInfo || {};
 
   const [showPopover, setShowPopover] = useState(false);
 
@@ -44,11 +73,12 @@ const UserProfilePopover = (props) => {
     return (
       <div className={styles.header}>
         <div className={styles.avatar}>
-          <img src={avatar || avatar1 || MockAvatar} alt="" />
+          <img src={avatar || avatar1 || DefaultAvatar} alt="" />
         </div>
         <div className={styles.information}>
           <span className={styles.name}>
-            {legalName} {userId ? `(${userId})` : ''}
+            {legalName || generalInfo?.legalName}{' '}
+            {userId || generalInfo?.userId ? `(${userId || generalInfo?.userId})` : ''}
           </span>
           <span className={styles.position}>{department?.name || departmentInfo?.name}</span>
           <span className={styles.department}>{title?.name || titleInfo?.name}</span>
@@ -56,14 +86,44 @@ const UserProfilePopover = (props) => {
       </div>
     );
   };
+
+  const getCountry = () => {
+    let result = '';
+    if (typeof country === 'string') result = country;
+    result = countryName || countryName1 || '';
+    return `, ${result}`;
+  };
+
+  const formatListSkill = (skillsProps, colors) => {
+    let temp = 0;
+    const listFormat = skillsProps.map((item) => {
+      if (temp >= 5) {
+        temp -= 5;
+      }
+      temp += 1;
+      return {
+        color: colors[temp - 1],
+        name: item.name,
+        id: item._id,
+      };
+    });
+    return [...listFormat];
+  };
+
   const userInfo = () => {
     const getTimezone =
-      getTimezoneViaCity(state || state1) || getTimezoneViaCity(countryName || countryName1) || '';
+      getTimezoneViaCity(state || state1) ||
+      getTimezoneViaCity(
+        countryName || countryName1 || typeof country === 'string' ? country : '',
+      ) ||
+      '';
     const timezone =
       getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone;
     const time = getCurrentTimeOfTimezoneOption(new Date(), timezone);
+    const skilList =
+      skills !== null && skills !== undefined ? formatListSkill(skills, listColors) || [] : [];
 
-    const items = [
+    let items = [
       {
         label: 'Reporting Manager',
         value: (
@@ -75,21 +135,42 @@ const UserProfilePopover = (props) => {
       },
       {
         label: 'Mobile',
-        value: personalNumber || workNumber,
+        value: generalInfo?.workNumber || workNumber,
       },
       {
         label: 'Email id',
-        value: workEmail,
+        value: generalInfo?.workEmail || workEmail,
       },
       {
         label: 'Location',
-        value: location || locationInfo ? `${state || state1}, ${countryName || countryName1}` : '',
+        value: location || locationInfo ? `${state || state1}${getCountry()}` : '',
       },
       {
         label: 'Local Time',
         value: time,
       },
     ];
+    const listSkills = {
+      label: !isEmpty(skilList) ? 'Skill' : '',
+      value: !isEmpty(skilList)
+        ? skilList.map((item) => (
+          <Tag
+            style={{
+                color: `${item?.color?.colorText}`,
+                fontWeight: 500,
+              }}
+            key={item?.id}
+            color={item?.color?.bg}
+          >
+            {item?.name}
+          </Tag>
+          ))
+        : '',
+    };
+
+    if (!isEmpty(skills)) {
+      items = [...items, listSkills];
+    }
 
     return (
       <div className={styles.userInfo}>
@@ -124,8 +205,10 @@ const UserProfilePopover = (props) => {
         <div className={styles.divider} />
         {userInfo()}
         <div className={styles.divider} />
-        <div className={styles.viewFullProfile} onClick={() => onViewProfile(userId)}>
-          View full profile
+        <div className={styles.viewFullProfile}>
+          <Link to={`/directory/employee-profile/${userId || generalInfo?.userId}`}>
+            View full profile
+          </Link>
         </div>
       </div>
     );

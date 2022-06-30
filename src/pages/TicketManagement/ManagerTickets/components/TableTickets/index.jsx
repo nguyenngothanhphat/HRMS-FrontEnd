@@ -5,7 +5,7 @@ import moment from 'moment';
 import React, { memo, Suspense, useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
-import UserProfilePopover from '@/pages/TicketManagement/components/UserProfilePopover';
+import UserProfilePopover from '@/components/UserProfilePopover';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import TicketsItem from '../TicketsItem';
 import styles from './index.less';
@@ -227,6 +227,37 @@ const TableTickets = (props) => {
     );
   };
 
+  const dataHover = (values) => {
+    const {
+      generalInfo: {
+        legalName = '',
+        avatar: avatar1 = '',
+        userId = '',
+        workEmail = '',
+        workNumber = '',
+        skills = [],
+      } = {},
+      generalInfo = {},
+      department = {},
+      location: locationInfo = {},
+      manager: managerInfo = {},
+      title = {},
+    } = values;
+    return {
+      legalName,
+      userId,
+      department,
+      workEmail,
+      workNumber,
+      locationInfo,
+      generalInfo,
+      managerInfo,
+      title,
+      avatar1,
+      skills,
+    };
+  };
+
   const getColumns = () => {
     return [
       {
@@ -296,11 +327,7 @@ const TableTickets = (props) => {
           const { generalInfo = {}, generalInfo: { legalName = '', userId = '' } = {} } =
             employeeRaise;
           return (
-            <UserProfilePopover
-              placement="top"
-              trigger="hover"
-              data={{ ...employeeRaise, ...generalInfo }}
-            >
+            <UserProfilePopover placement="top" trigger="hover" data={dataHover(employeeRaise)}>
               <span className={styles.userID} onClick={() => viewProfile(userId || '')}>
                 {!isEmpty(generalInfo)
                   ? `${
@@ -310,9 +337,10 @@ const TableTickets = (props) => {
                             legalName.length,
                           )}`
                         : legalName
-                    } (${userId})`
+                    }`
                   : ''}
               </span>
+              <div className={styles.userID}>{`(${userId})`}</div>
             </UserProfilePopover>
           );
         },

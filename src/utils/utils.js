@@ -169,3 +169,20 @@ export const removeEmptyFields = (obj) => {
     {},
   );
 };
+
+export const addZeroToNumber = (number) => {
+  if (number < 10 && number > 0) return `0${number}`.slice(-2);
+  return number;
+};
+
+export const getCountryId = (locationObj) => {
+  const type = typeof locationObj?.headQuarterAddress?.country;
+  switch (type) {
+    case 'string':
+      return locationObj?.headQuarterAddress?.country;
+    case 'object':
+      return locationObj?.headQuarterAddress?.country?._id;
+    default:
+      return '';
+  }
+};

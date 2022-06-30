@@ -13,7 +13,6 @@ import {
   updateProjectDetail,
   fetchResourceStatus,
   fetchTitleList,
-  fetchStatusProject,
   fetchProjectListTable,
   addAndUpdateComments,
   exportProject,
@@ -24,6 +23,7 @@ import {
   getResourceUtilization,
   getNewJoineesList,
   exportResource,
+  getListSkill,
 } from '@/services/resourceManagement';
 
 import { handlingResourceAvailableStatus } from '@/utils/resourceManagement';
@@ -239,13 +239,14 @@ const resourceManagement = {
       };
       try {
         response = yield call(fetchProjectListTable, payloadTemp);
-        const { statusCode, data = [] } = response;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
+        const { items = [], totals = [] } = data;
         yield put({
           type: 'save',
-          payload: { projectTable: data, payloadProject: payloadTemp },
+          payload: { projectTable: items, statusProject: totals, payloadProject: payloadTemp },
         });
-        const customerList = data.map((item) => {
+        const customerList = items.map((item) => {
           return {
             customerId: item.customerId || '',
             customerName: item.customerName || '',
@@ -275,24 +276,6 @@ const resourceManagement = {
         yield put({
           type: 'save',
           payload: { resourceUtilizationChartData: data },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-    },
-    *fetchStatusProjectList({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(fetchStatusProject, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { statusProject: data?.statuses || [] },
         });
       } catch (error) {
         dialog(error);
@@ -426,6 +409,16 @@ const resourceManagement = {
       }
       hide();
       return response;
+    },
+    *fetchListSkill(_, { call, put }) {
+      try {
+        const response = yield call(getListSkill);
+        const { statusCode, data: listSkill = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listSkill } });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
   reducers: {

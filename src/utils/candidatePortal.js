@@ -4,6 +4,7 @@ export const CANDIDATE_TASK_LINK = {
   SALARY_NEGOTIATION: 'salary-negotiation',
   ACCEPT_OFFER: 'accept-offer',
   REFERENCES: 'references',
+  DOCUMENTS_CHECKLIST: 'documents-checklist',
 };
 export const PORTAL_TAB_NAME = {
   DASHBOARD: 'dashboard',
@@ -38,9 +39,17 @@ export const DOCUMENT_TYPES = {
   RESUBMIT_PENDING: 'RESUBMIT-PENDING',
   RE_SUBMITTED: 'RE-SUBMITTED',
 
+  RECEIVED: 'RECEIVED',
+
   NOT_AVAILABLE_PENDING_HR: 'NOT-AVAILABLE-PENDING-HR',
   NOT_AVAILABLE_ACCEPTED: 'NOT-AVAILABLE-ACCEPTED',
   NOT_AVAILABLE_REJECTED: 'NOT-AVAILABLE-REJECTED',
+};
+
+export const DOCUMENT_KEYS = {
+  UPLOAD: 'Scan & Upload',
+  SIGN: 'Electronically Sign',
+  HARD_COPY: 'Hard Copy',
 };
 
 const getClassName = (name) => `.${name}`;

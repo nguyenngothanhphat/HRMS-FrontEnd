@@ -361,7 +361,7 @@ const BasicInformation = (props) => {
           >
             <Row gutter={[24, 24]}>
               {cards.map((x) => (
-                <Col span={24}>
+                <Col span={24} key={x.title}>
                   <Card title={x.noHeader ? null : renderCardTitle(x.title, x.description)}>
                     <div style={x.noHeader ? { padding: 24 } : {}}>{x.component}</div>
                   </Card>

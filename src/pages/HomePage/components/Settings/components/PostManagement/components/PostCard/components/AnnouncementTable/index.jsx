@@ -1,12 +1,13 @@
-import { Popconfirm, Image } from 'antd';
+import { Image, Popconfirm } from 'antd';
+import Parser from 'html-react-parser';
+import moment from 'moment';
 import React from 'react';
 import { connect, Link } from 'umi';
-import moment from 'moment';
-import Parser from 'html-react-parser';
-import CommonTable from '../CommonTable';
-import styles from './index.less';
+import { hashtagify, urlify } from '@/utils/homePage';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import EditIcon from '@/assets/homePage/editIcon.svg';
+import CommonTable from '../CommonTable';
+import styles from './index.less';
 
 const AnnouncementTable = (props) => {
   const {
@@ -31,6 +32,11 @@ const AnnouncementTable = (props) => {
     }
   };
 
+  const renderContent = (text) => {
+    const temp = urlify(text);
+    return hashtagify(temp);
+  };
+
   const getColumns = () => {
     const columns = [
       {
@@ -45,7 +51,9 @@ const AnnouncementTable = (props) => {
         dataIndex: 'description',
         key: 'description',
         render: (description = '') => (
-          <div style={{ lineHeight: '22px' }}>{Parser(description)}</div>
+          <div style={{ lineHeight: '22px', whiteSpace: 'pre-line' }}>
+            {Parser(renderContent(description))}
+          </div>
         ),
       },
       {
@@ -53,7 +61,7 @@ const AnnouncementTable = (props) => {
         dataIndex: 'location',
         key: 'location',
         width: '10%',
-        render: (location) => (
+        render: (location = []) => (
           <div style={{ lineHeight: '22px' }}>
             {location.map((x, index) => {
               return (

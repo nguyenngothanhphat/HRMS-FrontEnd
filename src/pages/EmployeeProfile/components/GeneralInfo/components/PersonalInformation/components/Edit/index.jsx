@@ -133,11 +133,11 @@ const Edit = (props) => {
   const processDataChanges = (values) => {
     const payloadChanges = {
       id,
-      personalNumber,
-      personalEmail,
-      Blood,
-      maritalStatus,
-      nationality,
+      personalNumber: values.personalNumber,
+      personalEmail: values.personalEmail,
+      Blood: values.Blood,
+      maritalStatus: values.maritalStatus,
+      nationality: values.nationality,
       residentAddress: {
         addressLine1: values.r_addressLine1,
         addressLine2: values.r_addressLine2,
@@ -247,7 +247,9 @@ const Edit = (props) => {
             name="personalNumber"
             rules={[
               {
-                pattern: /^[+]*[\d]{0,10}$/,
+                pattern:
+                  // eslint-disable-next-line no-useless-escape
+                  /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?$/gm,
                 message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
               },
             ]}

@@ -69,7 +69,7 @@ const PollTable = (props) => {
         key: 'pollDetail',
         width: '20%',
         render: (pollDetail = {}) => {
-          return Parser(pollDetail?.question || '');
+          return <div style={{ whiteSpace: 'pre-line' }}>{Parser(pollDetail?.question || '')}</div>;
         },
       },
       {
@@ -77,7 +77,7 @@ const PollTable = (props) => {
         dataIndex: 'location',
         key: 'location',
         width: '10%',
-        render: (location) => (
+        render: (location = []) => (
           <div style={{ lineHeight: '22px' }}>
             {location.map((x, index) => {
               return (
