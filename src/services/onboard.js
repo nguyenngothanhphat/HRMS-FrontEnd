@@ -159,3 +159,9 @@ export async function getCandidateById(payload) {
     data: payload,
   });
 }
+
+export async function getDomain() {
+  return request('/api/domaintenant', {
+    method: 'GET',
+  });
+}

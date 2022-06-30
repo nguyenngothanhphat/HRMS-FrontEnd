@@ -1,74 +1,108 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Button, Checkbox, Tooltip } from 'antd';
+import { Modal, Button, Checkbox, Tooltip, Form, Select, Input, Row, Col, Divider } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
+import classNames from 'classnames';
+import { SearchOutlined } from '@ant-design/icons';
 import TooltipIcon from '@/assets/tooltip.svg';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import Check from '@/assets/changePasswordCheck.svg';
+import Resubmit from '@/assets/resubmit.svg';
 
 import styles from '../../index.less';
+import ReportingManagerContent from './components/ReportingStructureContent';
+import UserNameContent from './components/UsernameContent';
+import DocSubmissionContent from './components/DocSubmissionContent';
+import PreJoiningDocContent from './components/PreJoiningDocContent';
+import InitiateJoiningContent from './components/InitiateJoiningContent';
 
 const JoiningFormalitiesModal = (props) => {
   const {
-    onCancel = () => {},
+    onClose = () => {},
     onOk = () => {},
     visible,
     candidate: { dateOfJoining = '', candidateId = '' },
     listJoiningFormalities,
     loadingGetEmployeeId,
     dispatch,
+    loadingCheckUserName,
+    loadingCreateEmployee,
+    userName,
   } = props;
   const [checkList, setCheckList] = useState([]);
+  const [validate, setValidate] = useState({ validateStatus: 'success', errorMsg: null });
+  const [initalValue, setInitalValue] = useState({});
+  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     dispatch({
       type: 'onboard/getListJoiningFormalities',
     });
-    setCheckList([]);
+    candidateId &&
+      dispatch({
+        type: 'newCandidateForm/fetchCandidateByRookie',
+        payload: {
+          rookieID: candidateId,
+          tenantId: getCurrentTenant(),
+        },
+      });
   }, [candidateId]);
+  useEffect(() => {
+    setInitalValue({ userName });
+  }, [userName]);
 
-  const renderHeaderModal = () => (
-    <div className={styles.headerText}>Initiate Joining Formalities</div>
-  );
+  // function
+  const next = () => {
+    setCurrent(current + 1);
+  };
+  const prev = () => {
+    setCurrent(current - 1);
+  };
+  const onFinish = async (value) => {
+    const { userName: name = '' } = value;
+    if (name) {
+      const isExistingUserName = await dispatch({
+        type: 'onboard/checkExistedUserName',
+        payload: { userName: name },
+      });
+      if (isExistingUserName === false) {
+        const response = await dispatch({
+          type: 'onboard/createEmployee',
+          payload: { userName: name, candidateId },
+        });
+        const { statusCode = '' } = response;
 
-  const converToEmployee = async () => {
+        if (statusCode === 200)
+          // onOk(value);
+          next();
+      } else setValidate({ validateStatus: 'error', errorMsg: 'That username is already taken' });
+    } else setValidate({ validateStatus: 'error', errorMsg: 'Please input user name' });
+  };
+  const onCloseModal = () => {
+    setCheckList([]);
+    onClose();
+  };
+
+  const renderHeaderModal = (title) => <div className={styles.headerText}>{title}</div>;
+  const onSaveRedux = (result) => {
+    dispatch({
+      type: 'onboard/saveJoiningFormalities',
+      payload: {
+        domain: result,
+      },
+    });
+  };
+  const converToEmployee = async (result) => {
     const response = await dispatch({
       type: 'onboard/getEmployeeId',
       payload: {
         candidateId,
       },
     });
+    onSaveRedux(result);
     const { statusCode = '' } = response;
     if (statusCode === 200) onOk();
   };
-
-  const convertToEmployee = () => (
-    <>
-      <div className={styles.headerContent}>
-        Please ensure that the joining formalities checklist have been completed before converting
-        the candidate to an employee.
-      </div>
-      <Checkbox.Group
-        style={{ width: '100%' }}
-        onChange={(value) => setCheckList(value)}
-        value={checkList}
-      >
-        {listJoiningFormalities.map((item) => (
-          <div key={item.name}>
-            <Checkbox value={item._id}>
-              <div className={styles.labelCheckbox}>{item.name}</div>
-            </Checkbox>
-            <Tooltip
-              title={<div className={styles.contentTooltip}>{item.description}</div>}
-              color="#fff"
-              placement="right"
-              overlayClassName={styles.tooltipOverlay}
-            >
-              <img className={styles.tooltip} alt="tool-tip" src={TooltipIcon} />
-            </Tooltip>
-          </div>
-        ))}
-      </Checkbox.Group>
-    </>
-  );
 
   const emptyModal = (date) => (
     <div className={styles.headerContent}>
@@ -76,54 +110,168 @@ const JoiningFormalitiesModal = (props) => {
       yet. Please try again!
     </div>
   );
-  const onCloseModal = () => {
-    setCheckList([]);
-    onCancel();
-  };
+
   const renderFooter = (isTodayDateJoin) => {
-    if (isTodayDateJoin) {
-      return [
+    // if (isTodayDateJoin) {
+    return [
+      <Button onClick={prev} className={styles.btnCancel}>
+        Previous
+      </Button>,
+      <Button
+        className={styles.btnSubmit}
+        type="primary"
+        disabled={checkList.length !== listJoiningFormalities.length}
+        loading={loadingGetEmployeeId}
+        onClick={() => converToEmployee()}
+      >
+        Convert to Employee
+      </Button>,
+    ];
+    // }
+
+    // return [
+    //   <Button onClick={prev} className={styles.btnCancel}>
+    //     Cancel
+    //   </Button>,
+    // ];
+  };
+  const getDayJoin = moment(dateOfJoining);
+  const isTodayDateJoin = moment().isAfter(getDayJoin);
+
+  const steps = [
+    {
+      title: 'Documents Submission',
+      description: null,
+      content: !isTodayDateJoin ? <DocSubmissionContent /> : emptyModal(dateOfJoining),
+      footer: !isTodayDateJoin ? (
+        <Button
+          className={styles.btnSubmit}
+          type="primary"
+          disabled={false}
+          // loading={loadingGetEmployeeId}
+          onClick={next}
+        >
+          Next
+        </Button>
+      ) : (
         <Button onClick={onCloseModal} className={styles.btnCancel}>
+          Cancel
+        </Button>
+      ),
+    },
+    {
+      title: 'Pre Joining Documents',
+      description:
+        'Please ensure all the documents have been submitted before converting the candidate to an employee. If in case there is any document not possible to submit, please remind the candidate submit later.',
+      content: <PreJoiningDocContent />,
+      footer: [
+        <Button onClick={prev} className={styles.btnCancel}>
+          Previous
+        </Button>,
+        <Button
+          className={styles.btnSubmit}
+          type="primary"
+          // loading={loadingGetEmployeeId}
+          onClick={next}
+        >
+          Next
+        </Button>,
+      ],
+    },
+    {
+      title: 'Initiate Joining Formalities',
+      description:
+        'Please ensure that the joining formalities checklist have been completed before converting the candidate to an employee.',
+      content: (
+        <InitiateJoiningContent
+          // isTodayDateJoin={isTodayDateJoin}
+          // emptyModal={emptyModal}
+          // dateOfJoining={dateOfJoining}
+          listJoiningFormalities={listJoiningFormalities}
+          checkList={checkList}
+          setCheckList={setCheckList}
+        />
+      ),
+
+      footer: renderFooter(isTodayDateJoin),
+    },
+    {
+      title: 'Candidate Username',
+      description:
+        'The following is the username that is generated for the candidate, you can make any changes to the username if you would like',
+      content: <UserNameContent onFinish={onFinish} validate={validate} />,
+      footer: [
+        <Button onClick={prev} className={styles.btnCancel}>
           Cancel
         </Button>,
         <Button
           className={styles.btnSubmit}
           type="primary"
-          disabled={checkList.length !== listJoiningFormalities.length}
-          loading={loadingGetEmployeeId}
-          onClick={() => converToEmployee()}
+          form="usernameForm"
+          key="submit"
+          htmlType="submit"
+          loading={loadingCheckUserName || loadingCreateEmployee}
         >
-          Convert to Employee
+          Next
         </Button>,
-      ];
-    }
+      ],
+    },
+    {
+      title: 'Reporting Structure',
+      description: 'Please select the reporting manager and reportees to proceed further',
+      content: (
+        <ReportingManagerContent
+          onFinish={onFinish}
+          // loadingEmployeeList={loadingEmployeeList}
+          // employeeList={employeeList}
+        />
+      ),
+      footer: [
+        <Button onClick={prev} className={styles.btnCancel}>
+          Cancel
+        </Button>,
+        <Button
+          className={styles.btnSubmit}
+          type="primary"
+          form="usernameForm"
+          key="submit"
+          htmlType="submit"
+          loading={loadingCheckUserName || loadingCreateEmployee}
+          onClick={() => onOk()}
+        >
+          Next
+        </Button>,
+      ],
+    },
+  ];
 
-    return [
-      <Button onClick={onCloseModal} className={styles.btnCancel}>
-        Cancel
-      </Button>,
-    ];
-  };
-  const getDayJoin = moment(dateOfJoining);
-  const isTodayDateJoin = moment().isAfter(getDayJoin);
   return (
     <Modal
       className={styles.joiningFormalitiesModal}
       onCancel={onCloseModal}
-      footer={renderFooter(isTodayDateJoin)}
-      title={renderHeaderModal()}
+      footer={steps[current].footer}
+      title={renderHeaderModal(steps[current].title)}
       destroyOnClose
       centered
       visible={visible}
     >
-      {isTodayDateJoin ? convertToEmployee() : emptyModal(dateOfJoining)}
+      {steps[current].description !== null && (
+        <div className={styles.headerContent}>{steps[current].description}</div>
+      )}
+      {steps[current].content}
     </Modal>
   );
 };
 
 export default connect(
-  ({ loading, onboard: { joiningFormalities: { listJoiningFormalities = [] } } = {} }) => ({
+  ({
+    loading,
+    onboard: { joiningFormalities: { listJoiningFormalities = [], userName = '' } } = {},
+  }) => ({
     listJoiningFormalities,
+    userName,
     loadingGetEmployeeId: loading.effects['onboard/getEmployeeId'],
+    loadingCheckUserName: loading.effects['onboard/checkExistedUserName'],
+    loadingCreateEmployee: loading.effects['onboard/createEmployee'],
   }),
 )(JoiningFormalitiesModal);

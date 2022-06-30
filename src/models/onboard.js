@@ -302,6 +302,7 @@ const onboard = {
       itemNewComer: {},
       totalComer: 0,
       userName: '',
+      domain: '',
       messageErr: '',
       employeeData: {},
       generatedId: '',

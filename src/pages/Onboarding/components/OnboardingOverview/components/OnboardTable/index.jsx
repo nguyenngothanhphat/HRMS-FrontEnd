@@ -583,8 +583,7 @@ class OnboardTable extends Component {
               <img className={styles.actionIcon} src="LaunchIcon" alt="launchIcon" />
               <span
                 onClick={() =>
-                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)
-                }
+                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)}
               >
                 Initiate joining formalities
               </span>
@@ -617,8 +616,7 @@ class OnboardTable extends Component {
                   id,
                   processStatusId,
                   type,
-                )
-              }
+                )}
               className={styles.actionText}
             >
               Re-assign
@@ -875,16 +873,16 @@ class OnboardTable extends Component {
         />
         <JoiningFormalitiesModal
           visible={openModalName === 'initiate'}
-          onCancel={this.cancelJoiningFormalities}
-          onOk={this.onConvertEmployee}
+          onOk={this.onSubmitUserName}
           candidate={{ dateOfJoining: dateJoinCandidate, candidateId: selectedCandidateId }}
+          onClose={this.cancelJoiningFormalities}
         />
-        <CandidateUserName
-          visible
+        {/* <CandidateUserName
+          visible={openModalName === 'username'}
           onCancel={this.cancelCandidateUserName}
           onOk={this.onSubmitUserName}
           candidateId={selectedCandidateId}
-        />
+        /> */}
         <ConfirmModal
           visible={openModalName === 'detail'}
           onCancel={this.onMaybeLater}

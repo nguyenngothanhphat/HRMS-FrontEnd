@@ -1,57 +1,92 @@
-.Domain{
-    box-sizing: border-box;
-    width: 100%;
-    height: fit-content;
-    background: #ffffff;
-    border: 1px solid #d6dce0;
-    border-radius: 5px;
-    .domainTitleContainer{
-        padding: 26px 24px;
-        border-bottom: 1px solid #E2E4E8;   
-        .domainTitle{
-            font-size: 16px;
-            font-weight: 700;
-            margin: 0;
-        }
+.Domain {
+  box-sizing: border-box;
+  width: 100%;
+  height: fit-content;
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
+  .domainTitleContainer {
+    padding: 26px 24px;
+    border-bottom: 1px solid #e2e4e8;
+    .domainTitle {
+      margin: 0;
+      font-weight: 700;
+      font-size: 16px;
     }
-    .domainContent{
-        padding: 40px 38px;
-        .contentInside{
-            font-size: 13px;
-            line-height: 2;
-            color: #464646;
+  }
+  .domainContent {
+    padding: 40px 38px;
+    .contentInside {
+      color: #464646;
+      font-size: 13px;
+      line-height: 2;
+    }
+    .formSetDomain {
+      margin-top: 32px;
+      color: #707177;
+      .deleteIcon {
+        margin-left: 8px;
+        cursor: pointer;
+      }
+      .btnAdd {
+        display: flex;
+        align-items: center;
+        padding: 0 8px;
+        color: #3a70f0;
+        font-weight: 500;
+        font-size: 14px;
+        font-style: normal;
+        line-height: 24px;
+        text-align: center;
+        .addIcon {
+          margin-right: 8px;
         }
-        .formSetDomain{
-            margin-top: 32px;
-            color: #707177;
-            .btnSave{
-                background-color: #FFA100;
-                height: auto;
-                font-size: 14px;
-                font-weight: 500;
-                color: #fff;
-                border-radius: 25px;
+      }
+      .btnSave {
+        display: inline-block;
+        height: auto;
+        padding: 12px 24px;
+        color: #fff;
+        font-weight: 500;
+        font-size: 14px;
+        text-shadow: none;
+        background-color: #ffa100;
 
-                border-color: #fff;
-                text-shadow: none;
-                box-shadow: none;
-               
-                display: inline-block;
-                padding: 12px 24px;
-            }
-            .inpDomain{
-                padding: 13px 16px;
-            }
-            :global{
-                .ant-form-item-label label{
-                    color: #707177;
-                }
-                .ant-input{
-                    padding: 13px 16px;
-                    color: #161C29;
-                }
-            }
+        border-color: #fff;
+        border-radius: 25px;
+        box-shadow: none;
+      }
+      .inpDomain {
+        padding: 13px 16px;
+      }
+      :global {
+        .ant-form-item-label label {
+          color: #707177;
         }
+        .ant-input {
+          padding: 13px 16px;
+          color: #161c29;
+        }
+      }
     }
-    
+  }
+}
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  .title {
+    font-weight: 500;
+    font-size: 15px;
+    font-style: normal;
+    line-height: 12px;
+    text-align: center;
+  }
+  .description {
+    font-size: 13px;
+    font-style: normal;
+    line-height: 2;
+    text-align: center;
+  }
 }

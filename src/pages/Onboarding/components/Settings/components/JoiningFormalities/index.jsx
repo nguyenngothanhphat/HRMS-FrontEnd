@@ -8,6 +8,7 @@ import plusIcon from '@/assets/add-adminstrator.svg';
 import styles from './index.less';
 import ModalDelete from './components/ModalDelete/index';
 import ModalAdd from './components/ModalAdd/index';
+import EmployeeId from './components/EmployeeId';
 
 const { TabPane } = Tabs;
 
@@ -146,7 +147,8 @@ const JoiningFormalities = (props) => {
           </div>
         </TabPane>
         <TabPane tab="Employee ID" key="2">
-          <div className={styles.employeeId}>
+          <EmployeeId />
+          {/* <div className={styles.employeeId}>
             <Form form={form} name="employeeId" layout="vertical" onFinish={onFinish}>
               <div className={styles.question}>
                 From where would you like to start the Auto generated ID?
@@ -191,7 +193,7 @@ const JoiningFormalities = (props) => {
                 </Form.Item>
               )}
             </Form>
-          </div>
+          </div> */}
         </TabPane>
       </Tabs>
 
