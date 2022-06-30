@@ -32,6 +32,7 @@ class CandidatePortal extends PureComponent {
     super(props);
     this.state = {
       openWelcomeModal: false,
+      openJoyrde: false,
     };
   }
 
@@ -105,6 +106,7 @@ class CandidatePortal extends PureComponent {
   handleWelcomeModal = (value) => {
     this.setState({
       openWelcomeModal: value,
+      openJoyrde: true,
     });
     localStorage.setItem('openWelcomeModal', value);
   };
@@ -139,7 +141,7 @@ class CandidatePortal extends PureComponent {
   };
 
   render() {
-    const { openWelcomeModal } = this.state;
+    const { openWelcomeModal, openJoyrde } = this.state;
     const {
       match: { params: { tabName = '' } = {} },
     } = this.props;
@@ -172,7 +174,7 @@ class CandidatePortal extends PureComponent {
           continuous
           showProgress
           showSkipButton
-          run={isFirstLogin}
+          run={isFirstLogin && openJoyrde}
           callback={this.handleJoyrideCallback}
           close
           styles={{
