@@ -93,6 +93,6 @@ export const getEmployeeName = (generalInfo = {}) => {
 
 export const dateFormat = 'MM/DD/YYYY';
 
-export const onJoinMeeting = (meetingId) => {
-  window.open(`https://meet.google.com/${meetingId}`, '_blank');
+export const onJoinMeeting = (url) => {
+  window.open(url, '_blank');
 };
