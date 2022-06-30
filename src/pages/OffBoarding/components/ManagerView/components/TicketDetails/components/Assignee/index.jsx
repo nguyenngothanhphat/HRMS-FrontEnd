@@ -56,7 +56,14 @@ const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
 const Assignee = (props) => {
   const {
     dispatch,
-    item: { _id = '', employee = {}, assigned = {}, status = '', hrStatus = '' } = {},
+    item: {
+      _id = '',
+      employee = {},
+      assigned = {},
+      status = '',
+      hrStatus = '',
+      managerUpdatedBy = {},
+    } = {},
     offboarding: { employeeList = [] },
     user: { currentUser = {} } = {},
   } = props;
@@ -69,6 +76,16 @@ const Assignee = (props) => {
   const [secondaryManager, setSecondaryManager] = useState(null);
 
   const getType = (type) => (type ? 'Primary' : 'Secondary');
+
+  const getStatus = (stt) => {
+    if (stt === OFFBOARDING.STATUS.ACCEPTED) {
+      return 'accepted';
+    }
+    if (stt === OFFBOARDING.STATUS.REJECTED) {
+      return 'rejected';
+    }
+    return null;
+  };
 
   const onEmployeeSearch = (value) => {
     if (!value) {
@@ -109,7 +126,6 @@ const Assignee = (props) => {
             delegateManager: managerAssignees[1]?._id,
           },
         },
-        replaceState: false,
       });
       if (res.statusCode === 200) {
         setDelegating(false);
@@ -153,6 +169,7 @@ const Assignee = (props) => {
         isYou: currentUser?.employee?._id === hr?._id,
         highlight:
           hrStatus === OFFBOARDING.STATUS.ACCEPTED || hrStatus === OFFBOARDING.STATUS.REJECTED,
+        status: getStatus(hrStatus),
       },
     ]);
     const managerTemp = [
@@ -164,7 +181,8 @@ const Assignee = (props) => {
         avatar: manager?.generalInfoInfo?.avatar,
         _id: manager?._id,
         isYou: currentUser?.employee?._id === manager?._id,
-        highlight: status === OFFBOARDING.STATUS.ACCEPTED,
+        highlight: status === OFFBOARDING.STATUS.ACCEPTED && managerUpdatedBy?._id === manager?._id,
+        status: getStatus(status),
       },
     ];
     if (!isEmpty(delegateManager)) {
@@ -175,8 +193,10 @@ const Assignee = (props) => {
         userId: delegateManager?.generalInfoInfo?.userId,
         avatar: delegateManager?.generalInfoInfo?.avatar,
         _id: delegateManager?._id,
-        isYou: currentUser?.employee?._id === manager?._id,
-        highlight: status === OFFBOARDING.STATUS.ACCEPTED,
+        isYou: currentUser?.employee?._id === delegateManager?._id,
+        highlight:
+          status === OFFBOARDING.STATUS.ACCEPTED && managerUpdatedBy?._id === delegateManager?._id,
+        status: getStatus(status),
       });
     }
     setManagerAssignees(managerTemp);
@@ -199,7 +219,7 @@ const Assignee = (props) => {
         <div className={styles.block}>
           <p className={styles.block__title}>HR Approval</p>
           <div className={styles.block__members}>
-            <Row align="middle" gutter={[0, 24]}>
+            <Row align="middle" gutter={[24, 24]}>
               {hrAssignees.map((y) => (
                 <>
                   <Col span={19}>
@@ -210,6 +230,7 @@ const Assignee = (props) => {
                       userId={y.userId}
                       isYou={y.isYou}
                       highlight={y.highlight}
+                      status={y.status}
                     />
                   </Col>
                   <Col span={5}>
@@ -250,6 +271,7 @@ const Assignee = (props) => {
                       userId={y.userId}
                       isYou={y.isYou}
                       highlight={y.highlight}
+                      status={y.status}
                     />
                   </Col>
                   <Col span={5}>

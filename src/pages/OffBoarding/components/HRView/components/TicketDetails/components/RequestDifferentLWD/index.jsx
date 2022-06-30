@@ -1,6 +1,6 @@
 import { Card, Col, DatePicker, Form, Row } from 'antd';
 import moment from 'moment';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
 import CheckIcon from '@/assets/offboarding/check.svg';
 import FailedIcon from '@/assets/offboarding/fail.svg';
@@ -18,14 +18,15 @@ const RequestDifferentLWD = (props) => {
       _id = '',
       employee = {},
       assigned = {},
-      managerNote: {
-        notes = '',
-      } = {},
+      managerNote: { notes = '' } = {},
       hrNote = {},
       hrNote: { closingComments: hrClosingComments = '', isAcceptLWD = false } = {},
       managerPickLWD = '',
     } = {},
+    loadingButton = false,
   } = props;
+
+  const [action, setAction] = useState('');
 
   useEffect(() => {
     if (managerPickLWD) {
@@ -35,12 +36,13 @@ const RequestDifferentLWD = (props) => {
     }
   }, [managerPickLWD]);
 
-  const onActionLWD = (action = '') => {
+  const onActionLWD = (actionProp = '') => {
+    setAction(actionProp);
     const payload = {
       id: _id,
       employeeId: employee?._id,
       action:
-        action === 'accept'
+        actionProp === 'accept'
           ? OFFBOARDING.UPDATE_ACTION.ACCEPT_MANAGER_LWD
           : OFFBOARDING.UPDATE_ACTION.REJECT_MANAGER_LWD,
     };
@@ -115,10 +117,18 @@ const RequestDifferentLWD = (props) => {
         <Col span={12} />
         <Col span={12}>
           <div className={styles.actions__buttons}>
-            <CustomSecondaryButton disabled={disabled} onClick={() => onActionLWD('reject')}>
+            <CustomSecondaryButton
+              disabled={disabled}
+              onClick={() => onActionLWD('reject')}
+              loading={loadingButton && action === 'reject'}
+            >
               Reject
             </CustomSecondaryButton>
-            <CustomPrimaryButton disabled={disabled} onClick={() => onActionLWD('accept')}>
+            <CustomPrimaryButton
+              disabled={disabled}
+              onClick={() => onActionLWD('accept')}
+              loading={loadingButton && action === 'accept'}
+            >
               Accept
             </CustomPrimaryButton>
           </div>
@@ -135,6 +145,7 @@ const RequestDifferentLWD = (props) => {
   );
 };
 
-export default connect(({ offboarding }) => ({
+export default connect(({ offboarding, loading }) => ({
   offboarding,
+  loadingButton: loading.effects['offboarding/updateRequestEffect'],
 }))(RequestDifferentLWD);

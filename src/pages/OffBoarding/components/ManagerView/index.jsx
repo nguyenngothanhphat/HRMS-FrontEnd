@@ -1,11 +1,11 @@
 import { Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { history, connect } from 'umi';
-import { PageContainer } from '@/layouts/layout/src';
-import TeamRequest from './components/TeamRequest';
-import styles from './index.less';
+import { connect, history } from 'umi';
 import CustomBlueButton from '@/components/CustomBlueButton';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
+import { PageContainer } from '@/layouts/layout/src';
+import RequestTable from '../RequestTable';
+import styles from './index.less';
 
 const TABS = {
   MY: 'my',
@@ -27,6 +27,15 @@ const ManagerView = (props) => {
   useEffect(() => {
     setSelectedLocation(selectedLocationsProp);
   }, [JSON.stringify(selectedLocationsProp)]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        viewingRequest: {},
+      },
+    });
+  }, []);
 
   const onLocationChange = (selection) => {
     dispatch({
@@ -74,7 +83,7 @@ const ManagerView = (props) => {
           destroyInactiveTabPane
         >
           <TabPane tab="Team Request" key={TABS.TEAM}>
-            <TeamRequest />
+            <RequestTable />
           </TabPane>
         </Tabs>
       </PageContainer>

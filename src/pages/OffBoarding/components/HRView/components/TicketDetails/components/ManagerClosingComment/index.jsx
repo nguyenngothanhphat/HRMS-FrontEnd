@@ -29,6 +29,7 @@ const ManagerClosingComment = (props) => {
         isHrRequired = false,
         isRequestDifferent = false,
         notes = '',
+        updatedAt = '',
       } = {},
       managerPickLWD = '',
     } = {},
@@ -83,7 +84,7 @@ const ManagerClosingComment = (props) => {
               </div>
             </Col>
             <Col span={10}>
-              <SmallNotice text="This will remain private to yourself and the HR" />
+              <SmallNotice text={`* This candidate can ${isRehired ? '' : 'not '}be rehired`} />
             </Col>
             <Col span={2} />
             <Col span={12}>
@@ -102,7 +103,7 @@ const ManagerClosingComment = (props) => {
               </div>
             </Col>
             <Col span={10}>
-              <SmallNotice text="Please select Yes if you want the HR to discuss the resignation decision with the employee." />
+              <SmallNotice text="Choosing this option opens a ticket in the Recruitment module to hire a replacement." />
             </Col>
             <Col span={2} />
           </Row>
@@ -111,10 +112,11 @@ const ManagerClosingComment = (props) => {
     );
   };
 
-  const renderCurrentTime = () => {
+  const renderTime = () => {
+    const time = updatedAt ? moment(updatedAt) : moment();
     return (
       <div className={styles.currentTime}>
-        <span>{moment().format(`${dateFormat} | h:mm a`)}</span>
+        <span>Last updated on {moment(time).format(`${dateFormat} | h:mm a`)}</span>
       </div>
     );
   };
@@ -125,7 +127,7 @@ const ManagerClosingComment = (props) => {
         assigned?.manager?.generalInfoInfo,
       )}’s Closing Comments from 1-on-1`}
       className={styles.ManagerClosingComment}
-      extra={renderCurrentTime()}
+      extra={renderTime()}
     >
       {renderContent()}
     </Card>

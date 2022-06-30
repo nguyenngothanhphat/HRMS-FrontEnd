@@ -684,13 +684,13 @@ const routes = [
             component: './OffBoarding/components/EmployeeView/components/ReasonForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
-          {
-            path: '/offboarding/my-request/review/:id',
-            name: 'reviewResignationTicket',
-            component: './OffBoarding/components/ReviewTicket',
-            hideInMenu: true,
-            authority: ['P_OFFBOARDING_VIEW','M_OFFBOARDING_VIEW'],
-          },
+          // {
+          //   path: '/offboarding/my-request/review/:id',
+          //   name: 'reviewResignationTicket',
+          //   component: './OffBoarding/components/ReviewTicket',
+          //   hideInMenu: true,
+          //   authority: ['P_OFFBOARDING_VIEW','M_OFFBOARDING_VIEW'],
+          // },
           {
             path: '/offboarding/list/review/:id',
             name: 'reviewResignationTicket',

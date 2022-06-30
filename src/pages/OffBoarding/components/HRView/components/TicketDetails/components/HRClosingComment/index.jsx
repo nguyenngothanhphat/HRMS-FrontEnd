@@ -14,9 +14,10 @@ const HRClosingComment = (props) => {
 
   const {
     dispatch,
-    item: { _id = '', employee = {}, hrNote: { closingComments = '' } = {} } = {},
+    item: { _id = '', employee = {}, hrNote: { closingComments = '', updatedAt = '' } = {} } = {},
     isEnterClosingComment = false,
     setIsEnterClosingComment = () => {},
+    loadingButton = false,
   } = props;
 
   // functionalities
@@ -76,11 +77,12 @@ const HRClosingComment = (props) => {
   };
 
   const renderOptions = () => {
+    const time = updatedAt ? moment(updatedAt) : moment();
     return (
       <div className={styles.options}>
         {!isEnterClosingComment && <EditButton onClick={() => setIsEnterClosingComment(true)} />}
         <div className={styles.currentTime}>
-          <span>{moment().format(`${dateFormat} | h:mm a`)}</span>
+          <span>{moment(time).format(`${dateFormat} | h:mm a`)}</span>
         </div>
       </div>
     );
@@ -96,7 +98,7 @@ const HRClosingComment = (props) => {
             <CustomSecondaryButton onClick={() => setIsEnterClosingComment(false)}>
               Cancel
             </CustomSecondaryButton>
-            <CustomPrimaryButton form="closingForm" htmlType="submit">
+            <CustomPrimaryButton form="closingForm" htmlType="submit" loading={loadingButton}>
               Submit
             </CustomPrimaryButton>
           </div>
@@ -117,6 +119,7 @@ const HRClosingComment = (props) => {
   );
 };
 
-export default connect(({ offboarding }) => ({
+export default connect(({ offboarding, loading }) => ({
   offboarding,
+  loadingButton: loading.effects['offboarding/updateRequestEffect'],
 }))(HRClosingComment);

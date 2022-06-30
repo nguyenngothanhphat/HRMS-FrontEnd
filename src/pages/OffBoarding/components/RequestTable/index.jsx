@@ -18,11 +18,11 @@ import {
   OFFBOARDING_TABS,
 } from '@/utils/offboarding';
 import { addZeroToNumber, removeEmptyFields } from '@/utils/utils';
-import SetMeetingModal from '../../../SetMeetingModal';
+import SetMeetingModal from '../SetMeetingModal';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
 
-const TeamRequest = (props) => {
+const RequestTable = (props) => {
   const {
     dispatch,
     offboarding: {
@@ -52,6 +52,9 @@ const TeamRequest = (props) => {
       status: currentStatus,
       search: searchText,
     };
+    if (type === OFFBOARDING_TABS.TEAM) {
+      payload.isTeam = true;
+    }
     if (!isEmpty(filterValues)) {
       const { fromDate = '', toDate = '' } = filterValues;
       if (fromDate) {
@@ -73,7 +76,10 @@ const TeamRequest = (props) => {
       payload: {
         id: handlingRequest?._id,
         employeeId: handlingRequest?.employee?._id,
-        action: OFFBOARDING.UPDATE_ACTION.MANAGER_RESCHEDULE,
+        action:
+          type === OFFBOARDING_TABS.TEAM
+            ? OFFBOARDING.UPDATE_ACTION.MANAGER_RESCHEDULE
+            : OFFBOARDING.UPDATE_ACTION.HR_RESCHEDULE,
         meeting: {
           managerDate: moment(values.time),
         },
@@ -159,23 +165,38 @@ const TeamRequest = (props) => {
   };
 
   const renderMenuDropdown = (row = {}) => {
-    return (
-      <div className={styles.containerDropdown}>
-        {type === OFFBOARDING_TABS.TEAM && (
+    if (type === OFFBOARDING_TABS.TEAM) {
+      return (
+        <div className={styles.containerDropdown}>
           <div className={styles.btn}>
             <span>
               <Link to={getViewDetailURL(row._id)}>Change assigned</Link>
             </span>
           </div>
-        )}
-        {type === OFFBOARDING_TABS.COMPANY_WIDE && (
-          <div className={styles.btn}>
-            <span>
-              <Link to={getViewDetailURL(row._id)}>Re-assign</Link>
-            </span>
-          </div>
-        )}
-        {!row.meeting?.employeeDate && !row.meeting?.managerDate && (
+
+          {!row.meeting?.employeeDate && !row.meeting?.managerDate && (
+            <div
+              className={styles.btn}
+              onClick={() => {
+                setHandlingRequest(row);
+                setShowDropdownId(null);
+              }}
+            >
+              <span>Schedule 1 on 1</span>
+            </div>
+          )}
+        </div>
+      );
+    }
+    return (
+      <div className={styles.containerDropdown}>
+        <div className={styles.btn}>
+          <span>
+            <Link to={getViewDetailURL(row._id)}>Re-assign</Link>
+          </span>
+        </div>
+
+        {row.managerNote?.isHrRequired && !row.meetingHR?.date && (
           <div
             className={styles.btn}
             onClick={() => {
@@ -373,7 +394,7 @@ const TeamRequest = (props) => {
   };
 
   return (
-    <div className={styles.TeamRequest}>
+    <div className={styles.RequestTable}>
       <Tabs
         activeKey={currentStatus}
         destroyInactiveTabPane
@@ -396,7 +417,7 @@ const TeamRequest = (props) => {
       </Tabs>
       <SetMeetingModal
         visible={!!handlingRequest}
-        title={`Set 1-on1 with ${handlingRequest?.employee?.generalInfoInfo?.legalName}`}
+        title={`Set 1-on-1 with ${handlingRequest?.employee?.generalInfoInfo?.legalName}`}
         onClose={() => setHandlingRequest(null)}
         partnerRole="Employee"
         employee={handlingRequest?.employee}
@@ -413,4 +434,4 @@ export default connect(
     companyLocationList,
     loadingFetchList: loading.effects['offboarding/fetchListEffect'],
   }),
-)(TeamRequest);
+)(RequestTable);

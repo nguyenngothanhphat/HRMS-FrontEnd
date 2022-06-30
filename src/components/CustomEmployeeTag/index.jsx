@@ -10,7 +10,14 @@ const CustomEmployeeTag = ({
   userId = '',
   isYou = false,
   highlight = false,
+  status = '',
 }) => {
+  const getColor = () => {
+    if (status === 'accepted') return '#00C598';
+    if (status === 'rejected') return '#E85757';
+    return 'transparent';
+  };
+
   return (
     <div
       className={styles.CustomEmployeeTag}
@@ -23,9 +30,16 @@ const CustomEmployeeTag = ({
         <img
           src={avatar || DefaultAvatar}
           alt="avatar"
-          style={highlight ? { borderColor: '#00C598', backgroundColor: '#00C598' } : {}}
+          style={highlight ? { borderColor: getColor(), backgroundColor: getColor() } : {}}
         />
-        {highlight && <div className={styles.dot} />}
+        {highlight && (
+          <div
+            className={styles.dot}
+            style={{
+              backgroundColor: getColor(),
+            }}
+          />
+        )}
       </div>
       <div className={styles.nameTitle}>
         <span className={styles.name}>

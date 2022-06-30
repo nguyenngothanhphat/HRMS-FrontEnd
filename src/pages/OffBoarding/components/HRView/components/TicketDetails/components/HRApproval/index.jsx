@@ -12,7 +12,15 @@ import styles from './index.less';
 const HRApproval = (props) => {
   const {
     dispatch,
-    item: { _id = '', employee = {}, hrNote = {}, hrStatus = '', assigned = {} } = {},
+    item: {
+      _id = '',
+      employee = {},
+      hrNote = {},
+      hrStatus = '',
+      status = '',
+      assigned = {},
+      managerNote: { isRequestDifferent = false } = {},
+    } = {},
     loadingButton = false,
   } = props;
 
@@ -44,7 +52,9 @@ const HRApproval = (props) => {
 
   // render UI
   const renderContent = () => {
-    const disabled = hrNote.isAcceptLWD === undefined;
+    const disabled =
+      (hrNote.isAcceptLWD === undefined && isRequestDifferent) ||
+      status === OFFBOARDING.STATUS.IN_PROGRESS;
 
     if (hrStatus === OFFBOARDING.STATUS.REJECTED) {
       return (

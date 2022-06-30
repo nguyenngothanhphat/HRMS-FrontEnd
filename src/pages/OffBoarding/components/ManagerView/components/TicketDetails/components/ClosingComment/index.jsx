@@ -37,6 +37,7 @@ const ClosingComment = (props) => {
         isHrRequired = false,
         isRequestDifferent = false,
         notes = '',
+        updatedAt = '',
       } = {},
       managerPickLWD = '',
     } = {},
@@ -262,10 +263,11 @@ const ClosingComment = (props) => {
     );
   };
 
-  const renderCurrentTime = () => {
+  const renderTime = () => {
+    const time = updatedAt ? moment(updatedAt) : moment();
     return (
       <div className={styles.currentTime}>
-        <span>{moment().format(`${dateFormat} | h:mm a`)}</span>
+        <span>{moment(time).format(`${dateFormat} | h:mm a`)}</span>
       </div>
     );
   };
@@ -354,7 +356,7 @@ const ClosingComment = (props) => {
     <Card
       title="Add Closing comments from your 1 on 1 with the employee"
       className={styles.ClosingComment}
-      extra={renderCurrentTime()}
+      extra={renderTime()}
     >
       {renderContent()}
       {renderButtons()}

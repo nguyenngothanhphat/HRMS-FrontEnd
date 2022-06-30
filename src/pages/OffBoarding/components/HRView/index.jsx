@@ -5,7 +5,7 @@ import CustomBlueButton from '@/components/CustomBlueButton';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
 import { PageContainer } from '@/layouts/layout/src';
 import { OFFBOARDING_TABS } from '@/utils/offboarding';
-import TeamRequest from '../ManagerView/components/TeamRequest';
+import RequestTable from '../RequestTable';
 import Settings from '../Settings';
 import styles from './index.less';
 
@@ -26,6 +26,15 @@ const HRView = (props) => {
   useEffect(() => {
     setSelectedLocation(selectedLocationsProp);
   }, [JSON.stringify(selectedLocationsProp)]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        viewingRequest: {},
+      },
+    });
+  }, []);
 
   const onLocationChange = (selection) => {
     dispatch({
@@ -90,10 +99,10 @@ const HRView = (props) => {
           destroyInactiveTabPane
         >
           <TabPane tab="Company Wide" key={OFFBOARDING_TABS.COMPANY_WIDE}>
-            <TeamRequest type={OFFBOARDING_TABS.COMPANY_WIDE} />
+            <RequestTable type={OFFBOARDING_TABS.COMPANY_WIDE} />
           </TabPane>
           <TabPane tab="Team Request" key={OFFBOARDING_TABS.TEAM}>
-            <TeamRequest type={OFFBOARDING_TABS.TEAM} />
+            <RequestTable type={OFFBOARDING_TABS.TEAM} />
           </TabPane>
           <TabPane tab="Settings" key="settings">
             <Settings type={type} />
