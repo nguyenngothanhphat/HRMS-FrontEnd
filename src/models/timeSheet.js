@@ -21,6 +21,7 @@ import {
   // complex view hr & finance
   getHRTimesheet,
   getFinanceTimesheet,
+  sendMailInCompleteTimeSheet,
   // export manager report (my project)
   exportProject,
   exportTeam,
@@ -675,6 +676,22 @@ const TimeSheet = {
           type: 'save',
           payload: { ...myRequest },
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *sendMailInCompleteTimeSheet({ payload = {} }, { call }) {
+      let response;
+      try {
+        response = yield call(sendMailInCompleteTimeSheet, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          companyId: getCurrentCompany(),
+        });
+        const { code, msg } = response;
+        if (code !== 200) throw response;
+        notification.success({ message: msg });
       } catch (errors) {
         dialog(errors);
       }

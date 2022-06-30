@@ -1,12 +1,22 @@
 import { Button } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import exportToCSV from '@/utils/exportAsExcel';
 import DownloadIcon from '@/assets/timeSheet/solidDownload.svg';
 import styles from './index.less';
+import { dateFormatAPI } from '@/utils/timeSheet';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const Footer = (props) => {
-  const { selectedEmployees = [], data = [] } = props;
+  const {
+    selectedEmployees = [],
+    data = [],
+    startDate = '',
+    endDate = '',
+    dispatch,
+    setSelectedEmployees = () => {},
+  } = props;
 
   const {
     user: {
@@ -14,7 +24,8 @@ const Footer = (props) => {
         location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
       } = {},
     } = {},
-    timeSheet: { isIncompleteTimesheet = false } = {},
+    timeSheet: { isIncompleteTimesheet = false, selectedLocations = [] } = {},
+    loadingSendMail = false,
   } = props;
 
   const locationUser = countryID === 'US';
@@ -37,7 +48,7 @@ const Footer = (props) => {
         totalWorkingDayInHours = '',
         breakTime = 0,
         overTime = 0,
-        incompleteDates=[],
+        incompleteDates = [],
         department: { name = '' } = {},
       } = item;
       let projectName = '';
@@ -73,7 +84,25 @@ const Footer = (props) => {
     exportToCSV(processData(result), 'HumanResourceReportData.xlsx');
   };
 
-  const remindEmployee = () => {};
+  const remindEmployee = () => {
+    const arr = getSelectedData();
+    const employeeIds = arr.map((el) => el.employeeId) || [];
+    dispatch({
+      type: 'timeSheet/sendMailInCompleteTimeSheet',
+      payload: {
+        selectedLocations,
+        isIncompleteTimesheet: true,
+        employeeIds,
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+      },
+    }).then((res) => {
+      const { code = '' } = res;
+      if (code === 200) {
+        setSelectedEmployees([]);
+      }
+    });
+  };
 
   return (
     <div className={styles.Footer}>
@@ -81,12 +110,11 @@ const Footer = (props) => {
       <div className={styles.right}>
         {isIncompleteTimesheet ? (
           <div className={styles.downloadIcon} onClick={remindEmployee}>
-            <Button>Remind Employee</Button>
+            <CustomPrimaryButton loading={loadingSendMail}>Remind Employee</CustomPrimaryButton>
           </div>
         ) : (
           <div className={styles.downloadIcon} onClick={downloadTemplate}>
-            <img src={DownloadIcon} alt="Icon Download" />
-            <Button>Download</Button>
+            <Button icon={<img src={DownloadIcon} alt="Icon Download" />}>Download</Button>
           </div>
         )}
       </div>
@@ -94,4 +122,8 @@ const Footer = (props) => {
   );
 };
 
-export default connect(({ user, timeSheet }) => ({ user, timeSheet }))(Footer);
+export default connect(({ user, timeSheet, loading }) => ({
+  user,
+  timeSheet,
+  loadingSendMail: loading.effects['timeSheet/sendMailInCompleteTimeSheet'],
+}))(Footer);
