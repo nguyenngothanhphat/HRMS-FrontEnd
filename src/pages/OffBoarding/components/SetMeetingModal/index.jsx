@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
 import CommonModal from '@/components/CommonModal';
 import SetMeetingModalContent from './components/SetMeetingModalContent';
 

@@ -104,6 +104,8 @@ const BackgroundRecheck = (props) => {
       });
       const check = validateFiles();
       setValidated(check);
+    } else {
+      setValidated(true);
     }
   }, [
     JSON.stringify(documentTypeA),

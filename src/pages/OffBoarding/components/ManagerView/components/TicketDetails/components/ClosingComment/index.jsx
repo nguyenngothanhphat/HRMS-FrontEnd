@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, connect } from 'umi';
 import { isEmpty } from 'lodash';
 import SuccessIcon from '@/assets/offboarding/successIcon.png';
+import FailedIcon from '@/assets/offboarding/failedIcon.svg';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
@@ -36,6 +37,7 @@ const ClosingComment = (props) => {
         isHrRequired = false,
         isRequestDifferent = false,
         notes = '',
+        updatedAt = '',
       } = {},
       managerPickLWD = '',
     } = {},
@@ -78,6 +80,7 @@ const ClosingComment = (props) => {
     const res = await dispatch({
       type: 'offboarding/updateRequestEffect',
       payload,
+      showNotification: false,
     });
     if (res.statusCode === 200) {
       setNotificationModalVisible(true);
@@ -260,10 +263,11 @@ const ClosingComment = (props) => {
     );
   };
 
-  const renderCurrentTime = () => {
+  const renderTime = () => {
+    const time = updatedAt ? moment(updatedAt) : moment();
     return (
       <div className={styles.currentTime}>
-        <span>{moment().format(`${dateFormat} | h:mm a`)}</span>
+        <span>{moment(time).format(`${dateFormat} | h:mm a`)}</span>
       </div>
     );
   };
@@ -304,7 +308,7 @@ const ClosingComment = (props) => {
     if (status === OFFBOARDING.STATUS.REJECTED) {
       return (
         <div className={styles.result}>
-          <img src={SuccessIcon} alt="" />
+          <img src={FailedIcon} alt="" />
           <span>
             The employee resignation request has been Rejected by{' '}
             <Link to={`/directory/employee-profile/${manager?.generalInfoInfo?.userId}`}>
@@ -352,7 +356,7 @@ const ClosingComment = (props) => {
     <Card
       title="Add Closing comments from your 1 on 1 with the employee"
       className={styles.ClosingComment}
-      extra={renderCurrentTime()}
+      extra={renderTime()}
     >
       {renderContent()}
       {renderButtons()}
