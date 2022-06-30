@@ -182,7 +182,9 @@ const AddPost = (props) => {
 
       fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
       setFileList([...fileListTemp]);
-      tempAllValues[name].fileList = fileListTemp;
+      if (tempAllValues[name]) {
+        tempAllValues[name].fileList = fileListTemp;
+      }
 
       return tempAllValues;
     };
