@@ -177,12 +177,11 @@ export const addZeroToNumber = (number) => {
 
 export const getCountryId = (locationObj) => {
   const type = typeof locationObj?.headQuarterAddress?.country;
-
   switch (type) {
     case 'string':
       return locationObj?.headQuarterAddress?.country;
     case 'object':
-      return locationObj?.headQuarterAddress?.country?.id;
+      return locationObj?.headQuarterAddress?.country?._id;
     default:
       return '';
   }

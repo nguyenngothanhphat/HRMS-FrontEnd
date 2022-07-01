@@ -61,7 +61,6 @@ const HumanResourceReport = (props) => {
     setSelectedEmployees([]);
   };
 
-  // USE EFFECT AREA
   useEffect(() => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
       fetchHRTimesheet(startDateWeek, endDateWeek);
@@ -205,7 +204,30 @@ const HumanResourceReport = (props) => {
 
   const renderFooter = () => {
     if (selectedEmployees.length === 0) return null;
-    return <Footer selectedEmployees={selectedEmployees} data={hrViewList} />;
+    switch (selectedView) {
+      case VIEW_TYPE.W:
+        return (
+          <Footer
+            selectedEmployees={selectedEmployees}
+            data={hrViewList}
+            startDate={startDateWeek}
+            endDate={endDateWeek}
+            setSelectedEmployees={setSelectedEmployees}
+          />
+        );
+      case VIEW_TYPE.M:
+        return (
+          <Footer
+            selectedEmployees={selectedEmployees}
+            data={hrViewList}
+            startDate={startDateMonth}
+            endDate={endDateMonth}
+            setSelectedEmployees={setSelectedEmployees}
+          />
+        );
+      default:
+        return null;
+    }
   };
   // MAIN AREA
   return (

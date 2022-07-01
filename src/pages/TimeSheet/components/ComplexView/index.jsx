@@ -24,19 +24,35 @@ const ComplexView = (props) => {
     tabName = '',
     showMyTimeSheet = true,
     companyLocationList = [],
-    timeSheet: { divisionList = [] } = {},
+    timeSheet: { divisionList = [], selectedLocations: selectedLocationsProp = [] } = {},
     currentDateProp = '',
     dispatch,
   } = props;
 
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
   const [selectedDivisions, setSelectedDivisions] = useState([]);
-  const [selectedLocations, setSelectedLocation] = useState([getCurrentLocation()]);
+  const [selectedLocations, setSelectedLocations] = useState([]);
   const [isIncompleteTimeSheet, setIsIncompleteTimeSheet] = useState(false);
 
   // PERMISSIONS TO VIEW LOCATION
   const viewLocationHR = permissions.viewLocationHRTimesheet === 1;
   const viewLocationFinance = permissions.viewLocationFinanceTimesheet === 1;
+
+  useEffect(() => {
+    setSelectedLocations(selectedLocationsProp);
+  }, [JSON.stringify(selectedLocationsProp)]);
+
+  useEffect(() => {
+    const currentLocation = getCurrentLocation();
+    if (currentLocation) {
+      dispatch({
+        type: 'timeSheet/save',
+        payload: {
+          selectedLocations: [currentLocation],
+        },
+      });
+    }
+  }, []);
 
   const requestLeave = () => {
     history.push('/time-off/overview/personal-timeoff/new');
@@ -49,7 +65,7 @@ const ComplexView = (props) => {
         selectedLocations: [...selection],
       },
     });
-    setSelectedLocation([...selection]);
+    setSelectedLocations([...selection]);
   };
 
   const onDivisionChange = (selection) => {
