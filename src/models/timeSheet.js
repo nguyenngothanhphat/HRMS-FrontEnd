@@ -214,7 +214,7 @@ const TimeSheet = {
       try {
         const payloadTemp = payload;
         const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
-        const { code, holidays } = res;
+        const { code, holidays = [] } = res;
         if (code !== 200) throw res;
         return holidays;
       } catch (errors) {

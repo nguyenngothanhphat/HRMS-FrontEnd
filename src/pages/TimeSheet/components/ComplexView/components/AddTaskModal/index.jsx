@@ -370,7 +370,7 @@ const AddTaskModal = (props) => {
     let check = false;
     if (mode === 'multiple') {
       check = true;
-      if (dates?.length) {
+      if (dates) {
         if (dates.length < 2) {
           check = false;
         } else if (moment(dates[0]).format(dateFormat) !== moment(dates[1]).format(dateFormat)) {
