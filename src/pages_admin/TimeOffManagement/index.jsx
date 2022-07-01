@@ -1,19 +1,29 @@
 import { Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { PageContainer } from '@/layouts/layout/src';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
+import { PageContainer } from '@/layouts/layout/src';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import TableContainer from './components/TableContainer';
 import styles from './index.less';
-
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { getCountryId } from '@/utils/utils';
 
 const { TabPane } = Tabs;
 
 const TimeOffManagement = (props) => {
   const { dispatch, companyLocationList = [] } = props;
   const [selectedLocations, setSelectedLocation] = useState([]);
+
+  const getCountryId = (locationObj) => {
+    const type = typeof locationObj?.headQuarterAddress?.country;
+    switch (type) {
+      case 'string':
+        return locationObj?.headQuarterAddress?.country;
+      case 'object':
+        return locationObj?.headQuarterAddress?.country?._id;
+      default:
+        return '';
+    }
+  };
 
   const fetchTimeoffType = () => {
     if (selectedLocations.length > 0) {
