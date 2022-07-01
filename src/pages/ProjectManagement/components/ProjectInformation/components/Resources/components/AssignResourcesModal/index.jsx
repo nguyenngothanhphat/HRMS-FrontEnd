@@ -104,7 +104,7 @@ const AssignResourcesModal = (props) => {
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
-        <img src={BackIcon} alt="" onClick={onBack} />
+        {step === 2 && <img src={BackIcon} alt="" onClick={onBack} />}
         <p className={styles.header__text}>
           {step === 1 ? 'Assign resources' : 'Review resources'}
         </p>

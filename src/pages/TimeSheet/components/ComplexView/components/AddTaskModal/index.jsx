@@ -27,7 +27,6 @@ import {
   TIMESHEET_ADD_TASK_ALERT,
 } from '@/utils/timeSheet';
 import styles from './index.less';
-import { getHolidaysByDateService } from '@/services/timeSheet';
 
 const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
@@ -73,8 +72,16 @@ const AddTaskModal = (props) => {
   };
 
   const fetchHolidaysByDate = async (startDate, endDate) => {
-    const dataHolidays = await getHolidaysByDateService(dispatch, startDate, endDate);
-    setHolidays(dataHolidays);
+    const holidaysResponse = await dispatch({
+      type: 'timeSheet/fetchHolidaysByDate',
+      payload: {
+        companyId: getCurrentCompany(),
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+      },
+    });
+
+    setHolidays(holidaysResponse);
   };
 
   useEffect(() => {
@@ -253,10 +260,12 @@ const AddTaskModal = (props) => {
     let check = false;
     if (mode === 'multiple') {
       check = true;
-      if (!dates || dates.length < 2) {
-        check = false;
-      } else if (moment(dates[0]).format(dateFormat) !== moment(dates[1]).format(dateFormat)) {
-        check = false;
+      if (dates) {
+        if (dates.length < 2) {
+          check = false;
+        } else if (moment(dates[0]).format(dateFormat) !== moment(dates[1]).format(dateFormat)) {
+          check = false;
+        }
       }
     }
 
@@ -471,14 +480,13 @@ const AddTaskModal = (props) => {
           onValuesChange={onValuesChange}
         >
           <Row gutter={[24, 0]} className={styles.abovePart}>
-            <Col xs={24} md={12} style={{ paddingTop: 16 }}>
+            <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Please select Timesheet Period' }]}
                 label="Select Timesheet Period"
                 name="dates"
                 fieldKey="dates"
                 labelCol={{ span: 24 }}
-                style={{ marginBottom: 0 }}
               >
                 <RangePicker
                   format={dateFormat}

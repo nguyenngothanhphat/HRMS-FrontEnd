@@ -10,8 +10,8 @@ import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import FilterContent from './components/FilterContent';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
-import { getHolidaysByDateService } from '@/services/timeSheet';
-import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
+import { checkHolidayInWeek, dateFormatAPI, holidayFormatDate } from '@/utils/timeSheet';
+import { getCurrentCompany } from '@/utils/authority';
 
 const Header = (props) => {
   const {
@@ -59,8 +59,15 @@ const Header = (props) => {
   };
 
   const fetchHolidaysByDate = async () => {
-    const dataHolidays = await getHolidaysByDateService(dispatch, startDate, endDate);
-    setHolidays(dataHolidays);
+    const holidaysResponse = await dispatch({
+      type: 'timeSheet/fetchHolidaysByDate',
+      payload: {
+        companyId: getCurrentCompany(),
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+      },
+    });
+    setHolidays(holidaysResponse);
   };
 
   useEffect(() => {

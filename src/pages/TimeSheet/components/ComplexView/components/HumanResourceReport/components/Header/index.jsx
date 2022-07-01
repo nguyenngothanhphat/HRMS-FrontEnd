@@ -8,12 +8,12 @@ import DownloadIcon from '@/assets/timeSheet/download.svg';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
-import { checkHolidayInWeek, holidayFormatDate, VIEW_TYPE } from '@/utils/timeSheet';
-import { getHolidaysByDateService } from '@/services/timeSheet';
+import { checkHolidayInWeek, dateFormatAPI, holidayFormatDate, VIEW_TYPE } from '@/utils/timeSheet';
 import styles from './index.less';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import FilterContent from './components/FilterContent';
+import { getCurrentCompany } from '@/utils/authority';
 
 const Header = (props) => {
   const {
@@ -137,8 +137,15 @@ const Header = (props) => {
   };
 
   const fetchHolidaysByDate = async () => {
-    const dataHolidays = await getHolidaysByDateService(dispatch, startDate, endDate);
-    setHolidays(dataHolidays);
+    const holidaysResponse = await dispatch({
+      type: 'timeSheet/fetchHolidaysByDate',
+      payload: {
+        companyId: getCurrentCompany(),
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+      },
+    });
+    setHolidays(holidaysResponse);
   };
 
   // USE EFFECT AREA

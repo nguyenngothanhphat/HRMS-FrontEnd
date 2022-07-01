@@ -9,6 +9,7 @@ import EmptyComponent from '@/components/Empty';
 import {
   checkHoliday,
   convertMsToTime,
+  dateFormatAPI,
   getHolidayNameByDate,
   holidayFormatDate,
   projectColor,
@@ -17,7 +18,7 @@ import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { getHolidaysByDateService } from '@/services/timeSheet';
+import { getCurrentCompany } from '@/utils/authority';
 
 const WeeklyTable = (props) => {
   const { dispatch, startDate = '', endDate = '', loadingFetch = false, data = [] } = props;
@@ -50,8 +51,15 @@ const WeeklyTable = (props) => {
   };
 
   const fetchHolidaysByDate = async () => {
-    const dataHolidays = await getHolidaysByDateService(dispatch, startDate, endDate);
-    setHolidays(dataHolidays);
+    const holidaysResponse = await dispatch({
+      type: 'timeSheet/fetchHolidaysByDate',
+      payload: {
+        companyId: getCurrentCompany(),
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+      },
+    });
+    setHolidays(holidaysResponse);
   };
 
   // USE EFFECT

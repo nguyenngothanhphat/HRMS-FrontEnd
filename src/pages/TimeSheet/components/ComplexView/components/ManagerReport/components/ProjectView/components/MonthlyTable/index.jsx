@@ -5,6 +5,7 @@ import { connect } from 'umi';
 import {
   checkHolidayInWeek,
   convertMsToTime,
+  dateFormatAPI,
   holidayFormatDate,
   projectColor,
 } from '@/utils/timeSheet';
@@ -15,7 +16,7 @@ import styles from './index.less';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { getHolidaysByDateService } from '@/services/timeSheet';
+import { getCurrentCompany } from '@/utils/authority';
 
 const MonthlyTable = (props) => {
   const {
@@ -36,8 +37,15 @@ const MonthlyTable = (props) => {
   };
 
   const fetchHolidaysByDate = async () => {
-    const dataHolidays = await getHolidaysByDateService(dispatch, startDate, endDate);
-    setHolidays(dataHolidays);
+    const holidaysResponse = await dispatch({
+      type: 'timeSheet/fetchHolidaysByDate',
+      payload: {
+        companyId: getCurrentCompany(),
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+      },
+    });
+    setHolidays(holidaysResponse);
   };
 
   // USE EFFECT

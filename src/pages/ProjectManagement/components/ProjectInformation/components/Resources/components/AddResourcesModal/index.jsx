@@ -93,7 +93,7 @@ const AddResourcesModal = (props) => {
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
-        <img src={BackIcon} alt="" onClick={onBack} />
+        {step === 2 && <img src={BackIcon} alt="" onClick={onBack} />}
         <p className={styles.header__text}>{step === 1 ? 'Add resources' : 'Review resources'}</p>
       </div>
     );
@@ -128,7 +128,7 @@ const AddResourcesModal = (props) => {
       <div className={styles.container}>
         <Row gutter={[0, 24]} className={styles.abovePart}>
           {items.map((x, index) => (
-            <Col xs={24} md={8} lg={6}>
+            <Col key={x.value} xs={24} md={8} lg={6}>
               <div className={styles.item} key={`${index + 1}`}>
                 <span className={styles.label}>{x.label}:</span>
                 <span className={styles.value}>{x.value}</span>
