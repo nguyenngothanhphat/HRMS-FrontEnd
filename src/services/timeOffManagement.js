@@ -34,3 +34,10 @@ export async function generateCSV(payload) {
     data: payload,
   });
 }
+
+export async function getTimeOffTypeByCountry(payload) {
+  return request('/api/timeofftypetenant/get-by-country', {
+    method: 'POST',
+    data: payload,
+  });
+}
