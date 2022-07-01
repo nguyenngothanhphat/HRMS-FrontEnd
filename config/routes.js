@@ -353,6 +353,12 @@ const routes = [
             hideInMenu: true,
           },
           {
+            path: '/offboarding/settings/:type',
+            component: './OffBoarding',
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
+            hideInMenu: true,
+          },
+          {
             path: '/time-off',
             name: 'timeOff',
             icon: '/assets/images/menuIcons/timeoff.svg',
@@ -678,17 +684,24 @@ const routes = [
             component: './OffBoarding/components/EmployeeView/components/ReasonForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
+          // {
+          //   path: '/offboarding/my-request/review/:id',
+          //   name: 'reviewResignationTicket',
+          //   component: './OffBoarding/components/ReviewTicket',
+          //   hideInMenu: true,
+          //   authority: ['P_OFFBOARDING_VIEW','M_OFFBOARDING_VIEW'],
+          // },
           {
-            path: '/offboarding/my-request/review/:id',
+            path: '/offboarding/list/review/:id',
             name: 'reviewResignationTicket',
-            component: './OffBoarding/components/ReviewTicket',
+            component: './OffBoarding/components/ManagerView/components/TicketDetails',
             hideInMenu: true,
             authority: ['P_OFFBOARDING_VIEW','M_OFFBOARDING_VIEW'],
           },
           {
-            path: '/offboarding/list/review/:id',
+            path: '/offboarding/list/hr-review/:id',
             name: 'reviewResignationTicket',
-            component: './OffBoarding/components/ReviewTicket',
+            component: './OffBoarding/components/HRView/components/TicketDetails',
             hideInMenu: true,
             authority: ['P_OFFBOARDING_VIEW','M_OFFBOARDING_VIEW'],
           },
@@ -699,20 +712,20 @@ const routes = [
           //   hideInMenu: true,
           //   authority: ['P_OFFBOARDING_VIEW'],
           // },
-          {
-            path: '/offboarding/hr-relieving-formalities/relieving-detail/:ticketId',
-            name: 'offboarding.relievingDetail',
-            component:
-              './OffBoarding/components/HRView/components/RelievingFormalities/components/RelievingDetails',
-            hideInMenu: true,
-            authority: ['P_OFFBOARDING_VIEW'],
-          },
+          // {
+          //   path: '/offboarding/hr-relieving-formalities/relieving-detail/:ticketId',
+          //   name: 'offboarding.relievingDetail',
+          //   component:
+          //     './OffBoarding/components/HRView/components/RelievingFormalities/components/RelievingDetails',
+          //   hideInMenu: true,
+          //   authority: ['P_OFFBOARDING_VIEW'],
+          // },
           {
             path: '/offboarding/settings/:type/create-custom-email',
             name: 'createCustomEmail',
             hideInMenu: true,
             component:
-              './OffBoarding/components/HRView/components/Settings/components/CustomEmails/components/CreateCustomEmail',
+              './OffBoarding/components/Settings/components/CustomEmails/components/CreateCustomEmail',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
@@ -720,7 +733,7 @@ const routes = [
             name: 'editEmail',
             hideInMenu: true,
             component:
-              './OffBoarding/components/HRView/components/Settings/components/CustomEmails/components/EditEmail',
+              './OffBoarding/components/Settings/components/CustomEmails/components/EditEmail',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
@@ -728,7 +741,7 @@ const routes = [
             name: 'offboarding.template.email',
             hideInMenu: true,
             component:
-              './OffBoarding/components/HRView/components/Settings/components/DocsTemplates/components/TemplateDetails',
+              './OffBoarding/components/Settings/components/DocsTemplates/components/TemplateDetails',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
@@ -736,7 +749,7 @@ const routes = [
             name: 'offboarding.setting.form.viewForm',
             hideInMenu: true,
             component:
-              './OffBoarding/components/HRView/components/Settings/components/Forms/components/ViewForm',
+              './OffBoarding/components/Settings/components/Forms/components/ViewForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
@@ -744,7 +757,7 @@ const routes = [
             name: 'offboarding.setting.form.addForm',
             hideInMenu: true,
             component:
-              './OffBoarding/components/HRView/components/Settings/components/Forms/components/HandleForm',
+              './OffBoarding/components/Settings/components/Forms/components/HandleForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
@@ -752,7 +765,7 @@ const routes = [
             name: 'offboarding.setting.form.editForm',
             hideInMenu: true,
             component:
-              './OffBoarding/components/HRView/components/Settings/components/Forms/components/HandleForm',
+              './OffBoarding/components/Settings/components/Forms/components/HandleForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {

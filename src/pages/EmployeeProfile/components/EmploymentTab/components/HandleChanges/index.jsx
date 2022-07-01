@@ -241,7 +241,7 @@ const HandleChanges = (props) => {
           ...changeData,
           stepFive: {
             ...changeData.stepThree,
-            notifyTo: [...changeData.stepFive.notifyTo, ...value],
+            notifyTo: [...new Set([...changeData.stepFive.notifyTo, ...value])],
           },
         };
         break;

@@ -214,6 +214,10 @@ const AddTaskModal = (props) => {
     if (dates && dates.length > 1 && dates[0] && dates[1]) fetchHolidaysByDate(dates[0], dates[1]);
   }, [dates]);
 
+  useEffect(() => {
+    if (dates && dates.length > 1 && dates[0] && dates[1]) fetchHolidaysByDate(dates[0], dates[1]);
+  }, [dates]);
+
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>

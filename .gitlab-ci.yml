@@ -29,6 +29,7 @@ build-job-dev:       # This job runs in the build stage, which runs first.
   script:
     - source /etc/environment
     - npm install
+    - mv ./config/proxy-dev.js ./config/proxy.js
     - npm run build
     - docker login -u khoa.le -p $PWD gitlab.paxanimi.ai:8150
     - docker build -t gitlab.paxanimi.ai:8150/hrms/hrms-frontend:dev-$CI_PIPELINE_ID -f Dockerfile .

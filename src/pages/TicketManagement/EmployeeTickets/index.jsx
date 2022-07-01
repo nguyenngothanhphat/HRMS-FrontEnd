@@ -20,9 +20,26 @@ const EmployeeTicket = (props) => {
     tabName = '',
     permissions = [],
     role = '',
+    selectedLocations: selectedLocationsProp = [],
   } = props;
 
-  const [selectedLocationsState, setSelectedLocationsState] = useState([getCurrentLocation()]);
+  const [selectedLocationsState, setSelectedLocationsState] = useState([]);
+
+  useEffect(() => {
+    setSelectedLocationsState(selectedLocationsProp);
+  }, [JSON.stringify(selectedLocationsProp)]);
+
+  useEffect(() => {
+    const currentLocation = getCurrentLocation();
+    if (currentLocation) {
+      dispatch({
+        type: 'ticketManagement/save',
+        payload: {
+          selectedLocations: [currentLocation],
+        },
+      });
+    }
+  }, []);
 
   const fetchLocation = () => {
     dispatch({
@@ -97,7 +114,7 @@ const EmployeeTicket = (props) => {
       dispatch({
         type: 'ticketManagement/save',
         payload: {
-          selectedLocations: [getCurrentLocation()],
+          selectedLocations: [],
         },
       });
     };
