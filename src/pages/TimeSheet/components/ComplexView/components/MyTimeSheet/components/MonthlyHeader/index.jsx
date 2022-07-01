@@ -15,7 +15,7 @@ const MonthlyHeader = (props) => {
     setStartDate = () => {},
     setEndDate = () => {},
     viewChangeComponent = '',
-    myTimesheetByMonth = () => {},
+    selectedDate = '',
   } = props;
   const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
   const [importModalVisible, setImportModalVisible] = useState(false);
@@ -67,8 +67,7 @@ const MonthlyHeader = (props) => {
         visible={addTaskModalVisible}
         onClose={() => setAddTaskModalVisible(false)}
         mode="multiple"
-        myTimesheetByMonth={myTimesheetByMonth}
-        date={startDate}
+        date={selectedDate}
       />
       <ImportModal visible={importModalVisible} onClose={() => setImportModalVisible(false)} />
     </div>

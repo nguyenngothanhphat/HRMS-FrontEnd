@@ -192,7 +192,7 @@ const TimeSheet = {
       return response;
     },
 
-    *fetchMyTimesheetByDay({ payload, isRefreshing }, { call, put, select }) {
+    *fetchMyTimesheetByDay({ payload, isRefreshing }, { call, select }) {
       let response = {};
       try {
         let payloadTemp = payload;
@@ -201,25 +201,8 @@ const TimeSheet = {
           payloadTemp = viewingPayload;
         }
         response = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
-        const { code, data } = response;
+        const { code } = response;
         if (code !== 200) throw response;
-        const { viewType } = payloadTemp;
-        const stateVar = 'detailTimesheet';
-        let dataTemp = null;
-        switch (viewType) {
-          case 'D':
-            dataTemp = data[0]?.timesheet;
-            break;
-          default:
-            break;
-        }
-        yield put({
-          type: 'save',
-          payload: {
-            viewingPayload: payloadTemp,
-            [stateVar]: dataTemp,
-          },
-        });
       } catch (errors) {
         dialog(errors);
         return [];
