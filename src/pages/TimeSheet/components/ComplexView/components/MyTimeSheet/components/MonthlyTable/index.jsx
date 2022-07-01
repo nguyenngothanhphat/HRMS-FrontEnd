@@ -1,13 +1,19 @@
 /* eslint-disable no-nested-ternary */
-import { Table } from 'antd';
+import { Table, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
-import { convertMsToTime, projectColor } from '@/utils/timeSheet';
+import {
+  checkHolidayInWeek,
+  convertMsToTime,
+  holidayFormatDate,
+  projectColor,
+} from '@/utils/timeSheet';
 import EmptyComponent from '@/components/Empty';
 import TimeoffPopover from './components/TimeoffPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import AirPlanIcon from '@/assets/timeSheet/airplanIcon.svg';
+import IconWarning from '@/assets/timeSheet/ic_warning.svg';
 import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
 
@@ -16,6 +22,7 @@ const MonthlyTable = (props) => {
     loadingFetchMyTimesheetByType = false,
     weeksOfMonth = [],
     timeoffList = [],
+    timeSheet: { holidays = [] },
     data: { weeks: weeksProp = [], summary: summaryProp = [] } = {},
   } = props;
 
@@ -41,8 +48,29 @@ const MonthlyTable = (props) => {
   // RENDER UI
   const renderHeaderItem = (weekItem) => {
     const { week = '', startDate: startDate1 = '', endDate: endDate1 = '' } = weekItem;
+    const isHoliday = checkHolidayInWeek(startDate1, endDate1, holidays);
+
     return (
-      <div className={styles.timeStamp}>
+      <div className={styles.timeStamp} style={{ backgroundColor: isHoliday ? '#FFFAF2' : '#FFF' }}>
+        {isHoliday && (
+          <Tooltip
+            title={
+              <span style={{ margin: 0, color: '#F98E2C' }}>
+                {holidays.map((holiday) => (
+                  <div key={holiday.date}>
+                    {checkHolidayInWeek(startDate1, endDate1, [holiday])
+                      ? `${holidayFormatDate(holiday.date)} is ${holiday.holidayName}`
+                      : null}
+                  </div>
+                ))}
+              </span>
+            }
+            placement="top"
+            color="#FFFAF2"
+          >
+            <img src={IconWarning} className={styles.holidayIconWarning} alt="" />
+          </Tooltip>
+        )}
         <div className={styles.weekName}>Week {week}</div>
         <div className={styles.weekDate}>
           {moment(startDate1).locale('en').format('MMM DD')} -{' '}
@@ -60,7 +88,7 @@ const MonthlyTable = (props) => {
 
   const columns = () => {
     const columnLength = weeksOfMonth.length + 1;
-    const dateColumns = weeksOfMonth.map((weekItem) => {
+    const dateColumns = summaryProp.map((weekItem) => {
       return {
         title: renderTitle(weekItem, 2),
         dataIndex: weekItem.week,
@@ -71,7 +99,6 @@ const MonthlyTable = (props) => {
           const { weeks = [], projectName = '' } = row;
           const find = weeks.find((w) => w.week === weekItem.week) || {};
           const findTimeoff = timeoffList.find((w) => w.week === weekItem.week) || {};
-
           if (projectName === 'Timeoff' && findTimeoff) {
             return (
               <TimeoffPopover
@@ -80,6 +107,7 @@ const MonthlyTable = (props) => {
                 timeoff={findTimeoff?.days}
                 startDate={findTimeoff?.startDate}
                 endDate={findTimeoff?.endDate}
+                holidays={holidays}
                 placement="bottomLeft"
               >
                 {!findTimeoff || findTimeoff?.totalTimeOffTime === 0 ? (
@@ -159,6 +187,7 @@ const MonthlyTable = (props) => {
               startDate={weekItem.startDate}
               endDate={weekItem.endDate}
               tasks={dailies}
+              holidays={holidays}
             >
               {weekTotalTime && weekTotalTime !== 0 ? (
                 <div className={styles.item}>
@@ -196,6 +225,7 @@ const MonthlyTable = (props) => {
   );
 };
 
-export default connect(({ loading }) => ({
+export default connect(({ timeSheet, loading }) => ({
+  timeSheet,
   loadingFetchMyTimesheetByType: loading.effects['timeSheet/fetchMyTimesheetByTypeEffect'],
 }))(MonthlyTable);

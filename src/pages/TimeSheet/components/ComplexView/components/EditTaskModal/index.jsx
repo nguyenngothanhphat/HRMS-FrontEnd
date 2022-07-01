@@ -215,7 +215,9 @@ const EditTaskModal = (props) => {
                   }
                 >
                   {projectList.map((val) => (
-                    <Option value={val.id}>{val.projectName}</Option>
+                    <Option value={val.id} key={val.id}>
+                      {val.projectName}
+                    </Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -230,7 +232,9 @@ const EditTaskModal = (props) => {
                 {TASKS.length !== 0 ? (
                   <Select showSearch placeholder="Select the task">
                     {TASKS.map((val) => (
-                      <Option value={val}>{val}</Option>
+                      <Option value={val} key={val}>
+                        {val}
+                      </Option>
                     ))}
                   </Select>
                 ) : (
