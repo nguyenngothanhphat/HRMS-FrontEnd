@@ -9,13 +9,16 @@ const CheckboxMenu = (props) => {
     options = [],
     default: defaultChecks = [],
     disabled = false,
+    multiple = true,
   } = props;
+
   const [indeterminate, setIndeterminate] = React.useState(false);
   const [checkAll, setCheckAll] = React.useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
-    if (selectedItems.length === 0 && defaultChecks.length > 0) {
+    // if (selectedItems.length === 0 && defaultChecks.length > 0) {
+    if (defaultChecks.length > 0) {
       setSelectedItems([...defaultChecks]);
     }
   }, [JSON.stringify(defaultChecks)]);
@@ -52,7 +55,7 @@ const CheckboxMenu = (props) => {
             onChange={onCheckAllChange}
             checked={checkAll}
             style={{ display: 'flex', margin: '8px 0' }}
-            disabled={disabled}
+            disabled={disabled || !multiple}
           >
             Select All
           </Checkbox>
