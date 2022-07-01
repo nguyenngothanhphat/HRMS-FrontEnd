@@ -1,14 +1,35 @@
 import { Button, Col, Row } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { getCurrentLocation } from '@/utils/authority';
-import styles from './index.less';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
+import styles from './index.less';
 
 const Header = (props) => {
-  const { dispatch, handleUploadDocument = () => {} } = props;
-  const [selectedLocations, setSelectedLocation] = useState([getCurrentLocation()]);
-  const { location: { companyLocationList = [] } = {} } = props;
+  const {
+    dispatch,
+    handleUploadDocument = () => {},
+    onboardingSettings: { selectedLocations: selectedLocationsProp = [] } = {},
+    location: { companyLocationList = [] } = {},
+  } = props;
+
+  const [selectedLocations, setSelectedLocations] = useState([]);
+
+  useEffect(() => {
+    setSelectedLocations(selectedLocationsProp);
+  }, [JSON.stringify(selectedLocationsProp)]);
+
+  useEffect(() => {
+    const currentLocation = getCurrentLocation();
+    if (currentLocation) {
+      dispatch({
+        type: 'onboardingSettings/save',
+        payload: {
+          selectedLocations: [currentLocation],
+        },
+      });
+    }
+  }, []);
 
   const onLocationChange = (value) => {
     dispatch({
@@ -17,7 +38,7 @@ const Header = (props) => {
         selectedLocations: [...value],
       },
     });
-    setSelectedLocation([...value]);
+    setSelectedLocations([...value]);
   };
 
   const renderLocationOptions = () => {
@@ -60,4 +81,8 @@ const Header = (props) => {
   );
 };
 
-export default connect(({ user, location }) => ({ user, location }))(Header);
+export default connect(({ user, location, onboardingSettings }) => ({
+  user,
+  location,
+  onboardingSettings,
+}))(Header);

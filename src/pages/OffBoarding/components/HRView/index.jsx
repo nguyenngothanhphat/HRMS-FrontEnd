@@ -8,6 +8,7 @@ import { OFFBOARDING_TABS } from '@/utils/offboarding';
 import RequestTable from '../RequestTable';
 import Settings from '../Settings';
 import styles from './index.less';
+import { getCurrentLocation } from '@/utils/authority';
 
 const { TabPane } = Tabs;
 
@@ -28,12 +29,15 @@ const HRView = (props) => {
   }, [JSON.stringify(selectedLocationsProp)]);
 
   useEffect(() => {
-    dispatch({
-      type: 'offboarding/save',
-      payload: {
-        viewingRequest: {},
-      },
-    });
+    const currentLocation = getCurrentLocation();
+    if (currentLocation) {
+      dispatch({
+        type: 'offboarding/save',
+        payload: {
+          selectedLocations: [currentLocation],
+        },
+      });
+    }
   }, []);
 
   const onLocationChange = (selection) => {
