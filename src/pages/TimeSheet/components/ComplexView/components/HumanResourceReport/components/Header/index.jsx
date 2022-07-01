@@ -8,12 +8,12 @@ import DownloadIcon from '@/assets/timeSheet/download.svg';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
-import { checkHolidayInWeek, dateFormatAPI, holidayFormatDate, VIEW_TYPE } from '@/utils/timeSheet';
+import { checkHolidayInWeek, holidayFormatDate, VIEW_TYPE } from '@/utils/timeSheet';
+import { getHolidaysByDateService } from '@/services/timeSheet';
 import styles from './index.less';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import FilterContent from './components/FilterContent';
-import { getCurrentCompany } from '@/utils/authority';
 
 const Header = (props) => {
   const {
@@ -27,18 +27,17 @@ const Header = (props) => {
     data = [],
     activeView = '',
     dispatch,
-    timeSheet: { holidays = [] },
   } = props;
 
   const {
     user: {
       currentUser: {
-        employee,
         location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
       } = {},
     } = {},
   } = props;
   const [applied, setApplied] = useState(0);
+  const [holidays, setHolidays] = useState([]);
   const [form, setForm] = useState(null);
 
   const locationUser = countryID === 'US';
@@ -137,22 +136,14 @@ const Header = (props) => {
     form?.resetFields();
   };
 
-  const fetchMyTimesheetEffectByType = () => {
-    dispatch({
-      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
-      payload: {
-        companyId: getCurrentCompany(),
-        employeeId: employee._id,
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-        viewType: VIEW_TYPE.W,
-      },
-    });
+  const fetchHolidaysByDate = async () => {
+    const dataHolidays = await getHolidaysByDateService(dispatch, startDate, endDate);
+    setHolidays(dataHolidays);
   };
 
   // USE EFFECT AREA
   useEffect(() => {
-    if (startDate && endDate) fetchMyTimesheetEffectByType();
+    if (startDate && endDate) fetchHolidaysByDate();
   }, [startDate, endDate]);
 
   const isHoliday = checkHolidayInWeek(startDate, endDate, holidays);
@@ -175,7 +166,7 @@ const Header = (props) => {
                 {holidays.map((holiday) => (
                   <div key={holiday.date}>
                     {checkHolidayInWeek(startDate, endDate, [holiday])
-                      ? `${holidayFormatDate(holiday.date)} is ${holiday.holidayName}`
+                      ? `${holidayFormatDate(holiday.date)} is ${holiday.holiday}`
                       : null}
                   </div>
                 ))}

@@ -36,8 +36,9 @@ import {
   // my request
   getMyRequest,
   resubmitMyRequest,
+  getHolidaysByDate,
 } from '@/services/timeSheet';
-import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
 import { dialog } from '@/utils/utils';
 
@@ -151,8 +152,9 @@ const TimeSheet = {
           payloadTemp = viewingPayload;
         }
         const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
-        const { code, data, holidays } = res;
+        const { code, data } = res;
         if (code !== 200) throw res;
+        const { holidays = [] } = data;
         const { viewType } = payloadTemp;
         let stateVar = 'myTimesheetByDay';
         let dataTemp = null;
@@ -194,10 +196,10 @@ const TimeSheet = {
     *fetchHolidaysByDate({ payload }, { call }) {
       try {
         const payloadTemp = payload;
-        const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
-        const { code, holidays } = res;
+        const res = yield call(getHolidaysByDate, {}, { ...payloadTemp });
+        const { code, data = [] } = res;
         if (code !== 200) throw res;
-        return holidays;
+        return data;
       } catch (errors) {
         dialog(errors);
         return [];

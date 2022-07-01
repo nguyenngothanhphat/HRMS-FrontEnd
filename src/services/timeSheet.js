@@ -1,3 +1,6 @@
+import moment from 'moment';
+import { getCurrentCompany } from '@/utils/authority';
+import { dateFormatAPI } from '@/utils/timeSheet';
 import request from '@/utils/request';
 import { API_KEYS } from '../../config/proxy';
 
@@ -93,6 +96,32 @@ export async function getMyTimesheetByType(payload, params) {
     API_KEYS.TIMESHEET_API,
   );
 }
+
+export async function getHolidaysByDate(payload, params) {
+  // date, week, month
+  return request(
+    `/api/holidays`,
+    {
+      method: 'GET',
+      data: payload,
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
+export const getHolidaysByDateService = async (dispatch, startDate, endDate) => {
+  const holidaysResponse = await dispatch({
+    type: 'timeSheet/fetchHolidaysByDate',
+    payload: {
+      companyId: getCurrentCompany(),
+      fromDate: moment(startDate).format(dateFormatAPI),
+      toDate: moment(endDate).format(dateFormatAPI),
+    },
+  });
+  return holidaysResponse;
+};
 
 // import
 export async function getImportData(payload, params) {

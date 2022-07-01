@@ -24,10 +24,10 @@ import {
   holidayFormatDate,
   hourFormat,
   hourFormatAPI,
-  VIEW_TYPE,
   TIMESHEET_ADD_TASK_ALERT,
 } from '@/utils/timeSheet';
 import styles from './index.less';
+import { getHolidaysByDateService } from '@/services/timeSheet';
 
 const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
@@ -73,16 +73,7 @@ const AddTaskModal = (props) => {
   };
 
   const fetchHolidaysByDate = async (startDate, endDate) => {
-    const dataHolidays = await dispatch({
-      type: 'timeSheet/fetchHolidaysByDate',
-      payload: {
-        companyId: getCurrentCompany(),
-        employeeId,
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-        viewType: VIEW_TYPE.W,
-      },
-    });
+    const dataHolidays = await getHolidaysByDateService(dispatch, startDate, endDate);
     setHolidays(dataHolidays);
   };
 
@@ -262,7 +253,7 @@ const AddTaskModal = (props) => {
     let check = false;
     if (mode === 'multiple') {
       check = true;
-      if (dates.length < 2) {
+      if (!dates || dates.length < 2) {
         check = false;
       } else if (moment(dates[0]).format(dateFormat) !== moment(dates[1]).format(dateFormat)) {
         check = false;
@@ -299,7 +290,7 @@ const AddTaskModal = (props) => {
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name, fieldKey }, index) => (
-              <>
+              <div key={key}>
                 {key !== 0 && <div className={styles.divider} />}
                 <Row gutter={[24, 0]} className={styles.belowPart}>
                   <Col xs={24} md={12}>
@@ -320,7 +311,7 @@ const AddTaskModal = (props) => {
                         }}
                       >
                         {projectList.map((val) => (
-                          <Option value={val.id}>
+                          <Option key={val.id} value={val.id}>
                             {`${val.projectName} - ${val.customerName}`}
                           </Option>
                         ))}
@@ -343,7 +334,9 @@ const AddTaskModal = (props) => {
                       {TASKS.length !== 0 ? (
                         <Select showSearch placeholder="Select the task">
                           {TASKS.map((val) => (
-                            <Option value={val}>{val}</Option>
+                            <Option key={val} value={val}>
+                              {val}
+                            </Option>
                           ))}
                         </Select>
                       ) : (
@@ -455,7 +448,7 @@ const AddTaskModal = (props) => {
                     )}
                   </Col>
                 </Row>
-              </>
+              </div>
             ))}
             {renderAddButton(fields, add)}
           </>
@@ -478,13 +471,14 @@ const AddTaskModal = (props) => {
           onValuesChange={onValuesChange}
         >
           <Row gutter={[24, 0]} className={styles.abovePart}>
-            <Col xs={24} md={12}>
+            <Col xs={24} md={12} style={{ paddingTop: 16 }}>
               <Form.Item
                 rules={[{ required: true, message: 'Please select Timesheet Period' }]}
                 label="Select Timesheet Period"
                 name="dates"
                 fieldKey="dates"
                 labelCol={{ span: 24 }}
+                style={{ marginBottom: 0 }}
               >
                 <RangePicker
                   format={dateFormat}
@@ -508,7 +502,7 @@ const AddTaskModal = (props) => {
                           .map((holiday) => holidayFormatDate(holiday.date))
                           .join(', ')
                           .concat(' are Holidays')
-                      : `${holidayFormatDate(holidays[0].date)} is ${holidays[0].holidayName}`
+                      : `${holidayFormatDate(holidays[0].date)} is ${holidays[0].holiday}`
                   }
                   showIcon
                   type="warning"
