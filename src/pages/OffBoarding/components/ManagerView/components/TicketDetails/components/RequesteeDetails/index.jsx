@@ -13,23 +13,36 @@ const RequesteeDetails = ({ item = {} }) => {
     } = {},
   } = item;
 
+  const items = [
+    {
+      label: 'Employee ID',
+      value: employeeId,
+    },
+    {
+      label: 'Employee Name',
+      value: (
+        <Link to={`/directory/employee-profile/${userId}`} className={styles.employeeLink}>
+          {getEmployeeName(generalInfoInfo)}
+        </Link>
+      ),
+    },
+    {
+      label: 'Position',
+      value: title,
+    },
+  ];
+
   return (
     <Card title="Requestee details" className={styles.RequesteeDetails}>
       <Row gutter={[24, 16]} className={styles.content}>
-        <Col span={6}>Employee ID</Col>
-        <Col span={18} className={styles.detailColumn}>
-          <span className={styles.fieldValue}>{employeeId}</span>
-        </Col>
-        <Col span={6}>Employee Name</Col>
-        <Col span={18} className={styles.detailColumn}>
-          <Link to={`/directory/employee-profile/${userId}`} className={styles.employeeLink}>
-            {getEmployeeName(generalInfoInfo)}
-          </Link>
-        </Col>
-        <Col span={6}>Position</Col>
-        <Col span={18} className={styles.detailColumn}>
-          <span>{title}</span>
-        </Col>
+        {items.map((x) => (
+          <>
+            <Col span={6}>{x.label}</Col>
+            <Col span={18} className={styles.detailColumn}>
+              <span className={styles.fieldValue}>{x.value}</span>
+            </Col>
+          </>
+        ))}
       </Row>
     </Card>
   );

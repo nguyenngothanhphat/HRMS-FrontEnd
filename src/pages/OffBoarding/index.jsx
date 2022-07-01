@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
-import WorkInProgress from '@/components/WorkInProgress';
 import { initViewOffboarding } from '@/utils/authority';
 import { goToTop } from '@/utils/utils';
 import EmployeeView from './components/EmployeeView';
+import HRView from './components/HRView';
 import ManagerView from './components/ManagerView';
 import styles from './index.less';
 
 const Offboarding = (props) => {
   const {
-    match: { params: { tabName = '' } = {} },
+    match: { params: { tabName = '', type = '' } = {} },
     location: { state: { isEmployeeMode = false } = {} } = {},
   } = props;
 
@@ -22,9 +22,9 @@ const Offboarding = (props) => {
   };
 
   const renderComponent = {
-    'hr-manager': <WorkInProgress />,
-    // hr: <HRView tabName={tabName} type={type} />,
-    hr: <WorkInProgress />,
+    'hr-manager': <HRView tabName={tabName} type={type} />,
+    hr: <HRView tabName={tabName} type={type} />,
+    // hr: <WorkInProgress />,
     manager: <ManagerView tabName={tabName} />,
     employee: <EmployeeView tabName={tabName} />,
   };

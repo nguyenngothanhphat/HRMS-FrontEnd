@@ -1,20 +1,25 @@
-import { Table } from 'antd';
+import { Table, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-// import CompleteIcon from '@/assets/timeSheet/complete.svg';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
-// import FailIcon from '@/assets/timeSheet/fail.svg';
-// import PendingIcon from '@/assets/timeSheet/pending.svg';
+import IconWarning from '@/assets/timeSheet/ic_warning.svg';
+import IconHoliday from '@/assets/timeSheet/ic_holiday.svg';
 import EmptyComponent from '@/components/Empty';
-import { convertMsToTime, projectColor } from '@/utils/timeSheet';
+import {
+  checkHoliday,
+  convertMsToTime,
+  getHolidayNameByDate,
+  holidayFormatDate,
+  projectColor,
+} from '@/utils/timeSheet';
 import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import UserProfilePopover from '@/components/UserProfilePopover';
 
 const WeeklyTable = (props) => {
-  const { startDate = '', endDate = '', loadingFetch = false, data = [] } = props;
+  const { startDate = '', endDate = '', loadingFetch = false, data = [], holidays = [] } = props;
 
   const [dateList, setDateList] = useState([]);
   const [pageSize, setPageSize] = useState(5);
@@ -42,25 +47,26 @@ const WeeklyTable = (props) => {
     return projectColor[index % projectColor.length];
   };
 
-  // USE EFFECT
   useEffect(() => {
     const dateListTemp = enumerateDaysBetweenDates(moment(startDate), moment(endDate));
     setDateList(dateListTemp);
   }, [startDate, endDate]);
 
-  const renderHoliday = (holidayName = 'Public Holiday') => {
+  const renderHoliday = (date) => {
+    const holidayName = getHolidayNameByDate(date);
     return (
-      <div className={styles.holidayColumn}>
-        {/* <img src={getIcon(type)} alt="" /> */}
-        <span className={styles.title}>{holidayName}</span>
-        {/* <span className={styles.description}>Waiting for approval</span> */}
+      <div className={styles.holidayContainer}>
+        <img src={IconHoliday} width={40} height={40} alt="" />
+        <p>{holidayName}</p>
       </div>
     );
   };
 
   const renderDateHeaderItem = (date) => {
+    const isHoliday = checkHoliday(date, holidays);
+    const holidayName = getHolidayNameByDate(date);
     return (
-      <div className={styles.timeStamp}>
+      <div className={styles.timeStamp} style={{ backgroundColor: isHoliday ? '#FFFAF2' : 'FFF' }}>
         <div className={styles.left}>{moment(date, 'MM/DD/YYYY').locale('en').format('DD')}</div>
         <div className={styles.right}>
           <span className={styles.date}>
@@ -70,6 +76,19 @@ const WeeklyTable = (props) => {
             {moment(date, 'MM/DD/YYYY').locale('en').format('MMMM')}
           </span>
         </div>
+        {isHoliday ? (
+          <Tooltip
+            title={
+              <span style={{ margin: 0, color: '#F98E2C' }}>
+                {`${holidayFormatDate(date)} is ${holidayName}`}
+              </span>
+            }
+            placement="top"
+            color="#FFFAF2"
+          >
+            <img src={IconWarning} className={styles.holidayIconWarning} alt="" />
+          </Tooltip>
+        ) : null}
       </div>
     );
   };
@@ -116,7 +135,15 @@ const WeeklyTable = (props) => {
   };
 
   const columns = () => {
+    const checkTaskOnHoliday = (date) => {
+      return data.every((list) => {
+        if (list.dailyList.some((day) => isTheSameDay(day.date, date))) return false;
+        return true;
+      });
+    };
+
     const dateColumns = dateList.map((date) => {
+      const isHoliday = checkHoliday(date, holidays);
       return {
         title: renderTitle(date, 2),
         dataIndex: date,
@@ -127,10 +154,6 @@ const WeeklyTable = (props) => {
           const { projectName = '', dailyList = [] } = row;
           const value = dailyList.find((d) => isTheSameDay(d.date, date));
           const getCellValue = () => {
-            if (value?.isHoliday) {
-              return renderHoliday();
-            }
-
             if (value?.isMorning && value?.isAfternoon) {
               return renderLeaveDays(date);
             }
@@ -142,32 +165,38 @@ const WeeklyTable = (props) => {
                 tasks={value?.dailyTask}
                 placement="bottomLeft"
               >
-                {value ? (
-                  <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    {(value?.isMorning || value?.isAfternoon) && (
-                      <span
-                        className={
-                          (value.isMorning && styles.hourValue__morningOff) ||
-                          (value.isAfternoon && styles.hourValue__afternoonOff)
-                        }
-                      >
-                        Leave
+                {isHoliday && checkTaskOnHoliday(date) ? (
+                  renderHoliday(date)
+                ) : (
+                  <>
+                    {value ? (
+                      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                        {(value?.isMorning || value?.isAfternoon) && (
+                          <span
+                            className={
+                              (value.isMorning && styles.hourValue__morningOff) ||
+                              (value.isAfternoon && styles.hourValue__afternoonOff)
+                            }
+                          >
+                            Leave
+                          </span>
+                        )}
+                        <span
+                          className={
+                            value?.isMorning || value?.isAfternoon
+                              ? styles.hourValue__work
+                              : styles.hourValue
+                          }
+                        >
+                          {convertMsToTime(value.spentTime)}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className={styles.hourValue}>
+                        <img src={EmptyLine} alt="" />
                       </span>
                     )}
-                    <span
-                      className={
-                        value?.isMorning || value?.isAfternoon
-                          ? styles.hourValue__work
-                          : styles.hourValue
-                      }
-                    >
-                      {convertMsToTime(value.spentTime)}
-                    </span>
-                  </div>
-                ) : (
-                  <span className={styles.hourValue}>
-                    <img src={EmptyLine} alt="" />
-                  </span>
+                  </>
                 )}
               </TaskPopover>
             );
@@ -177,13 +206,15 @@ const WeeklyTable = (props) => {
             props: {},
           };
 
-          if (index === 0 && dailyList[0]?.isHoliday) {
-            obj.props.rowSpan = data.length;
-          }
-          for (let i = 1; i < data.length; i += 1) {
-            // These ones are merged into above cell
-            if (index === i && dailyList[i]?.isHoliday) {
-              obj.props.rowSpan = 0;
+          // Handle Holiday cell
+          if (checkTaskOnHoliday(date)) {
+            if (index === 0 && isHoliday) {
+              obj.props.rowSpan = data.length;
+            }
+            for (let i = 1; i < data.length; i += 1) {
+              if (index === i && isHoliday) {
+                obj.props.rowSpan = 0;
+              }
             }
           }
           return obj;
