@@ -21,6 +21,7 @@ import {
   // complex view hr & finance
   getHRTimesheet,
   getFinanceTimesheet,
+  sendMailInCompleteTimeSheet,
   // export manager report (my project)
   exportProject,
   exportTeam,
@@ -90,7 +91,7 @@ const initialState = {
 
   // common
   selectedDivisions: [],
-  selectedLocations: [getCurrentLocation()],
+  selectedLocations: [],
   isIncompleteTimesheet: false,
   employeeSchedule: {},
 };
@@ -151,7 +152,7 @@ const TimeSheet = {
           payloadTemp = viewingPayload;
         }
         const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
-        const { code, data } = res;
+        const { code, data, holidays } = res;
         if (code !== 200) throw res;
         const { viewType } = payloadTemp;
         let stateVar = 'myTimesheetByDay';
@@ -181,6 +182,7 @@ const TimeSheet = {
             viewingPayload: payloadTemp,
             [stateVar]: dataTemp,
             timeoffList,
+            holidays,
           },
         });
       } catch (errors) {
@@ -223,6 +225,19 @@ const TimeSheet = {
         return [];
       }
       return response;
+    },
+
+    *fetchHolidaysByDate({ payload }, { call }) {
+      try {
+        const payloadTemp = payload;
+        const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
+        const { code, holidays } = res;
+        if (code !== 200) throw res;
+        return holidays;
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
     },
 
     // update/edit
@@ -711,6 +726,22 @@ const TimeSheet = {
           type: 'save',
           payload: { ...myRequest },
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *sendMailInCompleteTimeSheet({ payload = {} }, { call }) {
+      let response;
+      try {
+        response = yield call(sendMailInCompleteTimeSheet, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          companyId: getCurrentCompany(),
+        });
+        const { code, msg } = response;
+        if (code !== 200) throw response;
+        notification.success({ message: msg });
       } catch (errors) {
         dialog(errors);
       }

@@ -19,9 +19,12 @@ import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
 import CustomTimePicker from '@/components/CustomTimePicker';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
+  checkHolidayInWeek,
   dateFormatAPI,
+  holidayFormatDate,
   hourFormat,
   hourFormatAPI,
+  VIEW_TYPE,
   TIME_DEFAULT,
   TIMESHEET_ADD_TASK_ALERT,
 } from '@/utils/timeSheet';
@@ -78,7 +81,7 @@ const AddTaskModal = (props) => {
   const [detailTimesheet, setDetailTimesheet] = useState([]);
   const myTimesheet = myTimesheetByDay[0]?.timesheet;
   const [notice, setNotice] = useState(TIMESHEET_ADD_TASK_ALERT.DEFAULT);
-
+  const [holidays, setHolidays] = useState([]);
   const fetchProjectList = () => {
     dispatch({
       type: 'timeSheet/fetchProjectListEffect',
@@ -117,6 +120,20 @@ const AddTaskModal = (props) => {
       return TIME_DEFAULT.TIME_WORK_LATE;
     }
     return TIME_DEFAULT.START_TIME;
+  };
+
+  const fetchHolidaysByDate = async (startDate, endDate) => {
+    const dataHolidays = await dispatch({
+      type: 'timeSheet/fetchHolidaysByDate',
+      payload: {
+        companyId: getCurrentCompany(),
+        employeeId,
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+        viewType: VIEW_TYPE.W,
+      },
+    });
+    setHolidays(dataHolidays);
   };
 
   useEffect(() => {
@@ -192,6 +209,10 @@ const AddTaskModal = (props) => {
     await setDates(val);
     getTimeSheetByDay(val, true);
   };
+
+  useEffect(() => {
+    if (dates && dates.length > 1 && dates[0] && dates[1]) fetchHolidaysByDate(dates[0], dates[1]);
+  }, [dates]);
 
   const renderModalHeader = () => {
     return (
@@ -340,6 +361,11 @@ const AddTaskModal = (props) => {
       form.resetFields();
       refreshData();
     }
+  };
+
+  const checkHolidayBetweenDates = () => {
+    if (dates && dates.length > 1) return checkHolidayInWeek(dates[0], dates[1], holidays);
+    return false;
   };
 
   const renderAddButton = (fields, add) => {
@@ -584,14 +610,25 @@ const AddTaskModal = (props) => {
                 />
               </Form.Item>
             </Col>
-            <Col xs={24} md={12}>
-              <Alert
-                message="Info"
-                showIcon
-                type={notice.type}
-                description={notice.content}
-                // closable
-              />
+            <Col xs={24} md={12} className={styles.alertContainer}>
+              {checkHolidayBetweenDates() ? (
+                <Alert
+                  message={
+                    holidays.length > 1
+                      ? holidays
+                          .map((holiday) => holidayFormatDate(holiday.date))
+                          .join(', ')
+                          .concat(' are Holidays')
+                      : `${holidayFormatDate(holidays[0].date)} is ${holidays[0].holidayName}`
+                  }
+                  showIcon
+                  type="warning"
+                  description={`Did you work on ${holidays.length > 1 ? 'these' : 'this'} day?`}
+                  closable
+                />
+              ) : (
+                <Alert message="Info" showIcon type={notice.type} description={notice.content} />
+              )}
             </Col>
           </Row>
           {renderFormList()}
