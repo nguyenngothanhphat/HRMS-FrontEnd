@@ -18,12 +18,14 @@ const TeamView = (props) => {
   const [limit, setLimit] = useState(5);
   const [nameSearch, setNameSearch] = useState('');
 
-  const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
   const {
+    dispatch,
+    employee: { _id: employeeId = '' } = {},
     timeSheet: {
       managerTeamViewList = [],
       managerTeamViewPagination = {},
       filterManagerReport = {},
+      holidays = [],
     } = {},
     loadingFetch = false,
     activeView = '',
@@ -94,6 +96,7 @@ const TeamView = (props) => {
         setEndDate={setEndDate}
         onChangeSearch={onChangeSearch}
         activeView={activeView}
+        holidays={holidays}
       />
       <Spin spinning={loadingFetch}>
         <MemberTable data={managerTeamViewList} startDate={startDate} endDate={endDate} />

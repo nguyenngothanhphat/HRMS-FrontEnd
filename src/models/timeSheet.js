@@ -151,7 +151,7 @@ const TimeSheet = {
           payloadTemp = viewingPayload;
         }
         const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
-        const { code, data } = res;
+        const { code, data, holidays } = res;
         if (code !== 200) throw res;
         const { viewType } = payloadTemp;
         let stateVar = 'myTimesheetByDay';
@@ -181,6 +181,7 @@ const TimeSheet = {
             viewingPayload: payloadTemp,
             [stateVar]: dataTemp,
             timeoffList,
+            holidays,
           },
         });
       } catch (errors) {
@@ -188,6 +189,19 @@ const TimeSheet = {
         return [];
       }
       return response;
+    },
+
+    *fetchHolidaysByDate({ payload }, { call }) {
+      try {
+        const payloadTemp = payload;
+        const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
+        const { code, holidays = [] } = res;
+        if (code !== 200) throw res;
+        return holidays;
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
     },
 
     // update/edit
