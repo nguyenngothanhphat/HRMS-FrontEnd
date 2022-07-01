@@ -62,6 +62,7 @@ const initialState = {
   myTimesheetByWeek: [],
   myTimesheetByMonth: [],
   timeoffList: [],
+  detailTimesheet: [],
   // store payload for refreshing
   viewingPayload: {},
   // for importing
@@ -180,6 +181,41 @@ const TimeSheet = {
             viewingPayload: payloadTemp,
             [stateVar]: dataTemp,
             timeoffList,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
+    *fetchMyTimesheetByDay({ payload, isRefreshing }, { call, put, select }) {
+      let response = {};
+      try {
+        let payloadTemp = payload;
+        if (isRefreshing) {
+          const { viewingPayload } = yield select((state) => state.timeSheet);
+          payloadTemp = viewingPayload;
+        }
+        response = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
+        const { code, data } = response;
+        if (code !== 200) throw response;
+        const { viewType } = payloadTemp;
+        const stateVar = 'detailTimesheet';
+        let dataTemp = null;
+        switch (viewType) {
+          case 'D':
+            dataTemp = data[0]?.timesheet;
+            break;
+          default:
+            break;
+        }
+        yield put({
+          type: 'save',
+          payload: {
+            viewingPayload: payloadTemp,
+            [stateVar]: dataTemp,
           },
         });
       } catch (errors) {

@@ -115,6 +115,7 @@ const MyTimeSheet = (props) => {
             selectedView={selectedView}
             setSelectedView={setSelectedView}
             viewChangeComponent={viewChangeComponent}
+            myTimesheetByDay={myTimesheetByDay}
           />
         );
       case VIEW_TYPE.W:
@@ -125,6 +126,8 @@ const MyTimeSheet = (props) => {
             setStartDate={setStartDateWeek}
             setEndDate={setEndDateWeek}
             viewChangeComponent={viewChangeComponent}
+            setSelectedDate={setSelectedDate}
+            myTimesheetByWeek={myTimesheetByWeek}
           />
         );
 
@@ -136,6 +139,8 @@ const MyTimeSheet = (props) => {
             setStartDate={setStartDateMonth}
             setEndDate={setEndDateMonth}
             viewChangeComponent={viewChangeComponent}
+            setSelectedDate={setSelectedDate}
+            myTimesheetByMonth={myTimesheetByMonth}
           />
         );
 

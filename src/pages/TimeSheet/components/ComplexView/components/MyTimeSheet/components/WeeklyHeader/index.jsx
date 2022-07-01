@@ -15,6 +15,7 @@ const WeeklyHeader = (props) => {
     setStartDate = () => {},
     setEndDate = () => {},
     viewChangeComponent = '',
+    myTimesheetByWeek,
   } = props;
   const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
   const [importModalVisible, setImportModalVisible] = useState(false);
@@ -67,6 +68,8 @@ const WeeklyHeader = (props) => {
         onClose={() => setAddTaskModalVisible(false)}
         mode="multiple"
         aaaa={false}
+        myTimesheetByWeek={myTimesheetByWeek}
+        date={startDate}
       />
       <ImportModal visible={importModalVisible} onClose={() => setImportModalVisible(false)} />
     </div>

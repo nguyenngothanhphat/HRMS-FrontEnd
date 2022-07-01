@@ -18,7 +18,7 @@ import AddIcon from '@/assets/timeSheet/add.svg';
 import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
 import CustomTimePicker from '@/components/CustomTimePicker';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
+import { dateFormatAPI, hourFormat, hourFormatAPI, TIME_DEFAULT } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -36,10 +36,24 @@ const AddTaskModal = (props) => {
     visible = false,
     title = 'Add Task',
     onClose = () => {},
-    date = '',
     projectName = '',
     mode = 'single',
     timeSheet: { projectList = [] } = {},
+    date = '',
+    myTimesheetByDay = [],
+    myTimesheetByWeek = [],
+    myTimesheetByMonth = [],
+    taskDetail: {
+      projectId = '',
+      notes = '',
+      endTime = '',
+      taskName = '',
+      clientLocation = false,
+      breakTime = 0,
+      overTime = 0,
+      forDate = '',
+    } = {},
+    loadingTime = false,
   } = props;
 
   const {
@@ -55,6 +69,8 @@ const AddTaskModal = (props) => {
 
   // state
   const [dates, setDates] = useState(null);
+  const [detailTimesheet, setDetailTimesheet] = useState([]);
+  const myTimesheet = myTimesheetByDay[0]?.timesheet;
 
   const fetchProjectList = () => {
     dispatch({
@@ -62,18 +78,113 @@ const AddTaskModal = (props) => {
     });
   };
 
+  const formatStartTimeShow = (timeFormat) => {
+    return moment(timeFormat, hourFormatAPI).format(hourFormat);
+  };
+
+  const formatEndTimeShow = (timeFormat) => {
+    return moment(timeFormat, hourFormat).add(15, 'minutes').format(hourFormat);
+  };
+
+  const getLastEndTimeElement = (lastEle) => {
+    return lastEle[lastEle.length - 1]?.endTime;
+  };
+
+  const getDefaulValueStartTime = (val = []) => {
+    if (val && getLastEndTimeElement(val) < TIME_DEFAULT.END_TIME) {
+      return formatStartTimeShow(getLastEndTimeElement(val));
+    }
+    if (val && getLastEndTimeElement(val) >= TIME_DEFAULT.END_TIME) {
+      return TIME_DEFAULT.TIME_WORK_LATE;
+    }
+    if (detailTimesheet && getLastEndTimeElement(detailTimesheet) >= TIME_DEFAULT.END_TIME) {
+      return TIME_DEFAULT.TIME_WORK_LATE;
+    }
+    if (detailTimesheet && getLastEndTimeElement(detailTimesheet) < TIME_DEFAULT.END_TIME) {
+      return formatStartTimeShow(getLastEndTimeElement(detailTimesheet));
+    }
+    if (myTimesheet && getLastEndTimeElement(myTimesheet) < TIME_DEFAULT.END_TIME) {
+      return formatStartTimeShow(getLastEndTimeElement(myTimesheet));
+    }
+    if (myTimesheet && getLastEndTimeElement(myTimesheet) >= TIME_DEFAULT.END_TIME) {
+      return TIME_DEFAULT.TIME_WORK_LATE;
+    }
+    return TIME_DEFAULT.START_TIME;
+  };
+
   useEffect(() => {
     if (visible) {
       if (projectList.length === 0) {
         fetchProjectList();
       }
-      if (date) {
-        form.setFieldsValue({
-          date: moment(date),
-        });
-      }
+      form.setFieldsValue({
+        dates: forDate ? [moment(forDate), moment(forDate)] : [moment(date), moment(date)],
+        tasks: [
+          {
+            projectName: projectName || null,
+            taskName,
+            projectId,
+            startTime: endTime
+              ? moment(endTime, hourFormatAPI).format(hourFormat)
+              : getDefaulValueStartTime(),
+            endTime: endTime
+              ? moment(endTime, hourFormatAPI).add(15, 'minutes').format(hourFormat)
+              : formatEndTimeShow(getDefaulValueStartTime()),
+            notes,
+            clientLocation,
+            breakTime,
+            overTime,
+          },
+        ],
+      });
     }
-  }, [visible]);
+  }, [visible, date, JSON.stringify(myTimesheetByMonth), JSON.stringify(myTimesheetByWeek)]);
+
+  useEffect(() => {
+    if (!endTime) {
+      setDisabledHourBefore([getDefaulValueStartTime()]);
+    } else {
+      setDisabledHourBefore([endTime]);
+    }
+  }, [visible, endTime]);
+
+  const getTimeSheetByDay = async (day, isChange = false) => {
+    const res = await dispatch({
+      type: 'timeSheet/fetchMyTimesheetByDay',
+      payload: {
+        companyId: getCurrentCompany(),
+        employeeId,
+        fromDate: isChange
+          ? moment(day[0]).format(dateFormatAPI)
+          : moment(day).format(dateFormatAPI),
+        toDate: isChange ? moment(day[0]).format(dateFormatAPI) : moment(day).format(dateFormatAPI),
+        viewType: 'D',
+      },
+    });
+    if (res.code === 200) {
+      setDetailTimesheet(res.data[0].timesheet);
+      form.setFieldsValue({
+        dates: [moment(day[0]), moment(day[1])],
+        tasks: [
+          {
+            startTime: getDefaulValueStartTime(res.data[0]?.timesheet),
+            endTime: formatEndTimeShow(getDefaulValueStartTime(res.data[0]?.timesheet)),
+          },
+        ],
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (date) {
+      getTimeSheetByDay(date);
+    }
+  }, [date]);
+
+  const handleChangeDate = async (val) => {
+    await setDates(val);
+    getTimeSheetByDay(val, true);
+  };
 
   const renderModalHeader = () => {
     return (
@@ -102,7 +213,7 @@ const AddTaskModal = (props) => {
         if (i === index) {
           return {
             ...x,
-            endTime: null,
+            endTime: moment(x.startTime, hourFormat).add(15, 'minutes').format(hourFormat),
           };
         }
         return x;
@@ -224,7 +335,8 @@ const AddTaskModal = (props) => {
                         loading={loadingFetchProject}
                         disabled={loadingFetchProject}
                         filterOption={(input, option) =>
-                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                       >
                         {projectList.map((val) => (
                           <Option value={val.id}>
@@ -270,6 +382,8 @@ const AddTaskModal = (props) => {
                       <CustomTimePicker
                         placeholder="Select the start time"
                         showSearch
+                        loading={loadingTime}
+                        disabled={loadingTime}
                         onChange={() => onStartTimeChange(index)}
                       />
                     </Form.Item>
@@ -287,6 +401,8 @@ const AddTaskModal = (props) => {
                         placeholder="Select the end time"
                         showSearch
                         disabledHourBefore={disabledHourBefore[index]}
+                        loading={loadingTime}
+                        disabled={loadingTime}
                       />
                     </Form.Item>
                   </Col>
@@ -392,9 +508,6 @@ const AddTaskModal = (props) => {
           form={form}
           id="myForm"
           onFinish={handleFinish}
-          initialValues={{
-            tasks: [{ projectName: projectName || null }],
-          }}
           onValuesChange={onValuesChange}
         >
           <Row gutter={[24, 0]} className={styles.abovePart}>
@@ -413,7 +526,7 @@ const AddTaskModal = (props) => {
                     'This Week': [moment().startOf('week'), moment().endOf('week')],
                   }}
                   disabledDate={disabledDate}
-                  onCalendarChange={(val) => setDates(val)}
+                  onCalendarChange={(val) => handleChangeDate(val)}
                   onOpenChange={onOpenChange}
                   allowClear={false}
                 />
@@ -476,4 +589,5 @@ export default connect(({ loading, timeSheet, location, user }) => ({
   location,
   loadingAddTask: loading.effects['timeSheet/addMultipleActivityEffect'],
   loadingFetchProject: loading.effects['timeSheet/fetchProjectListEffect'],
+  loadingTime: loading.effects['timeSheet/fetchMyTimesheetByDay'],
 }))(AddTaskModal);

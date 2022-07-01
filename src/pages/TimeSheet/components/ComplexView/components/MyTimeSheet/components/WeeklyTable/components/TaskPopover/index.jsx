@@ -15,7 +15,15 @@ import { convertMsToTime } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const TaskPopover = (props) => {
-  const { children, dispatch, tasks = [], date = '', projectName = '', placement = 'top' } = props;
+  const {
+    children,
+    dispatch,
+    tasks = [],
+    date = '',
+    projectName = '',
+    placement = 'top',
+    index = 0,
+  } = props;
   const [showPopover, setShowPopover] = useState(false);
   const [showingTasks, setShowingTasks] = useState([]);
 
@@ -142,6 +150,7 @@ const TaskPopover = (props) => {
             onClick={() => {
               setAddTaskModalVisible(true);
               setShowPopover(false);
+              setHandlingPackage(tasks[index]);
             }}
             icon={<img src={AddSolidIcon} alt="" />}
           >
@@ -173,6 +182,7 @@ const TaskPopover = (props) => {
         mode="multiple"
         date={date}
         projectName={projectName}
+        taskDetail={handlingPackage}
       />
       <EditTaskModal
         visible={editTaskModalVisible}
