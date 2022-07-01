@@ -18,7 +18,13 @@ import AddIcon from '@/assets/timeSheet/add.svg';
 import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
 import CustomTimePicker from '@/components/CustomTimePicker';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { dateFormatAPI, hourFormat, hourFormatAPI, TIME_DEFAULT } from '@/utils/timeSheet';
+import {
+  dateFormatAPI,
+  hourFormat,
+  hourFormatAPI,
+  TIME_DEFAULT,
+  TIMESHEET_ADD_TASK_ALERT,
+} from '@/utils/timeSheet';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -71,6 +77,7 @@ const AddTaskModal = (props) => {
   const [dates, setDates] = useState(null);
   const [detailTimesheet, setDetailTimesheet] = useState([]);
   const myTimesheet = myTimesheetByDay[0]?.timesheet;
+  const [notice, setNotice] = useState(TIMESHEET_ADD_TASK_ALERT.DEFAULT);
 
   const fetchProjectList = () => {
     dispatch({
@@ -223,7 +230,11 @@ const AddTaskModal = (props) => {
 
   const onValuesChange = (changedValues, allValues) => {
     const { tasks = [] } = allValues;
-    const disabledHourBeforeTemp = tasks.map((x = {}) => x.startTime);
+    const disabledHourBeforeTemp = tasks.map((x = {}) => {
+      // minimum 30 minutes per task
+      const temp = moment(x.startTime, hourFormat).add(15, 'minutes');
+      return temp.format(hourFormat);
+    });
     setDisabledHourBefore(disabledHourBeforeTemp);
   };
 
@@ -231,12 +242,31 @@ const AddTaskModal = (props) => {
     if (!dates) {
       return false;
     }
-    const tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
-    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
+    const values = form.getFieldsValue();
+    const { tasks = [] } = values;
+
+    let tooLate = '';
+    let tooEarly = '';
+    // if tasks length > 1, only allow to select from date === to date
+    if (tasks.length > 1) {
+      tooLate = dates[0] && current.diff(dates[0], 'days') > 0;
+      tooEarly = dates[1] && dates[1].diff(current, 'days') > 0;
+    } else {
+      tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
+      tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
+    }
+
     return !!tooEarly || !!tooLate;
   };
 
   const onOpenChange = (open) => {
+    const values = form.getFieldsValue();
+    const { tasks = [] } = values;
+    if (tasks.length > 1) {
+      setNotice(TIMESHEET_ADD_TASK_ALERT.WARNING);
+    } else {
+      setNotice(TIMESHEET_ADD_TASK_ALERT.DEFAULT);
+    }
     if (open) {
       form.setFieldsValue({
         dates: [null, null],
@@ -310,6 +340,41 @@ const AddTaskModal = (props) => {
       form.resetFields();
       refreshData();
     }
+  };
+
+  const renderAddButton = (fields, add) => {
+    let check = false;
+    if (mode === 'multiple') {
+      check = true;
+      if (dates.length < 2) {
+        check = false;
+      } else if (moment(dates[0]).format(dateFormat) !== moment(dates[1]).format(dateFormat)) {
+        check = false;
+      }
+    }
+
+    return (
+      <div
+        className={styles.addButton}
+        onClick={
+          check
+            ? () => {
+                const values = form.getFieldsValue();
+                add({
+                  projectId: values.tasks[fields.length - 1].projectId,
+                });
+              }
+            : () => {}
+        }
+        style={{
+          cursor: check ? 'pointer' : 'not-allowed',
+          opacity: check ? 1 : 0.5,
+        }}
+      >
+        <img src={AddIcon} alt="" />
+        <span>Add another task</span>
+      </div>
+    );
   };
 
   const renderFormList = () => {
@@ -480,20 +545,7 @@ const AddTaskModal = (props) => {
                 </Row>
               </>
             ))}
-            {mode === 'multiple' && (
-              <div
-                className={styles.addButton}
-                onClick={() => {
-                  const values = form.getFieldsValue();
-                  add({
-                    projectId: values.tasks[fields.length - 1].projectId,
-                  });
-                }}
-              >
-                <img src={AddIcon} alt="" />
-                <span>Add another task</span>
-              </div>
-            )}
+            {renderAddButton(fields, add)}
           </>
         )}
       </Form.List>
@@ -536,9 +588,9 @@ const AddTaskModal = (props) => {
               <Alert
                 message="Info"
                 showIcon
-                type="info"
-                description="The same tasks will be updated for the selected date range"
-                closable
+                type={notice.type}
+                description={notice.content}
+                // closable
               />
             </Col>
           </Row>
@@ -554,7 +606,7 @@ const AddTaskModal = (props) => {
         className={`${styles.AddTaskModal} ${styles.noPadding}`}
         onCancel={handleCancel}
         destroyOnClose
-        width={650}
+        width={700}
         maskClosable={false}
         footer={
           <>
