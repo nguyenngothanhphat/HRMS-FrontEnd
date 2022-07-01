@@ -9,6 +9,7 @@ const CustomDropdownSelector = ({
   disabled = false,
   label = '',
   selectedList = [],
+  multiple = true,
 }) => {
   const getSelectedLocationName = () => {
     if (selectedList.length === 1) {
@@ -32,6 +33,7 @@ const CustomDropdownSelector = ({
         onChange={onChange}
         default={selectedList}
         disabled={disabled}
+        multiple={multiple}
       >
         <div
           className={`${options.length < 2 ? styles.noDropdown : styles.dropdown}`}
