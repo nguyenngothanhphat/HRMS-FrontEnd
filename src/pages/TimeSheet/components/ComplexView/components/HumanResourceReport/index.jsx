@@ -61,7 +61,6 @@ const HumanResourceReport = (props) => {
     setSelectedEmployees([]);
   };
 
-  // USE EFFECT AREA
   useEffect(() => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
       fetchHRTimesheet(startDateWeek, endDateWeek);

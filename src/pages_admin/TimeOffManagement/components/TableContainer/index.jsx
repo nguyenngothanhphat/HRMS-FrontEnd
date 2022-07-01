@@ -22,6 +22,7 @@ const TableContainer = (props) => {
 
   const [fromDate, setFromDate] = useState(moment().startOf('month'));
   const [toDate, setToDate] = useState(moment().endOf('month'));
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const [payload, setPayload] = useState({});
 
@@ -54,16 +55,19 @@ const TableContainer = (props) => {
         status: newStatus,
         tenantId: getCurrentTenant(),
         selectedLocations,
+        types: values.types || [],
       },
     });
   };
 
   useEffect(() => {
     getDataTable(payload);
-  }, [JSON.stringify(selectedLocations), JSON.stringify(payload)]);
+  }, [JSON.stringify(payload)]);
 
   useEffect(() => {
     fetchEmployees();
+    // select a location will clear the types selected in form
+    getDataTable({ ...payload, types: [] });
   }, [JSON.stringify(selectedLocations)]);
 
   return (
@@ -78,6 +82,7 @@ const TableContainer = (props) => {
           setToDate={setToDate}
           fromDate={fromDate}
           toDate={toDate}
+          selectedRows={selectedRows}
         />
       </div>
       <div className={styles.contentContainer}>
@@ -85,6 +90,8 @@ const TableContainer = (props) => {
           listTimeOff={listTimeOff}
           loading={loadingList}
           requestDetail={requestDetail}
+          selectedRows={selectedRows}
+          setSelectedRows={setSelectedRows}
         />
       </div>
     </div>

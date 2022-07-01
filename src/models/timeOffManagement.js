@@ -5,6 +5,7 @@ import {
   getListTimeOff,
   getListEmployees,
   getRequestById,
+  getTimeOffTypeByCountry,
   // getListTimeOffManagement,
 } from '../services/timeOffManagement';
 
@@ -26,6 +27,7 @@ const timeOffManagement = {
     listEmployee: [],
     requestDetail: {},
     selectedLocations: [],
+    timeOffTypesByCountry: [],
   },
   effects: {
     *fetchEmployeeList({ payload = {} }, { call, put }) {
@@ -71,6 +73,7 @@ const timeOffManagement = {
             duration: item.duration,
             employee: item.employee,
             status: newStatus,
+            approvalManager: item.approvalManager,
           };
         });
 
@@ -97,6 +100,21 @@ const timeOffManagement = {
       } catch (error) {
         dialog(error);
       }
+    },
+    *fetchTimeOffTypesByCountry({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getTimeOffTypeByCountry, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { timeOffTypesByCountry: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
   reducers: {

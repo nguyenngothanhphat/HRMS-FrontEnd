@@ -4,29 +4,65 @@ import React, { useState } from 'react';
 import { connect } from 'umi';
 import AddSolidIcon from '@/assets/timeSheet/addSolid.png';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
+import IconHoliday from '@/assets/timeSheet/ic_holiday.svg';
 import AddTaskModal from '@/pages/TimeSheet/components/ComplexView/components/AddTaskModal';
-import { convertMsToTime } from '@/utils/timeSheet';
+import {
+  checkDateBetweenRange,
+  convertMsToTime,
+  getHolidayNameByDate,
+  sortedDate,
+} from '@/utils/timeSheet';
 import styles from './index.less';
 
 const TaskPopover = (props) => {
-  const { children, tasks = [], startDate = '', endDate = '', placement = 'top' } = props;
+  const {
+    children,
+    tasks = [],
+    holidays = [],
+    startDate = '',
+    endDate = '',
+    placement = 'top',
+  } = props;
   const [showPopover, setShowPopover] = useState(false);
   const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
+
+  const getTaskWithHolidays = () => {
+    const holidaysWithoutTask = holidays.filter((holiday) => {
+      let isWithoutTask = false;
+      for (let i = 0; i < tasks.length; i += 1) {
+        if (moment(tasks[i].date).isSame(moment(holiday.date))) {
+          isWithoutTask = false;
+          break;
+        }
+        if (checkDateBetweenRange(startDate, endDate, holiday.date)) {
+          isWithoutTask = true;
+        }
+      }
+      if (isWithoutTask) return holiday;
+      return null;
+    });
+
+    const taskWithHoliday = tasks.concat(holidaysWithoutTask);
+    return sortedDate(taskWithHoliday);
+  };
 
   const renderTaskTable = () => {
     return (
       <div className={styles.taskTable}>
         <div className={styles.taskTable__body}>
-          {tasks.length === 0 && (
+          {getTaskWithHolidays().length === 0 && (
             <Row className={styles.eachRow} justify="space-between" align="middle">
               <Col span={24} className={styles.taskName}>
                 <span>No tasks</span>
               </Col>
             </Row>
           )}
-          {tasks.map((task) => {
-            const { date = '', dailyTotalTime } = task;
+          {getTaskWithHolidays().map((task) => {
+            const { date = '', dailyTotalTime = 0 } = task;
             const momentDate = moment(date).locale('en');
+            const holidayName = getHolidayNameByDate(date, holidays);
+
+            if (!dailyTotalTime && holidayName.trim() === '') return null;
             return (
               <Row className={styles.eachRow} justify="space-between" align="middle">
                 <Col span={18} className={styles.dateName}>
@@ -39,17 +75,25 @@ const TaskPopover = (props) => {
                     <span className={styles.name}>{moment(momentDate).format('dddd')}</span>
                     <span className={styles.timeBlock}>
                       <span className={styles.date}>{moment(momentDate).format('MMM DD')}</span>{' '}
-                      <img className={styles.calendarIcon} src={CalendarIcon} alt="" />
-                      <span className={styles.time}>{convertMsToTime(dailyTotalTime || 0)}</span>
+                      {dailyTotalTime ? (
+                        <>
+                          <img className={styles.calendarIcon} src={CalendarIcon} alt="" />
+                          <span className={styles.time}>
+                            {convertMsToTime(dailyTotalTime || 0)}
+                          </span>
+                        </>
+                      ) : null}
                     </span>
                   </div>
                 </Col>
-                {/* <Col span={6} className={styles.right}>
-                  <div className={styles.actionBtn}>
-                    <img src={EditIcon} alt="" />
-                    <img src={DelIcon} alt="" />
-                  </div>
-                </Col> */}
+                {holidayName.trim() !== '' && !dailyTotalTime ? (
+                  <Col span={6} className={styles.right}>
+                    <div className={styles.holidayContainer}>
+                      <img src={IconHoliday} alt="" width={32} height={32} />
+                      <div>{holidayName}</div>
+                    </div>
+                  </Col>
+                ) : null}
               </Row>
             );
           })}
