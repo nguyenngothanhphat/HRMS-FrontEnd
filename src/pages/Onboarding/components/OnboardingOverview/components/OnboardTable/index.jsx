@@ -25,8 +25,8 @@ import CandidateUserName from './components/CandidateUserName/index';
 import ConfirmModal from './components/ConfirmModal/index';
 
 import EyeIcon from '@/assets/eyes.svg';
-// import JoiningIcon from '@/assets/Vector.svg';
-// import LaunchIcon from '@/assets/launchIcon.svg';
+import JoiningIcon from '@/assets/Vector.svg';
+import LaunchIcon from '@/assets/launchIcon.svg';
 import DeleteIcon from '@/assets/bin.svg';
 
 const compare = (dateTimeA, dateTimeB) => {
@@ -57,6 +57,7 @@ class OnboardTable extends Component {
       openModalName: '',
       dateJoinCandidate: '',
       selectedCandidateId: '',
+      selectRookieId: '',
 
       // popup hover name
       timezoneList: [],
@@ -456,7 +457,7 @@ class OnboardTable extends Component {
             return (
               <Dropdown
                 className={styles.menuIcon}
-                overlay={this.actionMenu(payload, candidate)}
+                overlay={this.actionMenu(payload, candidate, id)}
                 placement="bottomRight"
               >
                 <img src={MenuIcon} alt="menu" />
@@ -507,7 +508,7 @@ class OnboardTable extends Component {
     });
   };
 
-  actionMenu = (payload = {}, candidate) => {
+  actionMenu = (payload = {}, candidate, candidateId) => {
     const {
       id = '',
       assignToId: currentEmpId = '',
@@ -561,7 +562,7 @@ class OnboardTable extends Component {
 
         break;
 
-      case OFFER_ACCEPTED:
+      case JOINED:
         menuItem = (
           <>
             <Menu.Item>
@@ -569,7 +570,7 @@ class OnboardTable extends Component {
                 className={styles.actionText}
                 onClick={() => this.handleSendPreJoining(id, candidate, processStatusId)}
               >
-                <img className={styles.actionIcon} src="JoiningIcon" alt="joiningIcon" />
+                <img className={styles.actionIcon} src={JoiningIcon} alt="joiningIcon" />
                 <span>Send Pre-Joining Documents</span>
               </Link>
             </Menu.Item>
@@ -580,10 +581,15 @@ class OnboardTable extends Component {
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <img className={styles.actionIcon} src="LaunchIcon" alt="launchIcon" />
+              <img className={styles.actionIcon} src={LaunchIcon} alt="launchIcon" />
               <span
                 onClick={() =>
-                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)}
+                  this.handleOpenJoiningFormalitiesModal(
+                    'initiate',
+                    dateJoin,
+                    candidate,
+                    candidateId,
+                  )}
               >
                 Initiate joining formalities
               </span>
@@ -653,11 +659,12 @@ class OnboardTable extends Component {
   };
 
   // JoiningFormalitiesModal
-  handleOpenJoiningFormalitiesModal = (value, dateJoin = '', selectedId = '') => {
+  handleOpenJoiningFormalitiesModal = (value, dateJoin = '', selectedId = '', rookieId = '') => {
     this.setState({
       openModalName: value,
       dateJoinCandidate: dateJoin,
       selectedCandidateId: selectedId,
+      selectRookieId: rookieId,
     });
   };
 
@@ -666,6 +673,7 @@ class OnboardTable extends Component {
       openModalName: '',
       dateJoinCandidate: '',
       selectedCandidateId: '',
+      selectRookieId: '',
     });
   };
 
@@ -769,6 +777,7 @@ class OnboardTable extends Component {
       renewModalVisible,
       dateJoinCandidate,
       selectedCandidateId,
+      selectRookieId,
       expiryStatus,
       expiryType,
     } = this.state;
@@ -874,7 +883,11 @@ class OnboardTable extends Component {
         <JoiningFormalitiesModal
           visible={openModalName === 'initiate'}
           onOk={this.onSubmitUserName}
-          candidate={{ dateOfJoining: dateJoinCandidate, candidateId: selectedCandidateId }}
+          candidate={{
+            dateOfJoining: dateJoinCandidate,
+            candidateId: selectedCandidateId,
+            rookieId: selectRookieId,
+          }}
           onClose={this.cancelJoiningFormalities}
         />
         {/* <CandidateUserName

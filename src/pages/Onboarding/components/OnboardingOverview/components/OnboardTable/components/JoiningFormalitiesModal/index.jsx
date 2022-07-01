@@ -21,7 +21,7 @@ const JoiningFormalitiesModal = (props) => {
     onClose = () => {},
     onOk = () => {},
     visible,
-    candidate: { dateOfJoining = '', candidateId = '' },
+    candidate: { dateOfJoining = '', candidateId = '', rookieId = '' },
     listJoiningFormalities,
     loadingGetEmployeeId,
     dispatch,
@@ -42,7 +42,7 @@ const JoiningFormalitiesModal = (props) => {
       dispatch({
         type: 'newCandidateForm/fetchCandidateByRookie',
         payload: {
-          rookieID: candidateId,
+          rookieID: rookieId,
           tenantId: getCurrentTenant(),
         },
       });
@@ -53,6 +53,9 @@ const JoiningFormalitiesModal = (props) => {
 
   // function
   const next = () => {
+    // if(current===0){
+
+    // }
     setCurrent(current + 1);
   };
   const prev = () => {
@@ -142,7 +145,11 @@ const JoiningFormalitiesModal = (props) => {
     {
       title: 'Documents Submission',
       description: null,
-      content: !isTodayDateJoin ? <DocSubmissionContent /> : emptyModal(dateOfJoining),
+      content: !isTodayDateJoin ? (
+        <DocSubmissionContent checkList={checkList} setCheckList={setCheckList} />
+      ) : (
+        emptyModal(dateOfJoining)
+      ),
       footer: !isTodayDateJoin ? (
         <Button
           className={styles.btnSubmit}

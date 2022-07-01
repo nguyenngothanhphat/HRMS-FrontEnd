@@ -24,6 +24,7 @@ import {
   getListNewComer,
   getCandidateById,
   getPosition,
+  getDomain,
 } from '@/services/onboard';
 import { dialog } from '@/utils/utils';
 import { PROCESS_STATUS_TABLE_NAME, PROCESS_STATUS } from '@/utils/onboarding';
@@ -1027,6 +1028,20 @@ const onboard = {
         yield put({
           type: 'saveJoiningFormalities',
           payload: { itemNewComer: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    // eslint-disable-next-line no-shadow
+    *fetchListDomain(_, { call, put }) {
+      try {
+        const response = yield call(getDomain);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { listDomain: data },
         });
       } catch (errors) {
         dialog(errors);

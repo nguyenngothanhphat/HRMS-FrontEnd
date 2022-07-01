@@ -11,8 +11,7 @@ import styles from '@/pages/Onboarding/components/OnboardingOverview/components/
 const DocSubmissionContent = (props) => {
   const {
     dispatch,
-    comment = true,
-    data: {
+    tempData: {
       documentLayout = [],
       documentTypeA = [],
       documentTypeB = [],
@@ -20,37 +19,38 @@ const DocSubmissionContent = (props) => {
       documentTypeD = [],
       documentTypeE = [],
     },
+    setCheckList,
+    checkList,
   } = props;
 
   const renderContent = (type) => {
-    type?.map((e) => {
+    return type?.map((e) => (
       <Row gutter={[16, 16]} className={styles.content}>
-        <Col span={7}>
-          <Checkbox value={null} />
+        <Col span={8} className={styles.comment__flex}>
+          <Checkbox value={e._id} />
           <span className={styles.comment__text}>{e.alias}</span>
         </Col>
-        {e.resubmitComment ? (
-          <Col className={styles.comment} span={17}>
+        {e.resubmitComment.length > 0 ? (
+          <Col className={styles.comment} span={16}>
             <div className={styles.candidateComment}>Candidate&apos;s Comments</div>
             {e.resubmitComment}
           </Col>
         ) : (
-          <Col className={styles.noComment} span={17} />
+          <Col className={styles.noComment} span={16} />
         )}
-      </Row>;
-    });
+      </Row>
+    ));
   };
 
   const selectTitle = (type) => {
-    const layout = documentLayout.find((x) => x.type === type);
-    return `Type ${layout.type}: ${layout.name}`;
+    const layout = documentLayout.find((x) => x?.type === type);
+    return `Type ${layout?.type}: ${layout?.name}`;
   };
 
   const docType = [
     {
       title: selectTitle('A'),
       data: documentTypeA,
-      hasComment: documentTypeA.some((a) => a.resubmitComment.length > 0),
     },
     {
       title: selectTitle('B'),
@@ -70,9 +70,11 @@ const DocSubmissionContent = (props) => {
     },
   ];
 
+  const comment = docType.some((e) => e.data.some((a) => a.resubmitComment.length > 0));
+
   return (
     <>
-      {comment ? (
+      {!comment ? (
         <>
           <div className={styles.headerContent}>
             The below documents have either not been submitted or need to be resubmitted. Please
@@ -81,7 +83,7 @@ const DocSubmissionContent = (props) => {
             candidate submit later.
           </div>
           <div className={classNames(styles.pageBottom, styles.pageBottom__fixed)}>
-            <>
+            <Checkbox.Group onChange={setCheckList} value={checkList}>
               {docType?.map(
                 (i) =>
                   i.data?.length > 0 && (
@@ -92,7 +94,7 @@ const DocSubmissionContent = (props) => {
                     </>
                   ),
               )}
-            </>
+            </Checkbox.Group>
           </div>
         </>
       ) : (
@@ -124,12 +126,6 @@ const DocSubmissionContent = (props) => {
     </>
   );
 };
-export default connect(
-  ({
-    onboard: { joiningFormalities: { listJoiningFormalities = [] } } = {},
-    newCandidateForm: { data = {} },
-  }) => ({
-    listJoiningFormalities,
-    data,
-  }),
-)(DocSubmissionContent);
+export default connect(({ newCandidateForm: { tempData = {} } }) => ({
+  tempData,
+}))(DocSubmissionContent);
