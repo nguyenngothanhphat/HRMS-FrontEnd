@@ -322,3 +322,15 @@ export async function resubmitMyRequest(payload) {
     API_KEYS.TIMESHEET_API,
   );
 }
+
+export async function sendMailInCompleteTimeSheet(payload) {
+  return request(
+    '/api/sendMail/incomplete',
+    {
+      method: 'GET',
+      params: payload,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}

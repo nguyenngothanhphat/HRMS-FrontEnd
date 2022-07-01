@@ -197,6 +197,26 @@ export const generateAllWeeks = (fromDate, toDate) => {
   return weeks;
 };
 
+export const checkHoliday = (date, holidays = []) =>
+  holidays.some((holiday) => moment(date).isSame(holiday?.date, 'day'));
+
+export const checkDateBetweenRange = (startDate, endDate, date) => {
+  return moment(date).isBetween(moment(startDate), moment(endDate), 'day', []);
+};
+
+export const checkHolidayInWeek = (startDate, endDate, holidays = []) =>
+  holidays.some((holiday) => checkDateBetweenRange(startDate, endDate, holiday.date));
+
+export const getHolidayNameByDate = (date, holidays = []) => {
+  const currentDate = holidays.find((holiday) => moment(holiday.date).isSame(moment(date)));
+  if (currentDate) return currentDate?.holidayName;
+  return '';
+};
+
+export const sortedDate = (days = []) => days.sort((a, b) => moment(a.date).diff(moment(b.date)));
+
+export const holidayFormatDate = (date) => moment(date).locale('en').format('MMM DD');
+
 export const TIMESHEET_ADD_TASK_ALERT = {
   DEFAULT: {
     type: 'info',
