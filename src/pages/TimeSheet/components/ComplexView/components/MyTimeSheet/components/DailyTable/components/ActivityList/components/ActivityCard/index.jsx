@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import DeleteIcon from '@/assets/timeSheet/del.svg';
 import EditIcon from '@/assets/timeSheet/edit.svg';
+import DuplicateIcon from '@/assets/timeSheet/duplicate.svg';
 import ModalImage from '@/assets/timeSheet/modalImage1.png';
 import CommonModal from '@/components/CommonModal';
 import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/EditTaskModal';
@@ -17,6 +18,7 @@ import {
   hourFormat,
 } from '@/utils/timeSheet';
 import styles from './index.less';
+import DuplicateTaskModal from '../DuplicateTaskModal';
 
 const { PROJECT, TASK, DESCRIPTION, TIME, TOTAL_HOURS, ACTIONS } = EMP_MT_SECONDARY_COL_SPAN;
 const ORIGINAL_TEXT_LONG = 48;
@@ -49,6 +51,7 @@ const ActivityCard = (props) => {
   // modals
   const [removeModalVisible, setRemoveModalVisible] = useState(false);
   const [editTaskModalVisible, setEditTaskModalVisible] = useState(false);
+  const [duplicateTaskModalVisible, setDuplicateTaskModalVisible] = useState(false);
 
   // USE EFFECT AREA
   const calculateCardPosition = () => {
@@ -198,6 +201,7 @@ const ActivityCard = (props) => {
         <Col span={ACTIONS} className={`${styles.flexCell} ${styles.alignCenter}`}>
           <div className={styles.actionsButton}>
             <img src={EditIcon} alt="" onClick={() => setEditTaskModalVisible(true)} />
+            <img src={DuplicateIcon} alt="" onClick={() => setDuplicateTaskModalVisible(true)} />
             <img src={DeleteIcon} onClick={() => setRemoveModalVisible(true)} alt="" />
           </div>
         </Col>
@@ -231,6 +235,12 @@ const ActivityCard = (props) => {
             </span>
           </div>
         }
+      />
+      <DuplicateTaskModal
+        task={card}
+        date={cardDay}
+        visible={duplicateTaskModalVisible}
+        onClose={() => setDuplicateTaskModalVisible(false)}
       />
 
       <EditTaskModal

@@ -65,6 +65,7 @@ const ImportModal = (props) => {
   const handleCancel = () => {
     dispatch({ type: 'timeSheet/clearImportModalData' });
     onClose();
+    setStep(1);
   };
 
   const onImport = () => {

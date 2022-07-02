@@ -2,7 +2,7 @@ import { Col, DatePicker, Form, Row } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
 import React, { useState } from 'react';
-import { dateFormat, dateFormatAPI } from '@/utils/timeSheet';
+import { dateFormatImport } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const { RangePicker } = DatePicker;
@@ -93,7 +93,7 @@ const ModalContentSelectDates = (props) => {
               //   labelCol={{ span: 12 }}
             >
               <RangePicker
-                format={dateFormat}
+                format={dateFormatImport}
                 ranges={{
                   Today: [moment(), moment()],
                   'This Week': [moment().startOf('week'), moment().endOf('week')],
