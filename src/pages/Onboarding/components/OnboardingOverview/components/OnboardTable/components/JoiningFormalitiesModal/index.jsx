@@ -30,9 +30,12 @@ const JoiningFormalitiesModal = (props) => {
     userName,
   } = props;
   const [checkList, setCheckList] = useState([]);
+  const [docSubCheckList, setDocSubCheckList] = useState([]);
+  const [preJoinCheckList, setPreJoinCheckList] = useState([]);
+  const [callback, setCallback] = useState();
   const [validate, setValidate] = useState({ validateStatus: 'success', errorMsg: null });
   const [initalValue, setInitalValue] = useState({});
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(4);
 
   useEffect(() => {
     dispatch({
@@ -57,54 +60,57 @@ const JoiningFormalitiesModal = (props) => {
 
     // }
     setCurrent(current + 1);
+    setCallback(undefined);
   };
   const prev = () => {
     setCurrent(current - 1);
+    setCallback(undefined);
   };
-  const onFinish = async (value) => {
-    const { userName: name = '' } = value;
-    if (name) {
-      const isExistingUserName = await dispatch({
-        type: 'onboard/checkExistedUserName',
-        payload: { userName: name },
-      });
-      if (isExistingUserName === false) {
-        const response = await dispatch({
-          type: 'onboard/createEmployee',
-          payload: { userName: name, candidateId },
-        });
-        const { statusCode = '' } = response;
+  // const onFinish = async (value) => {
+  //   const { userName: name = '' } = value;
+  //   if (name) {
+  //     const isExistingUserName = await dispatch({
+  //       type: 'onboard/checkExistedUserName',
+  //       payload: { userName: name },
+  //     });
+  //     if (isExistingUserName === false) {
+  //       const response = await dispatch({
+  //         type: 'onboard/createEmployee',
+  //         payload: { userName: name, candidateId },
+  //       });
+  //       const { statusCode = '' } = response;
 
-        if (statusCode === 200)
-          // onOk(value);
-          next();
-      } else setValidate({ validateStatus: 'error', errorMsg: 'That username is already taken' });
-    } else setValidate({ validateStatus: 'error', errorMsg: 'Please input user name' });
-  };
+  //       if (statusCode === 200)
+  //         // onOk(value);
+  //         next();
+  //     } else setValidate({ validateStatus: 'error', errorMsg: 'That username is already taken' });
+  //   } else setValidate({ validateStatus: 'error', errorMsg: 'Please input user name' });
+  // };
   const onCloseModal = () => {
     setCheckList([]);
     onClose();
   };
 
   const renderHeaderModal = (title) => <div className={styles.headerText}>{title}</div>;
-  const onSaveRedux = (result) => {
-    dispatch({
-      type: 'onboard/saveJoiningFormalities',
-      payload: {
-        domain: result,
-      },
-    });
-  };
-  const converToEmployee = async (result) => {
+  // const onSaveRedux = (result) => {
+  //   dispatch({
+  //     type: 'onboard/saveJoiningFormalities',
+  //     payload: {
+  //       domain: result,
+  //     },
+  //   });
+  // };
+  const converToEmployee = async () => {
     const response = await dispatch({
       type: 'onboard/getEmployeeId',
       payload: {
         candidateId,
       },
     });
-    onSaveRedux(result);
+    // onSaveRedux(result);
     const { statusCode = '' } = response;
-    if (statusCode === 200) onOk();
+    if (statusCode === 200) next();
+    // onOk();
   };
 
   const emptyModal = (date) => (
@@ -145,17 +151,20 @@ const JoiningFormalitiesModal = (props) => {
     {
       title: 'Documents Submission',
       description: null,
-      content: !isTodayDateJoin ? (
-        <DocSubmissionContent checkList={checkList} setCheckList={setCheckList} />
+      content: isTodayDateJoin ? (
+        <DocSubmissionContent
+          docSubCheckList={docSubCheckList}
+          setDocSubCheckList={setDocSubCheckList}
+          setCallback={(value) => setCallback(value)}
+        />
       ) : (
         emptyModal(dateOfJoining)
       ),
-      footer: !isTodayDateJoin ? (
+      footer: isTodayDateJoin ? (
         <Button
           className={styles.btnSubmit}
           type="primary"
-          disabled={false}
-          // loading={loadingGetEmployeeId}
+          disabled={docSubCheckList.length !== callback}
           onClick={next}
         >
           Next
@@ -170,7 +179,14 @@ const JoiningFormalitiesModal = (props) => {
       title: 'Pre Joining Documents',
       description:
         'Please ensure all the documents have been submitted before converting the candidate to an employee. If in case there is any document not possible to submit, please remind the candidate submit later.',
-      content: <PreJoiningDocContent />,
+      content: (
+        <PreJoiningDocContent
+          candidateId={candidateId}
+          setCallback={(value) => setCallback(value)}
+          preJoinCheckList={preJoinCheckList}
+          setPreJoinCheckList={setPreJoinCheckList}
+        />
+      ),
       footer: [
         <Button onClick={prev} className={styles.btnCancel}>
           Previous
@@ -180,6 +196,7 @@ const JoiningFormalitiesModal = (props) => {
           type="primary"
           // loading={loadingGetEmployeeId}
           onClick={next}
+          disabled={preJoinCheckList.length !== callback}
         >
           Next
         </Button>,
@@ -206,10 +223,10 @@ const JoiningFormalitiesModal = (props) => {
       title: 'Candidate Username',
       description:
         'The following is the username that is generated for the candidate, you can make any changes to the username if you would like',
-      content: <UserNameContent onFinish={onFinish} validate={validate} />,
+      content: <UserNameContent next={next} />,
       footer: [
         <Button onClick={prev} className={styles.btnCancel}>
-          Cancel
+          Previous
         </Button>,
         <Button
           className={styles.btnSubmit}
@@ -226,16 +243,10 @@ const JoiningFormalitiesModal = (props) => {
     {
       title: 'Reporting Structure',
       description: 'Please select the reporting manager and reportees to proceed further',
-      content: (
-        <ReportingManagerContent
-          onFinish={onFinish}
-          // loadingEmployeeList={loadingEmployeeList}
-          // employeeList={employeeList}
-        />
-      ),
+      content: <ReportingManagerContent />,
       footer: [
         <Button onClick={prev} className={styles.btnCancel}>
-          Cancel
+          Previous
         </Button>,
         <Button
           className={styles.btnSubmit}

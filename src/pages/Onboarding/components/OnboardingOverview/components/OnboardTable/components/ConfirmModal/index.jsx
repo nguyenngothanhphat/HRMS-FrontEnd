@@ -17,17 +17,11 @@ const ConfirmModal = (props) => {
       titleInfo: { name: jobTitle = '' } = {},
       password = '',
     },
-    manager = 'jogi',
-    reportees = [
-      'Nguyen Phan Tan Det',
-      'Tinh Tang Tung',
-      'Nguyen Phan Tan Det',
-      'Tinh Tang Tung',
-      'Nguyen Phan Tan Det',
-      'Tinh Tang Tung',
-      'Nguyen Phan Tan Det',
-      'Tinh Tang Tung',
-    ],
+    userName,
+    domain,
+    reportingManager,
+    title,
+    reportees,
   } = props;
   const [current, setCurrent] = useState(0);
   const [showMore, setShowMore] = useState(false);
@@ -43,25 +37,28 @@ const ConfirmModal = (props) => {
       content: (
         <div className={classNames(styles.pageBottom, styles.pageBottom__showMore)}>
           <div className={styles.pageBottom__text}>
-            User name: <strong>{workEmail}</strong>
+            User name:{' '}
+            <strong>
+              {userName}@{domain}
+            </strong>
           </div>
           <div className={styles.pageBottom__text}>
-            Password: <strong>{password}</strong>
+            Password: <strong>12345678@Tc</strong>
           </div>
           <div className={styles.pageBottom__text}>
             Employee ID: <strong>{employeeId}</strong>
           </div>
           <div className={styles.pageBottom__text}>
-            Job Title: <strong>{jobTitle}</strong>
+            Job Title: <strong>{title?.name}</strong>
           </div>
           <div className={styles.pageBottom__text}>
-            Reporting Manager: <strong>{manager}</strong>
+            Reporting Manager: <strong>{reportingManager?.generalInfoInfo.legalName}</strong>
           </div>
           <div className={styles.pageBottom__text}>
             Reportees:{' '}
             {reportees.slice(0, 4).map((t) => (
               <>
-                <strong>{t}</strong> ,{' '}
+                <strong>{t?.generalInfoInfo.legalName}</strong> ,{' '}
               </>
             ))}
             {reportees.length > 4 && !showMore ? (
@@ -79,7 +76,7 @@ const ConfirmModal = (props) => {
         </div>
       ),
       footer: [
-        <Button type="link" onClick={() => onClose()} className={styles.btnLater}>
+        <Button type="link" onClick={() => onCancel()} className={styles.btnLater}>
           Go back
         </Button>,
         <Button
@@ -112,7 +109,7 @@ const ConfirmModal = (props) => {
           >
             Go to Profile
           </Button>
-          <Button type="link" onClick={() => onCancel()} className={styles.btnLater}>
+          <Button type="link" onClick={() => onClose()} className={styles.btnLater}>
             Maybe later
           </Button>
         </div>
@@ -143,6 +140,18 @@ const ConfirmModal = (props) => {
   );
 };
 
-export default connect(({ onboard: { joiningFormalities: { employeeData = {} } = {} } }) => ({
-  employeeData,
-}))(ConfirmModal);
+export default connect(
+  ({
+    newCandidateForm: {
+      tempData: { reportingManager = {}, reportees = [], title = {} },
+    },
+    onboard: { joiningFormalities: { employeeData = {}, userName = '', domain = '' } = {} },
+  }) => ({
+    employeeData,
+    userName,
+    domain,
+    reportingManager,
+    reportees,
+    title,
+  }),
+)(ConfirmModal);

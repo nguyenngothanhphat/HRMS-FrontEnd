@@ -2,15 +2,13 @@ import { Checkbox, Col, Divider, Row, Tooltip } from 'antd';
 import classNames from 'classnames';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import Check from '@/assets/changePasswordCheck.svg';
 import TooltipIcon from '@/assets/tooltip.svg';
+import Check from '@/assets/changePasswordCheck.svg';
 
 import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 
 const DocSubmissionContent = (props) => {
   const {
-    dispatch,
     tempData: {
       documentLayout = [],
       documentTypeA = [],
@@ -19,8 +17,9 @@ const DocSubmissionContent = (props) => {
       documentTypeD = [],
       documentTypeE = [],
     },
-    setCheckList,
-    checkList,
+    setDocSubCheckList,
+    docSubCheckList,
+    setCallback,
   } = props;
 
   const renderContent = (type) => {
@@ -71,10 +70,19 @@ const DocSubmissionContent = (props) => {
   ];
 
   const comment = docType.some((e) => e.data.some((a) => a.resubmitComment.length > 0));
+  const allValues = docType.reduce((c, i) => c + i.data.length, 0);
+
+  useEffect(() => {
+    setCallback(allValues);
+  }, [allValues]);
+
+  useEffect(() => {
+    comment === false && setCallback(0);
+  }, [comment]);
 
   return (
     <>
-      {!comment ? (
+      {comment ? (
         <>
           <div className={styles.headerContent}>
             The below documents have either not been submitted or need to be resubmitted. Please
@@ -83,7 +91,7 @@ const DocSubmissionContent = (props) => {
             candidate submit later.
           </div>
           <div className={classNames(styles.pageBottom, styles.pageBottom__fixed)}>
-            <Checkbox.Group onChange={setCheckList} value={checkList}>
+            <Checkbox.Group onChange={setDocSubCheckList} value={docSubCheckList}>
               {docType?.map(
                 (i) =>
                   i.data?.length > 0 && (

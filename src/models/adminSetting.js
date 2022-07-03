@@ -39,13 +39,16 @@ import {
   // domain
   setEmailDomain,
   getCompanyById,
+  getDomains,
+  setDomains,
+  removeDomains,
 
   // ticket management
   getSettingTicketById,
   getSettingTicketList,
   upsertSettingTicket,
   removeSettingTicket,
-} from '../services/adminSetting';
+} from '@/services/adminSetting';
 
 const adminSetting = {
   namespace: 'adminSetting',
@@ -63,6 +66,7 @@ const adminSetting = {
       listGrades: [],
       listSupportTeam: [],
       emailDomain: '',
+      listDomain: [],
     },
     tempData: {
       listTitles: [],
@@ -625,6 +629,49 @@ const adminSetting = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchListDomain(_, { call, put }) {
+      try {
+        const response = yield call(getDomains);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { listDomain: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addListDomain({ payload }, { call, put }) {
+      try {
+        const response = yield call(setDomains, {
+          ...payload,
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'fetchListDomain',
+        });
+        notification.success({ message });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *removeListDomain({ payload }, { call, put }) {
+      try {
+        const response = yield call(removeDomains, {
+          ...payload,
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'fetchListDomain',
+        });
+        notification.success({ message });
+      } catch (error) {
+        dialog(error);
+      }
     },
   },
   reducers: {

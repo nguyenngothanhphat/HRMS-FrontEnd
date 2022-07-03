@@ -580,19 +580,12 @@ class OnboardTable extends Component {
                 <span>{actionText}</span>
               </Link>
             </Menu.Item>
-            <Menu.Item>
+            <Menu.Item
+              onClick={() =>
+                this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate, candidateId)}
+            >
               <img className={styles.actionIcon} src={LaunchIcon} alt="launchIcon" />
-              <span
-                onClick={() =>
-                  this.handleOpenJoiningFormalitiesModal(
-                    'initiate',
-                    dateJoin,
-                    candidate,
-                    candidateId,
-                  )}
-              >
-                Initiate joining formalities
-              </span>
+              <span>Initiate joining formalities</span>
             </Menu.Item>
           </>
         );
@@ -898,7 +891,7 @@ class OnboardTable extends Component {
         /> */}
         <ConfirmModal
           visible={openModalName === 'detail'}
-          onCancel={this.onMaybeLater}
+          onCancel={this.cancelCandidateUserName}
           onOk={this.onMaybeLater}
           onClose={this.cancelJoiningFormalities}
         />

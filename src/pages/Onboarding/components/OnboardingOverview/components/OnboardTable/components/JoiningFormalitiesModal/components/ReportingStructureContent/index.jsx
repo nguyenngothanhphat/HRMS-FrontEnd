@@ -10,7 +10,10 @@ const ReportingManagerContent = (props) => {
     onFinish = () => {},
     loadingEmployeeList = false,
     managerList: employeeList = [],
+    reportingManager,
+    reportees,
   } = props;
+  const [form] = Form.useForm();
   const [initialValue, setInitalValue] = useState({});
 
   useEffect(() => {
@@ -24,14 +27,12 @@ const ReportingManagerContent = (props) => {
     });
   }, []);
 
+  // useEffect(() => {
+  //   form.setFieldsValue({ reportingManager, reportees });
+  // }, [reportingManager, reportees]);
+
   return (
-    <Form
-      name="basic"
-      id="reportingForm"
-      onFinish={onFinish}
-      layout="vertical"
-      initialValues={initialValue}
-    >
+    <Form form={form} name="reportingForm" id="reportingForm" onFinish={onFinish} layout="vertical">
       <div className={styles.documentVerification}>
         <Form.Item
           name="reportingManager"
@@ -69,7 +70,6 @@ const ReportingManagerContent = (props) => {
             placeholder="Please select"
             allowClear
             mode="multiple"
-            checkable
             showSearch
             showArrow
             loading={loadingEmployeeList}
@@ -94,10 +94,14 @@ export default connect(
   ({
     newCandidateForm: {
       tempData: { managerList = [] },
+      reportingManager = {},
+      reportees = [],
     },
     loading,
   }) => ({
     managerList,
+    reportingManager,
+    reportees,
     loadingEmployeeList: loading.effects['newCandidateForm/fetchManagerList'],
   }),
 )(ReportingManagerContent);

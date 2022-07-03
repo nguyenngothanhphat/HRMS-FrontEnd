@@ -635,6 +635,12 @@
     .selectForm {
       width: 100%;
       margin-bottom: 12px;
+      :global {
+        .ant-select-selection-item {
+          display: flex;
+          align-items: baseline;
+        }
+      }
     }
   }
 
@@ -724,7 +730,7 @@
       color: #2c6df9;
     }
     .content {
-      margin-bottom: 36px;
+      margin-bottom: 24px;
     }
     .doctype {
       color: #3f72e0;
@@ -757,7 +763,7 @@
         font-weight: 400;
         font-size: 14px;
         font-style: normal;
-        line-height: 16px;
+        line-height: 18px;
       }
       &__flex {
         display: flex;
@@ -823,4 +829,12 @@
   font-style: normal;
   line-height: 18px;
   letter-spacing: 0.121875px;
+}
+
+.primaryTag {
+  float: right;
+  margin-left: auto;
+  color: #2c6df9;
+  background: #e6eeff;
+  border-radius: 12px;
 }

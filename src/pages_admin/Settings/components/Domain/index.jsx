@@ -10,7 +10,7 @@ import CommonModal from '@/components/CommonModal';
 const Domain = (props) => {
   const [form] = Form.useForm();
 
-  const { dispatch, loadingSave, emailDomain, hasData = false } = props;
+  const { dispatch, loadingSave, emailDomain, hasData = false, listDomain } = props;
   const [visible, setVisible] = useState(false);
   const [clear, setClear] = useState(false);
   const [content, setContent] = useState();
@@ -21,14 +21,26 @@ const Domain = (props) => {
     dispatch({
       type: 'adminSetting/getDomain',
     });
+    dispatch({
+      type: 'adminSetting/fetchListDomain',
+    });
   }, []);
 
+  useEffect(() => {
+    form.setFieldsValue({ emailDomain, domain: listDomain });
+  }, [emailDomain, listDomain]);
+
   const onFinish = (values) => {
+    console.log(values.domain);
+    // dispatch({
+    //   type: 'adminSetting/saveDomain',
+    //   payload: {
+    //     emailDomain: values.emailDomain,
+    //   },
+    // });
     dispatch({
-      type: 'adminSetting/saveDomain',
-      payload: {
-        emailDomain: values.emailDomain,
-      },
+      type: 'adminSetting/addListDomain',
+      payload: values.domain,
     });
   };
 
@@ -81,9 +93,6 @@ const Domain = (props) => {
           layout="vertical"
           form={form}
           onFinish={onFinish}
-          initialValues={{
-            emailDomain: emailDomain !== '' ? emailDomain : '',
-          }}
         >
           <Form.Item label="Domain Name 1" name="emailDomain">
             <Input className={s.inpDomain} placeholder="Set domain" />
@@ -101,11 +110,10 @@ const Domain = (props) => {
                           src={deleteSymbol}
                           alt="delete icon"
                           onClick={() => {
+                            setVisible(true);
                             if (hasData) {
-                              setVisible(true);
                               setContent(renderUsedDomaincontent);
                             } else {
-                              setVisible(true);
                               setFooter(true);
                               setContent(renderFreeDomaincontent);
                               setHandlingIndex(i);
@@ -159,9 +167,10 @@ const Domain = (props) => {
   );
 };
 export default connect(
-  ({ loading, adminSetting: { originData: { emailDomain = '' } = {} } = {} }) => ({
+  ({ loading, adminSetting: { originData: { emailDomain = '', listDomain = [] } = {} } = {} }) => ({
     loadingSave: loading.effects['adminSetting/saveDomain'],
     loadingData: loading.effects['adminSetting/getDomain'],
     emailDomain,
+    listDomain,
   }),
 )(Domain);
