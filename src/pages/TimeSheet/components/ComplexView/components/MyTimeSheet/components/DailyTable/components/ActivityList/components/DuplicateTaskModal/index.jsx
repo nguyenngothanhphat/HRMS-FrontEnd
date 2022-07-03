@@ -21,7 +21,7 @@ const DuplicateTaskModal = (props) => {
 
   const [dates, setDates] = useState(null);
   const [disabledHourBefore, setDisabledHourBefore] = useState([]);
-  console.log('🚀 ~ file: index.jsx ~ line 24 ~ DuplicateTaskModal ~ dates', dates);
+
   const getDateLists = (startDate, endDate) => {
     let datelist = [];
     const endDateTemp = moment(endDate).clone();
@@ -36,15 +36,6 @@ const DuplicateTaskModal = (props) => {
 
     return datelist;
   };
-  if (dates) {
-    console.log(
-      'getDatesBetweenDates',
-      getDateLists(
-        moment(dates[0], hourFormat).format(dateFormatAPI),
-        moment(dates[1], hourFormat).format(dateFormatAPI),
-      ),
-    );
-  }
 
   const disabledDate = (current) => {
     if (!dates) {
@@ -75,21 +66,33 @@ const DuplicateTaskModal = (props) => {
       setDates([null, null]);
     }
   };
+
   // FUNCTION
   const onStartTimeChange = (index) => {
-    const { tasks = [] } = form.getFieldsValue();
+    const value = form.getFieldsValue();
+    console.log('~ value', value);
 
-    form.setFieldsValue({
-      tasks: tasks.map((x, i) => {
-        if (i === index) {
-          return {
-            ...x,
-            endTime: null,
-          };
-        }
-        return x;
-      }),
+    // form.setFieldsValue({
+    //   tasks: tasks.map((x, i) => {
+    //     if (i === index) {
+    //       return {
+    //         ...x,
+    //         endTime: null,
+    //       };
+    //     }
+    //     return x;
+    //   }),
+    // });
+  };
+
+  const onValuesChange = (changedValues, allValues) => {
+    const { tasks = [] } = allValues;
+    const disabledHourBeforeTemp = tasks.map((x = {}) => {
+      // minimum 30 minutes per task
+      const temp = moment(x.startTime, hourFormat).add(15, 'minutes');
+      return temp.format(hourFormat);
     });
+    setDisabledHourBefore(disabledHourBeforeTemp);
   };
   // RENDER UI
   const renderModalHeader = () => {
@@ -105,7 +108,13 @@ const DuplicateTaskModal = (props) => {
 
   const renderContent = () => {
     return (
-      <Form name="basic" form={form} id="myForm" className={styles.formModal}>
+      <Form
+        name="tasks"
+        form={form}
+        id="myForm"
+        className={styles.formModal}
+        onValuesChange={onValuesChange}
+      >
         <Row gutter={[24, 0]} className={styles.abovePart}>
           <Col span={24}>
             <Form.Item
@@ -134,7 +143,7 @@ const DuplicateTaskModal = (props) => {
             ? getDateLists(
                 moment(dates[0], hourFormat).format(dateFormatAPI),
                 moment(dates[1], hourFormat).format(dateFormatAPI),
-              ).map((item) => {
+              ).map((item, index) => {
                 return (
                   <Row gutter={[10, 10]} className={styles.selectDetail} align="center">
                     <Col span={6}>{item}</Col>
@@ -142,12 +151,12 @@ const DuplicateTaskModal = (props) => {
                       <Form.Item
                         labelCol={{ span: 24 }}
                         rules={[{ required: true, message: 'Select the start time' }]}
-                        name="startTime"
+                        name={`${'startTime'}${index}`}
                       >
                         <CustomTimePicker
                           placeholder="Select the start time"
                           showSearch
-                          // onChange={() => onStartTimeChange(index)}
+                          onChange={() => onStartTimeChange(index)}
                         />
                       </Form.Item>
                     </Col>
@@ -160,7 +169,7 @@ const DuplicateTaskModal = (props) => {
                         <CustomTimePicker
                           placeholder="Select the end time"
                           showSearch
-                          // disabledHourBefore={disabledHourBefore[index]}
+                          disabledHourBefore={disabledHourBefore[index]}
                         />
                       </Form.Item>
                     </Col>
