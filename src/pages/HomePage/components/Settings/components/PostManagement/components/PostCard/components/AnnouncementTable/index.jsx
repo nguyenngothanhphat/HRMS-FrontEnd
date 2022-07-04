@@ -1,7 +1,7 @@
 import { Image, Popconfirm } from 'antd';
 import Parser from 'html-react-parser';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect, Link } from 'umi';
 import { hashtagify, urlify } from '@/utils/homePage';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
@@ -16,8 +16,9 @@ const AnnouncementTable = (props) => {
     loading = false,
     refreshData = () => {},
     onEditPost = () => {},
+    totalType = 0,
   } = props;
-
+  const [currentPage, setCurrentPage] = useState(1);
   const onDeleteAttachment = async (record) => {
     if (record?._id) {
       const res = await dispatch({
@@ -27,7 +28,7 @@ const AnnouncementTable = (props) => {
         },
       });
       if (res.statusCode === 200) {
-        refreshData();
+        refreshData(currentPage);
       }
     }
   };
@@ -141,7 +142,14 @@ const AnnouncementTable = (props) => {
 
   return (
     <div className={styles.AnnouncementTable}>
-      <CommonTable list={data} loading={loading} columns={getColumns()} />
+      <CommonTable
+        list={data}
+        loading={loading}
+        columns={getColumns()}
+        refreshData={refreshData}
+        totalType={totalType}
+        setCurrentPage={setCurrentPage}
+      />
     </div>
   );
 };
