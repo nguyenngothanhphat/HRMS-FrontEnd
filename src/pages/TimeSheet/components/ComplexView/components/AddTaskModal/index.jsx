@@ -47,11 +47,13 @@ const AddTaskModal = (props) => {
     onClose = () => {},
     projectName = '',
     mode = 'single',
-    timeSheet: { projectList = [] } = {},
+    timeSheet: {
+      projectList = [],
+      myTimesheetByDay = [],
+      myTimesheetByWeek = [],
+      myTimesheetByMonth = [],
+    } = {},
     date = '',
-    myTimesheetByDay = [],
-    myTimesheetByWeek = [],
-    myTimesheetByMonth = [],
     taskDetail: {
       projectId = '',
       notes = '',
@@ -162,7 +164,7 @@ const AddTaskModal = (props) => {
         ],
       });
     }
-  }, [visible, date, JSON.stringify(myTimesheetByMonth), JSON.stringify(myTimesheetByWeek)]);
+  }, [visible, JSON.stringify(myTimesheetByMonth), JSON.stringify(myTimesheetByWeek)]);
 
   useEffect(() => {
     if (!endTime) {
@@ -172,17 +174,15 @@ const AddTaskModal = (props) => {
     }
   }, [visible, endTime]);
 
-  const getTimeSheetByDay = async (day, isChange = false) => {
+  const getTimeSheetByDay = async (day) => {
     const res = await dispatch({
       type: 'timeSheet/fetchMyTimesheetByDay',
       payload: {
         companyId: getCurrentCompany(),
         employeeId,
-        fromDate: isChange
-          ? moment(day[0]).format(dateFormatAPI)
-          : moment(day).format(dateFormatAPI),
-        toDate: isChange ? moment(day[0]).format(dateFormatAPI) : moment(day).format(dateFormatAPI),
-        viewType: 'D',
+        fromDate: moment(day[0]).format(dateFormatAPI),
+        toDate: moment(day[0]).format(dateFormatAPI),
+        viewType: VIEW_TYPE.D,
       },
     });
     if (res.code === 200) {
@@ -199,15 +199,9 @@ const AddTaskModal = (props) => {
     }
   };
 
-  useEffect(() => {
-    if (date) {
-      getTimeSheetByDay(date);
-    }
-  }, [date]);
-
   const handleChangeDate = async (val) => {
     await setDates(val);
-    getTimeSheetByDay(val, true);
+    if (val && val.length > 1 && val[0] && val[1]) getTimeSheetByDay(val);
   };
 
   useEffect(() => {
@@ -368,7 +362,7 @@ const AddTaskModal = (props) => {
   };
 
   const checkHolidayBetweenDates = () => {
-    if (dates && dates.length > 1) return checkHolidayInWeek(dates[0], dates[1], holidays);
+    if (dates && dates?.length > 1) return checkHolidayInWeek(dates[0], dates[1], holidays);
     return false;
   };
 
@@ -376,10 +370,12 @@ const AddTaskModal = (props) => {
     let check = false;
     if (mode === 'multiple') {
       check = true;
-      if (dates.length < 2) {
-        check = false;
-      } else if (moment(dates[0]).format(dateFormat) !== moment(dates[1]).format(dateFormat)) {
-        check = false;
+      if (dates) {
+        if (dates.length < 2) {
+          check = false;
+        } else if (moment(dates[0]).format(dateFormat) !== moment(dates[1]).format(dateFormat)) {
+          check = false;
+        }
       }
     }
 
