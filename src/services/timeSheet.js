@@ -122,6 +122,19 @@ export async function importTimesheet(payload, params) {
     API_KEYS.TIMESHEET_API,
   );
 }
+export async function duplicateTimesheet(payload, params) {
+  // date, week, month
+  return request(
+    `/api/duplicated`,
+    {
+      method: 'POST',
+      data: payload,
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
 
 export async function exportTimeSheet(payload) {
   return request(

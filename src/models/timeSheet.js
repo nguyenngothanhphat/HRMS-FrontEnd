@@ -11,6 +11,7 @@ import {
   // complex view
   getMyTimesheetByType,
   importTimesheet,
+  duplicateTimesheet,
   exportTimeSheet,
   removeActivity,
   updateActivity,
@@ -344,7 +345,11 @@ const TimeSheet = {
     *importTimesheet({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(importTimesheet, { ids: payload.ids }, { ...payload, tenantId });
+        response = yield call(
+          importTimesheet,
+          { ids: payload.ids, dates: payload.dates },
+          { ...payload, tenantId },
+        );
         const { code, msg = '', errors = [] } = response;
         if (code !== 200) {
           pushError(errors);
@@ -362,6 +367,33 @@ const TimeSheet = {
       }
       return response;
     },
+
+    *duplicateTimesheet({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(
+          duplicateTimesheet,
+          { id: payload.id, dateTimes: payload.dateTimes },
+          { ...payload, tenantId },
+        );
+        const { code, msg = '', errors = [] } = response;
+        if (code !== 200) {
+          pushError(errors);
+          return [];
+        }
+        notification.success({ message: msg });
+
+        yield put({
+          type: 'save',
+          payload: {},
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
     // EXPORT TIMESHEET
     *exportTimeSheet(_, { call }) {
       let response = '';

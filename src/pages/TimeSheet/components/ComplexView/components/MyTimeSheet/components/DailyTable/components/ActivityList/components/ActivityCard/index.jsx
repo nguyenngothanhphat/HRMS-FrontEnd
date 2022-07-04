@@ -237,10 +237,11 @@ const ActivityCard = (props) => {
         }
       />
       <DuplicateTaskModal
+        id={id}
         task={card}
-        date={cardDay}
         visible={duplicateTaskModalVisible}
         onClose={() => setDuplicateTaskModalVisible(false)}
+        refreshTable={refreshTable}
       />
 
       <EditTaskModal

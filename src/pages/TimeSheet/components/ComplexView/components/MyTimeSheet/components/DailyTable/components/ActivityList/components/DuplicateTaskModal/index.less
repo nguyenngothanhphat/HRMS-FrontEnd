@@ -8,8 +8,8 @@
 .DuplicateTaskModal {
   :global {
     .ant-modal-body {
+      min-height: 400px;
       max-height: 500px;
-      min-height: 500px;
       overflow-y: auto;
     }
     .ant-form-item-explain {
@@ -50,13 +50,16 @@
       > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
       display: none;
     }
-    .ant-form-item{
+    .ant-form-item {
       margin-bottom: 0 !important;
     }
     .ant-form-item-label label {
       height: 0;
       color: #161c29;
       font-size: 13px;
+    }
+    .ant-form-item-explain {
+      display: none;
     }
 
     .ant-btn-primary {
@@ -103,7 +106,7 @@
       border-bottom-right-radius: 8px;
       border-bottom-left-radius: 8px;
     }
-    .ant-row-center{
+    .ant-row-center {
       align-items: center;
       margin-bottom: 12px;
     }
@@ -165,6 +168,7 @@
     }
     .btnSubmit:disabled {
       color: #fff;
+      cursor: default;
       opacity: 0.5;
     }
     .btnCancel {
@@ -207,18 +211,56 @@
       text-align: center;
     }
   }
-  .timeInput{
+  .timeInput {
     max-height: 400px;
-    overflow-y: scroll;
     margin-top: 24px;
-    background: #FAFCFF;
-    border: 1px solid #E3E8EF;
-    border-radius: 8px;
     padding: 24px 10px;
+    overflow-y: scroll;
+    background: #fafcff;
+    border: 1px solid #e3e8ef;
+    border-radius: 8px;
+  }
+  .dateInput {
+    :global {
+      .ant-form-item-control-input {
+        min-height: 0;
+      }
+      .ant-input {
+        height: 0 !important;
+        padding: 5px 0 !important;
+        color: #2c6df9 !important;
+        font-weight: 500;
+        font-size: 14px !important;
+        background: #fafcff !important;
+        border: none !important;
+      }
+      .ant-input[disabled] {
+        cursor: default;
+      }
+    }
+  }
+  .dayInput {
+    :global {
+      .ant-form-item-control-input {
+        min-height: 0;
+      }
+      .ant-input {
+        height: 25px !important;
+        padding: 5px 0 !important;
+        color: #9aa3b2 !important;
+        font-weight: 400 !important;
+        font-size: 12px !important;
+        background: #fafcff !important;
+        border: none !important;
+      }
+      .ant-input[disabled] {
+        cursor: default;
+      }
+    }
   }
 }
-.formModal{
-    padding: 24px;
+.formModal {
+  padding: 24px;
 }
 
 .noPadding {
@@ -234,5 +276,4 @@
       padding: @contentPadding;
     }
   }
-
 }

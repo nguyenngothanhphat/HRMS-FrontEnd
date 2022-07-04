@@ -69,35 +69,49 @@ const ImportModal = (props) => {
     setStep(1);
   };
 
-  const onImport = (dates) => {
-    let ids = [];
-    const date = [];
-    dates.forEach((item) => {
-      date.push(moment(item).locale('en').format(dateFormatAPI));
-    });
-    importingIds.forEach((item) => {
-      ids = [...ids, ...item.selectedIds];
-    });
-    console.log(' ~ ids', ids);
+  const getDateLists = (startDate, endDate) => {
+    let datelist = [];
+    const endDateTemp = moment(endDate).clone();
 
-    // return dispatch({
-    //   type: 'timeSheet/importTimesheet',
-    //   payload: {
-    //     companyId: getCurrentCompany(),
-    //     employeeId,
-    //     date,
-    //     ids,
-    //   },
-    // });
+    if (startDate && endDate) {
+      const now = moment(startDate);
+      while (now.isSameOrBefore(moment(endDateTemp), 'day')) {
+        datelist = [...datelist, moment(now).locale('en').format(dateFormatAPI)];
+        now.add(1, 'days');
+      }
+    }
+
+    return datelist;
+  };
+
+  const onImport = (datesProps) => {
+    const ids = [];
+    const dates = getDateLists(datesProps[0], datesProps[1]);
+    importingIds.forEach((item) => {
+      item?.selectedIds.forEach((obj) => {
+        ids.push(obj.id);
+      });
+    });
+
+    return dispatch({
+      type: 'timeSheet/importTimesheet',
+      payload: {
+        companyId: getCurrentCompany(),
+        employeeId,
+        dates,
+        ids,
+      },
+    });
   };
 
   const handleFinish = async ({ dates = [] }) => {
-    onImport(dates);
-    // const res = await onImport(dates);
-    // if (res.code === 200) {
-    //   handleCancel();
-    //   refreshData();
-    // }
+    if (!isEmpty(dates)) {
+      const res = await onImport(dates);
+      if (res.code === 200) {
+        handleCancel();
+        refreshData();
+      }
+    }
   };
 
   const handleNextStep = () => {

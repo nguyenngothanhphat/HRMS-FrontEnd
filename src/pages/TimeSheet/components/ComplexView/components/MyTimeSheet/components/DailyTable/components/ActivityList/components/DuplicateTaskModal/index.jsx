@@ -1,10 +1,11 @@
-import { Button, Form, Modal, Row, DatePicker, Col } from 'antd';
-import React, { useState } from 'react';
+import { Button, Col, DatePicker, Form, Input, Modal, Row } from 'antd';
 import moment from 'moment';
-import { dateFormatAPI, dateFormatImport, hourFormat } from '@/utils/timeSheet';
-
-import styles from './index.less';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
+import { dateFormatAPI, dateFormatImport, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
 import CustomTimePicker from '@/components/CustomTimePicker';
+import { getCurrentCompany } from '@/utils/authority';
+import styles from './index.less';
 
 const { RangePicker } = DatePicker;
 
@@ -14,10 +15,14 @@ const DuplicateTaskModal = (props) => {
   const {
     visible = false,
     onClose = () => {},
-    label = 'Duplicate Task',
+    refreshTable = () => {},
     task: { projectName = '', taskName = '' } = {},
-    // date = '',
+    label = 'Duplicate Task',
+    id = '',
+    dispatch,
   } = props;
+
+  const { employee: { _id: employeeId = '' } = {}, loadingDuplicate = false } = props;
 
   const [dates, setDates] = useState(null);
   const [disabledHourBefore, setDisabledHourBefore] = useState([]);
@@ -34,8 +39,27 @@ const DuplicateTaskModal = (props) => {
       }
     }
 
-    return datelist;
+    const arr = datelist.map((item) => {
+      return {
+        day: moment(item).locale('en').format('dddd'),
+        date: item,
+        startTime: null,
+        endTime: null,
+      };
+    });
+    return arr;
   };
+
+  useEffect(() => {
+    if (dates) {
+      form.setFieldsValue({
+        datesTime: getDateLists(
+          moment(dates[0], hourFormat).format(dateFormatAPI),
+          moment(dates[1], hourFormat).format(dateFormatAPI),
+        ),
+      });
+    }
+  }, [dates]);
 
   const disabledDate = (current) => {
     if (!dates) {
@@ -69,25 +93,23 @@ const DuplicateTaskModal = (props) => {
 
   // FUNCTION
   const onStartTimeChange = (index) => {
-    const value = form.getFieldsValue();
-    console.log('~ value', value);
-
-    // form.setFieldsValue({
-    //   tasks: tasks.map((x, i) => {
-    //     if (i === index) {
-    //       return {
-    //         ...x,
-    //         endTime: null,
-    //       };
-    //     }
-    //     return x;
-    //   }),
-    // });
+    const { datesTime = [] } = form.getFieldsValue();
+    form.setFieldsValue({
+      datesTime: datesTime.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            endTime: null,
+          };
+        }
+        return x;
+      }),
+    });
   };
 
   const onValuesChange = (changedValues, allValues) => {
-    const { tasks = [] } = allValues;
-    const disabledHourBeforeTemp = tasks.map((x = {}) => {
+    const { datesTime = [] } = allValues;
+    const disabledHourBeforeTemp = datesTime.map((x = {}) => {
       // minimum 30 minutes per task
       const temp = moment(x.startTime, hourFormat).add(15, 'minutes');
       return temp.format(hourFormat);
@@ -106,14 +128,108 @@ const DuplicateTaskModal = (props) => {
     );
   };
 
+  const renderFormList = () => {
+    return (
+      <Form.List name="datesTime">
+        {(fields) => (
+          <>
+            {fields.map(({ key, name, fieldKey }, index) => (
+              <>
+                {key !== 0 && <div className={styles.divider} />}
+                <Row gutter={[10, 10]} className={styles.selectDetail} align="center">
+                  <Col span={6}>
+                    <div>
+                      <Form.Item
+                        name={[name, 'day']}
+                        fieldKey={[fieldKey, 'day']}
+                        className={styles.dayInput}
+                      >
+                        <Input disabled />
+                      </Form.Item>
+                    </div>
+                    <div>
+                      <Form.Item
+                        name={[name, 'date']}
+                        fieldKey={[fieldKey, 'date']}
+                        className={styles.dateInput}
+                      >
+                        <Input disabled />
+                      </Form.Item>
+                    </div>
+                  </Col>
+                  <Col span={9}>
+                    <Form.Item
+                      labelCol={{ span: 24 }}
+                      rules={[{ required: true, message: 'Select the start time' }]}
+                      name={[name, 'startTime']}
+                      fieldKey={[fieldKey, 'startTime']}
+                    >
+                      <CustomTimePicker
+                        placeholder="Select the start time"
+                        showSearch
+                        onChange={() => onStartTimeChange(index)}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={9}>
+                    <Form.Item
+                      labelCol={{ span: 24 }}
+                      rules={[{ required: true, message: 'Select the end time' }]}
+                      name={[name, 'endTime']}
+                      fieldKey={[fieldKey, 'endTime']}
+                    >
+                      <CustomTimePicker
+                        placeholder="Select the end time"
+                        showSearch
+                        disabledHourBefore={disabledHourBefore[index]}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </>
+            ))}
+          </>
+        )}
+      </Form.List>
+    );
+  };
+
+  const handleFinish = (value) => {
+    const { datesTime = [] } = value;
+    const arr = datesTime.map((x) => {
+      return {
+        startTime: moment(x?.startTime, hourFormat).format(hourFormatAPI),
+        endTime: moment(x?.endTime, hourFormat).format(hourFormatAPI),
+        date: moment(x?.date, dateFormatImport).format(dateFormatAPI),
+      };
+    });
+
+    dispatch({
+      type: 'timeSheet/duplicateTimesheet',
+      payload: {
+        dateTimes: arr,
+        id,
+        employeeId,
+        companyId: getCurrentCompany(),
+      },
+    }).then((res) => {
+      const { code = '' } = res;
+      if (code === 200) {
+        onClose();
+        refreshTable();
+      }
+    });
+  };
+
   const renderContent = () => {
     return (
       <Form
-        name="tasks"
+        name="basic"
         form={form}
         id="myForm"
         className={styles.formModal}
         onValuesChange={onValuesChange}
+        onFinish={handleFinish}
       >
         <Row gutter={[24, 0]} className={styles.abovePart}>
           <Col span={24}>
@@ -138,44 +254,16 @@ const DuplicateTaskModal = (props) => {
             </Form.Item>
           </Col>
         </Row>
-        <div className={dates ? styles.timeInput : ''}>
-          {dates
-            ? getDateLists(
-                moment(dates[0], hourFormat).format(dateFormatAPI),
-                moment(dates[1], hourFormat).format(dateFormatAPI),
-              ).map((item, index) => {
-                return (
-                  <Row gutter={[10, 10]} className={styles.selectDetail} align="center">
-                    <Col span={6}>{item}</Col>
-                    <Col span={9}>
-                      <Form.Item
-                        labelCol={{ span: 24 }}
-                        rules={[{ required: true, message: 'Select the start time' }]}
-                        name={`${'startTime'}${index}`}
-                      >
-                        <CustomTimePicker
-                          placeholder="Select the start time"
-                          showSearch
-                          onChange={() => onStartTimeChange(index)}
-                        />
-                      </Form.Item>
-                    </Col>
-                    <Col span={9}>
-                      <Form.Item
-                        labelCol={{ span: 24 }}
-                        rules={[{ required: true, message: 'Select the end time' }]}
-                        name="endTime"
-                      >
-                        <CustomTimePicker
-                          placeholder="Select the end time"
-                          showSearch
-                          disabledHourBefore={disabledHourBefore[index]}
-                        />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                );
-              })
+
+        <div
+          className={
+            dates && Array.isArray(dates) && dates[0] !== null && dates[1] !== null
+              ? styles.timeInput
+              : ''
+          }
+        >
+          {dates && Array.isArray(dates) && dates[0] !== null && dates[1] !== null
+            ? renderFormList()
             : null}
         </div>
       </Form>
@@ -188,7 +276,17 @@ const DuplicateTaskModal = (props) => {
         <Button className={styles.btnCancel} onClick={() => onClose()}>
           Cancel
         </Button>
-        <Button className={styles.btnSubmit} type="primary">
+        <Button
+          className={styles.btnSubmit}
+          form="myForm"
+          key="submit"
+          type="primary"
+          htmlType="submit"
+          disabled={
+            dates === null || (Array.isArray(dates) && (dates[0] === null || dates[1] === null))
+          }
+          loading={loadingDuplicate}
+        >
           Duplicate
         </Button>
       </div>
@@ -213,4 +311,7 @@ const DuplicateTaskModal = (props) => {
   );
 };
 
-export default DuplicateTaskModal;
+export default connect(({ user: { currentUser: { employee = {} } = {} }, loading }) => ({
+  employee,
+  loadingDuplicate: loading.effects['timeSheet/duplicateTimesheet'],
+}))(DuplicateTaskModal);
