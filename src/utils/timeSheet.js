@@ -153,6 +153,12 @@ export const WORKING_HOURS = {
   END: 24,
 };
 
+export const TIME_DEFAULT = {
+  START_TIME: '8:00 am',
+  END_TIME: '5:00 pm',
+  TIME_WORK_LATE: '4:00 pm',
+};
+
 export const DEFAULT_TOP_HOUR = 16; // HOUR
 
 export const TASKS = [
