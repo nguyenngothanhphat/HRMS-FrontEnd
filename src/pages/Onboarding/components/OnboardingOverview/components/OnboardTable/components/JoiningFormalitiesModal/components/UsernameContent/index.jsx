@@ -1,6 +1,6 @@
 import { Form, Input, Select, Tag } from 'antd';
-import { connect } from 'umi';
 import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
 import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 
 const UserNameContent = (props) => {
@@ -36,12 +36,6 @@ const UserNameContent = (props) => {
         payload: { userName: name },
       });
       if (isExistingUserName === false) {
-        // const response = await dispatch({
-        //   type: 'onboard/createEmployee',
-        //   payload: { userName: name, candidateId },
-        // });
-        // const { statusCode = '' } = response;
-        // if (statusCode === 200) onOk(value);
         onSaveRedux({ domain });
         next();
       } else setValidate({ validateStatus: 'error', errorMsg: 'That username is already taken' });
@@ -102,6 +96,5 @@ export default connect(
     loadingGetListDomain: loading.effects['onboard/getEmployeeIdfetchListDomain'],
     loadingGetEmployeeId: loading.effects['onboard/getEmployeeId'],
     loadingCheckUserName: loading.effects['onboard/checkExistedUserName'],
-    loadingCreateEmployee: loading.effects['onboard/createEmployee'],
   }),
 )(UserNameContent);

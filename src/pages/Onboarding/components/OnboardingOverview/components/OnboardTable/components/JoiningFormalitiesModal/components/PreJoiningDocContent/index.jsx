@@ -1,12 +1,12 @@
 import { Checkbox, Col, Divider, Row } from 'antd';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
 import classNames from 'classnames';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect } from 'umi';
+import DoneIcon from '@/assets/candidatePortal/doneSign.svg';
+import Resubmit from '@/assets/resubmit.svg';
+import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
 import { DOCUMENTS_CHECKLIST_TYPE } from '@/utils/newCandidateForm';
-import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
-import Resubmit from '@/assets/resubmit.svg';
-import DoneIcon from '@/assets/candidatePortal/doneSign.svg';
 
 const PreJoiningDocContent = (props) => {
   const {
@@ -59,13 +59,13 @@ const PreJoiningDocContent = (props) => {
 
   useLayoutEffect(() => {
     if (documentTypeS?.length > 0 || documentTypeE?.length > 0 || documentTypeH?.length > 0) {
-      // dispatch({
-      //   type: 'newCandidateForm/updateByHR',
-      //   payload: {
-      //     candidate: candidateId,
-      //     documentChecklist,
-      //   },
-      // });
+      dispatch({
+        type: 'newCandidateForm/updateByHR',
+        payload: {
+          candidate: candidateId,
+          ...documentChecklist,
+        },
+      });
       const check = validateFiles();
       setValidated(check);
     }

@@ -1,54 +1,49 @@
 import { notification } from 'antd';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { dialog } from '@/utils/utils';
 import {
-  getRoleList,
-  getPermissionList,
-  getListTitle,
-  removeTitle,
-  getListDepartments,
-  getListPermissionOfRole,
-  updateRole,
-  getRoleByID,
-  // POSITION
-  addPosition,
-  getPositionByID,
-  updatePosition,
-
   // DEPARTMENT
   addDepartment,
-  removeDepartment,
-  getDepartmentByID,
-  updateDepartment,
-  getRolesByCompany,
-  setupComplete,
-  countEmployee,
+  addGrade,
+  // POSITION
+  addPosition,
   addRole,
-  removeRole,
-
+  countEmployee,
+  getCompanyById,
+  getDepartmentByID,
+  getDomains,
   // employee list
   getEmployeeList,
-
+  getGradeByID,
+  getListDepartments,
   // grade
   getListGrade,
-  addGrade,
-  updateGrade,
-  removeGrade,
-  getGradeByID,
-
-  // domain
-  setEmailDomain,
-  getCompanyById,
-  getDomains,
-  setDomains,
-  removeDomains,
-
+  getListPermissionOfRole,
+  getListTitle,
+  getPermissionList,
+  getPositionByID,
+  getRoleByID,
+  getRoleList,
+  getRolesByCompany,
   // ticket management
   getSettingTicketById,
   getSettingTicketList,
-  upsertSettingTicket,
+  removeDepartment,
+  removeDomains,
+  removeGrade,
+  removeRole,
   removeSettingTicket,
+  removeTitle,
+  setDomains,
+  // domain
+  setEmailDomain,
+  setupComplete,
+  updateDepartment,
+  updateGrade,
+  updatePosition,
+  updateRole,
+  upsertSettingTicket,
 } from '@/services/adminSetting';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { dialog } from '@/utils/utils';
 
 const adminSetting = {
   namespace: 'adminSetting',
@@ -645,9 +640,7 @@ const adminSetting = {
     },
     *addListDomain({ payload }, { call, put }) {
       try {
-        const response = yield call(setDomains, {
-          ...payload,
-        });
+        const response = yield call(setDomains, [...payload]);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         yield put({

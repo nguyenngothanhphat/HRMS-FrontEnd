@@ -1,11 +1,11 @@
+import { Button, Card, Divider, Form, Input } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Card, Divider } from 'antd';
 import { connect } from 'umi';
-import s from './index.less';
 import addSymbol from '@/assets/dashboard/blueAdd.svg';
 import deleteSymbol from '@/assets/deleteMailExist.svg';
 import errorFile from '@/assets/errorFile.svg';
 import CommonModal from '@/components/CommonModal';
+import s from './index.less';
 
 const Domain = (props) => {
   const [form] = Form.useForm();
@@ -27,11 +27,16 @@ const Domain = (props) => {
   }, []);
 
   useEffect(() => {
-    form.setFieldsValue({ emailDomain, domain: listDomain });
-  }, [emailDomain, listDomain]);
+    form.setFieldsValue({
+      emailDomain: listDomain.filter((a) => a.isPrimary),
+      domain: listDomain.filter((a) => a.isPrimary === false),
+    });
+  }, [listDomain]);
 
   const onFinish = (values) => {
-    console.log(values.domain);
+    const formatData = values.domain.map((i) => {
+      return i?._id ? { _id: i._id, name: i.name, isPrimary: i.isPrimary } : { name: i.name };
+    });
     // dispatch({
     //   type: 'adminSetting/saveDomain',
     //   payload: {
@@ -40,7 +45,7 @@ const Domain = (props) => {
     // });
     dispatch({
       type: 'adminSetting/addListDomain',
-      payload: values.domain,
+      payload: formatData,
     });
   };
 
@@ -61,7 +66,8 @@ const Domain = (props) => {
     </div>
   );
 
-  const onRemoveItem = (index) => {
+  const onRemoveItem = (index, id) => {
+    console.log(id);
     const values = form.getFieldsValue();
     const tempDomain = values.domain || {};
     tempDomain.splice(index, 1);

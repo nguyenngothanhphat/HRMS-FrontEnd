@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Modal, Button } from 'antd';
-import { connect, history } from 'umi';
-import classNames from 'classnames';
 import { DownOutlined } from '@ant-design/icons';
+import { Button, Modal } from 'antd';
+import classNames from 'classnames';
+import React, { useState } from 'react';
+import { connect, history } from 'umi';
 import imgDone from '@/assets/candidatePortal/imgDone.png';
 import styles from '../../index.less';
 
@@ -24,6 +24,7 @@ const ConfirmModal = (props) => {
     title,
     reportees,
     candidate,
+    loadingCreateEmployee,
   } = props;
   const [current, setCurrent] = useState(0);
   const [showMore, setShowMore] = useState(false);
@@ -96,9 +97,8 @@ const ConfirmModal = (props) => {
           type="primary"
           key="submit"
           htmlType="submit"
-          onClick={() => {
-            covertToEmployee();
-          }}
+          loading={loadingCreateEmployee}
+          onClick={covertToEmployee}
         >
           Convert to Employee
         </Button>,
@@ -133,7 +133,7 @@ const ConfirmModal = (props) => {
   return (
     <Modal
       className={`${styles.joiningFormalitiesModal} ${styles.joiningFormalitiesModal__custom}`}
-      onCancel={() => onCancel()}
+      onCancel={() => onClose()}
       destroyOnClose
       footer={steps[current].footer}
       centered
@@ -154,6 +154,7 @@ const ConfirmModal = (props) => {
 
 export default connect(
   ({
+    loading,
     newCandidateForm: {
       tempData: { reportingManager = {}, reportees = [], title = {}, candidate },
     },
@@ -166,5 +167,6 @@ export default connect(
     reportees,
     title,
     candidate,
+    loadingCreateEmployee: loading.effects['onboard/createEmployee'],
   }),
 )(ConfirmModal);

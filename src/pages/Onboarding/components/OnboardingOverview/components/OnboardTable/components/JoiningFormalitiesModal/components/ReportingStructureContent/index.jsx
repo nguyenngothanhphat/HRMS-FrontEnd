@@ -1,8 +1,8 @@
 import { Form, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 
 const ReportingManagerContent = (props) => {
   const {
@@ -19,16 +19,8 @@ const ReportingManagerContent = (props) => {
   const [selectedManager, setSelectedManager] = useState(null);
 
   const onValuesChange = (changedValues, allValues) => {
-    const { reportingManager = '', reportees = [] } = allValues;
+    const { reportingManager = '' } = allValues;
     setSelectedManager(reportingManager);
-    // const removeManagerSelected = employeeList.filter(
-    //   (x) => !!reportingManager && x._id !== reportingManager,
-    // );
-    // // const removePreporteeSelected = employeeList.filter(
-    // //   (x) => x._id !== reportees.find((a) => a === x._id),
-    // // );
-    // setArr(removeManagerSelected);
-    // // !!reportees && setArr(removePreporteeSelected);
   };
 
   useEffect(() => {
@@ -45,10 +37,6 @@ const ReportingManagerContent = (props) => {
       // reportees: employee?.map((e) => e._id),
     });
   }, []);
-
-  // useEffect(() => {
-  //   setArr(employeeList);
-  // }, [employeeList]);
 
   useEffect(() => {
     setSelectedManager(null);
@@ -87,8 +75,6 @@ const ReportingManagerContent = (props) => {
         <Form.Item
           name="reportingManager"
           label="Reporting Manager"
-          // validateStatus={validate.validateStatus}
-          // help={validate.errorMsg}
           rules={[{ required: true, message: 'Please select reporting manager' }]}
           className={styles.selectForm}
         >
@@ -111,8 +97,6 @@ const ReportingManagerContent = (props) => {
         <Form.Item
           name="reportees"
           label="Reportees"
-          // validateStatus={validate.validateStatus}
-          // help={validate.errorMsg}
           rules={[{ required: true, message: 'Please select reportees' }]}
           className={styles.selectForm}
         >

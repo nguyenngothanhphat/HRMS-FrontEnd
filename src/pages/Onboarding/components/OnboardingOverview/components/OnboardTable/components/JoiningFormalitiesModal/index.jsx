@@ -1,20 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Button, Checkbox, Tooltip, Form, Select, Input, Row, Col, Divider } from 'antd';
+import { Button, Modal } from 'antd';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import classNames from 'classnames';
-import { SearchOutlined } from '@ant-design/icons';
-import TooltipIcon from '@/assets/tooltip.svg';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import Check from '@/assets/changePasswordCheck.svg';
-import Resubmit from '@/assets/resubmit.svg';
+import { getCurrentTenant } from '@/utils/authority';
 
 import styles from '../../index.less';
+import DocSubmissionContent from './components/DocSubmissionContent';
+import InitiateJoiningContent from './components/InitiateJoiningContent';
+import PreJoiningDocContent from './components/PreJoiningDocContent';
 import ReportingManagerContent from './components/ReportingStructureContent';
 import UserNameContent from './components/UsernameContent';
-import DocSubmissionContent from './components/DocSubmissionContent';
-import PreJoiningDocContent from './components/PreJoiningDocContent';
-import InitiateJoiningContent from './components/InitiateJoiningContent';
 
 const JoiningFormalitiesModal = (props) => {
   const {
@@ -33,7 +28,6 @@ const JoiningFormalitiesModal = (props) => {
   const [docSubCheckList, setDocSubCheckList] = useState([]);
   const [preJoinCheckList, setPreJoinCheckList] = useState([]);
   const [callback, setCallback] = useState();
-  const [validate, setValidate] = useState({ validateStatus: 'success', errorMsg: null });
   const [initalValue, setInitalValue] = useState({});
   const [current, setCurrent] = useState(0);
 
@@ -41,6 +35,7 @@ const JoiningFormalitiesModal = (props) => {
     dispatch({
       type: 'onboard/getListJoiningFormalities',
     });
+    // eslint-disable-next-line no-unused-expressions
     candidateId &&
       dispatch({
         type: 'newCandidateForm/fetchCandidateByRookie',
@@ -56,9 +51,6 @@ const JoiningFormalitiesModal = (props) => {
 
   // function
   const next = () => {
-    // if(current===0){
-
-    // }
     setCurrent(current + 1);
     setCallback(undefined);
   };
@@ -66,40 +58,12 @@ const JoiningFormalitiesModal = (props) => {
     setCurrent(current - 1);
     setCallback(undefined);
   };
-  // const onFinish = async (value) => {
-  //   const { userName: name = '' } = value;
-  //   if (name) {
-  //     const isExistingUserName = await dispatch({
-  //       type: 'onboard/checkExistedUserName',
-  //       payload: { userName: name },
-  //     });
-  //     if (isExistingUserName === false) {
-  //       const response = await dispatch({
-  //         type: 'onboard/createEmployee',
-  //         payload: { userName: name, candidateId },
-  //       });
-  //       const { statusCode = '' } = response;
-
-  //       if (statusCode === 200)
-  //         // onOk(value);
-  //         next();
-  //     } else setValidate({ validateStatus: 'error', errorMsg: 'That username is already taken' });
-  //   } else setValidate({ validateStatus: 'error', errorMsg: 'Please input user name' });
-  // };
   const onCloseModal = () => {
     setCheckList([]);
     onClose();
   };
 
   const renderHeaderModal = (title) => <div className={styles.headerText}>{title}</div>;
-  // const onSaveRedux = (result) => {
-  //   dispatch({
-  //     type: 'onboard/saveJoiningFormalities',
-  //     payload: {
-  //       domain: result,
-  //     },
-  //   });
-  // };
   const converToEmployee = async () => {
     const response = await dispatch({
       type: 'onboard/getEmployeeId',
@@ -107,10 +71,8 @@ const JoiningFormalitiesModal = (props) => {
         candidateId,
       },
     });
-    // onSaveRedux(result);
     const { statusCode = '' } = response;
     if (statusCode === 200) next();
-    // onOk();
   };
 
   const emptyModal = (date) => (
@@ -120,30 +82,6 @@ const JoiningFormalitiesModal = (props) => {
     </div>
   );
 
-  const renderFooter = (isTodayDateJoin) => {
-    // if (isTodayDateJoin) {
-    return [
-      <Button onClick={prev} className={styles.btnCancel}>
-        Previous
-      </Button>,
-      <Button
-        className={styles.btnSubmit}
-        type="primary"
-        disabled={checkList.length !== listJoiningFormalities.length && callback}
-        loading={loadingGetEmployeeId}
-        onClick={() => converToEmployee()}
-      >
-        Convert to Employee
-      </Button>,
-    ];
-    // }
-
-    // return [
-    //   <Button onClick={prev} className={styles.btnCancel}>
-    //     Cancel
-    //   </Button>,
-    // ];
-  };
   const getDayJoin = moment(dateOfJoining);
   const isTodayDateJoin = moment().isAfter(getDayJoin);
 
@@ -194,7 +132,6 @@ const JoiningFormalitiesModal = (props) => {
         <Button
           className={styles.btnSubmit}
           type="primary"
-          // loading={loadingGetEmployeeId}
           onClick={next}
           disabled={preJoinCheckList.length !== callback}
         >
@@ -208,9 +145,6 @@ const JoiningFormalitiesModal = (props) => {
         'Please ensure that the joining formalities checklist have been completed before converting the candidate to an employee.',
       content: (
         <InitiateJoiningContent
-          // isTodayDateJoin={isTodayDateJoin}
-          // emptyModal={emptyModal}
-          // dateOfJoining={dateOfJoining}
           listJoiningFormalities={listJoiningFormalities}
           checkList={checkList}
           setCheckList={setCheckList}
@@ -218,7 +152,20 @@ const JoiningFormalitiesModal = (props) => {
         />
       ),
 
-      footer: renderFooter(isTodayDateJoin),
+      footer: [
+        <Button onClick={prev} className={styles.btnCancel}>
+          Previous
+        </Button>,
+        <Button
+          className={styles.btnSubmit}
+          type="primary"
+          disabled={checkList.length !== listJoiningFormalities.length && callback}
+          loading={loadingGetEmployeeId}
+          onClick={() => converToEmployee()}
+        >
+          Convert to Employee
+        </Button>,
+      ],
     },
     {
       title: 'Candidate Username',
@@ -255,7 +202,6 @@ const JoiningFormalitiesModal = (props) => {
           form="reportingForm"
           key="submit"
           htmlType="submit"
-          loading={loadingCheckUserName || loadingCreateEmployee}
           onClick={() => onOk()}
         >
           Next

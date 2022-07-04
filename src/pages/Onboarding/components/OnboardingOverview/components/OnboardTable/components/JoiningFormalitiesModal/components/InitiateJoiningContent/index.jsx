@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
 import { Checkbox, Tooltip } from 'antd';
-import { connect } from 'umi';
-import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
+import React, { useEffect } from 'react';
+import { connect, history } from 'umi';
 import TooltipIcon from '@/assets/tooltip.svg';
 import warning from '@/assets/warning.svg';
+import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 
 const InitiateJoiningContent = (props) => {
   const {
@@ -23,7 +23,7 @@ const InitiateJoiningContent = (props) => {
         location: _id,
       },
     });
-    setCallback(idGenerate?.length);
+    setCallback(!!idGenerate?.length);
   }, []);
 
   return (
@@ -49,7 +49,7 @@ const InitiateJoiningContent = (props) => {
           </div>
         ))}
       </Checkbox.Group>
-      {idGenerate?.length && (
+      {!!idGenerate?.length && (
         <div>
           <div>
             <img src={warning} alt="warnIcon" />
@@ -61,7 +61,12 @@ const InitiateJoiningContent = (props) => {
 
           <div>
             To do this,{' '}
-            <span className={styles.link}>
+            <span
+              className={styles.link}
+              onClick={() => {
+                history.push(`/onboarding/settings/joining-formalities`);
+              }}
+            >
               go to Settings &gt; Joining Formalities &gt; Employee ID
             </span>
           </div>

@@ -1,36 +1,36 @@
-import _ from 'lodash';
-import { history } from 'umi';
 import { notification } from 'antd';
+import _ from 'lodash';
 import moment from 'moment';
+import { history } from 'umi';
 import {
-  getOnboardingList,
-  deleteDraft,
-  initiateBackgroundCheck,
-  createProfile,
-  getTotalNumberOnboardingList,
-  reassignTicket,
-  getListEmployee,
-  getFilterList,
-  handleExpiryTicket,
-  getListJoiningFormalities,
   addJoiningFormalities,
-  updateJoiningFormalities,
-  removeJoiningFormalities,
-  updateSettingEmployeeId,
-  getSettingEmployeeId,
-  createUserName,
   checkExistingUserName,
   createEmployee,
-  getListNewComer,
+  createProfile,
+  createUserName,
+  deleteDraft,
   getCandidateById,
-  getPosition,
   getDomain,
+  getFilterList,
   getIdGenerate,
+  getListEmployee,
+  getListJoiningFormalities,
+  getListNewComer,
+  getOnboardingList,
+  getPosition,
+  getSettingEmployeeId,
+  getTotalNumberOnboardingList,
+  handleExpiryTicket,
+  initiateBackgroundCheck,
+  reassignTicket,
+  removeJoiningFormalities,
   updateIdGenerate,
+  updateJoiningFormalities,
+  updateSettingEmployeeId,
 } from '@/services/onboard';
-import { dialog } from '@/utils/utils';
-import { PROCESS_STATUS_TABLE_NAME, PROCESS_STATUS } from '@/utils/onboarding';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { PROCESS_STATUS, PROCESS_STATUS_TABLE_NAME } from '@/utils/onboarding';
+import { dialog } from '@/utils/utils';
 
 // const employeeList = rookieList.filter(
 //   (rookie) => rookie.isNew === undefined || rookie.isNew === null,
@@ -1071,11 +1071,11 @@ const onboard = {
         const response = yield call(getIdGenerate, {
           ...payload,
         });
-        const { statusCode, data } = response;
+        const { statusCode, data, total } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveJoiningFormalities',
-          payload: { idGenerate: data },
+          payload: { idGenerate: data, locationTotal: total },
         });
       } catch (errors) {
         dialog(errors);
