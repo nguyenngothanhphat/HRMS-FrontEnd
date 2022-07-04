@@ -148,52 +148,6 @@ const JoiningFormalities = (props) => {
         </TabPane>
         <TabPane tab="Employee ID" key="2">
           <EmployeeId />
-          {/* <div className={styles.employeeId}>
-            <Form form={form} name="employeeId" layout="vertical" onFinish={onFinish}>
-              <div className={styles.question}>
-                From where would you like to start the Auto generated ID?
-              </div>
-              <Form.Item label="Auto generated ID" name="generatedId">
-                <Input disabled={!isEdit} loading />
-              </Form.Item>
-              <div className={styles.question}>
-                Would you like to include a string infront of the auto generated Employee ID?
-              </div>
-              <Form.Item label="Prefix" name="prefix">
-                <Input disabled={!isEdit} />
-              </Form.Item>
-              {isEdit ? (
-                <Form.Item>
-                  <Space size={24}>
-                    <Button
-                      className={styles.btnCancel}
-                      onClick={() => {
-                        setIsEdit(false);
-                        form.setFieldsValue({ prefix, generatedId });
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      form="employeeId"
-                      loading={loadingUpdateEmployeeId}
-                      // onClick={form.submit}
-                    >
-                      Save Changes
-                    </Button>
-                  </Space>
-                </Form.Item>
-              ) : (
-                <Form.Item>
-                  <Button type="primary" onClick={() => setIsEdit(true)}>
-                    Edit
-                  </Button>
-                </Form.Item>
-              )}
-            </Form>
-          </div> */}
         </TabPane>
       </Tabs>
 

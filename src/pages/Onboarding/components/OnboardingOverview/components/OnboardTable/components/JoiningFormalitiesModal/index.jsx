@@ -35,7 +35,7 @@ const JoiningFormalitiesModal = (props) => {
   const [callback, setCallback] = useState();
   const [validate, setValidate] = useState({ validateStatus: 'success', errorMsg: null });
   const [initalValue, setInitalValue] = useState({});
-  const [current, setCurrent] = useState(4);
+  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     dispatch({
@@ -129,7 +129,7 @@ const JoiningFormalitiesModal = (props) => {
       <Button
         className={styles.btnSubmit}
         type="primary"
-        disabled={checkList.length !== listJoiningFormalities.length}
+        disabled={checkList.length !== listJoiningFormalities.length && callback}
         loading={loadingGetEmployeeId}
         onClick={() => converToEmployee()}
       >
@@ -214,6 +214,7 @@ const JoiningFormalitiesModal = (props) => {
           listJoiningFormalities={listJoiningFormalities}
           checkList={checkList}
           setCheckList={setCheckList}
+          setCallback={(value) => setCallback(value)}
         />
       ),
 
@@ -251,7 +252,7 @@ const JoiningFormalitiesModal = (props) => {
         <Button
           className={styles.btnSubmit}
           type="primary"
-          form="usernameForm"
+          form="reportingForm"
           key="submit"
           htmlType="submit"
           loading={loadingCheckUserName || loadingCreateEmployee}

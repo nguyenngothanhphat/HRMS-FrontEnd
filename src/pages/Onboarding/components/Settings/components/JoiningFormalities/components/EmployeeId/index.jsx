@@ -2,9 +2,11 @@ import { Button, Card, Col, Form, Input, Row, Space, Tabs, Tooltip } from 'antd'
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CommonTable from '@/components/CommonTable';
-import editIcon from '@/assets/edit-template-icon.svg';
+import editIcon from '@/assets/projectManagement/edit2.svg';
 import styles from './index.less';
 import TooltipIcon from '@/assets/tooltip.svg';
+import checkIcon from '@/assets/projectManagement/approveCheck.svg';
+import cancelIcon from '@/assets/projectManagement/cancelX.svg';
 
 const { TabPane } = Tabs;
 
@@ -13,97 +15,145 @@ const JoiningFormalities = (props) => {
     // listJoiningFormalities,
     // generatedId,
     // prefix,
-    idItem,
-    loadingAdd,
-    loadingUpdate,
-    loadingRemove,
+    // idItem,
+    // loadingAdd,
+    // loadingUpdate,
+    // loadingRemove,
     dispatch,
     loadingUpdateEmployeeId,
     loadingList,
+    idGenerate,
+    location,
+    settingId = {},
   } = props;
   const [form] = Form.useForm();
-  useEffect(() => {
+
+  const fetchTable = (page = 1, limit = 10) => {
     dispatch({
-      type: 'onboard/getSettingEmployeeId',
+      type: 'onboard/fetchIdGenerate',
+      payload: {
+        page,
+        limit,
+      },
+    });
+  };
+
+  const fetchSettingEmpolyeeId = (locationId) => {
+    dispatch({
+      type: 'onboard/fetchIdbyLocation',
+      payload: {
+        location: locationId,
+      },
+    });
+  };
+
+  useEffect(() => {
+    // dispatch({
+    //   type: 'onboard/getSettingEmployeeId',
+    // });
+    fetchTable();
+    fetchSettingEmpolyeeId(location._id);
+    form.setFieldsValue({
+      generatedId: settingId?.idGenerate?.start,
+      prefix: settingId?.idGenerate?.prefix,
     });
   }, []);
-  useEffect(() => {
-    if (!loadingAdd && !loadingUpdate && !loadingRemove)
-      dispatch({
-        type: 'onboard/getListJoiningFormalities',
-      });
-  }, [loadingAdd, loadingUpdate, loadingRemove]);
+  // useEffect(() => {
+  //   if (!loadingAdd && !loadingUpdate && !loadingRemove)
+  //     dispatch({
+  //       type: 'onboard/getListJoiningFormalities',
+  //     });
+  // }, [loadingAdd, loadingUpdate, loadingRemove]);
 
-  const [openModal, setOpenModal] = useState('');
-  const [item, setItem] = useState({});
   const [isEdit, setIsEdit] = useState(false);
-  const onClose = () => {
-    setOpenModal('');
-    setItem({});
-  };
-  const onClickBtn = (mode, record = {}) => {
-    setOpenModal(mode);
-    setItem(record);
-  };
+  const [editAction, setEditAction] = useState(false);
+  const [pageSelected, setPageSelected] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const onFinish = async (value) => {
+    // const response = await dispatch({
+    //   type: 'onboard/updateSettingEmployeeId',
+    //   payload: {
+    //     _id: idItem,
+    //     ...value,
+    //   },
+    // });
+    // const { statusCode = 0 } = response;
+    // if (statusCode === 200) setIsEdit(false);
+    const { prefix, generatedId: start } = value;
     const response = await dispatch({
-      type: 'onboard/updateSettingEmployeeId',
+      type: 'onboard/updateIdGenerate',
       payload: {
-        _id: idItem,
-        ...value,
+        location: {
+          _id: location._id,
+          prefix,
+          start,
+        },
       },
     });
     const { statusCode = 0 } = response;
-    if (statusCode === 200) setIsEdit(false);
+    if (statusCode === 200) {
+      setIsEdit(false);
+      fetchTable();
+    }
+  };
+
+  const Action = (record) => {
+    return (
+      <Space size={12} className={styles.groupBtn}>
+        {editAction ? (
+          <div>
+            <Button type="link" shape="circle" onClick={console.log('hihi')}>
+              <img src={checkIcon} alt="checkIcon" />
+            </Button>
+            <Button
+              type="link"
+              shape="circle"
+              onClick={() => setEditAction(false)}
+              icon={<img src={cancelIcon} alt="cancelIcon" />}
+            />
+          </div>
+        ) : (
+          <Button type="link" shape="circle" onClick={() => setEditAction(true)}>
+            <img src={editIcon} alt="editIcon" />
+          </Button>
+        )}
+      </Space>
+    );
   };
 
   const columns = [
     {
       title: <div style={{ marginLeft: '10px' }}>Location</div>,
-      dataIndex: 'location',
-      key: 'location',
+      dataIndex: 'name',
+      key: 'name',
       width: 200,
-      render: (location) => <div style={{ marginLeft: '10px' }}>{location}</div>,
+      render: (lo) => <div style={{ marginLeft: '10px' }}>{lo}</div>,
     },
     {
       title: 'Prefix (Optional)',
       dataIndex: 'prefix',
       key: 'prefix',
       width: 150,
-      render: (prefix) => prefix,
+      render: (_, row) => row?.idGenerate?.prefix,
     },
     {
       title: 'User ID Sequence Start',
-      dataIndex: 'generatedId',
-      key: 'generatedId',
+      dataIndex: 'start',
+      key: 'start',
       width: 150,
-      render: (generatedId) => generatedId?.generalInfoInfo?.legalName || '',
+      render: (_, row) => row?.idGenerate?.start,
     },
     {
       title: <div style={{ marginRight: '10px' }}>Action</div>,
       key: 'action',
       width: 150,
       align: 'right',
-      render: (_, record) => {
-        return (
-          <Space size={12} className={styles.groupBtn}>
-            <Button
-              type="link"
-              shape="circle"
-              size={24}
-              className={styles.btn}
-              onClick={() => onClickBtn('edit', record)}
-            >
-              <img src={editIcon} alt="editIcon" />
-            </Button>
-          </Space>
-        );
+      render: (_, row) => {
+        return Action(row);
       },
     },
   ];
-
-  //   form.setFieldsValue({ generatedId, prefix });
 
   return (
     <div className={styles.employeeId}>
@@ -197,10 +247,13 @@ const JoiningFormalities = (props) => {
       <Card className={styles.checkList} title="Regions">
         <CommonTable
           //   size="small"
-          //   dataSource={listJoiningFormalities}
+          setPageSize={setPageSize}
+          setPageSelected={setPageSelected}
+          list={idGenerate}
           columns={columns}
           //   pagination={false}
           loading={loadingList}
+          isBackendPaging
         />
       </Card>
     </div>
@@ -209,24 +262,30 @@ const JoiningFormalities = (props) => {
 export default connect(
   ({
     loading,
+    user: { currentUser: { location = '' } } = {},
     onboard: {
       joiningFormalities: {
         listJoiningFormalities = [],
         generatedId = '',
         prefix = '',
         idItem = '',
+        idGenerate = [],
+        settingId = {},
       } = {},
     },
   }) => ({
-    loadingList: loading.effects['onboard/getListJoiningFormalities'],
+    loadingList: loading.effects['onboard/fetchIdGenerate'],
     loadingAdd: loading.effects['onboard/addJoiningFormalities'],
     loadingUpdate: loading.effects['onboard/updateJoiningFormalities'],
     loadingRemove: loading.effects['onboard/removeJoiningFormalities'],
-    loadingUpdateEmployeeId: loading.effects['onboard/updateSettingEmployeeId'],
+    loadingUpdateEmployeeId: loading.effects['onboard/updateIdGenerate'],
     loadingGetEmployeeId: loading.effects['onboard/getSettingEmployeeId'],
     listJoiningFormalities,
     generatedId,
     prefix,
     idItem,
+    idGenerate,
+    location,
+    settingId,
   }),
 )(JoiningFormalities);

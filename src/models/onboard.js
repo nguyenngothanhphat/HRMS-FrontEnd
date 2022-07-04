@@ -25,6 +25,8 @@ import {
   getCandidateById,
   getPosition,
   getDomain,
+  getIdGenerate,
+  updateIdGenerate,
 } from '@/services/onboard';
 import { dialog } from '@/utils/utils';
 import { PROCESS_STATUS_TABLE_NAME, PROCESS_STATUS } from '@/utils/onboarding';
@@ -309,6 +311,8 @@ const onboard = {
       generatedId: '',
       prefix: '',
       idItem: '',
+      idGenerate: [],
+      settingId: '',
     },
     reloadTableData: false,
   },
@@ -1043,6 +1047,52 @@ const onboard = {
           type: 'saveJoiningFormalities',
           payload: { listDomain: data },
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchIdbyLocation({ payload }, { call, put }) {
+      try {
+        const response = yield call(getIdGenerate, {
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { settingId: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchIdGenerate({ payload }, { call, put }) {
+      try {
+        const response = yield call(getIdGenerate, {
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { idGenerate: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateIdGenerate({ payload }, { call, put }) {
+      try {
+        const response = yield call(updateIdGenerate, {
+          ...payload,
+        });
+        const { statusCode, data, message } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { idGenerate: data },
+        });
+        notification.success({ message });
       } catch (errors) {
         dialog(errors);
       }

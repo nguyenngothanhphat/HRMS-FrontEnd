@@ -8,6 +8,7 @@ import styles from '../../index.less';
 
 const ConfirmModal = (props) => {
   const {
+    dispatch,
     onCancel = () => {},
     onOk = () => {},
     onClose = () => {},
@@ -22,12 +23,23 @@ const ConfirmModal = (props) => {
     reportingManager,
     title,
     reportees,
+    candidate,
   } = props;
   const [current, setCurrent] = useState(0);
   const [showMore, setShowMore] = useState(false);
 
   const next = () => {
     setCurrent(current + 1);
+  };
+
+  const covertToEmployee = async () => {
+    const response = await dispatch({
+      type: 'onboard/createEmployee',
+      payload: { userName, candidateId: candidate, domain },
+    });
+    const { statusCode = '' } = response;
+
+    if (statusCode === 200) next();
   };
 
   const steps = [
@@ -58,7 +70,7 @@ const ConfirmModal = (props) => {
             Reportees:{' '}
             {reportees.slice(0, 4).map((t) => (
               <>
-                <strong>{t?.generalInfoInfo.legalName}</strong> ,{' '}
+                <strong>{t?.generalInfoInfo?.legalName}</strong> ,{' '}
               </>
             ))}
             {reportees.length > 4 && !showMore ? (
@@ -68,7 +80,7 @@ const ConfirmModal = (props) => {
             ) : (
               reportees.slice(4, reportees.length).map((t) => (
                 <>
-                  <strong>{t}</strong> ,{' '}
+                  <strong>{t?.generalInfoInfo?.legalName}</strong> ,{' '}
                 </>
               ))
             )}
@@ -85,7 +97,7 @@ const ConfirmModal = (props) => {
           key="submit"
           htmlType="submit"
           onClick={() => {
-            next();
+            covertToEmployee();
           }}
         >
           Convert to Employee
@@ -143,7 +155,7 @@ const ConfirmModal = (props) => {
 export default connect(
   ({
     newCandidateForm: {
-      tempData: { reportingManager = {}, reportees = [], title = {} },
+      tempData: { reportingManager = {}, reportees = [], title = {}, candidate },
     },
     onboard: { joiningFormalities: { employeeData = {}, userName = '', domain = '' } = {} },
   }) => ({
@@ -153,5 +165,6 @@ export default connect(
     reportingManager,
     reportees,
     title,
+    candidate,
   }),
 )(ConfirmModal);

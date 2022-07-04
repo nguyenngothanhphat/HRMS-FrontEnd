@@ -165,3 +165,17 @@ export async function getDomain() {
     method: 'GET',
   });
 }
+
+export async function getIdGenerate(params) {
+  return request('/api/locationtenant', {
+    method: 'GET',
+    params,
+  });
+}
+
+export async function updateIdGenerate(payload) {
+  return request('/api/locationtenant', {
+    method: 'PATCH',
+    data: payload,
+  });
+}

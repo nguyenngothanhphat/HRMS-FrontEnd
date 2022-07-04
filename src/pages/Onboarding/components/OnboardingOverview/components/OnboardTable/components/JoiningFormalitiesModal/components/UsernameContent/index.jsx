@@ -18,7 +18,7 @@ const UserNameContent = (props) => {
   }, []);
 
   useEffect(() => {
-    form.setFieldsValue({ userName });
+    form.setFieldsValue({ userName, domain: emailDomain });
   }, [userName]);
 
   const onSaveRedux = (result) => {
@@ -60,7 +60,12 @@ const UserNameContent = (props) => {
         >
           <Input />
         </Form.Item>
-        <Form.Item name="domain" label="Domain" className={styles.selectForm}>
+        <Form.Item
+          name="domain"
+          label="Domain"
+          className={styles.selectForm}
+          rules={[{ required: true, message: 'Please select domain' }]}
+        >
           <Select
             placeholder="Domain"
             allowClear
