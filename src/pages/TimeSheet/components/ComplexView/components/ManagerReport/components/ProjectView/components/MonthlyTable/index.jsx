@@ -1,17 +1,23 @@
-import { Table } from 'antd';
+import { Table, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import { convertMsToTime, projectColor } from '@/utils/timeSheet';
+import {
+  checkHolidayInWeek,
+  convertMsToTime,
+  holidayFormatDate,
+  projectColor,
+} from '@/utils/timeSheet';
 import EmptyComponent from '@/components/Empty';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import IconWarning from '@/assets/timeSheet/ic_warning.svg';
 import UserProfilePopover from '@/components/UserProfilePopover';
 
 const MonthlyTable = (props) => {
-  const { loadingFetch = false, weeksOfMonth = [], data = [] } = props;
+  const { loadingFetch = false, weeksOfMonth = [], data = [], holidays = [] } = props;
   const [pageSize, setPageSize] = useState(5);
   const [pageSelected, setPageSelected] = useState(1);
   // FUNCTIONS
@@ -22,13 +28,33 @@ const MonthlyTable = (props) => {
   // RENDER UI
   const renderHeaderItem = (weekItem) => {
     const { week = '', startDate: startDate1 = '', endDate: endDate1 = '' } = weekItem;
+    const isHoliday = checkHolidayInWeek(startDate1, endDate1, holidays);
     return (
-      <div className={styles.timeStamp}>
+      <div className={styles.timeStamp} style={{ backgroundColor: isHoliday ? '#FFFAF2' : '#FFF' }}>
         <div className={styles.weekName}>Week {week}</div>
         <div className={styles.weekDate}>
           {moment(startDate1).locale('en').format('MMM DD')} -{' '}
           {moment(endDate1).locale('en').format('MMM DD')}
         </div>
+        {isHoliday && (
+          <Tooltip
+            title={
+              <span style={{ margin: 0, color: '#F98E2C' }}>
+                {holidays.map((holiday) => (
+                  <div key={holiday.date}>
+                    {checkHolidayInWeek(startDate1, endDate1, [holiday])
+                      ? `${holidayFormatDate(holiday.date)} is ${holiday.holidayName}`
+                      : null}
+                  </div>
+                ))}
+              </span>
+            }
+            placement="top"
+            color="#FFFAF2"
+          >
+            <img src={IconWarning} className={styles.holidayIconWarning} alt="" />
+          </Tooltip>
+        )}
       </div>
     );
   };

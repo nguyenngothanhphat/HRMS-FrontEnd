@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { Suspense, useState } from 'react';
 import { connect } from 'umi';
-import { Skeleton, Tag } from 'antd';
+import { Skeleton, Tag, Tooltip } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
@@ -9,6 +9,8 @@ import styles from './index.less';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import FilterContent from './components/FilterContent';
+import IconWarning from '@/assets/timeSheet/ic_warning.svg';
+import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
 
 const Header = (props) => {
   const {
@@ -19,10 +21,13 @@ const Header = (props) => {
     setEndDate = () => {},
     onChangeSearch = () => {},
     activeView = '',
+    holidays = [],
   } = props;
 
   const [applied, setApplied] = useState(0);
   const [form, setForm] = useState(null);
+
+  const isHoliday = checkHolidayInWeek(startDate, endDate, holidays);
 
   // HEADER AREA
   const onPrevClick = () => {
@@ -63,6 +68,25 @@ const Header = (props) => {
           onNextClick={onNextClick}
           onChange={onDatePickerChange}
         />
+        {isHoliday && (
+          <Tooltip
+            title={
+              <span style={{ margin: 0, color: '#F98E2C' }}>
+                {holidays.map((holiday) => (
+                  <div key={holiday.date}>
+                    {checkHolidayInWeek(startDate, endDate, [holiday])
+                      ? `${holidayFormatDate(holiday.date)} is ${holiday.holidayName}`
+                      : null}
+                  </div>
+                ))}
+              </span>
+            }
+            placement="top"
+            color="#FFFAF2"
+          >
+            <img src={IconWarning} alt="" />
+          </Tooltip>
+        )}
       </div>
       <div className={styles.Header__right}>
         {applied > 0 && (
