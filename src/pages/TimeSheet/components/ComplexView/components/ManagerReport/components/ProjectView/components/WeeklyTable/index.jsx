@@ -9,6 +9,7 @@ import EmptyComponent from '@/components/Empty';
 import {
   checkHoliday,
   convertMsToTime,
+  dateFormatAPI,
   getHolidayNameByDate,
   holidayFormatDate,
   projectColor,
@@ -17,10 +18,12 @@ import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import UserProfilePopover from '@/components/UserProfilePopover';
+import { getCurrentCompany } from '@/utils/authority';
 
 const WeeklyTable = (props) => {
-  const { startDate = '', endDate = '', loadingFetch = false, data = [], holidays = [] } = props;
+  const { dispatch, startDate = '', endDate = '', loadingFetch = false, data = [] } = props;
 
+  const [holidays, setHolidays] = useState([]);
   const [dateList, setDateList] = useState([]);
   const [pageSize, setPageSize] = useState(5);
   const [pageSelected, setPageSelected] = useState(1);
@@ -47,13 +50,30 @@ const WeeklyTable = (props) => {
     return projectColor[index % projectColor.length];
   };
 
+  const fetchHolidaysByDate = async () => {
+    const holidaysResponse = await dispatch({
+      type: 'timeSheet/fetchHolidaysByDate',
+      payload: {
+        companyId: getCurrentCompany(),
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+      },
+    });
+    setHolidays(holidaysResponse);
+  };
+
+  // USE EFFECT
+  useEffect(() => {
+    if (startDate && endDate) fetchHolidaysByDate();
+  }, [startDate, endDate]);
+
   useEffect(() => {
     const dateListTemp = enumerateDaysBetweenDates(moment(startDate), moment(endDate));
     setDateList(dateListTemp);
   }, [startDate, endDate]);
 
   const renderHoliday = (date) => {
-    const holidayName = getHolidayNameByDate(date);
+    const holidayName = getHolidayNameByDate(date, holidays);
     return (
       <div className={styles.holidayContainer}>
         <img src={IconHoliday} width={40} height={40} alt="" />
@@ -64,7 +84,7 @@ const WeeklyTable = (props) => {
 
   const renderDateHeaderItem = (date) => {
     const isHoliday = checkHoliday(date, holidays);
-    const holidayName = getHolidayNameByDate(date);
+    const holidayName = getHolidayNameByDate(date, holidays);
     return (
       <div className={styles.timeStamp} style={{ backgroundColor: isHoliday ? '#FFFAF2' : 'FFF' }}>
         <div className={styles.left}>{moment(date, 'MM/DD/YYYY').locale('en').format('DD')}</div>

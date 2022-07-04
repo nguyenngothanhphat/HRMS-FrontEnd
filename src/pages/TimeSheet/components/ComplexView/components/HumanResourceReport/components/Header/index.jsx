@@ -27,18 +27,17 @@ const Header = (props) => {
     data = [],
     activeView = '',
     dispatch,
-    timeSheet: { holidays = [] },
   } = props;
 
   const {
     user: {
       currentUser: {
-        employee,
         location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
       } = {},
     } = {},
   } = props;
   const [applied, setApplied] = useState(0);
+  const [holidays, setHolidays] = useState([]);
   const [form, setForm] = useState(null);
 
   const locationUser = countryID === 'US';
@@ -137,22 +136,21 @@ const Header = (props) => {
     form?.resetFields();
   };
 
-  const fetchMyTimesheetEffectByType = () => {
-    dispatch({
-      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
+  const fetchHolidaysByDate = async () => {
+    const holidaysResponse = await dispatch({
+      type: 'timeSheet/fetchHolidaysByDate',
       payload: {
         companyId: getCurrentCompany(),
-        employeeId: employee._id,
         fromDate: moment(startDate).format(dateFormatAPI),
         toDate: moment(endDate).format(dateFormatAPI),
-        viewType: VIEW_TYPE.W,
       },
     });
+    setHolidays(holidaysResponse);
   };
 
   // USE EFFECT AREA
   useEffect(() => {
-    if (startDate && endDate) fetchMyTimesheetEffectByType();
+    if (startDate && endDate) fetchHolidaysByDate();
   }, [startDate, endDate]);
 
   const isHoliday = checkHolidayInWeek(startDate, endDate, holidays);
@@ -175,7 +173,7 @@ const Header = (props) => {
                 {holidays.map((holiday) => (
                   <div key={holiday.date}>
                     {checkHolidayInWeek(startDate, endDate, [holiday])
-                      ? `${holidayFormatDate(holiday.date)} is ${holiday.holidayName}`
+                      ? `${holidayFormatDate(holiday.date)} is ${holiday.holiday}`
                       : null}
                   </div>
                 ))}

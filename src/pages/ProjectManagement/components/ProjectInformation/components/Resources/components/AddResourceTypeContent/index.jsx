@@ -239,9 +239,16 @@ const AddResourceTypeContent = (props) => {
               name="technologies"
               labelCol={{ span: 24 }}
             >
-              <Select allowClear showSearch mode="multiple" placeholder="Select Technologies Used">
+              <Select
+                allowClear
+                showSearch
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                mode="multiple"
+                placeholder="Select Technologies Used"
+              >
                 {skillList.map((x) => (
-                  <Option key={x._id} value={x.name}>
+                  <Option key={x._id} value={x._id}>
                     {x.name}
                   </Option>
                 ))}

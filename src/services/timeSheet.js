@@ -94,6 +94,18 @@ export async function getMyTimesheetByType(payload, params) {
   );
 }
 
+export async function getHolidaysByDate(params) {
+  return request(
+    `/api/holidays`,
+    {
+      method: 'GET',
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
 // import
 export async function getImportData(payload, params) {
   // date, week, month
