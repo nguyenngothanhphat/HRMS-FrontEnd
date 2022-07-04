@@ -1,7 +1,7 @@
 import { Popconfirm } from 'antd';
 import Parser from 'html-react-parser';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect, Link } from 'umi';
 import CommonModal from '@/components/CommonModal';
 import EditIcon from '@/assets/homePage/editIcon.svg';
@@ -10,6 +10,7 @@ import ChartIcon from '@/assets/homePage/chartIcon.svg';
 import CommonTable from '../CommonTable';
 import ChartPreviewModalContent from './components/ChartPreviewModalContent';
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 const PollTable = (props) => {
   const {
@@ -18,9 +19,21 @@ const PollTable = (props) => {
     loading = false,
     refreshData = () => {},
     onEditPost = () => {},
+    totalType = 0,
   } = props;
   const [previewModalVisible, setPreviewModalVisible] = useState(false);
   const [viewingPoll, setViewingPoll] = useState('');
+
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [pageChanged, setPageChanged] = useState(false);
+
+  useEffect(() => {
+    if (pageChanged) {
+      refreshData({ page, limit });
+      goToTop();
+    }
+  }, [page, limit]);
 
   const fetchPollResult = (pollId) => {
     return dispatch({
@@ -166,9 +179,24 @@ const PollTable = (props) => {
     return columns;
   };
 
+  const onChangePage = (p, l) => {
+    setPageChanged(true);
+    setPage(p);
+    setLimit(l || limit);
+  };
+
   return (
     <div className={styles.PollTable}>
-      <CommonTable list={data} columns={getColumns()} loading={loading} />
+      <CommonTable
+        list={data}
+        columns={getColumns()}
+        loading={loading}
+        total={totalType}
+        isBackendPaging
+        onChangePage={onChangePage}
+        page={page}
+        limit={limit}
+      />
       <CommonModal
         visible={previewModalVisible}
         title={viewingPoll?.pollDetail?.question || 'Question here'}

@@ -1,5 +1,5 @@
 import { Popconfirm, Image } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
 import moment from 'moment';
 import Parser from 'html-react-parser';
@@ -7,15 +7,28 @@ import CommonTable from '../CommonTable';
 import styles from './index.less';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import EditIcon from '@/assets/homePage/editIcon.svg';
+import { goToTop } from '@/utils/utils';
 
 const ImageTable = (props) => {
   const {
     dispatch,
     data = [],
     loading = false,
+    totalType = 0,
     refreshData = () => {},
     onEditPost = () => {},
   } = props;
+
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [pageChanged, setPageChanged] = useState(false);
+
+  useEffect(() => {
+    if (pageChanged) {
+      refreshData({ page, limit });
+      goToTop();
+    }
+  }, [page, limit]);
 
   const onDeleteAttachment = async (record) => {
     if (record?._id) {
@@ -26,7 +39,7 @@ const ImageTable = (props) => {
         },
       });
       if (res.statusCode === 200) {
-        refreshData();
+        refreshData({ page, limit });
       }
     }
   };
@@ -136,9 +149,24 @@ const ImageTable = (props) => {
     return columns;
   };
 
+  const onChangePage = (p, l) => {
+    setPageChanged(true);
+    setPage(p);
+    setLimit(l || limit);
+  };
+
   return (
     <div className={styles.ImageTable}>
-      <CommonTable list={data} loading={loading} columns={getColumns()} />
+      <CommonTable
+        list={data}
+        loading={loading}
+        columns={getColumns()}
+        total={totalType}
+        isBackendPaging
+        onChangePage={onChangePage}
+        page={page}
+        limit={limit}
+      />
     </div>
   );
 };
