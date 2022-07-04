@@ -155,7 +155,7 @@ export const WORKING_HOURS = {
 
 export const TIME_DEFAULT = {
   START_TIME: '8:00 am',
-  END_TIME: '17:00',
+  END_TIME: '5:00 pm',
   TIME_WORK_LATE: '4:00 pm',
 };
 

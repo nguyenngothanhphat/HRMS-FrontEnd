@@ -67,7 +67,6 @@ const WeeklyHeader = (props) => {
         visible={addTaskModalVisible}
         onClose={() => setAddTaskModalVisible(false)}
         mode="multiple"
-        aaaa={false}
         date={selectedDate}
       />
       <ImportModal visible={importModalVisible} onClose={() => setImportModalVisible(false)} />
