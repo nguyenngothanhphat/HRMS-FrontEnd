@@ -125,6 +125,8 @@ const MyTimeSheet = (props) => {
             setStartDate={setStartDateWeek}
             setEndDate={setEndDateWeek}
             viewChangeComponent={viewChangeComponent}
+            setSelectedDate={setSelectedDate}
+            selectedDate={selectedDate}
           />
         );
 
@@ -132,10 +134,12 @@ const MyTimeSheet = (props) => {
         return (
           <MonthlyHeader
             startDate={startDateMonth}
+            selectedDate={selectedDate}
             endDate={endDateMonth}
             setStartDate={setStartDateMonth}
             setEndDate={setEndDateMonth}
             viewChangeComponent={viewChangeComponent}
+            setSelectedDate={setSelectedDate}
           />
         );
 

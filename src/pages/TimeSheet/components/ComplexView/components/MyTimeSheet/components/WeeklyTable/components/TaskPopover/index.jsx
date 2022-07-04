@@ -22,6 +22,7 @@ const TaskPopover = (props) => {
     date = '',
     projectName = '',
     placement = 'top',
+    index = 0,
     isHoliday = false,
   } = props;
   const [showPopover, setShowPopover] = useState(false);
@@ -156,6 +157,7 @@ const TaskPopover = (props) => {
             onClick={() => {
               setAddTaskModalVisible(true);
               setShowPopover(false);
+              setHandlingPackage(tasks[index]);
             }}
             icon={<img src={AddSolidIcon} alt="" />}
           >
@@ -185,6 +187,7 @@ const TaskPopover = (props) => {
         mode="multiple"
         date={date}
         projectName={projectName}
+        taskDetail={handlingPackage}
       />
       <EditTaskModal
         visible={editTaskModalVisible}
