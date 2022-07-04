@@ -24,9 +24,9 @@ import {
   holidayFormatDate,
   hourFormat,
   hourFormatAPI,
-  VIEW_TYPE,
-  TIME_DEFAULT,
   TIMESHEET_ADD_TASK_ALERT,
+  TIME_DEFAULT,
+  VIEW_TYPE,
 } from '@/utils/timeSheet';
 import styles from './index.less';
 
@@ -38,9 +38,6 @@ const { RangePicker } = DatePicker;
 
 const AddTaskModal = (props) => {
   const [form] = Form.useForm();
-
-  const [disabledHourBefore, setDisabledHourBefore] = useState([]); // for end time validation
-
   const {
     visible = false,
     title = 'Add Task',
@@ -55,9 +52,7 @@ const AddTaskModal = (props) => {
     date = '',
     taskDetail: {
       projectId = '',
-      notes = '',
       endTime = '',
-      taskName = '',
       clientLocation = false,
       breakTime = 0,
       overTime = 0,
@@ -78,15 +73,44 @@ const AddTaskModal = (props) => {
   const viewUS = countryID === countryIdUS;
 
   // state
+  const [disabledHourBefore, setDisabledHourBefore] = useState([]); // for end time validation
   const [dates, setDates] = useState(null);
   const [detailTimesheet, setDetailTimesheet] = useState([]);
   const myTimesheet = myTimesheetByDay[0]?.timesheet;
   const [notice, setNotice] = useState(TIMESHEET_ADD_TASK_ALERT.DEFAULT);
   const [holidays, setHolidays] = useState([]);
+
+  // api
   const fetchProjectList = () => {
     dispatch({
       type: 'timeSheet/fetchProjectListEffect',
     });
+  };
+
+  const fetchHolidaysByDate = async (startDate, endDate) => {
+    const holidaysResponse = await dispatch({
+      type: 'timeSheet/fetchHolidaysByDate',
+      payload: {
+        companyId: getCurrentCompany(),
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+      },
+    });
+    setHolidays(holidaysResponse);
+  };
+
+  const refreshData = () => {
+    dispatch({
+      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
+      isRefreshing: true,
+    });
+  };
+
+  // functions
+  const getDisabledHourBefore = (et, minimum) => {
+    return moment(et, hourFormat)
+      .add(minimum - 15, 'minutes')
+      .format(hourFormat);
   };
 
   const formatStartTimeShow = (timeFormat) => {
@@ -102,10 +126,13 @@ const AddTaskModal = (props) => {
   };
 
   const getDefaultValueStartTime = (val = []) => {
-    if (val?.length && formatStartTimeShow(getLastEndTimeElement(val)) < TIME_DEFAULT.END_TIME) {
+    if (val.length === 0) {
+      return TIME_DEFAULT.START_TIME;
+    }
+    if (val.length && formatStartTimeShow(getLastEndTimeElement(val)) < TIME_DEFAULT.END_TIME) {
       return formatStartTimeShow(getLastEndTimeElement(val));
     }
-    if (val?.length && formatStartTimeShow(getLastEndTimeElement(val)) >= TIME_DEFAULT.END_TIME) {
+    if (val.length && formatStartTimeShow(getLastEndTimeElement(val)) >= TIME_DEFAULT.END_TIME) {
       return TIME_DEFAULT.TIME_WORK_LATE;
     }
     if (
@@ -135,54 +162,6 @@ const AddTaskModal = (props) => {
     return TIME_DEFAULT.START_TIME;
   };
 
-  const fetchHolidaysByDate = async (startDate, endDate) => {
-    const holidaysResponse = await dispatch({
-      type: 'timeSheet/fetchHolidaysByDate',
-      payload: {
-        companyId: getCurrentCompany(),
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-      },
-    });
-
-    setHolidays(holidaysResponse);
-  };
-
-  useEffect(() => {
-    if (visible) {
-      if (projectList.length === 0) {
-        fetchProjectList();
-      }
-      form.setFieldsValue({
-        dates: forDate ? [moment(forDate), moment(forDate)] : [moment(date), moment(date)],
-        tasks: [
-          {
-            taskName,
-            projectId,
-            startTime: endTime
-              ? moment(endTime, hourFormatAPI).format(hourFormat)
-              : getDefaultValueStartTime(),
-            endTime: endTime
-              ? moment(endTime, hourFormatAPI).add(30, 'minutes').format(hourFormat)
-              : formatEndTimeShow(getDefaultValueStartTime()),
-            notes,
-            clientLocation,
-            breakTime,
-            overTime,
-          },
-        ],
-      });
-    }
-  }, [visible, JSON.stringify(myTimesheetByMonth), JSON.stringify(myTimesheetByWeek)]);
-
-  useEffect(() => {
-    if (!endTime) {
-      setDisabledHourBefore([getDefaultValueStartTime()]);
-    } else {
-      setDisabledHourBefore([endTime]);
-    }
-  }, [visible, endTime]);
-
   const getTimeSheetByDay = async (day) => {
     const res = await dispatch({
       type: 'timeSheet/fetchMyTimesheetByDay',
@@ -197,11 +176,10 @@ const AddTaskModal = (props) => {
     if (res.code === 200) {
       setDetailTimesheet(res.data[0].timesheet);
       form.setFieldsValue({
-        dates: [moment(day[0]), moment(day[1])],
         tasks: [
           {
-            startTime: getDefaultValueStartTime(res.data[0]?.timesheet),
-            endTime: formatEndTimeShow(getDefaultValueStartTime(res.data[0]?.timesheet)),
+            startTime: getDefaultValueStartTime(res.data[0]?.timesheet || []),
+            endTime: formatEndTimeShow(getDefaultValueStartTime(res.data[0]?.timesheet || [])),
           },
         ],
       });
@@ -210,34 +188,13 @@ const AddTaskModal = (props) => {
 
   const handleChangeDate = async (val) => {
     await setDates(val);
-    if (val && val.length > 1 && val[0] && val[1]) getTimeSheetByDay(val);
-  };
-
-  useEffect(() => {
-    if (dates && dates.length > 1 && dates[0] && dates[1]) fetchHolidaysByDate(dates[0], dates[1]);
-  }, [dates]);
-
-  useEffect(() => {
-    if (dates && dates.length > 1 && dates[0] && dates[1]) fetchHolidaysByDate(dates[0], dates[1]);
-  }, [dates]);
-
-  const renderModalHeader = () => {
-    return (
-      <div className={styles.header}>
-        <p className={styles.header__text}>{title}</p>
-      </div>
-    );
+    if (val && val.length > 1 && val[0] && val[1]) {
+      getTimeSheetByDay(val);
+    }
   };
 
   const handleCancel = () => {
     onClose();
-  };
-
-  const refreshData = () => {
-    dispatch({
-      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
-      isRefreshing: true,
-    });
   };
 
   const onStartTimeChange = (index) => {
@@ -260,8 +217,8 @@ const AddTaskModal = (props) => {
     const { tasks = [] } = allValues;
     const disabledHourBeforeTemp = tasks.map((x = {}) => {
       // minimum 30 minutes per task
-      const temp = moment(x.startTime, hourFormat).add(30, 'minutes');
-      return temp.format(hourFormat);
+      const temp = getDisabledHourBefore(x.startTime, 30);
+      return temp;
     });
     setDisabledHourBefore(disabledHourBeforeTemp);
   };
@@ -301,6 +258,11 @@ const AddTaskModal = (props) => {
       });
       setDates([null, null]);
     }
+  };
+
+  const checkHolidayBetweenDates = () => {
+    if (dates && dates.length > 1) return checkHolidayInWeek(dates[0], dates[1], holidays);
+    return false;
   };
 
   // main function
@@ -370,9 +332,56 @@ const AddTaskModal = (props) => {
     }
   };
 
-  const checkHolidayBetweenDates = () => {
-    if (dates && dates.length > 1) return checkHolidayInWeek(dates[0], dates[1], holidays);
-    return false;
+  // use effect
+  useEffect(() => {
+    if (dates && dates.length > 1 && dates[0] && dates[1]) {
+      fetchHolidaysByDate(dates[0], dates[1]);
+    }
+  }, [dates]);
+
+  useEffect(() => {
+    if (visible) {
+      if (projectList.length === 0) {
+        fetchProjectList();
+      }
+
+      const datesTemp = forDate ? [moment(forDate), moment(forDate)] : [moment(date), moment(date)];
+      setDates(datesTemp);
+      form.setFieldsValue({
+        dates: datesTemp,
+        tasks: [
+          {
+            projectId: projectId || null,
+            startTime: endTime
+              ? moment(endTime, hourFormatAPI).format(hourFormat)
+              : getDefaultValueStartTime(),
+            endTime: endTime
+              ? moment(endTime, hourFormatAPI).add(30, 'minutes').format(hourFormat)
+              : formatEndTimeShow(getDefaultValueStartTime()),
+            clientLocation,
+            breakTime,
+            overTime,
+          },
+        ],
+      });
+    }
+  }, [visible, JSON.stringify(myTimesheetByMonth), JSON.stringify(myTimesheetByWeek)]);
+
+  useEffect(() => {
+    const temp = endTime
+      ? getDisabledHourBefore(endTime, 30)
+      : getDisabledHourBefore(getDefaultValueStartTime(), 30);
+
+    setDisabledHourBefore([temp]);
+  }, [visible, endTime, JSON.stringify(detailTimesheet)]);
+
+  // render ui
+  const renderModalHeader = () => {
+    return (
+      <div className={styles.header}>
+        <p className={styles.header__text}>{title}</p>
+      </div>
+    );
   };
 
   const renderAddButton = (fields, add) => {
@@ -395,8 +404,16 @@ const AddTaskModal = (props) => {
           check
             ? () => {
                 const values = form.getFieldsValue();
+                const { tasks = [] } = values;
+                const { endTime: endTimeTemp = '' } = values.tasks[tasks.length - 1];
                 add({
                   projectId: values.tasks[fields.length - 1].projectId,
+                  startTime: endTimeTemp
+                    ? moment(endTimeTemp, hourFormat).format(hourFormat)
+                    : null,
+                  endTime: endTimeTemp
+                    ? moment(endTimeTemp, hourFormat).add(30, 'minutes').format(hourFormat)
+                    : null,
                 });
               }
             : () => {}
@@ -435,8 +452,7 @@ const AddTaskModal = (props) => {
                         loading={loadingFetchProject}
                         disabled={loadingFetchProject}
                         filterOption={(input, option) =>
-                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         {projectList.map((val) => (
                           <Option key={val.id} value={val.id}>
