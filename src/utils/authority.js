@@ -147,3 +147,11 @@ export function getIsFirstLogin() {
   const isFirstLogin = localStorage.getItem('isFirstLogin');
   return isFirstLogin === 'true';
 }
+
+export function setCountry(country) {
+  localStorage.setItem('country', country);
+}
+
+export function getCountry() {
+  return JSON.parse(localStorage.getItem('country'));
+}

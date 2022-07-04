@@ -12,13 +12,14 @@ const { DATE_OF_HOURS, REMAINING } = EMP_MT_MAIN_COL_SPAN;
 const ActivityList = (props) => {
   const {
     data: { timesheet = [], timeoff = [], date = '' } = {},
-    timeSheet: { holidays = [] },
+    timeSheet: { myTimesheetByDay = [] },
     hourList = [],
     employeeSchedule = {},
     startWorkingHour = '',
     endWorkingHour = '',
   } = props;
 
+  const holidays = (myTimesheetByDay.length && myTimesheetByDay[0].holidays) || [];
   // IS OLD TIME SHEET ? MIGRATED FROM THE INTRANET
   const [isOldTimeSheet, setIsOldTimeSheet] = useState(false);
 
@@ -55,10 +56,10 @@ const ActivityList = (props) => {
           })}
       </Col>
       {checkHoliday(date, holidays) && !timesheet.length && !timeoff.length ? (
-        <Col span={REMAINING} className={styles.hodilayContainer}>
+        <Col span={REMAINING} className={styles.holidayContainer}>
           <div className={styles.contentContainer}>
             <img src={IconHoliday} alt="" width={80} height={80} />
-            <p>{holidays[0].holidayName}</p>
+            <p>{holidays[0].holiday}</p>
           </div>
         </Col>
       ) : (

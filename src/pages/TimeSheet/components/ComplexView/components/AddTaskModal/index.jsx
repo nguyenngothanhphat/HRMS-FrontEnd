@@ -136,17 +136,16 @@ const AddTaskModal = (props) => {
   };
 
   const fetchHolidaysByDate = async (startDate, endDate) => {
-    const dataHolidays = await dispatch({
+    const holidaysResponse = await dispatch({
       type: 'timeSheet/fetchHolidaysByDate',
       payload: {
         companyId: getCurrentCompany(),
-        employeeId,
         fromDate: moment(startDate).format(dateFormatAPI),
         toDate: moment(endDate).format(dateFormatAPI),
-        viewType: VIEW_TYPE.W,
       },
     });
-    setHolidays(dataHolidays);
+
+    setHolidays(holidaysResponse);
   };
 
   useEffect(() => {
@@ -419,7 +418,7 @@ const AddTaskModal = (props) => {
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name, fieldKey }, index) => (
-              <>
+              <div key={key}>
                 {key !== 0 && <div className={styles.divider} />}
                 <Row gutter={[24, 0]} className={styles.belowPart}>
                   <Col xs={24} md={12}>
@@ -440,7 +439,7 @@ const AddTaskModal = (props) => {
                         }
                       >
                         {projectList.map((val) => (
-                          <Option value={val.id}>
+                          <Option key={val.id} value={val.id}>
                             {`${val.projectName} - ${val.customerName}`}
                           </Option>
                         ))}
@@ -463,7 +462,9 @@ const AddTaskModal = (props) => {
                       {TASKS.length !== 0 ? (
                         <Select showSearch placeholder="Select the task">
                           {TASKS.map((val) => (
-                            <Option value={val}>{val}</Option>
+                            <Option key={val} value={val}>
+                              {val}
+                            </Option>
                           ))}
                         </Select>
                       ) : (
@@ -579,7 +580,7 @@ const AddTaskModal = (props) => {
                     )}
                   </Col>
                 </Row>
-              </>
+              </div>
             ))}
             {renderAddButton(fields, add)}
           </>
@@ -629,7 +630,7 @@ const AddTaskModal = (props) => {
                           .map((holiday) => holidayFormatDate(holiday.date))
                           .join(', ')
                           .concat(' are Holidays')
-                      : `${holidayFormatDate(holidays[0].date)} is ${holidays[0].holidayName}`
+                      : `${holidayFormatDate(holidays[0].date)} is ${holidays[0].holiday}`
                   }
                   showIcon
                   type="warning"
