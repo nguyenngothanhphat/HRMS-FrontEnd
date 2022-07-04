@@ -209,7 +209,7 @@ export const checkHolidayInWeek = (startDate, endDate, holidays = []) =>
 
 export const getHolidayNameByDate = (date, holidays = []) => {
   const currentDate = holidays.find((holiday) => moment(holiday.date).isSame(moment(date)));
-  if (currentDate) return currentDate?.holidayName;
+  if (currentDate) return currentDate?.holiday;
   return '';
 };
 
