@@ -53,7 +53,10 @@ const OptionsHeader = (props) => {
   };
 
   const processData = (arr = []) => {
-    const array = arr.filter((x) => selectedRows.includes(x._id));
+    let array = [...arr];
+    if (selectedRows.length > 0) {
+      array = arr.filter((x) => selectedRows.includes(x._id));
+    }
     let capsPopulations = [];
     capsPopulations = array.map((item, key) => {
       return {

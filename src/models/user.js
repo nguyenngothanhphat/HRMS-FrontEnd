@@ -2,10 +2,10 @@ import { history } from 'umi';
 import { fetchCompanyOfUser, query as queryUsers, queryCurrent } from '@/services/user';
 import {
   getCurrentCompany,
-  getCurrentLocation,
   getCurrentTenant,
   getIsSigninGoogle,
   setAuthority,
+  setCountry,
   setCurrentCompany,
   setCurrentLocation,
   setFirstChangePassword,
@@ -41,6 +41,8 @@ const UserModel = {
         };
         const response = yield call(queryCurrent, payload);
         const { statusCode, data = {} } = response;
+        const { country } = data?.location?.headQuarterAddress;
+        setCountry(JSON.stringify(country));
         if (statusCode !== 200) {
           history.push('/login');
           throw response;

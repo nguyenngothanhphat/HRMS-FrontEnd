@@ -45,7 +45,6 @@ const AddTaskModal = (props) => {
     visible = false,
     title = 'Add Task',
     onClose = () => {},
-    projectName = '',
     mode = 'single',
     timeSheet: {
       projectList = [],
@@ -95,47 +94,58 @@ const AddTaskModal = (props) => {
   };
 
   const formatEndTimeShow = (timeFormat) => {
-    return moment(timeFormat, hourFormat).add(15, 'minutes').format(hourFormat);
+    return moment(timeFormat, hourFormat).add(30, 'minutes').format(hourFormat);
   };
 
   const getLastEndTimeElement = (lastEle) => {
     return lastEle[lastEle.length - 1]?.endTime;
   };
 
-  const getDefaulValueStartTime = (val = []) => {
-    if (val && getLastEndTimeElement(val) < TIME_DEFAULT.END_TIME) {
+  const getDefaultValueStartTime = (val = []) => {
+    if (val?.length && formatStartTimeShow(getLastEndTimeElement(val)) < TIME_DEFAULT.END_TIME) {
       return formatStartTimeShow(getLastEndTimeElement(val));
     }
-    if (val && getLastEndTimeElement(val) >= TIME_DEFAULT.END_TIME) {
+    if (val?.length && formatStartTimeShow(getLastEndTimeElement(val)) >= TIME_DEFAULT.END_TIME) {
       return TIME_DEFAULT.TIME_WORK_LATE;
     }
-    if (detailTimesheet && getLastEndTimeElement(detailTimesheet) >= TIME_DEFAULT.END_TIME) {
+    if (
+      detailTimesheet?.length &&
+      formatStartTimeShow(getLastEndTimeElement(detailTimesheet)) >= TIME_DEFAULT.END_TIME
+    ) {
       return TIME_DEFAULT.TIME_WORK_LATE;
     }
-    if (detailTimesheet && getLastEndTimeElement(detailTimesheet) < TIME_DEFAULT.END_TIME) {
+    if (
+      detailTimesheet?.length &&
+      formatStartTimeShow(getLastEndTimeElement(detailTimesheet)) < TIME_DEFAULT.END_TIME
+    ) {
       return formatStartTimeShow(getLastEndTimeElement(detailTimesheet));
     }
-    if (myTimesheet && getLastEndTimeElement(myTimesheet) < TIME_DEFAULT.END_TIME) {
+    if (
+      myTimesheet?.length &&
+      formatStartTimeShow(getLastEndTimeElement(myTimesheet)) < TIME_DEFAULT.END_TIME
+    ) {
       return formatStartTimeShow(getLastEndTimeElement(myTimesheet));
     }
-    if (myTimesheet && getLastEndTimeElement(myTimesheet) >= TIME_DEFAULT.END_TIME) {
+    if (
+      myTimesheet?.length &&
+      formatStartTimeShow(getLastEndTimeElement(myTimesheet)) >= TIME_DEFAULT.END_TIME
+    ) {
       return TIME_DEFAULT.TIME_WORK_LATE;
     }
     return TIME_DEFAULT.START_TIME;
   };
 
   const fetchHolidaysByDate = async (startDate, endDate) => {
-    const dataHolidays = await dispatch({
+    const holidaysResponse = await dispatch({
       type: 'timeSheet/fetchHolidaysByDate',
       payload: {
         companyId: getCurrentCompany(),
-        employeeId,
         fromDate: moment(startDate).format(dateFormatAPI),
         toDate: moment(endDate).format(dateFormatAPI),
-        viewType: VIEW_TYPE.W,
       },
     });
-    setHolidays(dataHolidays);
+
+    setHolidays(holidaysResponse);
   };
 
   useEffect(() => {
@@ -147,15 +157,14 @@ const AddTaskModal = (props) => {
         dates: forDate ? [moment(forDate), moment(forDate)] : [moment(date), moment(date)],
         tasks: [
           {
-            projectName: projectName || null,
             taskName,
             projectId,
             startTime: endTime
               ? moment(endTime, hourFormatAPI).format(hourFormat)
-              : getDefaulValueStartTime(),
+              : getDefaultValueStartTime(),
             endTime: endTime
-              ? moment(endTime, hourFormatAPI).add(15, 'minutes').format(hourFormat)
-              : formatEndTimeShow(getDefaulValueStartTime()),
+              ? moment(endTime, hourFormatAPI).add(30, 'minutes').format(hourFormat)
+              : formatEndTimeShow(getDefaultValueStartTime()),
             notes,
             clientLocation,
             breakTime,
@@ -168,7 +177,7 @@ const AddTaskModal = (props) => {
 
   useEffect(() => {
     if (!endTime) {
-      setDisabledHourBefore([getDefaulValueStartTime()]);
+      setDisabledHourBefore([getDefaultValueStartTime()]);
     } else {
       setDisabledHourBefore([endTime]);
     }
@@ -191,8 +200,8 @@ const AddTaskModal = (props) => {
         dates: [moment(day[0]), moment(day[1])],
         tasks: [
           {
-            startTime: getDefaulValueStartTime(res.data[0]?.timesheet),
-            endTime: formatEndTimeShow(getDefaulValueStartTime(res.data[0]?.timesheet)),
+            startTime: getDefaultValueStartTime(res.data[0]?.timesheet),
+            endTime: formatEndTimeShow(getDefaultValueStartTime(res.data[0]?.timesheet)),
           },
         ],
       });
@@ -239,7 +248,7 @@ const AddTaskModal = (props) => {
         if (i === index) {
           return {
             ...x,
-            endTime: moment(x.startTime, hourFormat).add(15, 'minutes').format(hourFormat),
+            endTime: moment(x.startTime, hourFormat).add(30, 'minutes').format(hourFormat),
           };
         }
         return x;
@@ -251,7 +260,7 @@ const AddTaskModal = (props) => {
     const { tasks = [] } = allValues;
     const disabledHourBeforeTemp = tasks.map((x = {}) => {
       // minimum 30 minutes per task
-      const temp = moment(x.startTime, hourFormat).add(15, 'minutes');
+      const temp = moment(x.startTime, hourFormat).add(30, 'minutes');
       return temp.format(hourFormat);
     });
     setDisabledHourBefore(disabledHourBeforeTemp);
@@ -362,7 +371,7 @@ const AddTaskModal = (props) => {
   };
 
   const checkHolidayBetweenDates = () => {
-    if (dates && dates?.length > 1) return checkHolidayInWeek(dates[0], dates[1], holidays);
+    if (dates && dates.length > 1) return checkHolidayInWeek(dates[0], dates[1], holidays);
     return false;
   };
 
@@ -409,7 +418,7 @@ const AddTaskModal = (props) => {
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name, fieldKey }, index) => (
-              <>
+              <div key={key}>
                 {key !== 0 && <div className={styles.divider} />}
                 <Row gutter={[24, 0]} className={styles.belowPart}>
                   <Col xs={24} md={12}>
@@ -430,7 +439,7 @@ const AddTaskModal = (props) => {
                         }
                       >
                         {projectList.map((val) => (
-                          <Option value={val.id}>
+                          <Option key={val.id} value={val.id}>
                             {`${val.projectName} - ${val.customerName}`}
                           </Option>
                         ))}
@@ -453,7 +462,9 @@ const AddTaskModal = (props) => {
                       {TASKS.length !== 0 ? (
                         <Select showSearch placeholder="Select the task">
                           {TASKS.map((val) => (
-                            <Option value={val}>{val}</Option>
+                            <Option key={val} value={val}>
+                              {val}
+                            </Option>
                           ))}
                         </Select>
                       ) : (
@@ -569,7 +580,7 @@ const AddTaskModal = (props) => {
                     )}
                   </Col>
                 </Row>
-              </>
+              </div>
             ))}
             {renderAddButton(fields, add)}
           </>
@@ -619,7 +630,7 @@ const AddTaskModal = (props) => {
                           .map((holiday) => holidayFormatDate(holiday.date))
                           .join(', ')
                           .concat(' are Holidays')
-                      : `${holidayFormatDate(holidays[0].date)} is ${holidays[0].holidayName}`
+                      : `${holidayFormatDate(holidays[0].date)} is ${holidays[0].holiday}`
                   }
                   showIcon
                   type="warning"

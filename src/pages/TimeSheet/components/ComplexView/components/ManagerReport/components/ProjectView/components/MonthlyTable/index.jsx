@@ -1,10 +1,11 @@
 import { Table, Tooltip } from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import {
   checkHolidayInWeek,
   convertMsToTime,
+  dateFormatAPI,
   holidayFormatDate,
   projectColor,
 } from '@/utils/timeSheet';
@@ -15,15 +16,42 @@ import styles from './index.less';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
 import UserProfilePopover from '@/components/UserProfilePopover';
+import { getCurrentCompany } from '@/utils/authority';
 
 const MonthlyTable = (props) => {
-  const { loadingFetch = false, weeksOfMonth = [], data = [], holidays = [] } = props;
+  const {
+    dispatch,
+    startDate,
+    endDate,
+    loadingFetch = false,
+    weeksOfMonth = [],
+    data = [],
+  } = props;
+
+  const [holidays, setHolidays] = useState([]);
   const [pageSize, setPageSize] = useState(5);
   const [pageSelected, setPageSelected] = useState(1);
   // FUNCTIONS
   const getColorByIndex = (index) => {
     return projectColor[index % projectColor.length];
   };
+
+  const fetchHolidaysByDate = async () => {
+    const holidaysResponse = await dispatch({
+      type: 'timeSheet/fetchHolidaysByDate',
+      payload: {
+        companyId: getCurrentCompany(),
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+      },
+    });
+    setHolidays(holidaysResponse);
+  };
+
+  // USE EFFECT
+  useEffect(() => {
+    if (startDate && endDate) fetchHolidaysByDate();
+  }, [startDate, endDate]);
 
   // RENDER UI
   const renderHeaderItem = (weekItem) => {
@@ -43,7 +71,7 @@ const MonthlyTable = (props) => {
                 {holidays.map((holiday) => (
                   <div key={holiday.date}>
                     {checkHolidayInWeek(startDate1, endDate1, [holiday])
-                      ? `${holidayFormatDate(holiday.date)} is ${holiday.holidayName}`
+                      ? `${holidayFormatDate(holiday.date)} is ${holiday.holiday}`
                       : null}
                   </div>
                 ))}

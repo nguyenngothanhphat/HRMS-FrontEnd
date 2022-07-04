@@ -64,7 +64,7 @@ const TaskPopover = (props) => {
 
             if (!dailyTotalTime && holidayName.trim() === '') return null;
             return (
-              <Row className={styles.eachRow} justify="space-between" align="middle">
+              <Row key={date} className={styles.eachRow} justify="space-between" align="middle">
                 <Col span={18} className={styles.dateName}>
                   <div className={styles.icon}>
                     <span>
