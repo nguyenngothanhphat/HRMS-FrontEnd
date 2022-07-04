@@ -2,7 +2,7 @@ import { Col, DatePicker, Form, Row } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
 import React, { useState } from 'react';
-import { dateFormat, dateFormatAPI } from '@/utils/timeSheet';
+import { dateFormatImport } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const { RangePicker } = DatePicker;
@@ -10,8 +10,7 @@ const { RangePicker } = DatePicker;
 const ModalContentSelectDates = (props) => {
   const [form] = Form.useForm();
 
-  const { importingIds = [] } = props;
-  console.log('🚀 ~ importingIds', importingIds);
+  const { importingIds = [], handleFinish = () => {} } = props;
 
   const [dates, setDates] = useState(null);
 
@@ -43,10 +42,6 @@ const ModalContentSelectDates = (props) => {
       });
       setDates([null, null]);
     }
-  };
-
-  const handleFinish = async (value) => {
-    console.log('🚀 ~ value', value);
   };
 
   const renderSelectedTask = () => {
@@ -81,19 +76,29 @@ const ModalContentSelectDates = (props) => {
 
   return (
     <div className={styles.ModalContentSelectDates}>
-      <Form name="basic" form={form} id="myForm" onFinish={handleFinish}>
+      <Form name="basic" form={form} id="myForm" onFinish={(value) => handleFinish(value)}>
         <Row gutter={[24, 0]} className={styles.abovePart}>
           <Col span={10}>Select Timesheet Period</Col>
           <Col span={14}>
             <Form.Item
-              rules={[{ required: true, message: 'Please select Timesheet Period' }]}
-              //   label="Select Timesheet Period"
+              rules={[
+                { required: true, message: 'Please select Timesheet Period' },
+                () => ({
+                  // eslint-disable-next-line no-unused-vars
+                  validator(_) {
+                    if (Array.isArray(dates) && (dates[0] === null || dates[1] === null)) {
+                      // eslint-disable-next-line prefer-promise-reject-errors
+                      return Promise.reject('Please select Timesheet Period ');
+                    }
+                    // eslint-disable-next-line compat/compat
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
               name="dates"
-              fieldKey="dates"
-              //   labelCol={{ span: 12 }}
             >
               <RangePicker
-                format={dateFormat}
+                format={dateFormatImport}
                 ranges={{
                   Today: [moment(), moment()],
                   'This Week': [moment().startOf('week'), moment().endOf('week')],
@@ -115,17 +120,6 @@ const ModalContentSelectDates = (props) => {
   );
 };
 
-export default connect(
-  ({
-    timeSheet: { timesheetDataImporting = [], importingIds = [], infoTasksImport = [] } = {},
-    user: { currentUser: { employee = {} } = {} },
-    loading,
-  }) => ({
-    timesheetDataImporting,
-    infoTasksImport,
-    employee,
-    loadingFetchTasks: loading.effects['timeSheet/fetchImportData'],
-    loadingImportTimesheet: loading.effects['timeSheet/importTimesheet'],
-    importingIds,
-  }),
-)(ModalContentSelectDates);
+export default connect(({ timeSheet: { importingIds = [] } = {} }) => ({
+  importingIds,
+}))(ModalContentSelectDates);

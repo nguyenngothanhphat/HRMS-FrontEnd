@@ -1,7 +1,8 @@
 import { Button, Modal } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
+import { isEmpty } from 'lodash';
 import { dateFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
@@ -19,7 +20,7 @@ const ImportModal = (props) => {
     employee: { _id: employeeId = '' } = {},
     importingIds = [],
     loadingImportTimesheet = false,
-    date: importDate = '',
+    // date: importDate = '',
   } = props;
 
   const [step, setStep] = useState(1);
@@ -65,30 +66,38 @@ const ImportModal = (props) => {
   const handleCancel = () => {
     dispatch({ type: 'timeSheet/clearImportModalData' });
     onClose();
+    setStep(1);
   };
 
-  const onImport = () => {
+  const onImport = (dates) => {
     let ids = [];
+    const date = [];
+    dates.forEach((item) => {
+      date.push(moment(item).locale('en').format(dateFormatAPI));
+    });
     importingIds.forEach((item) => {
       ids = [...ids, ...item.selectedIds];
     });
-    return dispatch({
-      type: 'timeSheet/importTimesheet',
-      payload: {
-        companyId: getCurrentCompany(),
-        employeeId,
-        date: moment(importDate).locale('en').format(dateFormatAPI),
-        ids,
-      },
-    });
+    console.log(' ~ ids', ids);
+
+    // return dispatch({
+    //   type: 'timeSheet/importTimesheet',
+    //   payload: {
+    //     companyId: getCurrentCompany(),
+    //     employeeId,
+    //     date,
+    //     ids,
+    //   },
+    // });
   };
 
-  const handleFinish = async () => {
-    const res = await onImport();
-    if (res.code === 200) {
-      handleCancel();
-      refreshData();
-    }
+  const handleFinish = async ({ dates = [] }) => {
+    onImport(dates);
+    // const res = await onImport(dates);
+    // if (res.code === 200) {
+    //   handleCancel();
+    //   refreshData();
+    // }
   };
 
   const handleNextStep = () => {
@@ -117,6 +126,7 @@ const ImportModal = (props) => {
                 type="primary"
                 onClick={handleNextStep}
                 loading={loadingImportTimesheet}
+                disabled={isEmpty(importingIds)}
               >
                 Next
               </Button>
@@ -125,7 +135,7 @@ const ImportModal = (props) => {
         );
       case 2:
         return (
-          <div className={styles.mainButtons}>
+          <div className={styles.containerButtons}>
             <Button className={styles.btnCancel} onClick={() => setStep(1)}>
               Previous
             </Button>
@@ -134,6 +144,8 @@ const ImportModal = (props) => {
               type="primary"
               onClick={handleFinish}
               loading={loadingImportTimesheet}
+              htmlType="submit"
+              form="myForm"
             >
               Import
             </Button>

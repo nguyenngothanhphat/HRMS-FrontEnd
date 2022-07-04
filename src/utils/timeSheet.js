@@ -58,6 +58,8 @@ export const addTimeForDate = (date, time) => {
 
 export const rangePickerFormat = 'ddd, MMM D, YYYY';
 export const dateFormat = 'ddd, MMM Do'; // show in first column
+export const dateFormatImport = 'DD-MM-YYYY'; // show in first column
+
 export const hourFormat = 'h:mm a';
 export const minuteStep = 30; // in time picker, only allows minute 0 and 30
 
