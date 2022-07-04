@@ -13,7 +13,7 @@ const CommonTable = (props) => {
     loading = false,
     page = 1,
     limit = 10,
-    totalType,
+    total: totalProp = 0,
     selectable = false,
     rowKey = '',
     scrollable = false,
@@ -21,20 +21,14 @@ const CommonTable = (props) => {
     selectedRowKeys = [],
     setSelectedRowKeys = () => {},
     components,
-    refreshData = () => {},
-    setCurrentPage = () => {},
   } = props;
   const [pageSelected, setPageSelected] = useState(1);
 
   const onChangePagination = (pageNumber) => {
     if (isBackendPaging) {
       onChangePage(pageNumber);
-      refreshData(pageNumber)
-      setCurrentPage(pageNumber)
     } else {
       setPageSelected(pageNumber);
-      refreshData(pageNumber)
-      setCurrentPage(pageNumber)
     }
   };
 
@@ -44,7 +38,7 @@ const CommonTable = (props) => {
 
   const pagination = {
     position: ['bottomLeft'],
-    total: totalType > 0 ? totalType : list.length,
+    total: isBackendPaging ? totalProp : list.length,
     showTotal: (total, range) => (
       <span>
         {' '}

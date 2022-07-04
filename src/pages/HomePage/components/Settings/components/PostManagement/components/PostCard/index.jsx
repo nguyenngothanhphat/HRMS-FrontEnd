@@ -46,7 +46,7 @@ const PostCard = (props) => {
     });
   };
 
-  const fetchData = (page = 1) => {
+  const fetchData = ({ page } = {}) => {
     let type = '';
 
     switch (selectedTab) {
@@ -79,9 +79,9 @@ const PostCard = (props) => {
     fetchTotalPostsOfType();
   };
 
-  const getTotalTab = (tab) => {
+  const getTotalTab = (tabId) => {
     let count = 0;
-    switch (tab) {
+    switch (tabId) {
       case TAB_IDS.ANNOUNCEMENTS:
         count = totalPostsOfType.find((x) => x._id === TAB_IDS.ANNOUNCEMENTS)?.count || 0;
         break;
@@ -104,8 +104,8 @@ const PostCard = (props) => {
       default:
         break;
     }
-    return count
-  }
+    return count;
+  };
 
   const getTabName = (tab) => {
     return `${tab.name} (${addZeroToNumber(getTotalTab(tab.id))})`;
@@ -186,7 +186,7 @@ const PostCard = (props) => {
   }, []);
 
   useEffect(() => {
-    fetchData();
+    fetchData({});
   }, [selectedTab]);
 
   const options = () => {
