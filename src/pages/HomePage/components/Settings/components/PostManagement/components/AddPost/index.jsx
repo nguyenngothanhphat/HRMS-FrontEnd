@@ -69,7 +69,16 @@ const AddPost = (props) => {
   };
 
   const handleChangeLocation = (val) => {
-    setLocation(val);
+    console.log(val);
+    val.forEach((x) => {
+      if (x === 'all') {
+        form.setFieldsValue({
+          location: companyLocationList.map((y) => y._id),
+        });
+      } else {
+        setLocation(val);
+      }
+    });
   };
 
   const onReset = () => {
@@ -331,7 +340,7 @@ const AddPost = (props) => {
           attachments,
           postType: TAB_IDS.ANNOUNCEMENTS,
           description: values.descriptionA,
-          location,
+          location: values.location,
         };
         break;
       }
@@ -341,7 +350,7 @@ const AddPost = (props) => {
           attachments,
           postType: TAB_IDS.ANNIVERSARY,
           description: values.descriptionB,
-          location,
+          location: values.location,
         };
         break;
       }
@@ -352,7 +361,7 @@ const AddPost = (props) => {
           postType: TAB_IDS.IMAGES,
           title: values.titleI,
           description: values.descriptionI,
-          location,
+          location: values.location,
         };
         break;
       }
@@ -367,7 +376,7 @@ const AddPost = (props) => {
       case TAB_IDS.POLL:
         payload = {
           postType: TAB_IDS.POLL,
-          location,
+          location: values.location,
           pollDetail: {
             question: values.questionP,
             response1: values.responsesP[0]?.response,
@@ -453,6 +462,7 @@ const AddPost = (props) => {
                 style={{ width: '100%' }}
                 onChange={handleChangeLocation}
               >
+                <Select.Option value="all">All Location</Select.Option>
                 {companyLocationList.map((x) => {
                   return (
                     <Select.Option value={x._id} key={x._id}>

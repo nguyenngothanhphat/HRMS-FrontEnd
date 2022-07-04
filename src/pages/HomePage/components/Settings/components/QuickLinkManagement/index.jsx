@@ -70,7 +70,6 @@ const QuickLinkManagement = (props) => {
     setAddingPost(false);
     setEditingPost(false);
     goToTop();
-    fetchData();
   };
 
   useEffect(() => {
@@ -80,14 +79,25 @@ const QuickLinkManagement = (props) => {
   if (addingPost) {
     return (
       <div>
-        <AddNewQuickLink onBack={onBack} selectedTab={selectedTab} record={record} />
+        <AddNewQuickLink
+          onBack={onBack}
+          fetchData={fetchData}
+          selectedTab={selectedTab}
+          record={record}
+        />
       </div>
     );
   }
   if (editingPost) {
     return (
       <div>
-        <AddNewQuickLink onBack={onBack} selectedTab={selectedTab} editing record={record} />
+        <AddNewQuickLink
+          onBack={onBack}
+          fetchData={fetchData}
+          selectedTab={selectedTab}
+          editing
+          record={record}
+        />
       </div>
     );
   }
