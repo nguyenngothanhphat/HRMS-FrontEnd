@@ -36,7 +36,6 @@ const ProjectView = (props) => {
       projectList = [],
       managerProjectViewList = [],
       managerProjectViewPagination = {},
-      holidays = [],
     } = {},
     employee: { _id: userId = '', departmentInfo: { name: departmentName = '' } = {} } = {},
     loadingFetchProjectList = false,
@@ -148,28 +147,6 @@ const ProjectView = (props) => {
     setEndDateMonth(endOfMonth);
   }, []);
 
-  const fetchMyTimesheetEffectByType = (startDate, endDate) => {
-    dispatch({
-      type: 'timeSheet/fetchMyTimesheetByTypeEffect',
-      payload: {
-        companyId: getCurrentCompany(),
-        employeeId: userId,
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-        viewType: VIEW_TYPE.W,
-      },
-    });
-  };
-
-  // USE EFFECT
-  useEffect(() => {
-    if (startDateWeek && endDateWeek) fetchMyTimesheetEffectByType(startDateWeek, endDateWeek);
-  }, [startDateWeek, endDateWeek]);
-
-  useEffect(() => {
-    if (startDateMonth && endDateMonth) fetchMyTimesheetEffectByType(startDateMonth, endDateMonth);
-  }, [startDateMonth, endDateMonth]);
-
   // refresh the week list when the month changed
   useEffect(() => {
     const weeks = generateAllWeeks(startDateMonth, endDateMonth);
@@ -246,7 +223,6 @@ const ProjectView = (props) => {
             data={managerProjectViewList}
             tablePagination={managerProjectViewPagination}
             onChangePage={onChangePage}
-            holidays={holidays}
           />
         );
       case VIEW_TYPE.M:
@@ -258,7 +234,6 @@ const ProjectView = (props) => {
             data={managerProjectViewList}
             tablePagination={managerProjectViewPagination}
             onChangePage={onChangePage}
-            holidays={holidays}
           />
         );
       default:
