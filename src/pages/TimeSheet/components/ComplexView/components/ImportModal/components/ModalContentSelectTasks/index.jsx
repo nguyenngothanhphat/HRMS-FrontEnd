@@ -19,11 +19,12 @@ const ModalContentSelectTasks = (props) => {
     importingIds = [],
     employee: { _id: employeeId = '' } = {},
     timesheetDataImporting = {},
+    setSelectedDate = () => {},
+    selectedDate = '',
   } = props;
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [selectedDate, setSelectedDate] = useState(moment());
 
   const onPrevWeekClick = () => {
     const lastSunday = moment(startDate).add(-1, 'weeks');
@@ -68,8 +69,8 @@ const ModalContentSelectTasks = (props) => {
   // USE EFFECT
 
   useEffect(() => {
-    const lastSunday = moment().add(-1, 'weeks').weekday(7);
-    const currentSaturday = moment().weekday(6);
+    const lastSunday = moment(selectedDate).add(-1, 'weeks').weekday(7);
+    const currentSaturday = moment(selectedDate).weekday(6);
     setStartDate(lastSunday);
     setEndDate(currentSaturday);
     return () => {};
