@@ -2,19 +2,21 @@ import React from 'react';
 import { Steps } from 'antd';
 import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
+// import CheckIcon from '@/assets/offboarding/check.svg';
 import { OFFBOARDING } from '@/utils/offboarding';
 import styles from './index.less';
 
 const { Step } = Steps;
-const { IN_PROGRESS, ACCEPTED, REJECTED, DELETED, DRAFT } = OFFBOARDING.STATUS;
+const { IN_PROGRESS, ACCEPTED, REJECTED, DELETED } = OFFBOARDING.STATUS;
 
 const ChainOfApproval = (props) => {
   const {
-    employee: {
-      generalInfo: { legalName: ln1 = '', avatar: av1 = '' } = {},
-      managerInfo: { generalInfoInfo: { legalName: ln2 = '', avatar: av2 = '' } = {} } = {},
+    data: {
+      hr: { generalInfoInfo: { legalName: ln2 = '', avatar: av2 = '' } } = {},
+      manager: { generalInfoInfo: { legalName: ln1 = '', avatar: av1 = '' } = {} } = {},
     } = {},
     status = '',
+    hrStatus = '',
   } = props;
 
   const renderIcon = (url, statusProps) => {
@@ -81,8 +83,8 @@ const ChainOfApproval = (props) => {
                       {index === 1 && (
                         <>
                           {status === REJECTED && renderIcon(avatar, REJECTED)}
-                          {(status === IN_PROGRESS || status === DRAFT) && renderIcon(avatar)}
-                          {status === ACCEPTED && renderIcon2(avatar)}
+                          {status === ACCEPTED && hrStatus === IN_PROGRESS && renderIcon(avatar)}
+                          {status === ACCEPTED && hrStatus === ACCEPTED && renderIcon2(avatar)}
                         </>
                       )}
                     </>
