@@ -54,6 +54,13 @@ const JoiningFormalities = (props) => {
     const { statusCode = 0 } = response;
     if (statusCode === 200) {
       setIsEdit(false);
+      dispatch({
+        type: 'onboard/getEmployeeIdFormatList',
+        payload: {
+          page: 1,
+          limit: 10,
+        },
+      });
     }
   };
 

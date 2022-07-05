@@ -18,8 +18,8 @@ const UserNameContent = (props) => {
   }, []);
 
   useEffect(() => {
-    form.setFieldsValue({ userName, domain: listDomain?.find(a=>a.isPrimary) });
-  }, [userName,listDomain]);
+    form.setFieldsValue({ userName });
+  }, [userName, listDomain]);
 
   const onSaveRedux = (result) => {
     dispatch({
@@ -67,11 +67,11 @@ const UserNameContent = (props) => {
             defaultActiveFirstOption
             loading={loadingGetListDomain}
             disabled={loadingGetListDomain}
-          >       
+          >
             {listDomain?.map((item) => (
-              <Select.Option key={item._id} value={item.name}>
-                {item.name}
-                {item.isPrimary&&<Tag className={styles.primaryTag}>Primary</Tag>}
+              <Select.Option key={item?._id} value={item?.name}>
+                {item?.name}
+                {item?.isPrimary && <Tag className={styles.primaryTag}>Primary</Tag>}
               </Select.Option>
             ))}
           </Select>
@@ -82,10 +82,7 @@ const UserNameContent = (props) => {
 };
 
 export default connect(
-  ({
-    loading,
-    onboard: { joiningFormalities: { listDomain = [], userName = '' } } = {},
-  }) => ({
+  ({ loading, onboard: { joiningFormalities: { listDomain = [], userName = '' } } = {} }) => ({
     listDomain,
     userName,
     loadingGetListDomain: loading.effects['onboard/getEmployeeIdfetchListDomain'],

@@ -25,6 +25,7 @@ const ConfirmModal = (props) => {
     reportees,
     candidate,
     loadingCreateEmployee,
+    settingId: { idGenerate = {} },
   } = props;
   const [current, setCurrent] = useState(0);
   const [showMore, setShowMore] = useState(false);
@@ -59,7 +60,11 @@ const ConfirmModal = (props) => {
             Password: <strong>12345678@Tc</strong>
           </div>
           <div className={styles.pageBottom__text}>
-            Employee ID: <strong>{employeeId}</strong>
+            Employee ID:{' '}
+            <strong>
+              {idGenerate.prefix}
+              {idGenerate.start}
+            </strong>
           </div>
           <div className={styles.pageBottom__text}>
             Job Title: <strong>{title?.name}</strong>
@@ -158,13 +163,16 @@ export default connect(
     newCandidateForm: {
       tempData: { reportingManager = {}, reportees = [], title = {}, candidate },
     },
-    onboard: { joiningFormalities: { employeeData = {}, userName = '', domain = '' } = {} },
+    onboard: {
+      joiningFormalities: { employeeData = {}, userName = '', domain = '', settingId = {} } = {},
+    },
   }) => ({
     employeeData,
     userName,
     domain,
     reportingManager,
     reportees,
+    settingId,
     title,
     candidate,
     loadingCreateEmployee: loading.effects['onboard/createEmployee'],

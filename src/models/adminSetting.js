@@ -627,7 +627,9 @@ const adminSetting = {
     },
     *fetchListDomain(_, { call, put }) {
       try {
-        const response = yield call(getDomains);
+        const response = yield call(getDomains, {
+          company: getCurrentCompany(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -640,7 +642,7 @@ const adminSetting = {
     },
     *addListDomain({ payload }, { call, put }) {
       try {
-        const response = yield call(setDomains, [...payload]);
+        const response = yield call(setDomains, payload);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -651,11 +653,10 @@ const adminSetting = {
         dialog(error);
       }
     },
-    *removeListDomain({ payload }, { call, put }) {
+    *removeListDomain({ params }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(removeDomains, {
-          ...payload,
-        });
+        response = yield call(removeDomains, params);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -665,6 +666,7 @@ const adminSetting = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
   },
   reducers: {

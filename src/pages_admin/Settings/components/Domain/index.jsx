@@ -1,4 +1,4 @@
-import { Button, Card, Divider, Form, Input } from 'antd';
+import { Button, Card, Divider, Form, Input, Switch } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import addSymbol from '@/assets/dashboard/blueAdd.svg';
@@ -6,11 +6,12 @@ import deleteSymbol from '@/assets/deleteMailExist.svg';
 import errorFile from '@/assets/errorFile.svg';
 import CommonModal from '@/components/CommonModal';
 import s from './index.less';
+import { getCurrentCompany } from '@/utils/authority';
 
 const Domain = (props) => {
   const [form] = Form.useForm();
 
-  const { dispatch, loadingSave, emailDomain, hasData = false, listDomain } = props;
+  const { dispatch, loadingSave, emailDomain, hasData = false, listDomain, loadingRemove } = props;
   const [visible, setVisible] = useState(false);
   const [clear, setClear] = useState(false);
   const [content, setContent] = useState();
@@ -28,15 +29,18 @@ const Domain = (props) => {
 
   useEffect(() => {
     form.setFieldsValue({
-      emailDomain: listDomain.filter((a) => a.isPrimary),
-      domain: listDomain.filter((a) => a.isPrimary === false),
+      // emailDomain: listDomain.find((a) => a.isPrimary).name,
+      domain: listDomain,
     });
   }, [listDomain]);
 
   const onFinish = (values) => {
     const formatData = values.domain.map((i) => {
-      return i?._id ? { _id: i._id, name: i.name, isPrimary: i.isPrimary } : { name: i.name };
+      return i?.isPrimary
+        ? { ...i, company: getCurrentCompany() }
+        : { ...i, isPrimary: !!i.isPrimary, company: getCurrentCompany() };
     });
+
     // dispatch({
     //   type: 'adminSetting/saveDomain',
     //   payload: {
@@ -66,14 +70,21 @@ const Domain = (props) => {
     </div>
   );
 
-  const onRemoveItem = (index, id) => {
-    console.log(id);
+  const onRemoveItem = async (index) => {
+    const id = listDomain[index]._id;
     const values = form.getFieldsValue();
     const tempDomain = values.domain || {};
-    tempDomain.splice(index, 1);
-    form.setFieldsValue({
-      domain: tempDomain,
+    const response = await dispatch({
+      type: 'adminSetting/removeListDomain',
+      params: id,
     });
+    const { statusCode = 0 } = response;
+    if (statusCode === 200) {
+      tempDomain.splice(index, 1);
+      form.setFieldsValue({
+        domain: tempDomain,
+      });
+    }
   };
 
   return (
@@ -100,40 +111,54 @@ const Domain = (props) => {
           form={form}
           onFinish={onFinish}
         >
-          <Form.Item label="Domain Name 1" name="emailDomain">
+          {/* <Form.Item label="Domain Name 1" name="emailDomain">
             <Input className={s.inpDomain} placeholder="Set domain" />
-          </Form.Item>
+          </Form.Item> */}
           <Form.List name="domain">
             {(fields, { add }) => (
               <>
                 {fields.map(({ key, name, ...restField }, i) => (
-                  <Form.Item
-                    {...restField}
-                    label={
-                      <div>
-                        <>Domain Name {i + 2} </>{' '}
-                        <img
-                          src={deleteSymbol}
-                          alt="delete icon"
-                          onClick={() => {
-                            setVisible(true);
-                            if (hasData) {
-                              setContent(renderUsedDomaincontent);
-                            } else {
-                              setFooter(true);
-                              setContent(renderFreeDomaincontent);
-                              setHandlingIndex(i);
-                            }
-                          }}
-                          className={s.deleteIcon}
-                        />
-                      </div>
-                    }
-                    name={[name, 'name']}
-                    key={key}
-                  >
-                    <Input className={s.inpDomain} placeholder="Set domain" />
-                  </Form.Item>
+                  <>
+                    <Form.Item
+                      {...restField}
+                      label={
+                        <div>
+                          <>Domain Name {i + 1} </>{' '}
+                          <img
+                            src={deleteSymbol}
+                            alt="delete icon"
+                            onClick={() => {
+                              setVisible(true);
+                              if (hasData) {
+                                setContent(renderUsedDomaincontent);
+                              } else {
+                                setFooter(true);
+                                setContent(renderFreeDomaincontent);
+                                setHandlingIndex(i);
+                              }
+                            }}
+                            className={s.deleteIcon}
+                          />
+                        </div>
+                      }
+                      name={[name, 'name']}
+                      key={key}
+                    >
+                      <Input className={s.inpDomain} placeholder="Set domain" />
+                    </Form.Item>
+                    <Form.Item
+                      className={s.primary}
+                      {...restField}
+                      name={[name, 'isPrimary']}
+                      key={key}
+                      label={<span className={s.primaryText}>Primary Domain</span>}
+                      labelAlign="right"
+                      wrapperCol={{ span: 1 }}
+                      labelCol={{ span: 23 }}
+                    >
+                      <Switch size="small" checked={listDomain[i]?.isPrimary} />
+                    </Form.Item>
+                  </>
                 ))}
                 <Form.Item>
                   <Button
@@ -165,6 +190,7 @@ const Domain = (props) => {
           setVisible(false);
           onRemoveItem(handlingIndex);
         }}
+        loading={loadingRemove}
         hasFooter={footer}
         withPadding
         width={400}
@@ -174,8 +200,9 @@ const Domain = (props) => {
 };
 export default connect(
   ({ loading, adminSetting: { originData: { emailDomain = '', listDomain = [] } = {} } = {} }) => ({
-    loadingSave: loading.effects['adminSetting/saveDomain'],
+    loadingSave: loading.effects['adminSetting/addListDomain'],
     loadingData: loading.effects['adminSetting/getDomain'],
+    loadingRemove: loading.effects['adminSetting/removeListDomain'],
     emailDomain,
     listDomain,
   }),

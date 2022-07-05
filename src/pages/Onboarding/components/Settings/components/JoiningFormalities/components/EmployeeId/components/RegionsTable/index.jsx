@@ -61,6 +61,7 @@ const Action = ({ record, isEditing, save, cancel, edit }) => {
 
 const RegionsTable = (props) => {
   const {
+    location,
     dispatch,
     loadingList,
     employeeIdList,
@@ -128,6 +129,14 @@ const RegionsTable = (props) => {
       if (res.statusCode === 200) {
         setEditingKey('');
         fetchData(page, limit);
+        // eslint-disable-next-line no-unused-expressions
+        key === location._id &&
+          dispatch({
+            type: 'onboard/getEmployeeIdFormatByLocation',
+            payload: {
+              location: location._id,
+            },
+          });
       }
     }
   };

@@ -223,9 +223,10 @@ export async function upsertSettingTicket(payload) {
   });
 }
 
-export async function getDomains() {
+export async function getDomains(payload) {
   return request('/api/domaintenant', {
     method: 'GET',
+    params: payload,
   });
 }
 
@@ -237,8 +238,7 @@ export async function setDomains(payload) {
 }
 
 export async function removeDomains(params) {
-  return request('/api/domaintenant', {
+  return request(`/api/domaintenant/${params}`, {
     method: 'DELETE',
-    params,
   });
 }

@@ -159,7 +159,7 @@ const JoiningFormalitiesModal = (props) => {
         <Button
           className={styles.btnSubmit}
           type="primary"
-          disabled={checkList.length !== listJoiningFormalities.length && callback}
+          disabled={checkList.length !== listJoiningFormalities.length && !callback}
           loading={loadingGetEmployeeId}
           onClick={() => converToEmployee()}
         >
