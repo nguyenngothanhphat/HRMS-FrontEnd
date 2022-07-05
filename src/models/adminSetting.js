@@ -629,6 +629,7 @@ const adminSetting = {
       try {
         const response = yield call(getDomains, {
           company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
@@ -640,7 +641,7 @@ const adminSetting = {
         dialog(errors);
       }
     },
-    *addListDomain({ payload }, { call, put }) {
+    *updateListDomain({ payload }, { call, put }) {
       try {
         const response = yield call(setDomains, payload);
         const { statusCode, message } = response;

@@ -160,9 +160,10 @@ export async function getCandidateById(payload) {
   });
 }
 
-export async function getDomain() {
+export async function getDomain(params) {
   return request('/api/domaintenant', {
     method: 'GET',
+    params,
   });
 }
 

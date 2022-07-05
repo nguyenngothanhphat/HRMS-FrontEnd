@@ -34,7 +34,7 @@ const ReportingManagerContent = (props) => {
     });
     form.setFieldsValue({
       reportingManager: manager?._id,
-      // reportees: employee?.map((e) => e._id),
+      reportees: employee,
     });
   }, []);
 

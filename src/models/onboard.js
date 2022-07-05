@@ -1040,7 +1040,10 @@ const onboard = {
     // eslint-disable-next-line no-shadow
     *fetchListDomain(_, { call, put }) {
       try {
-        const response = yield call(getDomain);
+        const response = yield call(getDomain, {
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({

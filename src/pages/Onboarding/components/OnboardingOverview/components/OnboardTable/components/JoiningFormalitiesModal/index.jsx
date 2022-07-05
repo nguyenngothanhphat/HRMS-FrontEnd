@@ -27,7 +27,7 @@ const JoiningFormalitiesModal = (props) => {
   const [checkList, setCheckList] = useState([]);
   const [docSubCheckList, setDocSubCheckList] = useState([]);
   const [preJoinCheckList, setPreJoinCheckList] = useState([]);
-  const [callback, setCallback] = useState();
+  const [callback, setCallback] = useState(0);
   const [initalValue, setInitalValue] = useState({});
   const [current, setCurrent] = useState(0);
 

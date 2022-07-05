@@ -5,20 +5,20 @@ import styles from '@/pages/Onboarding/components/OnboardingOverview/components/
 
 const UserNameContent = (props) => {
   const [form] = Form.useForm();
-  const { dispatch, listDomain, userName, loadingGetListDomain, next } = props;
+  const { dispatch, listDomain, userName, loadingGetListDomain, next, domain } = props;
   const [validate, setValidate] = useState({ validateStatus: 'success', errorMsg: null });
 
   useEffect(() => {
     dispatch({
       type: 'onboard/fetchListDomain',
     });
-    dispatch({
-      type: 'adminSetting/getDomain',
-    });
+    // dispatch({
+    //   type: 'adminSetting/getDomain',
+    // });
   }, []);
 
   useEffect(() => {
-    form.setFieldsValue({ userName });
+    form.setFieldsValue({ userName, domain });
   }, [userName, listDomain]);
 
   const onSaveRedux = (result) => {
@@ -82,9 +82,13 @@ const UserNameContent = (props) => {
 };
 
 export default connect(
-  ({ loading, onboard: { joiningFormalities: { listDomain = [], userName = '' } } = {} }) => ({
+  ({
+    loading,
+    onboard: { joiningFormalities: { listDomain = [], userName = '', domain = '' } } = {},
+  }) => ({
     listDomain,
     userName,
+    domain,
     loadingGetListDomain: loading.effects['onboard/getEmployeeIdfetchListDomain'],
     loadingGetEmployeeId: loading.effects['onboard/getEmployeeId'],
     loadingCheckUserName: loading.effects['onboard/checkExistedUserName'],
