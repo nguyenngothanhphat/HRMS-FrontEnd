@@ -3,12 +3,20 @@ import { Empty } from 'antd';
 import EmptyImage from '@/assets/timeSheet/emptyImage.png';
 import styles from './index.less';
 
-const EmptyComponent = (props) => {
-  const { description = 'No data', image = EmptyImage } = props;
-
+const EmptyComponent = ({
+  description = 'No data',
+  image = EmptyImage,
+  height = 200,
+  showDescription = true,
+}) => {
   return (
-    <div className={styles.EmptyComponent}>
-      <Empty description={description} image={image} />
+    <div
+      className={styles.EmptyComponent}
+      style={{
+        height,
+      }}
+    >
+      <Empty description={showDescription ? description : null} image={image} />
     </div>
   );
 };

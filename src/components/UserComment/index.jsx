@@ -9,7 +9,7 @@ import LikedIcon from '@/assets/homePage/liked.svg';
 import MenuIcon from '@/assets/homePage/menuDots.svg';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import CommentBox from '@/components/CommentBox';
-import { dateFormat, hashtagify, LIKE_ACTION, urlify } from '@/utils/homePage';
+import { dateFormat, hashtagify, POST_OR_CMT, LIKE_ACTION, urlify } from '@/utils/homePage';
 import styles from './index.less';
 
 const UserComment = ({
@@ -24,6 +24,10 @@ const UserComment = ({
   onEditCancel = () => {},
   refreshComments = () => {},
   setActivePostID = () => {},
+  getCommentReactionListEffect = () => {},
+  setViewingPostOrCommentLiked = () => {},
+  setIsLikeOrDislike = () => {},
+  hasPermission = false,
 }) => {
   const { _id: commentId = '', content = '', employee: owner = {}, totalReact = {} } = item;
 
@@ -73,15 +77,18 @@ const UserComment = ({
   const renderMenuDropdown = () => {
     return (
       <div className={styles.containerDropdown}>
-        <div
-          className={styles.btn}
-          onClick={() => {
-            onEditComment(commentId);
-            setDropDownVisible(false);
-          }}
-        >
-          <span>Edit</span>
-        </div>
+        {isMe && (
+          <div
+            className={styles.btn}
+            onClick={() => {
+              onEditComment(commentId);
+              setDropDownVisible(false);
+            }}
+          >
+            <span>Edit</span>
+          </div>
+        )}
+
         <div
           className={styles.btn}
           onClick={() => {
@@ -104,25 +111,39 @@ const UserComment = ({
     }
   };
 
+  const onViewWhoLiked = (type) => {
+    setIsLikeOrDislike(type);
+    setViewingPostOrCommentLiked(POST_OR_CMT.COMMENT);
+    getCommentReactionListEffect(commentId, type);
+  };
+
   const renderLikeBtn = () => {
     const liked = item.react === LIKE_ACTION.LIKE;
     const disliked = item.react === LIKE_ACTION.DISLIKE;
+    const likeCount = totalReact?.asObject?.[LIKE_ACTION.LIKE] || 0;
+    const dislikeCount = totalReact?.asObject?.[LIKE_ACTION.DISLIKE] || 0;
 
     return (
       <div className={styles.likes} style={{ pointerEvents: isEdit ? 'none' : 'auto' }}>
-        <div
-          onClick={() => onLikeComment(LIKE_ACTION.LIKE)}
-          className={liked ? styles.likes__pressed : null}
-        >
-          <img src={liked ? LikedIcon : LikeIcon} alt="" />
-          <span>{totalReact?.asObject?.[LIKE_ACTION.LIKE] || 0}</span>
+        <div className={liked ? styles.likes__pressed : null}>
+          <img
+            src={liked ? LikedIcon : LikeIcon}
+            alt=""
+            onClick={() => onLikeComment(LIKE_ACTION.LIKE)}
+          />
+          <span onClick={() => onViewWhoLiked(LIKE_ACTION.LIKE)}>
+            {likeCount} {likeCount > 1 ? 'Likes' : 'Like'}
+          </span>
         </div>
-        <div
-          onClick={() => onLikeComment(LIKE_ACTION.DISLIKE)}
-          className={disliked ? styles.likes__pressed : null}
-        >
-          <img src={disliked ? DislikedIcon : DislikeIcon} alt="" />
-          <span>{totalReact?.asObject?.[LIKE_ACTION.DISLIKE] || 0}</span>
+        <div className={disliked ? styles.likes__pressed : null}>
+          <img
+            src={disliked ? DislikedIcon : DislikeIcon}
+            alt=""
+            onClick={() => onLikeComment(LIKE_ACTION.DISLIKE)}
+          />
+          <span onClick={() => onViewWhoLiked(LIKE_ACTION.DISLIKE)}>
+            {dislikeCount} {dislikeCount > 1 ? 'Dislikes' : 'Dislike'}
+          </span>
         </div>
       </div>
     );
@@ -164,7 +185,7 @@ const UserComment = ({
             </Tooltip>
             <span className={styles.title}>{owner?.titleInfo?.name || 'Unknown'}</span>
           </div>
-          {!isEdit && isMe && (
+          {!isEdit && (isMe || hasPermission) && (
             <div className={styles.menu}>
               <Popover
                 trigger="click"

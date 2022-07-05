@@ -7,7 +7,7 @@ import LikeIcon from '@/assets/homePage/like.svg';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import CommonModal from '@/components/CommonModal';
-import LikedModalContent from '../LikedModalContent';
+import PostLikedModalContent from '@/components/PostLikedModalContent';
 import styles from './index.less';
 import { CELEBRATE_TYPE } from '@/utils/homePage';
 
@@ -289,7 +289,7 @@ const CelebratingDetailModalContent = (props) => {
         visible={likedModalVisible}
         onClose={() => setLikedModalVisible(false)}
         title="Likes"
-        content={<LikedModalContent list={likes} />}
+        content={<PostLikedModalContent list={likes} />}
         width={500}
         hasFooter={false}
       />
