@@ -5,7 +5,7 @@ import styles from '@/pages/Onboarding/components/OnboardingOverview/components/
 
 const UserNameContent = (props) => {
   const [form] = Form.useForm();
-  const { dispatch, listDomain, userName, loadingGetListDomain, next, emailDomain } = props;
+  const { dispatch, listDomain, userName, loadingGetListDomain, next } = props;
   const [validate, setValidate] = useState({ validateStatus: 'success', errorMsg: null });
 
   useEffect(() => {
@@ -18,8 +18,8 @@ const UserNameContent = (props) => {
   }, []);
 
   useEffect(() => {
-    form.setFieldsValue({ userName, domain: emailDomain });
-  }, [userName]);
+    form.setFieldsValue({ userName, domain: listDomain?.find(a=>a.isPrimary) });
+  }, [userName,listDomain]);
 
   const onSaveRedux = (result) => {
     dispatch({
@@ -67,14 +67,11 @@ const UserNameContent = (props) => {
             defaultActiveFirstOption
             loading={loadingGetListDomain}
             disabled={loadingGetListDomain}
-          >
-            <Select.Option key="primary" value={emailDomain}>
-              <span>{emailDomain}</span>
-              <Tag className={styles.primaryTag}>Primary</Tag>
-            </Select.Option>
+          >       
             {listDomain?.map((item) => (
               <Select.Option key={item._id} value={item.name}>
                 {item.name}
+                {item.isPrimary&&<Tag className={styles.primaryTag}>Primary</Tag>}
               </Select.Option>
             ))}
           </Select>
@@ -87,11 +84,9 @@ const UserNameContent = (props) => {
 export default connect(
   ({
     loading,
-    adminSetting: { originData: { emailDomain = '' } = {} } = {},
     onboard: { joiningFormalities: { listDomain = [], userName = '' } } = {},
   }) => ({
     listDomain,
-    emailDomain,
     userName,
     loadingGetListDomain: loading.effects['onboard/getEmployeeIdfetchListDomain'],
     loadingGetEmployeeId: loading.effects['onboard/getEmployeeId'],
