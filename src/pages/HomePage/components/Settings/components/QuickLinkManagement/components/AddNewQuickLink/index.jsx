@@ -28,14 +28,12 @@ const AddNewQuickLink = (props) => {
   const [fileList, setFileList] = useState([]);
 
   const handleChangeLocation = (val) => {
-    val.forEach((x) => {
-      if (x === 'all') {
-        form.setFieldsValue({
-          location: companyLocationList.map((y) => y._id),
-        });
-      } else {
-        setLocation(val);
-      }
+    let result = [...val];
+    if (val.includes('all')) {
+      result = companyLocationList.map((x) => x._id);
+    }
+    form.setFieldsValue({
+      location: result,
     });
   };
 
