@@ -1,7 +1,7 @@
 import { Col, DatePicker, Form, Row } from 'antd';
 import moment from 'moment';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import React, { useState } from 'react';
 import { dateFormatImport } from '@/utils/timeSheet';
 import styles from './index.less';
 
@@ -10,9 +10,15 @@ const { RangePicker } = DatePicker;
 const ModalContentSelectDates = (props) => {
   const [form] = Form.useForm();
 
-  const { importingIds = [], handleFinish = () => {} } = props;
+  const { importingIds = [], handleFinish = () => {}, dates = '', setDates = () => {} } = props;
 
-  const [dates, setDates] = useState(null);
+  useEffect(() => {
+    if (dates) {
+      form.setFieldsValue({
+        dates,
+      });
+    }
+  }, [dates]);
 
   const disabledDate = (current) => {
     if (!dates) {

@@ -3,8 +3,8 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { dateFormatAPI, dateFormatImport, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
-import CustomTimePicker from '@/components/CustomTimePicker';
 import { getCurrentCompany } from '@/utils/authority';
+import CustomTimePicker from '@/components/CustomTimePicker';
 import styles from './index.less';
 
 const { RangePicker } = DatePicker;
@@ -61,6 +61,7 @@ const DuplicateTaskModal = (props) => {
     }
   }, [dates]);
 
+  // FUNCTION
   const disabledDate = (current) => {
     if (!dates) {
       return false;
@@ -91,7 +92,6 @@ const DuplicateTaskModal = (props) => {
     }
   };
 
-  // FUNCTION
   const onStartTimeChange = (index) => {
     const { datesTime = [] } = form.getFieldsValue();
     form.setFieldsValue({
@@ -116,6 +116,34 @@ const DuplicateTaskModal = (props) => {
     });
     setDisabledHourBefore(disabledHourBeforeTemp);
   };
+
+  const handleFinish = (value) => {
+    const { datesTime = [] } = value;
+    const arr = datesTime.map((x) => {
+      return {
+        startTime: moment(x?.startTime, hourFormat).format(hourFormatAPI),
+        endTime: moment(x?.endTime, hourFormat).format(hourFormatAPI),
+        date: moment(x?.date, dateFormatImport).format(dateFormatAPI),
+      };
+    });
+
+    dispatch({
+      type: 'timeSheet/duplicateTimesheet',
+      payload: {
+        dateTimes: arr,
+        id,
+        employeeId,
+        companyId: getCurrentCompany(),
+      },
+    }).then((res) => {
+      const { code = '' } = res;
+      if (code === 200) {
+        onClose();
+        refreshTable();
+      }
+    });
+  };
+
   // RENDER UI
   const renderModalHeader = () => {
     return (
@@ -192,33 +220,6 @@ const DuplicateTaskModal = (props) => {
         )}
       </Form.List>
     );
-  };
-
-  const handleFinish = (value) => {
-    const { datesTime = [] } = value;
-    const arr = datesTime.map((x) => {
-      return {
-        startTime: moment(x?.startTime, hourFormat).format(hourFormatAPI),
-        endTime: moment(x?.endTime, hourFormat).format(hourFormatAPI),
-        date: moment(x?.date, dateFormatImport).format(dateFormatAPI),
-      };
-    });
-
-    dispatch({
-      type: 'timeSheet/duplicateTimesheet',
-      payload: {
-        dateTimes: arr,
-        id,
-        employeeId,
-        companyId: getCurrentCompany(),
-      },
-    }).then((res) => {
-      const { code = '' } = res;
-      if (code === 200) {
-        onClose();
-        refreshTable();
-      }
-    });
   };
 
   const renderContent = () => {
@@ -299,7 +300,7 @@ const DuplicateTaskModal = (props) => {
         className={`${styles.DuplicateTaskModal} ${styles.noPadding}`}
         onCancel={() => onClose()}
         destroyOnClose
-        width={700}
+        width={600}
         footer={renderModalFooter()}
         title={renderModalHeader()}
         centered

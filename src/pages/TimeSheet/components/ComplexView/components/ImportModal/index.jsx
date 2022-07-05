@@ -24,6 +24,7 @@ const ImportModal = (props) => {
   } = props;
 
   const [step, setStep] = useState(1);
+  const [dates, setDates] = useState(null);
 
   // FUNCTIONS
   // get dates between two dates
@@ -86,7 +87,7 @@ const ImportModal = (props) => {
 
   const onImport = (datesProps) => {
     const ids = [];
-    const dates = getDateLists(datesProps[0], datesProps[1]);
+    const datesTemp = getDateLists(datesProps[0], datesProps[1]);
     importingIds.forEach((item) => {
       item?.selectedIds.forEach((obj) => {
         ids.push(obj.id);
@@ -98,15 +99,15 @@ const ImportModal = (props) => {
       payload: {
         companyId: getCurrentCompany(),
         employeeId,
-        dates,
+        dates: datesTemp,
         ids,
       },
     });
   };
 
-  const handleFinish = async ({ dates = [] }) => {
-    if (!isEmpty(dates)) {
-      const res = await onImport(dates);
+  const handleFinish = async ({ datesProps = [] }) => {
+    if (!isEmpty(datesProps)) {
+      const res = await onImport(datesProps);
       if (res.code === 200) {
         handleCancel();
         refreshData();
@@ -185,7 +186,12 @@ const ImportModal = (props) => {
         {step === 1 ? (
           <ModalContentSelectTasks visible={visible} />
         ) : (
-          <ModalContentSelectDates handleCancel={handleCancel} handleFinish={handleFinish} />
+          <ModalContentSelectDates
+            handleCancel={handleCancel}
+            handleFinish={handleFinish}
+            dates={dates}
+            setDates={setDates}
+          />
         )}
       </Modal>
     </>
