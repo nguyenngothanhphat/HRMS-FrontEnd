@@ -28,6 +28,7 @@ const MyRequest = (props) => {
       },
     });
   };
+
   useEffect(() => {
     fetchList();
   }, []);
@@ -172,9 +173,11 @@ const MyRequest = (props) => {
       />
       <TimesheetDetailModal
         visible={openModal}
-        onClose={() => {
+        onClose={({ refresh } = {}) => {
           setOpenModal(false);
-          fetchList();
+          if (refresh) {
+            fetchList();
+          }
         }}
         rowKey={handlingWeek}
         dataSource={myRequest}
