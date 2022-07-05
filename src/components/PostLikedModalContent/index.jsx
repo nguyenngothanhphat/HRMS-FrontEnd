@@ -1,11 +1,19 @@
+import { Spin, Button } from 'antd';
 import React from 'react';
 import { connect, history } from 'umi';
-import styles from './index.less';
-import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
+import ShowMoreIcon from '@/assets/homePage/downArrow.svg';
 import EmptyComponent from '@/components/Empty';
+import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
+import styles from './index.less';
 
-const LikedModalContent = (props) => {
-  const { list = [], currentUser: { employee = {} } = {} } = props;
+const PostLikedModalContent = (props) => {
+  const {
+    list = [],
+    currentUser: { employee = {} } = {},
+    loading = false,
+    total = 0,
+    loadMore = () => {},
+  } = props;
 
   // functions
   const onViewProfileClick = (userId) => {
@@ -38,10 +46,32 @@ const LikedModalContent = (props) => {
     );
   };
 
-  if (list.length === 0) return <EmptyComponent />;
+  const renderShowMoreBtn = () => {
+    const showMore = list.length < total;
+    if (!showMore) return null;
+    return (
+      <div className={styles.loadMore}>
+        <Button onClick={() => loadMore()}>
+          Show more
+          <img src={ShowMoreIcon} alt="" />
+        </Button>
+      </div>
+    );
+  };
 
-  return <div className={styles.LikedModalContent}>{list.map((x) => renderUser(x))}</div>;
+  return (
+    <div className={styles.PostLikedModalContent}>
+      <Spin spinning={loading}>
+        {list.length > 0 ? (
+          list.map((x) => renderUser(x))
+        ) : (
+          <EmptyComponent height={70} showDescription={false} />
+        )}
+      </Spin>
+      {renderShowMoreBtn()}
+    </div>
+  );
 };
 export default connect(({ user: { currentUser } = {} }) => ({
   currentUser,
-}))(LikedModalContent);
+}))(PostLikedModalContent);

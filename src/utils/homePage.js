@@ -24,6 +24,11 @@ export const LIKE_ACTION = {
   DISLIKE: 'DISLIKE',
 };
 
+export const POST_OR_CMT = {
+  POST: 'POST',
+  COMMENT: 'COMMENT',
+};
+
 export const urlify = (text) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   return text.replace(urlRegex, (url) => {
