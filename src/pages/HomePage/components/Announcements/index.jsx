@@ -21,11 +21,12 @@ const Announcements = (props) => {
   const [limit, setLimit] = useState(10);
 
   const fetchData = () => {
+    const location = getCurrentLocation();
     return dispatch({
       type: 'homePage/fetchAnnouncementsEffect',
       payload: {
         postType: TAB_IDS.ANNOUNCEMENTS,
-        location: [getCurrentLocation()],
+        location: location ? [location] : [],
         page: 1,
         limit,
       },
