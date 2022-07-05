@@ -75,7 +75,6 @@ const AddTaskModal = (props) => {
   // state
   const [disabledHourBefore, setDisabledHourBefore] = useState([]); // for end time validation
   const [dates, setDates] = useState(null);
-  const [detailTimesheet, setDetailTimesheet] = useState([]);
   const myTimesheet = myTimesheetByDay[0]?.timesheet;
   const [notice, setNotice] = useState(TIMESHEET_ADD_TASK_ALERT.DEFAULT);
   const [holidays, setHolidays] = useState([]);
@@ -125,28 +124,18 @@ const AddTaskModal = (props) => {
     return lastEle[lastEle.length - 1]?.endTime;
   };
 
-  const getDefaultValueStartTime = (val = []) => {
-    if (val.length === 0) {
-      return TIME_DEFAULT.START_TIME;
+  // get value timesheet of date when changed date
+  const getDetailValueStartTime = (val = []) => {
+    if (val?.length && formatStartTimeShow(getLastEndTimeElement(val)) >= TIME_DEFAULT.END_TIME) {
+      return TIME_DEFAULT.TIME_WORK_LATE;
     }
-    if (val.length && formatStartTimeShow(getLastEndTimeElement(val)) < TIME_DEFAULT.END_TIME) {
+    if (val?.length && formatStartTimeShow(getLastEndTimeElement(val)) < TIME_DEFAULT.END_TIME) {
       return formatStartTimeShow(getLastEndTimeElement(val));
     }
-    if (val.length && formatStartTimeShow(getLastEndTimeElement(val)) >= TIME_DEFAULT.END_TIME) {
-      return TIME_DEFAULT.TIME_WORK_LATE;
-    }
-    if (
-      detailTimesheet?.length &&
-      formatStartTimeShow(getLastEndTimeElement(detailTimesheet)) >= TIME_DEFAULT.END_TIME
-    ) {
-      return TIME_DEFAULT.TIME_WORK_LATE;
-    }
-    if (
-      detailTimesheet?.length &&
-      formatStartTimeShow(getLastEndTimeElement(detailTimesheet)) < TIME_DEFAULT.END_TIME
-    ) {
-      return formatStartTimeShow(getLastEndTimeElement(detailTimesheet));
-    }
+    return TIME_DEFAULT.START_TIME;
+  };
+
+  const getDefaultValueStartTime = () => {
     if (
       myTimesheet?.length &&
       formatStartTimeShow(getLastEndTimeElement(myTimesheet)) < TIME_DEFAULT.END_TIME
@@ -174,12 +163,11 @@ const AddTaskModal = (props) => {
       },
     });
     if (res.code === 200) {
-      setDetailTimesheet(res.data[0].timesheet);
       form.setFieldsValue({
         tasks: [
           {
-            startTime: getDefaultValueStartTime(res.data[0]?.timesheet || []),
-            endTime: formatEndTimeShow(getDefaultValueStartTime(res.data[0]?.timesheet || [])),
+            startTime: getDetailValueStartTime(res.data[0].timesheet || []),
+            endTime: formatEndTimeShow(getDetailValueStartTime(res.data[0].timesheet || [])),
           },
         ],
       });
@@ -373,7 +361,7 @@ const AddTaskModal = (props) => {
       : getDisabledHourBefore(getDefaultValueStartTime(), 30);
 
     setDisabledHourBefore([temp]);
-  }, [visible, endTime, JSON.stringify(detailTimesheet)]);
+  }, [visible, endTime]);
 
   // render ui
   const renderModalHeader = () => {
