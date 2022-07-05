@@ -18,11 +18,54 @@
   overflow-x: auto;
   background-color: #ffffff;
   border-radius: 5px;
+  :global {
+    .ant-table-cell {
+      background: #fff !important;
+    }
+  }
 
   .tableContainer {
     min-width: 1100px;
     // box-shadow: 1px 0px 6px rgba(0, 0, 0, 0.15);
     overflow-x: auto;
+
+    .holidayContainer {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      background-color: #fffaf2;
+      p {
+        margin: 0;
+        margin-top: 10px;
+        color: #ffa100;
+        font-weight: 500;
+        font-size: 14px;
+      }
+      .addTaskContainer {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        inset: 0px;
+        .addTaskHoliday {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(#fff2dccc, 0.8);
+          cursor: pointer;
+          opacity: 0;
+        }
+        .addTaskHoliday:hover {
+          opacity: 1;
+        }
+      }
+    }
   }
 
   .loadingContainer {
@@ -71,9 +114,11 @@
   }
 
   .timeStamp {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100%;
     .left {
       color: #333333;
       font-weight: 500;
@@ -102,6 +147,14 @@
         opacity: 0.5;
       }
     }
+
+    .holidayIconWarning {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 16px;
+      height: 16px;
+    }
   }
 
   // ALL CELLS
@@ -119,7 +172,6 @@
   .hourValue {
     &:hover {
       color: #2c6df9;
-      background-color: #fafeff;
       cursor: pointer;
     }
   }

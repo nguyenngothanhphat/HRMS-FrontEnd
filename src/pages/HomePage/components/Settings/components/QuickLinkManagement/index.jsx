@@ -6,11 +6,23 @@ import { TAB_IDS_QUICK_LINK } from '@/utils/homePage';
 import { goToTop } from '@/utils/utils';
 // import styles from './index.less';
 
-const QuickLinkManagement = () => {
+const QuickLinkManagement = (props) => {
   const [addingPost, setAddingPost] = useState(false);
   const [editingPost, setEditingPost] = useState(false);
   const [record, setRecord] = useState({});
   const [selectedTab, setSelectedTab] = useState(TAB_IDS_QUICK_LINK.GENERAL);
+
+  const {
+    homePage: {
+      quickLinkListAllHomePage = [],
+      quickLinkListTimeOff = [],
+      totalQuickLinkType = [],
+    } = {},
+    loadingFetchQuickLinkList = false,
+  } = props;
+
+  // redux
+  const { dispatch } = props;
 
   const onAddNewQuickLink = (recordTemp) => {
     setRecord(recordTemp);
@@ -24,10 +36,41 @@ const QuickLinkManagement = () => {
     goToTop();
   };
 
+  const fetchTotalQuickLinkType = () => {
+    dispatch({
+      type: 'homePage/fetchTotalQuickLinkTypeEffect',
+    });
+  };
+
+  const fetchData = (page = 1, limit = 10) => {
+    let type = '';
+
+    switch (selectedTab) {
+      case TAB_IDS_QUICK_LINK.GENERAL:
+        type = 'homePage/fetchAllQuickLinkHomePageEffect';
+        break;
+      case TAB_IDS_QUICK_LINK.TIMEOFF:
+        type = 'homePage/fetchQuickLinkTimeOffEffect';
+        break;
+      default:
+        break;
+    }
+    dispatch({
+      type,
+      payload: {
+        type: selectedTab.toLowerCase(),
+        page,
+        limit,
+      },
+    });
+    fetchTotalQuickLinkType();
+  };
+
   const onBack = () => {
     setAddingPost(false);
     setEditingPost(false);
     goToTop();
+    fetchData();
   };
 
   useEffect(() => {
@@ -52,15 +95,32 @@ const QuickLinkManagement = () => {
     <div>
       <QuickLinkCard
         onAddNewQuickLink={onAddNewQuickLink}
+        quickLinkListAllHomePage={quickLinkListAllHomePage}
         selectedTab={selectedTab}
+        quickLinkListTimeOff={quickLinkListTimeOff}
+        totalQuickLinkType={totalQuickLinkType}
+        loadingFetchQuickLinkList={loadingFetchQuickLinkList}
         setSelectedTab={setSelectedTab}
+        fetchData={fetchData}
         onEditQuickLink={onEditQuickLink}
       />
     </div>
   );
 };
 
-export default connect(({ user: { currentUser = {}, permissions = {} } = {} }) => ({
-  currentUser,
-  permissions,
-}))(QuickLinkManagement);
+export default connect(
+  ({
+    homePage = {},
+    location: { companyLocationList = [] } = {},
+    loading,
+    user: { currentUser = {}, permissions = {} } = {},
+  }) => ({
+    currentUser,
+    permissions,
+    homePage,
+    companyLocationList,
+    loadingFetchQuickLinkList:
+      loading.effects['homePage/fetchAllQuickLinkHomePageEffect'] ||
+      loading.effects['homePage/fetchQuickLinkTimeOffEffect'],
+  }),
+)(QuickLinkManagement);

@@ -3,9 +3,12 @@ import { Checkbox, Col, DatePicker, Form, Row, Select, TreeSelect } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { isEmpty } from 'lodash';
 import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import CheckBoxIcon from '@/assets/onboarding/checkbox.svg';
+import UnCheckBoxIcon from '@/assets/onboarding/uncheckbox.svg';
 
 const { Option } = Select;
 const { TreeNode } = TreeSelect;
@@ -31,6 +34,7 @@ const JobDetailForm = (props) => {
         grade,
         department,
         workLocation,
+        location,
         workFromHome,
         clientLocation,
         title,
@@ -247,6 +251,51 @@ const JobDetailForm = (props) => {
     });
   };
 
+  const CustomIcon = (value) => {
+    if (value === location || workLocation?._id === value) {
+      return (
+        <>
+          <img style={{ width: 15, padding: 1 }} src={CheckBoxIcon} alt="Custom Icon" />
+        </>
+      );
+    }
+    return (
+      <>
+        <img style={{ width: 15, padding: 1 }} src={UnCheckBoxIcon} alt="Custom Icon" />
+      </>
+    );
+  };
+
+  const CustomIconHeader = () => {
+    if (!location) {
+      if (!isEmpty(workLocation)) {
+        return (
+          <>
+            <img style={{ width: 15, padding: 1 }} src={CheckBoxIcon} alt="Custom Icon" />
+          </>
+        );
+      }
+      return (
+        <>
+          <img style={{ width: 15, padding: 1 }} src={UnCheckBoxIcon} alt="Custom Icon" />
+        </>
+      );
+    }
+    return (
+      <>
+        <img style={{ width: 15, padding: 1 }} src={CheckBoxIcon} alt="Custom Icon" />
+      </>
+    );
+  };
+
+  const CustomIconDisable = () => {
+    return (
+      <>
+        <img style={{ width: 15, padding: 1 }} src={UnCheckBoxIcon} alt="Custom Icon" />
+      </>
+    );
+  };
+
   const renderSelectors = () => {
     const selectors = [
       {
@@ -261,22 +310,32 @@ const JobDetailForm = (props) => {
         ],
         component: (
           <TreeSelect
-            treeLine
             placeholder="Select the work location"
             onChange={(value) => onChangeValue(value, 'workLocation')}
             disabled={disabled || ![NEW_PROCESS_STATUS.DRAFT].includes(processStatus)}
             showSearch
             showArrow
             allowClear
+            treeIcon
             treeDefaultExpandAll
           >
-            <TreeNode title="Office Location">
+            <TreeNode icon={CustomIconHeader()} title="Office Location">
               {locationList.map((x, index) => (
-                <TreeNode title={x.name} value={x._id} key={index} />
+                <TreeNode icon={CustomIcon(x._id)} title={x.name} value={x._id} key={index} />
               ))}
             </TreeNode>
-            <TreeNode title="Work From Home" value="work from home" disabled />
-            <TreeNode title="Client Location" value="client location" />
+            <TreeNode
+              icon={CustomIconDisable()}
+              title="Work From Home"
+              value="work from home"
+              disabled
+            />
+            <TreeNode
+              icon={CustomIconDisable()}
+              title="Client Location"
+              value="client location"
+              disabled
+            />
           </TreeSelect>
         ),
       },

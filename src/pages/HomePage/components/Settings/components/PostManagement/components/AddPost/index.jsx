@@ -179,11 +179,13 @@ const AddPost = (props) => {
 
     const commonFunc = (name) => {
       let { fileList: fileListTemp = [] } = tempAllValues[name] || {};
-      if (fileListTemp.length > 0) {
-        fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
-        setFileList([...fileListTemp]);
+
+      fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
+      setFileList([...fileListTemp]);
+      if (tempAllValues[name]) {
         tempAllValues[name].fileList = fileListTemp;
       }
+
       return tempAllValues;
     };
 
@@ -427,7 +429,7 @@ const AddPost = (props) => {
           onFinish={editing ? onEdit : onPost}
         >
           <Form.Item label="Post Type" name="postType">
-            <Select disabled={editing} showArrow style={{ width: '100%' }} onChange={onModeChange}>
+            <Select disabled showArrow style={{ width: '100%' }} onChange={onModeChange}>
               {TABS.map((x) => {
                 return (
                   <Select.Option value={x.id} key={x.id}>

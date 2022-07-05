@@ -1,14 +1,24 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-nested-ternary */
-import { Table } from 'antd';
+import { Table, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { projectColor, convertMsToTime, VIEW_TYPE } from '@/utils/timeSheet';
+import {
+  projectColor,
+  convertMsToTime,
+  VIEW_TYPE,
+  checkHoliday,
+  holidayFormatDate,
+  getHolidayNameByDate,
+} from '@/utils/timeSheet';
 import AirPlanIcon from '@/assets/timeSheet/airplanIcon.svg';
 import TaskPopover from './components/TaskPopover';
 import TimeoffPopover from './components/TimeoffPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import IconHoliday from '@/assets/timeSheet/ic_holiday.svg';
+import IconWarning from '@/assets/timeSheet/ic_warning.svg';
+import IconAdd from '@/assets/timeSheet/add.svg';
 import EmptyComponent from '@/components/Empty';
 import CellMenu from './components/CellMenu';
 import styles from './index.less';
@@ -20,12 +30,14 @@ const WeeklyTable = (props) => {
     loadingFetchMyTimesheetByType = false,
     data = [],
     timeoffList = [],
+    timeSheet = { holidays: [] },
     setSelectedDate = () => {},
     setSelectedView = () => {},
   } = props;
   const [dateList, setDateList] = useState([]);
   const [formattedData, setFormattedData] = useState([]);
   const [popup, setPopup] = useState({ visible: false, x: 0, y: 0 });
+  const { holidays } = timeSheet;
 
   // FUNCTIONS
   // get dates between two dates
@@ -75,8 +87,9 @@ const WeeklyTable = (props) => {
   // RENDER UI
   // BODY
   const renderDateHeaderItem = (date) => {
+    const isHoliday = checkHoliday(date, holidays);
     return (
-      <div className={styles.timeStamp}>
+      <div className={styles.timeStamp} style={{ backgroundColor: isHoliday ? '#FFFAF2' : 'FFF' }}>
         <div className={styles.left}>{moment(date, 'MM/DD/YYYY').locale('en').format('DD')}</div>
         <div className={styles.right}>
           <span className={styles.date}>
@@ -86,6 +99,19 @@ const WeeklyTable = (props) => {
             {moment(date, 'MM/DD/YYYY').locale('en').format('MMMM')}
           </span>
         </div>
+        {isHoliday ? (
+          <Tooltip
+            title={
+              <span style={{ margin: 0, color: '#F98E2C' }}>
+                {`${holidayFormatDate(date)} is ${getHolidayNameByDate(date, holidays)}`}
+              </span>
+            }
+            placement="top"
+            color="#FFFAF2"
+          >
+            <img src={IconWarning} className={styles.holidayIconWarning} alt="" />
+          </Tooltip>
+        ) : null}
       </div>
     );
   };
@@ -99,6 +125,22 @@ const WeeklyTable = (props) => {
   const onViewDetail = (date) => {
     setSelectedDate(moment(date, 'MM/DD/YYYY'));
     setSelectedView(VIEW_TYPE.D);
+  };
+
+  const renderHoliday = (date) => {
+    return (
+      <div className={styles.holidayContainer}>
+        <img src={IconHoliday} width={40} height={40} alt="" />
+        <p>{getHolidayNameByDate(date, holidays)}</p>
+        <div className={styles.addTaskContainer}>
+          {formattedData.map((item) => (
+            <div className={styles.addTaskHoliday} key={item.projectName}>
+              <img src={IconAdd} alt="" width={40} height={40} />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   const onCell = (onClick) => ({
@@ -121,7 +163,15 @@ const WeeklyTable = (props) => {
   });
 
   const columns = () => {
+    const checkTaskOnHoliday = (date) => {
+      return formattedData.every((list) => {
+        if (list.days.some((day) => isTheSameDay(day.date, date))) return false;
+        return true;
+      });
+    };
+
     const dateColumns = dateList.map((date) => {
+      const isHoliday = checkHoliday(date, holidays);
       return {
         title: renderTitle(date, 2),
         dataIndex: date,
@@ -129,7 +179,7 @@ const WeeklyTable = (props) => {
         align: 'center',
         width: `${100 / 9}%`,
         onCell: () => onCell(() => onViewDetail(date)),
-        render: (_, row) => {
+        render: (_, row, index) => {
           const { projectName = '', days = [] } = row;
 
           const getCellValue = () => {
@@ -140,15 +190,22 @@ const WeeklyTable = (props) => {
                 date={date}
                 tasks={value?.dailyProjectTask}
                 placement="bottomLeft"
+                isHoliday={checkTaskOnHoliday(date) && isHoliday}
               >
-                {!value ? (
-                  <span className={styles.hourValue}>
-                    <img src={EmptyLine} alt="" />
-                  </span>
+                {isHoliday && checkTaskOnHoliday(date) ? (
+                  renderHoliday(date)
                 ) : (
-                  <span className={styles.hourValue}>
-                    {convertMsToTime(value?.projectDailyTime)}
-                  </span>
+                  <div style={{ height: '100%' }}>
+                    {!value ? (
+                      <span className={styles.hourValue}>
+                        <img src={EmptyLine} alt="" />
+                      </span>
+                    ) : (
+                      <span className={styles.hourValue}>
+                        {convertMsToTime(value?.projectDailyTime)}
+                      </span>
+                    )}
+                  </div>
                 )}
               </TaskPopover>
             );
@@ -164,12 +221,18 @@ const WeeklyTable = (props) => {
                 timeoff={arr}
                 placement="bottomLeft"
               >
-                {arr.length === 0 ? (
-                  <span className={styles.hourValue}>
-                    <img src={EmptyLine} alt="" />
-                  </span>
+                {isHoliday && checkTaskOnHoliday(date) ? (
+                  renderHoliday(date)
                 ) : (
-                  <span className={styles.hourValue}>{convertMsToTime(sum)}</span>
+                  <>
+                    {arr.length === 0 ? (
+                      <span className={styles.hourValue}>
+                        <img src={EmptyLine} alt="" />
+                      </span>
+                    ) : (
+                      <span className={styles.hourValue}>{convertMsToTime(sum)}</span>
+                    )}
+                  </>
                 )}
               </TimeoffPopover>
             );
@@ -191,16 +254,18 @@ const WeeklyTable = (props) => {
           //   }
           // }
 
-          // // pretend 10/29/2021 is holiday day
-          // if (index === 0 && date === '10/29/2021') {
-          //   obj.props.rowSpan = formattedData.length;
-          // }
-          // for (let i = 1; i < formattedData.length; i += 1) {
-          //   // These ones are merged into above cell
-          //   if (index === i && date === '10/29/2021') {
-          //     obj.props.rowSpan = 0;
-          //   }
-          // }
+          // Handle Holiday cell
+          if (checkTaskOnHoliday(date)) {
+            if (index === 0 && isHoliday) {
+              obj.props.rowSpan = formattedData.length;
+            }
+            for (let i = 1; i < formattedData.length; i += 1) {
+              if (index === i && isHoliday) {
+                obj.props.rowSpan = 0;
+              }
+            }
+          }
+
           return obj;
         },
       };
@@ -279,9 +344,9 @@ const WeeklyTable = (props) => {
         <div className={styles.item}>
           <span className={styles.text}>Total</span>
         </div>
-        {durationByDate.map((item) => {
+        {durationByDate.map((item, index) => {
           return (
-            <TaskPopover date={item.date} tasks={item.tasks}>
+            <TaskPopover date={item.date} tasks={item.tasks} key={item.date} index={index}>
               {item.tasks.length > 0 ? (
                 <div className={styles.item}>
                   <span className={styles.value}>{convertMsToTime(item.duration)}</span>
@@ -323,7 +388,8 @@ const WeeklyTable = (props) => {
   );
 };
 
-export default connect(({ loading, timeSheet: { myTimesheet = [] } = {} }) => ({
+export default connect(({ loading, timeSheet, timeSheet: { myTimesheet = [] } = {} }) => ({
+  timeSheet,
   myTimesheet,
   loadingFetchMyTimesheetByType: loading.effects['timeSheet/fetchMyTimesheetByTypeEffect'],
 }))(WeeklyTable);

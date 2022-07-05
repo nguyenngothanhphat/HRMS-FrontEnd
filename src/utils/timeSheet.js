@@ -153,6 +153,12 @@ export const WORKING_HOURS = {
   END: 24,
 };
 
+export const TIME_DEFAULT = {
+  START_TIME: '8:00 am',
+  END_TIME: '5:00 pm',
+  TIME_WORK_LATE: '4:00 pm',
+};
+
 export const DEFAULT_TOP_HOUR = 16; // HOUR
 
 export const TASKS = [
@@ -195,4 +201,35 @@ export const generateAllWeeks = (fromDate, toDate) => {
     }
   }
   return weeks;
+};
+
+export const checkHoliday = (date, holidays = []) =>
+  holidays.some((holiday) => moment(date).isSame(holiday?.date, 'day'));
+
+export const checkDateBetweenRange = (startDate, endDate, date) => {
+  return moment(date).isBetween(moment(startDate), moment(endDate), 'day', []);
+};
+
+export const checkHolidayInWeek = (startDate, endDate, holidays = []) =>
+  holidays.some((holiday) => checkDateBetweenRange(startDate, endDate, holiday.date));
+
+export const getHolidayNameByDate = (date, holidays = []) => {
+  const currentDate = holidays.find((holiday) => moment(holiday.date).isSame(moment(date)));
+  if (currentDate) return currentDate?.holiday;
+  return '';
+};
+
+export const sortedDate = (days = []) => days.sort((a, b) => moment(a.date).diff(moment(b.date)));
+
+export const holidayFormatDate = (date) => moment(date).locale('en').format('MMM DD');
+
+export const TIMESHEET_ADD_TASK_ALERT = {
+  DEFAULT: {
+    type: 'info',
+    content: 'The same tasks will be updated for the selected date range',
+  },
+  WARNING: {
+    type: 'warning',
+    content: 'You are allowed to select only one date if you have multiple tasks',
+  },
 };

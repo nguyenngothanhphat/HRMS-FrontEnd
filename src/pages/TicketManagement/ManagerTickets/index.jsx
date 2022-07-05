@@ -10,9 +10,32 @@ import styles from './index.less';
 
 const ManagerTicket = (props) => {
   const { TabPane } = Tabs;
-  const { dispatch, tabName = '', companyLocationList = [], permissions = [], role = '' } = props;
+  const {
+    dispatch,
+    tabName = '',
+    companyLocationList = [],
+    permissions = [],
+    role = '',
+    selectedLocations: selectedLocationsProp = [],
+  } = props;
 
-  const [selectedLocationsState, setSelectedLocationsState] = useState([getCurrentLocation()]);
+  const [selectedLocationsState, setSelectedLocationsState] = useState([]);
+
+  useEffect(() => {
+    setSelectedLocationsState(selectedLocationsProp);
+  }, [JSON.stringify(selectedLocationsProp)]);
+
+  useEffect(() => {
+    const currentLocation = getCurrentLocation();
+    if (currentLocation) {
+      dispatch({
+        type: 'ticketManagement/save',
+        payload: {
+          selectedLocations: [currentLocation],
+        },
+      });
+    }
+  }, []);
 
   const fetchLocationList = () => {
     dispatch({
@@ -61,7 +84,7 @@ const ManagerTicket = (props) => {
       dispatch({
         type: 'ticketManagement/save',
         payload: {
-          selectedLocations: [getCurrentLocation()],
+          selectedLocations: [],
         },
       });
     };
@@ -100,7 +123,6 @@ export default connect(
       } = {},
     },
     location: { companyLocationList = [] },
-
     ticketManagement: { listOffAllTicket = [], totalList = [], selectedLocations = [] } = {},
   }) => ({
     listOffAllTicket,

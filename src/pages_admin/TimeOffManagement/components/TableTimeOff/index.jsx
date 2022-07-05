@@ -42,6 +42,43 @@ class TableTimeOff extends PureComponent {
       },
     },
     {
+      title: 'Reporting Manager',
+      dataIndex: 'approvalManager',
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      sorter: {
+        compare: (a, b) =>
+          a.approvalManager?.generalInfo?.legalName.localeCompare(
+            b.approvalManager?.generalInfo?.legalName,
+          ),
+      },
+      render: (approvalManager = {}) => {
+        return (
+          <Link
+            to={`/directory/employee-profile/${approvalManager.generalInfo?.userId}`}
+            style={{
+              fontWeight: 500,
+            }}
+          >
+            {approvalManager?.generalInfo?.legalName}
+          </Link>
+        );
+      },
+    },
+    {
+      title: 'Joining Date',
+      align: 'center',
+      dataIndex: 'employee',
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      sorter: {
+        compare: (a, b) => new Date(a.joinDate) - new Date(b.joinDate),
+      },
+      render: (employee = {}) => {
+        return (
+          <span>{employee?.joinDate ? moment(employee?.joinDate).format('MM/DD/YYYY') : ''}</span>
+        );
+      },
+    },
+    {
       title: 'From Date',
       align: 'center',
       dataIndex: 'fromDate',
@@ -66,7 +103,7 @@ class TableTimeOff extends PureComponent {
       },
     },
     {
-      title: 'Count/Q.ty',
+      title: 'Count (in days)',
       dataIndex: 'duration',
       width: '10%',
       align: 'center',
@@ -75,8 +112,8 @@ class TableTimeOff extends PureComponent {
       title: 'Leave Type',
       dataIndex: 'type',
       render: (type) => {
-        const { typeName = '' } = type;
-        return <span>{typeName}</span>;
+        const { name = '' } = type;
+        return <span>{name}</span>;
       },
     },
     {
@@ -99,7 +136,6 @@ class TableTimeOff extends PureComponent {
     super(props);
     this.state = {
       pageSelected: 1,
-      selectedRowKeys: [],
       rowSize: 10,
     };
   }
@@ -128,18 +164,19 @@ class TableTimeOff extends PureComponent {
   };
 
   onSelectChange = (selectedRowKeys) => {
-    this.setState({ selectedRowKeys });
+    const { setSelectedRows = () => {} } = this.props;
+    setSelectedRows(selectedRowKeys);
   };
 
   render() {
-    const { listTimeOff = [], loading } = this.props;
-    const { pageSelected, selectedRowKeys, rowSize } = this.state;
+    const { listTimeOff = [], loading, selectedRows = [] } = this.props;
+    const { pageSelected, rowSize } = this.state;
 
     return (
       <div className={styles.TableTimeOff}>
         <CommonTable
           loading={loading}
-          selectedRowKeys={selectedRowKeys}
+          selectedRowKeys={selectedRows}
           setSelectedRowKeys={this.onSelectChange}
           columns={this.columns}
           list={listTimeOff}

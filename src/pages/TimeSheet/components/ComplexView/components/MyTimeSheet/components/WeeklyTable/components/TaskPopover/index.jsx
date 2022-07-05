@@ -15,7 +15,16 @@ import { convertMsToTime } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const TaskPopover = (props) => {
-  const { children, dispatch, tasks = [], date = '', projectName = '', placement = 'top' } = props;
+  const {
+    children,
+    dispatch,
+    tasks = [],
+    date = '',
+    projectName = '',
+    placement = 'top',
+    index = 0,
+    isHoliday = false,
+  } = props;
   const [showPopover, setShowPopover] = useState(false);
   const [showingTasks, setShowingTasks] = useState([]);
 
@@ -55,6 +64,12 @@ const TaskPopover = (props) => {
     }
   };
 
+  const handleChangeVisible = () => {
+    if (isHoliday) {
+      setAddTaskModalVisible(true);
+    } else setShowPopover(!showPopover);
+  };
+
   useEffect(() => {
     generateShowingTask(4);
   }, [JSON.stringify(tasks)]);
@@ -78,7 +93,7 @@ const TaskPopover = (props) => {
           )}
           {showingTasks.map((task) => {
             return (
-              <Row className={styles.eachRow} justify="space-between" align="middle">
+              <Row className={styles.eachRow} justify="space-between" align="middle" key={task.id}>
                 <Col span={18} className={styles.taskName}>
                   <span>{task.taskName || 'No name'}</span>
                   <div className={styles.actionBtn}>
@@ -142,6 +157,7 @@ const TaskPopover = (props) => {
             onClick={() => {
               setAddTaskModalVisible(true);
               setShowPopover(false);
+              setHandlingPackage(tasks[index]);
             }}
             icon={<img src={AddSolidIcon} alt="" />}
           >
@@ -161,9 +177,7 @@ const TaskPopover = (props) => {
         trigger="click"
         visible={showPopover}
         overlayClassName={styles.TaskPopover}
-        onVisibleChange={() => {
-          setShowPopover(!showPopover);
-        }}
+        onVisibleChange={handleChangeVisible}
       >
         {children}
       </Popover>
@@ -173,6 +187,7 @@ const TaskPopover = (props) => {
         mode="multiple"
         date={date}
         projectName={projectName}
+        taskDetail={handlingPackage}
       />
       <EditTaskModal
         visible={editTaskModalVisible}

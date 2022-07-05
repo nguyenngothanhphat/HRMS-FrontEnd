@@ -1,12 +1,16 @@
 import { Button, Checkbox, Col, DatePicker, Form, Row, Select } from 'antd';
+import { debounce } from 'lodash';
 import moment from 'moment';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import exportToCsv from '@/utils/exportToCsv';
+import DownloadIcon from '@/assets/timeOffManagement/ic_download.svg';
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
 
 const { Option } = Select;
+
 const OptionsHeader = (props) => {
   const [form] = Form.useForm();
   const {
@@ -15,11 +19,21 @@ const OptionsHeader = (props) => {
     listEmployee = [],
     disabled = false,
     loadingEmployeeList = false,
+    loadingFetchTimeoffTypes = false,
     toDate = '',
     fromDate = '',
     setFromDate = () => {},
     setToDate = () => {},
+    timeOffManagement: { timeOffTypesByCountry = [], selectedLocations = [] } = {},
+    selectedRows = [],
   } = props;
+  console.log('🚀  ~ selectedRows', selectedRows);
+
+  useEffect(() => {
+    form.setFieldsValue({
+      types: [],
+    });
+  }, [JSON.stringify(selectedLocations)]);
 
   // DISABLE DATE OF DATE PICKER
   const disabledFromDate = (current) => {
@@ -30,11 +44,19 @@ const OptionsHeader = (props) => {
     return current && current <= moment(fromDate);
   };
 
+  const onSaveDebounce = debounce((values) => {
+    setPayload(values);
+  }, 500);
+
   const onValuesChange = (changedValues, allValues) => {
-    setPayload(allValues);
+    onSaveDebounce(allValues);
   };
 
-  const processData = (array) => {
+  const processData = (arr = []) => {
+    let array = [...arr];
+    if (selectedRows.length > 0) {
+      array = arr.filter((x) => selectedRows.includes(x._id));
+    }
     let capsPopulations = [];
     capsPopulations = array.map((item, key) => {
       return {
@@ -48,10 +70,11 @@ const OptionsHeader = (props) => {
         'From Date': item.fromDate ? moment(item.fromDate).format('MM/DD/YYYY') : '-',
         'To Date': item.toDate ? moment(item.toDate).format('MM/DD/YYYY') : '-',
         'Count/Q.ty': item.duration || '-',
-        'Leave Type': item.type?.typeName || '-',
+        'Leave Type': item.type?.name || '-',
         Subject: item.subject || '-',
         Description: item.description || '-',
         Status: item.status,
+        'Reporting Manager': item.approvalManager?.generalInfo?.legalName || '-',
       };
     });
 
@@ -67,6 +90,7 @@ const OptionsHeader = (props) => {
     });
     return dataExport;
   };
+
   const downloadCSVFile = () => {
     exportToCsv(`TimeOff-Report-${Date.now()}.csv`, processData(listTimeOff));
   };
@@ -95,7 +119,7 @@ const OptionsHeader = (props) => {
           }}
         >
           <Row gutter={[24, 12]}>
-            <Col xs={7}>
+            <Col xs={{ span: 8, order: 1 }} xl={{ span: 6, order: 1 }}>
               <span className={styles.itemLabel}>User ID - Name</span>
               <Form.Item name="user">
                 <Select
@@ -117,7 +141,7 @@ const OptionsHeader = (props) => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col xs={9}>
+            <Col xs={{ span: 16, order: 2 }} xl={{ span: 9, order: 2 }}>
               <span className={styles.itemLabel}>Duration</span>
               <div>
                 <Row gutter={[24, 24]}>
@@ -147,23 +171,73 @@ const OptionsHeader = (props) => {
                 </Row>
               </div>
             </Col>
-            <Col className={styles.buttons} xs={8}>
-              {/* <Button className={styles.submitBtn} htmlType="submit">
-                Get data
-              </Button> */}
-              <Button
-                className={styles.downloadCSVBtn}
-                disabled={disabled}
-                onClick={downloadCSVFile}
-              >
-                Download as CSV
-              </Button>
+            <Col xs={{ span: 18, order: 3 }} xl={{ span: 5, order: 3 }}>
+              <span className={styles.itemLabel}>Leave Type</span>
+              <div>
+                <Row gutter={[24, 24]}>
+                  <Col xs={24}>
+                    <span />
+                    <Form.Item name="types">
+                      <Select
+                        placeholder="Select the Leave Type"
+                        // disabled={disabled}
+                        disabled={loadingFetchTimeoffTypes}
+                        loading={loadingFetchTimeoffTypes}
+                        mode="multiple"
+                        filterOption={(input, option) =>
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        notFoundContent={
+                          <EmptyComponent
+                            description={
+                              selectedLocations.length === 0 ? 'Select a location first' : 'No data'
+                            }
+                          />
+                        }
+                      >
+                        {timeOffTypesByCountry.map((item = {}) => {
+                          return (
+                            <Option key={item._id} value={item._id}>
+                              {item.name}
+                            </Option>
+                          );
+                        })}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </div>
             </Col>
-
-            <Col xs={1}>
+            <Col xs={{ span: 6, order: 4 }} xl={{ span: 4, order: 4 }} justify="end">
+              <span className={styles.itemLabel} />
+              <div className={styles.buttons}>
+                <Row gutter={[24, 24]}>
+                  <Col xs={24}>
+                    <span />
+                    <Form.Item>
+                      <Button
+                        className={styles.downloadCSVBtn}
+                        disabled={disabled}
+                        onClick={downloadCSVFile}
+                        icon={<img src={DownloadIcon} alt="" />}
+                      >
+                        Download
+                      </Button>
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </div>
+            </Col>
+          </Row>
+          <Row
+            gutter={[24, 24]}
+            style={{
+              marginTop: 16,
+            }}
+          >
+            <Col xs={{ span: 1 }}>
               <span className={styles.itemStatusLabel}>Status</span>
             </Col>
-            <Col xs={22} className={styles.statusFilter}>
+            <Col xs={{ span: 22 }} className={styles.statusFilter}>
               <Form.Item name="status" className={styles.statusRow}>
                 <Checkbox.Group options={options} disabled={disabled} />
               </Form.Item>
@@ -176,5 +250,6 @@ const OptionsHeader = (props) => {
 };
 export default connect(({ loading, timeOffManagement }) => ({
   loadingEmployeeList: loading.effects['timeOffManagement/fetchEmployeeList'],
+  loadingFetchTimeoffTypes: loading.effects['timeOffManagement/fetchTimeOffTypesByCountry'],
   timeOffManagement,
 }))(OptionsHeader);

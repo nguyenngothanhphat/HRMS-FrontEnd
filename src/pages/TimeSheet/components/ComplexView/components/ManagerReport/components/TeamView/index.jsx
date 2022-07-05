@@ -18,8 +18,9 @@ const TeamView = (props) => {
   const [limit, setLimit] = useState(5);
   const [nameSearch, setNameSearch] = useState('');
 
-  const { dispatch, employee: { _id: employeeId = '' } = {} } = props;
   const {
+    dispatch,
+    employee: { _id: employeeId = '' } = {},
     timeSheet: {
       managerTeamViewList = [],
       managerTeamViewPagination = {},

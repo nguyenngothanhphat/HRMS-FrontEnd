@@ -22,6 +22,7 @@ const AddProjectModal = (props) => {
       projectTypeList = [],
       projectStatusList = [],
       tagList = [],
+      skillList = [],
       divisionList = [],
       employeeList = [],
       newProjectId = '',
@@ -34,6 +35,17 @@ const AddProjectModal = (props) => {
     loadingFetchCustomerInfo = false,
   } = props;
 
+  const tagListDefault = tagList.map((x) => ({ ...x, name: x.tag_name }));
+  const allSkillList = tagListDefault
+    .concat(skillList)
+    .filter(
+      (v, i, a) =>
+        a.findIndex(
+          (item) =>
+            item.name.replace(/\s/g, '').toLowerCase() === v.name.replace(/\s/g, '').toLowerCase(),
+        ) === i,
+    );
+
   useEffect(() => {
     if (visible) {
       dispatch({
@@ -44,6 +56,9 @@ const AddProjectModal = (props) => {
       });
       dispatch({
         type: 'projectManagement/fetchTagListEffect',
+      });
+      dispatch({
+        type: 'projectManagement/fetchSkillListEffect',
       });
       dispatch({
         type: 'projectManagement/fetchDivisionListEffect',
@@ -463,14 +478,12 @@ const AddProjectModal = (props) => {
               <CreatableSelect
                 menuPlacement="top"
                 isMulti
-                options={tagList
-                  .sort((a, b) => a.tag_name.localeCompare(b.tag_name))
-                  .map((item) => {
-                    return {
-                      label: item.tag_name,
-                      value: item.tag_name,
-                    };
-                  })}
+                options={allSkillList?.map((item) => {
+                  return {
+                    label: item.name,
+                    value: item.name,
+                  };
+                })}
               />
             </Form.Item>
           </Col>

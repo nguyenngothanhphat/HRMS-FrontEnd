@@ -4,6 +4,8 @@
     padding: 24px;
 
     .itemLabel {
+      display: block;
+      height: 30px;
       padding-bottom: 10px;
       font-weight: 700;
       font-size: 13px;
@@ -25,31 +27,20 @@
 
     .buttons {
       display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
       justify-content: flex-end;
-      .submitBtn {
-        height: 42px;
-        margin-right: 10px;
-        background-color: #ffa100;
-        border: none;
-        border-radius: 35px;
-        outline: none;
-        box-shadow: none;
-        span {
-          color: white;
-          font-weight: 700;
-        }
-      }
-
       .downloadCSVBtn {
         height: 42px;
         background-color: white;
-        border-radius: 35px;
+        border: 1px solid #2c6df9;
+        border-radius: 40px;
         outline: none;
         box-shadow: none;
+        padding-inline: 16px 20px;
+        img {
+          padding-right: 6px;
+        }
         span {
-          color: #ffa100;
+          color: #2c6df9;
           font-weight: 700;
         }
       }
@@ -77,7 +68,6 @@
       font-size: 13px;
     }
 
-    // SELECT
     .ant-select {
       width: 100% !important;
     }
@@ -95,6 +85,35 @@
     .ant-select-selection-placeholder {
       font-size: 13px !important;
       line-height: 42px !important;
+    }
+    .ant-select-multiple {
+      .ant-select-selection-item {
+        height: 28px !important;
+        padding-top: 3px !important;
+        font-size: 13px;
+        line-height: unset !important;
+        background: #ffffff;
+        border: 1px solid #d6dce0;
+        border-left: 4px solid #2c6df9;
+        border-radius: 5px;
+      }
+      .ant-select-selection-item-remove {
+        margin-top: 3px;
+        margin-inline: 5px;
+
+        .anticon-close {
+          border: 0.75px solid #707177;
+          border-radius: 50%;
+        }
+      }
+    }
+    .ant-select-multiple .ant-select-selection-item-remove > * {
+      line-height: 0;
+    }
+    .ant-select-auto-complete {
+      .ant-input {
+        border: none !important;
+      }
     }
 
     .ant-select-selector {

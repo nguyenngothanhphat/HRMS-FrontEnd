@@ -80,21 +80,18 @@ const DocumentsChecklist = (props) => {
   };
 
   const checkDocumentUpload = () => {
+    let isDisable = false;
     const documentTypeS = documentsChecklist.find((item) => item.type === DOCUMENT_KEYS.UPLOAD);
     const documentTypeE = documentsChecklist.find((item) => item.type === DOCUMENT_KEYS.SIGN);
-    if (documentTypeS) {
-      return documentTypeS?.documents.every((item) => item.status !== DOCUMENT_TYPES.VERIFYING);
-    }
-    if (documentTypeE) {
-      return documentTypeE?.documents.every((item) => item.status !== DOCUMENT_TYPES.VERIFYING);
-    }
-    if (documentTypeS && documentTypeE) {
-      return (
-        documentTypeS?.documents.every((item) => item.status !== DOCUMENT_TYPES.VERIFYING) &&
-        documentTypeE?.documents.every((item) => item.status !== DOCUMENT_TYPES.VERIFYING)
-      );
-    }
-    return false;
+
+    [documentTypeS, documentTypeE].forEach((docType) => {
+      isDisable =
+        isDisable ||
+        !docType?.documents.every((item) =>
+          [DOCUMENT_TYPES.VERIFYING, DOCUMENT_TYPES.VERIFIED].includes(item.status),
+        );
+    });
+    return isDisable;
   };
 
   const handleUpdateDocument = async (attachmentRes) => {

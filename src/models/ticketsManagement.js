@@ -32,7 +32,7 @@ const ticketManagement = {
     employeeRaiseList: [],
     employeeAssignedList: [],
     filter: {},
-    selectedLocations: [getCurrentLocation()],
+    selectedLocations: [],
     supportTeamList: [],
     employeeFilterList: [],
   },
