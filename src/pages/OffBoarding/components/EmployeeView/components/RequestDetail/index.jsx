@@ -23,6 +23,7 @@ const RequestDetail = (props) => {
       LWD = '',
       reason = '',
       status = '',
+      hrStatus = '',
       _id = '',
       meeting: { status: meetingStatus = '' },
       assigned: {
@@ -83,6 +84,15 @@ const RequestDetail = (props) => {
           </div>
         );
       case STATUS.ACCEPTED:
+        if (hrStatus === STATUS.IN_PROGRESS) {
+          return (
+            <div className={styles.containerStatus}>
+              <div>Status: </div>
+              <div className={styles.statusInProgress} />
+              <div style={{ color: '#ffa100' }}>In Progress</div>
+            </div>
+          );
+        }
         return (
           <div className={styles.containerStatus}>
             <div>Status: </div>
@@ -121,6 +131,15 @@ const RequestDetail = (props) => {
   const renderButton = () => {
     switch (status) {
       case STATUS.ACCEPTED:
+        if (meetingStatus === MEETING_STATUS.HR_PICK_DATE && hrStatus !== STATUS.ACCEPTED) {
+          return (
+            <div className={styles.containerBtn}>
+              <CustomPrimaryButton onClick={() => onJoinMeeting(123)}>
+                Join with Google Meet
+              </CustomPrimaryButton>
+            </div>
+          );
+        }
         return (
           <div className={styles.containerBtn}>
             <Popover
