@@ -1082,20 +1082,22 @@ const onboard = {
       }
     },
     *updateIdGenerate({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(updateIdGenerate, {
+        response = yield call(updateIdGenerate, {
           ...payload,
         });
         const { statusCode, data, message } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveJoiningFormalities',
-          payload: { idGenerate: data },
+          payload: { idGenerate: [data] },
         });
         notification.success({ message });
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
   },
   reducers: {
