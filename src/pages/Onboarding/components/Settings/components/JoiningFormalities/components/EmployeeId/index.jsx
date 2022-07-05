@@ -4,6 +4,7 @@ import { connect } from 'umi';
 import TooltipIcon from '@/assets/tooltip.svg';
 import RegionsTable from './components/RegionsTable';
 import styles from './index.less';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const JoiningFormalities = (props) => {
   const {
@@ -18,19 +19,9 @@ const JoiningFormalities = (props) => {
   const [form] = Form.useForm();
   const [isEdit, setIsEdit] = useState(false);
 
-  const fetchTable = (p, l) => {
+  const getEmployeeIdFormatByLocation = (locationId) => {
     dispatch({
-      type: 'onboard/fetchIdGenerate',
-      payload: {
-        page: p,
-        limit: l,
-      },
-    });
-  };
-
-  const fetchSettingEmpolyeeId = (locationId) => {
-    dispatch({
-      type: 'onboard/fetchIdbyLocation',
+      type: 'onboard/getEmployeeIdFormatByLocation',
       payload: {
         location: locationId,
       },
@@ -38,7 +29,7 @@ const JoiningFormalities = (props) => {
   };
 
   useEffect(() => {
-    fetchSettingEmpolyeeId(location._id);
+    getEmployeeIdFormatByLocation(location._id);
   }, []);
 
   useEffect(() => {
@@ -49,18 +40,9 @@ const JoiningFormalities = (props) => {
   }, [JSON.stringify(settingId)]);
 
   const onFinish = async (value) => {
-    // const response = await dispatch({
-    //   type: 'onboard/updateSettingEmployeeId',
-    //   payload: {
-    //     _id: idItem,
-    //     ...value,
-    //   },
-    // });
-    // const { statusCode = 0 } = response;
-    // if (statusCode === 200) setIsEdit(false);
     const { prefix, generatedId: start } = value;
     const response = await dispatch({
-      type: 'onboard/updateIdGenerate',
+      type: 'onboard/updateEmployeeFormatByLocation',
       payload: {
         location: {
           _id: location._id,
@@ -72,7 +54,6 @@ const JoiningFormalities = (props) => {
     const { statusCode = 0 } = response;
     if (statusCode === 200) {
       setIsEdit(false);
-      fetchTable();
     }
   };
 
@@ -80,8 +61,8 @@ const JoiningFormalities = (props) => {
     <div className={styles.employeeId}>
       <Card className={styles.content}>
         <Form form={form} name="employeeId" layout="vertical" onFinish={onFinish}>
-          <Row gutter={[100, 24]}>
-            <Col xs={24} lg={8} span={12}>
+          <Row gutter={[24, 24]}>
+            <Col xs={24} lg={12}>
               <Form.Item
                 label={
                   <div>
@@ -89,7 +70,7 @@ const JoiningFormalities = (props) => {
                     <Tooltip
                       title={
                         <div className={styles.contentTooltip}>
-                          Would you like to include a string infront of the auto generated ID?
+                          Would you like to include a string in front of the auto generated ID?
                         </div>
                       }
                       color="#fff"
@@ -105,7 +86,7 @@ const JoiningFormalities = (props) => {
                 <Input disabled={!isEdit} />
               </Form.Item>
             </Col>
-            <Col xs={24} lg={8} span={12}>
+            <Col xs={24} lg={12}>
               <Form.Item
                 label={
                   <div>
@@ -130,37 +111,29 @@ const JoiningFormalities = (props) => {
               </Form.Item>
             </Col>
           </Row>
-
-          {isEdit ? (
-            <Form.Item>
-              <Space size={24}>
-                <Button
-                  className={styles.btnCancel}
-                  onClick={() => {
-                    setIsEdit(false);
-                    // form.setFieldsValue({ prefix, generatedId });
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  form="employeeId"
-                  loading={loadingUpdateEmployeeId}
-                >
-                  Save Changes
-                </Button>
-              </Space>
-            </Form.Item>
-          ) : (
-            <Form.Item>
-              <Button type="primary" onClick={() => setIsEdit(true)}>
-                Edit
-              </Button>
-            </Form.Item>
-          )}
         </Form>
+        {isEdit ? (
+          <Space size={12}>
+            <Button
+              className={styles.btnCancel}
+              onClick={() => {
+                setIsEdit(false);
+                // form.setFieldsValue({ prefix, generatedId });
+              }}
+            >
+              Cancel
+            </Button>
+            <CustomPrimaryButton
+              htmlType="submit"
+              form="employeeId"
+              loading={loadingUpdateEmployeeId}
+            >
+              Save Changes
+            </CustomPrimaryButton>
+          </Space>
+        ) : (
+          <CustomPrimaryButton onClick={() => setIsEdit(true)}>Edit</CustomPrimaryButton>
+        )}
       </Card>
       <RegionsTable />
     </div>
@@ -176,7 +149,7 @@ export default connect(
         generatedId = '',
         prefix = '',
         idItem = '',
-        idGenerate = [],
+        employeeIdList = [],
         settingId = {},
       } = {},
     },
@@ -184,13 +157,13 @@ export default connect(
     loadingAdd: loading.effects['onboard/addJoiningFormalities'],
     loadingUpdate: loading.effects['onboard/updateJoiningFormalities'],
     loadingRemove: loading.effects['onboard/removeJoiningFormalities'],
-    loadingUpdateEmployeeId: loading.effects['onboard/updateIdGenerate'],
+    loadingUpdateEmployeeId: loading.effects['onboard/updateEmployeeFormatByLocation'],
     loadingGetEmployeeId: loading.effects['onboard/getSettingEmployeeId'],
     listJoiningFormalities,
     generatedId,
     prefix,
     idItem,
-    idGenerate,
+    employeeIdList,
     location,
     settingId,
   }),

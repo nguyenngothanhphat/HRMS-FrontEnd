@@ -1,4 +1,4 @@
-import { Button, Card, Form, Input, Space } from 'antd';
+import { Card, Form, Input, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import checkIcon from '@/assets/projectManagement/approveCheck.svg';
@@ -44,37 +44,38 @@ const EditableCell = ({
 
 const Action = ({ record, isEditing, save, cancel, edit }) => {
   const editable = isEditing(record);
+
   return (
-    <Space size={12} className={styles.groupBtn}>
+    <Space size={4} className={styles.groupBtn}>
       {editable ? (
-        <div>
-          <Button type="link" shape="circle" onClick={save(record._id)}>
-            <img src={checkIcon} alt="checkIcon" />
-          </Button>
-          <Button type="link" shape="circle" onClick={cancel}>
-            <img src={cancelIcon} alt="cancelIcon" />
-          </Button>
-        </div>
+        <>
+          <img src={checkIcon} alt="checkIcon" onClick={() => save(record._id)} />
+          <img src={cancelIcon} alt="cancelIcon" onClick={cancel} />
+        </>
       ) : (
-        <Button type="link" shape="circle" onClick={() => edit(record)}>
-          <img src={editIcon} alt="editIcon" />
-        </Button>
+        <img src={editIcon} alt="editIcon" onClick={() => edit(record)} />
       )}
     </Space>
   );
 };
 
 const RegionsTable = (props) => {
-  const { dispatch, loadingList, idGenerate, locationTotal: total } = props;
+  const {
+    dispatch,
+    loadingList,
+    employeeIdList,
+    locationTotal: total,
+    loadingUpdate = false,
+  } = props;
   const [form] = Form.useForm();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [editingKey, setEditingKey] = useState('');
   const [data, setData] = useState();
 
-  const fetchTable = (p, l) => {
+  const fetchData = (p, l) => {
     dispatch({
-      type: 'onboard/fetchIdGenerate',
+      type: 'onboard/getEmployeeIdFormatList',
       payload: {
         page: p,
         limit: l,
@@ -85,7 +86,7 @@ const RegionsTable = (props) => {
   const formatData = (originData = []) => {
     const tempData = JSON.parse(JSON.stringify(originData));
     return tempData.map((item) => {
-      const { idGenerate: a = {} } = item;
+      const { employeeIdList: a = {} } = item;
       if (a.length > 0) {
         return {
           ...item,
@@ -98,14 +99,12 @@ const RegionsTable = (props) => {
   };
 
   useEffect(() => {
-    console.log('id', idGenerate);
-    const formattedData = formatData(idGenerate);
+    const formattedData = formatData(employeeIdList);
     setData(formattedData);
-    // console.log(formattedData);
-  }, [JSON.stringify(idGenerate)]);
+  }, [JSON.stringify(employeeIdList)]);
 
   useEffect(() => {
-    fetchTable(page, limit);
+    fetchData(page, limit);
   }, [page, limit]);
 
   const onChangePage = (p, l) => {
@@ -113,26 +112,29 @@ const RegionsTable = (props) => {
     setLimit(l || limit);
   };
 
-  const updateIdGenerate = (record, key) => {
+  const updateEmployeeFormatByLocation = async (record, key) => {
     const findRecord = data.find((x) => x._id === key);
     if (findRecord) {
-      dispatch({
-        type: 'onboard/updateIdGenerate',
+      const res = await dispatch({
+        type: 'onboard/updateEmployeeFormatByLocation',
         payload: {
           location: {
             _id: findRecord._id,
-            prefix: findRecord.prefix,
-            start: findRecord.start,
+            prefix: record.prefix,
+            start: record.start,
           },
         },
       });
+      if (res.statusCode === 200) {
+        setEditingKey('');
+        fetchData(page, limit);
+      }
     }
   };
 
   const isEditing = (record) => record._id === editingKey;
 
   const edit = (record = {}) => {
-    console.log('🚀 ~ record', record);
     form.setFieldsValue({
       prefix: record.idGenerate?.prefix || null,
       start: record.idGenerate?.start || null,
@@ -147,21 +149,7 @@ const RegionsTable = (props) => {
   const save = async (key) => {
     try {
       const row = await form.validateFields();
-      const newData = [...data];
-      const index = newData.findIndex((item) => key === item._id);
-
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        setData(newData);
-        setEditingKey('');
-      } else {
-        newData.push(row);
-        setData(newData);
-        setEditingKey('');
-      }
-
-      updateIdGenerate(row, key);
+      updateEmployeeFormatByLocation(row, key);
     } catch (errInfo) {
       // eslint-disable-next-line no-console
       console.log('Validate Failed:', errInfo);
@@ -180,6 +168,7 @@ const RegionsTable = (props) => {
       title: 'Prefix (Optional)',
       dataIndex: 'prefix',
       key: 'prefix',
+      editable: true,
       width: '25%',
       render: (_, row) => row?.idGenerate?.prefix,
     },
@@ -187,6 +176,7 @@ const RegionsTable = (props) => {
       title: 'User ID Sequence Start',
       dataIndex: 'start',
       key: 'start',
+      editable: true,
       width: '25%',
       render: (_, row) => row?.idGenerate?.start,
     },
@@ -221,21 +211,23 @@ const RegionsTable = (props) => {
 
   return (
     <Card className={styles.region} title="Regions">
-      <CommonTable
-        page={page}
-        limit={limit}
-        onChangePage={onChangePage}
-        list={data}
-        columns={mergedColumns}
-        total={total}
-        loading={loadingList}
-        isBackendPaging
-        components={{
-          body: {
-            cell: EditableCell,
-          },
-        }}
-      />
+      <Form form={form} component={false}>
+        <CommonTable
+          page={page}
+          limit={limit}
+          onChangePage={onChangePage}
+          list={data}
+          columns={mergedColumns}
+          total={total}
+          loading={loadingList || loadingUpdate}
+          isBackendPaging
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
+        />
+      </Form>
     </Card>
   );
 };
@@ -249,21 +241,20 @@ export default connect(
         generatedId = '',
         prefix = '',
         idItem = '',
-        idGenerate = [],
+        employeeIdList = [],
         locationTotal = '',
       } = {},
     },
   }) => ({
-    loadingList: loading.effects['onboard/fetchIdGenerate'],
+    loadingList: loading.effects['onboard/getEmployeeIdFormatList'],
     loadingAdd: loading.effects['onboard/addJoiningFormalities'],
-    loadingUpdate: loading.effects['onboard/updateJoiningFormalities'],
+    loadingUpdate: loading.effects['onboard/updateEmployeeFormatByLocation'],
     loadingRemove: loading.effects['onboard/removeJoiningFormalities'],
-    loadingGetEmployeeId: loading.effects['onboard/getSettingEmployeeId'],
     listJoiningFormalities,
     generatedId,
     prefix,
     idItem,
-    idGenerate,
+    employeeIdList,
     location,
     locationTotal,
   }),

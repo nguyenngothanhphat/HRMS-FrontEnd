@@ -12,7 +12,7 @@ import {
   getCandidateById,
   getDomain,
   getFilterList,
-  getIdGenerate,
+  getEmployeeIdFormatByLocation,
   getListEmployee,
   getListJoiningFormalities,
   getListNewComer,
@@ -24,7 +24,7 @@ import {
   initiateBackgroundCheck,
   reassignTicket,
   removeJoiningFormalities,
-  updateIdGenerate,
+  updateEmployeeFormatByLocation,
   updateJoiningFormalities,
   updateSettingEmployeeId,
 } from '@/services/onboard';
@@ -311,7 +311,7 @@ const onboard = {
       generatedId: '',
       prefix: '',
       idItem: '',
-      idGenerate: [],
+      employeeIdList: [],
       settingId: '',
     },
     reloadTableData: false,
@@ -1051,9 +1051,9 @@ const onboard = {
         dialog(errors);
       }
     },
-    *fetchIdbyLocation({ payload }, { call, put }) {
+    *getEmployeeIdFormatByLocation({ payload }, { call, put }) {
       try {
-        const response = yield call(getIdGenerate, {
+        const response = yield call(getEmployeeIdFormatByLocation, {
           ...payload,
         });
         const { statusCode, data } = response;
@@ -1066,33 +1066,29 @@ const onboard = {
         dialog(errors);
       }
     },
-    *fetchIdGenerate({ payload }, { call, put }) {
+    *getEmployeeIdFormatList({ payload }, { call, put }) {
       try {
-        const response = yield call(getIdGenerate, {
+        const response = yield call(getEmployeeIdFormatByLocation, {
           ...payload,
         });
         const { statusCode, data, total } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveJoiningFormalities',
-          payload: { idGenerate: data, locationTotal: total },
+          payload: { employeeIdList: data, locationTotal: total },
         });
       } catch (errors) {
         dialog(errors);
       }
     },
-    *updateIdGenerate({ payload }, { call, put }) {
+    *updateEmployeeFormatByLocation({ payload }, { call }) {
       let response = {};
       try {
-        response = yield call(updateIdGenerate, {
+        response = yield call(updateEmployeeFormatByLocation, {
           ...payload,
         });
-        const { statusCode, data, message } = response;
+        const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveJoiningFormalities',
-          payload: { idGenerate: [data] },
-        });
         notification.success({ message });
       } catch (errors) {
         dialog(errors);

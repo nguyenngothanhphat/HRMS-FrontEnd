@@ -11,19 +11,19 @@ const InitiateJoiningContent = (props) => {
     listJoiningFormalities = [],
     checkList,
     setCheckList,
-    settingId: { idGenerate = {} },
+    settingId: { employeeIdList = {} },
     workLocation: { _id = '' },
     setCallback,
   } = props;
 
   useEffect(() => {
     dispatch({
-      type: 'onboard/fetchIdbyLocation',
+      type: 'onboard/getEmployeeIdFormatByLocation',
       payload: {
         location: _id,
       },
     });
-    setCallback(!!idGenerate?.length);
+    setCallback(!!employeeIdList?.length);
   }, []);
 
   return (
@@ -49,7 +49,7 @@ const InitiateJoiningContent = (props) => {
           </div>
         ))}
       </Checkbox.Group>
-      {!!idGenerate?.length && (
+      {!!employeeIdList?.length && (
         <div>
           <div>
             <img src={warning} alt="warnIcon" />

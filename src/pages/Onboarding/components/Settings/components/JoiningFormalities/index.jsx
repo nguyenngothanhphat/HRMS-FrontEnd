@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Space, Tabs, Form, Input } from 'antd';
-import { connect } from 'umi';
+import { Form, Space, Table, Tabs } from 'antd';
 import moment from 'moment';
-import deleteIcon from '@/assets/delete.svg';
-import editIcon from '@/assets/edit-template-icon.svg';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
+import editIcon from '@/assets/onboarding/editIcon.svg';
+import deleteIcon from '@/assets/onboarding/delete.svg';
 import plusIcon from '@/assets/add-adminstrator.svg';
-import styles from './index.less';
-import ModalDelete from './components/ModalDelete/index';
-import ModalAdd from './components/ModalAdd/index';
 import EmployeeId from './components/EmployeeId';
+import ModalAdd from './components/ModalAdd/index';
+import ModalDelete from './components/ModalDelete/index';
+import styles from './index.less';
 
 const { TabPane } = Tabs;
 
@@ -17,30 +17,30 @@ const JoiningFormalities = (props) => {
     listJoiningFormalities,
     generatedId,
     prefix,
-    idItem,
     loadingAdd,
     loadingUpdate,
     loadingRemove,
     dispatch,
-    loadingUpdateEmployeeId,
     loadingList,
   } = props;
   const [form] = Form.useForm();
-  useEffect(() => {
+
+  const fetchCheckListEffect = () => {
     dispatch({
-      type: 'onboard/getSettingEmployeeId',
+      type: 'onboard/getListJoiningFormalities',
     });
-  }, []);
+  };
+
   useEffect(() => {
-    if (!loadingAdd && !loadingUpdate && !loadingRemove)
-      dispatch({
-        type: 'onboard/getListJoiningFormalities',
-      });
+    if (!loadingAdd && !loadingUpdate && !loadingRemove) {
+      fetchCheckListEffect();
+    }
   }, [loadingAdd, loadingUpdate, loadingRemove]);
 
   const [openModal, setOpenModal] = useState('');
   const [item, setItem] = useState({});
-  const [isEdit, setIsEdit] = useState(false);
+  const [activeKey, setActiveKey] = useState('1');
+
   const onClose = () => {
     setOpenModal('');
     setItem({});
@@ -48,18 +48,6 @@ const JoiningFormalities = (props) => {
   const onClickBtn = (mode, record = {}) => {
     setOpenModal(mode);
     setItem(record);
-  };
-
-  const onFinish = async (value) => {
-    const response = await dispatch({
-      type: 'onboard/updateSettingEmployeeId',
-      payload: {
-        _id: idItem,
-        ...value,
-      },
-    });
-    const { statusCode = 0 } = response;
-    if (statusCode === 200) setIsEdit(false);
   };
 
   const columns = [
@@ -81,7 +69,7 @@ const JoiningFormalities = (props) => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 150,
-      render: (createdAt) => moment(createdAt).format('DD.MM.YY'),
+      render: (createdAt) => moment(createdAt).format('MM/DD/YYYY'),
     },
     {
       title: 'Created By',
@@ -99,25 +87,9 @@ const JoiningFormalities = (props) => {
       align: 'center',
       render: (_, record) => {
         return (
-          <Space size={12} className={styles.groupBtn}>
-            <Button
-              type="link"
-              shape="circle"
-              size={24}
-              className={styles.btn}
-              onClick={() => onClickBtn('edit', record)}
-            >
-              <img src={editIcon} alt="editIcon" />
-            </Button>
-            <Button
-              type="link"
-              shape="circle"
-              size={24}
-              className={styles.btn}
-              onClick={() => onClickBtn('delete', record)}
-            >
-              <img src={deleteIcon} alt="deleteIcon" />
-            </Button>
+          <Space size={4} className={styles.groupBtn}>
+            <img src={editIcon} alt="editIcon" onClick={() => onClickBtn('edit', record)} />
+            <img src={deleteIcon} alt="deleteIcon" onClick={() => onClickBtn('delete', record)} />
           </Space>
         );
       },
@@ -128,7 +100,7 @@ const JoiningFormalities = (props) => {
 
   return (
     <div className={styles.page}>
-      <Tabs defaultActiveKey="1">
+      <Tabs activeKey={activeKey} onChange={(key) => setActiveKey(key)} destroyInactiveTabPane>
         <TabPane tab="Checklist" key="1">
           <div className={styles.checkList}>
             <Table
@@ -177,8 +149,6 @@ export default connect(
     loadingAdd: loading.effects['onboard/addJoiningFormalities'],
     loadingUpdate: loading.effects['onboard/updateJoiningFormalities'],
     loadingRemove: loading.effects['onboard/removeJoiningFormalities'],
-    loadingUpdateEmployeeId: loading.effects['onboard/updateSettingEmployeeId'],
-    loadingGetEmployeeId: loading.effects['onboard/getSettingEmployeeId'],
     listJoiningFormalities,
     generatedId,
     prefix,

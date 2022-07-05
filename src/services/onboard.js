@@ -166,14 +166,14 @@ export async function getDomain() {
   });
 }
 
-export async function getIdGenerate(params) {
+export async function getEmployeeIdFormatByLocation(params) {
   return request('/api/locationtenant', {
     method: 'GET',
     params,
   });
 }
 
-export async function updateIdGenerate(payload) {
+export async function updateEmployeeFormatByLocation(payload) {
   return request('/api/locationtenant', {
     method: 'PATCH',
     data: payload,
