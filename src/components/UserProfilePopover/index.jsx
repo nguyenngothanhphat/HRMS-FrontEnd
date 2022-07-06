@@ -1,12 +1,11 @@
 import { Col, Popover, Row, Tag } from 'antd';
+import { isEmpty } from 'lodash';
 import React, { useState } from 'react';
 import { connect, Link } from 'umi';
-import { isEmpty } from 'lodash';
-import CloseX from '@/assets/dashboard/closeX.svg';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
-
-import styles from './index.less';
 import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
+import CloseX from '@/assets/dashboard/closeX.svg';
+import styles from './index.less';
 
 const listColors = [
   {
@@ -120,7 +119,7 @@ const UserProfilePopover = (props) => {
     const timezone =
       getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone;
     const time = getCurrentTimeOfTimezoneOption(new Date(), timezone);
-    const skilList =
+    const skillList =
       skills !== null && skills !== undefined ? formatListSkill(skills, listColors) || [] : [];
 
     let items = [
@@ -151,9 +150,9 @@ const UserProfilePopover = (props) => {
       },
     ];
     const listSkills = {
-      label: !isEmpty(skilList) ? 'Skill' : '',
-      value: !isEmpty(skilList)
-        ? skilList.map((item) => (
+      label: !isEmpty(skillList) ? 'Skill' : '',
+      value: !isEmpty(skillList)
+        ? skillList.map((item) => (
           <Tag
             style={{
                 color: `${item?.color?.colorText}`,
@@ -218,7 +217,7 @@ const UserProfilePopover = (props) => {
     <>
       <Popover
         placement={placement}
-        content={() => renderPopup()}
+        content={showPopover ? renderPopup() : null}
         title={null}
         trigger="hover"
         visible={showPopover}
