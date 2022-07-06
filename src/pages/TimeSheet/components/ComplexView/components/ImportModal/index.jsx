@@ -1,6 +1,6 @@
 import { Button, Modal } from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 import { dateFormatAPI } from '@/utils/timeSheet';
@@ -20,11 +20,18 @@ const ImportModal = (props) => {
     employee: { _id: employeeId = '' } = {},
     importingIds = [],
     loadingImportTimesheet = false,
-    // date: importDate = '',
+    date: importDate = '',
   } = props;
 
   const [step, setStep] = useState(1);
   const [dates, setDates] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(moment());
+
+  useEffect(() => {
+    if (importDate) {
+      setSelectedDate(moment(importDate));
+    }
+  }, [importDate]);
 
   // FUNCTIONS
   // get dates between two dates
@@ -57,9 +64,11 @@ const ImportModal = (props) => {
           <div className={styles.header__title}>{title}</div>
           <div className={styles.header__label}>{step === 1 ? label : labelNext}</div>
         </div>
-        {/* <span className={styles.header__date}>
-          {moment(selectedDate).locale('en').format('MMMM DD, YYYY')}
-        </span> */}
+        {step === 1 && (
+          <span className={styles.header__date}>
+            {moment(selectedDate).locale('en').format('MMMM DD, YYYY')}
+          </span>
+        )}
       </div>
     );
   };
@@ -105,9 +114,9 @@ const ImportModal = (props) => {
     });
   };
 
-  const handleFinish = async ({ datesProps = [] }) => {
-    if (!isEmpty(datesProps)) {
-      const res = await onImport(datesProps);
+  const handleFinish = async ({ dates: dateProp = [] }) => {
+    if (!isEmpty(dateProp)) {
+      const res = await onImport(dateProp);
       if (res.code === 200) {
         handleCancel();
         refreshData();
@@ -184,7 +193,11 @@ const ImportModal = (props) => {
         visible={visible}
       >
         {step === 1 ? (
-          <ModalContentSelectTasks visible={visible} />
+          <ModalContentSelectTasks
+            setSelectedDate={setSelectedDate}
+            selectedDate={selectedDate}
+            visible={visible}
+          />
         ) : (
           <ModalContentSelectDates
             handleCancel={handleCancel}

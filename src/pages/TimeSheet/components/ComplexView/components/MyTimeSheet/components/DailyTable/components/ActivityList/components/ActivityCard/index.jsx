@@ -18,7 +18,7 @@ import {
   hourFormat,
 } from '@/utils/timeSheet';
 import styles from './index.less';
-import DuplicateTaskModal from '../DuplicateTaskModal';
+import DuplicateTaskModal from '../../../../../../../DuplicateTaskModal';
 
 const { PROJECT, TASK, DESCRIPTION, TIME, TOTAL_HOURS, ACTIONS } = EMP_MT_SECONDARY_COL_SPAN;
 const ORIGINAL_TEXT_LONG = 48;
