@@ -135,6 +135,7 @@ const FormLogin = (props) => {
             onChange={() =>
               form.setFieldsValue({ userEmail: (form.getFieldValue('userEmail') || '').trim() })
             }
+            spellcheck="false"
           />
         </Form.Item>
         <Form.Item
@@ -155,8 +156,8 @@ const FormLogin = (props) => {
               visible ? <EyeFilled style={{ color: '#2c6df9' }} /> : <EyeFilled />
             }
             className={styles.inputPassword}
-            autoComplete="none"
             placeholder="Enter your password"
+            spellcheck="false"
           />
         </Form.Item>
         <div className={styles.keepSignIn}>
