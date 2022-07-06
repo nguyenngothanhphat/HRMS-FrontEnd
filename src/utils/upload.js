@@ -5,18 +5,21 @@ export default async function uploadFile(files, params) {
   return axios.post('/file/upload', { files, params });
 }
 
-const identifyImage = (fileName) => {
-  const parts = fileName.split('.');
-  const ext = parts[parts.length - 1];
-  switch (ext.toLowerCase()) {
-    case 'jpg':
-    case 'jpeg':
-    case 'png':
-      return 1;
+const identifyImage = (fileName = '') => {
+  if (fileName) {
+    const parts = fileName.split('.');
+    const ext = parts[parts.length - 1];
+    switch (ext.toLowerCase()) {
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+        return 1;
 
-    default:
-      return 0;
+      default:
+        return 0;
+    }
   }
+  return 0;
 };
 
 export const beforeUpload = (file) => {

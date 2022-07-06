@@ -33,7 +33,7 @@ import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 
 const defaultState = {
   listTicket: [],
-  listMyTicket: {},
+  listMyTicket: [],
   listTimeSheetTicket: [],
   totalMyTicket: 0,
   isLoadData: false,

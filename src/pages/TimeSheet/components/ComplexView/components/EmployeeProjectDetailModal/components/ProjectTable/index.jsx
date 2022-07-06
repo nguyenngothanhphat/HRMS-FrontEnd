@@ -54,7 +54,7 @@ const ProjectTable = (props) => {
       {
         title: 'Date & Time',
         dataIndex: 'time',
-        width: '12%',
+        width: '17%',
         key: 'time',
         render: (_, record) => {
           return (

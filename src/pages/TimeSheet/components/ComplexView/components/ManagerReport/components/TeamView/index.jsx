@@ -25,7 +25,6 @@ const TeamView = (props) => {
       managerTeamViewList = [],
       managerTeamViewPagination = {},
       filterManagerReport = {},
-      holidays = [],
     } = {},
     loadingFetch = false,
     activeView = '',
@@ -96,7 +95,6 @@ const TeamView = (props) => {
         setEndDate={setEndDate}
         onChangeSearch={onChangeSearch}
         activeView={activeView}
-        holidays={holidays}
       />
       <Spin spinning={loadingFetch}>
         <MemberTable data={managerTeamViewList} startDate={startDate} endDate={endDate} />

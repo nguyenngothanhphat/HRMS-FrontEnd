@@ -57,7 +57,10 @@ export const addTimeForDate = (date, time) => {
 };
 
 export const rangePickerFormat = 'ddd, MMM D, YYYY';
+export const commonDateFormat = 'MM/DD/YYYY';
 export const dateFormat = 'ddd, MMM Do'; // show in first column
+export const dateFormatImport = 'DD-MM-YYYY'; // show in first column
+
 export const hourFormat = 'h:mm a';
 export const minuteStep = 30; // in time picker, only allows minute 0 and 30
 
@@ -153,6 +156,12 @@ export const WORKING_HOURS = {
   END: 24,
 };
 
+export const TIME_DEFAULT = {
+  START_TIME: '8:00 am',
+  END_TIME: '5:00 pm',
+  TIME_WORK_LATE: '4:00 pm',
+};
+
 export const DEFAULT_TOP_HOUR = 16; // HOUR
 
 export const TASKS = [
@@ -209,7 +218,7 @@ export const checkHolidayInWeek = (startDate, endDate, holidays = []) =>
 
 export const getHolidayNameByDate = (date, holidays = []) => {
   const currentDate = holidays.find((holiday) => moment(holiday.date).isSame(moment(date)));
-  if (currentDate) return currentDate?.holidayName;
+  if (currentDate) return currentDate?.holiday;
   return '';
 };
 

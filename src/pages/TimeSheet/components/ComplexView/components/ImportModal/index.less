@@ -150,7 +150,7 @@
       font-weight: 500;
     }
   }
-  .mainButtons {
+  .mainButtons,.containerButtons {
     .btnSubmit {
       color: #fff;
 
@@ -163,6 +163,7 @@
     .btnSubmit:disabled {
       color: #fff;
       opacity: 0.5;
+      cursor: default;
     }
     .btnCancel {
       display: inline-block;
@@ -178,6 +179,9 @@
       }
     }
   }
+  .containerButtons{
+    width: 100%;
+  }
 
   .header {
     display: flex;
@@ -186,11 +190,19 @@
     span {
       display: block;
     }
-    &__text {
+    &__title {
       margin: 0;
-      color: #161c29;
+      margin-bottom: 8px;
+      color: #2c6df9;
       font-weight: 600;
-      font-size: 16px;
+      font-size: 24px;
+      line-height: 28px;
+    }
+    &__label {
+      color: #5d6473;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 16px;
     }
     &__date {
       color: #000000;
@@ -198,8 +210,6 @@
       font-size: 13px;
       text-align: center;
     }
-  }
-  .content {
   }
 }
 

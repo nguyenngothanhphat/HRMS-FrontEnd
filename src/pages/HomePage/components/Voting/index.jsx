@@ -29,11 +29,12 @@ const Voting = (props) => {
   const [loading, setLoading] = useState(false);
 
   const fetchData = () => {
+    const location = getCurrentLocation();
     return dispatch({
       type: 'homePage/fetchPollsEffect',
       payload: {
         postType: TAB_IDS.POLL,
-        location: [getCurrentLocation()],
+        location: location ? [location] : [],
       },
     });
   };
