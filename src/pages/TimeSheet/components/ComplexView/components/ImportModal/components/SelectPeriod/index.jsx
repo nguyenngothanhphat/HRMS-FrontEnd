@@ -7,7 +7,7 @@ import styles from './index.less';
 
 const { RangePicker } = DatePicker;
 
-const ModalContentSelectDates = (props) => {
+const SelectPeriod = (props) => {
   const [form] = Form.useForm();
 
   const { importingIds = [], handleFinish = () => {}, dates = '', setDates = () => {} } = props;
@@ -81,7 +81,7 @@ const ModalContentSelectDates = (props) => {
   };
 
   return (
-    <div className={styles.ModalContentSelectDates}>
+    <div className={styles.SelectPeriod}>
       <Form name="basic" form={form} id="myForm" onFinish={(value) => handleFinish(value)}>
         <Row gutter={[24, 0]} className={styles.abovePart}>
           <Col span={10}>Select Timesheet Period</Col>
@@ -128,4 +128,4 @@ const ModalContentSelectDates = (props) => {
 
 export default connect(({ timeSheet: { importingIds = [] } = {} }) => ({
   importingIds,
-}))(ModalContentSelectDates);
+}))(SelectPeriod);

@@ -2,9 +2,10 @@ import { Button, Col, DatePicker, Form, Input, Modal, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { dateFormatAPI, dateFormatImport, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
-import { getCurrentCompany } from '@/utils/authority';
 import CustomTimePicker from '@/components/CustomTimePicker';
+import EmptyComponent from '@/components/Empty';
+import { getCurrentCompany } from '@/utils/authority';
+import { dateFormatAPI, dateFormatImport, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const { RangePicker } = DatePicker;
@@ -28,18 +29,18 @@ const DuplicateTaskModal = (props) => {
   const [disabledHourBefore, setDisabledHourBefore] = useState([]);
 
   const getDateLists = (startDate, endDate) => {
-    let datelist = [];
+    let dateList = [];
     const endDateTemp = moment(endDate).clone();
 
     if (startDate && endDate) {
       const now = moment(startDate);
       while (now.isSameOrBefore(moment(endDateTemp), 'day')) {
-        datelist = [...datelist, moment(now).format(dateFormatImport)];
+        dateList = [...dateList, moment(now).format(dateFormatImport)];
         now.add(1, 'days');
       }
     }
 
-    const arr = datelist.map((item) => {
+    const arr = dateList.map((item) => {
       return {
         day: moment(item).locale('en').format('dddd'),
         date: item,
@@ -263,9 +264,11 @@ const DuplicateTaskModal = (props) => {
               : ''
           }
         >
-          {dates && Array.isArray(dates) && dates[0] !== null && dates[1] !== null
-            ? renderFormList()
-            : null}
+          {dates && Array.isArray(dates) && dates[0] !== null && dates[1] !== null ? (
+            renderFormList()
+          ) : (
+            <EmptyComponent height={290} />
+          )}
         </div>
       </Form>
     );

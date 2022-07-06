@@ -57,6 +57,7 @@ export const addTimeForDate = (date, time) => {
 };
 
 export const rangePickerFormat = 'ddd, MMM D, YYYY';
+export const commonDateFormat = 'MM/DD/YYYY';
 export const dateFormat = 'ddd, MMM Do'; // show in first column
 export const dateFormatImport = 'DD-MM-YYYY'; // show in first column
 

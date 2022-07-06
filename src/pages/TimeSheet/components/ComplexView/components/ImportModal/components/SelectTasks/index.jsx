@@ -1,17 +1,13 @@
 import moment from 'moment';
-
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { dateFormatAPI } from '@/utils/timeSheet';
-
-import DateSwitcher from '../DateSwitcher';
-import TaskTable from '../TaskTable';
-import styles from './index.less';
+import { commonDateFormat, dateFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
+import DateSwitcher from './components/DateSwitcher';
+import TaskTable from './components/TaskTable';
+import styles from './index.less';
 
-const dateFormat = 'MM/DD/YYYY';
-
-const ModalContentSelectTasks = (props) => {
+const SelectTasks = (props) => {
   const { visible = false, dispatch } = props;
 
   const {
@@ -46,7 +42,7 @@ const ModalContentSelectTasks = (props) => {
       const dates = [];
 
       while (now.isSameOrBefore(endDate1)) {
-        dates.push(now.format(dateFormat));
+        dates.push(now.format(commonDateFormat));
         now.add(1, 'days');
       }
       return dates;
@@ -92,7 +88,7 @@ const ModalContentSelectTasks = (props) => {
   tasks = [...tasks, ...notAssignedTasks];
 
   return (
-    <div className={styles.ModalContentSelectTasks}>
+    <div className={styles.SelectTasks}>
       <DateSwitcher
         dates={dates}
         onPrevWeekClick={onPrevWeekClick}
@@ -123,4 +119,4 @@ export default connect(
     loadingImportTimesheet: loading.effects['timeSheet/importTimesheet'],
     importingIds,
   }),
-)(ModalContentSelectTasks);
+)(SelectTasks);

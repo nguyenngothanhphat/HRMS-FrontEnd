@@ -6,8 +6,8 @@ import { isEmpty } from 'lodash';
 import { dateFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
-import ModalContentSelectTasks from './components/ModalContentSelectTasks';
-import ModalContentSelectDates from './components/ModalContentSelectDates';
+import SelectTasks from './components/SelectTasks';
+import SelectPeriod from './components/SelectPeriod';
 
 const ImportModal = (props) => {
   const {
@@ -193,13 +193,13 @@ const ImportModal = (props) => {
         visible={visible}
       >
         {step === 1 ? (
-          <ModalContentSelectTasks
+          <SelectTasks
             setSelectedDate={setSelectedDate}
             selectedDate={selectedDate}
             visible={visible}
           />
         ) : (
-          <ModalContentSelectDates
+          <SelectPeriod
             handleCancel={handleCancel}
             handleFinish={handleFinish}
             dates={dates}
