@@ -18,13 +18,13 @@ const TableContainer = (props) => {
       selectedLocations = [],
     },
     loadingList = false,
+    payload = {},
+    setPayload = () => {},
   } = props;
 
   const [fromDate, setFromDate] = useState(moment().startOf('month'));
   const [toDate, setToDate] = useState(moment().endOf('month'));
   const [selectedRows, setSelectedRows] = useState([]);
-
-  const [payload, setPayload] = useState({});
 
   const fetchEmployees = () => {
     dispatch({

@@ -10,8 +10,9 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 
 const TimeOffManagement = (props) => {
-  const { dispatch, companyLocationList = [] } = props;
+  const { dispatch, companyLocationList = [], payload: { types: selectedTypes = [] } = {} } = props;
   const [selectedLocations, setSelectedLocation] = useState([]);
+  const [payload, setPayload] = useState({});
 
   const getCountryId = (locationObj) => {
     const type = typeof locationObj?.headQuarterAddress?.country;
@@ -52,17 +53,17 @@ const TimeOffManagement = (props) => {
   }, [JSON.stringify(selectedLocations)]);
 
   const onLocationChange = (selection = []) => {
-    let temp = [];
-    if (selection.length > 0) {
-      temp = [selection[selection.length - 1]];
-    }
+    // let temp = [...selection];
+    // if (selection.length > 0) {
+    //   temp = [selection[selection.length - 1]];
+    // }
     dispatch({
       type: 'timeOffManagement/save',
       payload: {
-        selectedLocations: [...temp],
+        selectedLocations: [...selection],
       },
     });
-    setSelectedLocation([...temp]);
+    setSelectedLocation([...selection]);
   };
 
   useEffect(() => {
@@ -94,7 +95,6 @@ const TimeOffManagement = (props) => {
           disabled={renderLocationOptions().length < 2}
           label="Location"
           selectedList={selectedLocations}
-          multiple={false}
         />
       </div>
     );
@@ -105,7 +105,7 @@ const TimeOffManagement = (props) => {
       <PageContainer>
         <Tabs activeKey="overview" tabBarExtraContent={renderFilterBar()} destroyInactiveTabPane>
           <TabPane tab="Timeoff Management" key="overview">
-            <TableContainer />
+            <TableContainer payload={payload} setPayload={setPayload} />
           </TabPane>
         </Tabs>
       </PageContainer>

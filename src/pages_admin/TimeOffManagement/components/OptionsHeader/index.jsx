@@ -26,8 +26,8 @@ const OptionsHeader = (props) => {
     setToDate = () => {},
     timeOffManagement: { timeOffTypesByCountry = [], selectedLocations = [] } = {},
     selectedRows = [],
+    companyLocationList = [],
   } = props;
-  console.log('🚀  ~ selectedRows', selectedRows);
 
   useEffect(() => {
     form.setFieldsValue({
@@ -181,7 +181,10 @@ const OptionsHeader = (props) => {
                       <Select
                         placeholder="Select the Leave Type"
                         // disabled={disabled}
-                        disabled={loadingFetchTimeoffTypes}
+                        disabled={
+                          loadingFetchTimeoffTypes ||
+                          companyLocationList.length === selectedLocations.length
+                        }
                         loading={loadingFetchTimeoffTypes}
                         mode="multiple"
                         filterOption={(input, option) =>
@@ -248,8 +251,11 @@ const OptionsHeader = (props) => {
     </div>
   );
 };
-export default connect(({ loading, timeOffManagement }) => ({
-  loadingEmployeeList: loading.effects['timeOffManagement/fetchEmployeeList'],
-  loadingFetchTimeoffTypes: loading.effects['timeOffManagement/fetchTimeOffTypesByCountry'],
-  timeOffManagement,
-}))(OptionsHeader);
+export default connect(
+  ({ loading, timeOffManagement, location: { companyLocationList = [] } }) => ({
+    loadingEmployeeList: loading.effects['timeOffManagement/fetchEmployeeList'],
+    loadingFetchTimeoffTypes: loading.effects['timeOffManagement/fetchTimeOffTypesByCountry'],
+    timeOffManagement,
+    companyLocationList,
+  }),
+)(OptionsHeader);
