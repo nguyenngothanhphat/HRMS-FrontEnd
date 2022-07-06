@@ -5,9 +5,10 @@
 @contentPadding: 24px;
 @borderColor: #d6dce0;
 
-.ImportModal {
+.DuplicateTaskModal {
   :global {
     .ant-modal-body {
+      min-height: 420px;
       max-height: 500px;
       overflow-y: auto;
     }
@@ -29,12 +30,10 @@
     .ant-input {
       height: 42px !important;
       padding: 5px 11px !important;
-      // background: transparent !important;
       border-radius: 5px !important;
     }
     .ant-select-selection-search-input {
       height: 42px !important;
-      //   border-radius: 5px;
     }
     .ant-select-multiple {
       .ant-select-selection-search-input {
@@ -51,10 +50,16 @@
       > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
       display: none;
     }
+    .ant-form-item {
+      margin-bottom: 0 !important;
+    }
     .ant-form-item-label label {
       height: 0;
       color: #161c29;
       font-size: 13px;
+    }
+    .ant-form-item-explain {
+      display: none;
     }
 
     .ant-btn-primary {
@@ -101,13 +106,16 @@
       border-bottom-right-radius: 8px;
       border-bottom-left-radius: 8px;
     }
-    .ant-form-item {
+    .ant-row-center {
+      align-items: center;
+    }
+    .ant-row-center:not(:last-child) {
       margin-bottom: 12px;
     }
     .ant-modal-footer {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
       padding: 13px 24px;
       border-top: 1px solid #d6dce0;
     }
@@ -150,7 +158,7 @@
       font-weight: 500;
     }
   }
-  .mainButtons,.containerButtons {
+  .mainButtons {
     .btnSubmit {
       color: #fff;
 
@@ -162,8 +170,8 @@
     }
     .btnSubmit:disabled {
       color: #fff;
-      opacity: 0.5;
       cursor: default;
+      opacity: 0.5;
     }
     .btnCancel {
       display: inline-block;
@@ -179,26 +187,20 @@
       }
     }
   }
-  .containerButtons{
-    width: 100%;
-  }
 
   .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     span {
       display: block;
     }
     &__title {
       margin: 0;
-      margin-bottom: 8px;
       color: #2c6df9;
       font-weight: 600;
-      font-size: 24px;
+      font-size: 20px;
       line-height: 28px;
     }
     &__label {
+      margin-bottom: 8px;
       color: #5d6473;
       font-weight: 400;
       font-size: 14px;
@@ -211,6 +213,56 @@
       text-align: center;
     }
   }
+  .timeInput {
+    max-height: 400px;
+    margin-top: 24px;
+    padding: 24px 11px;
+    overflow-y: auto;
+    background: #fafcff;
+    border: 1px solid #e3e8ef;
+    border-radius: 8px;
+  }
+  .dateInput {
+    :global {
+      .ant-form-item-control-input {
+        min-height: 0;
+      }
+      .ant-input {
+        max-height: 22px !important;
+        padding: 5px 0 !important;
+        color: #2c6df9 !important;
+        font-weight: 500;
+        font-size: 14px !important;
+        background: #fafcff !important;
+        border: none !important;
+      }
+      .ant-input[disabled] {
+        cursor: default;
+      }
+    }
+  }
+  .dayInput {
+    :global {
+      .ant-form-item-control-input {
+        min-height: 0;
+      }
+      .ant-input {
+        height: 25px !important;
+        padding: 5px 0 !important;
+        color: #9aa3b2 !important;
+        font-weight: 400 !important;
+        font-size: 12px !important;
+        background: #fafcff !important;
+        border: none !important;
+      }
+      .ant-input[disabled] {
+        cursor: default;
+      }
+    }
+  }
+}
+.formModal {
+  padding: 24px;
 }
 
 .noPadding {
