@@ -11,7 +11,7 @@ import { getCurrentCompany } from '@/utils/authority';
 const Domain = (props) => {
   const [form] = Form.useForm();
 
-  const { dispatch, loadingSave, emailDomain, hasData = false, listDomain, loadingRemove } = props;
+  const { dispatch, loadingSave, emailDomain, hasData = false, listDomain, loadingData } = props;
   const [visible, setVisible] = useState(false);
   const [content, setContent] = useState();
   const [footer, setFooter] = useState(false);
@@ -33,11 +33,9 @@ const Domain = (props) => {
   }, [listDomain]);
 
   const onFinish = (values) => {
-    console.log('🚀 ~ values', values);
     const formatData = values.domain.map((i) => {
-      return { name: i.name, isPrimary: !!i.isPrimary, company: getCurrentCompany() };
+      return { name: i.name, isPrimary: !!i.isPrimary };
     });
-    console.log('🚀 ~ formatData', formatData);
 
     // dispatch({
     //   type: 'adminSetting/saveDomain',
@@ -75,7 +73,7 @@ const Domain = (props) => {
     if (id) {
       const response = await dispatch({
         type: 'adminSetting/removeListDomain',
-        params: id,
+        payload: { id },
       });
       const { statusCode = 0 } = response;
       if (statusCode === 200) {
@@ -193,7 +191,7 @@ const Domain = (props) => {
           setVisible(false);
           onRemoveItem(handlingIndex);
         }}
-        loading={loadingRemove}
+        loading={loadingData}
         hasFooter={footer}
         withPadding
         width={400}
@@ -204,7 +202,7 @@ const Domain = (props) => {
 export default connect(
   ({ loading, adminSetting: { originData: { emailDomain = '', listDomain = [] } = {} } = {} }) => ({
     loadingSave: loading.effects['adminSetting/updateListDomain'],
-    loadingData: loading.effects['adminSetting/getDomain'],
+    loadingData: loading.effects['adminSetting/fetchListDomain'],
     loadingRemove: loading.effects['adminSetting/removeListDomain'],
     emailDomain,
     listDomain,

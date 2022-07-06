@@ -230,15 +230,17 @@ export async function getDomains(payload) {
   });
 }
 
-export async function setDomains(payload) {
+export async function setDomains(params, payload) {
   return request('/api/domaintenant/multiple', {
     method: 'POST',
     data: payload,
+    params,
   });
 }
 
-export async function removeDomains(params) {
-  return request(`/api/domaintenant/${params}`, {
+export async function removeDomains(params, payload) {
+  return request(`/api/domaintenant/${payload.id}`, {
     method: 'DELETE',
+    params,
   });
 }

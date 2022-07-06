@@ -643,7 +643,11 @@ const adminSetting = {
     },
     *updateListDomain({ payload }, { call, put }) {
       try {
-        const response = yield call(setDomains, payload);
+        const response = yield call(
+          setDomains,
+          { company: getCurrentCompany(), tenantId: getCurrentTenant() },
+          payload,
+        );
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -654,10 +658,10 @@ const adminSetting = {
         dialog(error);
       }
     },
-    *removeListDomain({ params }, { call, put }) {
+    *removeListDomain({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(removeDomains, params);
+        response = yield call(removeDomains, { tenantId: getCurrentTenant() }, payload);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         yield put({
