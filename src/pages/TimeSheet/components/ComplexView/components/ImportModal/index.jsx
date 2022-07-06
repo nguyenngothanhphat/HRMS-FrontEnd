@@ -64,9 +64,11 @@ const ImportModal = (props) => {
           <div className={styles.header__title}>{title}</div>
           <div className={styles.header__label}>{step === 1 ? label : labelNext}</div>
         </div>
-        <span className={styles.header__date}>
-          {moment(selectedDate).locale('en').format('MMMM DD, YYYY')}
-        </span>
+        {step === 1 && (
+          <span className={styles.header__date}>
+            {moment(selectedDate).locale('en').format('MMMM DD, YYYY')}
+          </span>
+        )}
       </div>
     );
   };
