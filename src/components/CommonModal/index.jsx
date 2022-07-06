@@ -5,26 +5,25 @@ import CustomPrimaryButton from '../CustomPrimaryButton';
 import CustomSecondaryButton from '../CustomSecondaryButton';
 import styles from './index.less';
 
-const CommonModal = (props) => {
-  const {
-    visible = false,
-    title = 'Modal',
-    onClose = () => {},
-    firstText = 'Submit',
-    secondText = 'Button',
-    cancelText = 'Cancel',
-    content = '',
-    width = 700,
-    loading = false,
-    hasFooter = true,
-    onFinish = () => {},
-    hasHeader = true,
-    withPadding = false,
-    hasCancelButton = true,
-    hasSecondButton = false,
-    onSecondButtonClick = () => {},
-  } = props;
-
+const CommonModal = ({
+  visible = false,
+  title = 'Modal',
+  onClose = () => {},
+  firstText = 'Submit',
+  secondText = 'Button',
+  cancelText = 'Cancel',
+  content = '',
+  width = 700,
+  loading = false,
+  hasFooter = true,
+  onFinish = () => {},
+  hasHeader = true,
+  withPadding = false,
+  hasCancelButton = true,
+  hasSecondButton = false,
+  onSecondButtonClick = () => {},
+  maskClosable = false,
+}) => {
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
@@ -81,7 +80,7 @@ const CommonModal = (props) => {
         title={hasHeader ? renderModalHeader() : null}
         centered
         visible={visible}
-        maskClosable={false}
+        maskClosable={maskClosable}
       >
         {renderModalContent()}
       </Modal>

@@ -344,9 +344,9 @@ const WeeklyTable = (props) => {
         <div className={styles.item}>
           <span className={styles.text}>Total</span>
         </div>
-        {durationByDate.map((item) => {
+        {durationByDate.map((item, index) => {
           return (
-            <TaskPopover date={item.date} tasks={item.tasks} key={item.date}>
+            <TaskPopover date={item.date} tasks={item.tasks} key={item.date} index={index}>
               {item.tasks.length > 0 ? (
                 <div className={styles.item}>
                   <span className={styles.value}>{convertMsToTime(item.duration)}</span>

@@ -12,7 +12,7 @@ import LikeIcon from '@/assets/homePage/like.svg';
 import CommentIcon from '@/assets/homePage/comment.svg';
 import CommonModal from '@/components/CommonModal';
 import CelebratingDetailModalContent from '../CelebratingDetailModalContent';
-import LikedModalContent from '../LikedModalContent';
+import PostLikedModalContent from '@/components/PostLikedModalContent';
 import { CELEBRATE_TYPE } from '@/utils/homePage';
 
 const NextArrow = (props) => {
@@ -277,7 +277,7 @@ const Card = (props) => {
         visible={likedModalVisible}
         onClose={() => setLikedModalVisible(false)}
         title="Likes"
-        content={<LikedModalContent list={viewingItem?.likes || []} />}
+        content={<PostLikedModalContent list={viewingItem?.likes || []} />}
         width={500}
         hasFooter={false}
       />

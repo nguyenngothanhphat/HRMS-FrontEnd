@@ -59,7 +59,7 @@ const MonthlyTable = (props) => {
                 {holidays.map((holiday) => (
                   <div key={holiday.date}>
                     {checkHolidayInWeek(startDate1, endDate1, [holiday])
-                      ? `${holidayFormatDate(holiday.date)} is ${holiday.holidayName}`
+                      ? `${holidayFormatDate(holiday.date)} is ${holiday.holiday}`
                       : null}
                   </div>
                 ))}
@@ -183,6 +183,7 @@ const MonthlyTable = (props) => {
           const { week = '', dailies = [], weekTotalTime = '' } = find;
           return (
             <TaskPopover
+              key={weekItem.week}
               week={week}
               startDate={weekItem.startDate}
               endDate={weekItem.endDate}

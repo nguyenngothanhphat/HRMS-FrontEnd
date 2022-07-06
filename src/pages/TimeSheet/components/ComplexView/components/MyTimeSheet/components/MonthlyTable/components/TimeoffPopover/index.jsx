@@ -48,7 +48,7 @@ const TimeoffPopover = (props) => {
           newTimeoff.push({
             date: holiday?.date,
             isHoliday: true,
-            holidayName: holiday?.holidayName,
+            holiday: holiday?.holiday,
           });
         return null;
       });
@@ -80,7 +80,7 @@ const TimeoffPopover = (props) => {
           {showingTimeOff.length !== 0 &&
             sortedDate(showingTimeOff).map((timeoffProp) => {
               return (
-                <Row className={styles.eachRow} justify="space-between" align="middle">
+                <Row key={timeoffProp?.date} className={styles.eachRow} justify="space-between" align="middle">
                   <Col span={16} className={styles.taskName}>
                     {timeoffProp?.isHoliday ? (
                       <span> Timeoff - {holidayFormatDate(timeoffProp?.date)} </span>
@@ -98,7 +98,7 @@ const TimeoffPopover = (props) => {
                   </Col>
                   <Col span={8} className={styles.right}>
                     {timeoffProp?.isHoliday ? (
-                      <div className={styles.holidayTxt}>{timeoffProp?.holidayName}</div>
+                      <div className={styles.holidayTxt}>{timeoffProp?.holiday}</div>
                     ) : (
                       convertMsToTime(getTimeOffTotalHours(timeoffProp) * 3600000)
                     )}

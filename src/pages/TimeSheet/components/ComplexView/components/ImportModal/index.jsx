@@ -2,60 +2,39 @@ import { Button, Modal } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { isEmpty } from 'lodash';
 import { dateFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
-import DateSwitcher from './components/DateSwitcher';
-import TaskTable from './components/TaskTable';
 import styles from './index.less';
-
-const dateFormat = 'MM/DD/YYYY';
+import SelectTasks from './components/SelectTasks';
+import SelectPeriod from './components/SelectPeriod';
 
 const ImportModal = (props) => {
   const {
     dispatch,
     visible = false,
-    title = 'Import rows from yesterday',
+    title = 'Import Tasks',
+    label = 'Please select the tasks that you want to import',
+    labelNext = 'Please select one or more dates to which the tasks must be imported.',
     onClose = () => {},
     employee: { _id: employeeId = '' } = {},
-    timesheetDataImporting = {},
     importingIds = [],
-    loadingFetchTasks = false,
     loadingImportTimesheet = false,
     date: importDate = '',
   } = props;
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+
+  const [step, setStep] = useState(1);
+  const [dates, setDates] = useState(null);
   const [selectedDate, setSelectedDate] = useState(moment());
+
+  useEffect(() => {
+    if (importDate) {
+      setSelectedDate(moment(importDate));
+    }
+  }, [importDate]);
 
   // FUNCTIONS
   // get dates between two dates
-  const enumerateDaysBetweenDates = (startDate1, endDate1) => {
-    if (startDate1 && endDate1) {
-      const now = startDate1.clone();
-      const dates = [];
-
-      while (now.isSameOrBefore(endDate1)) {
-        dates.push(now.format(dateFormat));
-        now.add(1, 'days');
-      }
-      return dates;
-    }
-    return [];
-  };
-
-  const onPrevWeekClick = () => {
-    const lastSunday = moment(startDate).add(-1, 'weeks');
-    const currentSaturday = moment(endDate).add(-1, 'weeks');
-    setStartDate(lastSunday);
-    setEndDate(currentSaturday);
-  };
-
-  const onNextWeekClick = () => {
-    const currentSunday = moment(startDate).add(1, 'weeks');
-    const nextSaturday = moment(startDate).add(1, 'weeks').weekday(6);
-    setStartDate(currentSunday);
-    setEndDate(nextSaturday);
-  };
 
   const addZeroToNumber = (number) => {
     if (number < 10 && number >= 0) return `0${number}`.slice(-2);
@@ -77,41 +56,19 @@ const ImportModal = (props) => {
     });
   };
 
-  // USE EFFECT
-  useEffect(() => {
-    const lastSunday = moment().add(-1, 'weeks').weekday(7);
-    const currentSaturday = moment().weekday(6);
-    setStartDate(lastSunday);
-    setEndDate(currentSaturday);
-    return () => {};
-  }, []);
-
-  const fetchImportData = () => {
-    dispatch({
-      type: 'timeSheet/fetchImportData',
-      payload: {
-        companyId: getCurrentCompany(),
-        employeeId,
-        fromDate: moment(selectedDate).format(dateFormatAPI),
-        toDate: moment(selectedDate).format(dateFormatAPI),
-      },
-    });
-  };
-
-  useEffect(() => {
-    if (visible) {
-      fetchImportData();
-    }
-  }, [selectedDate, visible]);
-
   // RENDER UI
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
-        <span className={styles.header__text}>{title}</span>
-        <span className={styles.header__date}>
-          {moment(selectedDate).locale('en').format('MMMM DD, YYYY')}
-        </span>
+        <div>
+          <div className={styles.header__title}>{title}</div>
+          <div className={styles.header__label}>{step === 1 ? label : labelNext}</div>
+        </div>
+        {step === 1 && (
+          <span className={styles.header__date}>
+            {moment(selectedDate).locale('en').format('MMMM DD, YYYY')}
+          </span>
+        )}
       </div>
     );
   };
@@ -119,68 +76,62 @@ const ImportModal = (props) => {
   const handleCancel = () => {
     dispatch({ type: 'timeSheet/clearImportModalData' });
     onClose();
+    setStep(1);
   };
 
-  const onImport = () => {
-    let ids = [];
+  const getDateLists = (startDate, endDate) => {
+    let datelist = [];
+    const endDateTemp = moment(endDate).clone();
+
+    if (startDate && endDate) {
+      const now = moment(startDate);
+      while (now.isSameOrBefore(moment(endDateTemp), 'day')) {
+        datelist = [...datelist, moment(now).locale('en').format(dateFormatAPI)];
+        now.add(1, 'days');
+      }
+    }
+
+    return datelist;
+  };
+
+  const onImport = (datesProps) => {
+    const ids = [];
+    const datesTemp = getDateLists(datesProps[0], datesProps[1]);
     importingIds.forEach((item) => {
-      ids = [...ids, ...item.selectedIds];
+      item?.selectedIds.forEach((obj) => {
+        ids.push(obj.id);
+      });
     });
+
     return dispatch({
       type: 'timeSheet/importTimesheet',
       payload: {
         companyId: getCurrentCompany(),
         employeeId,
-        date: moment(importDate).locale('en').format(dateFormatAPI),
+        dates: datesTemp,
         ids,
       },
     });
   };
-  const handleFinish = async () => {
-    const res = await onImport();
-    if (res.code === 200) {
-      handleCancel();
-      refreshData();
+
+  const handleFinish = async ({ dates: dateProp = [] }) => {
+    if (!isEmpty(dateProp)) {
+      const res = await onImport(dateProp);
+      if (res.code === 200) {
+        handleCancel();
+        refreshData();
+      }
     }
   };
 
-  const renderModalContent = () => {
-    const dates = enumerateDaysBetweenDates(startDate, endDate) || [];
-    const notAssignedTasks = timesheetDataImporting.notAssignedTask || [];
-    const assignedTasks = timesheetDataImporting.dailiesTask || [];
-    let tasks = [];
-    if (assignedTasks.length > 0) {
-      tasks = [...assignedTasks[0].dailyTasks];
-    }
-    tasks = [...tasks, ...notAssignedTasks];
-    return (
-      <div className={styles.content}>
-        <DateSwitcher
-          dates={dates}
-          onPrevWeekClick={onPrevWeekClick}
-          onNextWeekClick={onNextWeekClick}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          importingIds={importingIds}
-        />
-        <TaskTable
-          list={tasks}
-          selectedDate={selectedDate}
-          loading={loadingFetchTasks}
-          importingIds={importingIds}
-        />
-      </div>
-    );
+  const handleNextStep = () => {
+    setStep(2);
   };
 
-  return (
-    <>
-      <Modal
-        className={`${styles.ImportModal} ${styles.noPadding}`}
-        onCancel={handleCancel}
-        destroyOnClose
-        width={700}
-        footer={
+  const renderModalFooter = () => {
+    switch (step) {
+      case 1:
+        return (
           <>
             <div className={styles.taskNumberCount}>
               {getSumImportingIds() > 0 && (
@@ -197,19 +148,64 @@ const ImportModal = (props) => {
               <Button
                 className={styles.btnSubmit}
                 type="primary"
-                onClick={handleFinish}
+                onClick={handleNextStep}
                 loading={loadingImportTimesheet}
+                disabled={isEmpty(importingIds)}
               >
-                Import
+                Next
               </Button>
             </div>
           </>
-        }
+        );
+      case 2:
+        return (
+          <div className={styles.containerButtons}>
+            <Button className={styles.btnCancel} onClick={() => setStep(1)}>
+              Previous
+            </Button>
+            <Button
+              className={styles.btnSubmit}
+              type="primary"
+              onClick={handleFinish}
+              loading={loadingImportTimesheet}
+              htmlType="submit"
+              form="myForm"
+            >
+              Import
+            </Button>
+          </div>
+        );
+      default:
+        return '';
+    }
+  };
+
+  return (
+    <>
+      <Modal
+        className={`${styles.ImportModal} ${styles.noPadding}`}
+        onCancel={handleCancel}
+        destroyOnClose
+        width={700}
+        footer={renderModalFooter()}
         title={renderModalHeader()}
         centered
         visible={visible}
       >
-        {renderModalContent()}
+        {step === 1 ? (
+          <SelectTasks
+            setSelectedDate={setSelectedDate}
+            selectedDate={selectedDate}
+            visible={visible}
+          />
+        ) : (
+          <SelectPeriod
+            handleCancel={handleCancel}
+            handleFinish={handleFinish}
+            dates={dates}
+            setDates={setDates}
+          />
+        )}
       </Modal>
     </>
   );

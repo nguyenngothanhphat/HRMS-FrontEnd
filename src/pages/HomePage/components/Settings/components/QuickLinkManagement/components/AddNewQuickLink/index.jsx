@@ -10,7 +10,7 @@ import styles from './index.less';
 
 const AddNewQuickLink = (props) => {
   const [form] = Form.useForm();
-  const { selectedTab = '', onBack = () => {} } = props;
+  const { selectedTab = '', fetchData = () => {}, onBack = () => {} } = props;
   // editing post
   const { editing = false, record = {} } = props;
 
@@ -27,13 +27,14 @@ const AddNewQuickLink = (props) => {
   const [formValues, setFormValues] = useState({});
   const [fileList, setFileList] = useState([]);
 
-  // FUNCTIONS
-  // const onModeChange = (val) => {
-  //   setMode(val);
-  // };
-
   const handleChangeLocation = (val) => {
-    setLocation(val);
+    let result = [...val];
+    if (val.includes('all')) {
+      result = companyLocationList.map((x) => x._id);
+    }
+    form.setFieldsValue({
+      location: result,
+    });
   };
 
   const onReset = () => {
@@ -169,6 +170,8 @@ const AddNewQuickLink = (props) => {
     dispatch({
       type: 'homePage/addQuickLinkEffect',
       payload,
+    }).then((x) => {
+      if (x.statusCode === 200) fetchData();
     });
   };
 
@@ -205,6 +208,8 @@ const AddNewQuickLink = (props) => {
         ...payload,
         id: record._id,
       },
+    }).then((x) => {
+      if (x.statusCode === 200) fetchData();
     });
   };
 
@@ -247,6 +252,7 @@ const AddNewQuickLink = (props) => {
               style={{ width: '100%' }}
               onChange={handleChangeLocation}
             >
+              <Select.Option value="all">All Location</Select.Option>
               {companyLocationList.map((x) => {
                 return (
                   <Select.Option value={x._id} key={x._id}>

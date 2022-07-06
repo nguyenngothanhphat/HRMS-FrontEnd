@@ -142,8 +142,16 @@ const AddResourceTypeContent = (props) => {
               <span className={styles.label}>Tags:</span>
               <div className={styles.tags}>
                 {typeof tags === 'object'
-                  ? tags.map((t, i) => <CustomTag color={getColor(i)}>{t.tag_name}</CustomTag>)
-                  : tags.map((t, i) => <CustomTag color={getColor(i)}>{t}</CustomTag>)}
+                  ? tags.map((t, i) => (
+                    <CustomTag key={t.tag_name} color={getColor(i)}>
+                      {t.tag_name}
+                    </CustomTag>
+                    ))
+                  : tags.map((t, i) => (
+                    <CustomTag key={t.tag_name} color={getColor(i)}>
+                      {t}
+                    </CustomTag>
+                    ))}
               </div>
             </div>
           </Col>
@@ -156,9 +164,11 @@ const AddResourceTypeContent = (props) => {
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: 'Required field!' }]}
             >
-              <Select placeholder="Select Division">
+              <Select showSearch placeholder="Select Division">
                 {divisionList.map((x) => (
-                  <Option value={x.name}>{x.name}</Option>
+                  <Option key={x.name} value={x.name}>
+                    {x.name}
+                  </Option>
                 ))}
               </Select>
             </Form.Item>
@@ -179,7 +189,9 @@ const AddResourceTypeContent = (props) => {
                 showSearch
               >
                 {titleList.map((x) => (
-                  <Option value={x._id}>{x.name}</Option>
+                  <Option key={x._id} value={x._id}>
+                    {x.name}
+                  </Option>
                 ))}
               </Select>
             </Form.Item>
@@ -201,9 +213,11 @@ const AddResourceTypeContent = (props) => {
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: 'Required field!' }]}
             >
-              <Select placeholder="Select Billing Status">
+              <Select showSearch placeholder="Select Billing Status">
                 {billingStatusList.map((x) => (
-                  <Option value={x}>{x}</Option>
+                  <Option key={x} value={x}>
+                    {x}
+                  </Option>
                 ))}
               </Select>
             </Form.Item>
@@ -219,15 +233,28 @@ const AddResourceTypeContent = (props) => {
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
-            <Form.Item label="Technologies Used" name="technologies" labelCol={{ span: 24 }}>
-              <Select mode="multiple" placeholder="Select Technologies Used">
+            <Form.Item
+              rules={[{ required: true, message: 'Required field!' }]}
+              label="Technologies Used"
+              name="technologies"
+              labelCol={{ span: 24 }}
+            >
+              <Select
+                allowClear
+                showSearch
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                mode="multiple"
+                placeholder="Select Technologies Used"
+              >
                 {skillList.map((x) => (
-                  <Option value={x._id}>{x.name}</Option>
+                  <Option key={x._id} value={x._id}>
+                    {x.name}
+                  </Option>
                 ))}
               </Select>
             </Form.Item>
           </Col>
-
           <Col xs={24}>
             <Form.Item label="Comments/Notes" name="comments" labelCol={{ span: 24 }}>
               <Input.TextArea placeholder="Add comments/notes" autoSize={{ minRows: 4 }} />

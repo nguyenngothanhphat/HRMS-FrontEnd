@@ -1,13 +1,14 @@
 import { Image, Popconfirm } from 'antd';
 import Parser from 'html-react-parser';
 import moment from 'moment';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect, Link } from 'umi';
 import { hashtagify, urlify } from '@/utils/homePage';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import EditIcon from '@/assets/homePage/editIcon.svg';
 import CommonTable from '../CommonTable';
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 const AnnouncementTable = (props) => {
   const {
@@ -16,7 +17,19 @@ const AnnouncementTable = (props) => {
     loading = false,
     refreshData = () => {},
     onEditPost = () => {},
+    totalType = 0,
   } = props;
+
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [pageChanged, setPageChanged] = useState(false);
+
+  useEffect(() => {
+    if (pageChanged) {
+      refreshData({ page, limit });
+      goToTop();
+    }
+  }, [page, limit]);
 
   const onDeleteAttachment = async (record) => {
     if (record?._id) {
@@ -27,7 +40,7 @@ const AnnouncementTable = (props) => {
         },
       });
       if (res.statusCode === 200) {
-        refreshData();
+        refreshData({ page, limit });
       }
     }
   };
@@ -139,9 +152,24 @@ const AnnouncementTable = (props) => {
     return columns;
   };
 
+  const onChangePage = (p, l) => {
+    setPageChanged(true);
+    setPage(p);
+    setLimit(l || limit);
+  };
+
   return (
     <div className={styles.AnnouncementTable}>
-      <CommonTable list={data} loading={loading} columns={getColumns()} />
+      <CommonTable
+        list={data}
+        loading={loading}
+        columns={getColumns()}
+        total={totalType}
+        isBackendPaging
+        onChangePage={onChangePage}
+        page={page}
+        limit={limit}
+      />
     </div>
   );
 };
