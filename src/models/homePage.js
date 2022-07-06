@@ -44,9 +44,12 @@ const defaultState = {
   images: [],
   totalPostsOfType: [],
   selectedPollOption: {},
+  announcementTotal: 0,
 
   // social activities
   postComments: [],
+  reactionList: [],
+  reactionTotal: 0,
 };
 
 const homePage = {
@@ -190,11 +193,11 @@ const homePage = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data = [] } = response;
+        const { statusCode, data = [], total = 0 } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { announcements: data },
+          payload: { announcements: data, announcementTotal: total },
         });
       } catch (errors) {
         dialog(errors);
@@ -494,7 +497,7 @@ const homePage = {
       return response;
     },
 
-    *fetchPostReactionListEffect({ payload }, { call }) {
+    *fetchPostReactionListEffect({ payload }, { call, put }) {
       let response = {};
       try {
         response = yield call(getPostReactionList, {
@@ -502,8 +505,12 @@ const homePage = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode } = response;
+        const { statusCode, data = [], total = 0 } = response;
         if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { reactionList: data, reactionTotal: total },
+        });
       } catch (errors) {
         dialog(errors);
         return [];

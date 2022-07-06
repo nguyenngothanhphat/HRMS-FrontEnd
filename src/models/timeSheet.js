@@ -37,8 +37,9 @@ import {
   // my request
   getMyRequest,
   resubmitMyRequest,
+  getHolidaysByDate,
 } from '@/services/timeSheet';
-import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils/authority';
+import { getCountry, getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
 import { dialog } from '@/utils/utils';
 
@@ -64,6 +65,7 @@ const initialState = {
   myTimesheetByWeek: [],
   myTimesheetByMonth: [],
   timeoffList: [],
+  detailTimesheet: [],
   // store payload for refreshing
   viewingPayload: {},
   // for importing
@@ -151,9 +153,11 @@ const TimeSheet = {
           const { viewingPayload } = yield select((state) => state.timeSheet);
           payloadTemp = viewingPayload;
         }
-        const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
-        const { code, data, holidays } = res;
+        const { _id: countryId = '' } = getCountry();
+        const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId, country: countryId });
+        const { code, data } = res;
         if (code !== 200) throw res;
+        const { holidays = [] } = data;
         const { viewType } = payloadTemp;
         let stateVar = 'myTimesheetByDay';
         let dataTemp = null;
@@ -192,13 +196,33 @@ const TimeSheet = {
       return response;
     },
 
+    *fetchMyTimesheetByDay({ payload, isRefreshing }, { call, select }) {
+      let response = {};
+      try {
+        let payloadTemp = payload;
+        if (isRefreshing) {
+          const { viewingPayload } = yield select((state) => state.timeSheet);
+          payloadTemp = viewingPayload;
+        }
+        response = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
+        const { code } = response;
+        if (code !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
     *fetchHolidaysByDate({ payload }, { call }) {
       try {
         const payloadTemp = payload;
-        const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
-        const { code, holidays = [] } = res;
+        const { _id: countryId = '' } = getCountry();
+
+        const res = yield call(getHolidaysByDate, { ...payloadTemp, country: countryId });
+        const { code, data = [] } = res;
         if (code !== 200) throw res;
-        return holidays;
+        return data;
       } catch (errors) {
         dialog(errors);
         return [];

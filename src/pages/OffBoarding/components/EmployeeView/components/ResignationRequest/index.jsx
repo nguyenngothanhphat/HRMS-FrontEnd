@@ -27,7 +27,13 @@ const ResignationRequest = (props) => {
     offboarding: { viewingRequest = {} } = {},
   } = props;
 
-  const { status = '', step = '', meeting: { status: meetingStatus = '' } = {} } = viewingRequest;
+  const {
+    status = '',
+    hrStatus = '',
+    step = '',
+    meeting: { status: meetingStatus = '' } = {},
+    assigned = {},
+  } = viewingRequest;
 
   const getMyRequest = () => {
     dispatch({
@@ -114,7 +120,7 @@ const ResignationRequest = (props) => {
               <Col span={24} lg={8}>
                 <Row gutter={[24, 24]}>
                   <Col span={24}>
-                    <ChainOfApproval employee={employee} status={status} />
+                    <ChainOfApproval data={assigned} status={status} hrStatus={hrStatus} />
                   </Col>
                   <Col span={24}>
                     <Notes status={status} />
@@ -146,7 +152,7 @@ const ResignationRequest = (props) => {
             <Col span={24} lg={8}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <ChainOfApproval employee={employee} status={status} />
+                  <ChainOfApproval data={assigned} status={status} hrStatus={hrStatus} />
                 </Col>
                 <Col span={24}>
                   <Notes status={status} />
@@ -157,6 +163,37 @@ const ResignationRequest = (props) => {
         );
       }
       case STATUS.ACCEPTED:
+        if (hrStatus === STATUS.IN_PROGRESS) {
+          return (
+            <Row className={styles.content} gutter={[24, 24]}>
+              <Col span={24} lg={16}>
+                <Row gutter={[24, 24]}>
+                  <Col span={24}>
+                    <YourRequest
+                      data={viewingRequest}
+                      employee={employee}
+                      getMyRequest={getMyRequest}
+                      getRequestById={getRequestById}
+                    />
+                  </Col>
+                  <Col span={24}>
+                    <WhatNext employee={employee} item={viewingRequest} />
+                  </Col>
+                </Row>
+              </Col>
+              <Col span={24} lg={8}>
+                <Row gutter={[24, 24]}>
+                  <Col span={24}>
+                    <ChainOfApproval data={assigned} status={status} hrStatus={hrStatus} />
+                  </Col>
+                  <Col span={24}>
+                    <Notes status={status} />
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          );
+        }
         return (
           <Row className={styles.content} gutter={[24, 24]}>
             <Col span={24} lg={16}>
@@ -177,7 +214,7 @@ const ResignationRequest = (props) => {
             <Col span={24} lg={8}>
               <Row gutter={[24, 24]}>
                 <Col span={24}>
-                  <ChainOfApproval employee={employee} status={status} />
+                  <ChainOfApproval data={assigned} status={status} hrStatus={hrStatus} />
                 </Col>
                 <Col span={24}>
                   <Notes status={status} />

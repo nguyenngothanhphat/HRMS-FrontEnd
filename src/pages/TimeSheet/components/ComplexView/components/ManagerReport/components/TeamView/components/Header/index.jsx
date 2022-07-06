@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { Skeleton, Tag, Tooltip } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
@@ -10,7 +10,8 @@ import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import FilterContent from './components/FilterContent';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
-import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
+import { checkHolidayInWeek, dateFormatAPI, holidayFormatDate } from '@/utils/timeSheet';
+import { getCurrentCompany } from '@/utils/authority';
 
 const Header = (props) => {
   const {
@@ -21,10 +22,10 @@ const Header = (props) => {
     setEndDate = () => {},
     onChangeSearch = () => {},
     activeView = '',
-    holidays = [],
   } = props;
 
   const [applied, setApplied] = useState(0);
+  const [holidays, setHolidays] = useState([]);
   const [form, setForm] = useState(null);
 
   const isHoliday = checkHolidayInWeek(startDate, endDate, holidays);
@@ -57,6 +58,22 @@ const Header = (props) => {
     form?.resetFields();
   };
 
+  const fetchHolidaysByDate = async () => {
+    const holidaysResponse = await dispatch({
+      type: 'timeSheet/fetchHolidaysByDate',
+      payload: {
+        companyId: getCurrentCompany(),
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+      },
+    });
+    setHolidays(holidaysResponse);
+  };
+
+  useEffect(() => {
+    if (startDate && endDate) fetchHolidaysByDate();
+  }, [startDate, endDate]);
+
   // MAIN AREA
   return (
     <div className={styles.Header}>
@@ -75,7 +92,7 @@ const Header = (props) => {
                 {holidays.map((holiday) => (
                   <div key={holiday.date}>
                     {checkHolidayInWeek(startDate, endDate, [holiday])
-                      ? `${holidayFormatDate(holiday.date)} is ${holiday.holidayName}`
+                      ? `${holidayFormatDate(holiday.date)} is ${holiday.holiday}`
                       : null}
                   </div>
                 ))}

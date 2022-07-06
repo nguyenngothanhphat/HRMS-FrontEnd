@@ -26,6 +26,13 @@ const WhatNext = (props) => {
       } = {},
       _id = '',
       status = '',
+      hrStatus = '',
+      assigned: {
+        hr: {
+          generalInfoInfo: { legalName: hrName = '', avatar: avatarHr = '' } = {},
+          titleInfo: { name: titleHr = '' } = {},
+        } = {},
+      } = {},
     } = {},
     getMyRequest = () => {},
     dispatch,
@@ -88,28 +95,57 @@ const WhatNext = (props) => {
   const renderContent = () => {
     return (
       <Row gutter={[24, 16]} className={styles.content} align="top">
-        <Col span={10}>
-          <div className={styles.leftPart}>
-            <div className={styles.label}>1-on-1 meeting with</div>
-            <div className={styles.reporting}>
-              <Avatar size={36} src={avatar || avtDefault} style={{ marginRight: '15px' }} />
-              <div>
-                <div className={styles.legalName}>{managerName}</div>
-                <div className={styles.titleinfo}>{titleName}</div>
+        {hrStatus === STATUS.IN_PROGRESS && status === STATUS.ACCEPTED ? (
+          <Col span={10}>
+            <div className={styles.leftPart}>
+              <div className={styles.label}>HR Approval</div>
+              <div className={styles.reporting}>
+                <Avatar size={36} src={avatarHr || avtDefault} style={{ marginRight: '15px' }} />
+                <div>
+                  <div className={styles.legalName}>{hrName}</div>
+                  <div className={styles.titleinfo}>{titleHr}</div>
+                </div>
               </div>
-            </div>
-          </div>
-        </Col>
-        {meetingStatus !== MEETING_STATUS.NOT_START && status !== STATUS.REJECTED ? (
-          <Col span={14}>
-            <div className={styles.rightPart}>
-              <span className={styles.label}>Scheduled on</span>
-              <span className={styles.time}>{renderTimeMeeting()} </span>
-              <div className={styles.notification}>{renderWithStatus(meetingStatus)}</div>
             </div>
           </Col>
         ) : (
-          ''
+          <>
+            <Col span={10}>
+              <div className={styles.leftPart}>
+                <div className={styles.label}>1-on-1 meeting with</div>
+                <div className={styles.reporting}>
+                  <Avatar size={36} src={avatar || avtDefault} style={{ marginRight: '15px' }} />
+                  <div>
+                    <div className={styles.legalName}>{managerName}</div>
+                    <div className={styles.titleinfo}>{titleName}</div>
+                  </div>
+                </div>
+              </div>
+            </Col>
+            <Col span={10}>
+              <div className={styles.leftPart}>
+                <div className={styles.label}>1-on-1 meeting with</div>
+                <div className={styles.reporting}>
+                  <Avatar size={36} src={avatar || avtDefault} style={{ marginRight: '15px' }} />
+                  <div>
+                    <div className={styles.legalName}>{managerName}</div>
+                    <div className={styles.titleinfo}>{titleName}</div>
+                  </div>
+                </div>
+              </div>
+            </Col>
+            {meetingStatus !== MEETING_STATUS.NOT_START && status !== STATUS.REJECTED ? (
+              <Col span={14}>
+                <div className={styles.rightPart}>
+                  <span className={styles.label}>Scheduled on</span>
+                  <span className={styles.time}>{renderTimeMeeting()} </span>
+                  <div className={styles.notification}>{renderWithStatus(meetingStatus)}</div>
+                </div>
+              </Col>
+            ) : (
+              ''
+            )}
+          </>
         )}
       </Row>
     );

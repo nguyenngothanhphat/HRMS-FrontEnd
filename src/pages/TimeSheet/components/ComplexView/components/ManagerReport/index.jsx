@@ -42,7 +42,7 @@ const ManagerReport = (props) => {
     (viewReportProject && VIEW_TYPE.PROJECT_VIEW) || (viewReportTeam && VIEW_TYPE.TEAM_VIEW),
   );
 
-  const exportToExcel = async (type, fileName) => {
+  const exportToCSV = async (type, fileName) => {
     const getListExport = await dispatch({
       type,
       payload: payloadExport,
@@ -61,12 +61,12 @@ const ManagerReport = (props) => {
 
   const exportTag = () => {
     if (activeKey === VIEW_TYPE.PROJECT_VIEW) {
-      return exportToExcel(
+      return exportToCSV(
         'timeSheet/exportReportProject',
-        `ProjectView-${project.projectName}-${startDate}-${endDate}.xlsx`,
+        `ProjectView-${project.projectName}-${startDate}-${endDate}.csv`,
       );
     }
-    return exportToExcel('timeSheet/exportReportTeam', 'team-view.xlsx');
+    return exportToCSV('timeSheet/exportReportTeam', `TeamView-${startDate}-${endDate}.csv`);
   };
 
   const options = () => {

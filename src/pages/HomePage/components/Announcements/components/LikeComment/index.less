@@ -27,17 +27,11 @@
   .likes {
     .disableSelect();
     display: flex !important;
+    gap: 16px;
     justify-content: flex-start;
-    cursor: pointer;
     div {
       display: flex;
       align-items: center;
-      padding: 10px;
-      border-radius: 8px;
-
-      &:hover {
-        background-color: rgba(228, 237, 255, 0.822);
-      }
       &:not(:last-child) {
         margin-right: 5px;
       }
@@ -49,22 +43,24 @@
       font-size: 13px;
       font-family: Inter;
       font-style: normal;
-      line-height: 19px;
-      cursor: pointer;
-    }
-    img {
-      width: 16px;
-      height: 16px;
-      margin-right: 8px;
-    }
-    img {
       &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+    img {
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      &:hover {
+        background-color: rgba(228, 237, 255, 0.822);
         opacity: 0.8;
       }
     }
     &__pressed {
       span {
         color: #2c6df9;
+        font-weight: 500;
       }
     }
   }
