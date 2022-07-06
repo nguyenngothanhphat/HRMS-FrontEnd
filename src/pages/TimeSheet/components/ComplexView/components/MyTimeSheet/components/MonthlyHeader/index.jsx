@@ -3,6 +3,7 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import AddIcon from '@/assets/timeSheet/add.svg';
+import CustomWarningTooltip from '@/components/CustomWarningTooltip';
 import AddTaskModal from '@/pages/TimeSheet/components/ComplexView/components/AddTaskModal';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import ImportModal from '@/pages/TimeSheet/components/ComplexView/components/ImportModal';
@@ -59,9 +60,17 @@ const MonthlyHeader = (props) => {
           Add Task
         </Button>
         {/* TEMPORARILY DISABLE FOR WEEKLY VIEW & MONTHLY VIEW FOR 15 JAN 2022 RELEASE  */}
-        <Button disabled onClick={() => setImportModalVisible(true)}>
-          Import
-        </Button>
+        <CustomWarningTooltip placement="left" title="You can only import for Daily view">
+          <Button
+            disabled
+            onClick={() => setImportModalVisible(true)}
+            style={{
+              color: '#B7B7B7',
+            }}
+          >
+            Import
+          </Button>
+        </CustomWarningTooltip>
       </div>
       <AddTaskModal
         visible={addTaskModalVisible}
