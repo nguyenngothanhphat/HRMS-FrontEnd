@@ -112,7 +112,7 @@ const SelectPeriod = (props) => {
                 disabledDate={disabledDate}
                 onCalendarChange={(val) => setDates(val)}
                 onOpenChange={onOpenChange}
-                allowClear={false}
+                allowClear
               />
             </Form.Item>
           </Col>

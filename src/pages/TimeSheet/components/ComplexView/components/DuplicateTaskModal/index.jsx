@@ -236,7 +236,6 @@ const DuplicateTaskModal = (props) => {
         <Row gutter={[24, 0]} className={styles.abovePart}>
           <Col span={24}>
             <Form.Item
-              rules={[{ required: true, message: 'Please select Timesheet Period' }]}
               label="Select Timesheet Period"
               name="dates"
               fieldKey="dates"
@@ -251,7 +250,7 @@ const DuplicateTaskModal = (props) => {
                 disabledDate={disabledDate}
                 onCalendarChange={(val) => setDates(val)}
                 onOpenChange={onOpenChange}
-                allowClear={false}
+                allowClear
               />
             </Form.Item>
           </Col>
@@ -267,7 +266,7 @@ const DuplicateTaskModal = (props) => {
           {dates && Array.isArray(dates) && dates[0] !== null && dates[1] !== null ? (
             renderFormList()
           ) : (
-            <EmptyComponent height={290} />
+            <EmptyComponent height={290} description="Select the Timesheet Period" />
           )}
         </div>
       </Form>
