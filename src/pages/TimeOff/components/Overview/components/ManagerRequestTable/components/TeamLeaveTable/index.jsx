@@ -1,18 +1,16 @@
-import React, { PureComponent } from 'react';
-import { Table, Tag, Tooltip, Spin } from 'antd';
-import { history, connect, Link } from 'umi';
-import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
+import { Spin, Table, Tag, Tooltip } from 'antd';
+import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect, history, Link } from 'umi';
 import ApproveIcon from '@/assets/approveTR.svg';
-import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
-import { roundNumber, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
+import OpenIcon from '@/assets/openTR.svg';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
-
-import RejectCommentModal from '../RejectCommentModal';
-
-import styles from './index.less';
 import UserProfilePopover from '@/components/UserProfilePopover';
+import { roundNumber, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
+import RejectCommentModal from '../RejectCommentModal';
+import styles from './index.less';
 
 const { IN_PROGRESS, REJECTED, ON_HOLD } = TIMEOFF_STATUS;
 

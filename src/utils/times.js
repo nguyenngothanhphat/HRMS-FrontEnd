@@ -1,9 +1,13 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, isObject } from 'lodash';
 
 const moment = require('moment-timezone');
 const cityTimezones = require('city-timezones');
 
-export const getTimezoneViaCity = (city) => {
+export const getTimezoneViaCity = (cityProp = '') => {
+  let city = cityProp;
+  if (isObject(city)) {
+    city = city.name || '';
+  }
   // check if city is empty return the current timezone
   if (!city || isEmpty(city)) {
     return '';
