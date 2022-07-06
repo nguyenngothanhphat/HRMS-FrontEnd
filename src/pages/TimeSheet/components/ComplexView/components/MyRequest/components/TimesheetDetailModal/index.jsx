@@ -43,14 +43,15 @@ const TimesheetDetailModal = (props) => {
   };
 
   useLayoutEffect(() => {
-    if (startDateWeek && selectedView === 'W') {
+    if (visible && startDateWeek && selectedView === 'W') {
       fetchMyTimesheetEffectByType(startDateWeek, endDateWeek);
     }
-  }, [startDateWeek, selectedView]);
+  }, [visible, startDateWeek, selectedView]);
 
   const handleCancel = () => {
     onClose();
   };
+
   const handleResubmit = async () => {
     await dispatch({
       type: 'timeSheet/resubmitMyRequest',
@@ -58,7 +59,9 @@ const TimesheetDetailModal = (props) => {
         ticketId,
       },
     });
-    onClose();
+    onClose({
+      refresh: true,
+    });
   };
 
   // RENDER UI

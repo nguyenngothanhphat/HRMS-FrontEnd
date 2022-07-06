@@ -4,13 +4,15 @@ import { connect } from 'umi';
 import CommentIcon from '@/assets/homePage/comment.svg';
 import DislikeIcon from '@/assets/homePage/dislike.svg';
 import DislikedIcon from '@/assets/homePage/disliked.svg';
+import ShowMoreIcon from '@/assets/homePage/downArrow.svg';
 import LikeIcon from '@/assets/homePage/like.svg';
 import LikedIcon from '@/assets/homePage/liked.svg';
-import ShowMoreIcon from '@/assets/homePage/downArrow.svg';
 import ShowLessIcon from '@/assets/homePage/upArrow.svg';
 import CommentBox from '@/components/CommentBox';
+import CommonModal from '@/components/CommonModal';
+import PostLikedModalContent from '@/components/PostLikedModalContent';
 import UserComment from '@/components/UserComment';
-import { LIKE_ACTION } from '@/utils/homePage';
+import { LIKE_ACTION, POST_OR_CMT } from '@/utils/homePage';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -22,14 +24,18 @@ const DEFAULT_COMMENT_LIMIT = 5;
 
 const LikeComment = ({
   dispatch,
-  user: { currentUser: { employee = {} } = {} } = {},
-  homePage: { postComments = [] } = {},
+  user: {
+    currentUser: { employee = {} } = {},
+    permissions: { viewSettingHomePage = -1 } = {},
+  } = {},
+  homePage: { postComments = [], reactionList = [], reactionTotal = 0 } = {},
   post = {},
   loadingFetchComments = false,
   loadingAddComment = false,
   loadingEditComment = false,
   loadingRemoveComment = false,
   loadingFetchOnePost = false,
+  loadingFetchReactList = false,
   activePostID = '',
   setActivePostID = () => {},
 }) => {
@@ -39,6 +45,9 @@ const LikeComment = ({
   const [handlingCommentId, setHandlingCommentId] = useState('');
   const [comments, setComments] = useState([]);
   const [limit, setLimit] = useState(DEFAULT_COMMENT_LIMIT);
+
+  const [viewingPostOrCommentLiked, setViewingPostOrCommentLiked] = useState();
+  const [isLikeOrDislike, setIsLikeOrDislike] = useState('');
 
   // API
   const getPostCommentsEffect = (postIdProp, loadType) => {
@@ -121,6 +130,30 @@ const LikeComment = ({
     });
   };
 
+  const getPostReactionListEffect = (type) => {
+    return dispatch({
+      type: 'homePage/fetchPostReactionListEffect',
+      payload: {
+        post: post?._id,
+        type: type || isLikeOrDislike,
+        page: 1,
+        limit: Math.floor(reactionList.length / 5) * 5 + 5,
+      },
+    });
+  };
+
+  const getCommentReactionListEffect = (commentId, type) => {
+    return dispatch({
+      type: 'homePage/fetchPostReactionListEffect',
+      payload: {
+        comment: commentId,
+        type: type || isLikeOrDislike,
+        page: 1,
+        limit: Math.floor(reactionList.length / 5) * 5 + 5,
+      },
+    });
+  };
+
   useEffect(() => {
     const find = postComments.find((x) => x._id === post?._id);
     if (find) {
@@ -185,6 +218,24 @@ const LikeComment = ({
     setHandlingCommentId(commentId);
   };
 
+  const onViewWhoLiked = (type) => {
+    setIsLikeOrDislike(type);
+    getPostReactionListEffect(type);
+    setViewingPostOrCommentLiked(POST_OR_CMT.POST);
+  };
+
+  const onCloseLikedModal = () => {
+    setViewingPostOrCommentLiked('');
+    setIsLikeOrDislike('');
+    dispatch({
+      type: 'homePage/save',
+      payload: {
+        reactionList: [],
+        reactionTotal: 0,
+      },
+    });
+  };
+
   // render UI
   const renderCommentIcon = (isActive) => {
     return (
@@ -210,23 +261,31 @@ const LikeComment = ({
   const renderLikeBtn = () => {
     const liked = post.react === LIKE_ACTION.LIKE;
     const disliked = post.react === LIKE_ACTION.DISLIKE;
+    const likeCount = post.totalReact?.asObject?.[LIKE_ACTION.LIKE] || 0;
+    const dislikeCount = post.totalReact?.asObject?.[LIKE_ACTION.DISLIKE] || 0;
 
     return (
       <Spin spinning={loadingFetchOnePost && activePostID === post._id} indicator={null}>
         <div className={styles.likes}>
-          <div
-            onClick={() => onLikePost(LIKE_ACTION.LIKE)}
-            className={liked ? styles.likes__pressed : null}
-          >
-            <img src={liked ? LikedIcon : LikeIcon} alt="" />
-            <span>{post.totalReact?.asObject?.[LIKE_ACTION.LIKE] || 0}</span>
+          <div className={liked ? styles.likes__pressed : null}>
+            <img
+              src={liked ? LikedIcon : LikeIcon}
+              alt=""
+              onClick={() => onLikePost(LIKE_ACTION.LIKE)}
+            />
+            <span onClick={() => onViewWhoLiked(LIKE_ACTION.LIKE)}>
+              {likeCount} {likeCount > 1 ? 'Likes' : 'Like'}
+            </span>
           </div>
-          <div
-            onClick={() => onLikePost(LIKE_ACTION.DISLIKE)}
-            className={disliked ? styles.likes__pressed : null}
-          >
-            <img src={disliked ? DislikedIcon : DislikeIcon} alt="" />
-            <span>{post.totalReact?.asObject?.[LIKE_ACTION.DISLIKE] || 0}</span>
+          <div className={disliked ? styles.likes__pressed : null}>
+            <img
+              src={disliked ? DislikedIcon : DislikeIcon}
+              alt=""
+              onClick={() => onLikePost(LIKE_ACTION.DISLIKE)}
+            />
+            <span onClick={() => onViewWhoLiked(LIKE_ACTION.DISLIKE)}>
+              {dislikeCount} {dislikeCount > 1 ? 'Dislikes' : 'Dislike'}
+            </span>
           </div>
         </div>
       </Spin>
@@ -314,6 +373,10 @@ const LikeComment = ({
                         onEditCancel={onEditCancel}
                         refreshComments={refreshComments}
                         setActivePostID={setActivePostID}
+                        getCommentReactionListEffect={getCommentReactionListEffect}
+                        setViewingPostOrCommentLiked={setViewingPostOrCommentLiked}
+                        setIsLikeOrDislike={setIsLikeOrDislike}
+                        hasPermission={viewSettingHomePage !== -1}
                       />
                     </Spin>
                   </Col>
@@ -324,6 +387,23 @@ const LikeComment = ({
           </Spin>
         </Panel>
       </Collapse>
+
+      <CommonModal
+        visible={viewingPostOrCommentLiked}
+        onClose={onCloseLikedModal}
+        title={isLikeOrDislike === LIKE_ACTION.LIKE ? 'Likes' : 'Dislikes'}
+        content={
+          <PostLikedModalContent
+            list={reactionList.map((x) => x.employee)}
+            loading={loadingFetchReactList}
+            total={reactionTotal}
+            loadMore={getPostReactionListEffect}
+          />
+        }
+        width={500}
+        hasFooter={false}
+        maskClosable
+      />
     </div>
   );
 };
@@ -337,4 +417,5 @@ export default connect(({ user, homePage, loading }) => ({
   loadingRemoveComment: loading.effects['homePage/removeCommentEffect'],
   loadingFetchOnePost: loading.effects['homePage/fetchPostByIdEffect'],
   loadingReactPost: loading.effects['homePage/reactPostEffect'],
+  loadingFetchReactList: loading.effects['homePage/fetchPostReactionListEffect'],
 }))(LikeComment);

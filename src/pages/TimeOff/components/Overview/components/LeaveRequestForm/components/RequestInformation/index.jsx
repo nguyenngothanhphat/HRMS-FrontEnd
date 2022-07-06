@@ -1037,6 +1037,7 @@ const RequestInformation = (props) => {
                         }}
                         placeholder="From Date"
                         disabled={!selectedTypeName}
+                        multiple
                       />
                     </Form.Item>,
                   )}
