@@ -59,13 +59,13 @@ const ConfirmModal = (props) => {
           <div className={styles.pageBottom__text}>
             Password: <strong>12345678@Tc</strong>
           </div>
-          <div className={styles.pageBottom__text}>
+          {/* <div className={styles.pageBottom__text}>
             Employee ID:{' '}
             <strong>
               {idGenerate.prefix}
               {idGenerate.start}
             </strong>
-          </div>
+          </div> */}
           <div className={styles.pageBottom__text}>
             Job Title: <strong>{title?.name}</strong>
           </div>
@@ -74,9 +74,9 @@ const ConfirmModal = (props) => {
           </div>
           <div className={styles.pageBottom__text}>
             Reportees:{' '}
-            {reportees.slice(0, 4).map((t) => (
+            {reportees.slice(0, 4).map((t, i) => (
               <>
-                <strong>{t?.generalInfoInfo?.legalName}</strong> ,{' '}
+                <strong>{t?.generalInfoInfo?.legalName}</strong> {i < 3 && ', '}
               </>
             ))}
             {reportees.length > 4 && !showMore ? (
@@ -84,9 +84,10 @@ const ConfirmModal = (props) => {
                 +{reportees.length - 4} More <DownOutlined />
               </Button>
             ) : (
-              reportees.slice(4, reportees.length).map((t) => (
+              reportees.slice(4, reportees.length).map((t, i) => (
                 <>
-                  <strong>{t?.generalInfoInfo?.legalName}</strong> ,{' '}
+                  {reportees.length > i && ', '}
+                  <strong>{t?.generalInfoInfo?.legalName}</strong>
                 </>
               ))
             )}

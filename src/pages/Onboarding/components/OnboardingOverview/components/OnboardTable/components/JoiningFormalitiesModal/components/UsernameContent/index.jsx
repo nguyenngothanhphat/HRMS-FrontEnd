@@ -29,14 +29,14 @@ const UserNameContent = (props) => {
   };
 
   const onFinish = async (value) => {
-    const { userName: name = '', domain } = value;
+    const { userName: name = '', domain: domainName } = value;
     if (name) {
       const isExistingUserName = await dispatch({
         type: 'onboard/checkExistedUserName',
         payload: { userName: name },
       });
       if (isExistingUserName === false) {
-        onSaveRedux({ domain });
+        onSaveRedux({ domain: domainName });
         next();
       } else setValidate({ validateStatus: 'error', errorMsg: 'That username is already taken' });
     } else setValidate({ validateStatus: 'error', errorMsg: 'Please input user name' });
@@ -89,7 +89,7 @@ export default connect(
     listDomain,
     userName,
     domain,
-    loadingGetListDomain: loading.effects['onboard/getEmployeeIdfetchListDomain'],
+    loadingGetListDomain: loading.effects['onboard/fetchListDomain'],
     loadingGetEmployeeId: loading.effects['onboard/getEmployeeId'],
     loadingCheckUserName: loading.effects['onboard/checkExistedUserName'],
   }),

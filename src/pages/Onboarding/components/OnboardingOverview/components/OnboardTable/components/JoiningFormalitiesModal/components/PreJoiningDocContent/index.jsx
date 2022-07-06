@@ -1,4 +1,4 @@
-import { Checkbox, Col, Divider, Row } from 'antd';
+import { Checkbox, Col, Divider, Row, Tooltip } from 'antd';
 import classNames from 'classnames';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -7,6 +7,7 @@ import Resubmit from '@/assets/resubmit.svg';
 import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
 import { DOCUMENTS_CHECKLIST_TYPE } from '@/utils/newCandidateForm';
+import Check from '@/assets/changePasswordCheck.svg';
 
 const PreJoiningDocContent = (props) => {
   const {
@@ -137,19 +138,31 @@ const PreJoiningDocContent = (props) => {
     ));
   };
 
-  const allValues = documentChecklist.reduce((c, i) => c + i.documents.length, 0);
+  const allValues = documentChecklist.reduce(
+    (c, i) =>
+      c +
+      i.documents.filter(
+        (e) => e.status !== DOCUMENT_TYPES.VERIFIED && e.status !== DOCUMENT_TYPES.RECEIVED,
+      ).length,
+    0,
+  );
+  const waiting = documentChecklist.some((i) =>
+    i.documents.some(
+      (e) => e.status !== DOCUMENT_TYPES.VERIFIED && e.status !== DOCUMENT_TYPES.RECEIVED,
+    ),
+  );
 
   useEffect(() => {
     setCallback(allValues);
   }, [allValues]);
 
-  return (
+  return waiting ? (
     <div className={classNames(styles.pageBottom, styles.pageBottom__fixed)}>
       <Checkbox.Group value={preJoinCheckList} onChange={setPreJoinCheckList}>
         {documentChecklist.map(
           (docType) =>
             docType.documents.some(
-              (e) => e.status !== DOCUMENT_TYPES.VERIFIED || e.status !== DOCUMENT_TYPES.RECEIVED,
+              (e) => e.status !== DOCUMENT_TYPES.VERIFIED && e.status !== DOCUMENT_TYPES.RECEIVED,
             ) && (
               <>
                 <div className={styles.doctype}>{docType.type}</div>
@@ -160,6 +173,15 @@ const PreJoiningDocContent = (props) => {
         )}
       </Checkbox.Group>
     </div>
+  ) : (
+    <>
+      <div className={styles.pageNotice}>
+        <img className={styles.check} alt="check" src={Check} height="20px" />
+        <div className={styles.pageNotice__text}>
+          All the required documents have been received and verified
+        </div>
+      </div>
+    </>
   );
 };
 

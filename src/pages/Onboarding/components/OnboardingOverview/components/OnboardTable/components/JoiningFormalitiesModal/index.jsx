@@ -22,13 +22,11 @@ const JoiningFormalitiesModal = (props) => {
     dispatch,
     loadingCheckUserName,
     loadingCreateEmployee,
-    userName,
   } = props;
   const [checkList, setCheckList] = useState([]);
   const [docSubCheckList, setDocSubCheckList] = useState([]);
   const [preJoinCheckList, setPreJoinCheckList] = useState([]);
   const [callback, setCallback] = useState(0);
-  const [initalValue, setInitalValue] = useState({});
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -44,10 +42,8 @@ const JoiningFormalitiesModal = (props) => {
           tenantId: getCurrentTenant(),
         },
       });
+    return setCurrent(0);
   }, [candidateId]);
-  useEffect(() => {
-    setInitalValue({ userName });
-  }, [userName]);
 
   // function
   const next = () => {
@@ -229,12 +225,8 @@ const JoiningFormalitiesModal = (props) => {
 };
 
 export default connect(
-  ({
-    loading,
-    onboard: { joiningFormalities: { listJoiningFormalities = [], userName = '' } } = {},
-  }) => ({
+  ({ loading, onboard: { joiningFormalities: { listJoiningFormalities = [] } } = {} }) => ({
     listJoiningFormalities,
-    userName,
     loadingGetEmployeeId: loading.effects['onboard/getEmployeeId'],
     loadingCheckUserName: loading.effects['onboard/checkExistedUserName'],
     loadingCreateEmployee: loading.effects['onboard/createEmployee'],

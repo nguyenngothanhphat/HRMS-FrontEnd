@@ -6,7 +6,6 @@ import deleteSymbol from '@/assets/deleteMailExist.svg';
 import errorFile from '@/assets/errorFile.svg';
 import CommonModal from '@/components/CommonModal';
 import s from './index.less';
-import { getCurrentCompany } from '@/utils/authority';
 
 const Domain = (props) => {
   const [form] = Form.useForm();
@@ -34,7 +33,9 @@ const Domain = (props) => {
 
   const onFinish = (values) => {
     const formatData = values.domain.map((i) => {
-      return { name: i.name, isPrimary: !!i.isPrimary };
+      return i._id
+        ? { _id: i._id, name: i.name, isPrimary: !!i.isPrimary }
+        : { name: i.name, isPrimary: !!i.isPrimary };
     });
 
     // dispatch({
@@ -69,7 +70,7 @@ const Domain = (props) => {
   const onRemoveItem = async (index) => {
     const id = listDomain[index]?._id;
     const values = form.getFieldsValue();
-    const tempDomain = values.domain || {};
+    const tempDomain = values.domain || [];
     if (id) {
       const response = await dispatch({
         type: 'adminSetting/removeListDomain',
@@ -123,6 +124,8 @@ const Domain = (props) => {
                 {fields.map(({ key, name, ...restField }, i) => (
                   <>
                     <Form.Item
+                      className={s.domainContent}
+                      // eslint-disable-next-line react/jsx-props-no-spreading
                       {...restField}
                       label={
                         <div>
@@ -151,14 +154,16 @@ const Domain = (props) => {
                     </Form.Item>
                     <Form.Item
                       className={s.primary}
+                      // eslint-disable-next-line react/jsx-props-no-spreading
                       {...restField}
                       name={[name, 'isPrimary']}
                       key={key}
                       label={<span className={s.primaryText}>Primary Domain</span>}
                       wrapperCol={{ span: 1 }}
                       labelCol={{ span: 23 }}
+                      valuePropName="checked"
                     >
-                      <Switch size="small" checked={listDomain[i]?.isPrimary} />
+                      <Switch size="small" />
                     </Form.Item>
                   </>
                 ))}

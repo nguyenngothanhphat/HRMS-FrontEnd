@@ -231,7 +231,7 @@ export async function getDomains(payload) {
 }
 
 export async function setDomains(params, payload) {
-  return request('/api/domaintenant/multiple', {
+  return request('/api/domaintenant', {
     method: 'POST',
     data: payload,
     params,

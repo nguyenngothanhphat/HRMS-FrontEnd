@@ -14,6 +14,10 @@ const ReportingManagerContent = (props) => {
     candidateId,
     rookieId,
   } = props;
+  console.log(
+    '🚀 ~ employee',
+    employee.map((item) => item._id),
+  );
   const [form] = Form.useForm();
   // const [arr, setArr] = useState(employeeList);
   const [selectedManager, setSelectedManager] = useState(null);
@@ -34,7 +38,7 @@ const ReportingManagerContent = (props) => {
     });
     form.setFieldsValue({
       reportingManager: manager?._id,
-      reportees: employee,
+      reportees: employee?.map((a) => a?._id),
     });
   }, []);
 

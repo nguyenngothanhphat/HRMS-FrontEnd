@@ -14,6 +14,7 @@ const JoiningFormalities = (props) => {
     loadingUpdateEmployeeId,
     location,
     settingId = {},
+    employeeIdList,
     // locationTotal: total,
   } = props;
   const [form] = Form.useForm();
@@ -41,14 +42,12 @@ const JoiningFormalities = (props) => {
 
   const onFinish = async (value) => {
     const { prefix, generatedId: start } = value;
+
     const response = await dispatch({
-      type: 'onboard/updateEmployeeFormatByLocation',
+      type: 'onboard/updateEmployeeFormatByGlobal',
       payload: {
-        location: {
-          _id: location._id,
-          prefix,
-          start,
-        },
+        prefix,
+        start,
       },
     });
     const { statusCode = 0 } = response;

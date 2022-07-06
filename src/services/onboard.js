@@ -180,3 +180,10 @@ export async function updateEmployeeFormatByLocation(payload) {
     data: payload,
   });
 }
+
+export async function updateEmployeeFormatByGlobal(payload) {
+  return request('/api/locationtenant/multiple', {
+    method: 'PATCH',
+    data: payload,
+  });
+}

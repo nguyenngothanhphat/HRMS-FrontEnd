@@ -69,16 +69,13 @@ const DocSubmissionContent = (props) => {
     },
   ];
 
-  const comment = docType.some((e) => e.data.some((a) => a.resubmitComment.length > 0));
+  const comment = docType.some((e) => e.data.some((a) => !!a.resubmitComment?.length));
   const allValues = docType.reduce((c, i) => c + i.data.length, 0);
 
   useEffect(() => {
-    setCallback(allValues);
-  }, [allValues]);
-
-  useEffect(() => {
-    comment === false && setCallback(0);
-  }, [comment]);
+    // eslint-disable-next-line no-unused-expressions
+    comment ? setCallback(allValues) : setCallback(0);
+  }, [allValues, comment]);
 
   return (
     <>

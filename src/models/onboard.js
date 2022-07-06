@@ -27,6 +27,7 @@ import {
   updateEmployeeFormatByLocation,
   updateJoiningFormalities,
   updateSettingEmployeeId,
+  updateEmployeeFormatByGlobal,
 } from '@/services/onboard';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { PROCESS_STATUS, PROCESS_STATUS_TABLE_NAME } from '@/utils/onboarding';
@@ -1088,6 +1089,20 @@ const onboard = {
       let response = {};
       try {
         response = yield call(updateEmployeeFormatByLocation, {
+          ...payload,
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *updateEmployeeFormatByGlobal({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(updateEmployeeFormatByGlobal, {
           ...payload,
         });
         const { statusCode, message } = response;
