@@ -1,75 +1,73 @@
 /* eslint-disable react/jsx-curly-newline */
 import { EyeFilled } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
-import React, { Component } from 'react';
-// import GoogleLogin from 'react-google-login';
+import React, { useEffect, useState } from 'react';
 import { connect, formatMessage, history, Link } from 'umi';
 import { removeLocalStorage } from '@/utils/authority';
 import logoGoogle from '@/assets/logo_google.png';
 import styles from './index.less';
 import { IS_TERRALOGIC_CANDIDATE_LOGIN, IS_TERRALOGIC_LOGIN } from '@/utils/login';
 
-@connect(({ loading, login: { messageError = '', urlGoogle = '', urlLollypop = '' } = {} }) => ({
-  loading: loading.effects['login/login'],
-  messageError,
-  urlGoogle,
-  urlLollypop,
-}))
-class FormLogin extends Component {
-  formRef = React.createRef();
+const FormLogin = (props) => {
+  const {
+    location,
+    dispatch,
+    loading = false,
+    login: {
+      messageError = '',
+      isEmailError: isEmailErrorProp = false,
+      isPasswordError: isPasswordErrorProp = false,
+      urlGoogle = '',
+      urlLollypop = '',
+    } = {},
+  } = props;
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      checkValidationEmail: undefined,
-      isMessageValidationEmail: true,
-    };
-  }
+  const [form] = Form.useForm();
+  const [isEmailError, setIsEmailError] = useState(false);
+  const [isPasswordError, setIsPasswordError] = useState(false);
 
-  componentDidMount = () => {
-    const { location, dispatch } = this.props;
+  useEffect(() => {
+    setIsEmailError(isEmailErrorProp);
+    setIsPasswordError(isPasswordErrorProp);
+  }, [isEmailErrorProp, isPasswordErrorProp]);
+
+  useEffect(() => {
     const query = new URLSearchParams(location.search);
-    const email = query.get('email');
-
-    if (email) {
-      this.formRef.current.setFieldsValue({
-        userEmail: email,
+    const emailGet = query.get('email');
+    if (emailGet) {
+      form.setFieldsValue({
+        userEmail: emailGet,
       });
     }
     removeLocalStorage();
     dispatch({ type: 'login/getURLGoogle' });
     dispatch({ type: 'login/getURLLollypop' });
-    // this.formRef.current.setFieldsValue({
-    //   email: autoFillEmail,
-    // });
     history.replace();
-  };
+  }, []);
 
-  onFinish = ({ userEmail: email, password, keepSignIn }) => {
-    const payload = { email, password, keepSignIn };
-    this.handleSubmit(payload);
-  };
-
-  handleSubmit = (values) => {
-    const { dispatch } = this.props;
-
+  const handleSubmit = (values) => {
     dispatch({
       type: 'login/login',
-      payload: { ...values },
-    }).then(() => {
-      const { messageError = '' } = this.props;
-
-      const checkValidationEmail =
-        messageError === 'User not found' || messageError === 'Invalid user' ? 'error' : undefined;
-
-      this.setState({ checkValidationEmail, isMessageValidationEmail: true });
+      payload: values,
     });
   };
 
-  _renderButton = () => {
-    const { loading } = this.props;
-    // const valueEmail = getFieldValue('userEmail');
-    // const valuePsw = getFieldValue('password');
+  const onValuesChange = () => {
+    dispatch({
+      type: 'login/save',
+      payload: {
+        isEmailError: false,
+        isPasswordError: false,
+      },
+    });
+  };
+
+  const onFinish = ({ userEmail, password, keepSignIn }) => {
+    const payload = { email: userEmail, password, keepSignIn };
+    handleSubmit(payload);
+  };
+
+  const _renderButton = () => {
     return (
       <Button
         type="primary"
@@ -83,29 +81,7 @@ class FormLogin extends Component {
     );
   };
 
-  returnMessageValidationEmail = (messageError) => {
-    if (messageError === 'User not found') return 'User does not exist';
-    if (messageError === 'Invalid user') return 'Invalid user';
-    return undefined;
-  };
-
-  onValuesChange = (values) => {
-    const { checkValidationEmail } = this.state;
-    if (checkValidationEmail === 'error' && values) {
-      this.setState({ isMessageValidationEmail: false, checkValidationEmail: undefined });
-    }
-  };
-
-  checkBoxValue = (emailsLocalStr, passwordLocalStr) => {
-    let checkedBox = false;
-    if (emailsLocalStr && passwordLocalStr) {
-      checkedBox = true;
-    }
-
-    return checkedBox;
-  };
-
-  getLoginBoxText = () => {
+  const getLoginBoxText = () => {
     if (IS_TERRALOGIC_CANDIDATE_LOGIN)
       return ['Welcome Back', 'Enter your credentials to access your account.'];
     if (IS_TERRALOGIC_LOGIN)
@@ -113,128 +89,134 @@ class FormLogin extends Component {
     return ['Sign in to your account'];
   };
 
-  render() {
-    const { messageError = '', urlGoogle = '', urlLollypop = '' } = this.props;
-    const { checkValidationEmail, isMessageValidationEmail } = this.state;
+  const titleText = getLoginBoxText(IS_TERRALOGIC_LOGIN, IS_TERRALOGIC_CANDIDATE_LOGIN);
 
-    const messageValidationEmail = this.returnMessageValidationEmail(messageError);
+  return (
+    <div className={styles.formWrapper}>
+      <p
+        className={styles.formWrapper__title}
+        style={IS_TERRALOGIC_LOGIN || IS_TERRALOGIC_CANDIDATE_LOGIN ? { fontSize: '24px' } : {}}
+      >
+        {titleText[0]}
+      </p>
+      {titleText.length > 1 && <p className={styles.formWrapper__description}>{titleText[1]}</p>}
 
-    const checkValidationPsw = messageError === 'Invalid password' ? 'error' : undefined;
-    const messageValidationPsw =
-      messageError === 'Invalid password' ? 'Incorrect password. Try again' : undefined;
-
-    const titleText = this.getLoginBoxText(IS_TERRALOGIC_LOGIN, IS_TERRALOGIC_CANDIDATE_LOGIN);
-    return (
-      <div className={styles.formWrapper}>
-        <p
-          className={styles.formWrapper__title}
-          style={IS_TERRALOGIC_LOGIN || IS_TERRALOGIC_CANDIDATE_LOGIN ? { fontSize: '24px' } : {}}
+      <Form
+        layout="vertical"
+        name="basic"
+        initialValues={{
+          keepSignIn: false,
+        }}
+        onFinish={onFinish}
+        requiredMark={false}
+        onValuesChange={onValuesChange}
+        form={form}
+      >
+        <Form.Item
+          label={formatMessage({ id: 'pages.login.emailLabel' })}
+          name="userEmail"
+          validateStatus={isEmailError ? 'error' : undefined}
+          help={isEmailError ? messageError : null}
+          validateTrigger="onSubmit"
+          rules={[
+            {
+              required: true,
+              message: formatMessage({ id: 'pages.login.pleaseInputYourEmail' }),
+            },
+            {
+              type: 'email',
+              message: formatMessage({ id: 'pages.login.invalidEmail' }),
+            },
+          ]}
         >
-          {titleText[0]}
-        </p>
-        {titleText.length > 1 && <p className={styles.formWrapper__description}>{titleText[1]}</p>}
-        <Form
-          layout="vertical"
-          name="basic"
-          initialValues={{
-            keepSignIn: false,
-          }}
-          onFinish={this.onFinish}
-          onValuesChange={this.onValuesChange}
-          requiredMark={false}
-          ref={this.formRef}
+          <Input
+            className={styles.inputEmail}
+            placeholder="Enter your email"
+            onChange={() =>
+              form.setFieldsValue({ userEmail: (form.getFieldValue('userEmail') || '').trim() })
+            }
+            spellcheck="false"
+          />
+        </Form.Item>
+        <Form.Item
+          label={formatMessage({ id: 'pages.login.passwordLabel' })}
+          name="password"
+          validateTrigger="onSubmit"
+          validateStatus={isPasswordError ? 'error' : undefined}
+          help={isPasswordError ? messageError : null}
+          rules={[
+            {
+              required: true,
+              message: formatMessage({ id: 'pages.login.pleaseInputYourPassword' }),
+            },
+          ]}
         >
-          <Form.Item
-            label={formatMessage({ id: 'pages.login.emailLabel' })}
-            name="userEmail"
-            validateStatus={checkValidationEmail}
-            help={isMessageValidationEmail ? messageValidationEmail : null}
-            rules={[
-              {
-                required: true,
-                message: formatMessage({ id: 'pages.login.pleaseInputYourEmail' }),
-              },
-              {
-                type: 'email',
-                message: formatMessage({ id: 'pages.login.invalidEmail' }),
-              },
-            ]}
-          >
-            <Input className={styles.inputEmail} />
+          <Input.Password
+            iconRender={(visible) =>
+              visible ? <EyeFilled style={{ color: '#2c6df9' }} /> : <EyeFilled />
+            }
+            className={styles.inputPassword}
+            placeholder="Enter your password"
+            spellcheck="false"
+          />
+        </Form.Item>
+        <div className={styles.keepSignIn}>
+          <Form.Item className={styles.checkbox} name="keepSignIn" valuePropName="checked">
+            <Checkbox>
+              <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
+            </Checkbox>
           </Form.Item>
-          <Form.Item
-            label={formatMessage({ id: 'pages.login.passwordLabel' })}
-            name="password"
-            validateStatus={checkValidationPsw}
-            help={messageValidationPsw}
-            rules={[
-              {
-                required: true,
-                message: formatMessage({ id: 'pages.login.pleaseInputYourPassword' }),
-              },
-            ]}
-          >
-            <Input.Password
-              iconRender={(visible) =>
-                visible ? <EyeFilled style={{ color: '#2c6df9' }} /> : <EyeFilled />
-              }
-              className={styles.inputPassword}
-            />
-          </Form.Item>
-          <div className={styles.keepSignIn}>
-            <Form.Item className={styles.checkbox} name="keepSignIn" valuePropName="checked">
-              <Checkbox>
-                <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
-              </Checkbox>
-            </Form.Item>
-            {/* {IS_TERRALOGIC_LOGIN && (
+          {/* {IS_TERRALOGIC_LOGIN && (
               <Link to="/forgot-password" className={styles.forgotPasswordLink}>
                 {formatMessage({ id: 'pages.login.forgotPassword' })}
               </Link>
             )} */}
-          </div>
+        </div>
 
-          <Form.Item
-            noStyle
-            shouldUpdate={(prevValues, currentValues) =>
-              prevValues.userEmail !== currentValues.userEmail ||
-              prevValues.password !== currentValues.password
-            }
-          >
-            {({ getFieldValue }) => this._renderButton(getFieldValue)}
-          </Form.Item>
-          {!IS_TERRALOGIC_CANDIDATE_LOGIN && (
-            <>
-              {IS_TERRALOGIC_LOGIN ? (
-                <div className={styles.textOr}>or</div>
-              ) : (
-                <div className={styles.textOr}>or sign in with</div>
-              )}
-              <a href={urlGoogle}>
-                <Button type="primary" className={styles.btnSignInGG}>
-                  <img src={logoGoogle} alt="logo" />
-                  <span>Terralogic Login</span>
-                </Button>
-              </a>
-              <a href={urlLollypop}>
-                <Button type="primary" className={styles.btnSignInLollypop}>
-                  <img src={logoGoogle} alt="logo" />
-                  <span>Lollypop Login</span>
-                </Button>
-              </a>
-              {!IS_TERRALOGIC_LOGIN && (
-                <Link to="/forgot-password">
-                  <p className={styles.forgotPassword}>
-                    {formatMessage({ id: 'pages.login.forgotPassword' })}
-                  </p>
-                </Link>
-              )}
-            </>
-          )}
-        </Form>
-      </div>
-    );
-  }
-}
+        <Form.Item
+          noStyle
+          shouldUpdate={(prevValues, currentValues) =>
+            prevValues.userEmail !== currentValues.userEmail ||
+            prevValues.password !== currentValues.password
+          }
+        >
+          {({ getFieldValue }) => _renderButton(getFieldValue)}
+        </Form.Item>
 
-export default FormLogin;
+        {!IS_TERRALOGIC_CANDIDATE_LOGIN && (
+          <>
+            {IS_TERRALOGIC_LOGIN ? (
+              <div className={styles.textOr}>or</div>
+            ) : (
+              <div className={styles.textOr}>or sign in with</div>
+            )}
+            <a href={urlGoogle}>
+              <Button type="primary" className={styles.btnSignInGG}>
+                <img src={logoGoogle} alt="logo" />
+                <span>Terralogic Login</span>
+              </Button>
+            </a>
+            <a href={urlLollypop}>
+              <Button type="primary" className={styles.btnSignInLollypop}>
+                <img src={logoGoogle} alt="logo" />
+                <span>Lollypop Login</span>
+              </Button>
+            </a>
+            {!IS_TERRALOGIC_LOGIN && (
+              <Link to="/forgot-password">
+                <p className={styles.forgotPassword}>
+                  {formatMessage({ id: 'pages.login.forgotPassword' })}
+                </p>
+              </Link>
+            )}
+          </>
+        )}
+      </Form>
+    </div>
+  );
+};
+
+export default connect(({ loading, login }) => ({
+  loading: loading.effects['login/login'],
+  login,
+}))(FormLogin);
