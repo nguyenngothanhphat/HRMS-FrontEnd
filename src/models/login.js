@@ -19,18 +19,24 @@ const Model = {
     messageError: '',
     urlGoogle: '',
     urlLollypop: '',
+    isEmailError: false,
+    isPasswordError: false,
   },
   effects: {
     *login({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(accountLogin, payload);
+        response = yield call(accountLogin, payload);
         yield put({
           type: 'changeLoginStatus',
           payload: response,
         });
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { messageError: '' } });
+        yield put({
+          type: 'save',
+          payload: { messageError: '', isEmailError: false, isPasswordError: false },
+        });
         setToken(response.data.token);
 
         let formatArrRoles = [];
@@ -86,10 +92,17 @@ const Model = {
         if (data.length > 0) {
           const [firstError] = data;
           const { defaultMessage: messageError = '' } = firstError;
-          yield put({ type: 'save', payload: { messageError } });
+          yield put({
+            type: 'save',
+            payload: {
+              messageError,
+              isEmailError: messageError !== 'Invalid password',
+              isPasswordError: messageError === 'Invalid password',
+            },
+          });
         }
       }
-      return {};
+      return response;
     },
 
     *logout(_, { put }) {
