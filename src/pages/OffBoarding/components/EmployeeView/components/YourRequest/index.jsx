@@ -23,6 +23,7 @@ const YourRequest = (props) => {
       LWD = '',
       _id = '',
       status = '',
+      hrStatus = '',
       meeting: { status: meetingStatus = '' } = {},
       assigned: {
         hr: { generalInfoInfo: { avatar: avatarHr = '', legalName: hrName = '' } = {} } = {},
@@ -92,6 +93,15 @@ const YourRequest = (props) => {
           </div>
         );
       case STATUS.ACCEPTED:
+        if (hrStatus === STATUS.IN_PROGRESS) {
+          return (
+            <div className={styles.containerStatus}>
+              <div>Status: </div>
+              <div className={styles.statusInProgress} />
+              <div style={{ color: '#ffa100' }}>In Progress</div>
+            </div>
+          );
+        }
         return (
           <div className={styles.containerStatus}>
             <div>Status: </div>

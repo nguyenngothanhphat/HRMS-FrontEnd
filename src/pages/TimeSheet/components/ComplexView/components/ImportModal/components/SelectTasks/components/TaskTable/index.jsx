@@ -13,7 +13,7 @@ const TaskTable = (props) => {
   useEffect(() => {
     const selectRowsRedux = importingIds.find((v) => isTheSameDay(v.date, selectedDate));
     if (selectRowsRedux) {
-      setSelectedTask(selectRowsRedux.selectedIds);
+      setSelectedTask(selectRowsRedux.selectedIds.map((v) => v.id));
     }
   }, [JSON.stringify(list)]);
 
@@ -51,7 +51,8 @@ const TaskTable = (props) => {
   };
 
   const onSelectChange = (selectedRowKeys) => {
-    saveImportingIds(selectedRowKeys);
+    const arr = list.filter((v) => selectedRowKeys.includes(v.id));
+    saveImportingIds(arr);
     setSelectedTask(selectedRowKeys);
   };
 
