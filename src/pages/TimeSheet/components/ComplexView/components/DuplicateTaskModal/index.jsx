@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import CustomTimePicker from '@/components/CustomTimePicker';
 import EmptyComponent from '@/components/Empty';
 import { getCurrentCompany } from '@/utils/authority';
-import { dateFormatAPI, dateFormatImport, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
+import { commonDateFormat, dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const { RangePicker } = DatePicker;
@@ -35,7 +35,7 @@ const DuplicateTaskModal = (props) => {
     if (startDate && endDate) {
       const now = moment(startDate);
       while (now.isSameOrBefore(moment(endDateTemp), 'day')) {
-        dateList = [...dateList, moment(now).format(dateFormatImport)];
+        dateList = [...dateList, moment(now).format(commonDateFormat)];
         now.add(1, 'days');
       }
     }
@@ -55,8 +55,8 @@ const DuplicateTaskModal = (props) => {
     if (dates) {
       form.setFieldsValue({
         datesTime: getDateLists(
-          moment(dates[0], hourFormat).format(dateFormatAPI),
-          moment(dates[1], hourFormat).format(dateFormatAPI),
+          moment(dates[0], hourFormat).format(commonDateFormat),
+          moment(dates[1], hourFormat).format(commonDateFormat),
         ),
       });
     }
@@ -124,7 +124,7 @@ const DuplicateTaskModal = (props) => {
       return {
         startTime: moment(x?.startTime, hourFormat).format(hourFormatAPI),
         endTime: moment(x?.endTime, hourFormat).format(hourFormatAPI),
-        date: moment(x?.date, dateFormatImport).format(dateFormatAPI),
+        date: moment(x?.date, commonDateFormat).format(dateFormatAPI),
       };
     });
 
@@ -242,7 +242,7 @@ const DuplicateTaskModal = (props) => {
               labelCol={{ span: 24 }}
             >
               <RangePicker
-                format={dateFormatImport}
+                format={commonDateFormat}
                 ranges={{
                   Today: [moment(), moment()],
                   'This Week': [moment().startOf('week'), moment().endOf('week')],
