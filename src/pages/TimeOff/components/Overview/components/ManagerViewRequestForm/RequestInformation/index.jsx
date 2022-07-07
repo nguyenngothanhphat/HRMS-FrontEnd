@@ -488,9 +488,11 @@ class RequestInformation extends PureComponent {
             <div className={styles.projectList}>
               {/* <span className={styles.title}>Projects</span> */}
               <Row>
-                <Col span={6}>Current Project</Col>
-                <Col span={6}>Project Manager</Col>
-                <Col span={12}>Project Health</Col>
+                <Col span={5}>Current Project</Col>
+                <Col span={5}>Project Manager</Col>
+                <Col span={5}>Start Date</Col>
+                <Col span={5}>End Date</Col>
+                <Col span={4}>Project Health</Col>
               </Row>
 
               {projectsList.length === 0 ? (
@@ -504,22 +506,22 @@ class RequestInformation extends PureComponent {
               ) : (
                 <>
                   {projectsList.map((x) => {
-                    const { project = {} } = x;
                     const {
-                      projectName: prName = '',
-                      projectManager: {
-                        // _id: pjManagerId = '',
-                        generalInfo: { legalName: pmLn = '', userId: managerUserId = '' } = {},
-                      } = {},
+                      projectManager = {},
                       projectHealth = 0,
-                    } = project;
+                      startDate = '',
+                      endDate = '',
+                      project = {},
+                    } = x;
                     return (
                       <>
                         <Project
-                          name={prName}
-                          projectManager={pmLn}
+                          project={project}
+                          projectManager={projectManager}
                           projectHealth={projectHealth}
-                          employeeId={managerUserId}
+                          startDate={startDate}
+                          endDate={endDate}
+                          infomationProject={x}
                         />
                         {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
                       </>
