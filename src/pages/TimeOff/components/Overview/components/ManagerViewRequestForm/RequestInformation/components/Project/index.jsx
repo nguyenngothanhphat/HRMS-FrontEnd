@@ -80,10 +80,10 @@ class Project extends Component {
             </UserProfilePopover>
           </Col>
           <Col span={5} className={styles.detailColumn}>
-            <span>{moment(startDate).format(TIMEOFF_DATE_FORMAT) || '-'}</span>
+            <span>{startDate ? moment(startDate).format(TIMEOFF_DATE_FORMAT) : '-'}</span>
           </Col>
           <Col span={5} className={styles.detailColumn}>
-            <span>{moment(endDate).format(TIMEOFF_DATE_FORMAT) || '-'}</span>
+            <span>{endDate ? moment(endDate).format(TIMEOFF_DATE_FORMAT) : '-'}</span>
           </Col>
           <Col span={4} className={styles.detailColumn}>
             <div className={styles.projectHealth}>
