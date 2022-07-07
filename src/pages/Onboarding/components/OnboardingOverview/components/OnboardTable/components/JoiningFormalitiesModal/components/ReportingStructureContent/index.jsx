@@ -9,15 +9,11 @@ const ReportingManagerContent = (props) => {
     dispatch,
     loadingEmployeeList = false,
     managerList: employeeList = [],
-    reportingManager: manager,
-    reportees: employee,
-    candidateId,
-    rookieId,
+    reportingManager: manager = [],
+    reportees: employee = [],
+    candidateId = '',
+    rookieId = '',
   } = props;
-  console.log(
-    '🚀 ~ employee',
-    employee.map((item) => item._id),
-  );
   const [form] = Form.useForm();
   // const [arr, setArr] = useState(employeeList);
   const [selectedManager, setSelectedManager] = useState(null);

@@ -3,23 +3,21 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import addSymbol from '@/assets/dashboard/blueAdd.svg';
 import deleteSymbol from '@/assets/deleteMailExist.svg';
-import errorFile from '@/assets/errorFile.svg';
+import ErrorFile from '@/assets/errorFile.svg';
 import CommonModal from '@/components/CommonModal';
 import s from './index.less';
+import WarningFile from '@/assets/warningFile.svg';
 
 const Domain = (props) => {
   const [form] = Form.useForm();
 
-  const { dispatch, loadingSave, emailDomain, hasData = false, listDomain, loadingData } = props;
+  const { dispatch, loadingSave = false, listDomain = [], loadingRemove = false } = props;
   const [visible, setVisible] = useState(false);
   const [content, setContent] = useState();
   const [footer, setFooter] = useState(false);
   const [handlingIndex, setHandlingIndex] = useState(null);
 
   useEffect(() => {
-    // dispatch({
-    //   type: 'adminSetting/getDomain',
-    // });
     dispatch({
       type: 'adminSetting/fetchListDomain',
     });
@@ -31,41 +29,71 @@ const Domain = (props) => {
     });
   }, [listDomain]);
 
-  const onFinish = (values) => {
+  const renderUsedDomaincontent = (data) => {
+    const { id, defaultMessage } = data[0];
+    if (id === 'domaintenant.exists.item')
+      return (
+        <div className={s.modalContent}>
+          <img src={ErrorFile} alt="error icon" />
+          <div className={s.title}>This domain is in use</div>
+          <div className={s.description}>
+            Please delete all records related to this domain and try again!
+          </div>
+        </div>
+      );
+    return (
+      <div className={s.modalContent}>
+        <img src={ErrorFile} alt="error icon" />
+        <div className={s.title}>{defaultMessage}</div>
+      </div>
+    );
+  };
+
+  const renderFreeDomaincontent = (
+    <div className={s.modalContent}>
+      <img src={ErrorFile} alt="error icon" />
+      <div className={s.title}>Are you sure you want to delete the domain?</div>
+    </div>
+  );
+
+  const renderPrimaryDomaincontent = (data) => {
+    const { id, defaultMessage } = data[0];
+    if (id === 'domaintenant.more.primary.item')
+      return (
+        <div className={s.modalContent}>
+          <img src={WarningFile} alt="warning icon" />
+          <div className={s.title}>Must to have one Primary Domain</div>
+          <div className={s.description}>
+            You can not disable primary for all domains, please set the other domain as primary.
+          </div>
+        </div>
+      );
+    return (
+      <div className={s.modalContent}>
+        <img src={WarningFile} alt="warning icon" />
+        <div className={s.title}>{defaultMessage}</div>
+      </div>
+    );
+  };
+
+  const onFinish = async (values) => {
     const formatData = values.domain.map((i) => {
       return i._id
         ? { _id: i._id, name: i.name, isPrimary: !!i.isPrimary }
         : { name: i.name, isPrimary: !!i.isPrimary };
     });
 
-    // dispatch({
-    //   type: 'adminSetting/saveDomain',
-    //   payload: {
-    //     emailDomain: values.emailDomain,
-    //   },
-    // });
-    dispatch({
+    const response = await dispatch({
       type: 'adminSetting/updateListDomain',
       payload: formatData,
     });
+    const { statusCode = 0, data } = response;
+    if (statusCode === 400) {
+      setVisible(true);
+      setContent(renderPrimaryDomaincontent(data));
+      setFooter(false);
+    }
   };
-
-  // const renderUsedDomaincontent = (
-  //   <div className={s.modalContent}>
-  //     <img src={errorFile} alt="error icon" />
-  //     <div className={s.title}>This domain is used</div>
-  //     <div className={s.description}>
-  //       Please delete all records related to this domain and try again!
-  //     </div>
-  //   </div>
-  // );
-
-  const renderFreeDomaincontent = (
-    <div className={s.modalContent}>
-      <img src={errorFile} alt="error icon" />
-      <div className={s.title}>Are you sure you want to delete the domain?</div>
-    </div>
-  );
 
   const onRemoveItem = async (index) => {
     const id = listDomain[index]?._id;
@@ -76,12 +104,17 @@ const Domain = (props) => {
         type: 'adminSetting/removeListDomain',
         payload: { id },
       });
-      const { statusCode = 0 } = response;
+      const { statusCode = 0, data } = response;
       if (statusCode === 200) {
         tempDomain.splice(index, 1);
         form.setFieldsValue({
           domain: tempDomain,
         });
+      }
+      if (statusCode === 400) {
+        setVisible(true);
+        setContent(renderUsedDomaincontent(data));
+        setFooter(false);
       }
     } else {
       tempDomain.splice(index, 1);
@@ -115,9 +148,6 @@ const Domain = (props) => {
           form={form}
           onFinish={onFinish}
         >
-          {/* <Form.Item label="Domain Name 1" name="emailDomain">
-            <Input className={s.inpDomain} placeholder="Set domain" />
-          </Form.Item> */}
           <Form.List name="domain">
             {(fields, { add }) => (
               <>
@@ -135,13 +165,9 @@ const Domain = (props) => {
                             alt="delete icon"
                             onClick={() => {
                               setVisible(true);
-                              // if (hasData) {
-                              //   setContent(renderUsedDomaincontent);
-                              // } else {
                               setFooter(true);
                               setContent(renderFreeDomaincontent);
                               setHandlingIndex(i);
-                              // }
                             }}
                             className={s.deleteIcon}
                           />
@@ -196,7 +222,7 @@ const Domain = (props) => {
           setVisible(false);
           onRemoveItem(handlingIndex);
         }}
-        loading={loadingData}
+        loading={loadingRemove}
         hasFooter={footer}
         withPadding
         width={400}
@@ -205,11 +231,10 @@ const Domain = (props) => {
   );
 };
 export default connect(
-  ({ loading, adminSetting: { originData: { emailDomain = '', listDomain = [] } = {} } = {} }) => ({
+  ({ loading, adminSetting: { originData: { listDomain = [] } = {} } = {} }) => ({
     loadingSave: loading.effects['adminSetting/updateListDomain'],
     loadingData: loading.effects['adminSetting/fetchListDomain'],
     loadingRemove: loading.effects['adminSetting/removeListDomain'],
-    emailDomain,
     listDomain,
   }),
 )(Domain);

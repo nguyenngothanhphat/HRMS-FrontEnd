@@ -15,13 +15,13 @@ const JoiningFormalitiesModal = (props) => {
   const {
     onClose = () => {},
     onOk = () => {},
-    visible,
+    visible = false,
     candidate: { dateOfJoining = '', candidateId = '', rookieId = '' },
-    listJoiningFormalities,
-    loadingGetEmployeeId,
+    listJoiningFormalities = [],
+    loadingGetEmployeeId = false,
     dispatch,
-    loadingCheckUserName,
-    loadingCreateEmployee,
+    loadingCheckUserName = false,
+    loadingCreateEmployee = false,
   } = props;
   const [checkList, setCheckList] = useState([]);
   const [docSubCheckList, setDocSubCheckList] = useState([]);
@@ -216,7 +216,7 @@ const JoiningFormalitiesModal = (props) => {
       centered
       visible={visible}
     >
-      {steps[current].description !== null && (
+      {!!steps[current].description && (
         <div className={styles.headerContent}>{steps[current].description}</div>
       )}
       {steps[current].content}

@@ -34,7 +34,7 @@ const ConfirmModal = (props) => {
     setCurrent(current + 1);
   };
 
-  const covertToEmployee = async () => {
+  const convertToEmployee = async () => {
     const response = await dispatch({
       type: 'onboard/createEmployee',
       payload: { userName, candidateId: candidate, domain },
@@ -104,7 +104,7 @@ const ConfirmModal = (props) => {
           key="submit"
           htmlType="submit"
           loading={loadingCreateEmployee}
-          onClick={covertToEmployee}
+          onClick={convertToEmployee}
         >
           Convert to Employee
         </Button>,

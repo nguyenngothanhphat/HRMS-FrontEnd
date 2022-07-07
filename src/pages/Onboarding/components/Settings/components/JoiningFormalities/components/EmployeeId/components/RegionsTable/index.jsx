@@ -61,10 +61,10 @@ const Action = ({ record, isEditing, save, cancel, edit }) => {
 
 const RegionsTable = (props) => {
   const {
-    location,
+    location = '',
     dispatch,
-    loadingList,
-    employeeIdList,
+    loadingList = false,
+    employeeIdList = [],
     locationTotal: total,
     loadingUpdate = false,
   } = props;

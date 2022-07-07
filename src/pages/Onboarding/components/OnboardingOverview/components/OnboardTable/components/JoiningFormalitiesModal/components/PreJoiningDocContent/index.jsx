@@ -13,9 +13,9 @@ const PreJoiningDocContent = (props) => {
   const {
     dispatch,
     tempData: { documentChecklist = [] },
-    candidateId,
+    candidateId = '',
     setCallback,
-    preJoinCheckList,
+    preJoinCheckList = [],
     setPreJoinCheckList,
   } = props;
   const [selectingFile, setSelectingFile] = useState(null);

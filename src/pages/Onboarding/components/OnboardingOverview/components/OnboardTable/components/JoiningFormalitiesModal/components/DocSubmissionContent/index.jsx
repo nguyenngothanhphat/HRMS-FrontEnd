@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import TooltipIcon from '@/assets/tooltip.svg';
-import Check from '@/assets/changePasswordCheck.svg';
+import CheckIcon from '@/assets/changePasswordCheck.svg';
 
 import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 
@@ -18,11 +18,11 @@ const DocSubmissionContent = (props) => {
       documentTypeE = [],
     },
     setDocSubCheckList,
-    docSubCheckList,
+    docSubCheckList=[],
     setCallback,
   } = props;
 
-  const renderContent = (type) => {
+  const renderItems = (type) => {
     return type?.map((e) => (
       <Row gutter={[16, 16]} className={styles.content}>
         <Col span={8} className={styles.comment__flex}>
@@ -77,6 +77,19 @@ const DocSubmissionContent = (props) => {
     comment ? setCallback(allValues) : setCallback(0);
   }, [allValues, comment]);
 
+  const renderContent = docType.map((i) => {
+    const { data = [] } = i;
+    return (
+      !!data.length && (
+        <>
+          <div className={styles.doctype}>{i.title}</div>
+          <Divider />
+          {renderItems(i.data)}
+        </>
+      )
+    );
+  });
+
   return (
     <>
       {comment ? (
@@ -89,16 +102,7 @@ const DocSubmissionContent = (props) => {
           </div>
           <div className={classNames(styles.pageBottom, styles.pageBottom__fixed)}>
             <Checkbox.Group onChange={setDocSubCheckList} value={docSubCheckList}>
-              {docType?.map(
-                (i) =>
-                  i.data?.length > 0 && (
-                    <>
-                      <div className={styles.doctype}>{i.title}</div>
-                      <Divider />
-                      {renderContent(i.data)}
-                    </>
-                  ),
-              )}
+              {renderContent}
             </Checkbox.Group>
           </div>
         </>
@@ -121,7 +125,7 @@ const DocSubmissionContent = (props) => {
           </div>
 
           <div className={styles.pageNotice}>
-            <img className={styles.check} alt="check" src={Check} height="20px" />
+            <img className={styles.check} alt="check icon" src={CheckIcon} height="20px" />
             <div className={styles.pageNotice__text}>
               All the required documents have been submitted and verified
             </div>

@@ -5,7 +5,14 @@ import styles from '@/pages/Onboarding/components/OnboardingOverview/components/
 
 const UserNameContent = (props) => {
   const [form] = Form.useForm();
-  const { dispatch, listDomain, userName, loadingGetListDomain, next, domain } = props;
+  const {
+    dispatch,
+    listDomain = [],
+    userName = '',
+    loadingGetListDomain = false,
+    next = () => {},
+    domain = '',
+  } = props;
   const [validate, setValidate] = useState({ validateStatus: 'success', errorMsg: null });
 
   useEffect(() => {

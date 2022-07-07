@@ -2,17 +2,17 @@ import { Checkbox, Tooltip } from 'antd';
 import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
 import TooltipIcon from '@/assets/tooltip.svg';
-import warning from '@/assets/warning.svg';
+import WarningIcon from '@/assets/warning.svg';
 import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 
 const InitiateJoiningContent = (props) => {
   const {
     dispatch,
     listJoiningFormalities = [],
-    checkList,
+    checkList = [],
     setCheckList,
-    settingId: { employeeIdList = {} },
-    workLocation: { _id = '' },
+    settingId: { employeeIdList = [] },
+    workLocation: { _id = '' } = {},
     setCallback,
   } = props;
 
@@ -23,7 +23,7 @@ const InitiateJoiningContent = (props) => {
         location: _id,
       },
     });
-    setCallback(!!employeeIdList?.length);
+    setCallback(!!employeeIdList.length);
   }, []);
 
   return (
@@ -49,10 +49,10 @@ const InitiateJoiningContent = (props) => {
           </div>
         ))}
       </Checkbox.Group>
-      {!!employeeIdList?.length && (
+      {!!employeeIdList.length && (
         <div>
           <div>
-            <img src={warning} alt="warnIcon" />
+            <img src={WarningIcon} alt="warnIcon" />
             <span className={styles.warning}>
               {' '}
               Settings for filling the Employee ID is missing, please fill it to proceed further
@@ -78,23 +78,12 @@ const InitiateJoiningContent = (props) => {
 
 export default connect(
   ({
-    onboard: {
-      joiningFormalities: {
-        listJoiningFormalities = [],
-        generatedId = '',
-        prefix = '',
-        idItem = '',
-        settingId = {},
-      } = {},
-    },
+    onboard: { joiningFormalities: { listJoiningFormalities = [], settingId = {} } = {} },
     newCandidateForm: {
       tempData: { workLocation = {} },
     },
   }) => ({
     listJoiningFormalities,
-    generatedId,
-    prefix,
-    idItem,
     settingId,
     workLocation,
   }),

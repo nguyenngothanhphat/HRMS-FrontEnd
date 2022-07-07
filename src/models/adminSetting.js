@@ -642,8 +642,9 @@ const adminSetting = {
       }
     },
     *updateListDomain({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(
+        response = yield call(
           setDomains,
           { company: getCurrentCompany(), tenantId: getCurrentTenant() },
           payload,
@@ -655,8 +656,10 @@ const adminSetting = {
         });
         notification.success({ message });
       } catch (error) {
-        dialog(error);
+        const { statusCode } = error;
+        if (statusCode !== 400) dialog(error);
       }
+      return response;
     },
     *removeListDomain({ payload }, { call, put }) {
       let response = {};
@@ -669,7 +672,8 @@ const adminSetting = {
         });
         notification.success({ message });
       } catch (error) {
-        dialog(error);
+        const { statusCode } = error;
+        if (statusCode !== 400) dialog(error);
       }
       return response;
     },

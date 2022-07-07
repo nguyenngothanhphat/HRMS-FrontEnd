@@ -11,11 +11,9 @@ const JoiningFormalities = (props) => {
     // generatedId,
     // prefix,
     dispatch,
-    loadingUpdateEmployeeId,
-    location,
+    loadingUpdateEmployeeId = false,
+    location = '',
     settingId = {},
-    employeeIdList,
-    // locationTotal: total,
   } = props;
   const [form] = Form.useForm();
   const [isEdit, setIsEdit] = useState(false);
@@ -155,7 +153,6 @@ export default connect(
         generatedId = '',
         prefix = '',
         idItem = '',
-        employeeIdList = [],
         settingId = {},
       } = {},
     },
@@ -169,7 +166,6 @@ export default connect(
     generatedId,
     prefix,
     idItem,
-    employeeIdList,
     location,
     settingId,
   }),
