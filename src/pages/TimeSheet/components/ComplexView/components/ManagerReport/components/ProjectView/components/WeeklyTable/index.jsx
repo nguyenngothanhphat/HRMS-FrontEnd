@@ -157,7 +157,7 @@ const WeeklyTable = (props) => {
   const columns = () => {
     const checkTaskOnHoliday = (date) => {
       return data.every((list) => {
-        if (list.dailyList.some((day) => isTheSameDay(day.date, date))) return false;
+        if (list?.dailyList?.some((day) => isTheSameDay(day.date, date))) return false;
         return true;
       });
     };
