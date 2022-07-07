@@ -1,3 +1,4 @@
+import { notification } from 'antd';
 import moment from 'moment';
 
 export const TAB_NAME = {
@@ -235,4 +236,27 @@ export const TIMESHEET_ADD_TASK_ALERT = {
     type: 'warning',
     content: 'You are allowed to select only one date if you have multiple tasks',
   },
+};
+
+export const pushSuccess = (errorList = [], text, msg) => {
+  if (errorList.length > 0) {
+    let datesErr = '';
+    for (let i = 0; i < errorList.length; i += 1) {
+      datesErr += errorList[i]?.error?.item?.date
+        ? moment(errorList[i]?.error.item.date).format(commonDateFormat)
+        : moment(errorList[i]?.date).format(commonDateFormat);
+      if (i + 1 < errorList.length) datesErr += ', ';
+    }
+
+    notification.warning({
+      message: `Your timesheet tasks were ${text}. Note: other tasks overlapped`,
+      description: datesErr,
+      duration: 500,
+    });
+  }
+
+  if (errorList.length === 0) {
+    return notification.success({ message: msg });
+  }
+  return null;
 };

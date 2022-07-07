@@ -40,7 +40,7 @@ import {
   getHolidaysByDate,
 } from '@/services/timeSheet';
 import { getCountry, getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
+import { convertMsToTime, isTheSameDay, pushSuccess } from '@/utils/timeSheet';
 import { dialog } from '@/utils/utils';
 
 const tenantId = getCurrentTenant();
@@ -154,7 +154,11 @@ const TimeSheet = {
           payloadTemp = viewingPayload;
         }
         const { _id: countryId = '' } = getCountry();
-        const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId, country: countryId });
+        const res = yield call(
+          getMyTimesheetByType,
+          {},
+          { ...payloadTemp, tenantId, country: countryId },
+        );
         const { code, data } = res;
         if (code !== 200) throw res;
         const { holidays = [] } = data;
@@ -269,14 +273,14 @@ const TimeSheet = {
       try {
         const adding = date ? message.loading('Adding...', 0) : () => {}; // only loading in simple view
         response = yield call(addActivity, { ...payload, tenantId });
-        const { code, data = {}, msg = '', errors = [] } = response;
+        const { code, data = {}, errors = [] } = response;
+        const { errorList = [] } = data;
         adding();
         if (code !== 200) {
           pushError(errors);
           return [];
         }
-        notification.success({ message: msg });
-
+        pushSuccess(errorList, 'added', 'Create timesheet successfully');
         if (date) {
           // for refresh immediately - no need to call API to refresh list
           yield put({
@@ -305,12 +309,13 @@ const TimeSheet = {
           toDate: payload.toDate,
         };
         response = yield call(addMultipleActivity, payload.data, params);
-        const { code, msg = '', errors = [] } = response;
+        const { code, data = {}, errors = [] } = response;
+        const { errorList = [] } = data;
         if (code !== 200) {
           pushError(errors);
           return [];
         }
-        notification.success({ message: msg });
+        pushSuccess(errorList, 'added', 'Create timesheet successfully');
       } catch (errors) {
         dialog(errors);
         return [];
@@ -374,12 +379,13 @@ const TimeSheet = {
           { ids: payload.ids, dates: payload.dates },
           { ...payload, tenantId },
         );
-        const { code, msg = '', errors = [] } = response;
+        const { code, data = {}, errors = [] } = response;
+        const { error = [] } = data;
         if (code !== 200) {
           pushError(errors);
           return [];
         }
-        notification.success({ message: msg });
+        pushSuccess(error, 'imported', 'Importing timesheet successfully');
 
         yield put({
           type: 'save',
@@ -400,12 +406,14 @@ const TimeSheet = {
           { id: payload.id, dateTimes: payload.dateTimes },
           { ...payload, tenantId },
         );
-        const { code, msg = '', errors = [] } = response;
+        const { code, data = {}, errors = [] } = response;
+        const { error = [] } = data;
+
         if (code !== 200) {
           pushError(errors);
           return [];
         }
-        notification.success({ message: msg });
+        pushSuccess(error, 'imported', 'Importing timesheet successfully');
 
         yield put({
           type: 'save',
