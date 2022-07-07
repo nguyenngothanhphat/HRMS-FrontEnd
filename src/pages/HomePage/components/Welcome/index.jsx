@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
-import ActivityLogModalContent from '@/pages/Dashboard/components/ActivityLog/components/ActivityLogModalContent';
+// import ActivityLogModalContent from '@/pages/Dashboard/components/ActivityLog/components/ActivityLogModalContent';
+import CommonTab from '@/pages/Dashboard/components/ActivityLog/components/CommonTab';
 import CommonModal from '@/components/CommonModal';
 
 const Welcome = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const { currentUser: { employee = {} || {} } = {} } = props;
+  const {
+    currentUser: { employee = {} || {} } = {},
+    unseenTotal,
+    activeConversationUnseen,
+  } = props;
   const { generalInfo: { legalName = '' } = {} || {} } = employee;
-
   return (
     <div className={styles.Welcome}>
       <p className={styles.Welcome__helloText}>Hello {legalName}!</p>
       <span className={styles.Welcome__notificationText}>
         You have{' '}
         <span className={styles.number} onClick={() => setModalVisible(true)}>
-          0 notifications
+          {unseenTotal} notifications
         </span>{' '}
         today
       </span>
@@ -25,13 +29,24 @@ const Welcome = (props) => {
         onClose={() => setModalVisible(false)}
         title="Notifications"
         hasFooter={false}
-        content={<ActivityLogModalContent tabKey="2" data={[]} />}
+        data={activeConversationUnseen}
+        // content={<ActivityLogModalContent tabKey="2" data={[]} />}
+        content={<CommonTab type="4" data={activeConversationUnseen} isInModal />}
       />
     </div>
   );
 };
 
-export default connect(({ user: { currentUser = {}, permissions = {} } = {} }) => ({
-  currentUser,
-  permissions,
-}))(Welcome);
+export default connect(
+  ({
+    loading,
+    conversation: { unseenTotal, activeConversationUnseen },
+    user: { currentUser = {}, permissions = {} } = {},
+  }) => ({
+    currentUser,
+    permissions,
+    unseenTotal,
+    activeConversationUnseen,
+    loading: loading.effects['conversation/getConversationUnSeenEffect'],
+  }),
+)(Welcome);
