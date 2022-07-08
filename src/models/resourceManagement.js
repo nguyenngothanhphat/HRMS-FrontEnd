@@ -26,7 +26,7 @@ import {
   getListSkill,
 } from '@/services/resourceManagement';
 
-import { handlingResourceAvailableStatus } from '@/utils/resourceManagement';
+import { getSelectedDivisions, getSelectedLocations, handlingResourceAvailableStatus } from '@/utils/resourceManagement';
 
 const initialState = {
   resourceList: [],
@@ -44,8 +44,8 @@ const initialState = {
   utilizationOverviewList: [],
   resourceUtilizationList: {},
   newJoineeList: [],
-  selectedDivisions: [],
-  selectedLocations: [getCurrentLocation()], // empty for all
+  selectedDivisions: getSelectedDivisions() || [],
+  selectedLocations: getSelectedLocations() || [getCurrentLocation()], // empty for all
   currentPayload: {},
   filter: {},
 };

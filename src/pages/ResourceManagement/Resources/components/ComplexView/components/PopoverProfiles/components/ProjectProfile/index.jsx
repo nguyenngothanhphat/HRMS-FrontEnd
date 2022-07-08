@@ -1,59 +1,68 @@
 import { Col, Popover, Row, Progress } from 'antd';
 import React, { useState } from 'react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import CloseX from '@/assets/dashboard/closeX.svg';
 
 import styles from './index.less';
 import CapitalNameIcon from '../../../CapitalNameIcon';
 
-import {getProjectById} from '@/utils/resourceManagement'
-
 const ProjectProfile = (props) => {
-  const { children, placement = 'top', projectId } = props;
+  const { children, placement = 'top', project = {} } = props;
   const [showPopover, setShowPopover] = useState(false);
 
+  const {
+    project: { projectId = '', projectName = '-', division = '-', customerName = '' } = {},
+    accountOwner: { generalInfo: { legalName: accountOwner = '-' } = {} } = {},
+    engineeringOwner: { generalInfo: { legalName: engineeringOwner = '-' } = {} } = {},
+    utilization = 0,
+  } = project;
+
+  const handleViewProject = () => {
+    history.push(`/project-management/list/${projectId}/summary`);
+  };
+
   const renderHeader = () => {
-    const {projectList} = props;
-    const project = getProjectById(projectList, projectId)
-    const {division = {}} = project || {}
-    const projectName = project ? project.projectName : '-'
     return (
       <div className={styles.header}>
         <CapitalNameIcon text={projectName} />
         <div className={styles.information}>
           <span className={styles.name}>{projectName}</span>
-          <span className={styles.position}>{division ? division.name : '-'}</span>
-          {/* <span className={styles.department}>Engineering Dept</span> */}
+          <span className={styles.position}>{division}</span>
         </div>
       </div>
     );
   };
+
   const projectInfo = () => {
-    const {projectList} = props;
-    const project = getProjectById(projectList, projectId)
     const items = [
       {
         label: 'Customer',
-        value: `${project ? project.customerName : '-' }`,
-        // link: '#',
+        value: customerName,
       },
       {
         label: 'Account Owner',
-        value: <span className={styles.managerName}>{project && project.accountOwner && project.accountOwner.generalInfo ? project.accountOwner.generalInfo.legalName : '-'}</span>,
+        value: <span className={styles.managerName}>{accountOwner}</span>,
         link: '#',
       },
       {
         label: 'Engineering Owner',
-        value: <span className={styles.managerName}>{project && project.engineeringOwner && project.engineeringOwner.generalInfo ? project.engineeringOwner.generalInfo.legalName : '-'}</span>,
+        value: <span className={styles.managerName}>{engineeringOwner}</span>,
         link: '#',
       },
       {
         label: 'Project ID',
-        value: `${project ? project.projectId : '-'}`,
+        value: projectId,
       },
       {
         label: 'Status',
-        value: <div><Progress percent={project ? (project.statusProgress||0) : 0} showInfo={false} /><div className={styles.rightPosition}><span>{project ? (project.statusProgress||0) : 0}%</span></div></div>,
+        value: (
+          <div>
+            <Progress percent={utilization || 0} showInfo={false} />
+            <div className={styles.rightPosition}>
+              <span>{utilization || 0}%</span>
+            </div>
+          </div>
+        ),
       },
     ];
 
@@ -84,9 +93,11 @@ const ProjectProfile = (props) => {
         />
         {renderHeader()}
         <div className={styles.divider} />
-        {projectInfo(projectId)}
+        {projectInfo()}
         <div className={styles.divider} />
-        <div className={styles.viewFullProfile}>View more details</div>
+        <div onClick={handleViewProject} className={styles.viewFullProfile}>
+          View more details
+        </div>
       </div>
     );
   };
@@ -110,6 +121,6 @@ const ProjectProfile = (props) => {
   );
 };
 
-export default connect(({resourceManagement: { projectList=[]}}) => ({projectList}))(
+export default connect(({ resourceManagement: { projectList = [] } }) => ({ projectList }))(
   ProjectProfile,
 );

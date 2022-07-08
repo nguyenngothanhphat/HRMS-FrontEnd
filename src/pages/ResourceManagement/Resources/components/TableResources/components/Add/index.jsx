@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { Row, Col, Button, Modal, Form, Input, Select, DatePicker, Card, notification } from 'antd';
 import moment from 'moment';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import styles from './index.less';
@@ -30,6 +30,7 @@ class AddActionBTN extends Component {
     this.state = {
       visibleModalSuccess: false,
       projectId: '',
+      projectAssignedId: ''
     };
   }
 
@@ -55,13 +56,19 @@ class AddActionBTN extends Component {
     });
   };
 
+  handleViewProject = () => {
+    const { projectAssignedId } = this.state;
+    history.push(`/project-management/list/${projectAssignedId}/summary`);
+  };
+
   handleOnchange = (event) => {
     this.setState({ projectId: event });
   };
 
   handleSubmitAssign = async (values) => {
-    const { dispatch, dataPassRow, refreshData, onClose = () => {} } = this.props;
+    const { dispatch, dataPassRow, refreshData, onClose = () => {}, projectList = [] } = this.props;
     const { project, status, utilization, startDate, endDate, comment, revisedEndDate } = values;
+
     if (
       new Date(endDate).getTime() <= new Date(startDate).getTime() ||
       new Date(revisedEndDate).getTime() <= new Date(startDate).getTime()
@@ -94,6 +101,7 @@ class AddActionBTN extends Component {
       if (response.statusCode === 200) {
         this.setState({
           visibleModalSuccess: true,
+          projectAssignedId: projectList.find(item => item.id === project).projectId
         });
         onClose();
       }
@@ -138,8 +146,7 @@ class AddActionBTN extends Component {
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {projectList.map((project) => (
                   <Option value={project.id}>{project.projectName}</Option>
@@ -156,8 +163,7 @@ class AddActionBTN extends Component {
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {statusList.map((status) => (
                   <Option value={status}>{status}</Option>
@@ -321,7 +327,7 @@ class AddActionBTN extends Component {
             The resource has been successfully assigned to the project
           </p>
           <div className={styles.spaceFooterModalSuccess}>
-            <div className={styles.btnCancel} onClick={this.handleCancelModelSuccess}>
+            <div className={styles.btnCancel} onClick={this.handleViewProject}>
               View Project
             </div>
             <Button onClick={this.handleCancelModelSuccess} className={styles.btnSubmit}>

@@ -12,7 +12,7 @@ export const getTimezoneViaCity = (cityProp = '') => {
   if (!city || isEmpty(city)) {
     return '';
   }
-  const cityWords = city.split(' ');
+  const cityWords = city?.split(' ');
   let cityLookup = [];
   cityWords.forEach((c) => {
     const result = cityTimezones.findFromCityStateProvince(c);
