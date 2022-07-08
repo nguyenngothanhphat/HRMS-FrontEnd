@@ -27,16 +27,10 @@ const TableContainer = (props) => {
   const didMount = useRef(true);
 
   const getDataTable = (values = {}) => {
-    const {
-      status = [],
-      types = [],
-      user = null,
-      fromDate: fromDate1 = '',
-      toDate: toDate1 = '',
-    } = values;
+    const { status = [], types = [], user = null } = values;
 
-    const from = fromDate1 ? moment(fromDate1).format('YYYY-MM-DD') : null;
-    const to = toDate1 ? moment(toDate1).format('YYYY-MM-DD') : null;
+    const from = fromDate ? moment(fromDate).format('YYYY-MM-DD') : null;
+    const to = toDate ? moment(toDate).format('YYYY-MM-DD') : null;
 
     dispatch({
       type: 'timeOffManagement/getListTimeOffEffect',
