@@ -2,7 +2,7 @@ import { Checkbox, Tooltip } from 'antd';
 import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
 import TooltipIcon from '@/assets/tooltip.svg';
-import WarningIcon from '@/assets/warning.svg';
+import WarningIcon from '@/assets/onboarding/warning.svg';
 import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 
 const InitiateJoiningContent = (props) => {

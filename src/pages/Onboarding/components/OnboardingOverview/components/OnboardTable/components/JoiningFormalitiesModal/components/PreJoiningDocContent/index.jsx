@@ -1,13 +1,13 @@
-import { Checkbox, Col, Divider, Row, Tooltip } from 'antd';
+import { Checkbox, Col, Divider, Row } from 'antd';
 import classNames from 'classnames';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect } from 'umi';
 import DoneIcon from '@/assets/candidatePortal/doneSign.svg';
+import CheckIcon from '@/assets/onboarding/checkIcon.svg';
 import Resubmit from '@/assets/resubmit.svg';
 import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
 import { DOCUMENTS_CHECKLIST_TYPE } from '@/utils/newCandidateForm';
-import Check from '@/assets/changePasswordCheck.svg';
 
 const PreJoiningDocContent = (props) => {
   const {
@@ -176,7 +176,7 @@ const PreJoiningDocContent = (props) => {
   ) : (
     <>
       <div className={styles.pageNotice}>
-        <img className={styles.check} alt="check" src={Check} height="20px" />
+        <img className={styles.check} alt="check icon" src={CheckIcon} height="20px" />
         <div className={styles.pageNotice__text}>
           All the required documents have been received and verified
         </div>

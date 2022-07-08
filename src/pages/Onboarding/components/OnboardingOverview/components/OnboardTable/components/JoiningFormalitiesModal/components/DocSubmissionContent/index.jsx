@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import TooltipIcon from '@/assets/tooltip.svg';
-import CheckIcon from '@/assets/changePasswordCheck.svg';
+import CheckIcon from '@/assets/onboarding/checkIcon.svg';
 
 import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 
@@ -18,7 +18,7 @@ const DocSubmissionContent = (props) => {
       documentTypeE = [],
     },
     setDocSubCheckList,
-    docSubCheckList=[],
+    docSubCheckList = [],
     setCallback,
   } = props;
 

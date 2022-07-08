@@ -1,12 +1,12 @@
 import { Button, Card, Divider, Form, Input, Switch } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import ErrorFile from '@/assets/adminSetting/errorFile.svg';
+import WarningFile from '@/assets/adminSetting/warningFile.svg';
 import addSymbol from '@/assets/dashboard/blueAdd.svg';
 import deleteSymbol from '@/assets/deleteMailExist.svg';
-import ErrorFile from '@/assets/errorFile.svg';
 import CommonModal from '@/components/CommonModal';
 import s from './index.less';
-import WarningFile from '@/assets/warningFile.svg';
 
 const Domain = (props) => {
   const [form] = Form.useForm();
