@@ -1,99 +1,100 @@
 // import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
+import { Spin } from 'antd';
 import moment from 'moment';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
-import OptionsHeader from '../OptionsHeader';
-import TableTimeOff from '../TableTimeOff';
+import React, { useEffect, useRef, useState } from 'react';
+import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
+import OptionsHeader from './components/Header';
+import TableTimeOff from './components/TableTimeOff';
 import styles from './index.less';
 
 const TableContainer = (props) => {
   const {
     dispatch,
-    timeOffManagement: {
-      listEmployee = [],
-      listTimeOff = [],
-      requestDetail,
-      selectedLocations = [],
-    },
+    timeOffManagement: { listTimeOff = [], selectedLocations = [], listTotal = 0 },
     loadingList = false,
+    loadingExport = false,
     payload = {},
     setPayload = () => {},
+    loadingFetchLocation = false,
   } = props;
 
   const [fromDate, setFromDate] = useState(moment().startOf('month'));
   const [toDate, setToDate] = useState(moment().endOf('month'));
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
-  const fetchEmployees = () => {
-    dispatch({
-      type: 'timeOffManagement/fetchEmployeeList',
-      payload: {
-        company: getCurrentCompany(),
-        tenantId: getCurrentTenant(),
-        status: ['INACTIVE', 'ACTIVE'],
-        location: selectedLocations,
-      },
-    });
-  };
+  const didMount = useRef(true);
 
   const getDataTable = (values = {}) => {
-    const { status = [] } = values;
-    let newStatus = [...status];
-    if (status.includes(TIMEOFF_STATUS.IN_PROGRESS)) {
-      newStatus = [...newStatus, TIMEOFF_STATUS.IN_PROGRESS_NEXT];
-    }
-    const from = fromDate ? moment(fromDate).format('YYYY-MM-DD') : '';
-    const to = toDate ? moment(toDate).format('YYYY-MM-DD') : '';
+    const {
+      status = [],
+      types = [],
+      user = null,
+      fromDate: fromDate1 = '',
+      toDate: toDate1 = '',
+    } = values;
+
+    const from = fromDate1 ? moment(fromDate1).format('YYYY-MM-DD') : null;
+    const to = toDate1 ? moment(toDate1).format('YYYY-MM-DD') : null;
+
     dispatch({
-      type: 'timeOffManagement/fetchListTimeOff',
+      type: 'timeOffManagement/getListTimeOffEffect',
       payload: {
-        employee: values.user || '',
-        from,
-        to,
-        status: newStatus,
+        types: (types || []).reduce((a, b) => [...a, ...b], []),
         tenantId: getCurrentTenant(),
         selectedLocations,
-        types: values.types || [],
+        status,
+        employee: user,
+        from,
+        to,
+        page,
+        limit,
       },
     });
   };
 
-  useEffect(() => {
-    getDataTable(payload);
-  }, [JSON.stringify(payload)]);
+  const onExport = () => {
+    dispatch({
+      type: 'timeOffManagement/exportCSVEffect',
+      payload,
+    });
+  };
 
   useEffect(() => {
-    fetchEmployees();
-    // select a location will clear the types selected in form
-    getDataTable({ ...payload, types: [] });
-  }, [JSON.stringify(selectedLocations)]);
+    if (selectedLocations.length || !didMount.current) {
+      getDataTable(payload);
+    }
+    didMount.current = false;
+  }, [JSON.stringify(payload), page, limit, JSON.stringify(selectedLocations)]);
 
   return (
     <div className={styles.TimeOffTableContainer}>
-      <div className={styles.optionsHeader}>
-        <OptionsHeader
-          listEmployee={listEmployee}
-          listTimeOff={listTimeOff}
-          disabled={loadingList}
-          setPayload={setPayload}
-          setFromDate={setFromDate}
-          setToDate={setToDate}
-          fromDate={fromDate}
-          toDate={toDate}
-          selectedRows={selectedRows}
-        />
-      </div>
-      <div className={styles.contentContainer}>
-        <TableTimeOff
-          listTimeOff={listTimeOff}
-          loading={loadingList}
-          requestDetail={requestDetail}
-          selectedRows={selectedRows}
-          setSelectedRows={setSelectedRows}
-        />
-      </div>
+      <Spin spinning={loadingFetchLocation}>
+        <div className={styles.optionsHeader}>
+          <OptionsHeader
+            disabled={loadingList}
+            setPayload={setPayload}
+            setFromDate={setFromDate}
+            setToDate={setToDate}
+            fromDate={fromDate}
+            toDate={toDate}
+            onExport={onExport}
+            loadingExport={loadingExport}
+          />
+        </div>
+        <div className={styles.contentContainer}>
+          <TableTimeOff
+            listTimeOff={listTimeOff}
+            loading={loadingList}
+            setPage={setPage}
+            setLimit={setLimit}
+            listTotal={listTotal}
+            page={page}
+            limit={limit}
+          />
+        </div>
+      </Spin>
     </div>
   );
 };
@@ -105,10 +106,11 @@ export default connect(
     user: { companiesOfUser = [] } = {},
     location: { companyLocationList = [] } = {},
   }) => ({
-    loadingList: loading.effects['timeOffManagement/fetchListTimeOff'],
-    loadingDetail: loading.effects['timeOffManagement/fetchRequestById'],
     timeOffManagement,
     companiesOfUser,
     companyLocationList,
+    loadingList: loading.effects['timeOffManagement/getListTimeOffEffect'],
+    loadingExport: loading.effects['timeOffManagement/exportCSVEffect'],
+    loadingFetchLocation: loading.effects['timeOffManagement/getLocationsOfCountriesEffect'],
   }),
 )(TableContainer);
