@@ -19,9 +19,6 @@ const UserNameContent = (props) => {
     dispatch({
       type: 'onboard/fetchListDomain',
     });
-    // dispatch({
-    //   type: 'adminSetting/getDomain',
-    // });
   }, []);
 
   useEffect(() => {
@@ -97,7 +94,5 @@ export default connect(
     userName,
     domain,
     loadingGetListDomain: loading.effects['onboard/fetchListDomain'],
-    loadingGetEmployeeId: loading.effects['onboard/getEmployeeId'],
-    loadingCheckUserName: loading.effects['onboard/checkExistedUserName'],
   }),
 )(UserNameContent);

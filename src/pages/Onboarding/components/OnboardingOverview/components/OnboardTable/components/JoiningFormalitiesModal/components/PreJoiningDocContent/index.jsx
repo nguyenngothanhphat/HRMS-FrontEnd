@@ -12,11 +12,11 @@ import { DOCUMENTS_CHECKLIST_TYPE } from '@/utils/newCandidateForm';
 const PreJoiningDocContent = (props) => {
   const {
     dispatch,
-    tempData: { documentChecklist = [] },
+    tempData: { documentChecklist = [] } = {},
     candidateId = '',
-    setCallback,
+    setCallback = () => {},
     preJoinCheckList = [],
-    setPreJoinCheckList,
+    setPreJoinCheckList = () => {},
   } = props;
   const [selectingFile, setSelectingFile] = useState(null);
   const [validated, setValidated] = useState(false);
@@ -32,7 +32,6 @@ const PreJoiningDocContent = (props) => {
   )?.documents;
 
   const validateFiles = () => {
-    // for type A, B, C, D
     const checkDocumentUploaded = (arr = []) => {
       if (arr.length === 0) return true;
       return arr
@@ -109,33 +108,29 @@ const PreJoiningDocContent = (props) => {
   };
 
   const renderContent = (type) => {
-    return type?.map((e) => (
-      <Row className={styles.content} gutter={[16, 16]}>
-        <Col span={17}>
-          <Checkbox value={e} />
-          <span className={styles.comment__text}>{e.alias}</span>
-        </Col>
-        {(e.status && e.status === DOCUMENT_TYPES.VERIFIED) ||
-        e.status === DOCUMENT_TYPES.RECEIVED ? (
-          <Col span={7} className={styles.received}>
-            <span>{e.status}</span> <img alt="received" src={DoneIcon} />
+    return type?.map((e) => {
+      const { _id = '', alias = '', status = '', resubmitComment = '' } = e;
+      return (
+        <Row className={styles.content} gutter={[16, 16]}>
+          <Col span={17}>
+            <Checkbox value={_id} />
+            <span className={styles.comment__text}>{alias}</span>
           </Col>
-        ) : (
           <Col
             span={7}
             className={styles.waiting}
             onClick={() => assignPayloadToData({ status: DOCUMENT_TYPES.RECEIVED })}
           >
-            <span>{e.status || 'Waiting'}</span> <img alt="resubmit" src={Resubmit} />
+            <span>{status || 'Waiting'}</span> <img alt="resubmit" src={Resubmit} />
           </Col>
-        )}
-        {e.resubmitComment && (
-          <Col className={styles.checklistComment} span={24}>
-            {e.resubmitComment}
-          </Col>
-        )}
-      </Row>
-    ));
+          {resubmitComment && (
+            <Col className={styles.checklistComment} span={24}>
+              {resubmitComment}
+            </Col>
+          )}
+        </Row>
+      );
+    });
   };
 
   const allValues = documentChecklist.reduce(

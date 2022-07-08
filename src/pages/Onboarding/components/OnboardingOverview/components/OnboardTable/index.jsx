@@ -562,7 +562,7 @@ class OnboardTable extends Component {
 
         break;
 
-      case JOINED:
+      case OFFER_ACCEPTED:
         menuItem = (
           <>
             <Menu.Item>
@@ -574,6 +574,19 @@ class OnboardTable extends Component {
                 <span>Send Pre-Joining Documents</span>
               </Link>
             </Menu.Item>
+            <Menu.Item>
+              <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
+                <img className={styles.actionIcon} src={EyeIcon} alt="eyesIcon" />
+                <span>{actionText}</span>
+              </Link>
+            </Menu.Item>
+          </>
+        );
+        break;
+
+      case JOINED:
+        menuItem = (
+          <>
             <Menu.Item>
               <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
                 <img className={styles.actionIcon} src={EyeIcon} alt="eyesIcon" />

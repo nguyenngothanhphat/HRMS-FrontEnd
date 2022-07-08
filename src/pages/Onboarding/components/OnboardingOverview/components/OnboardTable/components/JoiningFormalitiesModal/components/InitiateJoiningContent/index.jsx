@@ -1,8 +1,8 @@
 import { Checkbox, Tooltip } from 'antd';
 import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
-import TooltipIcon from '@/assets/tooltip.svg';
 import WarningIcon from '@/assets/onboarding/warning.svg';
+import TooltipIcon from '@/assets/tooltip.svg';
 import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 
 const InitiateJoiningContent = (props) => {
@@ -10,10 +10,10 @@ const InitiateJoiningContent = (props) => {
     dispatch,
     listJoiningFormalities = [],
     checkList = [],
-    setCheckList,
-    settingId: { employeeIdList = [] },
+    setCheckList = () => {},
+    settingId: { employeeIdList = [] } = [],
     workLocation: { _id = '' } = {},
-    setCallback,
+    setCallback = () => {},
   } = props;
 
   useEffect(() => {
@@ -26,6 +26,25 @@ const InitiateJoiningContent = (props) => {
     setCallback(!!employeeIdList.length);
   }, []);
 
+  const renderContent = listJoiningFormalities.map((item) => {
+    const { name = '', _id: id = '', description = '' } = item;
+    return (
+      <div key={name}>
+        <Checkbox value={id}>
+          <div className={styles.labelCheckbox}>{name}</div>
+        </Checkbox>
+        <Tooltip
+          title={<div className={styles.contentTooltip}>{description}</div>}
+          color="#fff"
+          placement="right"
+          overlayClassName={styles.tooltipOverlay}
+        >
+          <img className={styles.tooltip} alt="tool-tip" src={TooltipIcon} />
+        </Tooltip>
+      </div>
+    );
+  });
+
   return (
     <>
       <Checkbox.Group
@@ -33,21 +52,7 @@ const InitiateJoiningContent = (props) => {
         onChange={(value) => setCheckList(value)}
         value={checkList}
       >
-        {listJoiningFormalities.map((item) => (
-          <div key={item.name}>
-            <Checkbox value={item._id}>
-              <div className={styles.labelCheckbox}>{item.name}</div>
-            </Checkbox>
-            <Tooltip
-              title={<div className={styles.contentTooltip}>{item.description}</div>}
-              color="#fff"
-              placement="right"
-              overlayClassName={styles.tooltipOverlay}
-            >
-              <img className={styles.tooltip} alt="tool-tip" src={TooltipIcon} />
-            </Tooltip>
-          </div>
-        ))}
+        {renderContent}
       </Checkbox.Group>
       {!!employeeIdList.length && (
         <div>

@@ -7,14 +7,7 @@ import styles from './index.less';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const JoiningFormalities = (props) => {
-  const {
-    // generatedId,
-    // prefix,
-    dispatch,
-    loadingUpdateEmployeeId = false,
-    location = '',
-    settingId = {},
-  } = props;
+  const { dispatch, loadingUpdateEmployeeId = false, location = '', settingId = {} } = props;
   const [form] = Form.useForm();
   const [isEdit, setIsEdit] = useState(false);
 
@@ -122,7 +115,6 @@ const JoiningFormalities = (props) => {
               className={styles.btnCancel}
               onClick={() => {
                 setIsEdit(false);
-                // form.setFieldsValue({ prefix, generatedId });
               }}
             >
               Cancel
@@ -148,13 +140,7 @@ export default connect(
     loading,
     user: { currentUser: { location = '' } } = {},
     onboard: {
-      joiningFormalities: {
-        listJoiningFormalities = [],
-        generatedId = '',
-        prefix = '',
-        idItem = '',
-        settingId = {},
-      } = {},
+      joiningFormalities: { listJoiningFormalities = [], idItem = '', settingId = {} } = {},
     },
   }) => ({
     loadingAdd: loading.effects['onboard/addJoiningFormalities'],
@@ -163,8 +149,6 @@ export default connect(
     loadingUpdateEmployeeId: loading.effects['onboard/updateEmployeeFormatByLocation'],
     loadingGetEmployeeId: loading.effects['onboard/getSettingEmployeeId'],
     listJoiningFormalities,
-    generatedId,
-    prefix,
     idItem,
     location,
     settingId,

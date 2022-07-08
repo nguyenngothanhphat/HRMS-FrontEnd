@@ -1,4 +1,4 @@
-import { Button, Modal } from 'antd';
+import { Button, Modal, Spin } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -22,6 +22,7 @@ const JoiningFormalitiesModal = (props) => {
     dispatch,
     loadingCheckUserName = false,
     loadingCreateEmployee = false,
+    loadingFetchRookie = false,
   } = props;
   const [checkList, setCheckList] = useState([]);
   const [docSubCheckList, setDocSubCheckList] = useState([]);
@@ -42,7 +43,12 @@ const JoiningFormalitiesModal = (props) => {
           tenantId: getCurrentTenant(),
         },
       });
-    return setCurrent(0);
+    return () => {
+      setCurrent(0);
+      setCheckList([]);
+      setDocSubCheckList([]);
+      setPreJoinCheckList([]);
+    };
   }, [candidateId]);
 
   // function
@@ -55,7 +61,6 @@ const JoiningFormalitiesModal = (props) => {
     setCallback(undefined);
   };
   const onCloseModal = () => {
-    setCheckList([]);
     onClose();
   };
 
@@ -86,11 +91,13 @@ const JoiningFormalitiesModal = (props) => {
       title: 'Documents Submission',
       description: null,
       content: isTodayDateJoin ? (
-        <DocSubmissionContent
-          docSubCheckList={docSubCheckList}
-          setDocSubCheckList={setDocSubCheckList}
-          setCallback={(value) => setCallback(value)}
-        />
+        <Spin spinning={loadingFetchRookie}>
+          <DocSubmissionContent
+            docSubCheckList={docSubCheckList}
+            setDocSubCheckList={setDocSubCheckList}
+            setCallback={(value) => setCallback(value)}
+          />
+        </Spin>
       ) : (
         emptyModal(dateOfJoining)
       ),
@@ -100,6 +107,7 @@ const JoiningFormalitiesModal = (props) => {
           type="primary"
           disabled={docSubCheckList.length !== callback}
           onClick={next}
+          loading={loadingFetchRookie}
         >
           Next
         </Button>
@@ -199,6 +207,7 @@ const JoiningFormalitiesModal = (props) => {
           key="submit"
           htmlType="submit"
           onClick={() => onOk()}
+          loading={loadingFetchRookie}
         >
           Next
         </Button>,
@@ -230,5 +239,6 @@ export default connect(
     loadingGetEmployeeId: loading.effects['onboard/getEmployeeId'],
     loadingCheckUserName: loading.effects['onboard/checkExistedUserName'],
     loadingCreateEmployee: loading.effects['onboard/createEmployee'],
+    loadingFetchRookie: loading.effects['newCandidateForm/fetchCandidateByRookie'],
   }),
 )(JoiningFormalitiesModal);

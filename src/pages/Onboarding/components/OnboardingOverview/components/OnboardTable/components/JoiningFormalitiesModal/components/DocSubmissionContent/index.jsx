@@ -2,10 +2,9 @@ import { Checkbox, Col, Divider, Row, Tooltip } from 'antd';
 import classNames from 'classnames';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
+import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 import TooltipIcon from '@/assets/tooltip.svg';
 import CheckIcon from '@/assets/onboarding/checkIcon.svg';
-
-import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
 
 const DocSubmissionContent = (props) => {
   const {
@@ -17,28 +16,31 @@ const DocSubmissionContent = (props) => {
       documentTypeD = [],
       documentTypeE = [],
     },
-    setDocSubCheckList,
+    setDocSubCheckList = () => {},
     docSubCheckList = [],
-    setCallback,
+    setCallback = () => {},
   } = props;
 
   const renderItems = (type) => {
-    return type?.map((e) => (
-      <Row gutter={[16, 16]} className={styles.content}>
-        <Col span={8} className={styles.comment__flex}>
-          <Checkbox value={e._id} />
-          <span className={styles.comment__text}>{e.alias}</span>
-        </Col>
-        {e.resubmitComment.length > 0 ? (
-          <Col className={styles.comment} span={16}>
-            <div className={styles.candidateComment}>Candidate&apos;s Comments</div>
-            {e.resubmitComment}
+    return type?.map((e) => {
+      const { notAvailableComment = '', alias = '', _id = '' } = e;
+      return (
+        <Row gutter={[16, 16]} className={styles.content}>
+          <Col span={8} className={styles.comment__flex}>
+            <Checkbox value={_id} />
+            <span className={styles.comment__text}>{alias}</span>
           </Col>
-        ) : (
-          <Col className={styles.noComment} span={16} />
-        )}
-      </Row>
-    ));
+          {notAvailableComment ? (
+            <Col className={styles.comment} span={16}>
+              <div className={styles.candidateComment}>Candidate&apos;s Comments</div>
+              {notAvailableComment}
+            </Col>
+          ) : (
+            <Col className={styles.noComment} span={16} />
+          )}
+        </Row>
+      );
+    });
   };
 
   const selectTitle = (type) => {
@@ -69,7 +71,7 @@ const DocSubmissionContent = (props) => {
     },
   ];
 
-  const comment = docType.some((e) => e.data.some((a) => !!a.resubmitComment?.length));
+  const comment = docType.some((e) => e.data.some((a) => !!a.notAvailableComment?.length));
   const allValues = docType.reduce((c, i) => c + i.data.length, 0);
 
   useEffect(() => {
@@ -78,13 +80,13 @@ const DocSubmissionContent = (props) => {
   }, [allValues, comment]);
 
   const renderContent = docType.map((i) => {
-    const { data = [] } = i;
+    const { data = [], title = '' } = i;
     return (
       !!data.length && (
         <>
-          <div className={styles.doctype}>{i.title}</div>
+          <div className={styles.doctype}>{title}</div>
           <Divider />
-          {renderItems(i.data)}
+          {renderItems(data)}
         </>
       )
     );

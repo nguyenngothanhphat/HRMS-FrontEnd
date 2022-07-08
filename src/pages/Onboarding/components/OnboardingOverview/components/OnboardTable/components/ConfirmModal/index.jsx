@@ -1,5 +1,5 @@
 import { DownOutlined } from '@ant-design/icons';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Spin } from 'antd';
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { connect, history } from 'umi';
@@ -12,20 +12,16 @@ const ConfirmModal = (props) => {
     onCancel = () => {},
     onOk = () => {},
     onClose = () => {},
-    visible,
-    employeeData: {
-      generalInfoInfo: { workEmail = '', employeeId = '', userId = '' } = {},
-      titleInfo: { name: jobTitle = '' } = {},
-      password = '',
-    },
-    userName,
-    domain,
-    reportingManager,
-    title,
-    reportees,
-    candidate,
-    loadingCreateEmployee,
-    settingId: { idGenerate = {} },
+    visible = false,
+    employeeData: { generalInfoInfo: { userId = '' } = {}, password = '' },
+    userName = '',
+    domain = '',
+    reportingManager = '',
+    title = '',
+    reportees = [],
+    candidate = '',
+    loadingCreateEmployee = false,
+    loadingEmployeeDetail = false,
   } = props;
   const [current, setCurrent] = useState(0);
   const [showMore, setShowMore] = useState(false);
@@ -44,55 +40,59 @@ const ConfirmModal = (props) => {
     if (statusCode === 200) next();
   };
 
+  const renderReportees = (
+    <>
+      {reportees.slice(0, 4).map((t, i) => {
+        const { generalInfoInfo: { legalName = '' } = {} } = t;
+        return (
+          <>
+            <strong>{legalName}</strong> {', '}
+          </>
+        );
+      })}
+      {reportees.length > 4 && !showMore ? (
+        <Button type="text" className={styles.showBtn} onClick={() => setShowMore(true)}>
+          +{reportees.length - 4} More <DownOutlined />
+        </Button>
+      ) : (
+        reportees.slice(4, reportees.length).map((t, i) => {
+          const { generalInfoInfo: { legalName = '' } = {} } = t;
+          return (
+            <>
+              {reportees.length > i && ', '}
+              <strong>{legalName}</strong>
+            </>
+          );
+        })
+      )}
+    </>
+  );
+
   const steps = [
     {
       title: 'Almost There!',
       description: "Here's a summary of the candidate's profile",
       content: (
-        <div className={classNames(styles.pageBottom, styles.pageBottom__showMore)}>
-          <div className={styles.pageBottom__text}>
-            User name:{' '}
-            <strong>
-              {userName}@{domain}
-            </strong>
+        <Spin spinning={loadingEmployeeDetail}>
+          <div className={classNames(styles.pageBottom, styles.pageBottom__showMore)}>
+            <div className={styles.pageBottom__text}>
+              User name:{' '}
+              <strong>
+                {userName}@{domain}
+              </strong>
+            </div>
+            <div className={styles.pageBottom__text}>
+              Password: <strong>12345678@Tc</strong>
+            </div>
+            <div className={styles.pageBottom__text}>
+              Job Title: <strong>{title?.name}</strong>
+            </div>
+            <div className={styles.pageBottom__text}>
+              Reporting Manager: <strong>{reportingManager?.generalInfoInfo.legalName}</strong>
+            </div>
+            <div className={styles.pageBottom__text}>Reportees: {renderReportees}</div>
           </div>
-          <div className={styles.pageBottom__text}>
-            Password: <strong>12345678@Tc</strong>
-          </div>
-          {/* <div className={styles.pageBottom__text}>
-            Employee ID:{' '}
-            <strong>
-              {idGenerate.prefix}
-              {idGenerate.start}
-            </strong>
-          </div> */}
-          <div className={styles.pageBottom__text}>
-            Job Title: <strong>{title?.name}</strong>
-          </div>
-          <div className={styles.pageBottom__text}>
-            Reporting Manager: <strong>{reportingManager?.generalInfoInfo.legalName}</strong>
-          </div>
-          <div className={styles.pageBottom__text}>
-            Reportees:{' '}
-            {reportees.slice(0, 4).map((t, i) => (
-              <>
-                <strong>{t?.generalInfoInfo?.legalName}</strong> {i < 3 && ', '}
-              </>
-            ))}
-            {reportees.length > 4 && !showMore ? (
-              <Button type="text" className={styles.showBtn} onClick={() => setShowMore(true)}>
-                +{reportees.length - 4} More <DownOutlined />
-              </Button>
-            ) : (
-              reportees.slice(4, reportees.length).map((t, i) => (
-                <>
-                  {reportees.length > i && ', '}
-                  <strong>{t?.generalInfoInfo?.legalName}</strong>
-                </>
-              ))
-            )}
-          </div>
-        </div>
+        </Spin>
       ),
       footer: [
         <Button type="link" onClick={() => onCancel()} className={styles.btnLater}>
@@ -164,18 +164,16 @@ export default connect(
     newCandidateForm: {
       tempData: { reportingManager = {}, reportees = [], title = {}, candidate },
     },
-    onboard: {
-      joiningFormalities: { employeeData = {}, userName = '', domain = '', settingId = {} } = {},
-    },
+    onboard: { joiningFormalities: { employeeData = {}, userName = '', domain = '' } = {} },
   }) => ({
     employeeData,
     userName,
     domain,
     reportingManager,
     reportees,
-    settingId,
     title,
     candidate,
     loadingCreateEmployee: loading.effects['onboard/createEmployee'],
+    loadingEmployeeDetail: loading.effects['newCandidateForm/fetchCandidateByRookie'],
   }),
 )(ConfirmModal);

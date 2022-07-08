@@ -1,20 +1,16 @@
 import { notification } from 'antd';
 import {
-  // DEPARTMENT
   addDepartment,
   addGrade,
-  // POSITION
   addPosition,
   addRole,
   countEmployee,
   getCompanyById,
   getDepartmentByID,
   getDomains,
-  // employee list
   getEmployeeList,
   getGradeByID,
   getListDepartments,
-  // grade
   getListGrade,
   getListPermissionOfRole,
   getListTitle,
@@ -23,7 +19,6 @@ import {
   getRoleByID,
   getRoleList,
   getRolesByCompany,
-  // ticket management
   getSettingTicketById,
   getSettingTicketList,
   removeDepartment,
@@ -33,7 +28,6 @@ import {
   removeSettingTicket,
   removeTitle,
   setDomains,
-  // domain
   setEmailDomain,
   setupComplete,
   updateDepartment,
