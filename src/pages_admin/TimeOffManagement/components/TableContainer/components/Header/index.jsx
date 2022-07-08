@@ -1,39 +1,30 @@
 import { Button, Checkbox, Col, DatePicker, Form, Row, Select } from 'antd';
 import { debounce } from 'lodash';
 import moment from 'moment';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'umi';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
-import exportToCsv from '@/utils/exportToCsv';
+import { dateFormat, TIMEOFF_NAME_BY_ID } from '@/utils/timeOffManagement';
 import DownloadIcon from '@/assets/timeOffManagement/ic_download.svg';
 import styles from './index.less';
-import EmptyComponent from '@/components/Empty';
 
 const { Option } = Select;
 
-const OptionsHeader = (props) => {
+const Header = (props) => {
   const [form] = Form.useForm();
+
   const {
+    timeOffManagement: { typeList = [], listTimeOff = [], listEmployees = [] } = {},
     setPayload = () => {},
-    listTimeOff = [],
-    listEmployee = [],
     disabled = false,
-    loadingEmployeeList = false,
-    loadingFetchTimeoffTypes = false,
     toDate = '',
     fromDate = '',
     setFromDate = () => {},
     setToDate = () => {},
-    timeOffManagement: { timeOffTypesByCountry = [], selectedLocations = [] } = {},
-    selectedRows = [],
+    onExport = () => {},
+    loadingEmployeeList = false,
+    loadingExport = false,
+    loadingFetchTimeoffTypes = false,
   } = props;
-  console.log('🚀  ~ selectedRows', selectedRows);
-
-  useEffect(() => {
-    form.setFieldsValue({
-      types: [],
-    });
-  }, [JSON.stringify(selectedLocations)]);
 
   // DISABLE DATE OF DATE PICKER
   const disabledFromDate = (current) => {
@@ -52,70 +43,16 @@ const OptionsHeader = (props) => {
     onSaveDebounce(allValues);
   };
 
-  const processData = (arr = []) => {
-    let array = [...arr];
-    if (selectedRows.length > 0) {
-      array = arr.filter((x) => selectedRows.includes(x._id));
-    }
-    let capsPopulations = [];
-    capsPopulations = array.map((item, key) => {
-      return {
-        'S.No': key + 1,
-        'Ticket ID': item.ticketID || '-',
-        'Employee ID': item.employee?.generalInfo?.employeeId || '-',
-        'User ID': item.employee?.generalInfo?.userId || '-',
-        'First Name': item.employee?.generalInfo?.firstName || '-',
-        'Middle Name': item.employee?.generalInfo?.middleName || '-',
-        'Last Name': item.employee?.generalInfo?.lastName || '-',
-        'From Date': item.fromDate ? moment(item.fromDate).format('MM/DD/YYYY') : '-',
-        'To Date': item.toDate ? moment(item.toDate).format('MM/DD/YYYY') : '-',
-        'Count/Q.ty': item.duration || '-',
-        'Leave Type': item.type?.name || '-',
-        Subject: item.subject || '-',
-        Description: item.description || '-',
-        Status: item.status,
-        'Reporting Manager': item.approvalManager?.generalInfo?.legalName || '-',
-      };
-    });
-
-    // Get keys, header csv
-    const keys = Object.keys(capsPopulations[0]);
-    const dataExport = [];
-    dataExport.push(keys);
-
-    // Add the rows
-    capsPopulations.forEach((obj) => {
-      const value = `${keys.map((k) => obj[k]).join('_')}`.split('_');
-      dataExport.push(value);
-    });
-    return dataExport;
-  };
-
-  const downloadCSVFile = () => {
-    exportToCsv(`TimeOff-Report-${Date.now()}.csv`, processData(listTimeOff));
-  };
-
-  const dateFormat = 'MM/DD/YYYY';
-  const options = [
-    { value: TIMEOFF_STATUS.ACCEPTED, label: 'Approved' },
-    { value: TIMEOFF_STATUS.IN_PROGRESS, label: 'In Progress' },
-    { value: TIMEOFF_STATUS.REJECTED, label: 'Rejected' },
-    { value: TIMEOFF_STATUS.ON_HOLD, label: 'On-hold' },
-    { value: TIMEOFF_STATUS.DRAFTS, label: 'Draft' },
-    { value: TIMEOFF_STATUS.DELETED, label: 'Deleted' },
-    { value: TIMEOFF_STATUS.WITHDRAWN, label: 'Withdrawn' },
-  ];
-
   return (
-    <div className={styles.OptionsHeader}>
+    <div className={styles.Header}>
       <div className={styles.container}>
         <Form
           name="uploadForm"
           form={form}
           onValuesChange={onValuesChange}
           initialValues={{
-            durationFrom: fromDate,
-            durationTo: toDate,
+            fromDate,
+            toDate,
           }}
         >
           <Row gutter={[24, 12]}>
@@ -131,7 +68,7 @@ const OptionsHeader = (props) => {
                   disabled={disabled || loadingEmployeeList}
                   loading={loadingEmployeeList}
                 >
-                  {listEmployee.map((item = {}) => {
+                  {listEmployees.map((item = {}) => {
                     return (
                       <Option key={item._id} value={item._id}>
                         {`${item?.generalInfo?.employeeId} - ${item?.generalInfo?.legalName}`}
@@ -146,7 +83,7 @@ const OptionsHeader = (props) => {
               <div>
                 <Row gutter={[24, 24]}>
                   <Col xs={12}>
-                    <Form.Item name="durationFrom">
+                    <Form.Item name="fromDate">
                       <DatePicker
                         placeholder="From Date"
                         format={dateFormat}
@@ -158,7 +95,7 @@ const OptionsHeader = (props) => {
                   </Col>
                   <Col xs={12}>
                     <span />
-                    <Form.Item name="durationTo">
+                    <Form.Item name="toDate">
                       <DatePicker
                         placeholder="To Date"
                         format={dateFormat}
@@ -180,23 +117,15 @@ const OptionsHeader = (props) => {
                     <Form.Item name="types">
                       <Select
                         placeholder="Select the Leave Type"
-                        // disabled={disabled}
                         disabled={loadingFetchTimeoffTypes}
                         loading={loadingFetchTimeoffTypes}
                         mode="multiple"
                         filterOption={(input, option) =>
                           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                        notFoundContent={
-                          <EmptyComponent
-                            description={
-                              selectedLocations.length === 0 ? 'Select a location first' : 'No data'
-                            }
-                          />
-                        }
                       >
-                        {timeOffTypesByCountry.map((item = {}) => {
+                        {typeList.map((item = {}) => {
                           return (
-                            <Option key={item._id} value={item._id}>
+                            <Option key={item.name} value={item.ids}>
                               {item.name}
                             </Option>
                           );
@@ -216,8 +145,9 @@ const OptionsHeader = (props) => {
                     <Form.Item>
                       <Button
                         className={styles.downloadCSVBtn}
-                        disabled={disabled}
-                        onClick={downloadCSVFile}
+                        disabled={disabled || listTimeOff.length === 0}
+                        onClick={onExport}
+                        loading={loadingExport}
                         icon={<img src={DownloadIcon} alt="" />}
                       >
                         Download
@@ -239,7 +169,7 @@ const OptionsHeader = (props) => {
             </Col>
             <Col xs={{ span: 22 }} className={styles.statusFilter}>
               <Form.Item name="status" className={styles.statusRow}>
-                <Checkbox.Group options={options} disabled={disabled} />
+                <Checkbox.Group options={TIMEOFF_NAME_BY_ID} disabled={disabled} />
               </Form.Item>
             </Col>
           </Row>
@@ -249,7 +179,7 @@ const OptionsHeader = (props) => {
   );
 };
 export default connect(({ loading, timeOffManagement }) => ({
-  loadingEmployeeList: loading.effects['timeOffManagement/fetchEmployeeList'],
-  loadingFetchTimeoffTypes: loading.effects['timeOffManagement/fetchTimeOffTypesByCountry'],
+  loadingEmployeeList: loading.effects['timeOffManagement/getListEmployeesEffect'],
+  loadingFetchTimeoffTypes: loading.effects['timeOffManagement/getTimeOffTypeListEffect'],
   timeOffManagement,
-}))(OptionsHeader);
+}))(Header);
