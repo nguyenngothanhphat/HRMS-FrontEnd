@@ -9,8 +9,29 @@ const NotificationTag = (props) => {
   const {
     item: { messages = [], newMessages = 0, sendFrom = '', candidateId = '' } = {},
     setModalVisible = () => {},
+    employee = {},
+    dispatch,
   } = props;
   const { createdAt: date = '' } = messages[0];
+  const handleClick = () => {
+    const userId = employee ? employee._id : '';
+    const conversationId = messages[0] ? messages[0].conversationId : '';
+    dispatch({
+      type: 'conversation/seenMessageEffect',
+      payload: {
+        userId,
+        conversationId,
+      }
+    })
+    dispatch({
+      type: 'conversation/getConversationUnSeenEffect',
+      payload: {
+        userId,
+      },
+    });
+    history.push(`/onboarding/list/view/${candidateId}`);
+    setModalVisible();
+  };
   // RENDER UI
   const renderTag = () => {
     const dateTemp = moment(date).date();
@@ -30,13 +51,7 @@ const NotificationTag = (props) => {
               </div>
             </Col>
             <Col span={4} className={styles.rightPart}>
-              <div
-                className={styles.viewBtn}
-                onClick={() => {
-                  history.push(`/onboarding/list/view/${candidateId}`);
-                  setModalVisible();
-                }}
-              >
+              <div className={styles.viewBtn} onClick={() => handleClick()}>
                 <img src={openTR} alt="notification-icon" height={32} width={32} />
               </div>
             </Col>
@@ -49,4 +64,7 @@ const NotificationTag = (props) => {
   return renderTag();
 };
 
-export default connect(() => ({}))(NotificationTag);
+export default connect(({ loading, user: { currentUser: { employee = {} } } = {} }) => ({
+  employee,
+  loading: loading.effects['conversation/seenMessageEffect'],
+}))(NotificationTag);
