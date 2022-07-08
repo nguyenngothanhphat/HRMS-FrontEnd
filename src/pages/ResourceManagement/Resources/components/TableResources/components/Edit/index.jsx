@@ -21,7 +21,7 @@ const { Option } = Select;
     statusList,
   }),
 )
-class EditActionBTN extends Component {
+class Edit extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -79,6 +79,12 @@ class EditActionBTN extends Component {
       visible,
       onClose = () => {},
     } = this.props;
+    const startDate = this.parseDate(dataPassRow?.startDate || '');
+    const endDate = this.parseDate(dataPassRow?.endDate || '');
+    const revisedEndDate = this.parseDate(dataPassRow?.revisedEndDate || '');
+    const projectId = dataPassRow?.projectId || '';
+    const utilization = dataPassRow?.utilization || '';
+    const billStatus = dataPassRow?.billStatus || '';
 
     const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
@@ -87,141 +93,140 @@ class EditActionBTN extends Component {
       0,
     );
     const maxEnterUtilization = 100 - sumUtilization + dataPassRow.utilization;
-    return (
-      <div className={styles.EditActionBTN}>
-        <Modal
-          className={styles.modalEditProjectDetail}
-          title="Edit Project Details"
-          width="620px"
-          visible={visible}
-          footer={null}
-          onCancel={onClose}
-          destroyOnClose
-        >
-          <Form
-            layout="vertical"
-            className={styles.formAdd}
-            method="POST"
-            onFinish={(values) => this.handleSubmitAssign(values)}
-            initialValues={{
-              startDate: this.parseDate(dataPassRow.startDate, 'MM/DD/YYYY'),
-              endDate: this.parseDate(dataPassRow.endDate, 'MM/DD/YYYY'),
-              revisedEndDate:
-                dataPassRow.revisedEndDate !== '-' &&
-                this.parseDate(dataPassRow.revisedEndDate, 'MM/DD/YYYY'),
-              project: dataPassRow.project,
-              utilization: dataPassRow.utilization,
-              status: dataPassRow.billStatus,
-            }}
+    
+      return (
+        <div className={styles.EditActionBTN}>
+          <Modal
+            className={styles.modalEditProjectDetail}
+            title="Edit Project Details"
+            width="620px"
+            visible={visible}
+            footer={null}
+            onCancel={onClose}
+            destroyOnClose
           >
-            <Row gutter={[24, 24]}>
-              <Col span={12}>
-                <Form.Item
-                  label="Project"
-                  name="project"
-                  rules={[{ required: true, message: 'Please select the project!' }]}
-                >
-                  <Select defaultValue={dataPassRow.projectName}>
-                    {projectList.map((project) => (
-                      <Option value={project.id}>{project.projectName}</Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  label="Status"
-                  name="status"
-                  rules={[
-                    { required: true, message: 'Please select the status!' },
-                    () => ({
-                      validator(_, value) {
-                        if (value && value === '-') {
-                          return Promise.reject(`Please select the status!`);
-                        }
-                        return Promise.resolve();
-                      },
-                    }),
-                  ]}
-                >
-                  <Select>
-                    {statusList.map((status) => (
-                      <Option value={status}>{status}</Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  label="Bandwith Allocation (%)"
-                  name="utilization"
-                  rules={[
-                    { required: true, message: 'Please enter the bandwith allocation (%)!' },
-                    () => ({
-                      validator(_, value) {
-                        if (value && isNaN(value)) {
-                          return Promise.reject(`Value enter has to be a number!`);
-                        }
-                        if (value > maxEnterUtilization) {
-                          return Promise.reject(
-                            `Your cannot enter a value that is more than ${maxEnterUtilization}!`,
-                          );
-                        }
-                        if (value < 0) {
-                          return Promise.reject(`Your cannot enter a value that is less than 0!`);
-                        }
-                        return Promise.resolve();
-                      },
-                    }),
-                  ]}
-                  validateTrigger="onBlur"
-                >
-                  <Input addonAfter="%" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="Start Date"
-                  name="startDate"
-                  rules={[{ required: true, message: 'Start date value could not be empty!' }]}
-                >
-                  <DatePicker
-                    placeholder="Start Date"
-                    format="MM/DD/YYYY"
-                    suffixIcon={<img src={datePickerIcon} alt="" />}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="End Date"
-                  name="endDate"
-                  rules={[{ required: true, message: 'End date value could not be empty!' }]}
-                >
-                  <DatePicker
-                    placeholder="Enter End Date"
-                    format="MM/DD/YYYY"
-                    suffixIcon={<img src={datePickerIcon} alt="" />}
-                  />
-                </Form.Item>
-                <Form.Item label="Revised End Date" name="revisedEndDate">
-                  <DatePicker
-                    placeholder="Enter Date"
-                    format="MM/DD/YYYY"
-                    suffixIcon={<img src={datePickerIcon} alt="" />}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            <br />
-            <br />
-            <div className={styles.spaceFooter}>
-              <div className={styles.btnCancel} onClick={onClose}>
-                Cancel
+            <Form
+              layout="vertical"
+              className={styles.formAdd}
+              method="POST"
+              onFinish={(values) => this.handleSubmitAssign(values)}
+              initialValues={{
+                startDate,
+                endDate,
+                revisedEndDate,
+                project: projectId,
+                utilization,
+                status: billStatus,
+              }}
+            >
+              <Row gutter={[24, 24]}>
+                <Col span={12}>
+                  <Form.Item
+                    label="Project"
+                    name="project"
+                    rules={[{ required: true, message: 'Please select the project!' }]}
+                  >
+                    <Select>
+                      {projectList.map((project) => (
+                        <Option value={project.id}>{project.projectName}</Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    label="Status"
+                    name="status"
+                    rules={[
+                      { required: true, message: 'Please select the status!' },
+                      () => ({
+                        validator(_, value) {
+                          if (value && value === '-') {
+                            return Promise.reject(`Please select the status!`);
+                          }
+                          return Promise.resolve();
+                        },
+                      }),
+                    ]}
+                  >
+                    <Select>
+                      {statusList.map((status) => (
+                        <Option value={status}>{status}</Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    label="Bandwith Allocation (%)"
+                    name="utilization"
+                    rules={[
+                      { required: true, message: 'Please enter the bandwith allocation (%)!' },
+                      () => ({
+                        validator(_, value) {
+                          if (value && isNaN(value)) {
+                            return Promise.reject(`Value enter has to be a number!`);
+                          }
+                          if (value > maxEnterUtilization) {
+                            return Promise.reject(
+                              `Your cannot enter a value that is more than ${maxEnterUtilization}!`,
+                            );
+                          }
+                          if (value < 0) {
+                            return Promise.reject(`Your cannot enter a value that is less than 0!`);
+                          }
+                          return Promise.resolve();
+                        },
+                      }),
+                    ]}
+                    validateTrigger="onBlur"
+                  >
+                    <Input addonAfter="%" />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="Start Date"
+                    name="startDate"
+                    rules={[{ required: true, message: 'Start date value could not be empty!' }]}
+                  >
+                    <DatePicker
+                      placeholder="Start Date"
+                      format="MM/DD/YYYY"
+                      suffixIcon={<img src={datePickerIcon} alt="" />}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label="End Date"
+                    name="endDate"
+                    rules={[{ required: true, message: 'End date value could not be empty!' }]}
+                  >
+                    <DatePicker
+                      placeholder="Enter End Date"
+                      format="MM/DD/YYYY"
+                      suffixIcon={<img src={datePickerIcon} alt="" />}
+                    />
+                  </Form.Item>
+                  <Form.Item label="Revised End Date" name="revisedEndDate">
+                    <DatePicker
+                      placeholder="Enter Date"
+                      format="MM/DD/YYYY"
+                      suffixIcon={<img src={datePickerIcon} alt="" />}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <br />
+              <br />
+              <div className={styles.spaceFooter}>
+                <div className={styles.btnCancel} onClick={onClose}>
+                  Cancel
+                </div>
+                <Button type="primary" htmlType="submit" className={styles.btnSubmit}>
+                  Save Changes
+                </Button>
               </div>
-              <Button type="primary" htmlType="submit" className={styles.btnSubmit}>
-                Save Changes
-              </Button>
-            </div>
-          </Form>
-        </Modal>
-      </div>
-    );
+            </Form>
+          </Modal>
+        </div>
+      );
   }
 }
 
-export default EditActionBTN;
+export default Edit;

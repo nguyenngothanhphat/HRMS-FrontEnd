@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { Table, Tag } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
-import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import AddModal from './components/Add';
 import EditModal from './components/Edit';
 import HistoryModal from './components/History';
@@ -16,6 +15,9 @@ import CommentOverlay from '../ComplexView/components/Overlay';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import EmptyComponent from '@/components/Empty';
 import UserProfilePopover from '@/components/UserProfilePopover';
+import ProjectRow from './components/ProjectRow';
+import ProjectLayout from './components/ProjectLayout';
+import { checkUtilization, projectDateFormat } from '@/utils/resourceManagement';
 
 @connect(
   ({
@@ -249,11 +251,27 @@ class TableResources extends PureComponent {
       return obj;
     };
 
+    const formatDataForm = (row, project) => {
+      return {
+        ...row,
+        resourceId: project?.id,
+        projectId: project?.project?.id,
+        utilization: project?.utilization,
+        startDate: project?.startDate,
+        endDate: project?.endDate,
+        projectName: project?.project?.projectName,
+        revisedEndDate: project?.revisedEndDate,
+        billStatus: project?.status,
+      };
+    };
+
     const dataHover = (employeeId) => {
       const { resourceList = [] } = this.props;
       const obj = resourceList.find((x) => x._id === employeeId) || {};
       return { ...obj, ...obj?.generalInfo };
     };
+
+    const renderEmpty = () => <div className={styles.emptyItem}>-</div>;
 
     const columns = () => {
       return [
@@ -262,14 +280,17 @@ class TableResources extends PureComponent {
           dataIndex: 'employeeName',
           key: 'employeeName',
           render: (value, row, index) => {
-            const statusClass = resourceStatusClass(row.availableStatus);
+            const availableStatus = row?.availableStatus;
+            const statusClass = resourceStatusClass(availableStatus);
             const div = (
               <div>
-                <div>
-                  <div className={styles.resourceStatus}>
-                    <span className={styles[statusClass]}>{row.availableStatus}</span>
+                {availableStatus && (
+                  <div>
+                    <div className={styles.resourceStatus}>
+                      <span className={styles[statusClass]}>{availableStatus}</span>
+                    </div>
                   </div>
-                </div>
+                )}
                 <UserProfilePopover data={dataHover(row.employeeId)} placement="topLeft">
                   <div className={styles.userProfile}>
                     <div className={styles.avatar}>
@@ -336,39 +357,81 @@ class TableResources extends PureComponent {
         },
         {
           title: 'Current Project(s)',
-          dataIndex: 'projectName',
-          render: (value, row) => {
-            const employeeRowCount = data.filter((x) => x.employeeId === row.employeeId).length;
+          dataIndex: 'projects',
+          render: (projects) => {
+            const projectLength = projects.length;
             const display = (
-              <ProjectProfile placement="leftTop" projectId={row.project}>
-                <span className={styles.employeeName}>{value || '-'}</span>
-              </ProjectProfile>
+              <ProjectLayout>
+                {projectLength
+                  ? projects.map((project, index) => (
+                    <ProjectProfile placement="leftTop" project={project}>
+                      <div>
+                        <ProjectRow
+                          key={project.id}
+                          value={project?.project?.projectName || '-'}
+                          length={projectLength}
+                          index={index}
+                          className={styles.employeeName}
+                        />
+                      </div>
+                    </ProjectProfile>
+                    ))
+                  : renderEmpty()}
+              </ProjectLayout>
             );
             const obj = {
               children: display,
               props: {
                 rowSpan: 1,
-                className: employeeRowCount > 1 ? 'left-border' : '',
+                className: 'left-border',
               },
             };
             return obj;
           },
         },
         {
-          title: 'Status',
+          title: 'Billing Status',
           dataIndex: 'billStatus',
           key: 'billStatus',
           align: 'center',
-          render: (billStatus) => {
-            return <span className={styles.basicCellField}> {billStatus}</span>;
+          render: (projects) => {
+            const projectLength = projects.length;
+            return (
+              <ProjectLayout>
+                {projectLength
+                  ? projects.map((project, index) => (
+                    <ProjectRow
+                      key={project.id}
+                      value={project?.status || '-'}
+                      length={projectLength}
+                      index={index}
+                    />
+                    ))
+                  : renderEmpty()}
+              </ProjectLayout>
+            );
           },
         },
         {
           title: 'Utilization',
           dataIndex: 'utilization',
           key: 'utilization',
-          render: (value) => {
-            return <span>{value} %</span>;
+          render: (projects) => {
+            const projectLength = projects.length;
+            return (
+              <ProjectLayout>
+                {projectLength
+                  ? projects.map((project, index) => (
+                    <ProjectRow
+                      key={project.id}
+                      value={`${project?.utilization || 0}%`}
+                      length={projectLength}
+                      index={index}
+                    />
+                    ))
+                  : renderEmpty()}
+              </ProjectLayout>
+            );
           },
         },
         {
@@ -380,8 +443,22 @@ class TableResources extends PureComponent {
           ),
           dataIndex: 'startDate',
           key: 'startDate',
-          render: (value) => {
-            return <span className={styles.basicCellField}>{value}</span>;
+          render: (projects) => {
+            const projectLength = projects.length;
+            return (
+              <ProjectLayout>
+                {projectLength
+                  ? projects.map((project, index) => (
+                    <ProjectRow
+                      key={project.id}
+                      value={projectDateFormat(project?.startDate)}
+                      length={projectLength}
+                      index={index}
+                    />
+                    ))
+                  : renderEmpty()}
+              </ProjectLayout>
+            );
           },
         },
         {
@@ -393,8 +470,22 @@ class TableResources extends PureComponent {
           ),
           dataIndex: 'endDate',
           key: 'endDate',
-          render: (value) => {
-            return <span className={styles.basicCellField}>{value}</span>;
+          render: (projects) => {
+            const projectLength = projects.length;
+            return (
+              <ProjectLayout>
+                {projectLength
+                  ? projects.map((project, index) => (
+                    <ProjectRow
+                      key={project.id}
+                      value={projectDateFormat(project?.endDate)}
+                      length={projectLength}
+                      index={index}
+                    />
+                    ))
+                  : renderEmpty()}
+              </ProjectLayout>
+            );
           },
         },
         {
@@ -406,32 +497,45 @@ class TableResources extends PureComponent {
           ),
           dataIndex: 'revisedEndDate',
           key: 'revisedEndDate',
-          render: (value, row) => {
-            let display = '-';
-            const employeeRowCount = data.filter((x) => x.employeeId === row.employeeId).length;
-            if (row.projectName === '' && row.startDate === '-') {
-              display = <div className={styles.reservedField}>{value}</div>;
-            } else {
-              display = (
-                <div className={styles.reservedField}>
-                  {value}
-                  <div className={styles.resourceManagementEdit}>
-                    {allowModify && (
-                      <div className={styles.buttonContainer}>
-                        <img src={editIcon} alt="historyIcon" onClick={() => this.showModal(row)} />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            }
+          render: (projects, row) => {
+            const projectLength = projects.length;
+            const display = (
+              <>
+                <ProjectLayout length={projectLength}>
+                  {projectLength
+                    ? projects.map((project, index) => {
+                        const dataRow = formatDataForm(row, project);
+                        return (
+                          <div key={project.id} className={styles.editRow}>
+                            <ProjectRow
+                              value={projectDateFormat(project?.revisedEndDate)}
+                              length={projectLength}
+                              index={index}
+                            />
+                            <div className={styles.resourceManagementEdit}>
+                              {allowModify && (
+                                <div className={styles.buttonContainer}>
+                                  <img
+                                    src={editIcon}
+                                    alt="historyIcon"
+                                    onClick={() => this.showModal(dataRow)}
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })
+                    : renderEmpty()}
+                </ProjectLayout>
+              </>
+            );
+
             const obj = {
               children: display,
               props: {
                 rowSpan: 1,
-                className: `${styles.basicCellFieldShowEdit} ${
-                  employeeRowCount > 1 ? 'right-border' : ''
-                }`,
+                className: `${styles.basicCellFieldShowEdit} right-border`,
               },
             };
             return obj;
@@ -495,6 +599,7 @@ class TableResources extends PureComponent {
           // dataIndex: 'subject',
           key: 'action',
           render: (value, row, index) => {
+            const checkAction = checkUtilization(row?.projects);
             const action = (
               <div className={styles.actionParent}>
                 <div className={styles.buttonGroup}>
@@ -502,7 +607,8 @@ class TableResources extends PureComponent {
                     <img
                       src={addAction}
                       alt="attachIcon"
-                      onClick={() => this.showModalAdd(row)}
+                      onClick={() => checkAction && this.showModalAdd(row)}
+                      style={{ cursor: checkAction ? 'pointer' : 'not-allowed' }}
                       className={styles.buttonAdd}
                     />
                   )}

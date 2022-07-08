@@ -26,7 +26,6 @@ const ResourceList = (props) => {
     currentPayload = {},
   } = props;
 
-  const viewModeAdmin = permissions.viewResourceAdminMode !== -1;
   const modifyResourcePermission = permissions.modifyResource !== -1;
   const adminMode = permissions.viewResourceAdminMode !== -1;
   const countryMode = permissions.viewResourceCountryMode !== -1;

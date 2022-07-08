@@ -1,11 +1,10 @@
 import moment from 'moment';
 
-const parseDate = (dateText) => {
-  if (!dateText) {
-    return '-';
-  }
-  return moment(dateText).format('MM/DD/YYYY');
+const availableStatus = {
+  AVAILABLE_NOW: 'Available Now',
+  AVAILABLE_SOON: 'Available Soon',
 };
+
 const handleLongText = (text, length) => {
   if (!text) {
     return '';
@@ -18,80 +17,57 @@ const handleLongText = (text, length) => {
   return `${formatText}...${formatText.includes('(') ? ')' : ''}`;
 };
 
-const cloneObj = (obj) => {
-  const newObj = {};
-  // eslint-disable-next-line no-restricted-syntax
-  for (const [key, value] of Object.entries(obj)) {
-    newObj[key] = value;
-  }
-  return newObj;
+export const projectDateFormat = (date) => {
+  if (date) return moment(date).locale('en').format('MM/DD/YYYY');
+  return '-';
 };
 
-// obj = {
-//   employeeId: 15,
-//   employeeName: `employee 15`,
-//   division: 'division',
-//   designation: 'designation',
-//   experience: (Math.random(i) * i).toFixed(1),
-//   projectName: '',
-//   availableStatus: 'Available Soon',
-//   comment: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint nt. ullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint. Amet minim mollit non deserunt ullamcoullamco est sit aliqua dolor do amet sint...Read More',
-//   utilization: 0,
-//   startDate: '',
-//   endDate: '',
-// };
-// eslint-disable-next-line import/prefer-default-export
-export function formatData(rawData, projectList) {
+export const checkUtilization = (projects) => {
+  let sum = 0;
+  projects.forEach((project) => {
+    sum += project?.utilization || 0;
+  });
+  if (sum === 100) return false;
+  return true;
+};
+
+export function formatData(rawData) {
   const dataList = [];
   rawData.forEach((obj) => {
     const { titleInfo, generalInfo, projects } = obj;
-    const availableStatus = 'Available Now';
     const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
     const employeeName = `${generalInfo.legalName} ${userName ? `(${userName})` : ''}`;
+    
+    const projectList = projects.filter(item => {
+      const revisedEndDate = item?.revisedEndDate
+      const endDate = item?.endDate
+      if(revisedEndDate){
+        if(moment(revisedEndDate).isAfter(moment())) return item
+      } else if(moment(endDate).isAfter(moment())) return item
+      return null
+    })
+
     const newObj = {
       avatar: generalInfo.avatar,
       employeeSkills: generalInfo?.skills,
       employeeId: obj?._id,
       employeeName: handleLongText(employeeName.trim(), 25),
-      availableStatus,
+      availableStatus: availableStatus[obj?.availableStatus] || '',
       division: obj?.departmentInfo?.name,
       designation: titleInfo?.name,
       experience: generalInfo?.totalExp,
       comment: obj?.commentResource,
-      projectName: '',
-      utilization: 0,
-      billStatus: '-',
-      startDate: '-',
-      endDate: '-',
+      projects: projectList,
+      utilization: projectList,
+      billStatus: projectList,
+      startDate: projectList,
+      endDate: projectList,
+      revisedEndDate: projectList,
       resourceId: 0,
     };
-    let ability = 0;
-    // eslint-disable-next-line no-restricted-syntax
-    for (const p of projects) {
-      ability += p.utilization;
-    }
-    newObj.availableStatus = ability < 100 ? 'Available Now' : 'Available Soon';
-    if (projects.length === 0) {
-      dataList.push(newObj);
-    } else {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const p of projects) {
-        const project = projectList.find((x) => x.id === p?.project?.id);
-        const pObj = cloneObj(newObj);
-        pObj.projectName = project?.projectName;
-        pObj.projectId = project?.projectId;
-        pObj.startDate = parseDate(p?.startDate);
-        pObj.endDate = parseDate(p?.endDate);
-        pObj.billStatus = p?.status || '-';
-        pObj.project = project?.id;
-        pObj.utilization = p?.utilization || 0;
-        pObj.revisedEndDate = parseDate(p?.revisedEndDate);
-        pObj.resourceId = p?.id;
-        dataList.push(pObj);
-      }
-    }
+    dataList.push(newObj);
   });
-  // console.log(`formatDataSource: ${JSON.stringify(dataList)}`);
+
   return dataList;
 }
 
@@ -125,4 +101,20 @@ export function handlingResourceAvailableStatus(data) {
     obj.number = value;
   }
   return statusData;
+}
+
+export const setSelectedLocations = (data) => {
+  localStorage.setItem('resourceSelectedLocations',JSON.stringify(data))
+}
+
+export const getSelectedLocations = () => {
+  return JSON.parse(localStorage.getItem('resourceSelectedLocations'))
+}
+
+export const setSelectedDivisions = (data) => {
+  localStorage.setItem('resourceSelectedDivision',JSON.stringify(data))
+}
+
+export const getSelectedDivisions = () => {
+  return JSON.parse(localStorage.getItem('resourceSelectedDivision'))
 }
