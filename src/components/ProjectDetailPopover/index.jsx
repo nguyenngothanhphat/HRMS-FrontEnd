@@ -18,6 +18,7 @@ const ProjectDetailPopover = (props) => {
     engineeringOwner: { generalInfo: { legalName: nameEngineeringOwner = '' } = {} } = {},
     startDate = '',
     endDate = '',
+    percentComplete = '',
   } = data;
   const [showPopover, setShowPopover] = useState(false);
 
@@ -42,7 +43,7 @@ const ProjectDetailPopover = (props) => {
               <span>Status</span>
               <span>
                 {': '}
-                {status}
+                {status || '_'}
               </span>
             </div>
             <div className={styles.employeeInfo__department}>
@@ -105,8 +106,8 @@ const ProjectDetailPopover = (props) => {
             <Col span={15}>
               <Progress
                 strokeLinecap="round"
-                strokeColor={getProgressBarColor(status)}
-                percent={status}
+                strokeColor={getProgressBarColor(percentComplete)}
+                percent={percentComplete}
                 size="small"
                 type="line"
                 showInfo={false}
