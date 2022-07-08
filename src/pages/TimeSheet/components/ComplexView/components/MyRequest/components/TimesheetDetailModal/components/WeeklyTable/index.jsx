@@ -19,7 +19,6 @@ const WeeklyTable = (props) => {
     loadingFetchMyTimesheetByType = false,
     data = [],
     timeoffList = [],
-    setSelectedView = () => {},
     callback = () => {},
   } = props;
   const [dateList, setDateList] = useState([]);
@@ -267,7 +266,7 @@ const WeeklyTable = (props) => {
           dataSource={formattedData}
           bordered
           pagination={false}
-          scroll={{ y: 500 }}
+          // scroll={{ x: '100%', y: 500 }}
           footer={data.length === 0 ? null : renderFooter}
           loading={loadingFetchMyTimesheetByType}
           locale={{

@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import DeleteIcon from '@/assets/timeSheet/del.svg';
 import EditIcon from '@/assets/timeSheet/edit.svg';
 import DuplicateIcon from '@/assets/timeSheet/duplicate.svg';
-import ModalImage from '@/assets/timeSheet/modalImage1.png';
+import ModalImage from '@/assets/timeSheet/modalImage2.png';
 import CommonModal from '@/components/CommonModal';
 import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/EditTaskModal';
 import { getCurrentCompany } from '@/utils/authority';
