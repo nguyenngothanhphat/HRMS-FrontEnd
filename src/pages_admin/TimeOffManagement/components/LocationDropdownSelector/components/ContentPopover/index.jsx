@@ -10,6 +10,7 @@ const ContentPopover = (props) => {
     checkAll = false,
     onCheckAll = () => {},
     selected = [],
+    indeterminate = false,
   } = props;
 
   const RenderTree = () => {
@@ -20,6 +21,7 @@ const ContentPopover = (props) => {
             onChange={onCheckAll}
             checked={checkAll}
             style={{ display: 'flex', margin: '8px 0' }}
+            indeterminate={indeterminate}
           >
             Select All
           </Checkbox>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 import ContentPopover from './components/ContentPopover';
 import styles from './index.less';
@@ -9,8 +9,9 @@ const LocationDropdownSelector = ({
   selectedLocations = [],
   saveLocationToRedux = () => {},
 }) => {
-  const [dataLength, setDataLength] = React.useState(0);
-  const [selectedLocationsLength, setSelectedLocationsLength] = React.useState(0);
+  const [dataLength, setDataLength] = useState(0);
+  const [selectedLocationsLength, setSelectedLocationsLength] = useState(0);
+  const [indeterminate, setIndeterminate] = useState(false);
 
   // functions
   const onCheck = (selection = []) => {
@@ -45,6 +46,10 @@ const LocationDropdownSelector = ({
     setSelectedLocationsLength(ids.length);
   }, [JSON.stringify(selectedLocations)]);
 
+  useEffect(() => {
+    setIndeterminate(selectedLocationsLength > 0 && selectedLocationsLength < dataLength);
+  }, [selectedLocationsLength, dataLength]);
+
   // render UI
   const getSelectedLocationName = () => {
     if (selectedLocationsLength === 1) {
@@ -77,6 +82,7 @@ const LocationDropdownSelector = ({
         selected={selectedLocations}
         onCheck={onCheck}
         onCheckAll={onCheckAll}
+        indeterminate={indeterminate}
       >
         <div
           className={`${data.length < 2 ? styles.noDropdown : styles.dropdown}`}

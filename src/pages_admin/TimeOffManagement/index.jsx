@@ -35,7 +35,10 @@ const TimeOffManagement = (props) => {
     const tempData = locationsOfCountries.map((x, i) => {
       return {
         title: x.country?.name,
-        key: i, // do not change this key
+        // When you select locations,
+        // Antd Tree will include this key in the output values.
+        // So, I'll remove this key from the output values by filter typeof x !== 'number'.
+        key: i, // <-- this
         children: x.data.map((y) => {
           return {
             title: y.name,
@@ -54,7 +57,6 @@ const TimeOffManagement = (props) => {
         company: getCurrentCompany(),
         tenantId: getCurrentTenant(),
         status: ['INACTIVE', 'ACTIVE'],
-        // location: selectedLocations,
       },
     });
     dispatch({
