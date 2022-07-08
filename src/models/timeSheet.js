@@ -385,7 +385,7 @@ const TimeSheet = {
           pushError(errors);
           return [];
         }
-        pushSuccess(error, 'imported', 'Importing timesheet successfully');
+        pushSuccess(error, 'imported', 'Import timesheet successfully');
 
         yield put({
           type: 'save',
@@ -413,7 +413,7 @@ const TimeSheet = {
           pushError(errors);
           return [];
         }
-        pushSuccess(error, 'imported', 'Importing timesheet successfully');
+        pushSuccess(error, 'imported', 'Import timesheet successfully');
 
         yield put({
           type: 'save',
