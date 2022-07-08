@@ -1,4 +1,16 @@
-import { Button, Col, DatePicker, Form, Input, message, Row, Select, Spin, Tooltip } from 'antd';
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  message,
+  Row,
+  Select,
+  Spin,
+  Tag,
+  Tooltip,
+} from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
@@ -86,13 +98,15 @@ const RequestInformation = (props) => {
   const [dateLists, setDateLists] = useState([]);
   const [isModified, setIsModified] = useState(false); // when start editing a request, if there are any changes, isModified = true
   const [workingDays, setWorkingDays] = useState([]);
+  const [isNormalType, setIsNormalType] = useState(false);
+  const [listDate, setListDate] = useState([]);
+  const [visible, setVisible] = useState(false);
 
   const BY_HOUR = TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.HOUR;
   const BY_WHOLE_DAY =
     TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.WHOLE_DAY;
   // DYNAMIC ROW OF DATE LISTS
-  const showAllDateList = dateLists.length < MAX_NO_OF_DAYS_TO_SHOW;
-
+  const showAllDateList = dateLists.length < MAX_NO_OF_DAYS_TO_SHOW || listDate.length > 0;
   // functions
   const getTableTabIndexOfSubmittedType = (selectedTypeTemp, selectedTypeNameTemp) => {
     switch (selectedTypeNameTemp) {
@@ -211,7 +225,6 @@ const RequestInformation = (props) => {
         now.add(1, 'days');
       }
     }
-
     return {
       dates,
       endDate: endDateTemp,
@@ -236,6 +249,11 @@ const RequestInformation = (props) => {
       const { type = '', name = '' } = foundType;
       setSelectedType(type);
       setSelectedTypeName(name);
+      if (type === TIMEOFF_TYPE.A || type === TIMEOFF_TYPE.B) {
+        setIsNormalType(true);
+      } else {
+        setIsNormalType(false);
+      }
     }
   };
 
@@ -267,7 +285,7 @@ const RequestInformation = (props) => {
         endTimeDefault = endWorkDay?.end || WORKING_HOURS.END;
       }
 
-      result = dateLists.map((value, index) => {
+      result = (!isNormalType ? dateLists : listDate).map((value, index) => {
         return {
           date: moment(value).format('YYYY-MM-DD'),
           timeOfDay: HOUR,
@@ -286,7 +304,7 @@ const RequestInformation = (props) => {
           };
         });
       } else {
-        result = dateLists.map((value, index) => {
+        result = (!isNormalType ? dateLists : listDate).map((value, index) => {
           return {
             date: moment(value).format('YYYY-MM-DD'),
             timeOfDay: leaveTimeLists[index].period,
@@ -312,24 +330,44 @@ const RequestInformation = (props) => {
         attachments = [],
       } = values;
 
-      if (timeOffType && durationFrom && durationTo) {
+      if (timeOffType && ((durationFrom && durationTo) || listDate.length)) {
         const leaveDatesPayload = generateLeaveDates(leaveTimeLists);
 
-        const data = {
-          type: timeOffType,
-          employee: employeeId,
-          subject,
-          fromDate: moment(durationFrom).format('YYYY-MM-DD'),
-          toDate: moment(durationTo).format('YYYY-MM-DD'),
-          leaveDates: leaveDatesPayload,
-          onDate: moment().format('YYYY-MM-DD'),
-          description,
-          approvalManager: managerId, // id
-          cc: personCC,
-          attachments,
-          company: getCurrentCompany(),
-        };
-
+        let data = {};
+        if (isNormalType) {
+          data = {
+            type: timeOffType,
+            status: IN_PROGRESS,
+            subject,
+            listDate,
+            leaveDates: leaveDatesPayload,
+            onDate: moment().format('YYYY-MM-DD'),
+            description,
+            cc: personCC,
+            tenantId: getCurrentTenant(),
+            company: employee.company,
+            attachments,
+            approvalManager: managerId,
+            employee: employeeId,
+          };
+        } else {
+          data = {
+            type: timeOffType,
+            status: IN_PROGRESS,
+            subject,
+            fromDate: moment(durationFrom).format('YYYY-MM-DD'),
+            toDate: moment(durationTo).format('YYYY-MM-DD'),
+            leaveDates: leaveDatesPayload,
+            onDate: moment().format('YYYY-MM-DD'),
+            description,
+            cc: personCC,
+            tenantId: getCurrentTenant(),
+            company: employee.company,
+            attachments,
+            approvalManager: managerId,
+            employee: employeeId,
+          };
+        }
         if (!isEditingDrafts) {
           dispatch({
             type: 'timeOff/saveDraftLeaveRequest',
@@ -361,7 +399,6 @@ const RequestInformation = (props) => {
       leaveTimeLists = [],
       attachments = [],
     } = values;
-
     const leaveDatesPayload = generateLeaveDates(leaveTimeLists);
 
     // ON SUBMIT
@@ -370,20 +407,37 @@ const RequestInformation = (props) => {
         message.error('Please select valid leave time dates!');
       } else {
         // generate data for API
-        const payload = {
-          type: timeOffType,
-          status: IN_PROGRESS,
-          subject,
-          fromDate: moment(durationFrom).format('YYYY-MM-DD'),
-          toDate: moment(durationTo).format('YYYY-MM-DD'),
-          leaveDates: leaveDatesPayload,
-          onDate: moment().format('YYYY-MM-DD'),
-          description,
-          cc: personCC,
-          tenantId: getCurrentTenant(),
-          company: employee.company,
-          attachments,
-        };
+        let payload = {};
+        if (isNormalType) {
+          payload = {
+            type: timeOffType,
+            status: IN_PROGRESS,
+            subject,
+            listDate,
+            leaveDates: leaveDatesPayload,
+            onDate: moment().format('YYYY-MM-DD'),
+            description,
+            cc: personCC,
+            tenantId: getCurrentTenant(),
+            company: employee.company,
+            attachments,
+          };
+        } else {
+          payload = {
+            type: timeOffType,
+            status: IN_PROGRESS,
+            subject,
+            fromDate: moment(durationFrom).format('YYYY-MM-DD'),
+            toDate: moment(durationTo).format('YYYY-MM-DD'),
+            leaveDates: leaveDatesPayload,
+            onDate: moment().format('YYYY-MM-DD'),
+            description,
+            cc: personCC,
+            tenantId: getCurrentTenant(),
+            company: employee.company,
+            attachments,
+          };
+        }
 
         let type = '';
         if (action === NEW_LEAVE_REQUEST) {
@@ -416,6 +470,14 @@ const RequestInformation = (props) => {
 
   const toDateOnChange = (value) => {
     setDurationTo(value || '');
+  };
+
+  const handleChange = (value) => {
+    if (!listDate.includes(moment(value).format(TIMEOFF_DATE_FORMAT))) {
+      setListDate([...listDate, moment(value).format(TIMEOFF_DATE_FORMAT)]);
+    } else {
+      setListDate(listDate.filter((x) => x !== moment(value).format(TIMEOFF_DATE_FORMAT)));
+    }
   };
 
   // DATE PICKER ON CHANGE
@@ -509,10 +571,12 @@ const RequestInformation = (props) => {
   };
 
   const disabledFromDate = (current) => {
+    const value = form.getFieldsValue();
     return (
       !workingDays.includes(moment(current).day()) ||
       !checkIfWholeDayAvailable(current) ||
-      !checkIfHalfDayAvailable(current)
+      !checkIfHalfDayAvailable(current) ||
+      value?.listDate?.find((x) => x === moment(current).format('YYYY-MM-DD'))
     );
   };
 
@@ -577,6 +641,14 @@ const RequestInformation = (props) => {
       if (viewingStatus === DRAFTS) {
         setIsEditingDrafts(true);
       }
+      let isNormalTypeTemp = false;
+      let listDateTemp = [];
+      if (viewingType.type === TIMEOFF_TYPE.A || viewingType.type === TIMEOFF_TYPE.B) {
+        isNormalTypeTemp = true;
+        listDateTemp = viewingLeaveDates.map((x) => x.date);
+        setIsNormalType(true);
+        setListDate(listDateTemp);
+      }
 
       setDurationFrom(viewingFromDate ? moment(viewingFromDate) : null);
       setDurationTo(viewingToDate ? moment(viewingToDate) : null);
@@ -588,9 +660,8 @@ const RequestInformation = (props) => {
       const dateListsTemp = dateListsObj.dates;
       setDateLists(dateListsTemp);
       const resultDates = [];
-
       let check = false;
-      dateListsTemp.forEach((val1) => {
+      (!isNormalTypeTemp ? dateListsTemp : listDateTemp).forEach((val1) => {
         check = false;
         viewingLeaveDates.forEach((val2) => {
           const { date = '' } = val2;
@@ -604,7 +675,6 @@ const RequestInformation = (props) => {
         });
         if (!check) resultDates.push(null);
       });
-
       let leaveTimeLists = [];
       if (BY_HOUR) {
         leaveTimeLists = resultDates.map((date, index) => {
@@ -624,6 +694,7 @@ const RequestInformation = (props) => {
         subject: viewingSubject,
         durationFrom: viewingFromDate ? moment(viewingFromDate) : null,
         durationTo: viewingToDate ? moment(viewingToDate) : null,
+        listDate: listDateTemp,
         description: viewingDescription,
         personCC: viewingCC,
         // attachments: viewingAttachmentList,
@@ -659,14 +730,25 @@ const RequestInformation = (props) => {
   // USE EFFECT
   useEffect(() => {
     if (invalidDatesProps.length > 0) {
+      let listDates = [];
+      let temp = [];
       const dateList = enumerateDaysBetweenDates(moment(viewingFromDate), moment(viewingToDate));
-      const temp = invalidDatesProps.filter((x) => {
-        return !dateList.some(
-          (y) =>
-            moment(y).format(TIMEOFF_DATE_FORMAT) === moment(x.date).format(TIMEOFF_DATE_FORMAT),
-        );
-      });
-
+      if (!isNormalType && viewingFromDate && viewingToDate) {
+        temp = invalidDatesProps.filter((x) => {
+          return dateList.some(
+            (y) =>
+              moment(y).format(TIMEOFF_DATE_FORMAT) === moment(x.date).format(TIMEOFF_DATE_FORMAT),
+          );
+        });
+      } else {
+        listDates = viewingLeaveRequest.leaveDates?.map((x) => x.date);
+        temp = invalidDatesProps.filter((x) => {
+          return !listDates?.some(
+            (y) =>
+              moment(y).format(TIMEOFF_DATE_FORMAT) === moment(x.date).format(TIMEOFF_DATE_FORMAT),
+          );
+        });
+      }
       setInvalidDates(temp);
     }
   }, [JSON.stringify(invalidDatesProps)]);
@@ -713,10 +795,22 @@ const RequestInformation = (props) => {
     }
   }, [durationFrom, durationTo, currentAllowanceState]);
 
+  const renderTag = ({ value, onClose }) => {
+    const handleClose = () => {
+      setListDate(listDate.filter((x) => x !== value));
+      onClose();
+    };
+    return (
+      <Tag onClose={handleClose} closable>
+        {moment(value).format(TIMEOFF_DATE_FORMAT)}
+      </Tag>
+    );
+  };
+
   useEffect(() => {
     // only generate leave time lists when modified. If editing a ticket, no need to generate
-    if (dateLists.length > 0 && isModified) {
-      const initialValuesForLeaveTimesList = dateLists.map((x) => {
+    if ((dateLists.length || listDate.length) > 0 && isModified) {
+      const initialValuesForLeaveTimesList = (!isNormalType ? dateLists : listDate).map((x) => {
         // for non US user
         if (!BY_HOUR) {
           if (findInvalidHalfOfDay(x).includes(MORNING)) {
@@ -736,7 +830,7 @@ const RequestInformation = (props) => {
         leaveTimeLists: initialValuesForLeaveTimesList,
       });
     }
-  }, [selectedTypeName, durationFrom, JSON.stringify(dateLists)]);
+  }, [selectedTypeName, durationFrom, JSON.stringify(dateLists), JSON.stringify(listDate)]);
 
   useEffect(() => {
     // generate second notice
@@ -759,6 +853,12 @@ const RequestInformation = (props) => {
   }, []);
 
   useEffect(() => {
+    form.setFieldsValue({
+      listDate,
+    });
+  }, [JSON.stringify(listDate)]);
+
+  useEffect(() => {
     const workingDaysTemp = [];
     TIMEOFF_WORK_DAYS.forEach((x) => {
       if (workDay.some((y) => y.date === x.text && y.checked)) {
@@ -767,6 +867,14 @@ const RequestInformation = (props) => {
     });
     setWorkingDays(workingDaysTemp);
   }, [JSON.stringify(workDay)]);
+
+  const dateRender = (currentDate) => {
+    let isSelected;
+    if (listDate.length) {
+      isSelected = listDate.indexOf(moment(currentDate).format(TIMEOFF_DATE_FORMAT)) > -1;
+    }
+    return <div className={isSelected ? styles.selectDate : ''}>{currentDate.date()}</div>;
+  };
 
   // MAIN
   const layout = {
@@ -871,7 +979,7 @@ const RequestInformation = (props) => {
           <Col lg={12} sm={16}>
             <div className={styles.extraTimeSpent}>
               {renderTableHeader()}
-              {(!durationFrom || !durationTo) && (
+              {(!durationFrom || !durationTo) && !listDate.length && (
                 <div className={styles.content}>
                   <div className={styles.emptyContent}>
                     <span>Selected duration will show as days</span>
@@ -883,7 +991,7 @@ const RequestInformation = (props) => {
           <Col lg={6} sm={0} />
         </Row>
 
-        {durationFrom && durationTo && (
+        {((durationFrom && durationTo) || !!listDate.length) && (
           <Form.List name="leaveTimeLists">
             {() => (
               <Row key={1} className={styles.eachRow}>
@@ -892,12 +1000,11 @@ const RequestInformation = (props) => {
                 </Col>
                 <Col lg={12} sm={16} className={styles.leaveDaysContainer}>
                   {showAllDateList ? (
-                    dateLists.map((date, index) => {
+                    (!isNormalType ? dateLists : listDate).map((date, index) => {
                       return (
                         <LeaveTimeRow
                           eachDate={date}
                           index={index}
-                          listLength={dateLists.length}
                           needValidate={needValidate}
                           findInvalidHalfOfDay={findInvalidHalfOfDay}
                           BY_HOUR={BY_HOUR}
@@ -1018,54 +1125,94 @@ const RequestInformation = (props) => {
             </Col>
             <Col lg={12} sm={16}>
               <Row gutter={['20', '0']}>
-                <Col span={12}>
-                  {renderFormItem(
-                    <Form.Item
-                      name="durationFrom"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Please select a date!',
-                        },
-                      ]}
-                    >
-                      <DatePicker
-                        disabledDate={disabledFromDate}
-                        format={TIMEOFF_DATE_FORMAT}
-                        onChange={(value) => {
-                          fromDateOnChange(value);
-                        }}
-                        placeholder="From Date"
-                        disabled={!selectedTypeName}
-                        multiple
-                      />
-                    </Form.Item>,
-                  )}
-                </Col>
-                <Col span={12}>
-                  {renderFormItem(
-                    <Form.Item
-                      name="durationTo"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Please select a date!',
-                        },
-                      ]}
-                    >
-                      <DatePicker
-                        disabledDate={disabledToDate}
-                        format={TIMEOFF_DATE_FORMAT}
-                        disabled={!selectedTypeName}
-                        //  disabled={!selectedTypeName || selectedType === C}
-                        onChange={(value) => {
-                          toDateOnChange(value);
-                        }}
-                        placeholder="To Date"
-                      />
-                    </Form.Item>,
-                  )}
-                </Col>
+                {isNormalType ? (
+                  <Col span={24}>
+                    {renderFormItem(
+                      <Form.Item name="listDate">
+                        <Select
+                          mode="tags"
+                          placeholder="Select days you want to off"
+                          onFocus={() => setVisible(true)}
+                          onBlur={() => setVisible(false)}
+                          open={visible}
+                          value={listDate}
+                          tagRender={renderTag}
+                          onClear={() => setListDate([])}
+                          allowClear
+                          dropdownMatchSelectWidth={false}
+                          dropdownStyle={{ height: '270px', width: '280px', minWidth: '0' }}
+                          dropdownClassName="multipleDropdown"
+                          dropdownRender={() => {
+                            return (
+                              <DatePicker
+                                disabledDate={disabledFromDate}
+                                format={TIMEOFF_DATE_FORMAT}
+                                onSelect={handleChange}
+                                disabled={!selectedTypeName}
+                                open={visible}
+                                dateRender={dateRender}
+                                style={{ visibility: 'hidden' }}
+                                getPopupContainer={() =>
+                                  document.getElementsByClassName('multipleDropdown')[0]
+                                }
+                              />
+                            );
+                          }}
+                        />
+                      </Form.Item>,
+                    )}
+                  </Col>
+                ) : (
+                  <>
+                    <Col span={12}>
+                      {renderFormItem(
+                        <Form.Item
+                          name="durationFrom"
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Please select a date!',
+                            },
+                          ]}
+                        >
+                          <DatePicker
+                            disabledDate={disabledFromDate}
+                            format={TIMEOFF_DATE_FORMAT}
+                            onChange={(value) => {
+                              fromDateOnChange(value);
+                            }}
+                            placeholder="From Date"
+                            disabled={!selectedTypeName}
+                          />
+                        </Form.Item>,
+                      )}
+                    </Col>
+                    <Col span={12}>
+                      {renderFormItem(
+                        <Form.Item
+                          name="durationTo"
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Please select a date!',
+                            },
+                          ]}
+                        >
+                          <DatePicker
+                            disabledDate={disabledToDate}
+                            format={TIMEOFF_DATE_FORMAT}
+                            disabled={!selectedTypeName}
+                            //  disabled={!selectedTypeName || selectedType === C}
+                            onChange={(value) => {
+                              toDateOnChange(value);
+                            }}
+                            placeholder="To Date"
+                          />
+                        </Form.Item>,
+                      )}
+                    </Col>
+                  </>
+                )}
               </Row>
             </Col>
             <Col lg={6} sm={0}>

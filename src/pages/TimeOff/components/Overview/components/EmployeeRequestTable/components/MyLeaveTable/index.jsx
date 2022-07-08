@@ -62,16 +62,30 @@ class MyLeaveTable extends PureComponent {
       dataIndex: 'startDate',
       align: 'left',
       render: (_, record) => {
-        return `${moment(record.fromDate).locale('en').format(TIMEOFF_DATE_FORMAT)} - ${moment(
-          record.toDate,
-        )
-          .locale('en')
-          .format(TIMEOFF_DATE_FORMAT)}`;
+        const { fromDate, toDate, leaveDates } = record;
+        if (fromDate && toDate) {
+          return `${moment(fromDate).locale('en').format(TIMEOFF_DATE_FORMAT)} - ${moment(toDate)
+            .locale('en')
+            .format(TIMEOFF_DATE_FORMAT)}`;
+        }
+        return (
+          <Tooltip title={() => this.getListDate(leaveDates)}>
+            {`${moment(leaveDates[0].date).locale('en').format(TIMEOFF_DATE_FORMAT)} - ${moment(
+              leaveDates[leaveDates.length - 1].date,
+            )
+              .locale('en')
+              .format(TIMEOFF_DATE_FORMAT)}`}
+          </Tooltip>
+        );
       },
       defaultSortOrder: ['ascend'],
       sorter: {
         compare: (a, b) =>
-          a.fromDate && b.fromDate ? moment(a.fromDate).isAfter(moment(b.fromDate)) : false,
+          a.fromDate && b.fromDate
+            ? moment(a.fromDate).isAfter(moment(b.fromDate))
+            : moment(a.leaveDates[0].date)
+                .format(TIMEOFF_DATE_FORMAT)
+                .localeCompare(moment(b.leaveDates[0].date).format(TIMEOFF_DATE_FORMAT)),
       },
       sortDirections: ['ascend', 'descend', 'ascend'],
     },
@@ -151,6 +165,14 @@ class MyLeaveTable extends PureComponent {
         limit: pageSize,
       },
     });
+  };
+
+  getListDate = (listDate) => {
+    return listDate.map((x) => (
+      <div>
+        {`${moment(x.date).locale('en').format('DD')} ${moment(x.date).locale('en').format('MMM')}`}
+      </div>
+    ));
   };
 
   renderEmptyTableContent = () => {
