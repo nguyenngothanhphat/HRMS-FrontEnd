@@ -72,6 +72,7 @@ export const addZeroToNumber = (number) => {
 };
 
 export const TIMEOFF_DATE_FORMAT = 'MM/DD/YYYY';
+export const TIMEOFF_DATE_FORMAT_API = 'YYYY-MM-DD';
 
 export const TIMEOFF_COL_SPAN_1 = {
   DATE: 7,
