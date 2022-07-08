@@ -17,10 +17,11 @@
   width: 100%;
   overflow-x: auto;
   background-color: #ffffff;
-  border-radius: 5px;
+  border: solid 1px #d6dce0;
+  border-radius: 8px;
 
   .tableContainer {
-    min-width: 1100px;
+    min-width: 1250px;
     // box-shadow: 1px 0px 6px rgba(0, 0, 0, 0.15);
     overflow-x: auto;
   }
@@ -141,7 +142,6 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    margin-left: 24px;
     .icon {
       position: relative;
       display: flex;
@@ -243,16 +243,6 @@
     .ant-table-cell {
       font-size: 13px;
     }
-    // .ant-table.ant-table-bordered > .ant-table-container {
-    //   border: none;
-    // }
-    // .ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table,
-    // .ant-table.ant-table-bordered > .ant-table-container > .ant-table-header > table {
-    //   border: none;
-    // }
-    // .ant-table-container table > thead > tr th:last-child {
-    //   border-right: none !important;
-    // }
     .ant-table-tbody > tr.ant-table-row:hover > td {
       background: unset;
     }
@@ -300,6 +290,150 @@
 
     .ant-tabs-nav {
       height: 56px;
+    }
+
+    .ant-table .ant-table-thead tr th {
+      &:last-child {
+        border-right: none !important;
+      }
+      border-top: none !important;
+    }
+    .ant-table .ant-table-tbody tr td {
+      &:last-child {
+        border-right: none !important;
+      }
+      &:first-child {
+        border-left: none !important;
+      }
+    }
+    .ant-table .ant-table-footer {
+      padding: 0 !important;
+      border: none;
+    }
+
+    .ant-table {
+      ::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    .ant-table-cell-scrollbar {
+      display: none;
+    }
+
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-content
+      > table
+      > thead
+      > tr
+      > th,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-header
+      > table
+      > thead
+      > tr
+      > th,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-body
+      > table
+      > thead
+      > tr
+      > th,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-summary
+      > table
+      > thead
+      > tr
+      > th,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-content
+      > table
+      > tbody
+      > tr
+      > td,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-header
+      > table
+      > tbody
+      > tr
+      > td,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-body
+      > table
+      > tbody
+      > tr
+      > td,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-summary
+      > table
+      > tbody
+      > tr
+      > td,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-content
+      > table
+      > tfoot
+      > tr
+      > th,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-header
+      > table
+      > tfoot
+      > tr
+      > th,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-body
+      > table
+      > tfoot
+      > tr
+      > th,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-summary
+      > table
+      > tfoot
+      > tr
+      > th,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-content
+      > table
+      > tfoot
+      > tr
+      > td,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-header
+      > table
+      > tfoot
+      > tr
+      > td,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-body
+      > table
+      > tfoot
+      > tr
+      > td,
+    .ant-table.ant-table-bordered
+      > .ant-table-container
+      > .ant-table-summary
+      > table
+      > tfoot
+      > tr
+      > td {
+      border-color: #d6dce0;
     }
   }
 }

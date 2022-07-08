@@ -1,6 +1,7 @@
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/utils/timeOff';
 import FilterBar from '../FilterBar';
 import MyCompoffTable from '../MyCompoffTable';
 import MyLeaveTable from '../MyLeaveTable';
@@ -134,8 +135,8 @@ const TimeOffRequestTab = (props) => {
         status,
         type: timeOffTypes,
         search,
-        fromDate,
-        toDate,
+        fromDate: fromDate ? moment(fromDate).format(TIMEOFF_DATE_FORMAT_API) : null,
+        toDate: toDate ? moment(toDate).format(TIMEOFF_DATE_FORMAT_API) : null,
         page,
         limit,
       },

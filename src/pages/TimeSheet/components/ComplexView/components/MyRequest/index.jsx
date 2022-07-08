@@ -71,7 +71,7 @@ const MyRequest = (props) => {
         render: (row) => {
           return (
             <UserProfilePopover placement="rightTop" data={row?.manager}>
-              {row?.manager.legalName}
+              {row?.manager?.legalName}
             </UserProfilePopover>
           );
         },
@@ -87,7 +87,6 @@ const MyRequest = (props) => {
         render: (comment) => {
           return <p className={styles.comment}>{comment?.length > 0 ? comment : '-'}</p>;
         },
-
         sorter: (a, b) => a.comment - b.comment,
         sortDirections: [],
       },

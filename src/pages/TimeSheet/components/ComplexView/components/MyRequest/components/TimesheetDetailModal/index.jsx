@@ -4,6 +4,7 @@ import React, { useLayoutEffect, useState } from 'react';
 import { connect } from 'umi';
 import { dateFormatAPI } from '@/utils/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import WeeklyTable from './components/WeeklyTable';
 import styles from './index.less';
 
@@ -19,6 +20,7 @@ const TimesheetDetailModal = (props) => {
     employee: { _id: employeeId = '' } = {},
     rowKey = 0,
   } = props;
+
   const {
     status = '',
     fromDate: startDateWeek = '',
@@ -26,6 +28,7 @@ const TimesheetDetailModal = (props) => {
     comment = '',
     ticketId = '',
   } = dataSource[rowKey] || {};
+
   const [selectedView, setSelectedView] = useState('W');
   const [isEdited, setIsEdited] = useState(false);
 
@@ -103,7 +106,14 @@ const TimesheetDetailModal = (props) => {
             <>
               <Divider />
               <div>
-                Manager&apos;s Comment
+                <span
+                  style={{
+                    color: '#8C8C8C',
+                    fontSize: 14,
+                  }}
+                >
+                  Manager&apos;s Comment
+                </span>
                 <div className={styles.content__comments}>{comment}</div>
               </div>
             </>
@@ -119,9 +129,7 @@ const TimesheetDetailModal = (props) => {
         <Button className={styles.btnCancel} onClick={handleCancel}>
           Cancel
         </Button>
-        <Button className={styles.btnSubmit} type="primary" onClick={handleResubmit}>
-          Re-Submit
-        </Button>
+        <CustomPrimaryButton onClick={handleResubmit}>Re-Submit</CustomPrimaryButton>
       </>
     );
   };
@@ -132,7 +140,7 @@ const TimesheetDetailModal = (props) => {
         className={`${styles.TimesheetDetailModal} ${styles.noPadding}`}
         onCancel={isEdited ? handleResubmit : handleCancel}
         destroyOnClose
-        width={750}
+        width="70vw"
         footer={isEdited ? renderModalFooter() : <div />}
         title={renderModalHeader()}
         centered
