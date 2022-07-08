@@ -54,15 +54,16 @@ class RequestInformation extends PureComponent {
     }, 500);
   };
 
-  // FETCH LEAVE REQUEST DETAIL
-  componentDidMount = () => {
-    const { dispatch, currentUser: { employee: { _id = '' } = {} } = {} } = this.props;
-    dispatch({
-      type: 'timeOff/fetchProjectsListByEmployee',
-      payload: {
-        employee: _id,
-      },
-    });
+  componentDidUpdate = (prevPorps) => {
+    const { employeeId = '', dispatch } = this.props;
+    if (prevPorps.employeeId !== employeeId) {
+      dispatch({
+        type: 'timeOff/fetchProjectsListByEmployee',
+        payload: {
+          employee: employeeId,
+        },
+      });
+    }
   };
 
   // ON FINISH & SHOW SUCCESS MODAL WHEN CLICKING ON SUBMIT
@@ -489,10 +490,14 @@ class RequestInformation extends PureComponent {
               {/* <span className={styles.title}>Projects</span> */}
               <Row>
                 <Col span={5}>Current Project</Col>
-                <Col span={5}>Project Manager</Col>
-                <Col span={5}>Start Date</Col>
-                <Col span={5}>End Date</Col>
-                <Col span={4}>Project Health</Col>
+                {!isEmpty(projectsList) && (
+                  <>
+                    <Col span={5}>Project Manager</Col>
+                    <Col span={5}>Start Date</Col>
+                    <Col span={5}>End Date</Col>
+                    <Col span={4}>Project Health</Col>
+                  </>
+                )}
               </Row>
 
               {projectsList.length === 0 ? (
