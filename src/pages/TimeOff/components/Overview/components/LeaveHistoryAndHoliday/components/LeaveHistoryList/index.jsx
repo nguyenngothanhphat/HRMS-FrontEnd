@@ -25,11 +25,10 @@ export default class LeaveHistoryList extends PureComponent {
   render() {
     const { leavingList = [] } = this.props;
     const getTitle = (leaveDates = []) => {
-      console.log(leaveDates);
       return leaveDates.map((x) => (
         <div key={x._id}>
           <span>{moment(x.date).locale('en').format('DD')}</span>{' '}
-          <span>{moment(x.date).locale('en').format('MMM')}</span>
+          <span>{`${moment(x.date).locale('en').format('MMM')} (${x.timeOfDay})`}</span>
         </div>
       ));
     };

@@ -5,7 +5,13 @@ import { connect } from 'umi';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
 import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
-import { isFutureDay, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS, TIMEOFF_TYPE } from '@/utils/timeOff';
+import {
+  checkNormalTypeTimeoff,
+  isFutureDay,
+  TIMEOFF_DATE_FORMAT,
+  TIMEOFF_STATUS,
+  TIMEOFF_TYPE,
+} from '@/utils/timeOff';
 import styles from './index.less';
 import HolidayList from './components/HolidayList';
 import HolidayCalendar from './components/HolidayCalendar';
@@ -115,18 +121,22 @@ const LeaveHistoryAndHoliday = (props) => {
         status === IN_PROGRESS ||
         status === IN_PROGRESS_NEXT
       ) {
+        const listLeave = leaveDates.sort(
+          (a, b) =>
+            moment(a.date).locale('en').format('DD') - moment(b.date).locale('en').format('DD'),
+        );
         const fromDate = from
           ? moment(from).locale('en').format(TIMEOFF_DATE_FORMAT)
-          : moment(leaveDates[0].date).locale('en').format(TIMEOFF_DATE_FORMAT);
+          : moment(listLeave[0].date).locale('en').format(TIMEOFF_DATE_FORMAT);
         const toDate = to
           ? moment(to).locale('en').format(TIMEOFF_DATE_FORMAT)
-          : moment(leaveDates[leaveDates.length - 1].date)
+          : moment(listLeave[listLeave.length - 1].date)
               .locale('en')
               .format(TIMEOFF_DATE_FORMAT);
-        if (!from && !to && typeName !== TIMEOFF_TYPE.C && typeName !== TIMEOFF_TYPE.D) {
+        if (!from && !to && checkNormalTypeTimeoff(typeName)) {
           return {
             _id,
-            leaveDates,
+            leaveDates: listLeave,
             normalType: true,
             duration,
             typeName,
@@ -167,24 +177,17 @@ const LeaveHistoryAndHoliday = (props) => {
       } = each;
 
       if (status !== DRAFTS && status !== ON_HOLD && status !== DELETED && status !== WITHDRAWN) {
-        const fromDate = from
-          ? moment(from).locale('en').format(TIMEOFF_DATE_FORMAT)
-          : moment(leaveDates[0].date).locale('en').format(TIMEOFF_DATE_FORMAT);
-        const toDate = to
-          ? moment(to).locale('en').format(TIMEOFF_DATE_FORMAT)
-          : moment(leaveDates[leaveDates.length - 1].date)
-              .locale('en')
-              .format(TIMEOFF_DATE_FORMAT);
-        if (!from && !to) {
+        const fromDate = moment(from).locale('en').format(TIMEOFF_DATE_FORMAT);
+        const toDate = moment(to).locale('en').format(TIMEOFF_DATE_FORMAT);
+        const listLeave = leaveDates.map((x) => x.date);
+        if (!from && !to && checkNormalTypeTimeoff(typeName)) {
           return {
             _id,
-            listLeave: leaveDates,
+            listLeave,
             duration,
             typeName,
             status,
             subject,
-            fromDate,
-            toDate,
           };
         }
         return {

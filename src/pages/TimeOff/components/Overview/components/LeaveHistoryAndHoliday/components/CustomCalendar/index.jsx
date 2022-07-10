@@ -16,7 +16,6 @@ moment.locale('en-gb'); // important!
 
 const CustomCalendar = (props) => {
   const { holidays = [], leaveRequests = [], currentTime = '', setCurrentTime = () => {} } = props;
-  console.log(leaveRequests);
   // FUNCTION
   const checkIfSameDay = (a, b, c = []) => {
     return (
@@ -24,7 +23,6 @@ const CustomCalendar = (props) => {
       c.some((d) => moment(d).format('MM/DD/YYYY') === moment(b).format('MM/DD/YYYY'))
     );
   };
-
   const checkCurrentDay = (val) => {
     return checkIfSameDay(val, moment());
   };

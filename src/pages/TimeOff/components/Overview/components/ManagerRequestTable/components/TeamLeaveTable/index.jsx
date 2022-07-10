@@ -98,9 +98,17 @@ class TeamLeaveTable extends PureComponent {
   getListDate = (listDate) => {
     return listDate.map((x) => (
       <div>
-        {`${moment(x.date).locale('en').format('DD')} ${moment(x.date).locale('en').format('MMM')}`}
+        {`${moment(x.date).locale('en').format('DD')} ${moment(x.date)
+          .locale('en')
+          .format('MMM')} (${x.timeOfDay})`}
       </div>
     ));
+  };
+
+  formatDate = (date1, date2) => {
+    return `${moment(date1).locale('en').format(TIMEOFF_DATE_FORMAT)} - ${moment(date2)
+      .locale('en')
+      .format(TIMEOFF_DATE_FORMAT)}`;
   };
 
   getColumns = (TYPE) => {
@@ -159,18 +167,16 @@ class TeamLeaveTable extends PureComponent {
         align: 'left',
         render: (_, record) => {
           const { fromDate, toDate, leaveDates } = record;
+          const listLeave = leaveDates.sort(
+            (a, b) =>
+              moment(a.date).locale('en').format('DD') - moment(b.date).locale('en').format('DD'),
+          );
           if (fromDate && toDate) {
-            return `${moment(fromDate).locale('en').format(TIMEOFF_DATE_FORMAT)} - ${moment(toDate)
-              .locale('en')
-              .format(TIMEOFF_DATE_FORMAT)}`;
+            return this.formatDate(fromDate, toDate);
           }
           return (
             <Tooltip title={() => this.getListDate(leaveDates)}>
-              {`${moment(leaveDates[0].date).locale('en').format(TIMEOFF_DATE_FORMAT)} - ${moment(
-                leaveDates[leaveDates.length - 1].date,
-              )
-                .locale('en')
-                .format(TIMEOFF_DATE_FORMAT)}`}
+              {this.formatDate(listLeave[0].date, listLeave[listLeave.length - 1].date)}
             </Tooltip>
           );
         },

@@ -170,7 +170,6 @@ const RequestInformation = (props) => {
         moment(x.date).format(TIMEOFF_DATE_FORMAT) === moment(date).format(TIMEOFF_DATE_FORMAT)
       );
     });
-
     return filtered.map((x) => x.timeOfDay);
   };
 
@@ -697,7 +696,6 @@ const RequestInformation = (props) => {
         listDate: listDateTemp,
         description: viewingDescription,
         personCC: viewingCC,
-        // attachments: viewingAttachmentList,
         leaveTimeLists,
       });
 
@@ -754,6 +752,31 @@ const RequestInformation = (props) => {
   }, [JSON.stringify(invalidDatesProps)]);
 
   useEffect(() => {
+    // only generate leave time lists when modified. If editing a ticket, no need to generate
+    if ((dateLists.length || listDate.length) > 0 && isModified) {
+      const initialValuesForLeaveTimesList = (isNormalType ? listDate : dateLists).map((x) => {
+        // for non US user
+        if (!BY_HOUR) {
+          if (findInvalidHalfOfDay(x).includes(MORNING)) {
+            return { period: AFTERNOON };
+          }
+          if (findInvalidHalfOfDay(x).includes(AFTERNOON)) {
+            return { period: MORNING };
+          }
+          return { period: WHOLE_DAY };
+        }
+        // for US user
+        return {
+          period: WHOLE_DAY,
+        };
+      });
+      form.setFieldsValue({
+        leaveTimeLists: initialValuesForLeaveTimesList,
+      });
+    }
+  }, [selectedTypeName, durationFrom, JSON.stringify(dateLists), JSON.stringify(listDate)]);
+
+  useEffect(() => {
     if (viewingId) {
       fetchData();
     }
@@ -806,31 +829,6 @@ const RequestInformation = (props) => {
       </Tag>
     );
   };
-
-  useEffect(() => {
-    // only generate leave time lists when modified. If editing a ticket, no need to generate
-    if ((dateLists.length || listDate.length) > 0 && isModified) {
-      const initialValuesForLeaveTimesList = (!isNormalType ? dateLists : listDate).map((x) => {
-        // for non US user
-        if (!BY_HOUR) {
-          if (findInvalidHalfOfDay(x).includes(MORNING)) {
-            return { period: AFTERNOON };
-          }
-          if (findInvalidHalfOfDay(x).includes(AFTERNOON)) {
-            return { period: MORNING };
-          }
-          return { period: WHOLE_DAY };
-        }
-        // for US user
-        return {
-          period: WHOLE_DAY,
-        };
-      });
-      form.setFieldsValue({
-        leaveTimeLists: initialValuesForLeaveTimesList,
-      });
-    }
-  }, [selectedTypeName, durationFrom, JSON.stringify(dateLists), JSON.stringify(listDate)]);
 
   useEffect(() => {
     // generate second notice
