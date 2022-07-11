@@ -32,6 +32,7 @@ const FormLogin = (props) => {
   }, [isEmailErrorProp, isPasswordErrorProp]);
 
   useEffect(() => {
+    // eslint-disable-next-line compat/compat
     const query = new URLSearchParams(location.search);
     const emailGet = query.get('email');
     if (emailGet) {
@@ -115,8 +116,8 @@ const FormLogin = (props) => {
         <Form.Item
           label={formatMessage({ id: 'pages.login.emailLabel' })}
           name="userEmail"
-          validateStatus={isEmailError ? 'error' : undefined}
-          help={isEmailError ? messageError : null}
+          // validateStatus={isEmailError ? 'error' : undefined}
+          // help={isEmailError ? messageError : null}
           validateTrigger="onSubmit"
           rules={[
             {
@@ -142,8 +143,8 @@ const FormLogin = (props) => {
           label={formatMessage({ id: 'pages.login.passwordLabel' })}
           name="password"
           validateTrigger="onSubmit"
-          validateStatus={isPasswordError ? 'error' : undefined}
-          help={isPasswordError ? messageError : null}
+          validateStatus={isPasswordError || isEmailError ? 'error' : undefined}
+          help={isPasswordError || isEmailError ? messageError : null}
           rules={[
             {
               required: true,
