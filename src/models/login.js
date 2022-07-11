@@ -93,7 +93,7 @@ const Model = {
         if (data.length > 0) {
           const [firstError] = data;
           const { defaultMessage: messageError = '' } = firstError;
-          notification.error({ message: messageError});
+          notification.error({ message: messageError });
           yield put({
             type: 'save',
             payload: {
