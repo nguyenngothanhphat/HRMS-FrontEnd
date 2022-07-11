@@ -6,6 +6,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import styles from './index.less';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
+import History from '../../../History';
 
 @connect(({ timeOff, loading }) => ({
   timeOff,
@@ -86,7 +87,8 @@ class ManagerViewRequestForm extends PureComponent {
                 <RequestInformation employeeId={employeeId} />
               </Col>
               <Col xs={24} lg={8}>
-                <RightContent viewingLeaveRequest={viewingLeaveRequest} status={status} />
+                <History data={viewingLeaveRequest} status={status} />
+                {/* <RightContent viewingLeaveRequest={viewingLeaveRequest} status={status} /> */}
               </Col>
             </Row>
           </Spin>

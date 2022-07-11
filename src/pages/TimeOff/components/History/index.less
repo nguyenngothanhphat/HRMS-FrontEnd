@@ -1,0 +1,120 @@
+.History {
+  border: 1px solid #ebeff2;
+  border-radius: 5px;
+  :global {
+    .ant-card-head-title {
+      color: #161c29;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .ant-steps-item-description {
+      display: flex;
+      align-items: center;
+    }
+    .ant-steps-item-title {
+      padding-right: 0;
+    }
+    .ant-steps-item-content {
+      margin-bottom: 25px;
+    }
+    .ant-steps-item .ant-steps-item-description {
+      padding-bottom: 0 !important;
+    }
+    .ant-steps-item-finish
+      > .ant-steps-item-container
+      > .ant-steps-item-content
+      > .ant-steps-item-description {
+      color: rgba(0, 0, 0, 0.85);
+    }
+    .ant-steps-vertical
+      > .ant-steps-item:not(:last-child)
+      > .ant-steps-item-container
+      > .ant-steps-item-tail {
+      top: 20px;
+      padding: 8px 0 !important;
+    }
+  }
+  .step__dashed {
+    :global {
+      .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after {
+        background-color: transparent;
+        border-left: 2px dashed #2c6df9;
+      }
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      margin-right: 8px;
+      padding: 1px;
+      border: 1px solid #2c6df9;
+      border-radius: 50%;
+    }
+    .nameStep {
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .containerStatus {
+      font-size: 13px;
+      .status {
+        color: #2c6df9;
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+  }
+  .steps__solid {
+    :global {
+      .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after {
+        background-color: transparent;
+        border-left: 2px solid #2c6df9;
+      }
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      margin-right: 8px;
+      padding: 1px;
+      border: 1px solid #2c6df9;
+      border-radius: 50%;
+    }
+    .nameStep {
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .containerStatus {
+      font-size: 13px;
+      .status {
+        color: #2c6df9;
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+  }
+  .header {
+    padding: 30px 0;
+    color: #161c29;
+    font-weight: 600;
+    font-size: 20px;
+  }
+  .note {
+    padding-bottom: 24px;
+    border-bottom: 1px solid #ebeff2;
+    .titleNote {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 12px;
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+      span {
+        display: block;
+      }
+    }
+    .contentNote {
+      color: #344054;
+      font-weight: 400;
+      font-size: 13px;
+    }
+  }
+}
