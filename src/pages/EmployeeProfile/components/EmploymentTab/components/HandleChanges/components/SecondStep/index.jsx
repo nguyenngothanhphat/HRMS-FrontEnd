@@ -17,7 +17,7 @@ export default function SecondStep(props) {
       <div className={styles.select}>
         <div className={styles.label}>Work Location</div>
         <Select
-          defaultValue={changeData.newLocation || null}
+          value={changeData.stepTwo.wLocation || null}
           showSearch
           placeholder="Select a location"
           optionFilterProp="children"
@@ -39,7 +39,7 @@ export default function SecondStep(props) {
       <div className={styles.select}>
         <div className={styles.label}>Employment Type</div>
         <Select
-          defaultValue={changeData.stepTwo.employment || null}
+          value={changeData.stepTwo.employment || null}
           showSearch
           placeholder="Select an employment type"
           optionFilterProp="children"
@@ -61,7 +61,7 @@ export default function SecondStep(props) {
       <div className={styles.select}>
         <div className={styles.label}>Department</div>
         <Select
-          defaultValue={changeData.stepTwo.department || null}
+          value={changeData.stepTwo.department || null}
           showSearch
           placeholder="Select a department"
           optionFilterProp="children"

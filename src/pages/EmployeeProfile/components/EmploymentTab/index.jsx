@@ -1,4 +1,4 @@
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
@@ -19,6 +19,7 @@ const EmploymentTab = (props) => {
     permissions = {},
     employeeProfile = {},
     dataOrgChart: { employees: reportees = [], manager = {} },
+    loadingReportees = false,
   } = props;
 
   const {
@@ -44,6 +45,10 @@ const EmploymentTab = (props) => {
   const visibleSuccess = employeeProfile ? employeeProfile.visibleSuccess : false;
 
   const fetchData = () => {
+    dispatch({
+      type: 'employeeProfile/fetchCompensation',
+      payload: { employee },
+    });
     dispatch({
       type: 'employeeProfile/fetchEmployeeTypes',
     });
@@ -91,7 +96,7 @@ const EmploymentTab = (props) => {
         currentAnnualCTC: currentAnnualCTC || null,
       });
     }
-  }, [employee, JSON.stringify(reportees)]);
+  }, [JSON.stringify(reportees), JSON.stringify(generalData), JSON.stringify(employmentData)]);
 
   const handleMakeChanges = async () => {
     setCurrent(0);
@@ -157,12 +162,6 @@ const EmploymentTab = (props) => {
   };
 
   const handleSubmit = async (data) => {
-    let takeEffect = '';
-    if (data.stepOne === 'Now') {
-      takeEffect = 'UPDATED';
-    } else if (Date.parse(data.stepOne) < Date.now()) {
-      takeEffect = 'UPDATED';
-    } else takeEffect = 'WILL_UPDATE';
     const payload = {
       title: data.stepThree.title || null,
       manager: data.stepThree.reportTo || null,
@@ -175,13 +174,13 @@ const EmploymentTab = (props) => {
       compensationType: data.stepFour.compensationType || null,
       annualCTC: data.stepFour.currentAnnualCTC || null,
       notifyTo: data.stepFive.notifyTo || [],
-      effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
+      effectiveDate: data.stepOne.effectDate || Date.now(),
       changeDate: new Date(),
-      takeEffect,
       id: data.employee,
       employee: data.employee,
       changedBy: data.changedBy,
       tenantId: getCurrentTenant(),
+      type: data.stepOne.type,
 
       // changed text
       ...getChangesText(),
@@ -262,56 +261,58 @@ const EmploymentTab = (props) => {
           <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />
         )}
       </div>
-      <div className={styles.employmentTab}>
-        <div className={styles.employmentTab__title} align="middle">
-          <span className={styles.title}>
-            {isChanging ? `Edit Employment` : 'Employment History'}
-          </span>
-          {isChanging ? (
-            <div onClick={handleMakeChanges} className={styles.cancelButton}>
-              <img alt="" src={path} />
-              <span className={styles.editBtn}>Cancel & Return</span>
-            </div>
-          ) : (
-            permissions.makeChangesHistory !== -1 && (
-              <div
-                className={styles.employmentTab__action}
-                onClick={handleMakeChanges}
-                style={{ display: 'flex', alignItems: 'center' }}
-              >
-                <img alt="" src={edit} />
-                <span className={styles.editBtn}>Make changes</span>
+      <Spin spinning={loadingReportees}>
+        <div className={styles.employmentTab}>
+          <div className={styles.employmentTab__title} align="middle">
+            <span className={styles.title}>
+              {isChanging ? `Edit Employment` : 'Employment History'}
+            </span>
+            {isChanging ? (
+              <div onClick={handleMakeChanges} className={styles.cancelButton}>
+                <img alt="" src={path} />
+                <span className={styles.editBtn}>Cancel & Return</span>
               </div>
-            )
-          )}
-        </div>
-        {isChanging ? (
-          <HandleChanges
-            nextTab={nextTab}
-            isChanging={isChanging}
-            data={currentData}
-            current={current}
-            setChangedData={setChangedData}
-            isModified={isModified}
-            setIsModified={setIsModified}
-          />
-        ) : (
-          <EmploymentHistoryTable fetchChangeHistories={fetchChangeHistories} />
-        )}
-        {isChanging ? (
-          <div className={styles.footer}>
-            <div>{current + 1}/7 steps</div>
-            <div className={styles.buttons}>
-              <Button onClick={previousTab} type="text">
-                {current > 0 ? 'Back' : null}
-              </Button>
-              <Button onClick={nextTab} type="primary" disabled={!isModified && current === 5}>
-                {current === 6 ? 'Submit' : 'Continue'}
-              </Button>
-            </div>
+            ) : (
+              permissions.makeChangesHistory !== -1 && (
+                <div
+                  className={styles.employmentTab__action}
+                  onClick={handleMakeChanges}
+                  style={{ display: 'flex', alignItems: 'center' }}
+                >
+                  <img alt="" src={edit} />
+                  <span className={styles.editBtn}>Make changes</span>
+                </div>
+              )
+            )}
           </div>
-        ) : null}
-      </div>
+          {isChanging ? (
+            <HandleChanges
+              nextTab={nextTab}
+              isChanging={isChanging}
+              data={currentData}
+              current={current}
+              setChangedData={setChangedData}
+              isModified={isModified}
+              setIsModified={setIsModified}
+            />
+          ) : (
+            <EmploymentHistoryTable fetchChangeHistories={fetchChangeHistories} />
+          )}
+          {isChanging ? (
+            <div className={styles.footer}>
+              <div>{current + 1}/7 steps</div>
+              <div className={styles.buttons}>
+                <Button onClick={previousTab} type="text">
+                  {current > 0 ? 'Back' : null}
+                </Button>
+                <Button onClick={nextTab} type="primary" disabled={!isModified && current === 5}>
+                  {current === 6 ? 'Submit' : 'Continue'}
+                </Button>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </Spin>
       <CommonModal
         width={550}
         visible={visibleSuccess}
@@ -346,10 +347,12 @@ export default connect(
     employeeProfile,
     employee: { dataOrgChart = {} },
     user: { permissions, currentUser = {} },
+    loading,
   }) => ({
     employeeProfile,
     currentUser,
     permissions,
     dataOrgChart,
+    loadingReportees: loading.effects['employee/fetchDataOrgChart'],
   }),
 )(EmploymentTab);
