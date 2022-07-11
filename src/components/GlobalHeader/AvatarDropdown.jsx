@@ -25,7 +25,6 @@ const AvatarDropdown = (props) => {
     currentUser = {},
     dispatch,
     signInRole = [],
-    manageTenant = [],
     currentUser: {
       employee: { _id: employeeID = '', generalInfo: { userId = '' } = {} } = {},
     } = {},
@@ -54,7 +53,7 @@ const AvatarDropdown = (props) => {
         type: 'location/fetchLocationListByParentCompany',
         payload: {
           company: companyId,
-          tenantIds: manageTenant,
+          tenantId,
         },
       });
     } else {

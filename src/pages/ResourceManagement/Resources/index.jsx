@@ -10,6 +10,12 @@ import CustomDropdownSelector from '@/components/CustomDropdownSelector';
 import ProjectList from './components/Projects';
 import ResourceList from './components/ResourceList';
 import styles from './index.less';
+import {
+  getSelectedDivisions,
+  getSelectedLocations,
+  setSelectedDivisions,
+  setSelectedLocations,
+} from '@/utils/resourceManagement';
 
 const baseModuleUrl = '/resource-management';
 const TABS = {
@@ -43,17 +49,43 @@ const TABS = {
   }),
 )
 class Resources extends Component {
+  debouncedChangeLocation = debounce((selection) => {
+    const { dispatch } = this.props;
+    this.setState({
+      selectedLocations: [...selection],
+    });
+    setSelectedLocations([...selection]);
+    dispatch({
+      type: 'resourceManagement/save',
+      payload: {
+        selectedLocations: [...selection],
+      },
+    });
+  }, 1000);
+
+  debouncedChangeDivision = debounce((selection) => {
+    const { dispatch } = this.props;
+    this.setState({
+      selectedDivisions: [...selection],
+    });
+    setSelectedDivisions([...selection]);
+    dispatch({
+      type: 'resourceManagement/save',
+      payload: {
+        selectedDivisions: [...selection],
+      },
+    });
+  }, 1000);
+
   constructor(props) {
     super(props);
     this.state = {
-      // resourceList: [],
       loadingSearch: false,
-      selectedDivisions: [],
-      selectedLocations: [getCurrentLocation()],
+      selectedDivisions: getSelectedDivisions() || [],
+      selectedLocations: getSelectedLocations() || [getCurrentLocation()],
     };
     this.setDebounce = debounce(() => {
       this.setState({
-        // resourceList: query,
         loadingSearch: false,
       });
     }, 1000);
@@ -74,6 +106,13 @@ class Resources extends Component {
         },
       });
     }
+
+    dispatch({
+      type: 'resourceManagement/save',
+      payload: {
+        selectedLocations: getSelectedLocations() || [getCurrentLocation()],
+      },
+    });
   }
 
   onSearch = (value) => {
@@ -92,29 +131,11 @@ class Resources extends Component {
   };
 
   onLocationChange = (selection) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'resourceManagement/save',
-      payload: {
-        selectedLocations: [...selection],
-      },
-    });
-    this.setState({
-      selectedLocations: [...selection],
-    });
+    this.debouncedChangeLocation(selection);
   };
 
   onDivisionChange = (selection) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'resourceManagement/save',
-      payload: {
-        selectedDivisions: [...selection],
-      },
-    });
-    this.setState({
-      selectedDivisions: [...selection],
-    });
+    this.debouncedChangeDivision(selection);
   };
 
   exportToExcel = async (type, fileName) => {
@@ -141,7 +162,6 @@ class Resources extends Component {
   exportTag = (nameTag, exportTag) => {
     if (nameTag === TABS.PROJECTS) {
       return this.exportToExcel('resourceManagement/exportReportProject', 'rm-projects.csv');
-      // return this.exportToExcel('resourceManagement/exportResourceManagement', 'resource.csv');
     }
     return (
       <div className={styles.options}>
@@ -245,7 +265,6 @@ class Resources extends Component {
     const viewResourceListPermission = permissions.viewResourceListTab !== -1;
     const viewUtilizationPermission = permissions.viewUtilizationTab !== -1;
     const viewResourceProjectListPermission = permissions.viewResourceProjectListTab !== -1;
-    // const viewModeAdmin = permissions.viewResourceAdminMode !== -1;
     const viewModeCountry = permissions.viewResourceCountryMode !== -1;
     const viewModeDivision = permissions.viewResourceDivisionMode !== -1;
 
@@ -269,7 +288,6 @@ class Resources extends Component {
               <TabPane tab="Resources" key={TABS.RESOURCES}>
                 <ResourceList
                   location={[locationID]}
-                  // data={resourceList}
                   loadingSearch={loadingSearch}
                   countData={totalList}
                 />

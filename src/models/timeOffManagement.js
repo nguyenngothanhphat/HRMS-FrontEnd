@@ -1,116 +1,109 @@
-import { getCurrentCompany } from '@/utils/authority';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { exportCSV } from '@/utils/timeOffManagement';
 import { dialog } from '@/utils/utils';
 import {
-  getListTimeOff,
   getListEmployees,
-  getRequestById,
-  getTimeOffTypeByCountry,
-  // getListTimeOffManagement,
+  getListTimeOff,
+  getLocationsOfCountries,
+  getTimeOffTypeList,
 } from '../services/timeOffManagement';
-
-const options = [
-  { value: TIMEOFF_STATUS.ACCEPTED, label: 'Approved' },
-  { value: TIMEOFF_STATUS.IN_PROGRESS, label: 'In Progress' },
-  { value: TIMEOFF_STATUS.IN_PROGRESS_NEXT, label: 'In Progress' },
-  { value: TIMEOFF_STATUS.REJECTED, label: 'Rejected' },
-  { value: TIMEOFF_STATUS.DRAFTS, label: 'Draft' },
-  { value: TIMEOFF_STATUS.ON_HOLD, label: 'On-hold' },
-  { value: TIMEOFF_STATUS.DELETED, label: 'Deleted' },
-  { value: TIMEOFF_STATUS.WITHDRAWN, label: 'Withdrawn' },
-];
 
 const timeOffManagement = {
   namespace: 'timeOffManagement',
   state: {
     listTimeOff: [],
-    listEmployee: [],
-    requestDetail: {},
+    listTotal: 0,
+    listEmployees: [],
     selectedLocations: [],
-    timeOffTypesByCountry: [],
+    locationsOfCountries: [],
+    typeList: [],
   },
   effects: {
-    *fetchEmployeeList({ payload = {} }, { call, put }) {
+    *getListEmployeesEffect({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getListEmployees, payload);
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listEmployee: data } });
+        yield put({ type: 'save', payload: { listEmployees: data } });
       } catch (error) {
         dialog(error);
       }
     },
 
-    *fetchListTimeOff({ payload = {} }, { call, put }) {
+    *getListTimeOffEffect({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getListTimeOff, { ...payload, company: getCurrentCompany() });
-        let { data: listTimeOff = [] } = response;
-        const { statusCode } = response;
+        const { statusCode, data: listTimeOff = [], total = 0 } = response;
         if (statusCode !== 200) throw response;
-
-        listTimeOff = listTimeOff.map((item = {}) => {
-          const fullName = `${item.employee.generalInfo.firstName} ${item.employee.generalInfo.lastName}`;
-          let newStatus = '';
-
-          options.forEach((op) => {
-            if (op.value === item.status) {
-              newStatus = op.label;
-            }
-          });
-
-          return {
-            _id: item._id,
-            ticketID: item.ticketID,
-            employeeId: item.employee.employeeId,
-            name: fullName,
-            // country: item.employee.location.country.nativeName,
-            cc: item.cc,
-            fromDate: item.fromDate,
-            toDate: item.toDate,
-            type: item.type,
-            updated: item.updated,
-            description: item.description,
-            duration: item.duration,
-            employee: item.employee,
-            status: newStatus,
-            approvalManager: item.approvalManager,
-          };
-        });
-
         yield put({
           type: 'save',
-          payload: { listTimeOff },
+          payload: { listTimeOff, listTotal: total },
         });
-        // console.log('data', listTimeOff)
       } catch (errors) {
         dialog(errors);
       }
     },
-    *fetchRequestById({ payload = {} }, { call, put }) {
+
+    *getTimeOffTypeListEffect({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getRequestById, { ...payload, company: getCurrentCompany() });
-        const { statusCode, data = {} } = response;
+        response = yield call(getTimeOffTypeList, payload);
+        const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: {
-            requestDetail: data,
-          },
+          payload: { typeList: data },
         });
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
-    *fetchTimeOffTypesByCountry({ payload }, { call, put }) {
+
+    *getLocationsOfCountriesEffect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getTimeOffTypeByCountry, payload);
-        const { statusCode, data } = response;
+        response = yield call(getLocationsOfCountries, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
+
+        let allDataTemp = [];
+        data.forEach((item) => {
+          const { data: d = [] } = item;
+          allDataTemp = [...allDataTemp, ...d.map((x) => x._id)];
+        });
+
         yield put({
           type: 'save',
-          payload: { timeOffTypesByCountry: data },
+          payload: { locationsOfCountries: data, selectedLocations: allDataTemp },
         });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *exportCSVEffect({ payload }, { call, select }) {
+      let response = {};
+      try {
+        const { listTotal = 0, selectedLocations = [] } = yield select(
+          (state) => state.timeOffManagement,
+        );
+        response = yield call(getListTimeOff, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          limit: listTotal,
+          page: 1,
+          selectedLocations,
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        exportCSV(data);
       } catch (error) {
         dialog(error);
       }
