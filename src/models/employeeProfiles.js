@@ -1286,14 +1286,12 @@ const employeeProfile = {
       }
     },
 
-    *fetchTitleByDepartment({ payload }, { call, put, select }) {
+    *fetchTitleByDepartment({ payload }, { call, put }) {
       try {
-        const { employee } = yield select((state) => state.employeeProfile);
         const res = yield call(getListTitle, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          employee,
         });
         const { statusCode, data } = res;
         if (statusCode !== 200) throw res;

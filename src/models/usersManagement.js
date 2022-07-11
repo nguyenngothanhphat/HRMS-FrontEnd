@@ -12,7 +12,6 @@ import {
   getRolesByEmployee,
   updateGeneralInfo,
   resetPasswordByEmail,
-  getLocationListByParentCompany,
   getFilterList,
 } from '../services/usersManagement';
 
@@ -92,16 +91,6 @@ const usersManagement = {
     *fetchLocationList({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getLocationList, payload);
-        const { statusCode, data: location = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { location } });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *fetchOwnerLocationList({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(getLocationListByParentCompany, payload);
         const { statusCode, data: location = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { location } });

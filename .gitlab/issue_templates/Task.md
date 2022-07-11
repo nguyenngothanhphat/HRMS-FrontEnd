@@ -15,4 +15,4 @@ Dependencies (if any) -
 
 
 /label ~task
-/cc @aashwij @christine.nguyen @thang.nguyen
+/cc @aashwij @christine.nguyen @luke.nguyen @atlin.joys

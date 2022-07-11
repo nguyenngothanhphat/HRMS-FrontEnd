@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import styles from './index.less';
 import EditCommentModal from './components/EditComment';
 import ViewCommentModal from './components/ViewComment';
+import DeleteComment from './components/DeleteComment';
 
 class CommentOverlay extends PureComponent {
   render() {
@@ -13,14 +14,9 @@ class CommentOverlay extends PureComponent {
         </span>
         <div className={styles.mask}>
           <div className={styles.buttonContainer}>
-            {allowModify && (
-              // <span className={styles.showEditComment}>
-              <EditCommentModal dataRow={row} refreshData={refreshData} />
-              // </span>
-            )}
-            {/* <span className={styles.showViewComment}> */}
+            {allowModify && <EditCommentModal dataRow={row} refreshData={refreshData} />}
             <ViewCommentModal dataRow={row} />
-            {/* </span> */}
+            <DeleteComment id={row.employeeId} refreshData={refreshData} />
           </div>
         </div>
       </div>
