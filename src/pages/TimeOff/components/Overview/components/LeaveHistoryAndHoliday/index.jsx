@@ -109,7 +109,7 @@ const LeaveHistoryAndHoliday = (props) => {
         duration = 0,
         fromDate: from = '',
         toDate: to = '',
-        type: { name: typeName = '' } = {},
+        type: { name: typeName = '', type = '' } = {},
         _id = '',
         subject = '',
         leaveDates = [],
@@ -133,11 +133,11 @@ const LeaveHistoryAndHoliday = (props) => {
           : moment(listLeave[listLeave.length - 1].date)
               .locale('en')
               .format(TIMEOFF_DATE_FORMAT);
-        if (!from && !to && checkNormalTypeTimeoff(typeName)) {
+        if (!from && !to && checkNormalTypeTimeoff(type)) {
           return {
             _id,
             leaveDates: listLeave,
-            normalType: true,
+            normalType: checkNormalTypeTimeoff(type),
             duration,
             typeName,
             status,
@@ -170,7 +170,7 @@ const LeaveHistoryAndHoliday = (props) => {
         duration = 0,
         fromDate: from = '',
         toDate: to = '',
-        type: { name: typeName = '' } = {},
+        type: { name: typeName = '', type = '' } = {},
         _id = '',
         subject,
         leaveDates = [],
@@ -179,8 +179,13 @@ const LeaveHistoryAndHoliday = (props) => {
       if (status !== DRAFTS && status !== ON_HOLD && status !== DELETED && status !== WITHDRAWN) {
         const fromDate = moment(from).locale('en').format(TIMEOFF_DATE_FORMAT);
         const toDate = moment(to).locale('en').format(TIMEOFF_DATE_FORMAT);
-        const listLeave = leaveDates.map((x) => x.date);
-        if (!from && !to && checkNormalTypeTimeoff(typeName)) {
+        const listLeave = leaveDates
+          .sort(
+            (a, b) =>
+              moment(a.date).locale('en').format('DD') - moment(b.date).locale('en').format('DD'),
+          )
+          .map((x) => x.date);
+        if (!from && !to && checkNormalTypeTimeoff(type)) {
           return {
             _id,
             listLeave,
@@ -188,6 +193,7 @@ const LeaveHistoryAndHoliday = (props) => {
             typeName,
             status,
             subject,
+            leaveDates,
           };
         }
         return {

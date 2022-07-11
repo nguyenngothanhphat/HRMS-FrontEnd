@@ -166,7 +166,7 @@ class TeamLeaveTable extends PureComponent {
         dataIndex: 'leaveTimes',
         align: 'left',
         render: (_, record) => {
-          const { fromDate, toDate, leaveDates } = record;
+          const { fromDate = '', toDate = '', leaveDates = [] } = record;
           const listLeave = leaveDates.sort(
             (a, b) =>
               moment(a.date).locale('en').format('DD') - moment(b.date).locale('en').format('DD'),
