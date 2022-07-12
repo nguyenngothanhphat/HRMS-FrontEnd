@@ -171,7 +171,7 @@ const ResourcesCard = (props) => {
     dispatch({
       type: 'projectDetails/fetchResourceOfProjectEffect',
       payload: {
-        project: [id],
+        projects: [id],
         ...name,
         page: p,
         limit: l,
@@ -181,7 +181,7 @@ const ResourcesCard = (props) => {
   };
 
   useEffect(() => {
-    fetchResourceOfProject(searchValue, page, limit);
+    fetchResourceOfProject({ name: searchValue }, page, limit);
   }, [page, limit]);
 
   // useEffect(() => {
@@ -194,7 +194,7 @@ const ResourcesCard = (props) => {
   };
 
   const onSearchDebounce = debounce((value) => {
-    fetchResourceOfProject(value);
+    fetchResourceOfProject({ name: value });
     setSearchValue(value);
   }, 1000);
 
@@ -204,7 +204,7 @@ const ResourcesCard = (props) => {
   };
 
   const onFilter = (filterPayload) => {
-    fetchResourceOfProject(filterPayload);
+    fetchResourceOfProject({ name: searchValue, ...filterPayload }, page, limit);
     if (Object.keys(filterPayload).length > 0) {
       setIsFiltering(true);
       setApplied(Object.keys(filterPayload).length);
@@ -233,7 +233,7 @@ const ResourcesCard = (props) => {
         setRemovingPackage('');
         const tempData = data.filter((x) => x._id !== key);
         setData(tempData);
-        fetchResourceOfProject(searchValue, page, limit);
+        fetchResourceOfProject({ name: searchValue }, page, limit);
       }
     }
   };
@@ -439,7 +439,7 @@ const ResourcesCard = (props) => {
       <AddResourcesModal
         visible={addResourceModalVisible}
         onClose={() => setAddResourceModalVisible(false)}
-        refreshResourceList={() => fetchResourceOfProject(searchValue, page, limit)}
+        refreshResourceList={() => fetchResourceOfProject({ name: searchValue }, page, limit)}
       />
       <CommonModal
         visible={removeResourceModalVisible}

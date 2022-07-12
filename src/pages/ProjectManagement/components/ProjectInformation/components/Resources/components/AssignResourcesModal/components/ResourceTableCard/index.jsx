@@ -44,7 +44,11 @@ const ResourceTableCard = (props) => {
 
   const onSearchDebounce = debounce((value) => {
     setSearchValue(value);
-    fetchData(value);
+    if (filter) {
+      fetchData(value, page, limit, filter);
+    } else {
+      fetchData(value, page, limit);
+    }
   }, 1000);
 
   const onSearch = (e = {}) => {

@@ -91,7 +91,7 @@ const FilterResourcesContent = (props) => {
         </Select>
       </Form.Item>
 
-      <Form.Item label="By billing status" name="status">
+      <Form.Item label="By billing status" name="statuses">
         <Select
           mode="multiple"
           allowClear
