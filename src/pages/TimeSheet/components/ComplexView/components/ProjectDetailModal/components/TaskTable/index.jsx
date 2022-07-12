@@ -10,26 +10,16 @@ const TaskTable = (props) => {
   const renderHeader = () => {
     return (
       <Row className={styles.tableHeader}>
-        <Col span={4} className={styles.title}>
+        <Col span={8} className={styles.title}>
           Department
         </Col>
-        <Col span={4} className={styles.title}>
-          Task
-        </Col>
-        <Col span={4} className={styles.title}>
-          Description
-        </Col>
-
-        <Col span={12} className={styles.groupCell}>
+        <Col span={16} className={styles.groupCell}>
           <Row className={styles.groupRow}>
-            <Col span={8} className={styles.title}>
+            <Col span={12} className={styles.title}>
               Resources
             </Col>
-            <Col span={8} className={`${styles.title} ${styles.alignCenter}`}>
+            <Col span={12} className={`${styles.title} ${styles.alignCenter}`}>
               Time taken
-            </Col>
-            <Col span={8} className={`${styles.title} ${styles.alignCenter}`}>
-              Total time (task)
             </Col>
           </Row>
         </Col>
