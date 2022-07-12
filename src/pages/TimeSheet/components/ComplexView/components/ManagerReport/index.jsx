@@ -63,7 +63,7 @@ const ManagerReport = (props) => {
     if (activeKey === VIEW_TYPE.PROJECT_VIEW) {
       return exportToCSV(
         'timeSheet/exportReportProject',
-        `ProjectView-${project.projectName}-${startDate}-${endDate}.csv`,
+        `ProjectView-${project?.projectName || ''}-${startDate}-${endDate}.csv`,
       );
     }
     return exportToCSV('timeSheet/exportReportTeam', `TeamView-${startDate}-${endDate}.csv`);

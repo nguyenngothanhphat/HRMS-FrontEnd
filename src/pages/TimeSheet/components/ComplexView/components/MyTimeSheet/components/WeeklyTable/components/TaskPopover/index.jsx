@@ -6,7 +6,7 @@ import CloseX from '@/assets/dashboard/closeX.svg';
 import AddSolidIcon from '@/assets/timeSheet/addSolid.png';
 import DelIcon from '@/assets/timeSheet/del.svg';
 import EditIcon from '@/assets/timeSheet/edit.svg';
-import ModalImage from '@/assets/timeSheet/modalImage1.png';
+import ModalImage from '@/assets/timeSheet/modalImage2.png';
 import CommonModal from '@/components/CommonModal';
 import AddTaskModal from '@/pages/TimeSheet/components/ComplexView/components/AddTaskModal';
 import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/EditTaskModal';

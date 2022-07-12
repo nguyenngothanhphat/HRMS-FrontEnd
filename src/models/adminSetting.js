@@ -52,6 +52,7 @@ const adminSetting = {
       listRoles: [],
       listPermissions: [],
       listDepartments: [],
+      totalDepartmentList: 0,
       listGrades: [],
       listSupportTeam: [],
       emailDomain: '',
@@ -63,6 +64,7 @@ const adminSetting = {
       listRoles: [],
       listPermissions: [],
       listDepartments: [],
+      totalDepartmentList: 0,
       listGrades: [],
       listSupportTeam: [
         {
@@ -169,10 +171,10 @@ const adminSetting = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data: listDepartments = [] } = response;
+        const { statusCode, data: listDepartments = [], total: totalDepartmentList = 0 } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveOrigin', payload: { listDepartments } });
-        yield put({ type: 'saveTemp', payload: { listDepartments } });
+        yield put({ type: 'saveOrigin', payload: { listDepartments, totalDepartmentList } });
+        yield put({ type: 'saveTemp', payload: { listDepartments, totalDepartmentList } });
       } catch (errors) {
         dialog(errors);
       }

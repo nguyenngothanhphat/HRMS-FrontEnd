@@ -9,8 +9,6 @@
 @red: #fd4546;
 
 .TimesheetDetailModal {
-  width: 80% !important;
-  max-height: 600px !important;
   .btnCancel {
     box-sizing: border-box;
     width: 95px;
@@ -28,109 +26,26 @@
   }
 
   :global {
-    .ant-modal-body {
-      max-height: 400px !important;
-      overflow-y: scroll;
-    }
-    .ant-form-item-explain {
-      div {
-        font-size: 13px;
-      }
-    }
-    .ant-select-selection-item {
-      color: #161c29;
-    }
-    .ant-select-disabled {
-      .ant-select-selection-item {
-        color: #161c2980;
-      }
-    }
-
-    .ant-select-selector,
-    .ant-input {
-      height: 42px !important;
-      padding: 5px 11px !important;
-      // background: transparent !important;
-      border-radius: 5px !important;
-    }
-    .ant-select-selection-search-input {
-      height: 42px !important;
-      //   border-radius: 5px;
-    }
-    .ant-select-multiple {
-      .ant-select-selection-search-input {
-        height: unset !important;
-      }
-    }
-    .ant-picker {
-      width: 100%;
-      min-height: 42px !important;
-      font-size: 13px;
-      border-radius: 5px;
-    }
-    .ant-form-item-label
-      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
-      display: none;
-    }
-    .ant-form-item-label label {
-      height: 0;
-      color: #161c29;
-      font-size: 13px;
-    }
-
-    .ant-btn-primary {
-      height: 40px;
-      padding: 0 30px;
-      object-fit: contain;
-      color: #ffffff;
-      font-weight: 500;
-      font-size: 14px;
-      font-family: Roboto;
-      letter-spacing: 0.13px;
-
-      text-shadow: none;
-      background-color: #ffa100;
-      border: solid 1px #ffa100;
-      border-radius: 25px;
-      box-shadow: none;
-      &:hover {
-        color: #ffffff;
-        background-color: #ffa100;
-      }
-    }
-    .ant-btn-primary[disabled] {
-      color: #fff;
-      opacity: 0.5;
-    }
-    .ant-btn-secondary {
-      width: 94px;
-      height: 40px;
-      padding-right: 41px;
-      object-fit: contain;
-      color: #ffa100;
-      font-weight: 500;
-      font-size: 14px;
-      font-family: Roboto;
-      letter-spacing: 0.13px;
-      border: solid 0;
-      border-radius: 25px;
-      box-shadow: none;
-    }
     .ant-modal-header {
       padding: 24px;
-      border: none;
+      border-bottom: none;
       border-top-left-radius: 8px;
     }
     .ant-modal-content {
-      border: 1px solid #d6dce0;
-      border-radius: 8px;
+      border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
     }
     .ant-form-item {
       margin-bottom: 12px;
     }
     .ant-modal-footer {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      justify-content: flex-end;
       padding: 24px;
-      border: none;
+      border-top: none;
     }
     .ant-select-selection-overflow-item .ant-select-selection-overflow-item-suffix {
       display: none;
@@ -150,41 +65,26 @@
         opacity: 0.5;
       }
     }
-
-    // checkbox
-    .ant-checkbox-wrapper {
-      span {
-        font-size: 13px;
-      }
+    .ant-modal-body {
+      max-height: 500px !important;
+      overflow-y: auto;
     }
-  }
-
-  .taskNumberCount {
-    span {
-      display: inline-block;
-      margin-right: 5px;
-      color: #464646;
-      font-size: 13px;
-    }
-    .number {
-      color: #2c6df9;
+    .ant-btn-secondary {
+      width: 94px;
+      height: 40px;
+      padding-right: 41px;
+      object-fit: contain;
+      color: #ffa100;
       font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+      border: solid 0;
+      border-radius: 25px;
+      box-shadow: none;
     }
   }
 
-  .btnSubmit {
-    color: #fff;
-
-    font-weight: 600;
-    font-size: 14px;
-    background-color: #ffa100;
-    border: none;
-    border-radius: 25px;
-  }
-  .btnSubmit:disabled {
-    color: #fff;
-    opacity: 0.5;
-  }
   .status {
     &__Pending {
       margin-bottom: 12px;
@@ -238,8 +138,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    max-width: 92%;
     margin: auto;
+    padding: 0 24px;
     &__comments {
       margin-bottom: 12px;
       color: #161c29;

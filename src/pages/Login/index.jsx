@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-curly-newline */
 import { EyeFilled } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect, formatMessage, history, Link } from 'umi';
 import { removeLocalStorage } from '@/utils/authority';
 import logoGoogle from '@/assets/logo_google.png';
@@ -14,24 +14,25 @@ const FormLogin = (props) => {
     dispatch,
     loading = false,
     login: {
-      messageError = '',
-      isEmailError: isEmailErrorProp = false,
-      isPasswordError: isPasswordErrorProp = false,
+      // messageError = '',
+      // isEmailError: isEmailErrorProp = false,
+      // isPasswordError: isPasswordErrorProp = false,
       urlGoogle = '',
       urlLollypop = '',
     } = {},
   } = props;
 
   const [form] = Form.useForm();
-  const [isEmailError, setIsEmailError] = useState(false);
-  const [isPasswordError, setIsPasswordError] = useState(false);
+  // const [isEmailError, setIsEmailError] = useState(false);
+  // const [isPasswordError, setIsPasswordError] = useState(false);
+
+  // useEffect(() => {
+  //   setIsEmailError(isEmailErrorProp);
+  //   setIsPasswordError(isPasswordErrorProp);
+  // }, [isEmailErrorProp, isPasswordErrorProp]);
 
   useEffect(() => {
-    setIsEmailError(isEmailErrorProp);
-    setIsPasswordError(isPasswordErrorProp);
-  }, [isEmailErrorProp, isPasswordErrorProp]);
-
-  useEffect(() => {
+    // eslint-disable-next-line compat/compat
     const query = new URLSearchParams(location.search);
     const emailGet = query.get('email');
     if (emailGet) {
@@ -115,8 +116,8 @@ const FormLogin = (props) => {
         <Form.Item
           label={formatMessage({ id: 'pages.login.emailLabel' })}
           name="userEmail"
-          validateStatus={isEmailError ? 'error' : undefined}
-          help={isEmailError ? messageError : null}
+          // validateStatus={isEmailError ? 'error' : undefined}
+          // help={isEmailError ? messageError : null}
           validateTrigger="onSubmit"
           rules={[
             {
@@ -142,8 +143,8 @@ const FormLogin = (props) => {
           label={formatMessage({ id: 'pages.login.passwordLabel' })}
           name="password"
           validateTrigger="onSubmit"
-          validateStatus={isPasswordError ? 'error' : undefined}
-          help={isPasswordError ? messageError : null}
+          // validateStatus={isPasswordError || isEmailError ? 'error' : undefined}
+          // help={isPasswordError || isEmailError ? messageError : null}
           rules={[
             {
               required: true,

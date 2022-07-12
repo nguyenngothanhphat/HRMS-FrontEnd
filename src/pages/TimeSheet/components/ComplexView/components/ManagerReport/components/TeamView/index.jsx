@@ -10,12 +10,12 @@ import MemberTable from './components/MemberTable';
 import Pagination from './components/Pagination';
 import styles from './index.less';
 
+const limit = 5;
 const TeamView = (props) => {
   // weekly
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
   const [nameSearch, setNameSearch] = useState('');
 
   const {
@@ -25,6 +25,7 @@ const TeamView = (props) => {
       managerTeamViewList = [],
       managerTeamViewPagination = {},
       filterManagerReport = {},
+      payloadExport = {},
     } = {},
     loadingFetch = false,
     activeView = '',
@@ -52,7 +53,7 @@ const TeamView = (props) => {
     dispatch({
       type: 'timeSheet/savePayload',
       payload: {
-        payloadExport: payload,
+        payloadExport: { ...payloadExport, payload },
       },
     });
   };

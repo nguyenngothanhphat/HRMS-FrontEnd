@@ -1,6 +1,6 @@
 import { Col, DatePicker, Form, Row, Select, Skeleton, Space, Tag } from 'antd';
 import { debounce } from 'lodash';
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { connect } from 'umi';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterButton from '@/components/FilterButton';
@@ -18,10 +18,7 @@ const TimeOffFilter = (props) => {
     filter = {},
     saveCurrentTypeTab = () => {},
     currentLeaveTypeTab = '',
-    currentScopeTab = '',
   } = props;
-
-  const [isTypeChanged, setIsTypeChanged] = useState(false);
 
   const onSearchDebounce = debounce((value) => {
     dispatch({
@@ -45,10 +42,6 @@ const TimeOffFilter = (props) => {
   const onFinish = (values) => {
     const filterTemp = removeEmptyFields(values);
 
-    if (filterTemp.type.length !== type.length) {
-      setIsTypeChanged(true);
-    }
-
     // dispatch action
     dispatch({
       type: 'timeOff/save',
@@ -69,13 +62,9 @@ const TimeOffFilter = (props) => {
     form.setFieldsValue({ type, fromDate, toDate });
   }, [filter]);
 
-  useEffect(() => {
-    setIsTypeChanged(false);
-  }, [currentScopeTab]);
-
   const countFilter = () => {
     let count = 0;
-    if (type.length > 0 && isTypeChanged) {
+    if (type.length > 0) {
       count += 1;
     }
     if (fromDate || toDate) {
@@ -84,11 +73,10 @@ const TimeOffFilter = (props) => {
     return count;
   };
 
-  const getFilterActive = (type.length > 0 && isTypeChanged) || fromDate || toDate;
+  const getFilterActive = type.length > 0 || fromDate || toDate;
 
   const onClearFilter = () => {
     saveCurrentTypeTab(currentLeaveTypeTab);
-    setIsTypeChanged(false);
   };
 
   const FilterContent = () => {

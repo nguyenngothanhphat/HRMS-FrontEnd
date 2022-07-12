@@ -4,7 +4,14 @@ import styles from './styles.less';
 
 export default function ThirdStep(props) {
   const { Option } = Select;
-  const { onChange, onSearch, changeData, fetchedState = {} } = props;
+  const {
+    onChange,
+    onSearch,
+    changeData,
+    fetchedState = {},
+    loadingFetchEmployeeList = false,
+    loadingFetchTitleList = false,
+  } = props;
   const { stepTwo: { department = '' } = {} } = changeData;
   const { employeeList = [] } = fetchedState;
 
@@ -28,15 +35,15 @@ export default function ThirdStep(props) {
       <div className={styles.select}>
         <div className={styles.label}>Title</div>
         <Select
-          value={changeData.newTitle || null}
+          value={changeData.stepThree.title || null}
           showSearch
           placeholder="Select a title"
           optionFilterProp="children"
           onChange={(value) => onChange(value, 'title')}
+          loading={loadingFetchTitleList}
           onSearch={onSearch}
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {changeData.stepTwo.department
             ? fetchedState.listTitleByDepartment.map((item) => {
@@ -52,15 +59,15 @@ export default function ThirdStep(props) {
       <div className={styles.select}>
         <div className={styles.label}>Reporting To</div>
         <Select
-          defaultValue={changeData.stepThree.reportTo || null}
+          value={changeData.stepThree.reportTo || null}
           showSearch
           placeholder="Select a manager"
           optionFilterProp="children"
           onChange={(value) => onChange(value, 'reportTo')}
           onSearch={onSearch}
+          loading={loadingFetchEmployeeList}
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {employeeList.map((item) => {
             return (
@@ -74,18 +81,18 @@ export default function ThirdStep(props) {
       <div className={styles.select}>
         <div className={styles.label}>Reportees</div>
         <Select
-          defaultValue={changeData.stepThree.reportees || null}
+          value={changeData.stepThree.reportees || null}
           showSearch
           placeholder="Select reportees"
           optionFilterProp="children"
           onChange={(value) => onChange(value, 'reportees')}
           onSearch={onSearch}
           showArrow
+          loading={loadingFetchEmployeeList}
           allowClear
           mode="multiple"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {sameDeptEmployees.map((item) => {
             return (

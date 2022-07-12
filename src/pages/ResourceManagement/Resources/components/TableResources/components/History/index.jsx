@@ -13,26 +13,31 @@ class HistoryActionBTN extends Component {
     this.state = {};
   }
 
-  // renderEmployeeName =(workEmail)=>{
-  //   const employeeName
-  //   const userName = workEmail.substring(0, workEmail.indexOf('@'));
-  //   return employeeName = `${workMail.legalName} ${userName ? `(${userName})` : ''}`;
-  // }
-
   render() {
     const { resourceList = [], dataPassRow = {}, visible, onClose = () => {} } = this.props;
     const getEmpInListResource = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const { projects = [] } = getEmpInListResource || {};
     const { managerInfo = {} } = getEmpInListResource || {};
+
+    const dateFormat = (date) => (date ? moment(date).format('MM-DD-YYYY') : '-');
+
     const dataSource = projects
-      .map((x, index) => {
+      .map((projectInfo, index) => {
+        const {
+          revisedEndDate,
+          project: { projectName = '-', projectDescription = '' } = {},
+          startDate = '',
+          endDate = '',
+          status = '-',
+        } = projectInfo;
+
         return {
           key: index + 1,
-          ProjectName: x.project.projectName || '-',
-          StartDate: moment(x.startDate).format('MM-DD-YYYY') || '-',
-          EndDate: moment(x.endDate).format('MM-DD-YYYY') || '-',
-          Billing: x.status || '-',
-          Description: x.project.projectDescription || '-',
+          projectName: projectName || '-',
+          startDate: dateFormat(startDate),
+          endDate: revisedEndDate ? dateFormat(revisedEndDate) : dateFormat(endDate),
+          status: status || '',
+          projectDescription: projectDescription || '-',
         };
       })
       .sort((a, b) => {
@@ -45,14 +50,14 @@ class HistoryActionBTN extends Component {
     const columns = [
       {
         title: 'Project Name',
-        dataIndex: 'ProjectName',
-        key: 'ProjectName',
+        dataIndex: 'projectName',
+        key: 'projectName',
         width: '25%',
         render: (value) => {
           const active = true;
           return (
             <div>
-              <span className={styles.projectname}> {value}</span>
+              <span className={styles.projectName}> {value}</span>
               <span className={styles.labelProject}>{active ? ' Current' : ''}</span>
             </div>
           );
@@ -65,8 +70,8 @@ class HistoryActionBTN extends Component {
             <div className={styles.date}>(mm/dd/yyyy)</div>
           </div>
         ),
-        dataIndex: 'StartDate',
-        key: 'StartDate',
+        dataIndex: 'startDate',
+        key: 'startDate',
         width: '15%',
       },
       {
@@ -76,20 +81,20 @@ class HistoryActionBTN extends Component {
             <div className={styles.date}>(mm/dd/yyyy)</div>
           </div>
         ),
-        dataIndex: 'EndDate',
-        key: 'EndDate',
+        dataIndex: 'endDate',
+        key: 'endDate',
         width: '15%',
       },
       {
         title: 'Billing Status',
-        dataIndex: 'Billing',
-        key: 'Billing',
+        dataIndex: 'status',
+        key: 'status',
         width: '20%',
       },
       {
         title: 'Project Description',
-        dataIndex: 'Description',
-        key: 'Description',
+        dataIndex: 'projectDescription',
+        key: 'projectDescription',
         width: '25%',
         render: (value) => {
           if (value.length < 35) {
