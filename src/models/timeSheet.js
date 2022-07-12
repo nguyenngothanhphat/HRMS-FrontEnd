@@ -80,6 +80,7 @@ const initialState = {
   // hr & finance complex view
   hrViewList: [],
   financeViewList: [],
+  financeViewListTotal: 0,
   payloadExport: {},
   // filter
   employeeNameList: [],
@@ -94,6 +95,7 @@ const initialState = {
   // common
   selectedDivisions: [],
   selectedLocations: [],
+  isLocationLoaded: false,
   isIncompleteTimesheet: false,
   employeeSchedule: {},
 };
@@ -569,13 +571,14 @@ const TimeSheet = {
       const response = {};
       try {
         const res = yield call(getFinanceTimesheet, {}, { ...payload, tenantId });
-        const { code, data = [] } = res;
+        const { code, data = [], pagination={} } = res;
         if (code !== 200) throw res;
 
         yield put({
           type: 'save',
           payload: {
             financeViewList: data,
+            financeViewListTotal:pagination?.rowCount || 0,
           },
         });
       } catch (errors) {
