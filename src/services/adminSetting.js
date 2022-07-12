@@ -209,7 +209,6 @@ export async function getSettingTicketById(payload) {
   });
 }
 
-
 export async function removeSettingTicket(payload) {
   return request('/api/settingtickettenant/inactive', {
     method: 'POST',
@@ -221,5 +220,27 @@ export async function upsertSettingTicket(payload) {
   return request('/api/settingtickettenant/upsert', {
     method: 'POST',
     data: payload,
+  });
+}
+
+export async function getDomains(payload) {
+  return request('/api/domaintenant', {
+    method: 'GET',
+    params: payload,
+  });
+}
+
+export async function setDomains(params, payload) {
+  return request('/api/domaintenant', {
+    method: 'POST',
+    data: payload,
+    params,
+  });
+}
+
+export async function removeDomains(params, payload) {
+  return request(`/api/domaintenant/${payload.id}`, {
+    method: 'DELETE',
+    params,
   });
 }

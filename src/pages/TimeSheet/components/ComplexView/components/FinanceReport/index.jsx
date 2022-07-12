@@ -12,6 +12,8 @@ import MonthlyTable from './components/MonthlyTable';
 import styles from './index.less';
 
 const FinanceReport = (props) => {
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   // weekly
   const [startDateWeek, setStartDateWeek] = useState('');
   const [endDateWeek, setEndDateWeek] = useState('');
@@ -29,7 +31,13 @@ const FinanceReport = (props) => {
   const {
     dispatch,
     employee: { _id: employeeId = '' } = {},
-    timeSheet: { financeViewList = [], selectedDivisions = [], selectedLocations = [], filterFinance = {} } = {},
+    timeSheet: {
+      financeViewList = [],
+      financeViewListTotal = 0,
+      selectedDivisions = [],
+      selectedLocations = [],
+      filterFinance = {},
+    } = {},
     loadingFetch = false,
   } = props;
 
@@ -49,11 +57,20 @@ const FinanceReport = (props) => {
     if (nameSearch) {
       payload.search = nameSearch;
     }
+    if (selectedView === VIEW_TYPE.W) {
+      payload.page = page;
+      payload.limit = limit;
+    }
 
     dispatch({
       type: 'timeSheet/fetchFinanceTimesheetEffect',
       payload,
     });
+  };
+
+  const onChangePagination = (pageNumber, pageSizeTemp) => {
+    setPage(pageNumber);
+    setLimit(pageSizeTemp);
   };
 
   // USE EFFECT AREA
@@ -65,9 +82,11 @@ const FinanceReport = (props) => {
     startDateWeek,
     selectedView,
     nameSearch,
+    page,
+    limit,
     JSON.stringify(selectedDivisions),
     JSON.stringify(selectedLocations),
-    JSON.stringify(filterFinance)
+    JSON.stringify(filterFinance),
   ]);
 
   useEffect(() => {
@@ -80,7 +99,7 @@ const FinanceReport = (props) => {
     nameSearch,
     JSON.stringify(selectedDivisions),
     JSON.stringify(selectedLocations),
-    JSON.stringify(filterFinance)
+    JSON.stringify(filterFinance),
   ]);
 
   useEffect(() => {
@@ -173,6 +192,10 @@ const FinanceReport = (props) => {
             selectedProjects={selectedProjects}
             setSelectedProjects={setSelectedProjects}
             loadingFetch={loadingFetch}
+            onChangePagination={onChangePagination}
+            page={page}
+            limit={limit}
+            total={financeViewListTotal}
           />
         );
       case VIEW_TYPE.M:
@@ -194,7 +217,14 @@ const FinanceReport = (props) => {
 
   const renderFooter = () => {
     if (selectedProjects.length === 0) return null;
-    return <Footer selectedProjects={selectedProjects} data={financeViewList} />;
+    return (
+      <Footer
+        selectedProjects={selectedProjects}
+        data={financeViewList}
+        weeksOfMonth={weeksOfMonth}
+        selectedView={selectedView}
+      />
+    );
   };
 
   // MAIN AREA

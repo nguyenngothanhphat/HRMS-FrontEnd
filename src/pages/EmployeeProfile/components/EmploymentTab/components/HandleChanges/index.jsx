@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { getCurrentCompany } from '@/utils/authority';
+import { MAKE_CHANGE_TYPE } from '@/utils/employeeProfile';
 import { dialog } from '@/utils/utils';
-import styles from './styles.less';
-import FirstStep from './components/FirstStep';
-import SecondStep from './components/SecondStep';
-import ThirdStep from './components/ThirdStep';
-import FourthStep from './components/FourthStep';
 import FifthStep from './components/FifthStep';
-import SixthStep from './components/SixthStep';
+import FirstStep from './components/FirstStep';
+import FourthStep from './components/FourthStep';
+import SecondStep from './components/SecondStep';
 import SeventhStep from './components/SeventhStep';
+import SixthStep from './components/SixthStep';
+import ThirdStep from './components/ThirdStep';
+import styles from './styles.less';
+
+const { ALREADY_CHANGE, IMMEDIATE_CHANGE, SCHEDULE_CHANGE } = MAKE_CHANGE_TYPE;
 
 const HandleChanges = (props) => {
   const {
@@ -19,7 +24,10 @@ const HandleChanges = (props) => {
     companyLocationList = [],
     setIsModified = () => {},
     isModified = false,
+    loadingFetchTitleList = false,
+    loadingFetchEmployeeList = false,
   } = props;
+
   const { currentUser } = user || {};
   const [radio, setRadio] = useState(2);
   const [changeData, setChangeData] = useState({
@@ -31,21 +39,23 @@ const HandleChanges = (props) => {
     newEmploymentType: '',
     newManager: '',
     newReportees: [],
-    stepOne: 'Now',
+    stepOne: {
+      type: IMMEDIATE_CHANGE,
+      effectDate: null,
+    },
     stepTwo: {
-      wLocation: '',
-      employment: '',
-      department: '',
+      wLocation: data.location,
+      employment: data.employeeType,
+      department: data.department,
     },
     stepThree: {
-      title: '',
-      reportToBefore: data.manager || '',
+      title: data.title,
       reportTo: data.manager || '',
       reportees: data.reportees || [],
     },
     stepFour: {
-      currentAnnualCTC: '',
-      compensationType: null,
+      currentAnnualCTC: data.currentAnnualCTC,
+      compensationType: data.compensationType,
     },
     stepFive: {
       toEmployee: false,
@@ -59,18 +69,41 @@ const HandleChanges = (props) => {
 
   useEffect(() => {
     const { dispatch } = props;
+    if (data.department) {
+      dispatch({
+        type: 'employeeProfile/fetchTitleByDepartment',
+        payload: {
+          company: getCurrentCompany(),
+          department: data.department,
+        },
+      });
+    }
     dispatch({
       type: 'employee/fetchDataOrgChart',
       payload: { employee: employeeProfile.employee },
     });
-    dispatch({
-      type: 'employeeProfile/fetchEmployeeListSingleCompanyEffect',
-    });
+    if (!(employeeProfile.employeeList || []).length) {
+      dispatch({
+        type: 'employeeProfile/fetchEmployeeListSingleCompanyEffect',
+      });
+    }
   }, []);
 
   useEffect(() => {
+    setChangeData((prev) => {
+      return {
+        ...prev,
+        stepThree: {
+          ...prev.stepThree,
+          reportees: data.reportees || [],
+        },
+      };
+    });
+  }, [employeeProfile.reportees]);
+
+  useEffect(() => {
     const { nextTab } = props;
-    if (changeData.stepOne === 'Before' || changeData.stepOne === 'Later') {
+    if (!changeData.stepOne.effectDate && radio !== 2) {
       if (current > 0) {
         nextTab('STOP');
         dialog({ message: 'Please enter a date' });
@@ -87,13 +120,13 @@ const HandleChanges = (props) => {
   const onRadioChange = (e) => {
     switch (Number(e.target.value)) {
       case 1:
-        setChangeData({ ...changeData, stepOne: 'Before' });
+        setChangeData({ ...changeData, stepOne: { type: ALREADY_CHANGE } });
         break;
       case 2:
-        setChangeData({ ...changeData, stepOne: 'Now' });
+        setChangeData({ ...changeData, stepOne: { type: IMMEDIATE_CHANGE } });
         break;
       case 3:
-        setChangeData({ ...changeData, stepOne: 'Later' });
+        setChangeData({ ...changeData, stepOne: { type: SCHEDULE_CHANGE } });
         break;
       case 4: {
         let notifyToTemp = JSON.parse(JSON.stringify(changeData.stepFive.notifyTo));
@@ -141,14 +174,16 @@ const HandleChanges = (props) => {
   };
 
   const onDateChange = (value, msg) => {
-    if (msg === 'Before') {
+    if (msg === ALREADY_CHANGE) {
       if (Date.parse(value) < Date.now()) {
-        setChangeData({ ...changeData, stepOne: value._ });
+        setChangeData({ ...changeData, stepOne: { ...changeData.stepOne, effectDate: value } });
       } else dialog({ message: 'Please enter an appropriate date' });
-    } else if (msg === 'Later') {
+    } else if (msg === SCHEDULE_CHANGE) {
       if (Date.parse(value) > Date.now()) {
-        setChangeData({ ...changeData, stepOne: value._ });
+        setChangeData({ ...changeData, stepOne: { ...changeData.stepOne, effectDate: value } });
       } else dialog({ message: 'Please enter an appropriate date' });
+    } else {
+      setChangeData({ ...changeData, stepOne: { ...changeData.stepOne, effectDate: moment() } });
     }
   };
 
@@ -202,7 +237,10 @@ const HandleChanges = (props) => {
           stepTwo: {
             ...changeData.stepTwo,
             department: value,
-            title: '',
+          },
+          stepThree: {
+            ...changeData.stepThree,
+            title: null,
           },
           newTitle: '',
           newDepartment: employeeProfile.departments.find((x) => x._id === value)?.name,
@@ -211,7 +249,7 @@ const HandleChanges = (props) => {
         dispatch({
           type: 'employeeProfile/fetchTitleByDepartment',
           payload: {
-            company: employeeProfile?.originData?.compensationData?.company,
+            company: getCurrentCompany(),
             department: value,
           },
         });
@@ -279,7 +317,13 @@ const HandleChanges = (props) => {
         />
       ) : null}
       {current === 2 ? (
-        <ThirdStep fetchedState={employeeProfile} changeData={changeData} onChange={onChange} />
+        <ThirdStep
+          fetchedState={employeeProfile}
+          changeData={changeData}
+          onChange={onChange}
+          loadingFetchEmployeeList={loadingFetchEmployeeList}
+          loadingFetchTitleList={loadingFetchTitleList}
+        />
       ) : null}
       {current === 3 ? (
         <FourthStep
@@ -320,10 +364,14 @@ export default connect(
     employeeProfile,
     user,
     location: { companyLocationList = [] } = {},
+    loading,
   }) => ({
     employeeProfile,
     companyLocationList,
     user,
+    loadingFetchEmployeeList:
+      loading.effects['employeeProfile/fetchEmployeeListSingleCompanyEffect'],
+    loadingFetchTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
     // dataOrgChart,
   }),
 )(HandleChanges);

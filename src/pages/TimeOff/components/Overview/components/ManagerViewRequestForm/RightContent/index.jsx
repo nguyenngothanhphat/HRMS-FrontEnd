@@ -46,8 +46,8 @@ class RightContent extends PureComponent {
   getFlow = () => {
     const {
       viewingLeaveRequest: {
-        employee: { generalInfo: { legalName: ln1 = '', avatar: av1 = '' } = {} } = {},
-        approvalManager: { generalInfo: { legalName: ln2 = '', avatar: av2 = '' } = {} } = {},
+        employee: { generalInfoInfo: { legalName: ln1 = '', avatar: av1 = '' } = {} } = {},
+        approvalManager: { generalInfoInfo: { legalName: ln2 = '', avatar: av2 = '' } = {} } = {},
       } = {},
     } = this.props;
 
