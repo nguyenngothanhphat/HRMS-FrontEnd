@@ -1,57 +1,122 @@
-.Domain{
-    box-sizing: border-box;
-    width: 100%;
-    height: fit-content;
-    background: #ffffff;
-    border: 1px solid #d6dce0;
-    border-radius: 5px;
-    .domainTitleContainer{
-        padding: 26px 24px;
-        border-bottom: 1px solid #E2E4E8;   
-        .domainTitle{
-            font-size: 16px;
-            font-weight: 700;
-            margin: 0;
-        }
+.Domain {
+  box-sizing: border-box;
+  width: 100%;
+  height: fit-content;
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
+  :global {
+    .ant-card-head-title {
+      padding-block: 24px;
     }
-    .domainContent{
-        padding: 40px 38px;
-        .contentInside{
-            font-size: 13px;
-            line-height: 2;
-            color: #464646;
+  }
+  .domainTitleContainer {
+    .domainTitle {
+      margin: 0;
+      font-weight: 700;
+      font-size: 16px;
+    }
+  }
+  .domainContent {
+    .contentInside {
+      color: #464646;
+      font-size: 13px;
+      line-height: 2;
+    }
+    .formSetDomain {
+      margin-top: 32px;
+      color: #707177;
+      .deleteIcon {
+        margin-left: 8px;
+        cursor: pointer;
+      }
+      .btnAdd {
+        display: flex;
+        align-items: center;
+        padding: 0 8px;
+        color: #3a70f0;
+        font-weight: 500;
+        font-size: 14px;
+        font-style: normal;
+        line-height: 24px;
+        text-align: center;
+        .addIcon {
+          margin-right: 8px;
         }
-        .formSetDomain{
-            margin-top: 32px;
-            color: #707177;
-            .btnSave{
-                background-color: #FFA100;
-                height: auto;
-                font-size: 14px;
-                font-weight: 500;
-                color: #fff;
-                border-radius: 25px;
+      }
+      .btnSave {
+        display: inline-block;
+        height: auto;
+        padding: 12px 24px;
+        color: #fff;
+        font-weight: 500;
+        font-size: 14px;
+        text-shadow: none;
+        background-color: #ffa100;
 
-                border-color: #fff;
-                text-shadow: none;
-                box-shadow: none;
-               
-                display: inline-block;
-                padding: 12px 24px;
-            }
-            .inpDomain{
-                padding: 13px 16px;
-            }
-            :global{
-                .ant-form-item-label label{
-                    color: #707177;
-                }
-                .ant-input{
-                    padding: 13px 16px;
-                    color: #161C29;
-                }
-            }
+        border-color: #fff;
+        border-radius: 25px;
+        box-shadow: none;
+      }
+      .domainContent {
+        margin-bottom: 4px;
+        padding: 0;
+      }
+      .inpDomain {
+        padding: 13px 16px;
+      }
+      .primary {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: baseline;
+
+        .primaryText {
+          margin-left: 8px;
+          color: #667085;
+          font-weight: 400;
+          font-size: 14px;
+          font-style: normal;
+          line-height: 20px;
         }
+        .check {
+          margin-left: 8px;
+          color: #2c6df9;
+          font-weight: 400;
+          font-size: 14px;
+          font-style: normal;
+          line-height: 20px;
+        }
+      }
+
+      :global {
+        .ant-form-item-label label {
+          color: #707177;
+        }
+        .ant-input {
+          padding: 13px 16px;
+          color: #161c29;
+        }
+      }
     }
-    
+  }
+}
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 15px;
+  text-align: center;
+  .title {
+    font-weight: 600;
+    font-size: 18px;
+    font-style: normal;
+    line-height: 28px;
+    text-align: center;
+  }
+  .description {
+    margin-top: 8px;
+    font-size: 13px;
+    font-style: normal;
+    text-align: center;
+  }
 }

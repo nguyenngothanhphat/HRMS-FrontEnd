@@ -1,23 +1,24 @@
-import { Avatar, Table, Tooltip } from 'antd';
+import { Avatar, Tooltip } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
+import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import CommonTable from '@/components/CommonTable';
 import { employeeColor } from '@/utils/timeSheet';
 import ProjectDetailModal from '../../../ProjectDetailModal';
-import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
-import EmptyComponent from '@/components/Empty';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
   const {
     data = [],
-    limit = 10,
     selectedProjects = [],
     setSelectedProjects = () => {},
     loadingFetch = false,
+    page = 1,
+    limit = 10,
+    onChangePagination = () => {},
+    total = 0,
   } = props;
 
-  const [pageSelected, setPageSelected] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
   const [projectDetailModalVisible, setProjectDetailModalVisible] = useState(false);
   const [handlingProject, setHandlingProject] = useState('');
 
@@ -104,55 +105,23 @@ const WeeklyTable = (props) => {
     return columns;
   };
 
-  const onSelectChange = (values) => {
-    setSelectedProjects(values);
-  };
-
-  const rowSelection = {
-    selectedRowKeys: selectedProjects,
-    onChange: onSelectChange,
-  };
-
-  const onChangePagination = (pageNumber, pageSizeTemp) => {
-    setPageSelected(pageNumber);
-    setPageSize(pageSizeTemp);
-  };
-
-  const pagination = {
-    position: ['bottomLeft'],
-    total: data.length,
-    showTotal: (total, range) => (
-      <span>
-        {' '}
-        Showing{' '}
-        <b>
-          {range[0]} - {range[1]}
-        </b>{' '}
-        of {total}{' '}
-      </span>
-    ),
-    defaultPageSize: 10,
-    showSizeChanger: true,
-    pageSizeOptions: ['10', '25', '50', '100'],
-    pageSize,
-    current: pageSelected,
-    onChange: onChangePagination,
-  };
-
   // MAIN AREA
   return (
     <div className={styles.WeeklyTable}>
-      <Table
+      <CommonTable
         columns={generateColumns()}
-        dataSource={data}
-        rowSelection={rowSelection}
-        rowKey={(record) => record.projectId}
-        scroll={selectedProjects.length > 0 ? { y: 400 } : {}}
-        pagination={pagination}
+        list={data}
+        selectedRowKeys={selectedProjects}
+        setSelectedRowKeys={setSelectedProjects}
+        rowKey="projectId"
+        scrollable
         loading={loadingFetch}
-        locale={{
-          emptyText: <EmptyComponent />,
-        }}
+        selectable
+        isBackendPaging
+        page={page}
+        limit={limit}
+        onChangePage={onChangePagination}
+        total={total}
       />
       <ProjectDetailModal
         visible={projectDetailModalVisible}

@@ -1,33 +1,37 @@
-import _ from 'lodash';
-import { history } from 'umi';
 import { notification } from 'antd';
+import _ from 'lodash';
 import moment from 'moment';
+import { history } from 'umi';
 import {
-  getOnboardingList,
-  deleteDraft,
-  initiateBackgroundCheck,
-  createProfile,
-  getTotalNumberOnboardingList,
-  reassignTicket,
-  getListEmployee,
-  getFilterList,
-  handleExpiryTicket,
-  getListJoiningFormalities,
   addJoiningFormalities,
-  updateJoiningFormalities,
-  removeJoiningFormalities,
-  updateSettingEmployeeId,
-  getSettingEmployeeId,
-  createUserName,
   checkExistingUserName,
   createEmployee,
-  getListNewComer,
+  createProfile,
+  createUserName,
+  deleteDraft,
   getCandidateById,
+  getDomain,
+  getFilterList,
+  getEmployeeIdFormatByLocation,
+  getListEmployee,
+  getListJoiningFormalities,
+  getListNewComer,
+  getOnboardingList,
   getPosition,
+  getSettingEmployeeId,
+  getTotalNumberOnboardingList,
+  handleExpiryTicket,
+  initiateBackgroundCheck,
+  reassignTicket,
+  removeJoiningFormalities,
+  updateEmployeeFormatByLocation,
+  updateJoiningFormalities,
+  updateSettingEmployeeId,
+  updateEmployeeFormatByGlobal,
 } from '@/services/onboard';
-import { dialog } from '@/utils/utils';
-import { PROCESS_STATUS_TABLE_NAME, PROCESS_STATUS } from '@/utils/onboarding';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { PROCESS_STATUS, PROCESS_STATUS_TABLE_NAME } from '@/utils/onboarding';
+import { dialog } from '@/utils/utils';
 
 // const employeeList = rookieList.filter(
 //   (rookie) => rookie.isNew === undefined || rookie.isNew === null,
@@ -302,11 +306,14 @@ const onboard = {
       itemNewComer: {},
       totalComer: 0,
       userName: '',
+      domain: '',
       messageErr: '',
       employeeData: {},
       generatedId: '',
       prefix: '',
       idItem: '',
+      employeeIdList: [],
+      settingId: '',
     },
     reloadTableData: false,
   },
@@ -1030,6 +1037,81 @@ const onboard = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    // eslint-disable-next-line no-shadow
+    *fetchListDomain(_, { call, put }) {
+      try {
+        const response = yield call(getDomain, {
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { listDomain: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getEmployeeIdFormatByLocation({ payload }, { call, put }) {
+      try {
+        const response = yield call(getEmployeeIdFormatByLocation, {
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { settingId: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getEmployeeIdFormatList({ payload }, { call, put }) {
+      try {
+        const response = yield call(getEmployeeIdFormatByLocation, {
+          ...payload,
+        });
+        const { statusCode, data, total } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { employeeIdList: data, locationTotal: total },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateEmployeeFormatByLocation({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(updateEmployeeFormatByLocation, {
+          ...payload,
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *updateEmployeeFormatByGlobal({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(updateEmployeeFormatByGlobal, {
+          ...payload,
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
   reducers: {

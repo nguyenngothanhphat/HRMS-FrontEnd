@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Tooltip } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { history } from 'umi';
@@ -15,6 +15,16 @@ export default class EventDetailBox extends PureComponent {
 
   render() {
     const { data = {}, color = 0 } = this.props;
+
+    const getTitle = (leaveDates = []) => {
+      return leaveDates.map((x) => (
+        <div key={x._id}>
+          <span>{moment(x.date).locale('en').format('DD')}</span>{' '}
+          <span>{`${moment(x.date).locale('en').format('MMM')} (${x.timeOfDay})`}</span>
+        </div>
+      ));
+    };
+
     const {
       fromDate: from = '',
       toDate: to = '',
@@ -23,26 +33,52 @@ export default class EventDetailBox extends PureComponent {
       typeName = '',
       _id = '',
       status = '',
+      leaveDates = [],
     } = data;
+
     return (
       <Row onClick={() => this.goToLeaveRequest(_id)} className={styles.EventDetailBox}>
-        <Col
-          xs={8}
-          className={styles.dateAndMonth}
-          style={{
-            justifyContent: 'space-evenly',
-          }}
-        >
-          <span className={styles.container}>
-            <span className={styles.day}>{moment(from).locale('en').format('DD')}</span>
-            <span className={styles.month}>{moment(from).locale('en').format('MMM')}</span>
-          </span>
-          <span className={styles.subtractSymbol}>-</span>
-          <span className={styles.container}>
-            <span className={styles.day}>{moment(to).locale('en').format('DD')}</span>
-            <span className={styles.month}>{moment(to).locale('en').format('MMM')}</span>
-          </span>
-        </Col>
+        {!from && !to ? (
+          <Tooltip title={() => getTitle(leaveDates)}>
+            <Col xs={8} className={styles.dateAndMonth} style={{ justifyContent: 'space-evenly' }}>
+              {' '}
+              <span className={styles.container}>
+                <span className={styles.day}>
+                  {moment(leaveDates[0].date).locale('en').format('DD')}
+                </span>
+                <span className={styles.month}>
+                  {moment(leaveDates[0].date).locale('en').format('MMM')}
+                </span>
+              </span>
+              <span className={styles.subtractSymbol}>-</span>
+              <span className={styles.container}>
+                <span className={styles.day}>
+                  {moment(leaveDates[leaveDates.length - 1].date)
+                    .locale('en')
+                    .format('DD')}
+                </span>
+                <span className={styles.month}>
+                  {moment(leaveDates[leaveDates.length - 1].date)
+                    .locale('en')
+                    .format('MMM')}
+                </span>
+              </span>
+            </Col>
+          </Tooltip>
+        ) : (
+          <Col xs={8} className={styles.dateAndMonth} style={{ justifyContent: 'space-evenly' }}>
+            {' '}
+            <span className={styles.container}>
+              <span className={styles.day}>{moment(from).locale('en').format('DD')}</span>
+              <span className={styles.month}>{moment(from).locale('en').format('MMM')}</span>
+            </span>
+            <span className={styles.subtractSymbol}>-</span>
+            <span className={styles.container}>
+              <span className={styles.day}>{moment(to).locale('en').format('DD')}</span>
+              <span className={styles.month}>{moment(to).locale('en').format('MMM')}</span>
+            </span>
+          </Col>
+        )}
         <Col xs={9} className={styles.eventOfDay}>
           {typeName}
         </Col>

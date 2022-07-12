@@ -4,6 +4,7 @@ import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
 import {
+  checkNormalTypeTimeoff,
   getHours,
   MAX_NO_OF_DAYS_TO_SHOW,
   TIMEOFF_12H_FORMAT,
@@ -240,6 +241,7 @@ class RequestInformation extends PureComponent {
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate, type);
+    const listTime = leaveDates.map((x) => moment(x.date).format('MM/DD/YYYY'));
     const showAllDateList = duration <= MAX_NO_OF_DAYS_TO_SHOW;
 
     const BY_HOUR =
@@ -328,7 +330,7 @@ class RequestInformation extends PureComponent {
       if (showAllDateList)
         return (
           <>
-            {formatDurationTime.map((date, index) => {
+            {(!checkNormalTypeTimeoff(type) ? formatDurationTime : listTime).map((date, index) => {
               return (
                 <Row
                   className={styles.duration}
@@ -369,7 +371,7 @@ class RequestInformation extends PureComponent {
       <>
         <Row style={{ paddingBottom: '5px' }}>
           <Col span={6}>Duration</Col>
-          {!isEmpty(formatDurationTime) && (
+          {!isEmpty(listTime || formatDurationTime) && (
             <>
               <Col span={18} className={styles.detailColumn}>
                 <div className={styles.extraTimeSpent}>{renderTableHeader()}</div>
@@ -437,9 +439,9 @@ class RequestInformation extends PureComponent {
       type: { name = '' } = {},
       employee: {
         // _id: employeeId = '',
-        generalInfo: { legalName = '', userId = '' } = {},
+        generalInfoInfo: { legalName = '', userId = '' } = {},
         employeeId: employeeIdText = '',
-        position: { name: position = '' } = {},
+        titleInfo: { name: position = '' } = {},
       } = {},
       comment = '',
       withdraw: {
@@ -526,7 +528,7 @@ class RequestInformation extends PureComponent {
                           projectHealth={projectHealth}
                           startDate={startDate}
                           endDate={endDate}
-                          infomationProject={x}
+                          item={x}
                         />
                         {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
                       </>

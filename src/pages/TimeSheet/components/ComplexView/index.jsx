@@ -1,4 +1,4 @@
-import { Checkbox, Tabs } from 'antd';
+import { Checkbox, Skeleton, Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import ModalImage from '@/assets/timeSheet/modalImage1.png';
@@ -24,7 +24,11 @@ const ComplexView = (props) => {
     tabName = '',
     showMyTimeSheet = true,
     companyLocationList = [],
-    timeSheet: { divisionList = [], selectedLocations: selectedLocationsProp = [] } = {},
+    timeSheet: {
+      divisionList = [],
+      selectedLocations: selectedLocationsProp = [],
+      isLocationLoaded = false,
+    } = {},
     currentDateProp = '',
     dispatch,
   } = props;
@@ -49,6 +53,7 @@ const ComplexView = (props) => {
         type: 'timeSheet/save',
         payload: {
           selectedLocations: [currentLocation],
+          isLocationLoaded: true,
         },
       });
     }
@@ -293,13 +298,22 @@ const ComplexView = (props) => {
           }}
           destroyInactiveTabPane
         >
-          {showMyTimeSheet && (
-            <TabPane tab="My Timesheet" key={TAB_NAME.MY}>
-              <MyTimeSheet currentDateProp={currentDateProp} />
-            </TabPane>
+          {isLocationLoaded ? (
+            <>
+              {showMyTimeSheet && (
+                <TabPane tab="My Timesheet" key={TAB_NAME.MY}>
+                  <MyTimeSheet currentDateProp={currentDateProp} />
+                </TabPane>
+              )}
+              {renderOtherTabs()}
+            </>
+          ) : (
+            <div style={{ padding: 24 }}>
+              <Skeleton active />
+            </div>
           )}
-          {renderOtherTabs()}
         </Tabs>
+
         <CommonModal
           visible={navToTimeoffModalVisible}
           onClose={() => setNavToTimeoffModalVisible(false)}

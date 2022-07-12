@@ -12,7 +12,9 @@ function TicketsItem(props) {
   const {
     dispatch,
     employeeAssignee = {},
-    employeeAssignee: { generalInfo: { userIdProps = '', legalNameProps = '' } = {} } = {},
+    employeeAssignee: {
+      generalInfo: { userId: userIdProps = '', legalName: legalNameProps = '' } = {},
+    } = {},
     renderMenuDropdown = () => {},
     viewProfile = () => {},
     handleClickSelect = () => {},
@@ -96,7 +98,7 @@ function TicketsItem(props) {
                 legalNameProps.length,
               )}`
             : legalNameProps}{' '}
-          {isEdit && <UpOutlined />}
+          {/* {isEdit && <UpOutlined />} */}
         </span>
       </UserProfilePopover>
       <div style={{ display: 'flex' }}>

@@ -51,7 +51,7 @@ const PostLikedModalContent = (props) => {
     if (!showMore) return null;
     return (
       <div className={styles.loadMore}>
-        <Button onClick={() => loadMore()}>
+        <Button onClick={() => loadMore()} disabled={loading}>
           Show more
           <img src={ShowMoreIcon} alt="" />
         </Button>
