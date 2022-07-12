@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { Row, Col } from 'antd';
-import { history, Link } from 'umi';
+import { Col, Row } from 'antd';
 import moment from 'moment';
-import styles from './index.less';
+import React, { Component } from 'react';
+import { history, Link } from 'umi';
 import { TIMEOFF_DATE_FORMAT } from '@/utils/timeOff';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import ProjectDetailPopover from '@/components/ProjectDetailPopover';
+import styles from './index.less';
 
 class Project extends Component {
   onViewProfileClick = (userId) => {
@@ -54,7 +54,7 @@ class Project extends Component {
       project: { projectName, id: projectId = '' } = {},
       projectManager: { generalInfo: { legalName: managerName = '', userId = '' } = {} } = {},
       projectManager = {},
-      infomationProject = {},
+      item = {},
       startDate = '',
       endDate = '',
     } = this.props;
@@ -62,11 +62,7 @@ class Project extends Component {
       <div className={styles.Project}>
         <Row>
           <Col span={5} className={styles.detailColumn}>
-            <ProjectDetailPopover
-              data={{ ...infomationProject }}
-              trigger="hover"
-              placement="topRight"
-            >
+            <ProjectDetailPopover data={{ ...item }} trigger="hover" placement="topRight">
               <Link className={styles.projectName} to={this.viewProject(projectId)}>
                 {projectName || '-'}
               </Link>
