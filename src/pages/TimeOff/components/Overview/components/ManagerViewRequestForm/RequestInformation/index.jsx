@@ -439,9 +439,9 @@ class RequestInformation extends PureComponent {
       type: { name = '' } = {},
       employee: {
         // _id: employeeId = '',
-        generalInfo: { legalName = '', userId = '' } = {},
+        generalInfoInfo: { legalName = '', userId = '' } = {},
         employeeId: employeeIdText = '',
-        position: { name: position = '' } = {},
+        titleInfo: { name: position = '' } = {},
       } = {},
       comment = '',
       withdraw: {
@@ -528,7 +528,7 @@ class RequestInformation extends PureComponent {
                           projectHealth={projectHealth}
                           startDate={startDate}
                           endDate={endDate}
-                          infomationProject={x}
+                          item={x}
                         />
                         {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
                       </>
