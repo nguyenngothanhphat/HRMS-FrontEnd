@@ -1,13 +1,13 @@
-import NextIcon from '@/assets/timeOff/next.svg';
-import PrevIcon from '@/assets/timeOff/previous.svg';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { Calendar, ConfigProvider, Tooltip } from 'antd';
 import enGB from 'antd/lib/locale-provider/en_GB';
 import moment from 'moment';
 import 'moment/locale/en-gb';
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'umi';
 import TypeColorTag from '../TypeColorTag';
+import NextIcon from '@/assets/timeOff/next.svg';
+import PrevIcon from '@/assets/timeOff/previous.svg';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 
 const { IN_PROGRESS, ACCEPTED, REJECTED } = TIMEOFF_STATUS;
@@ -16,18 +16,27 @@ moment.locale('en-gb'); // important!
 
 const CustomCalendar = (props) => {
   const { holidays = [], leaveRequests = [], currentTime = '', setCurrentTime = () => {} } = props;
-
   // FUNCTION
-  const checkIfSameDay = (a, b) => {
-    return moment(a).format('MM/DD/YYYY') === moment(b).format('MM/DD/YYYY');
+  const checkIfSameDay = (a, b, c = []) => {
+    return (
+      moment(a).format('MM/DD/YYYY') === moment(b).format('MM/DD/YYYY') ||
+      c.some((d) => moment(d).format('MM/DD/YYYY') === moment(b).format('MM/DD/YYYY'))
+    );
   };
-
   const checkCurrentDay = (val) => {
     return checkIfSameDay(val, moment());
   };
 
   const checkLeaveRequest = (val, status) => {
-    return leaveRequests.some((x) => checkIfSameDay(x.fromDate, val) && status === x.status);
+    return leaveRequests.some((x) => {
+      if (x.fromDate) {
+        return checkIfSameDay(x.fromDate, val) && status === x.status;
+      }
+      if (x?.listLeave?.length) {
+        return checkIfSameDay('', val, x.listLeave) && status === x.status;
+      }
+      return false;
+    });
   };
 
   const checkHoliday = (val) => {
@@ -68,7 +77,15 @@ const CustomCalendar = (props) => {
     const className = getClassName(value);
 
     const filter = [
-      ...leaveRequests.filter((x) => checkIfSameDay(x.fromDate, value)),
+      ...leaveRequests.filter((x) => {
+        if (x.fromDate) {
+          return checkIfSameDay(x.fromDate, value);
+        }
+        if (x?.listLeave?.length) {
+          return x.listLeave.map((z) => checkIfSameDay(z, value));
+        }
+        return false;
+      }),
       ...holidays.filter((x) => checkIfSameDay(x.date?.iso, value)),
     ];
     const getNames = () => {

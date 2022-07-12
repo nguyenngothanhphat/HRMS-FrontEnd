@@ -3,7 +3,7 @@ import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
 import { isEmpty } from 'lodash';
-import { roundNumber, TIMEOFF_STATUS, TIMEOFF_TYPE } from '@/utils/timeOff';
+import { roundNumber, TIMEOFF_STATUS, TIMEOFF_TYPE, checkNormalTypeTimeoff } from '@/utils/timeOff';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import Withdraw2Modal from '../Withdraw2Modal';
@@ -187,7 +187,10 @@ class RequestInformation extends PureComponent {
   render() {
     const { showWithdrawModal, showWithdraw2Modal, viewDocumentModal } = this.state;
     const {
-      timeOff: { viewingLeaveRequest = {} } = {},
+      timeOff: {
+        viewingLeaveRequest = {},
+        viewingLeaveRequest: { type: { type: leaveType = '' } = {} } = {},
+      } = {},
       loadingFetchLeaveRequestById,
       loadingEmployeeWithdrawInProgress,
       loadingEmployeeWithdrawApproved,
@@ -204,9 +207,11 @@ class RequestInformation extends PureComponent {
       description = '',
       type: { name = '', type = '' } = {},
       comment = '',
+      leaveDates = [],
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
+    const listTime = leaveDates.map((x) => moment(x.date).format('MM/DD/YYYY'));
 
     const checkWithdrawValid =
       status === IN_PROGRESS || (status === ACCEPTED && this.checkWithdrawValid(fromDate));
@@ -250,13 +255,25 @@ class RequestInformation extends PureComponent {
             </Col>
 
             <Col span={6}>Duration</Col>
-            {formatDurationTime ? (
+            {formatDurationTime || listTime ? (
               <>
                 <Col span={18} className={styles.detailColumn}>
-                  <span>{formatDurationTime}</span>{' '}
+                  {formatDurationTime && !checkNormalTypeTimeoff(leaveType) ? (
+                    <span>{formatDurationTime}</span>
+                  ) : (
+                    listTime.map((y, index) => (
+                      <span>
+                        {y}
+                        {!(listTime.length - 1 <= index) && (
+                          <span style={{ margin: '0 3px' }}>|</span>
+                        )}
+                      </span>
+                    ))
+                  )}
                   <span
                     style={{
                       fontWeight: 'bold',
+                      marginLeft: 3,
                     }}
                     className={styles.fieldValue}
                   >
