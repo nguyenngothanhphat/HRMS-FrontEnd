@@ -115,7 +115,7 @@ const AddPost = (props) => {
           tempFormValues = {
             postType: TAB_IDS.ANNOUNCEMENTS,
             descriptionA: record.description,
-            uploadFilesA: [...fileListTemp()],
+            uploadFilesA: { fileList: [...fileListTemp()] },
           };
           break;
         }
@@ -123,7 +123,7 @@ const AddPost = (props) => {
           tempFormValues = {
             postType: TAB_IDS.ANNIVERSARY,
             descriptionB: record.description,
-            uploadFilesB: [...fileListTemp()],
+            uploadFilesB: { fileList: [...fileListTemp()] },
           };
 
           break;
@@ -133,14 +133,14 @@ const AddPost = (props) => {
             postType: TAB_IDS.IMAGES,
             titleI: record.title,
             descriptionI: record.description,
-            uploadFilesI: [...fileListTemp()],
+            uploadFilesI: { fileList: [...fileListTemp()] },
           };
           break;
         }
         case TAB_IDS.BANNER: {
           tempFormValues = {
             postType: TAB_IDS.BANNER,
-            uploadFilesBN: [...fileListTemp()],
+            uploadFilesBN: { fileList: [...fileListTemp()] },
           };
           break;
         }
@@ -185,13 +185,11 @@ const AddPost = (props) => {
 
     const commonFunc = (name) => {
       let { fileList: fileListTemp = [] } = tempAllValues[name] || {};
-
       fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
       setFileList([...fileListTemp]);
       if (tempAllValues[name]) {
         tempAllValues[name].fileList = fileListTemp;
       }
-
       return tempAllValues;
     };
 
