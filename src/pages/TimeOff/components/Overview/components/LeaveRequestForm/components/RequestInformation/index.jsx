@@ -733,7 +733,7 @@ const RequestInformation = (props) => {
       const dateList = enumerateDaysBetweenDates(moment(viewingFromDate), moment(viewingToDate));
       if (!isNormalType && viewingFromDate && viewingToDate) {
         temp = invalidDatesProps.filter((x) => {
-          return dateList.some(
+          return !dateList.some(
             (y) =>
               moment(y).format(TIMEOFF_DATE_FORMAT) === moment(x.date).format(TIMEOFF_DATE_FORMAT),
           );
@@ -1003,6 +1003,7 @@ const RequestInformation = (props) => {
                         <LeaveTimeRow
                           eachDate={date}
                           index={index}
+                          listLength={dateLists.length}
                           needValidate={needValidate}
                           findInvalidHalfOfDay={findInvalidHalfOfDay}
                           BY_HOUR={BY_HOUR}
