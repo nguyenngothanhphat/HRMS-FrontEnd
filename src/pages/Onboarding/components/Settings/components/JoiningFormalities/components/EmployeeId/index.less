@@ -1,5 +1,5 @@
-.page {
-  margin: 0 24px 24px;
+.employeeId {
+  margin: 24px 0;
 
   .pageHeader {
     display: flex;
@@ -54,40 +54,48 @@
   }
 
   :global {
-    .ant-tabs-nav {
-      background-color: #f6f7f9;
+    .ant-card {
+      margin-top: 24px;
+    }
+    .ant-card-head {
+      border: none;
+    }
+    .ant-card-head-title {
+      padding-top: 24px;
+      padding-bottom: 0;
+    }
+    .ant-table-tbody > tr.ant-table-row-level-0:hover > td {
+      background: unset;
     }
 
-    .ant-tabs-top > .ant-tabs-nav::before,
-    .ant-tabs-bottom > .ant-tabs-nav::before,
-    .ant-tabs-top > div > .ant-tabs-nav::before,
-    .ant-tabs-bottom > div > .ant-tabs-nav::before {
-      border-bottom: 1px solid #d6dce0;
+    .ant-input {
+      width: 100%;
+      min-height: 30px !important;
+      font-size: 13px;
+      border-radius: 5px;
     }
-
-    .ant-tabs-tab > .ant-tabs-tab-btn {
-      font-size: 14px;
+    .ant-form-item-explain,
+    .ant-form-item-explain-error {
+      display: none;
     }
   }
 
-  .checkList {
+  .region {
     box-sizing: border-box;
+    min-height: 400px;
     margin-top: 24px;
-    padding: 24px;
+    // padding: 16px;
     background: #ffffff;
     border: 1px solid #d6dce0;
     border-radius: 5px;
 
     .footer {
-      margin-top: 20px;
+      margin: 32px 0;
 
       &__btn {
         display: flex;
         align-items: center;
         cursor: pointer;
-        img {
-          margin-right: 8px;
-        }
 
         .text {
           color: #2c6df9;
@@ -98,11 +106,11 @@
     }
   }
 
-  .employeeId {
+  .content {
     box-sizing: border-box;
-    min-height: 400px;
-    margin-top: 24px;
-    padding: 40px 40px 0 40px;
+    // min-height: 400px;
+    // margin-top: 24px;
+    // padding: 40px 40px 0 40px;
     background: #ffffff;
     border: 1px solid #d6dce0;
     border-radius: 5px;
@@ -121,19 +129,10 @@
 
       .ant-input {
         box-sizing: border-box;
-        width: 360px;
+        // width: 360px;
         height: 42px;
         border: 1px solid #d6dce4;
         border-radius: 5px;
-      }
-
-      .ant-btn-primary {
-        box-sizing: border-box;
-        min-width: 70px;
-        height: 40px;
-        background: #ffa100;
-        border: 1px solid #ffa100;
-        border-radius: 25px;
       }
     }
 
@@ -141,6 +140,7 @@
       box-sizing: border-box;
       height: 40px;
       color: #de0e0e;
+      font-weight: 500;
       border: 1px solid #de0e0e;
       border-radius: 25px;
     }
@@ -149,7 +149,7 @@
   .groupBtn {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     img {
       cursor: pointer;
     }
@@ -263,8 +263,16 @@
   }
 }
 
-.blueText {
-  color: #2c6df9;
-  font-weight: 500;
-  font-size: 13px;
+// .blueText {
+//   color: #2c6df9;
+//   font-weight: 500;
+//   font-size: 13px;
+// }
+
+.contentTooltip {
+  color: #707177;
+  font-weight: 400;
+  font-size: 12px;
+  font-style: normal;
+  line-height: 14px;
 }
