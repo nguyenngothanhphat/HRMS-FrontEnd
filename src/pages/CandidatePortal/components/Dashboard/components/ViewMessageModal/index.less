@@ -1,17 +1,16 @@
-@darkColour: #161C29;
-@blueColour: #2C6DF9;
+@darkColour: #161c29;
+@blueColour: #2c6df9;
 @lightGrayColor: #707177;
 @commonPadding: 15px;
 @contentPadding: 32px;
-@borderColor: #D6DCE0;
+@borderColor: #d6dce0;
 
 .ViewMessageModal {
-
   :global {
     .ant-modal-body {
       max-height: 500px;
-      overflow-y: auto;
       padding: 0 @contentPadding @contentPadding @contentPadding;
+      overflow-y: auto;
     }
     .ant-form-item-explain {
       div {
@@ -44,13 +43,13 @@
       font-size: 12px;
     }
     .ant-btn-primary {
-      padding: 0 30px;
       height: 40px;
+      padding: 0 30px;
       object-fit: contain;
       color: #ffffff;
       font-weight: 500;
       font-size: 14px;
-      font-family: Roboto;
+
       letter-spacing: 0.13px;
 
       text-shadow: none;
@@ -71,7 +70,7 @@
       color: #ffa100;
       font-weight: 500;
       font-size: 14px;
-      font-family: Roboto;
+
       letter-spacing: 0.13px;
       border: solid 0;
       border-radius: 25px;
@@ -147,7 +146,6 @@
     }
   }
 
-
   .eachItem {
     display: flex;
     justify-content: flex-start;
@@ -157,18 +155,18 @@
       margin-right: 10px;
     }
     .messageContent {
-      font-size: 13px;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
       align-items: flex-start;
+      justify-content: flex-start;
+      font-size: 13px;
       span {
         display: block;
       }
       .messageTitle {
+        color: #000000;
         font-weight: 500;
         line-height: 20px;
-        color: #000000;
       }
       .message {
         color: @lightGrayColor;

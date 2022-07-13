@@ -1,7 +1,8 @@
+import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/utils/timeOff';
+import { getShortType, TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/utils/timeOff';
 import FilterBar from '../FilterBar';
 import MyCompoffTable from '../MyCompoffTable';
 import MyLeaveTable from '../MyLeaveTable';
@@ -15,9 +16,12 @@ const TimeOffRequestTab = (props) => {
     timeOff: {
       currentFilterTab,
       filter: { search, fromDate, toDate, type: timeOffTypes = [] },
+      filter = {},
       paging: { page, limit },
       compoffRequests = [],
       leaveRequests = [],
+      currentPayloadTypes = [],
+      currentLeaveTypeTab = '',
     } = {},
     type = 0,
     tab = 0,
@@ -86,6 +90,19 @@ const TimeOffRequestTab = (props) => {
     setWithdrawnLength(withdrawnLengthTemp);
   };
 
+  const getTotalByType = () => {
+    const payload = {
+      type: getShortType(currentLeaveTypeTab),
+      status: TIMEOFF_STATUS.IN_PROGRESS,
+      isTeam: false,
+    };
+
+    dispatch({
+      type: 'timeOff/getTotalByTypeEffect',
+      payload,
+    });
+  };
+
   const fetchData = () => {
     let status = '';
 
@@ -133,7 +150,7 @@ const TimeOffRequestTab = (props) => {
       type: typeAPI,
       payload: {
         status,
-        type: timeOffTypes,
+        type: timeOffTypes.length === 0 ? currentPayloadTypes : timeOffTypes,
         search,
         fromDate: fromDate ? moment(fromDate).format(TIMEOFF_DATE_FORMAT_API) : null,
         toDate: toDate ? moment(toDate).format(TIMEOFF_DATE_FORMAT_API) : null,
@@ -146,13 +163,15 @@ const TimeOffRequestTab = (props) => {
         countTotal(total);
       }
     });
+
+    getTotalByType();
   };
 
   useEffect(() => {
-    if (timeOffTypes.length > 0) {
+    if (timeOffTypes.length > 0 || (currentPayloadTypes.length > 0 && isEmpty(filter))) {
       fetchData();
     }
-  }, [selectedTabNumber, page, limit, search, fromDate, toDate, JSON.stringify(timeOffTypes)]);
+  }, [selectedTabNumber, page, limit, JSON.stringify(filter), JSON.stringify(currentPayloadTypes)]);
 
   const dataNumber = {
     inProgressLength,

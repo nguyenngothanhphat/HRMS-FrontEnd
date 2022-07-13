@@ -1,24 +1,22 @@
 import { Spin, Tabs } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
+import { addZeroToNumber } from '@/utils/utils';
+import { TIMEOFF_TYPE } from '@/utils/timeOff';
 import RequestScopeTabs from './components/RequestScopeTabs';
 import styles from './index.less';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
 
 const { TabPane } = Tabs;
-const { IN_PROGRESS, ON_HOLD } = TIMEOFF_STATUS;
 
 const ManagerRequestTable = (props) => {
   const {
     dispatch,
     timeOff: {
       currentLeaveTypeTab = '',
+      currentScopeTab = '',
       yourTimeOffTypes = {},
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
-      countTotal = [],
-      currentScopeTab = '1',
-      currentFilterTab = '',
-      typeLeaveCount = {
+      totalByType = {
         A: 0,
         B: 0,
         C: 0,
@@ -26,87 +24,24 @@ const ManagerRequestTable = (props) => {
       },
     } = {},
     loadingTimeOffType = false,
-    eligibleForCompOff = false,
+    // eligibleForCompOff = false,
   } = props;
 
-  const fetchCountTotal = () => {
-    // Get all type ID
-    const leavesTemp = [...commonLeaves, ...specialLeaves];
-
-    const typeId = leavesTemp.map((item) => {
-      return item._id;
-    });
-
-    // Fetch all countTotal
-    let typeAPI = '';
-    switch (currentScopeTab) {
-      case '1':
-        typeAPI = 'timeOff/fetchAllLeaveRequests';
-        break;
-      case '2':
-        typeAPI = 'timeOff/fetchTeamLeaveRequests';
-        break;
-      case '3':
-        typeAPI = 'timeOff/fetchLeaveRequestOfEmployee';
-        break;
-      default:
-        break;
-    }
-
-    dispatch({
-      type: typeAPI,
-      payload: {
-        type: typeId,
-        isCountTotal: true,
-      },
-    });
-  };
-
-  const countByStatus = (status) => {
-    const typeTotalCount = {
-      A: 0,
-      B: 0,
-      C: 0,
-      D: 0,
-    };
-    // get data of count follow status
-    countTotal.forEach((item) => {
-      if (status.includes(item._id)) {
-        item.types.forEach((ele) => {
-          typeTotalCount[`${ele.type}`] += ele.count;
-        });
-      }
-    });
-
-    dispatch({
-      type: 'timeOff/save',
-      payload: {
-        typeLeaveCount: typeTotalCount,
-      },
-    });
-  };
-
-  const saveCurrentTypeTab = (type) => {
-    dispatch({
-      type: 'timeOff/save',
-      payload: {
-        currentLeaveTypeTab: String(type),
-        currentFilterTab: '1',
-      },
-    });
+  const saveCurrentTypeTab = (type = '') => {
     let arr = [];
+
     switch (type) {
       case '1':
-        arr = commonLeaves.filter((x) => x.type === 'A');
+        arr = commonLeaves.filter((x) => x.type === TIMEOFF_TYPE.A);
         break;
       case '2':
-        arr = specialLeaves.filter((x) => x.type === 'C');
+        arr = specialLeaves.filter((x) => x.type === TIMEOFF_TYPE.C);
         break;
       case '3':
-        arr = commonLeaves.filter((x) => x.type === 'B');
+        arr = commonLeaves.filter((x) => x.type === TIMEOFF_TYPE.B);
         break;
       case '4':
-        arr = specialLeaves.filter((x) => x.type === 'D');
+        arr = specialLeaves.filter((x) => x.type === TIMEOFF_TYPE.D);
         break;
       default:
         arr = [];
@@ -114,9 +49,11 @@ const ManagerRequestTable = (props) => {
     }
     arr = arr.map((item) => item._id);
     dispatch({
-      type: 'timeOff/saveFilter',
+      type: 'timeOff/save',
       payload: {
-        type: arr,
+        currentLeaveTypeTab: String(type),
+        currentFilterTab: '1',
+        currentPayloadTypes: arr,
       },
     });
     dispatch({
@@ -125,19 +62,15 @@ const ManagerRequestTable = (props) => {
         page: 1,
       },
     });
+    dispatch({
+      type: 'timeOff/saveFilter',
+      payload: {},
+    });
   };
 
   useEffect(() => {
     saveCurrentTypeTab('1');
-  }, [JSON.stringify(yourTimeOffTypes)]);
-
-  useEffect(() => {
-    fetchCountTotal();
-  }, [currentLeaveTypeTab, currentScopeTab, currentFilterTab]);
-
-  useEffect(() => {
-    countByStatus([IN_PROGRESS, ON_HOLD]);
-  }, [countTotal]);
+  }, [JSON.stringify(yourTimeOffTypes), currentScopeTab]);
 
   const renderTableTitle = {
     left: (
@@ -145,12 +78,6 @@ const ManagerRequestTable = (props) => {
         <span>Timeoff Requests</span>
       </div>
     ),
-  };
-
-  const addZeroToNumber = (number) => {
-    if (number === 0) return 0;
-    if (number < 10 && number > 0) return `0${number}`.slice(-2);
-    return number;
   };
 
   return (
@@ -165,7 +92,7 @@ const ManagerRequestTable = (props) => {
           destroyInactiveTabPane
         >
           <>
-            <TabPane tab={`Leave Requests (${addZeroToNumber(typeLeaveCount.A)})`} key="1">
+            <TabPane tab={`Leave Requests (${addZeroToNumber(totalByType.A)})`} key="1">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
                 tab={1}
@@ -173,7 +100,7 @@ const ManagerRequestTable = (props) => {
                 type={1}
               />
             </TabPane>
-            <TabPane tab={`Special Leave Requests (${addZeroToNumber(typeLeaveCount.C)})`} key="2">
+            <TabPane tab={`Special Leave Requests (${addZeroToNumber(totalByType.C)})`} key="2">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
                 tab={2}
@@ -181,7 +108,7 @@ const ManagerRequestTable = (props) => {
                 type={1}
               />
             </TabPane>
-            <TabPane tab={`LOP Requests (${addZeroToNumber(typeLeaveCount.B)})`} key="3">
+            <TabPane tab={`LOP Requests (${addZeroToNumber(totalByType.B)})`} key="3">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
                 tab={3}
@@ -189,7 +116,7 @@ const ManagerRequestTable = (props) => {
                 type={1}
               />
             </TabPane>
-            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(typeLeaveCount.D)})`} key="4">
+            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(totalByType.D)})`} key="4">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
                 tab={4}
@@ -197,7 +124,7 @@ const ManagerRequestTable = (props) => {
                 type={1}
               />
             </TabPane>
-            {eligibleForCompOff && (
+            {/* {eligibleForCompOff && (
               <TabPane tab="Compoff Requests" key="5">
                 <RequestScopeTabs
                   saveCurrentTypeTab={saveCurrentTypeTab}
@@ -206,7 +133,7 @@ const ManagerRequestTable = (props) => {
                   type={2}
                 />
               </TabPane>
-            )}
+            )} */}
           </>
         </Tabs>
       </Spin>

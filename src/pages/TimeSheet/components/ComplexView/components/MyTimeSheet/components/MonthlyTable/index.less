@@ -71,12 +71,12 @@
   }
 
   .timeStamp {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100%;
-    position: relative;
     .weekName {
       color: #333333;
       font-weight: 500;
@@ -204,13 +204,13 @@
     height: 70px;
     background-color: #fff;
     .item {
+      display: flex;
       flex-basis: 100%;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
       text-align: center;
       cursor: pointer;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
     .text {
       display: flex;
@@ -249,7 +249,7 @@
       background: unset;
     }
     td.ant-table-cell {
-      width: 84px;
+      // width: 84px;
       height: 80px;
       color: #464646;
       font-weight: normal;

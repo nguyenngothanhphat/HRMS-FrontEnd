@@ -214,7 +214,9 @@ class RequestInformation extends PureComponent {
     const listTime = leaveDates.map((x) => moment(x.date).format('MM/DD/YYYY'));
 
     const checkWithdrawValid =
-      status === IN_PROGRESS || (status === ACCEPTED && this.checkWithdrawValid(fromDate));
+      status === IN_PROGRESS ||
+      (status === ACCEPTED &&
+        this.checkWithdrawValid(fromDate || moment(leaveDates[0]?.date, 'YYYY-MM-DD')));
 
     const duration = roundNumber(durationProp);
 

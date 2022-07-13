@@ -17,6 +17,7 @@ const WeeklyHeader = (props) => {
     setEndDate = () => {},
     viewChangeComponent = '',
     selectedDate = '',
+    loadingFetch = false,
   } = props;
   const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
   const [importModalVisible, setImportModalVisible] = useState(false);
@@ -52,6 +53,7 @@ const WeeklyHeader = (props) => {
           onNextClick={onNextWeekClick}
           onChange={onDatePickerChange}
           disabled
+          disableBtn={loadingFetch}
         />
       </div>
       <div className={styles.WeeklyHeader__middle}>{viewChangeComponent()}</div>

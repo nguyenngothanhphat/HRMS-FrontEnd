@@ -66,11 +66,6 @@ export const TIMEOFF_COLOR = {
   Holiday: '#6a0dad',
 };
 
-export const addZeroToNumber = (number) => {
-  if (number < 10 && number >= 0) return `0${number}`.slice(-2);
-  return number;
-};
-
 export const TIMEOFF_DATE_FORMAT = 'MM/DD/YYYY';
 export const TIMEOFF_DATE_FORMAT_API = 'YYYY-MM-DD';
 
@@ -242,3 +237,20 @@ export const convertHoursToDays = (numberHourPerDay, value) => {
 export const isFutureDay = (date) => {
   return moment(date).isAfter(moment());
 };
+
+export const getShortType = (tab) => {
+  switch (tab) {
+    case '1':
+      return 'A';
+    case '2':
+      return 'C';
+    case '3':
+      return 'B';
+    case '4':
+      return 'D';
+    default:
+      return '';
+  }
+};
+
+export const TIMEOFF_NEW_REQUEST_DAYS = 4;
