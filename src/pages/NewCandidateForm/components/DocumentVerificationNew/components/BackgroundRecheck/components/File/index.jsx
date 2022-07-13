@@ -41,7 +41,7 @@ const File = (props) => {
   const renderNeedVerification = () => {
     return (
       <div className={styles.needVerification}>
-        <span>Need verification</span>
+        <span>Needs verification</span>
         <img src="data:," alt="" />
       </div>
     );
