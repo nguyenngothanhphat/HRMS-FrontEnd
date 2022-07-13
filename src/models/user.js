@@ -43,7 +43,6 @@ const UserModel = {
         const response = yield call(queryCurrent, payload);
         const { statusCode, data = {} } = response;
         const { country = '' } = data?.location?.headQuarterAddress || {};
-        console.log("🚀 ~ country", country)
         setCountry(JSON.stringify(country));
         if (statusCode !== 200) {
           history.push('/login');

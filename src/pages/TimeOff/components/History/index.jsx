@@ -1,5 +1,5 @@
 import { Card, Steps } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import WarningIcon from '@/assets/timeOff/warning.svg';
 import CheckIcon from '@/assets/timeOff/check.svg';
@@ -13,7 +13,7 @@ const { Step } = Steps;
 
 const History = (props) => {
   const { status = '', data, data: { history = [] } = {} } = props;
-  console.log('🚀 ~ data', data);
+  const [indexWithdraw, setIndexWithdraw] = useState(0);
 
   const getFlow = () => {
     const array = history.map((item) => {
@@ -29,9 +29,23 @@ const History = (props) => {
         updatedAt,
       };
     });
-
-    return array;
+    const a = [];
+    const b = [];
+    array.forEach((item) => {
+      if (item.statusHistory === TIMEOFF_HISTORY_STATUS.APPLIED) {
+        a.push(item);
+      } else {
+        b.push(item);
+      }
+    });
+    return [...a, ...b];
   };
+
+  useEffect(() => {
+    setIndexWithdraw(
+      getFlow().findIndex((item) => item?.statusHistory === TIMEOFF_HISTORY_STATUS.WITHDRAW),
+    );
+  }, [data]);
 
   const renderColorStatus = (statusProp) => {
     switch (statusProp) {
@@ -50,6 +64,25 @@ const History = (props) => {
     }
   };
 
+  const renderStatusName = (statusProp) => {
+    switch (statusProp) {
+      case TIMEOFF_HISTORY_STATUS.APPLIED:
+        return 'Applied';
+      case TIMEOFF_HISTORY_STATUS.EDITED:
+        return 'Edited';
+      case TIMEOFF_HISTORY_STATUS.REJECTED:
+        return 'Rejected';
+      case TIMEOFF_HISTORY_STATUS.APPROVED:
+        return 'Approved';
+      case TIMEOFF_HISTORY_STATUS.WAITING:
+        return 'Waiting for Approval';
+      case TIMEOFF_HISTORY_STATUS.WITHDRAW:
+        return 'Withdraw';
+      default:
+        return 'Applied';
+    }
+  };
+
   const renderImg = (name, avatar, updatedAt, statusProp) => {
     return (
       <>
@@ -65,9 +98,7 @@ const History = (props) => {
           <div className={styles.nameStep}>{name}</div>
           <div className={styles.containerStatus}>
             <span className={styles.status} style={renderColorStatus(statusProp)}>
-              {statusProp === TIMEOFF_HISTORY_STATUS.WAITING
-                ? 'Waiting for Approval'
-                : statusProp?.toLowerCase()}
+              {renderStatusName(statusProp)}
             </span>{' '}
             {statusProp !== TIMEOFF_HISTORY_STATUS.WAITING && (
               <span className={styles.date}>
@@ -83,11 +114,11 @@ const History = (props) => {
   const renderIcon = (statusProp) => {
     switch (statusProp) {
       case TIMEOFF_HISTORY_STATUS.APPLIED:
-        case TIMEOFF_HISTORY_STATUS.EDITED:
+      case TIMEOFF_HISTORY_STATUS.EDITED:
       case TIMEOFF_HISTORY_STATUS.APPROVED:
-      case TIMEOFF_HISTORY_STATUS.WITHDRAW:
         return <img src={CheckIcon} alt="" />;
       case TIMEOFF_HISTORY_STATUS.REJECTED:
+      case TIMEOFF_HISTORY_STATUS.WITHDRAW:
         return <img src={ErrorIcon} alt="" />;
       default:
         return <img src={DotIcon} alt="" />;
@@ -96,11 +127,21 @@ const History = (props) => {
 
   const renderSteps = () => {
     const people = getFlow();
-    return people.map((item) => {
+    return people.map((item, index) => {
       const { name = '', avatar = '', statusHistory = '', updatedAt = '' } = item;
       return (
         <>
           <Step
+            className={`${
+              people[index + 1]?.statusHistory !== TIMEOFF_HISTORY_STATUS.WAITING
+                ? styles.steps__solid
+                : styles.step__dashed
+            } 
+              ${
+                status === TIMEOFF_STATUS.WITHDRAWN && index > indexWithdraw
+                  ? styles.steps__withdraw
+                  : ''
+              }`}
             icon={renderIcon(statusHistory)}
             description={renderImg(name, avatar, updatedAt, statusHistory)}
           />
@@ -108,6 +149,8 @@ const History = (props) => {
       );
     });
   };
+
+  if (status === TIMEOFF_STATUS.DRAFTS) return null;
 
   return (
     <Card title={null} className={styles.History}>
@@ -123,13 +166,7 @@ const History = (props) => {
           </div>
         </div>
         <div className={styles.header}>History</div>
-        <div
-          className={
-            status && status !== TIMEOFF_STATUS.IN_PROGRESS
-              ? styles.steps__solid
-              : styles.step__dashed
-          }
-        >
+        <div>
           <Steps current={1} direction="vertical">
             {renderSteps()}
           </Steps>

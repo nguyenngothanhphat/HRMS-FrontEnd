@@ -91,7 +91,7 @@ export async function addLeaveRequest(payload) {
 }
 
 export async function saveDraftLeaveRequest(payload) {
-  return request('/api/leaverequesttenant/save-draft', {
+  return request('/api/leaverequesttenant', {
     method: 'POST',
     data: payload,
   });
