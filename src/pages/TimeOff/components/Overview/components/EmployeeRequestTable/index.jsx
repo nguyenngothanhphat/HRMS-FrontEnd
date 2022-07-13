@@ -1,12 +1,11 @@
 import { Spin, Tabs } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
+import { addZeroToNumber } from '@/utils/utils';
 import TimeOffRequestTab from './components/TimeOffRequestTab';
 import styles from './index.less';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
 
 const { TabPane } = Tabs;
-const { IN_PROGRESS, ON_HOLD } = TIMEOFF_STATUS;
 
 const EmployeeRequestTable = (props) => {
   const {
@@ -15,8 +14,7 @@ const EmployeeRequestTable = (props) => {
       currentLeaveTypeTab = '',
       yourTimeOffTypes = {},
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
-      countTotal = [],
-      typeLeaveCount = {
+      totalByType = {
         A: 0,
         B: 0,
         C: 0,
@@ -25,36 +23,10 @@ const EmployeeRequestTable = (props) => {
     } = {},
     loadingTimeOffType = false,
     eligibleForCompOff = false,
+    currentScopeTab = '',
   } = props;
 
-  const countInProgress = () => {
-    // Get all type ID
-
-    const leavesTemp = [...commonLeaves, ...specialLeaves];
-
-    const typeId = leavesTemp.map((item) => {
-      return item._id;
-    });
-
-    //
-    dispatch({
-      type: 'timeOff/fetchLeaveRequestOfEmployee',
-      payload: {
-        status: [IN_PROGRESS, ON_HOLD],
-        type: typeId,
-        isCountTotal: true,
-      },
-    });
-  };
-
   const saveCurrentTypeTab = (type) => {
-    dispatch({
-      type: 'timeOff/save',
-      payload: {
-        currentLeaveTypeTab: String(type),
-        currentFilterTab: '1',
-      },
-    });
     let arr = [];
     switch (type) {
       case '1':
@@ -75,53 +47,29 @@ const EmployeeRequestTable = (props) => {
     }
     arr = arr.map((item) => item._id);
     dispatch({
-      type: 'timeOff/saveFilter',
+      type: 'timeOff/save',
       payload: {
-        type: arr,
+        currentLeaveTypeTab: String(type),
+        currentFilterTab: '1',
+        currentPayloadTypes: arr,
       },
     });
+
     dispatch({
       type: 'timeOff/savePaging',
       payload: {
         page: 1,
       },
     });
-  };
-
-  const countByStatus = (status) => {
-    const typeTotalCount = {
-      A: 0,
-      B: 0,
-      C: 0,
-      D: 0,
-    };
-    countTotal.forEach((item) => {
-      if (status.includes(item._id)) {
-        item.types.forEach((ele) => {
-          typeTotalCount[`${ele.type}`] += ele.count;
-        });
-      }
-    });
-
     dispatch({
-      type: 'timeOff/save',
-      payload: {
-        typeLeaveCount: typeTotalCount,
-      },
+      type: 'timeOff/saveFilter',
+      payload: {},
     });
   };
 
   useEffect(() => {
     saveCurrentTypeTab('1');
-  }, [JSON.stringify(yourTimeOffTypes)]);
-
-  useEffect(() => {
-    countInProgress();
-  }, []);
-
-  useEffect(() => {
-    countByStatus([IN_PROGRESS, ON_HOLD]);
-  }, [countTotal]);
+  }, [JSON.stringify(yourTimeOffTypes), currentScopeTab]);
 
   const renderTableTitle = {
     left: (
@@ -129,12 +77,6 @@ const EmployeeRequestTable = (props) => {
         <span>Timeoff Requests</span>
       </div>
     ),
-  };
-
-  const addZeroToNumber = (number) => {
-    if (number === 0) return 0;
-    if (number < 10 && number > 0) return `0${number}`.slice(-2);
-    return number;
   };
 
   return (
@@ -149,16 +91,16 @@ const EmployeeRequestTable = (props) => {
           destroyInactiveTabPane
         >
           <>
-            <TabPane tab={`Leave Requests (${addZeroToNumber(typeLeaveCount.A)})`} key="1">
+            <TabPane tab={`Leave Requests (${addZeroToNumber(totalByType.A)})`} key="1">
               <TimeOffRequestTab tab={1} type={1} />
             </TabPane>
-            <TabPane tab={`Special Leave Requests (${addZeroToNumber(typeLeaveCount.C)})`} key="2">
+            <TabPane tab={`Special Leave Requests (${addZeroToNumber(totalByType.C)})`} key="2">
               <TimeOffRequestTab tab={2} type={1} />
             </TabPane>
-            <TabPane tab={`LWP Requests (${addZeroToNumber(typeLeaveCount.B)})`} key="3">
+            <TabPane tab={`LOP Requests (${addZeroToNumber(totalByType.B)})`} key="3">
               <TimeOffRequestTab tab={3} type={1} />
             </TabPane>
-            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(typeLeaveCount.D)})`} key="4">
+            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(totalByType.D)})`} key="4">
               <TimeOffRequestTab tab={4} type={1} />
             </TabPane>
             {eligibleForCompOff && (

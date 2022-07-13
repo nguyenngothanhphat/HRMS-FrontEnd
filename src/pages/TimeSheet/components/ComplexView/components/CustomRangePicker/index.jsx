@@ -18,12 +18,20 @@ const CustomRangePicker = (props) => {
     onNextClick = () => {},
     onChange = () => {},
     disabled = false,
+    disableBtn = false,
   } = props;
 
   // MAIN AREA
   return (
     <div className={styles.CustomRangePicker}>
-      <div className={styles.prevBtn} onClick={onPrevClick}>
+      <div
+        className={styles.prevBtn}
+        onClick={onPrevClick}
+        style={{
+          cursor: disableBtn ? 'default' : 'pointer',
+          pointerEvents: disableBtn ? 'none' : 'auto',
+        }}
+      >
         <img src={PrevIcon} alt="" />
       </div>
       <div className={styles.rangePicker}>
@@ -39,7 +47,14 @@ const CustomRangePicker = (props) => {
           }
         />
       </div>
-      <div className={styles.nextBtn} onClick={onNextClick}>
+      <div
+        className={styles.nextBtn}
+        onClick={onNextClick}
+        style={{
+          cursor: disableBtn ? 'default' : 'pointer',
+          pointerEvents: disableBtn ? 'none' : 'auto',
+        }}
+      >
         <img src={NextIcon} alt="" />
       </div>
     </div>

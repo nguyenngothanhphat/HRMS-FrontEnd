@@ -215,6 +215,13 @@ export async function getAllLeaveRequests(payload) {
   });
 }
 
+export async function getTotalByType(params) {
+  return request('/api/leaverequesttenant/group-type', {
+    method: 'GET',
+    params,
+  });
+}
+
 export async function uploadFile(data) {
   return request('/api/attachments/upload', {
     method: 'POST',

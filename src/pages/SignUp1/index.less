@@ -5,14 +5,13 @@
 @dark-orange: #e69303;
 
 .wrapper {
-  font-family: 'Roboto', sans-serif;
   width: 40%;
   height: auto;
   padding: 20px 30px 80px;
   h2 {
-    font-size: 16px;
-    font-weight: 700;
     color: @black;
+    font-weight: 700;
+    font-size: 16px;
   }
 
   .form {
@@ -26,22 +25,22 @@
   }
 
   label {
+    display: block;
+    margin-bottom: 12px;
+    color: @gray;
     // -webkit-filter: blur(10px);
     // filter: blur(10px);
     font-size: 13px;
-    color: @gray;
-    margin-bottom: 12px;
-    display: block;
   }
 
   input[type='text'] {
     width: 100%;
     height: 42px;
+    padding: 0 16px;
+    color: @black;
+    font-size: 14px;
     border: solid 1px #d6dce4;
     border-radius: 5px;
-    color: @black;
-    padding: 0 16px;
-    font-size: 14px;
     outline: none;
     transition: border-color 0.2s ease-in;
 
@@ -56,17 +55,17 @@
   }
 
   button {
-    text-transform: capitalize;
-    background-color: @orange;
-    outline: none;
-    transition: background-color 0.2s ease-in;
     width: 100%;
     height: 40px;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 25px;
-    border: none;
     margin-top: 20px;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: capitalize;
+    background-color: @orange;
+    border: none;
+    border-radius: 25px;
+    outline: none;
+    transition: background-color 0.2s ease-in;
 
     &:hover,
     &:focus {
@@ -89,15 +88,15 @@
     }
 
     .ant-form-item-explain {
+      margin-top: 10px;
       color: red;
       font-size: 13px;
-      margin-top: 10px;
     }
 
     .ant-checkbox-wrapper {
-      margin-top: 12px;
       display: flex;
       align-items: center;
+      margin-top: 12px;
 
       input {
         cursor: pointer;
@@ -107,9 +106,9 @@
         cursor: pointer;
 
         &:nth-child(2) {
-          font-size: 13px;
           margin-left: 6px;
           color: @gray;
+          font-size: 13px;
         }
       }
     }

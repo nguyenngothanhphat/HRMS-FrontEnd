@@ -1,13 +1,13 @@
 .RenewModal {
   :global {
     .ant-picker {
+      width: 100%;
       height: 42px !important;
-      // border: none !important;
-      background: transparent !important;
       // padding-top: 10px !important;
       padding: 5px 11px !important;
+      // border: none !important;
+      background: transparent !important;
       border-radius: 5px;
-      width: 100%;
     }
     .ant-form-item-label label {
       height: 0;
@@ -21,7 +21,7 @@
       color: #ffffff;
       font-weight: 500;
       font-size: 14px;
-      font-family: Roboto;
+
       letter-spacing: 0.13px;
       // display: none;
       text-shadow: none;
@@ -42,7 +42,7 @@
       color: #ffa100;
       font-weight: 500;
       font-size: 14px;
-      font-family: Roboto;
+
       letter-spacing: 0.13px;
       border: solid 0;
       border-radius: 25px;
@@ -52,9 +52,9 @@
       border-top-left-radius: 8px;
     }
     .ant-modal-content {
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
       border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
     }
     .ant-form-item {
       margin-bottom: 12px;
@@ -64,13 +64,13 @@
     }
     .ant-modal-close-x {
       position: absolute;
-      background-color: #2c6df9;
-      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 54px;
       height: 48px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: #fff;
+      background-color: #2c6df9;
       border-top-right-radius: 8px;
       border-bottom-right-radius: 8px;
       &:active {
@@ -79,26 +79,26 @@
     }
   }
   .btnSubmit {
-    font-size: 14px;
     width: 95px;
+    color: #fff;
     // height: 40px;
     font-weight: 600;
-    border-radius: 25px;
-    color: #fff;
+    font-size: 14px;
     background-color: #ffa100;
     border: none;
+    border-radius: 25px;
   }
   .btnSubmit:disabled {
     color: #fff;
     opacity: 0.5;
   }
   .btnCancel {
-    border: none;
     display: inline-block;
-    color: #ffa100;
-    font-size: 14px;
-    font-weight: 500;
     margin-right: 20px;
+    color: #ffa100;
+    font-weight: 500;
+    font-size: 14px;
+    border: none;
     cursor: pointer;
     &:active {
       opacity: 0.5;
@@ -107,14 +107,13 @@
 
   .header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     &__text {
+      margin: 0;
+      color: #161c29;
       font-weight: 600;
       font-size: 16px;
-      color: #161c29;
-      margin: 0;
     }
   }
 }
-  
