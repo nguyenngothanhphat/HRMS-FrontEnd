@@ -454,7 +454,7 @@ class TeamLeaveTable extends PureComponent {
             </>
           );
         case 3:
-          return <>You have not applied for any LWP requests.</>;
+          return <>You have not applied for any LOP requests.</>;
         case 4:
           return <>You have not applied any request to Work from home or Client’s place.</>;
         case 5:
@@ -483,7 +483,7 @@ class TeamLeaveTable extends PureComponent {
       case 3:
         return (
           <>
-            No LWP requests received. <br />
+            No LOP requests received. <br />
           </>
         );
       case 4:

@@ -155,7 +155,7 @@ const EmployeeRequestTable = (props) => {
             <TabPane tab={`Special Leave Requests (${addZeroToNumber(typeLeaveCount.C)})`} key="2">
               <TimeOffRequestTab tab={2} type={1} />
             </TabPane>
-            <TabPane tab={`LWP Requests (${addZeroToNumber(typeLeaveCount.B)})`} key="3">
+            <TabPane tab={`LOP Requests (${addZeroToNumber(typeLeaveCount.B)})`} key="3">
               <TimeOffRequestTab tab={3} type={1} />
             </TabPane>
             <TabPane tab={`WFH/CP Requests (${addZeroToNumber(typeLeaveCount.D)})`} key="4">
