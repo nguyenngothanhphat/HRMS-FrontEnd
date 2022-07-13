@@ -97,7 +97,9 @@ const References = (props) => {
     title: formatMessage({ id: 'component.noteComponent.title' }),
     data: (
       <Typography.Text>
-        All the fields that are marked mandatory need to be filled. Please provide upto 3 references
+        Please add the required number of professional references on this page. Professional
+        references can be people who you have directly worked with or studied under and are willing
+        to vouch for your qualifications.
       </Typography.Text>
     ),
   };
