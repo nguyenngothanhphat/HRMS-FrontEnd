@@ -82,7 +82,7 @@ const CustomCalendar = (props) => {
           return checkIfSameDay(x.fromDate, value);
         }
         if (x?.listLeave?.length) {
-          return x.listLeave.map((z) => checkIfSameDay(z, value));
+          return checkIfSameDay('', value, x.listLeave);
         }
         return false;
       }),

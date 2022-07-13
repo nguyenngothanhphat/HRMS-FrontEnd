@@ -262,12 +262,10 @@ class RequestInformation extends PureComponent {
                     <span>{formatDurationTime}</span>
                   ) : (
                     listTime.map((y, index) => (
-                      <span>
+                      <>
                         {y}
-                        {!(listTime.length - 1 <= index) && (
-                          <span style={{ margin: '0 3px' }}>|</span>
-                        )}
-                      </span>
+                        {!(listTime.length - 1 <= index) && ' | '}
+                      </>
                     ))
                   )}
                   <span
