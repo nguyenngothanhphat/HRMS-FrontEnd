@@ -1,17 +1,27 @@
-/* eslint-disable camelcase */
-/* eslint-disable react/jsx-props-no-spreading */
 import { Button, Col, Input, Row, Slider, Space, Spin } from 'antd';
 import { toNumber, toString, trim, trimStart, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { roundNumber2, SALARY_STRUCTURE_OPTION } from '@/utils/onboardingSetting';
+import {
+  roundNumber2,
+  SALARY_STRUCTURE_OPTION,
+  ANNUAL_RETENTION_BONUS,
+  ELIGIBLE_VARIABLE_PAY,
+  INSURANCE,
+  JOINING_BONUS,
+  MIDTERM_HIKE,
+  TOTAL_COMPENSATION,
+  TOTAL_COST_COMPANY,
+} from '@/utils/onboardingSetting';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { Page } from '../../../../utils';
 import styles from './index.less';
 import ModalWaitAccept from './ModalWaitAccept/index';
 import SalaryReference from './SalaryReference/index';
+
+const reg = /^\d*(\.\d*)?$/;
 
 const SalaryStructureTemplate = (props) => {
   const {
@@ -55,7 +65,7 @@ const SalaryStructureTemplate = (props) => {
       payload: {
         grade: grade._id,
         location: workLocation?._id,
-        getSetting: !!(settingsTempData.length === 0),
+        getSetting: settingsTempData.length === 0,
       },
     });
 
@@ -161,18 +171,8 @@ const SalaryStructureTemplate = (props) => {
     const { value } = e.target;
     let newValue = value.replace(/,/g, '');
 
-    const reg = /^\d*(\.\d*)?$/;
-
     if (reg.test(newValue) || newValue === '') {
       if (key === 'basic' && toNumber(newValue) > maximum) newValue = maximum;
-      // if (
-      //   (key === 'lunch_allowance' ||
-      //     key === 'petrol_allowance' ||
-      //     key === 'mobile_internet_allowance') &&
-      //   toNumber(newValue) > getValueByKey(salaryTempDataSetting, key)
-      // ) {
-      //   newValue = getValueByKey(salaryTempDataSetting, key);
-      // }
 
       const tempTableData = JSON.parse(JSON.stringify(settingsTempData));
 
@@ -190,78 +190,50 @@ const SalaryStructureTemplate = (props) => {
 
   const calculationForIndia = (e, key) => {
     const { value } = e.target;
-    const reg = /^\d*(\.\d*)?$/;
     const tempTableData = JSON.parse(JSON.stringify(settingsTempData));
     const newValue = value.replace(/,/g, '');
 
-    let total_compensation = 0;
+    const getValue = (name) => {
+      if (key === name) return +newValue;
+      return tempTableData.find((data) => data.key === name)?.value || 0;
+    };
 
     // step 0
-    let variable_pay_percentage = 0;
-    let retention_bonus_amount = 0;
-    let joining_bonus_amount = 0;
-    let midterm_hike_amount = 0;
-    if (key !== 'total_compensation') {
-      total_compensation = tempTableData.find((x) => x.key === 'total_compensation')?.value;
-    } else {
-      total_compensation = newValue * 1;
-    }
+    const totalCompensation = getValue(TOTAL_COMPENSATION);
+    const variablePayPercentage = getValue(ELIGIBLE_VARIABLE_PAY);
+    const retentionBonusAmount = getValue(ANNUAL_RETENTION_BONUS);
+    const joiningBonusAmount = getValue(JOINING_BONUS);
+    const midtermHikeAmount = getValue(MIDTERM_HIKE);
 
-    if (key === 'eligible_variable_pay') {
-      variable_pay_percentage = newValue * 1;
-    } else {
-      variable_pay_percentage = tempTableData.find((x) => x.key === 'eligible_variable_pay')?.value;
-    }
-
-    if (key === 'annual_retention_bonus') {
-      retention_bonus_amount = newValue * 1;
-    } else {
-      retention_bonus_amount = tempTableData.find((x) => x.key === 'annual_retention_bonus')?.value;
-    }
-
-    if (key === 'joining_bonus') {
-      joining_bonus_amount = newValue * 1;
-    } else {
-      joining_bonus_amount = tempTableData.find((x) => x.key === 'joining_bonus')?.value;
-    }
-
-    if (key === 'midterm_hike') {
-      midterm_hike_amount = newValue * 1;
-    } else {
-      midterm_hike_amount = tempTableData.find((x) => x.key === 'midterm_hike')?.value;
-    }
-
-    if (reg.test(total_compensation)) {
+    if (reg.test(totalCompensation)) {
       // step 2
-      let variable_pay_amount = 0;
-      let total_compensation_minus_variable_pay_amount = 0;
-      if (variable_pay_percentage !== 0 && variable_pay_percentage !== '0') {
-        variable_pay_amount = total_compensation * (variable_pay_percentage / 100);
-        total_compensation_minus_variable_pay_amount =
-          total_compensation * (1 - variable_pay_percentage / 100);
+      let variablePayAmount = 0;
+      let totalCompensationMinusVariablePayAmount = 0;
+      if (+variablePayPercentage) {
+        variablePayAmount = totalCompensation * (variablePayPercentage / 100);
+        totalCompensationMinusVariablePayAmount = totalCompensation - variablePayAmount;
       } else {
-        variable_pay_amount = 0;
-        total_compensation_minus_variable_pay_amount = total_compensation;
+        totalCompensationMinusVariablePayAmount = totalCompensation;
       }
 
-      variable_pay_amount = roundNumber2(variable_pay_amount);
-      total_compensation_minus_variable_pay_amount = roundNumber2(
-        total_compensation_minus_variable_pay_amount,
+      variablePayAmount = roundNumber2(variablePayAmount);
+      totalCompensationMinusVariablePayAmount = roundNumber2(
+        totalCompensationMinusVariablePayAmount,
       );
 
       // step 3
       let pf = 0;
-      if ((total_compensation_minus_variable_pay_amount / 12) * 0.65 < 15000) {
-        pf = (total_compensation_minus_variable_pay_amount / 12) * 0.65 * 0.12 * 12;
+      if ((totalCompensationMinusVariablePayAmount / 12) * 0.65 < 15000) {
+        pf = (totalCompensationMinusVariablePayAmount / 12) * 0.65 * 0.12 * 12;
       } else {
         pf = 15000 * 0.12 * 12;
       }
       pf = roundNumber2(pf);
 
-      const total_compensation_minus_variable_pay_minus_pf_amount =
-        total_compensation_minus_variable_pay_amount - pf;
+      const totalCompensationMinusVariablePayMinusPfAmount =
+        totalCompensationMinusVariablePayAmount - pf;
 
-      const final = roundNumber2(total_compensation_minus_variable_pay_minus_pf_amount);
+      const final = roundNumber2(totalCompensationMinusVariablePayMinusPfAmount);
 
       // step 4
       const basic = roundNumber2(final * 0.5);
@@ -270,54 +242,54 @@ const SalaryStructureTemplate = (props) => {
       const hra = roundNumber2(basic / 2);
 
       // step 6
-      const total_other_allowances = roundNumber2(final - (basic + hra));
+      const totalOtherAllowances = roundNumber2(final - (basic + hra));
 
       // step 7
-      const variable_pay = variable_pay_amount;
+      const variablePay = variablePayAmount;
 
       // step 8
       const PF = pf;
 
       // step 9
-      const insurance = 7382;
+      const insurance = getValue(INSURANCE) || 7382;
 
       // step 10
       const gratuity = roundNumber2(basic / 12 / 2);
 
-      const total_cost_company = roundNumber2(
+      const totalCostCompany = roundNumber2(
         basic +
           hra +
-          total_other_allowances +
-          variable_pay +
+          totalOtherAllowances +
+          variablePay +
           PF +
           insurance +
           gratuity +
-          retention_bonus_amount,
+          retentionBonusAmount,
       );
 
       const objValues = {
-        eligible_variable_pay: variable_pay_percentage,
-        annual_retention_bonus: retention_bonus_amount,
-        joining_bonus: joining_bonus_amount,
-        midterm_hike: midterm_hike_amount,
-        variable_pay,
-        retention_bonus: retention_bonus_amount,
+        eligible_variable_pay: variablePayPercentage,
+        annual_retention_bonus: retentionBonusAmount,
+        joining_bonus: joiningBonusAmount,
+        midterm_hike: midtermHikeAmount,
+        variable_pay: variablePay,
+        retention_bonus: retentionBonusAmount,
         PF,
         basic,
         hra,
-        total_other_allowances,
+        total_other_allowances: totalOtherAllowances,
         gratuity,
         insurance,
-        total_cost_company,
-        total_compensation,
+        total_cost_company: totalCostCompany,
+        total_compensation: totalCompensation,
       };
 
       const objKeys = Object.keys(objValues);
       const result = tempTableData.map((x) => {
-        const findIndex = objKeys.findIndex((y) => y === x.key);
+        const objValue = objKeys.find((y) => y === x.key);
         return {
           ...x,
-          value: objValues[objKeys[findIndex]],
+          value: objValues[objValue],
         };
       });
 
@@ -333,8 +305,6 @@ const SalaryStructureTemplate = (props) => {
   const onBlur = (e, key) => {
     const { value } = e.target;
     let newValue = value.replace(/,/g, '');
-
-    const reg = /^\d*(\.\d*)?$/;
 
     if (reg.test(newValue) || newValue === '') {
       if (key === 'basic' && toNumber(newValue) < minimum) newValue = minimum;
@@ -353,7 +323,7 @@ const SalaryStructureTemplate = (props) => {
           else sum += valueSalary;
         }
       });
-      const indexTotal = tempTableData.findIndex((x) => x.key === 'total_compensation');
+      const indexTotal = tempTableData.findIndex((x) => x.key === TOTAL_COMPENSATION);
       tempTableData[indexTotal].value = Math.round(sum);
       dispatch({
         type: 'newCandidateForm/saveSalaryStructure',
@@ -560,7 +530,7 @@ const SalaryStructureTemplate = (props) => {
           <Col span={12} className={styles.salary__left}>
             {settingsTempData.map(
               (item) =>
-                item.key !== 'total_compensation' && (
+                item.key !== TOTAL_COMPENSATION && (
                   <div
                     key={item.key}
                     className={
@@ -588,7 +558,7 @@ const SalaryStructureTemplate = (props) => {
             }
           >
             {settingsTempData.map((item) => {
-              if (item.key !== 'total_compensation') {
+              if (item.key !== TOTAL_COMPENSATION) {
                 if (item.key === 'salary_13')
                   return (
                     <div key={item.key} className={styles.salary__right__text}>
@@ -607,7 +577,7 @@ const SalaryStructureTemplate = (props) => {
           <Col span={12} className={styles.salaryTotal__left}>
             {settingsTempData.map(
               (item) =>
-                item.key === 'total_compensation' && (
+                item.key === TOTAL_COMPENSATION && (
                   <div key={item.key} className={styles.salaryTotal__left__text}>
                     {item.title}
                   </div>
@@ -617,7 +587,7 @@ const SalaryStructureTemplate = (props) => {
           <Col span={12} className={styles.salaryTotal__right}>
             {settingsTempData.map(
               (item) =>
-                item.key === 'total_compensation' && (
+                item.key === TOTAL_COMPENSATION && (
                   <div key={item.key} className={styles.salaryTotal__right__text}>
                     {renderSingle(item.value, item.unit)}
                   </div>
@@ -630,27 +600,27 @@ const SalaryStructureTemplate = (props) => {
   };
 
   const _renderTotalSalaryTable = () => {
-    const annualTotal = settingsTempData.find((x) => x.key === 'total_compensation') || {};
-    const final = settingsTempData.find((x) => x.key === 'total_cost_company') || {};
-    const eligible_variable_pay =
-      settingsTempData.find((x) => x.key === 'eligible_variable_pay') || {};
-    const annual_retention_bonus =
-      settingsTempData.find((x) => x.key === 'annual_retention_bonus') || {};
-    const joining_bonus = settingsTempData.find((x) => x.key === 'joining_bonus') || {};
-    const midterm_hike = settingsTempData.find((x) => x.key === 'midterm_hike') || {};
-    const isJoiningBonus = !isEmpty(joining_bonus) ? joining_bonus.value !== 0 : false;
-    const isMidtermHike = !isEmpty(midterm_hike) ? midterm_hike.value !== 0 : false;
+    const findItem = (key) => settingsTempData.find((value) => value.key === key) || {};
+
+    const annualTotal = findItem(TOTAL_COMPENSATION);
+    const final = findItem(TOTAL_COST_COMPANY);
+    const eligibleVariablePay = findItem(ELIGIBLE_VARIABLE_PAY);
+    const annualRetentionBonus = findItem(ANNUAL_RETENTION_BONUS);
+    const joiningBonus = findItem(JOINING_BONUS);
+    const midtermHike = findItem(MIDTERM_HIKE);
+    const isJoiningBonus = !isEmpty(joiningBonus) ? joiningBonus.value !== 0 : false;
+    const isMidtermHike = !isEmpty(midtermHike) ? midtermHike.value !== 0 : false;
 
     const salaryFields = settingsTempData.filter(
       (x) =>
         ![
-          'total_cost_company',
-          'total_compensation',
-          'eligible_variable_pay',
-          'annual_retention_bonus',
-          'joining_bonus',
-          'midterm_hike',
-        ].includes(x.key),
+          TOTAL_COST_COMPANY,
+          TOTAL_COMPENSATION,
+          ELIGIBLE_VARIABLE_PAY,
+          ANNUAL_RETENTION_BONUS,
+          JOINING_BONUS,
+          MIDTERM_HIKE,
+        ].includes(x.key) && x.value,
     );
 
     return (
@@ -664,10 +634,11 @@ const SalaryStructureTemplate = (props) => {
               <Col span={8}>
                 <div className={styles.salary__right__inputAfter}>
                   <Input
+                    type="number"
                     addonAfter="% of basics"
                     disabled={!isEditingSalary}
-                    defaultValue={convertVariable(eligible_variable_pay.value)}
-                    onChange={(e) => calculationForIndia(e, eligible_variable_pay.key)}
+                    defaultValue={convertVariable(eligibleVariablePay.value)}
+                    onChange={(e) => calculationForIndia(e, eligibleVariablePay.key)}
                   />
                 </div>
               </Col>
@@ -679,10 +650,11 @@ const SalaryStructureTemplate = (props) => {
               <Col span={8}>
                 <div className={styles.inputBefore}>
                   <Input
+                    type="number"
                     addonBefore="INR"
                     disabled={!isEditingSalary}
-                    defaultValue={convertVariable(annual_retention_bonus.value)}
-                    onChange={(e) => calculationForIndia(e, annual_retention_bonus.key)}
+                    defaultValue={convertVariable(annualRetentionBonus.value)}
+                    onChange={(e) => calculationForIndia(e, annualRetentionBonus.key)}
                   />
                 </div>
               </Col>
@@ -694,10 +666,11 @@ const SalaryStructureTemplate = (props) => {
               <Col span={8}>
                 <div className={styles.inputBefore}>
                   <Input
+                    type="number"
                     addonBefore="INR"
                     disabled={!isEditingSalary}
-                    defaultValue={convertVariable(joining_bonus.value)}
-                    onChange={(e) => calculationForIndia(e, joining_bonus.key)}
+                    defaultValue={convertVariable(joiningBonus.value)}
+                    onChange={(e) => calculationForIndia(e, joiningBonus.key)}
                   />
                 </div>
               </Col>
@@ -709,10 +682,11 @@ const SalaryStructureTemplate = (props) => {
               <Col span={8}>
                 <div className={styles.inputBefore}>
                   <Input
+                    type="number"
                     addonBefore="INR"
                     disabled={!isEditingSalary}
-                    defaultValue={convertVariable(midterm_hike.value)}
-                    onChange={(e) => calculationForIndia(e, midterm_hike.key)}
+                    defaultValue={convertVariable(midtermHike.value)}
+                    onChange={(e) => calculationForIndia(e, midtermHike.key)}
                   />
                 </div>
               </Col>
@@ -730,6 +704,7 @@ const SalaryStructureTemplate = (props) => {
                 {isEditingSalary ? (
                   <div className={styles.inputBefore}>
                     <Input
+                      type="number"
                       addonBefore="INR"
                       defaultValue={convertVariable(annualTotal.value)}
                       onChange={(e) => calculationForIndia(e, annualTotal.key)}
@@ -751,9 +726,22 @@ const SalaryStructureTemplate = (props) => {
               </div>
               <div className={styles.rightSide}>
                 {salaryFields.map((x) => (
-                  <span className={styles.itemValue} key={x.key}>
-                    {renderSingle(x.value, x.unit)}
-                  </span>
+                  <>
+                    {isEditingSalary && x.key === INSURANCE ? (
+                      <div className={styles.inputBefore}>
+                        <Input
+                          type="number"
+                          addonBefore="INR"
+                          defaultValue={convertVariable(x.value)}
+                          onChange={(e) => calculationForIndia(e, x.key)}
+                        />
+                      </div>
+                    ) : (
+                      <span className={styles.itemValue} key={x.key}>
+                        {renderSingle(x.value, x.unit)}
+                      </span>
+                    )}
+                  </>
                 ))}
               </div>
             </div>
@@ -774,7 +762,7 @@ const SalaryStructureTemplate = (props) => {
             {isJoiningBonus && (
               <div className={styles.noteField}>
                 1. As a part of this offer the candidate shall be entitled to a Joining Bonus of INR{' '}
-                {convertValue(joining_bonus.value)}. Post Joining 50% of this amount shall be paid
+                {convertValue(joiningBonus.value)}. Post Joining 50% of this amount shall be paid
                 along with the second month&apos;s salary (or the applicable first payroll). And on
                 completion of three months of service the balance 50% shall be paid along with the
                 immediate next payroll.
@@ -783,7 +771,7 @@ const SalaryStructureTemplate = (props) => {
             {isMidtermHike && (
               <div className={styles.noteField}>
                 2. As a part of this offer the candidate shall be entitled to a one time Mid Term
-                Hike of INR {convertValue(midterm_hike.value)}. Upon completion of 6 months duration
+                Hike of INR {convertValue(midtermHike.value)}. Upon completion of 6 months duration
                 of employment with full standing and meeting the Project and Management
                 expectations.
               </div>
