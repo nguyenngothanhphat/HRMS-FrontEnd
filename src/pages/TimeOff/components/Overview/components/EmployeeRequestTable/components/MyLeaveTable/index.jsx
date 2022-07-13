@@ -202,7 +202,7 @@ class MyLeaveTable extends PureComponent {
           </>
         );
       case 3:
-        return <>You have not applied for any LWP requests.</>;
+        return <>You have not applied for any LOP requests.</>;
       case 4:
         return <>You have not applied any request to Work from home or Client’s place.</>;
       case 5:
