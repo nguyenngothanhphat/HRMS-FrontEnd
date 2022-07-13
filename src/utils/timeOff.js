@@ -252,3 +252,5 @@ export const getShortType = (tab) => {
       return '';
   }
 };
+
+export const TIMEOFF_NEW_REQUEST_DAYS = 4;

@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/utils/timeOff';
+import { getShortType, TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/utils/timeOff';
 import FilterBar from '../FilterBar';
 import MyCompoffTable from '../MyCompoffTable';
 import MyLeaveTable from '../MyLeaveTable';
@@ -21,6 +21,7 @@ const TimeOffRequestTab = (props) => {
       compoffRequests = [],
       leaveRequests = [],
       currentPayloadTypes = [],
+      currentLeaveTypeTab = '',
     } = {},
     type = 0,
     tab = 0,
@@ -89,6 +90,19 @@ const TimeOffRequestTab = (props) => {
     setWithdrawnLength(withdrawnLengthTemp);
   };
 
+  const getTotalByType = () => {
+    const payload = {
+      type: getShortType(currentLeaveTypeTab),
+      status: TIMEOFF_STATUS.IN_PROGRESS,
+      isTeam: false,
+    };
+
+    dispatch({
+      type: 'timeOff/getTotalByTypeEffect',
+      payload,
+    });
+  };
+
   const fetchData = () => {
     let status = '';
 
@@ -149,6 +163,8 @@ const TimeOffRequestTab = (props) => {
         countTotal(total);
       }
     });
+
+    getTotalByType();
   };
 
   useEffect(() => {

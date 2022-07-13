@@ -14,7 +14,7 @@ const EmployeeRequestTable = (props) => {
       currentLeaveTypeTab = '',
       yourTimeOffTypes = {},
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
-      typeLeaveCount = {
+      totalByType = {
         A: 0,
         B: 0,
         C: 0,
@@ -91,16 +91,16 @@ const EmployeeRequestTable = (props) => {
           destroyInactiveTabPane
         >
           <>
-            <TabPane tab={`Leave Requests (${addZeroToNumber(typeLeaveCount.A)})`} key="1">
+            <TabPane tab={`Leave Requests (${addZeroToNumber(totalByType.A)})`} key="1">
               <TimeOffRequestTab tab={1} type={1} />
             </TabPane>
-            <TabPane tab={`Special Leave Requests (${addZeroToNumber(typeLeaveCount.C)})`} key="2">
+            <TabPane tab={`Special Leave Requests (${addZeroToNumber(totalByType.C)})`} key="2">
               <TimeOffRequestTab tab={2} type={1} />
             </TabPane>
-            <TabPane tab={`LWP Requests (${addZeroToNumber(typeLeaveCount.B)})`} key="3">
+            <TabPane tab={`LWP Requests (${addZeroToNumber(totalByType.B)})`} key="3">
               <TimeOffRequestTab tab={3} type={1} />
             </TabPane>
-            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(typeLeaveCount.D)})`} key="4">
+            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(totalByType.D)})`} key="4">
               <TimeOffRequestTab tab={4} type={1} />
             </TabPane>
             {eligibleForCompOff && (

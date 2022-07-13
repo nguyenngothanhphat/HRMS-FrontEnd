@@ -8,7 +8,12 @@ import CancelIcon from '@/assets/cancelTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { roundNumber, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
+import {
+  roundNumber,
+  TIMEOFF_DATE_FORMAT,
+  TIMEOFF_NEW_REQUEST_DAYS,
+  TIMEOFF_STATUS,
+} from '@/utils/timeOff';
 import RejectCommentModal from '../RejectCommentModal';
 import styles from './index.less';
 
@@ -16,7 +21,7 @@ const { IN_PROGRESS, REJECTED, ON_HOLD } = TIMEOFF_STATUS;
 
 const COLUMN_WIDTH = {
   TYPE_A: {
-    TICKET_ID: '15%',
+    TICKET_ID: '17%',
     REQUESTEE: '15%',
     TYPE: '17%',
     // LEAVE_DATES: '25%',
@@ -112,7 +117,6 @@ class TeamLeaveTable extends PureComponent {
   };
 
   getColumns = (TYPE) => {
-    const { category } = this.props;
     return [
       {
         title: 'Ticket ID',
@@ -121,18 +125,23 @@ class TeamLeaveTable extends PureComponent {
         fixed: 'left',
         width: COLUMN_WIDTH[TYPE].TICKET_ID,
         render: (_, record) => {
-          const { ticketID = '', _id = '', onDate = '', status = '' } = record;
-          const createdDate = moment(onDate).locale('en').format('YYYY/MM/DD');
-          const nowDate = moment().locale('en').format('YYYY/MM/DD');
+          const { ticketID = '', _id = '', onDate = '', updated = false, status = '' } = record;
+          const checkUpdated = status === IN_PROGRESS && updated;
+          const createdDate = moment(onDate).format('YYYY/MM/DD');
+          const nowDate = moment().format('YYYY/MM/DD');
           const isNewRequest =
             status === IN_PROGRESS &&
-            moment(nowDate).subtract(2, 'days').isSameOrBefore(moment(createdDate));
-
+            moment(nowDate)
+              .subtract(TIMEOFF_NEW_REQUEST_DAYS, 'days')
+              .isSameOrBefore(moment(createdDate));
           return (
-            <Link to={`/time-off/overview/manager-timeoff/view/${_id}`} className={styles.ID}>
-              <span className={styles.text}>{ticketID}</span>
+            <span className={styles.ID}>
+              <Link to={`/time-off/overview/manager-timeoff/view/${_id}`}>
+                <span className={styles.text}>{ticketID}</span>
+              </Link>
+              {checkUpdated && <Tag color="#2C6DF9">Updated</Tag>}
               {isNewRequest && <Tag color="#2C6DF9">New</Tag>}
-            </Link>
+            </span>
           );
         },
       },
@@ -180,16 +189,6 @@ class TeamLeaveTable extends PureComponent {
             </Tooltip>
           );
         },
-        defaultSortOrder: ['ascend'],
-        sorter: {
-          compare: (a, b) =>
-            a.fromDate && b.fromDate
-              ? moment(a.fromDate).isAfter(moment(b.fromDate))
-              : moment(a.leaveDates[0].date)
-                  .format(TIMEOFF_DATE_FORMAT)
-                  .localeCompare(moment(b.leaveDates[0].date).format(TIMEOFF_DATE_FORMAT)),
-        },
-        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: 'Duration',
@@ -542,7 +541,7 @@ class TeamLeaveTable extends PureComponent {
     };
 
     const scroll = {
-      x: selectedTab !== REJECTED ? '50vw' : '58vw',
+      x: selectedTab !== REJECTED ? '50vw' : '64vw',
       y: 'max-content',
     };
 

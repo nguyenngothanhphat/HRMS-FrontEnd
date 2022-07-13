@@ -16,7 +16,7 @@ const ManagerRequestTable = (props) => {
       currentScopeTab = '',
       yourTimeOffTypes = {},
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
-      typeLeaveCount = {
+      totalByType = {
         A: 0,
         B: 0,
         C: 0,
@@ -92,7 +92,7 @@ const ManagerRequestTable = (props) => {
           destroyInactiveTabPane
         >
           <>
-            <TabPane tab={`Leave Requests (${addZeroToNumber(typeLeaveCount.A)})`} key="1">
+            <TabPane tab={`Leave Requests (${addZeroToNumber(totalByType.A)})`} key="1">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
                 tab={1}
@@ -100,7 +100,7 @@ const ManagerRequestTable = (props) => {
                 type={1}
               />
             </TabPane>
-            <TabPane tab={`Special Leave Requests (${addZeroToNumber(typeLeaveCount.C)})`} key="2">
+            <TabPane tab={`Special Leave Requests (${addZeroToNumber(totalByType.C)})`} key="2">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
                 tab={2}
@@ -108,7 +108,7 @@ const ManagerRequestTable = (props) => {
                 type={1}
               />
             </TabPane>
-            <TabPane tab={`LWP Requests (${addZeroToNumber(typeLeaveCount.B)})`} key="3">
+            <TabPane tab={`LWP Requests (${addZeroToNumber(totalByType.B)})`} key="3">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
                 tab={3}
@@ -116,7 +116,7 @@ const ManagerRequestTable = (props) => {
                 type={1}
               />
             </TabPane>
-            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(typeLeaveCount.D)})`} key="4">
+            <TabPane tab={`WFH/CP Requests (${addZeroToNumber(totalByType.D)})`} key="4">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
                 tab={4}

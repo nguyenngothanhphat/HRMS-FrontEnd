@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 import MyLeaveTable from '@/pages/TimeOff/components/Overview/components/EmployeeRequestTable/components/MyLeaveTable';
 import ROLES from '@/utils/roles';
-import { TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/utils/timeOff';
+import { getShortType, TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/utils/timeOff';
 import FilterBar from '../FilterBar';
 import TeamLeaveTable from '../TeamLeaveTable';
 import styles from './index.less';
@@ -25,6 +25,7 @@ const TimeOffRequestTab = (props) => {
       teamLeaveRequests = [],
       allLeaveRequests = [],
       currentPayloadTypes = [],
+      currentLeaveTypeTab = '',
     } = {},
     category = '',
     tab = 0,
@@ -136,6 +137,22 @@ const TimeOffRequestTab = (props) => {
     setDeletedLength(deletedLengthTemp);
   };
 
+  const getTotalByType = () => {
+    const payload = {
+      type: getShortType(currentLeaveTypeTab),
+      status: TIMEOFF_STATUS.IN_PROGRESS,
+    };
+    if (category !== 'MY') {
+      payload.isTeam = category === 'TEAM' ? true : null;
+    } else {
+      payload.isTeam = false;
+    }
+    dispatch({
+      type: 'timeOff/getTotalByTypeEffect',
+      payload,
+    });
+  };
+
   const fetchData = () => {
     let status = '';
     if (selectedTabNumber === '1') {
@@ -180,6 +197,8 @@ const TimeOffRequestTab = (props) => {
         countTotal(total);
       }
     });
+
+    getTotalByType();
   };
 
   useEffect(() => {
