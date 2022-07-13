@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -15,9 +16,11 @@ const TimeOffRequestTab = (props) => {
     timeOff: {
       currentFilterTab,
       filter: { search, fromDate, toDate, type: timeOffTypes = [] },
+      filter = {},
       paging: { page, limit },
       compoffRequests = [],
       leaveRequests = [],
+      currentPayloadTypes = [],
     } = {},
     type = 0,
     tab = 0,
@@ -133,7 +136,7 @@ const TimeOffRequestTab = (props) => {
       type: typeAPI,
       payload: {
         status,
-        type: timeOffTypes,
+        type: timeOffTypes.length === 0 ? currentPayloadTypes : timeOffTypes,
         search,
         fromDate: fromDate ? moment(fromDate).format(TIMEOFF_DATE_FORMAT_API) : null,
         toDate: toDate ? moment(toDate).format(TIMEOFF_DATE_FORMAT_API) : null,
@@ -149,10 +152,10 @@ const TimeOffRequestTab = (props) => {
   };
 
   useEffect(() => {
-    if (timeOffTypes.length > 0) {
+    if (timeOffTypes.length > 0 || (currentPayloadTypes.length > 0 && isEmpty(filter))) {
       fetchData();
     }
-  }, [selectedTabNumber, page, limit, search, fromDate, toDate, JSON.stringify(timeOffTypes)]);
+  }, [selectedTabNumber, page, limit, JSON.stringify(filter), JSON.stringify(currentPayloadTypes)]);
 
   const dataNumber = {
     inProgressLength,

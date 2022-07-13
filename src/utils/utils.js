@@ -172,7 +172,7 @@ export const removeEmptyFields = (obj) => {
 
 export const addZeroToNumber = (number) => {
   if (number < 10 && number > 0) return `0${number}`.slice(-2);
-  return number;
+  return number || 0;
 };
 
 export const getCountryId = (locationObj) => {

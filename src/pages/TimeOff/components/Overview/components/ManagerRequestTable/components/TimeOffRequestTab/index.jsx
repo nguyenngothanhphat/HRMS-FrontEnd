@@ -1,12 +1,11 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import MyCompoffTable from '@/pages/TimeOff/components/Overview/components/EmployeeRequestTable/components/MyCompoffTable';
+import { isEmpty } from 'lodash';
 import MyLeaveTable from '@/pages/TimeOff/components/Overview/components/EmployeeRequestTable/components/MyLeaveTable';
 import ROLES from '@/utils/roles';
 import { TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/utils/timeOff';
 import FilterBar from '../FilterBar';
-import TeamCompoffTable from '../TeamCompoffTable';
 import TeamLeaveTable from '../TeamLeaveTable';
 import styles from './index.less';
 
@@ -21,15 +20,13 @@ const TimeOffRequestTab = (props) => {
       filter: { search, fromDate, toDate, type: timeOffTypes = [] },
       filter = {},
       paging: { page, limit },
-      compoffRequests = [],
       leaveRequests = [],
       currentUserRole = '',
-      teamCompoffRequests = [],
       teamLeaveRequests = [],
       allLeaveRequests = [],
+      currentPayloadTypes = [],
     } = {},
     category = '',
-    type = 0,
     tab = 0,
     user: { permissions = {} },
     dispatch,
@@ -141,67 +138,36 @@ const TimeOffRequestTab = (props) => {
 
   const fetchData = () => {
     let status = '';
-    if (type === 1) {
-      if (selectedTabNumber === '1') {
-        status = [IN_PROGRESS, ON_HOLD];
-      }
-      if (selectedTabNumber === '2') {
-        status = [ACCEPTED];
-      }
-      if (selectedTabNumber === '3') {
-        status = [REJECTED];
-      }
-      if (selectedTabNumber === '4') {
-        status = [DRAFTS];
-      }
-      if (selectedTabNumber === '5') {
-        status = [WITHDRAWN];
-      }
-      if (selectedTabNumber === '6') {
-        status = [DELETED];
-      }
-    } else if (type === 2) {
-      // compoff
-      if (selectedTabNumber === '1') {
-        if (currentUserRole === REGION_HEAD) {
-          status = [IN_PROGRESS_NEXT, IN_PROGRESS];
-        } else status = [IN_PROGRESS];
-      }
-      if (selectedTabNumber === '2') {
-        if (currentUserRole === REGION_HEAD) {
-          status = [ACCEPTED];
-        } else status = [IN_PROGRESS_NEXT, ACCEPTED];
-      }
-      if (selectedTabNumber === '3') {
-        status = [REJECTED];
-      }
-      if (selectedTabNumber === '4') {
-        status = [DRAFTS];
-      }
-      if (selectedTabNumber === '5') {
-        status = [ON_HOLD];
-      }
-      if (selectedTabNumber === '6') {
-        status = [DELETED];
-      }
+    if (selectedTabNumber === '1') {
+      status = [IN_PROGRESS, ON_HOLD];
+    }
+    if (selectedTabNumber === '2') {
+      status = [ACCEPTED];
+    }
+    if (selectedTabNumber === '3') {
+      status = [REJECTED];
+    }
+    if (selectedTabNumber === '4') {
+      status = [DRAFTS];
+    }
+    if (selectedTabNumber === '5') {
+      status = [WITHDRAWN];
+    }
+    if (selectedTabNumber === '6') {
+      status = [DELETED];
     }
 
     let typeAPI = '';
-    if (type === 1) {
-      if (category === 'MY') typeAPI = 'timeOff/fetchLeaveRequestOfEmployee';
-      else if (category === 'ALL') typeAPI = 'timeOff/fetchAllLeaveRequests';
-      else typeAPI = 'timeOff/fetchTeamLeaveRequests';
-    }
-    if (type === 2) {
-      if (category === 'MY') typeAPI = 'timeOff/fetchMyCompoffRequests';
-      else typeAPI = 'timeOff/fetchTeamCompoffRequests';
-    }
+
+    if (category === 'MY') typeAPI = 'timeOff/fetchLeaveRequestOfEmployee';
+    else if (category === 'ALL') typeAPI = 'timeOff/fetchAllLeaveRequests';
+    else typeAPI = 'timeOff/fetchTeamLeaveRequests';
 
     dispatch({
       type: typeAPI,
       payload: {
         status,
-        type: timeOffTypes,
+        type: timeOffTypes.length === 0 ? currentPayloadTypes : timeOffTypes,
         search,
         fromDate: fromDate ? moment(fromDate).format(TIMEOFF_DATE_FORMAT_API) : null,
         toDate: toDate ? moment(toDate).format(TIMEOFF_DATE_FORMAT_API) : null,
@@ -217,10 +183,10 @@ const TimeOffRequestTab = (props) => {
   };
 
   useEffect(() => {
-    if (timeOffTypes.length > 0) {
+    if (timeOffTypes.length > 0 || (currentPayloadTypes.length > 0 && isEmpty(filter))) {
       fetchData();
     }
-  }, [selectedTabNumber, page, limit, JSON.stringify(filter)]);
+  }, [selectedTabNumber, page, limit, JSON.stringify(filter), JSON.stringify(currentPayloadTypes)]);
 
   const onApproveRejectHandle = (obj) => {
     setHandlePackage(obj);
@@ -246,7 +212,7 @@ const TimeOffRequestTab = (props) => {
         handlePackage={handlePackage}
       />
       <div className={styles.tableContainer}>
-        {type === 1 && category === 'ALL' && (
+        {category === 'ALL' && (
           <TeamLeaveTable
             data={allLeaveRequests}
             category={category}
@@ -257,7 +223,7 @@ const TimeOffRequestTab = (props) => {
             isHR={viewHRTimeoff}
           />
         )}
-        {type === 1 && category === 'TEAM' && (
+        {category === 'TEAM' && (
           <TeamLeaveTable
             data={teamLeaveRequests}
             category={category}
@@ -268,22 +234,8 @@ const TimeOffRequestTab = (props) => {
             isHR={viewHRTimeoff}
           />
         )}
-        {type === 1 && category === 'MY' && (
+        {category === 'MY' && (
           <MyLeaveTable data={leaveRequests} selectedTab={selectedTab} tab={tab} />
-        )}
-        {type === 2 && category === 'TEAM' && (
-          <TeamCompoffTable
-            data={teamCompoffRequests}
-            category={category}
-            selectedTab={selectedTab}
-            onRefreshTable={fetchData}
-            onHandle={onApproveRejectHandle}
-            isHR={viewHRTimeoff}
-            tab={tab}
-          />
-        )}
-        {type === 2 && category === 'MY' && (
-          <MyCompoffTable data={compoffRequests} selectedTab={selectedTab} tab={tab} />
         )}
       </div>
     </div>

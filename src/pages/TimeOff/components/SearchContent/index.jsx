@@ -2,6 +2,7 @@ import { Col, DatePicker, Form, Row, Select, Skeleton, Space, Tag } from 'antd';
 import { debounce } from 'lodash';
 import React, { Suspense, useEffect } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
@@ -18,7 +19,12 @@ const TimeOffFilter = (props) => {
     filter = {},
     saveCurrentTypeTab = () => {},
     currentLeaveTypeTab = '',
+    shortType = '',
   } = props;
+
+  const typeList = [...commonLeaves, ...specialLeaves].filter((x) =>
+    shortType ? x.type === shortType : true,
+  );
 
   const onSearchDebounce = debounce((value) => {
     dispatch({
@@ -39,6 +45,16 @@ const TimeOffFilter = (props) => {
   };
 
   // FUNCTIONALITY
+  const disabledFromDate = (current) => {
+    if (!toDate) return false;
+    return current && current >= moment(toDate);
+  };
+
+  const disabledToDate = (current) => {
+    if (!fromDate) return false;
+    return current && current <= moment(fromDate);
+  };
+
   const onFinish = (values) => {
     const filterTemp = removeEmptyFields(values);
 
@@ -53,9 +69,8 @@ const TimeOffFilter = (props) => {
     onFinish(values);
   }, 700);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
 
   useEffect(() => {
@@ -77,6 +92,11 @@ const TimeOffFilter = (props) => {
 
   const onClearFilter = () => {
     saveCurrentTypeTab(currentLeaveTypeTab);
+    // dispatch action
+    dispatch({
+      type: 'timeOff/save',
+      payload: { filter: {} },
+    });
   };
 
   const FilterContent = () => {
@@ -88,6 +108,7 @@ const TimeOffFilter = (props) => {
         initialValues={{ type, fromDate, toDate }}
         onValuesChange={onValuesChange}
         className={styles.FilterContent}
+        onFinish={() => {}}
       >
         <Form.Item label="BY TIMEOFF TYPES" name="type">
           <Select
@@ -102,7 +123,7 @@ const TimeOffFilter = (props) => {
             }
             showArrow
           >
-            {[...commonLeaves, ...specialLeaves].map((x) => {
+            {typeList.map((x) => {
               return (
                 <Select.Option value={x._id} key={x._id}>
                   {x.name}
@@ -115,7 +136,7 @@ const TimeOffFilter = (props) => {
           <Row>
             <Col span={11}>
               <Form.Item name="fromDate">
-                <DatePicker format="MMM DD, YYYY" />
+                <DatePicker format="MMM DD, YYYY" disabledDate={disabledFromDate} allowClear />
               </Form.Item>
             </Col>
             <Col span={2} className={styles.separator}>
@@ -123,7 +144,7 @@ const TimeOffFilter = (props) => {
             </Col>
             <Col span={11}>
               <Form.Item name="toDate">
-                <DatePicker format="MMM DD, YYYY" />
+                <DatePicker format="MMM DD, YYYY" disabledDate={disabledToDate} allowClear />
               </Form.Item>
             </Col>
           </Row>

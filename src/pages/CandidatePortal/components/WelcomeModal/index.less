@@ -1,9 +1,9 @@
-@darkColour: #161C29;
-@blueColour: #2C6DF9;
+@darkColour: #161c29;
+@blueColour: #2c6df9;
 @lightGrayColor: #707177;
 @commonPadding: 15px;
 @contentPadding: 32px;
-@borderColor: #D6DCE0;
+@borderColor: #d6dce0;
 
 .WelcomeModal {
   :global {
@@ -22,8 +22,8 @@
       width: 100%;
       padding: 5px 11px !important;
       background: transparent !important;
-      border-radius: 5px !important;
       border-color: @borderColor;
+      border-radius: 5px !important;
     }
     .ant-form-item-label
       > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
@@ -35,13 +35,13 @@
       font-size: 12px;
     }
     .ant-btn-primary {
-      padding: 0 40px;
       height: 40px;
+      padding: 0 40px;
       object-fit: contain;
       color: #ffffff;
       font-weight: 500;
       font-size: 14px;
-      font-family: Roboto;
+
       letter-spacing: 0.13px;
 
       text-shadow: none;
@@ -62,7 +62,7 @@
       color: #ffa100;
       font-weight: 500;
       font-size: 14px;
-      font-family: Roboto;
+
       letter-spacing: 0.13px;
       border: solid 0;
       border-radius: 25px;
@@ -140,25 +140,25 @@
   .welcomeContent {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     .welcomeText {
+      display: block;
+      margin-bottom: 16px;
+      color: @darkColour;
       font-weight: 500;
       font-size: 18px;
       line-height: 28px;
       letter-spacing: 0.16875px;
-      color: @darkColour;
-      display: block;
       text-align: center;
-      margin-bottom: 16px;
     }
     .describeText {
-      font-size: 13px;
-      line-height: 20px;
-      color: @lightGrayColor;
-      text-align: center;
       display: block;
       margin-bottom: @contentPadding;
+      color: @lightGrayColor;
+      font-size: 13px;
+      line-height: 20px;
+      text-align: center;
     }
   }
 }
