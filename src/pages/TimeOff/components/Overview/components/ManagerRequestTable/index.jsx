@@ -108,11 +108,11 @@ const ManagerRequestTable = (props) => {
                 type={1}
               />
             </TabPane>
-            <TabPane tab={`LWP Requests (${addZeroToNumber(totalByType.B)})`} key="3">
+            <TabPane tab={`LOP Requests (${addZeroToNumber(totalByType.B)})`} key="3">
               <RequestScopeTabs
                 saveCurrentTypeTab={saveCurrentTypeTab}
                 tab={3}
-                tabName="LWP Requests"
+                tabName="LOP Requests"
                 type={1}
               />
             </TabPane>

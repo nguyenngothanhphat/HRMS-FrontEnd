@@ -29,8 +29,8 @@ const Note = {
   title: 'Note',
   data: (
     <Typography.Text>
-      All the documents that are marked as mandatory need to be uploaded and one or more of the
-      documents that are optional can be uploaded.
+      All the documents on the left need to be uploaded. If you don`t have any of these documents,
+      please select the Not Available button and provide a reason.
     </Typography.Text>
   ),
 };
@@ -378,13 +378,13 @@ const EligibilityDocs = (props) => {
             {/* TYPE E */}
             {data[mapType.E]
               ? data[mapType.E].length > 0 && (
-              <PreviousEmployment
-                items={data[mapType.E]}
-                layout={documentLayout.find((x) => x.type === 'E')}
-                onNotAvailableClick={onNotAvailableClick}
-                onViewCommentClick={onViewCommentClick}
-                onViewDocumentClick={onViewDocumentClick}
-              />
+                  <PreviousEmployment
+                    items={data[mapType.E]}
+                    layout={documentLayout.find((x) => x.type === 'E')}
+                    onNotAvailableClick={onNotAvailableClick}
+                    onViewCommentClick={onViewCommentClick}
+                    onViewDocumentClick={onViewDocumentClick}
+                  />
                 )
               : null}
           </div>

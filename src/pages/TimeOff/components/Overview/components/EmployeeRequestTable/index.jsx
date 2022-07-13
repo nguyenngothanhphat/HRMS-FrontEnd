@@ -97,7 +97,7 @@ const EmployeeRequestTable = (props) => {
             <TabPane tab={`Special Leave Requests (${addZeroToNumber(totalByType.C)})`} key="2">
               <TimeOffRequestTab tab={2} type={1} />
             </TabPane>
-            <TabPane tab={`LWP Requests (${addZeroToNumber(totalByType.B)})`} key="3">
+            <TabPane tab={`LOP Requests (${addZeroToNumber(totalByType.B)})`} key="3">
               <TimeOffRequestTab tab={3} type={1} />
             </TabPane>
             <TabPane tab={`WFH/CP Requests (${addZeroToNumber(totalByType.D)})`} key="4">
