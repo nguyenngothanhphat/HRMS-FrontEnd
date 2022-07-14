@@ -1,5 +1,4 @@
 import { history } from 'umi';
-import { LogoutOutlined } from '@ant-design/icons';
 import { fetchCompanyOfUser, query as queryUsers, queryCurrent } from '@/services/user';
 import {
   getCurrentCompany,

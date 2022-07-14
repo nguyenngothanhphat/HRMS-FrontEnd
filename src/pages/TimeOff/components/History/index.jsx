@@ -18,7 +18,7 @@ const History = (props) => {
   const getFlow = () => {
     const array = history.map((item) => {
       const {
-        employee: { generalInfoInfo: { legalName = '', avatar = '' } = {} },
+        employee: { generalInfoInfo: { legalName = '', avatar = '' } = {} } = {},
         status: statusHistory = '',
         updatedAt = '',
       } = item;
@@ -130,22 +130,20 @@ const History = (props) => {
     return people.map((item, index) => {
       const { name = '', avatar = '', statusHistory = '', updatedAt = '' } = item;
       return (
-        <>
-          <Step
-            className={`${
-              people[index + 1]?.statusHistory !== TIMEOFF_HISTORY_STATUS.WAITING
-                ? styles.steps__solid
-                : styles.step__dashed
-            } 
+        <Step
+          className={`${
+            people[index + 1]?.statusHistory !== TIMEOFF_HISTORY_STATUS.WAITING
+              ? styles.steps__solid
+              : styles.step__dashed
+          } 
               ${
                 status === TIMEOFF_STATUS.WITHDRAWN && index > indexWithdraw
                   ? styles.steps__withdraw
                   : ''
               }`}
-            icon={renderIcon(statusHistory)}
-            description={renderImg(name, avatar, updatedAt, statusHistory)}
-          />
-        </>
+          icon={renderIcon(statusHistory)}
+          description={renderImg(name, avatar, updatedAt, statusHistory)}
+        />
       );
     });
   };
