@@ -1,9 +1,16 @@
-import { Button, Col, Row } from 'antd';
+import { Button, Col, Row, Tag } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
 import { isEmpty } from 'lodash';
-import { roundNumber, TIMEOFF_STATUS, TIMEOFF_TYPE, checkNormalTypeTimeoff } from '@/utils/timeOff';
+import {
+  roundNumber,
+  TIMEOFF_STATUS,
+  TIMEOFF_TYPE,
+  checkNormalTypeTimeoff,
+  isUpdatedRequest,
+  isNewRequest,
+} from '@/utils/timeOff';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import Withdraw2Modal from '../Withdraw2Modal';
@@ -203,11 +210,12 @@ class RequestInformation extends PureComponent {
       fromDate = '',
       toDate = '',
       duration: durationProp = '',
-      // onDate = '',
+      onDate = '',
       description = '',
       type: { name = '', type = '' } = {},
       comment = '',
       leaveDates = [],
+      updated = false,
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
@@ -219,12 +227,18 @@ class RequestInformation extends PureComponent {
         this.checkWithdrawValid(fromDate || moment(leaveDates[0]?.date, 'YYYY-MM-DD')));
 
     const duration = roundNumber(durationProp);
+    const isUpdated = isUpdatedRequest(status, updated);
+    const isNew = isNewRequest(status, onDate);
 
     return (
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
           <span className={styles.title}>
-            {loadingFetchLeaveRequestById ? '' : `[Ticket ID: ${ticketID}]: ${subject}`}
+            <span className={styles.ticketID}>
+              {loadingFetchLeaveRequestById ? '' : `[Ticket ID: ${ticketID}]: ${subject}`}
+            </span>
+            {isUpdated && <Tag color="#2C6DF9">Updated</Tag>}
+            {isNew && !isUpdated && <Tag color="#2C6DF9">New</Tag>}
           </span>
           {(status === DRAFTS || status === IN_PROGRESS) && (
             <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
