@@ -1,6 +1,6 @@
 import React from 'react';
 import { history } from 'umi';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 import styles from './index.less';
 
 const CustomEmployeeTag = ({

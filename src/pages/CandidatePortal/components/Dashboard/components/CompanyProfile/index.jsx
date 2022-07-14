@@ -20,10 +20,10 @@ const Card1 = () => {
         <br />
       </p>
       <span className={styles.contentTitle}>
-        Read more about us at-{' '}
+        Read more about us at - {' '}
         <Link
           style={{ fontWeight: 500 }}
-          to={{ pathname: 'https://terralogic.com' }}
+          to={{ pathname: 'https://www.terralogic.com/about-us/' }}
           target="_blank"
         >
           www.terralogic.com

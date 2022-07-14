@@ -9,7 +9,7 @@ import styles from './index.less';
 
 @connect(
   ({
-    conversation: { conversationList = [], listLastMessage = [] } = {},
+    conversation: { conversationList = [], listLastMessage = [], activeConversationUnseen } = {},
     user: { currentUser: { candidate: { _id: candidate = '' } = {} } } = {},
     candidatePortal: { data: { assignTo = {} } } = {},
     candidatePortal = {},
@@ -18,6 +18,7 @@ import styles from './index.less';
   }) => ({
     data,
     conversationList,
+    activeConversationUnseen,
     listLastMessage,
     candidate,
     assignTo,
@@ -167,6 +168,7 @@ class Messages extends PureComponent {
       data: {
         CEOInfo: { generalInfoInfo: { firstName = '', lastName = '' } = {} || {} } = {} || {},
       },
+      activeConversationUnseen = [],
     } = this.props;
     const charCeoName = firstName.charAt(0) + lastName.charAt(0);
     return (
@@ -181,6 +183,7 @@ class Messages extends PureComponent {
               listLastMessage={listLastMessage}
               changeHrAvatar={this.changeHrAvatar}
               charCeoName={charCeoName}
+              activeConversationUnseen={activeConversationUnseen}
             />
           </Col>
           <Col xs={24} lg={16}>

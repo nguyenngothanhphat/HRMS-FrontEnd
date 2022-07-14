@@ -7,6 +7,7 @@ import FilterButton from '@/components/FilterButton';
 import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
 import FilterPopover from '../FilterPopover';
 import styles from './index.less';
+import { exportRawDataToCSV } from '@/utils/utils';
 
 const { Option } = Select;
 
@@ -64,15 +65,7 @@ const HeaderProjectRM = (props) => {
       },
     });
     const getDataExport = getListExport ? getListExport.data : '';
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getDataExport,
-    )}`;
-    downloadLink.download = fileName;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    exportRawDataToCSV(getDataExport, fileName);
   };
 
   const allProject = data.filter((obj) => obj.statusId === undefined || obj.statusId === 0);

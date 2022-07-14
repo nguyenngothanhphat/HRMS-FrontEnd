@@ -6,6 +6,7 @@ import DownloadIcon from '@/assets/timeSheet/download.svg';
 import ProjectView from './components/ProjectView';
 import TeamView from './components/TeamView';
 import styles from './index.less';
+import { exportRawDataToCSV } from '@/utils/utils';
 
 const { TabPane } = Tabs;
 
@@ -48,15 +49,7 @@ const ManagerReport = (props) => {
       payload: payloadExport,
     });
     const getDataExport = getListExport ? getListExport.data : '';
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getDataExport,
-    )}`;
-    downloadLink.download = fileName;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    exportRawDataToCSV(getDataExport, fileName);
   };
 
   const exportTag = () => {

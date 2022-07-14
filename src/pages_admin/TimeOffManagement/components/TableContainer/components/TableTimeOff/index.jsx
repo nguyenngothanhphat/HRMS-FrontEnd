@@ -14,6 +14,15 @@ const TableTimeOff = ({
   limit = 10,
   page = 1,
 }) => {
+  const renderTimeTitle = (title) => {
+    return (
+      <span className={styles.timeTitle}>
+        <span>{title}</span>
+        <span className={styles.smallText}>(mm/dd/yyyy)</span>
+      </span>
+    );
+  };
+
   const columns = [
     {
       title: 'No.',
@@ -67,8 +76,8 @@ const TableTimeOff = ({
       },
     },
     {
-      title: 'Joining Date',
-      align: 'center',
+      title: renderTimeTitle('Joining Date'),
+      align: 'left',
       dataIndex: 'employee',
       render: (employee = {}) => {
         return (
@@ -77,16 +86,16 @@ const TableTimeOff = ({
       },
     },
     {
-      title: 'From Date',
-      align: 'center',
+      title: renderTimeTitle('From Date'),
+      align: 'left',
       dataIndex: 'fromDate',
       render: (fromDate) => {
         return <span>{fromDate ? moment(fromDate).format('MM/DD/YYYY') : ''}</span>;
       },
     },
     {
-      title: 'To Date',
-      align: 'center',
+      title: renderTimeTitle('To Date'),
+      align: 'left',
       dataIndex: 'toDate',
       render: (toDate) => {
         return <span>{toDate ? moment(toDate).format('MM/DD/YYYY') : ''}</span>;

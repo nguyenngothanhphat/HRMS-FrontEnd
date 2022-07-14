@@ -1,6 +1,5 @@
 import { Carousel, Col, Layout, Row } from 'antd';
 import React from 'react';
-import { Link } from 'umi';
 import InstagramIcon from '../assets/login/instagram.svg';
 import LinkedInIcon from '../assets/login/linkedin.svg';
 import LollypopLogo from '../assets/login/lollypop_logo.svg';
@@ -105,9 +104,9 @@ const TerralogicCandidateLoginLayout = ({ children }) => {
                 <div className={styles.icons}>
                   {icons.map((x) => (
                     <div className={styles.icon}>
-                      <Link to={x.link}>
+                      <a href={x.link} target='_blank' rel="noreferrer">
                         <img src={x.icon} alt="" />
-                      </Link>
+                      </a>
                     </div>
                   ))}
                 </div>

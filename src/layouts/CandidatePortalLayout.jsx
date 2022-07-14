@@ -81,6 +81,10 @@ const CandidatePortalLayout = React.memo((props) => {
     setNotification(Number(unseenTotal));
   }, [JSON.stringify(activeConversationUnseen)]);
 
+  useEffect(() => {
+    document.title = 'Terralogic Candidate Portal';
+  }, []);
+
   const saveNewMessage = (message) => {
     dispatch({
       type: 'conversation/saveNewMessage',

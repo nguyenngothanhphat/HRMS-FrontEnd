@@ -16,6 +16,7 @@ import {
   setSelectedDivisions,
   setSelectedLocations,
 } from '@/utils/resourceManagement';
+import { exportRawDataToCSV } from '@/utils/utils';
 
 const baseModuleUrl = '/resource-management';
 const TABS = {
@@ -148,15 +149,7 @@ class Resources extends Component {
       },
     });
     const getDataExport = getListExport ? getListExport.data : '';
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getDataExport,
-    )}`;
-    downloadLink.download = fileName;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    exportRawDataToCSV(getDataExport, fileName);
   };
 
   exportTag = (nameTag, exportTag) => {

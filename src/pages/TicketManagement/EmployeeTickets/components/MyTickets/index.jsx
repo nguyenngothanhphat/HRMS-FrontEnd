@@ -13,14 +13,11 @@ const MyTickets = (props) => {
     data = [],
     loading,
     loadingFilter,
+    totalStatus = [],
     countData = [],
     permissions = [],
     selectedLocations = [],
-    employee: {
-      _id = '',
-      departmentInfo: { _id: idDepart = '' },
-      location: { headQuarterAddress: { country = '' } = {} } = {},
-    } = {},
+    employee: { _id = '', location: { headQuarterAddress: { country = '' } = {} } = {} } = {},
     dispatch,
     role = '',
   } = props;
@@ -61,6 +58,7 @@ const MyTickets = (props) => {
   const initDataTable = () => {
     let payload = {
       status: [getStatus(selectedFilterTab)],
+      employee_assignee: _id,
       permissions,
       page: pageSelected,
       limit: size,
@@ -75,20 +73,6 @@ const MyTickets = (props) => {
     }
     dispatch({
       type: 'ticketManagement/fetchListAllTicket',
-      payload,
-    });
-  };
-
-  const fetchTotalList = () => {
-    const payload = {
-      employeeAssignee: _id,
-      departmentAssign: idDepart,
-      location: selectedLocations,
-      permissions,
-      country,
-    };
-    dispatch({
-      type: 'ticketManagement/fetchToTalList',
       payload,
     });
   };
@@ -127,10 +111,6 @@ const MyTickets = (props) => {
     };
   }, [pageSelected, size, selectedFilterTab, nameSearch, JSON.stringify(selectedLocations)]);
 
-  useEffect(() => {
-    fetchTotalList();
-  }, [nameSearch, JSON.stringify(selectedLocations)]);
-
   return (
     <>
       <div>
@@ -138,7 +118,7 @@ const MyTickets = (props) => {
       </div>
       <div className={styles.containerTickets}>
         <div className={styles.tabTickets}>
-          <Summary setSelectedTab={setSelectedTab} countData={countData} />
+          <Summary setSelectedTab={setSelectedTab} totalStatus={totalStatus} />
           <div className={styles.filterTable}>
             <FilterCount
               applied={applied}
@@ -167,7 +147,6 @@ const MyTickets = (props) => {
           getPageAndSize={getPageAndSize}
           role={role}
           refreshFetchData={initDataTable}
-          refreshFetchTotalList={fetchTotalList}
         />
       </div>
     </>

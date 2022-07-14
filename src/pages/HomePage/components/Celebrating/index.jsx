@@ -1,11 +1,11 @@
-import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import AnniversaryImage from '@/assets/homePage/anniversary.png';
 import BirthdayImage from '@/assets/homePage/birthday.png';
 import BirthdayImage2 from '@/assets/homePage/birthday2.png';
 import BirthdayImage3 from '@/assets/homePage/birthday3.png';
 import BirthdayImage4 from '@/assets/homePage/birthday4.png';
-import CongratulationImage from '@/assets/homePage/congratulation.png';
+import NewJoineeImage from '@/assets/homePage/welcomeNewJoinee.png';
 import { CELEBRATE_TYPE } from '@/utils/homePage';
 import Card from './components/Card';
 import styles from './index.less';
@@ -26,22 +26,17 @@ const Celebrating = (props) => {
     fetchCelebrationList();
   }, []);
 
-  const compare = (a, b) => {
-    if (moment(a) > moment(b)) return 1;
-    if (moment(a) < moment(b)) return -1;
-    return 0;
-  };
-
-  const isPastDate = (date1, date2) => {
-    return moment(date1).isBefore(moment(date2), 'day');
-  };
-
-  const addCurrentYearToExistingDate = (date) => {
-    const currentYear = moment().format('YYYY');
-    return moment(
-      `${currentYear}/${moment.utc(date).format('MM')}/${moment.utc(date).format('DD')}`,
-      'YYYY/MM/DD',
-    );
+  const getAvatarImage = (type, avatarIndex) => {
+    switch (type) {
+      case CELEBRATE_TYPE.BIRTHDAY:
+        return avatars[avatarIndex % avatars.length];
+      case CELEBRATE_TYPE.ANNIVERSARY:
+        return AnniversaryImage;
+      case CELEBRATE_TYPE.NEWJOINEE:
+        return NewJoineeImage;
+      default:
+        return '';
+    }
   };
 
   const formatData = () => {
@@ -56,43 +51,14 @@ const Celebrating = (props) => {
           ...x,
           generalInfoInfo: {
             ...x.generalInfoInfo,
-            avatar:
-              type === CELEBRATE_TYPE.BIRTHDAY
-                ? avatars[avatarIndex % avatars.length]
-                : CongratulationImage,
+            avatar: getAvatarImage(type, avatarIndex),
           },
         };
       }
       return x;
     });
 
-    let birthdayList = tempList.filter((x) => x.type === CELEBRATE_TYPE.BIRTHDAY);
-    const anniversaryList = tempList.filter((x) => x.type === CELEBRATE_TYPE.ANNIVERSARY);
-    const newJoineeList = tempList.filter((x) => x.type === CELEBRATE_TYPE.NEWJOINEE);
-
-    // birthday
-    birthdayList = [
-      ...birthdayList.filter((x) => {
-        return !isPastDate(moment(addCurrentYearToExistingDate(x.generalInfoInfo?.DOB)), moment());
-      }),
-    ];
-
-    birthdayList.sort((a, b) =>
-      compare(
-        moment(addCurrentYearToExistingDate(a.generalInfoInfo.DOB)),
-        moment(addCurrentYearToExistingDate(b.generalInfoInfo.DOB)),
-      ),
-    );
-
-    // anniversary
-    anniversaryList.sort((a, b) =>
-      compare(
-        moment(addCurrentYearToExistingDate(a.joinDate)),
-        moment(addCurrentYearToExistingDate(b.joinDate)),
-      ),
-    );
-
-    setList([...birthdayList, ...anniversaryList, ...newJoineeList]);
+    setList(tempList);
   };
 
   useEffect(() => {

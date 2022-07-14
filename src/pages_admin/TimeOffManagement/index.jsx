@@ -6,6 +6,8 @@ import { PageContainer } from '@/layouts/layout/src';
 import LocationDropdownSelector from './components/LocationDropdownSelector';
 import TableContainer from './components/TableContainer';
 import styles from './index.less';
+import CustomBlueButton from '@/components/CustomBlueButton';
+import DownloadIcon from '@/assets/timeOffManagement/ic_download.svg';
 
 const { TabPane } = Tabs;
 
@@ -16,6 +18,10 @@ const TimeOffManagement = (props) => {
       locationsOfCountries = [],
       selectedLocations: selectedLocationsProp = [],
     } = {},
+    loadingExport = false,
+    loadingGetMissingLeaveDates = false,
+    loadingList = false,
+    loadingFetchLocation = false,
   } = props;
 
   const [selectedLocations, setSelectedLocation] = useState([]);
@@ -28,6 +34,20 @@ const TimeOffManagement = (props) => {
       payload: {
         selectedLocations: arr,
       },
+    });
+  };
+
+  const onExport = () => {
+    dispatch({
+      type: 'timeOffManagement/exportCSVEffect',
+      payload,
+    });
+  };
+
+  const onGetMissingLeaveDates = () => {
+    dispatch({
+      type: 'timeOffManagement/getMissingLeaveDatesEffect',
+      payload,
     });
   };
 
@@ -92,6 +112,42 @@ const TimeOffManagement = (props) => {
           selectedLocations={selectedLocations}
           saveLocationToRedux={saveLocationToRedux}
         />
+        <CustomBlueButton
+          icon={
+            <img
+              src={DownloadIcon}
+              style={{
+                width: 26,
+                height: 26,
+                paddingRight: 8,
+              }}
+              alt=""
+            />
+          }
+          onClick={onGetMissingLeaveDates}
+          loading={loadingGetMissingLeaveDates}
+          disabled={loadingList || loadingFetchLocation}
+        >
+          Missing Leave days
+        </CustomBlueButton>
+        <CustomBlueButton
+          icon={
+            <img
+              src={DownloadIcon}
+              style={{
+                width: 26,
+                height: 26,
+                paddingRight: 8,
+              }}
+              alt=""
+            />
+          }
+          loading={loadingExport}
+          onClick={onExport}
+          disabled={loadingList || loadingFetchLocation}
+        >
+          Download
+        </CustomBlueButton>
       </div>
     );
   };
@@ -109,9 +165,13 @@ const TimeOffManagement = (props) => {
   );
 };
 export default connect(
-  ({ user: { currentUser = {}, permissions = {} } = {}, timeOffManagement }) => ({
+  ({ loading, user: { currentUser = {}, permissions = {} } = {}, timeOffManagement }) => ({
     currentUser,
     permissions,
     timeOffManagement,
+    loadingExport: loading.effects['timeOffManagement/exportCSVEffect'],
+    loadingGetMissingLeaveDates: loading.effects['timeOffManagement/getMissingLeaveDatesEffect'],
+    loadingList: loading.effects['timeOffManagement/getListTimeOffEffect'],
+    loadingFetchLocation: loading.effects['timeOffManagement/getLocationsOfCountriesEffect'],
   }),
 )(TimeOffManagement);

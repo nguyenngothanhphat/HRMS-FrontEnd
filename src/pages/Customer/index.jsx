@@ -7,6 +7,7 @@ import Settings from './components/Settings';
 // import exportToCSV from '@/utils/exportAsExcel';
 import TableContainer from './components/TableContainer';
 import style from './index.less';
+import { exportRawDataToCSV } from '@/utils/utils';
 
 @connect(
   ({ customerManagement: { customerListPayload = {}, customerFilterListPayload = {} } = {} }) => ({
@@ -36,14 +37,7 @@ class Customer extends PureComponent {
       },
     });
     const { data = '' } = getListExport;
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    // downloadLink.href = `data:text/csv;charset=utf-8,${escape(getListExport)}`;
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(universalBOM + data)}`;
-    downloadLink.download = 'customers.csv';
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    exportRawDataToCSV(data, 'customers.csv');
   };
 
   render() {

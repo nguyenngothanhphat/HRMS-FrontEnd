@@ -27,3 +27,10 @@ export async function getTimeOffTypeList(params) {
     params,
   });
 }
+
+export async function getMissingLeaveDates(params) {
+  return request('/api/leaverequesttenant/report-missing-leave-dates', {
+    method: 'GET',
+    params,
+  });
+}
