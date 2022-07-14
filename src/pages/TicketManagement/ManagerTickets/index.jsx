@@ -106,7 +106,7 @@ const ManagerTicket = (props) => {
           {isLocationLoaded ? (
             <>
               <TabPane tab="Overview" key="overview">
-                <WorkInProgress />;
+                <WorkInProgress />
               </TabPane>
               <TabPane tab="All Tickets" key="all-tickets">
                 <AllTicket role={role} permissions={permissions} />
