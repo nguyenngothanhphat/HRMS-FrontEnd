@@ -35,7 +35,7 @@ const RaiseTicketModal = (props) => {
   const formRef = React.createRef();
   const {
     visible = false,
-    title = '',
+    title = 'Raise Ticket',
     onClose = () => {},
     currentUser: {
       employee: {
@@ -47,13 +47,14 @@ const RaiseTicketModal = (props) => {
     loadingFetchSupportTeam = false,
     loadingAddTicket = false,
     supportTeamList = [],
+    isFeedback = false,
   } = props;
   const { listEmployee, loadingUploadAttachment = false } = props;
   const { maxFileSize = 2, dispatch } = props;
 
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
-  const [attachment, setAttachment] = useState('');
+  const support = supportTeamList.find((x) => x.name === 'H.R.M.S Support');
 
   // permission setting
 
@@ -67,6 +68,7 @@ const RaiseTicketModal = (props) => {
   const handleCancel = () => {
     onClose();
   };
+
   useEffect(() => {
     if (visible) {
       const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
@@ -87,11 +89,20 @@ const RaiseTicketModal = (props) => {
     }
   }, [visible]);
 
+  useEffect(() => {
+    if (isFeedback && visible) {
+      form.setFieldsValue({
+        supportTeam: support?._id,
+      });
+      setQueryTypeList(support?.queryType || []);
+    }
+  }, [visible, JSON.stringify(support)]);
+
   const handleReset = () => {
     form.resetFields();
     setUploadedAttachments([]);
-    setAttachment('');
   };
+
   const beforeUpload = (file) => {
     const checkType =
       file.type === 'application/pdf' ||
@@ -123,8 +134,6 @@ const RaiseTicketModal = (props) => {
     });
     if (res.statusCode === 200) {
       const { data = [] } = res;
-      const idUpload = data[0].id;
-      setAttachment(idUpload);
       if (data.length > 0) {
         const uploadedAttachmentsTemp = JSON.parse(JSON.stringify(uploadedAttachments));
         uploadedAttachmentsTemp.push(data[0]);
@@ -186,7 +195,7 @@ const RaiseTicketModal = (props) => {
         employeeRaise: myEmployeeID,
         employeeAssignee: '',
         status: value.status,
-        queryType: value.queryType,
+        queryTypeId: value.queryType,
         subject: value.subject,
         description: value.description,
         priority: value.priority,
@@ -201,7 +210,6 @@ const RaiseTicketModal = (props) => {
         onClose();
         form.resetFields();
         setUploadedAttachments([]);
-        setAttachment('');
         refreshData();
       }
     });
@@ -256,7 +264,7 @@ const RaiseTicketModal = (props) => {
               >
                 <Select showSearch placeholder="Select the query type">
                   {queryTypeList.map((val) => (
-                    <Option value={val}>{val}</Option>
+                    <Option value={val._id}>{val.name}</Option>
                   ))}
                 </Select>
               </Form.Item>

@@ -7,6 +7,7 @@ import SearchTable from '../SearchTable';
 import TableResources from '../TableResources';
 import ResourceStatus from './components/ResourceStatus';
 import styles from './index.less';
+import { exportRawDataToCSV } from '@/utils/utils';
 
 const ResourceList = (props) => {
   const {
@@ -26,7 +27,6 @@ const ResourceList = (props) => {
     currentPayload = {},
   } = props;
 
-  const viewModeAdmin = permissions.viewResourceAdminMode !== -1;
   const modifyResourcePermission = permissions.modifyResource !== -1;
   const adminMode = permissions.viewResourceAdminMode !== -1;
   const countryMode = permissions.viewResourceCountryMode !== -1;
@@ -105,6 +105,12 @@ const ResourceList = (props) => {
     });
   };
 
+  const fetchListSkill = async () => {
+    dispatch({
+      type: 'resourceManagement/fetchListSkill',
+    });
+  };
+
   const getPageAndSize = (page, pageSize) => {
     setPageSelected(page);
     setSize(pageSize);
@@ -164,15 +170,7 @@ const ResourceList = (props) => {
       },
     });
     const getDataExport = getListExport ? getListExport.data : '';
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getDataExport,
-    )}`;
-    downloadLink.download = fileName;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    exportRawDataToCSV(getDataExport, fileName);
   };
 
   useEffect(() => {
@@ -180,6 +178,7 @@ const ResourceList = (props) => {
     fetchStatusList();
     fetchDivisions();
     fetchTitleList();
+    fetchListSkill();
   }, []);
 
   useEffect(() => {

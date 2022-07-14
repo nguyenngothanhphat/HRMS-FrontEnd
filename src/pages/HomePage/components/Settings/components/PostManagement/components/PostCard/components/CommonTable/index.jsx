@@ -13,7 +13,7 @@ const CommonTable = (props) => {
     loading = false,
     page = 1,
     limit = 10,
-    total: totalProp,
+    total: totalProp = 0,
     selectable = false,
     rowKey = '',
     scrollable = false,

@@ -18,24 +18,23 @@ class PopoverInfo extends Component {
       companyLocationList = {},
       propsState: { currentTime, timezoneList } = {},
     } = this.props;
+
     const {
-      generalInfo: {
-        legalName = '',
-        userId = '',
-        workEmail = '',
-        workNumber = '',
-        avatar = '',
-        linkedIn = '',
-      } = {},
-      employee: { employeeId = '' } = {},
-      employeeId: hrId = '',
-      titleInfo: { name: titleName = '' } = {},
-      employeeTypeInfo: { name: typeName } = {},
-      departmentInfo: { name: departmentName = '' } = {},
-      locationInfo: { _id = '' } = {},
+      department: { name: departmentName = '' } = {},
+      location: { locationId: _id = '' } = {},
+      employeeCode: { employeeId = '' },
+      userId = '',
+      avatar = '',
+      workEmail = '',
+      workNumber = '',
+      legalName = '',
+      title = '',
+      typeName = 'Full Time',
+      linkedIn = '',
     } = data;
     const findTimezone =
       _id !== '' ? timezoneList.find((timezone) => timezone.locationId === _id) || {} : [];
+
     let filterLocation = companyLocationList.map((item) => (item._id === _id ? item : null));
     filterLocation = filterLocation.filter((item) => item !== null);
 
@@ -56,10 +55,10 @@ class PopoverInfo extends Component {
           <div className={styles.employeeInfo}>
             <div className={styles.employeeInfo__name}>{legalName}</div>
             <div className={styles.employeeInfo__department}>
-              {titleName}, {departmentName} Dept.
+              {title || 'Senior Project Manager I'}, {departmentName} Dept.
             </div>
             <div className={styles.employeeInfo__emplId}>
-              {employeeId || hrId} | {typeName}
+              {employeeId} | {typeName}
             </div>
           </div>
         </div>
@@ -70,7 +69,7 @@ class PopoverInfo extends Component {
               <div className={styles.contact__title}>Mobile: </div>
             </Col>
             <Col span={17}>
-              <div className={styles.contact__value}>{workNumber}</div>
+              <div className={styles.contact__value}>{workNumber || '-'}</div>
             </Col>
             <Col span={7}>
               <div className={styles.contact__title}>Email id: </div>

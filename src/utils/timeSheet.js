@@ -1,3 +1,4 @@
+import { notification } from 'antd';
 import moment from 'moment';
 
 export const TAB_NAME = {
@@ -7,6 +8,7 @@ export const TAB_NAME = {
   FINANCE_REPORTS: 'finance-reports',
   HR_REPORTS: 'hr-reports',
   SETTINGS: 'settings',
+  MY_REQUESTS: 'my-requests',
 };
 
 export const VIEW_TYPE = {
@@ -56,7 +58,10 @@ export const addTimeForDate = (date, time) => {
 };
 
 export const rangePickerFormat = 'ddd, MMM D, YYYY';
+export const commonDateFormat = 'MM/DD/YYYY';
 export const dateFormat = 'ddd, MMM Do'; // show in first column
+export const dateFormatImport = 'DD-MM-YYYY'; // show in first column
+
 export const hourFormat = 'h:mm a';
 export const minuteStep = 30; // in time picker, only allows minute 0 and 30
 
@@ -152,6 +157,12 @@ export const WORKING_HOURS = {
   END: 24,
 };
 
+export const TIME_DEFAULT = {
+  START_TIME: '8:00 am',
+  END_TIME: '5:00 pm',
+  TIME_WORK_LATE: '4:00 pm',
+};
+
 export const DEFAULT_TOP_HOUR = 16; // HOUR
 
 export const TASKS = [
@@ -194,4 +205,58 @@ export const generateAllWeeks = (fromDate, toDate) => {
     }
   }
   return weeks;
+};
+
+export const checkHoliday = (date, holidays = []) =>
+  holidays.some((holiday) => moment(date).isSame(holiday?.date, 'day'));
+
+export const checkDateBetweenRange = (startDate, endDate, date) => {
+  return moment(date).isBetween(moment(startDate), moment(endDate), 'day', []);
+};
+
+export const checkHolidayInWeek = (startDate, endDate, holidays = []) =>
+  holidays.some((holiday) => checkDateBetweenRange(startDate, endDate, holiday.date));
+
+export const getHolidayNameByDate = (date, holidays = []) => {
+  const currentDate = holidays.find((holiday) => moment(holiday.date).isSame(moment(date)));
+  if (currentDate) return currentDate?.holiday;
+  return '';
+};
+
+export const sortedDate = (days = []) => days.sort((a, b) => moment(a.date).diff(moment(b.date)));
+
+export const holidayFormatDate = (date) => moment(date).locale('en').format('MMM DD');
+
+export const TIMESHEET_ADD_TASK_ALERT = {
+  DEFAULT: {
+    type: 'info',
+    content: 'The same tasks will be updated for the selected date range',
+  },
+  WARNING: {
+    type: 'warning',
+    content: 'You are allowed to select only one date if you have multiple tasks',
+  },
+};
+
+export const pushSuccess = (errorList = [], text, msg) => {
+  if (errorList.length > 0) {
+    let datesErr = '';
+    for (let i = 0; i < errorList.length; i += 1) {
+      datesErr += errorList[i]?.error?.item?.date
+        ? moment(errorList[i]?.error.item.date).format(commonDateFormat)
+        : moment(errorList[i]?.date).format(commonDateFormat);
+      if (i + 1 < errorList.length) datesErr += ', ';
+    }
+
+    notification.warning({
+      message: `Your timesheet tasks were ${text}. Note: other tasks overlapped`,
+      description: datesErr,
+      duration: 500,
+    });
+  }
+
+  if (errorList.length === 0) {
+    return notification.success({ message: msg });
+  }
+  return null;
 };

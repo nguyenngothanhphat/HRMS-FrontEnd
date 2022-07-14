@@ -1,18 +1,14 @@
 import React, { PureComponent } from 'react';
 import { Link } from 'umi';
-import VideoPreview from '@/assets/candidatePortal/videoPreview.svg';
+import YoutubeEmbed from '@/components/YoutubeEmbed';
 import styles from './index.less';
 
 const Card1 = () => {
-  const viewCompanyVideo = () => {
-    const win = window.open('https://www.lollypop.design/about/', '_blank');
-    win.focus();
-  };
-
   return (
     <>
       <div className={styles.videoPreview}>
-        <img src={VideoPreview} alt="video" onClick={viewCompanyVideo} />
+        <YoutubeEmbed embedId="57NZs0YmcAQ" />
+        {/* https://www.youtube.com/watch?v=57NZs0YmcAQ */}
       </div>
       <span className={styles.contentTitle}>Who are we?</span>
       <p className={styles.contentBody}>
@@ -24,10 +20,10 @@ const Card1 = () => {
         <br />
       </p>
       <span className={styles.contentTitle}>
-        Read more about us at-{' '}
+        Read more about us at - {' '}
         <Link
           style={{ fontWeight: 500 }}
-          to={{ pathname: 'https://terralogic.com' }}
+          to={{ pathname: 'https://www.terralogic.com/about-us/' }}
           target="_blank"
         >
           www.terralogic.com

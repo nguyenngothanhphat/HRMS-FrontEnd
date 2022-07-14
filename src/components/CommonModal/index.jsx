@@ -1,28 +1,29 @@
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import CustomPrimaryButton from '../CustomPrimaryButton';
+import CustomSecondaryButton from '../CustomSecondaryButton';
 import styles from './index.less';
 
-const CommonModal = (props) => {
-  const {
-    visible = false,
-    title = 'Modal',
-    onClose = () => {},
-    firstText = 'Submit',
-    secondText = 'Button',
-    cancelText = 'Cancel',
-    content = '',
-    width = 700,
-    loading = false,
-    hasFooter = true,
-    onFinish = () => {},
-    hasHeader = true,
-    withPadding = false,
-    hasCancelButton = true,
-    hasSecondButton = false,
-    onSecondButtonClick = () => {},
-  } = props;
-
+const CommonModal = ({
+  visible = false,
+  title = 'Modal',
+  onClose = () => {},
+  firstText = 'Submit',
+  secondText = 'Button',
+  cancelText = 'Cancel',
+  content = '',
+  width = 700,
+  loading = false,
+  hasFooter = true,
+  onFinish = () => {},
+  hasHeader = true,
+  withPadding = false,
+  hasCancelButton = true,
+  hasSecondButton = false,
+  onSecondButtonClick = () => {},
+  maskClosable = false,
+}) => {
   const renderModalHeader = () => {
     return (
       <div className={styles.header}>
@@ -46,10 +47,6 @@ const CommonModal = (props) => {
     return `${styles.CommonModal} ${styles.noPadding}`;
   };
 
-  const handleFinish = () => {
-    onFinish();
-  };
-
   return (
     <>
       <Modal
@@ -59,34 +56,31 @@ const CommonModal = (props) => {
         width={width}
         footer={
           hasFooter ? (
-            <>
+            <div className={styles.footer}>
               {hasCancelButton && (
-                <Button className={styles.btnCancel} onClick={handleCancel}>
-                  {cancelText}
-                </Button>
+                <CustomSecondaryButton onClick={handleCancel}>{cancelText}</CustomSecondaryButton>
               )}
               {hasSecondButton && (
-                <Button className={styles.btnCancel} onClick={onSecondButtonClick}>
+                <CustomSecondaryButton onClick={onSecondButtonClick}>
                   {secondText}
-                </Button>
+                </CustomSecondaryButton>
               )}
-              <Button
-                className={styles.btnSubmit}
-                type="primary"
+              <CustomPrimaryButton
                 form="myForm"
                 key="submit"
                 htmlType="submit"
                 loading={loading}
-                onClick={handleFinish}
+                onClick={onFinish}
               >
                 {firstText}
-              </Button>
-            </>
+              </CustomPrimaryButton>
+            </div>
           ) : null
         }
         title={hasHeader ? renderModalHeader() : null}
         centered
         visible={visible}
+        maskClosable={maskClosable}
       >
         {renderModalContent()}
       </Modal>

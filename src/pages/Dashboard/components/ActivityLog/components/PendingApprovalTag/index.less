@@ -1,7 +1,8 @@
 @rowPaddingBlock: 16px;
 @tagPadding: 12px;
 @greenColor: #1ab88f;
-@blueColour: #2c6df9;
+@blueColor: #2c6df9;
+@yellowColor: #ffa100;
 .PendingApprovalTag {
   align-items: center;
   padding: @tagPadding 29px @tagPadding @tagPadding;
@@ -36,8 +37,12 @@
       color: #707177;
       font-size: 12px;
       line-height: 18px;
-      .userId {
-        color: @blueColour;
+      .timesheetType {
+        color: @blueColor;
+        font-weight: 500;
+      }
+      .timeoffType {
+        color: @yellowColor;
         font-weight: 500;
       }
     }
@@ -46,14 +51,14 @@
     display: flex;
     align-items: center;
     justify-content: end;
-    img{
+    img {
       cursor: pointer;
     }
     .viewBtn {
       display: flex;
       justify-content: flex-end;
       span {
-        color: @blueColour;
+        color: @blueColor;
         font-weight: 500;
         cursor: pointer;
       }

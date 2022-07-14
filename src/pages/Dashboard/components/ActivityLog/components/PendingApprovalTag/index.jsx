@@ -7,6 +7,7 @@ import RejectCommentModal from './components/RejectCommentModal';
 import ViewIcon from '@/assets/dashboard/open.svg';
 import ApproveIcon from '@/assets/dashboard/approve.svg';
 import CancelIcon from '@/assets/dashboard/cancel.svg';
+import { TYPE_TICKET_APPROVAL } from '@/utils/dashboard';
 import styles from './index.less';
 
 const PendingApprovalTag = (props) => {
@@ -14,9 +15,11 @@ const PendingApprovalTag = (props) => {
     item: {
       createdAt: date = '',
       employee: { generalInfo: { legalName = '', userId = '' } = {} || {} } = {} || {},
+      employeeInfo: { legalName: nameTimeSheet = '', userId: userTimeSheet = '' } = {} || {},
       type: { typeName = '' } = {} || {},
       typeTicket = '',
       ticketID = '',
+      ticketId = '',
       _id = '',
     } = {},
     item,
@@ -26,35 +29,73 @@ const PendingApprovalTag = (props) => {
   } = props;
   const [openModal, setOpenModal] = useState(false);
   const [commentModalVisible, setCommentModalVisible] = useState(false);
-
-  const onApproveClick = async (idProp) => {
-    const res = await dispatch({
-      type: 'dashboard/approveRequest',
-      payload: {
-        typeTicket,
-        _id: idProp,
-      },
-    });
-    const { statusCode = 0 } = res;
-    if (statusCode === 200) {
-      refreshData();
+  const [viewedDetail, setViewedDetail] = useState(false);
+  const onApproveClick = async (itemProp) => {
+    let response = {};
+    if (typeTicket === TYPE_TICKET_APPROVAL.LEAVE_REQUEST) {
+      response = await dispatch({
+        type: 'dashboard/approveRequest',
+        payload: {
+          typeTicket,
+          _id: itemProp._id,
+        },
+        statusTimeoff: 'approval',
+      });
+      const { statusCode = '' } = response;
+      if (statusCode === 200) {
+        refreshData();
+      }
+    } else {
+      response = await dispatch({
+        type: 'dashboard/approveTimeSheetRequest',
+        payload: {
+          status: 'APPROVED',
+          ticketId: itemProp.ticketId,
+        },
+      });
+      const { code = '' } = response;
+      if (code === 200) {
+        refreshData();
+      }
     }
   };
 
   const onReject = async (comment) => {
-    const res = await dispatch({
-      type: 'dashboard/rejectRequest',
-      payload: {
-        typeTicket,
-        _id,
-        comment,
-      },
-    });
-    const { statusCode = 0 } = res;
-    if (statusCode === 200) {
-      setCommentModalVisible(false);
-      refreshData();
+    let response = {};
+    if (typeTicket === TYPE_TICKET_APPROVAL.LEAVE_REQUEST) {
+      response = await dispatch({
+        type: 'dashboard/rejectRequest',
+        payload: {
+          typeTicket,
+          _id,
+          comment,
+        },
+      });
+      const { statusCode = '' } = response;
+      if (statusCode === 200) {
+        refreshData();
+        setCommentModalVisible(false);
+      }
+    } else {
+      response = await dispatch({
+        type: 'dashboard/rejectTimeSheetRequest',
+        payload: {
+          status: 'REJECTED',
+          ticketId,
+          comment,
+        },
+      });
+      const { code = '' } = response;
+      if (code === 200) {
+        refreshData();
+        setCommentModalVisible(false);
+      }
     }
+  };
+
+  const handleViewDetail = () => {
+    setOpenModal(true);
+    setViewedDetail(true);
   };
 
   // RENDER UI
@@ -72,21 +113,28 @@ const PendingApprovalTag = (props) => {
                   <span>{monthTemp}</span>
                 </div>
                 <div className={styles.content}>
-                  New {typeName && typeTicket === 'leaveRequest' ? 'Timeoff' : 'Compoff'} request
-                  from{' '}
-                  <span className={styles.userId}>
-                    {legalName} ({userId})
+                  New{' '}
+                  {typeTicket === TYPE_TICKET_APPROVAL.LEAVE_REQUEST ? (
+                    <span className={styles.timeoffType}>Timeoff</span>
+                  ) : (
+                    <span className={styles.timesheetType}>Timesheet</span>
+                  )}{' '}
+                  request from{' '}
+                  <span>
+                    {typeTicket === TYPE_TICKET_APPROVAL.LEAVE_REQUEST
+                      ? `${legalName}(${userId})`
+                      : `${nameTimeSheet}(${userTimeSheet})`}
                   </span>{' '}
                   has been received.
                 </div>
               </Col>
               <Col span={4} className={styles.rightPart}>
-                <div className={styles.viewBtn} onClick={() => setOpenModal(true)}>
+                <div className={styles.viewBtn} onClick={handleViewDetail}>
                   <Tooltip title="View">
                     <img src={ViewIcon} alt="View Icon" />
                   </Tooltip>
                 </div>
-                <div className={styles.viewBtn} onClick={() => onApproveClick(_id)}>
+                <div className={styles.viewBtn} onClick={() => onApproveClick(item)}>
                   <Tooltip title="Approve">
                     <img src={ApproveIcon} alt="Approve Icon" />
                   </Tooltip>
@@ -100,7 +148,14 @@ const PendingApprovalTag = (props) => {
             </Row>
           </div>
         </Col>
-        <DetailTicket openModal={openModal} ticket={item} onCancel={() => setOpenModal(false)} />
+        <DetailTicket
+          openModal={openModal}
+          viewedDetail={viewedDetail}
+          ticket={item}
+          onCancel={() => setOpenModal(false)}
+          setViewedDetail={setViewedDetail}
+          refreshData={refreshData}
+        />
         <RejectCommentModal
           visible={commentModalVisible}
           onClose={() => setCommentModalVisible(false)}

@@ -61,3 +61,40 @@
     border-radius: 15px;
   }
 }
+.dropdownPopover {
+  width: 120px;
+  :global {
+    .ant-popover-inner {
+      padding: 0;
+      border: 1px solid #eaecef;
+      border-radius: 8px;
+    }
+    .ant-popover-inner-content {
+      padding: 0 !important;
+    }
+  }
+  .containerDropdown {
+    padding: 8px;
+
+    .btnActionView,
+    .btnActionEdit,
+    .btnActionDelete,
+    .btnActionAssign {
+      padding: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      img {
+        padding-right: 8px;
+      }
+      span {
+        color: #464646;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 14px;
+      }
+      &:hover {
+        background: #f5f5f5;
+      }
+    }
+  }
+}

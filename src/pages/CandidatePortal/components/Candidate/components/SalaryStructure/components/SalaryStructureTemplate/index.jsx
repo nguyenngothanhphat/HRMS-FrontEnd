@@ -1,6 +1,6 @@
 import { Button, Col, Row } from 'antd';
 // import AnswerQuestion from '@/components/Question/AnswerQuestion';
-import { trimStart, toString, trim } from 'lodash';
+import { trimStart, toString, trim, isEmpty } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
@@ -49,14 +49,16 @@ class SalaryStructureTemplate extends PureComponent {
 
   componentDidMount = () => {
     const { dispatch, data: { grade = {}, workLocation = {} } = {} } = this.props;
-    dispatch({
-      type: 'candidatePortal/fetchSalaryStructureByGrade',
-      payload: {
-        grade: grade?._id,
-        location: workLocation?._id,
-        getSetting: false,
-      },
-    });
+    if (workLocation._id && grade._id) {
+      dispatch({
+        type: 'candidatePortal/fetchSalaryStructureByGrade',
+        payload: {
+          grade: grade._id,
+          location: workLocation._id,
+          getSetting: false,
+        },
+      });
+    }
   };
 
   onClickReNegotiate = () => {
@@ -216,10 +218,32 @@ class SalaryStructureTemplate extends PureComponent {
     return '';
   };
 
+  convertValue = (value) => {
+    const str = toString(value);
+    const list = str.split('.');
+
+    let num = list[0] !== '' && list[0] !== '0' ? trimStart(list[0], '0') : '0';
+    let result = '';
+    while (num.length > 3) {
+      result = `,${num.slice(-3)}${result}`;
+      num = num.slice(0, num.length - 3);
+    }
+    if (num) {
+      result = num + result;
+    }
+    list[0] = result;
+    return list.join('.');
+  };
+
   render() {
     const { settings, loadingSalary, salaryStructureSetting = {} } = this.props;
     const { notifyModalVisible, actionType } = this.state;
 
+    const data = settings.filter((x) => x.key !== 'midterm_hike' && x.key !== 'joining_bonus');
+    const joiningBonus = settings.find((x) => x.key === 'joining_bonus') || {};
+    const midtermHike = settings.find((x) => x.key === 'midterm_hike') || {};
+    const isJoiningBonus = !isEmpty(joiningBonus) ? joiningBonus.value !== 0 : false;
+    const isMidtermHike = !isEmpty(midtermHike) ? midtermHike.value !== 0 : false;
     const { option = '' } = salaryStructureSetting || {};
 
     const isTotalCompensation = option === SALARY_STRUCTURE_OPTION.TOTAL_COMPENSATION;
@@ -239,7 +263,7 @@ class SalaryStructureTemplate extends PureComponent {
             {isTotalCompensation && (
               <Row className={styles.salaryTop}>
                 <Col span={12} className={styles.salaryTop__left}>
-                  {settings.map(
+                  {data.map(
                     (item) =>
                       item.key === 'total_compensation' && (
                         <div key={item.key} className={styles.salaryTotal__left__text}>
@@ -249,20 +273,21 @@ class SalaryStructureTemplate extends PureComponent {
                   )}
                 </Col>
                 <Col span={12} className={styles.salaryTop__right}>
-                  {settings.map(
-                    (item) =>
+                  {data.map((item) => {
+                    return (
                       item.key === 'total_compensation' && (
                         <div key={item.key} className={styles.salaryTotal__right__text}>
                           {this.renderSingle(item.value, item.unit)}
                         </div>
-                      ),
-                  )}
+                      )
+                    );
+                  })}
                 </Col>
               </Row>
             )}
             <Row className={styles.salary}>
               <Col span={12} className={styles.salary__left}>
-                {settings.map(
+                {data.map(
                   (item) =>
                     ![
                       'total_compensation',
@@ -275,7 +300,7 @@ class SalaryStructureTemplate extends PureComponent {
                 )}
               </Col>
               <Col span={12} className={styles.salary__right}>
-                {settings.map((item) => {
+                {data.map((item) => {
                   if (
                     ![
                       'total_compensation',
@@ -298,7 +323,7 @@ class SalaryStructureTemplate extends PureComponent {
             </Row>
             <Row className={styles.salaryTotal}>
               <Col span={12} className={styles.salaryTotal__left}>
-                {settings.map(
+                {data.map(
                   (item) =>
                     [isTotalCompensation ? 'total_cost_company' : 'total_compensation'].includes(
                       item.key,
@@ -310,7 +335,7 @@ class SalaryStructureTemplate extends PureComponent {
                 )}
               </Col>
               <Col span={12} className={styles.salaryTotal__right}>
-                {settings.map(
+                {data.map(
                   (item) =>
                     [isTotalCompensation ? 'total_cost_company' : 'total_compensation'].includes(
                       item.key,
@@ -324,8 +349,30 @@ class SalaryStructureTemplate extends PureComponent {
             </Row>
           </div>
         )}
-        {this._renderBottomBar()}
 
+        {(isJoiningBonus || isMidtermHike) && (
+          <div className={styles.containerNote}>
+            Note-
+            {isJoiningBonus && (
+              <div className={styles.noteField}>
+                1. As a part of this offer the candidate shall be entitled to a Joining Bonus of INR{' '}
+                {this.convertValue(joiningBonus.value)}. Post Joining 50% of this amount shall be
+                paid along with the second month's salary (or the applicable first payroll). And on
+                completion of three months of service the balance 50% shall be paid along with the
+                immediate next payroll.
+              </div>
+            )}
+            {isMidtermHike && (
+              <div className={styles.noteField}>
+                2. As a part of this offer the candidate shall be entitled to a one time Mid Term
+                Hike of INR {this.convertValue(midtermHike.value)}. Upon completion of 6 months
+                duration of employment with full standing and meeting the Project and Management
+                expectations.
+              </div>
+            )}
+          </div>
+        )}
+        {this._renderBottomBar()}
         <NotifyModal
           visible={notifyModalVisible}
           onClose={() => this.handleNotifyModalVisible(false)}

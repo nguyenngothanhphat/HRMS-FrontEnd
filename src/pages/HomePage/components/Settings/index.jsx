@@ -4,11 +4,11 @@ import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import LayoutHomePageSettings from '@/components/LayoutHomePageSettings';
 import PostManagement from './components/PostManagement';
+import QuickLinkManagement from './components/QuickLinkManagement';
 import styles from './index.less';
 
 const Settings = (props) => {
   const { match: { params: { reId = '', tabName = '' } = {} } = {} } = props;
-
   const listMenu = [
     {
       id: 1,
@@ -16,8 +16,13 @@ const Settings = (props) => {
       component: <PostManagement />,
       link: 'post-management',
     },
+    {
+      id: 2,
+      name: 'Quick Link Management',
+      component: <QuickLinkManagement />,
+      link: 'quick-link-management',
+    },
   ];
-
   return (
     <PageContainer>
       <div className={styles.Settings}>

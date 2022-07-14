@@ -64,10 +64,19 @@ export function setCurrentCompany(companyId) {
   reloadAuthorized();
 }
 
+export function setCompanyOfUser(list) {
+  localStorage.setItem('companyOfUser', JSON.stringify(list));
+}
+
 export function getCurrentCompany() {
   const currentCompanyId = localStorage.getItem('currentCompanyId');
   if (currentCompanyId === 'undefined') return null;
   return currentCompanyId;
+}
+
+export function getCompanyOfUser() {
+  const companyOfUser = localStorage.getItem('companyOfUser');
+  return JSON.parse(companyOfUser);
 }
 
 export function setCurrentLocation(locationId) {
@@ -106,20 +115,17 @@ export function setIsSwitchingRole(switchingRole) {
 
 export function getIsSwitchingRole() {
   const isSwitch = localStorage.getItem('isSwitchingRole');
-  if (isSwitch === 'true') return true;
-  return false;
+  return isSwitch === 'true';
 }
 
 export function getSwitchRoleAbility() {
   const isSwitch = localStorage.getItem('switchRoleAbility');
-  if (isSwitch === 'true') return true;
-  return false;
+  return isSwitch === 'true';
 }
 
 export function initViewOffboarding() {
   const view = localStorage.getItem('initViewOffboarding');
-  if (view === 'true') return true;
-  return false;
+  return view === 'true';
 }
 
 export function setIsSigninGoogle(value) {
@@ -128,8 +134,7 @@ export function setIsSigninGoogle(value) {
 }
 export function getIsSigninGoogle() {
   const isSigninGoogle = localStorage.getItem('isSigninGoogle');
-  if (isSigninGoogle === 'true') return true;
-  return false;
+  return isSigninGoogle === 'true';
 }
 
 // is first change password
@@ -138,7 +143,24 @@ export function setFirstChangePassword(value) {
   // reloadAuthorized();
 }
 export function getFirstChangePassword() {
-  const isSigninGoogle = localStorage.getItem('firstChangePassword');
-  if (isSigninGoogle === 'true') return true;
-  return false;
+  const firstChangePassword = localStorage.getItem('firstChangePassword');
+  return firstChangePassword === 'true';
+}
+
+// is first login
+export function setIsFirstLogin(value) {
+  localStorage.setItem('isFirstLogin', value);
+  // reloadAuthorized();
+}
+export function getIsFirstLogin() {
+  const isFirstLogin = localStorage.getItem('isFirstLogin');
+  return isFirstLogin === 'true';
+}
+
+export function setCountry(country) {
+  localStorage.setItem('country', country);
+}
+
+export function getCountry() {
+  return JSON.parse(localStorage.getItem('country'));
 }

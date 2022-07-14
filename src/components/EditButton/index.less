@@ -1,0 +1,32 @@
+.EditButton {
+  :global {
+    .ant-btn {
+      height: 42px;
+      padding-right: 25px;
+      padding-left: 25px;
+      background-color: transparent;
+      border: none;
+      border-radius: 25px;
+      box-shadow: none;
+      opacity: 1;
+      span {
+        color: #2c6df9;
+        font-weight: 500;
+        font-size: 14px;
+      }
+      img {
+        margin-top: -2px;
+        padding-right: 10px;
+      }
+      &:hover {
+        background-color: transparent;
+        opacity: 0.8;
+      }
+      &:disabled {
+        background-color: transparent;
+        cursor: default;
+        opacity: 0.5;
+      }
+    }
+  }
+}

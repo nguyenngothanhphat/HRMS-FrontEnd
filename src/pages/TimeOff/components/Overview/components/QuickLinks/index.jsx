@@ -1,33 +1,15 @@
 import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
+import { connect } from 'umi';
+import { flattenDeep } from 'lodash';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
+import { TAB_IDS_QUICK_LINK } from '@/utils/homePage';
+import EmptyComponent from '@/components/Empty';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 
-const mockData = [
-  {
-    id: 1,
-    link: 'https://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
-    text: 'Casual Leave Policy',
-  },
-  {
-    id: 2,
-    link: 'https://api-stghrms.paxanimi.ai/api/attachments/60c6fe575c94a70561aaca35/ModelMaternityPolicy.pdf',
-    text: 'Maternity Leave Policy',
-  },
-  {
-    id: 3,
-    link: 'https://api-stghrms.paxanimi.ai/api/attachments/60c6ff445c94a70561aaca44/sampleBereavementLeavePolicy.pdf',
-    text: 'Bereavement Leave Policy',
-  },
-  {
-    id: 4,
-    link: 'https://api-stghrms.paxanimi.ai/api/attachments/60c6ff9d5c94a70561aaca47/LWOP%2520Guidelines.pdf',
-    text: 'Leave without Pay Policy',
-  },
-];
-export default class QuickLinks extends PureComponent {
+class QuickLinks extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,15 +31,29 @@ export default class QuickLinks extends PureComponent {
     });
   };
 
+  componentDidMount = () => {
+    const { dispatch, location: { _id: locationId = '' } = {} } = this.props;
+    dispatch({
+      type: 'homePage/fetchQuickLinkTimeOffEffect',
+      payload: {
+        type: TAB_IDS_QUICK_LINK.TIMEOFF.toLowerCase(),
+        location: [locationId],
+      },
+    });
+  };
+
   render() {
     const { viewDocumentModal, link } = this.state;
+    const { quickLinkListTimeOff } = this.props;
+    const quickLinkList = flattenDeep(quickLinkListTimeOff.map((x) => x.attachmentInfo));
     return (
       <div className={styles.QuickLinks}>
         <Tabs defaultActiveKey="1">
           <TabPane tab="Quick Links" key="1">
-            {mockData.map((row) => (
-              <span key={row.id} onClick={() => this.onLinkClick(row.link)}>
-                {row.text}
+            {quickLinkList.length <= 0 && <EmptyComponent />}
+            {quickLinkList.map((row) => (
+              <span key={row.id} onClick={() => this.onLinkClick(row.url)}>
+                {row.name.slice(0, -4)}
               </span>
             ))}
           </TabPane>
@@ -71,3 +67,13 @@ export default class QuickLinks extends PureComponent {
     );
   }
 }
+
+export default connect(
+  ({
+    homePage: { quickLinkListTimeOff = [] } = {},
+    user: { currentUser: { location = {} } = {} } = {},
+  }) => ({
+    quickLinkListTimeOff,
+    location,
+  }),
+)(QuickLinks);

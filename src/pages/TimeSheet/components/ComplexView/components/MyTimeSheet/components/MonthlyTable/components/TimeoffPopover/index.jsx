@@ -4,7 +4,12 @@ import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
 import CloseX from '@/assets/dashboard/closeX.svg';
 
-import { convertMsToTime } from '@/utils/timeSheet';
+import {
+  checkHolidayInWeek,
+  convertMsToTime,
+  holidayFormatDate,
+  sortedDate,
+} from '@/utils/timeSheet';
 import styles from './index.less';
 import { TIMEOFF_PERIOD } from '@/utils/timeOff';
 
@@ -15,11 +20,10 @@ const TimeoffPopover = (props) => {
     startDate = '',
     endDate = '',
     placement = 'top',
-    timeSheet: { employeeSchedule: { totalHour = 0 } = {} } = {},
+    timeSheet: { employeeSchedule: { totalHour = 0 } = {}, holidays = [] } = {},
   } = props;
   const [showPopover, setShowPopover] = useState(false);
   const [showingTimeOff, setShowingTimeOff] = useState([]);
-
 
   const getTimeOffTotalHours = (item) => {
     const { startTime = '', endTime = '', timeOfDay = '' } = item;
@@ -34,9 +38,26 @@ const TimeoffPopover = (props) => {
     return moment.duration(moment(endTime, 'HH:mm').diff(moment(startTime, 'HH:mm'))).asHours();
   };
 
+  const isHoliday = checkHolidayInWeek(startDate, endDate, holidays);
+
   useEffect(() => {
-    setShowingTimeOff(timeoff);
-  }, [JSON.stringify(timeoff)]);
+    if (isHoliday) {
+      const newTimeoff = [...timeoff];
+      holidays.map((holiday) => {
+        if (checkHolidayInWeek(startDate, endDate, [holiday]))
+          newTimeoff.push({
+            date: holiday?.date,
+            isHoliday: true,
+            holiday: holiday?.holiday,
+          });
+        return null;
+      });
+
+      setShowingTimeOff(newTimeoff);
+    } else {
+      setShowingTimeOff(timeoff);
+    }
+  }, [isHoliday, JSON.stringify(timeoff)]);
 
   const renderTaskTable = () => {
     return (
@@ -48,7 +69,7 @@ const TimeoffPopover = (props) => {
           </Col>
         </Row>
         <div className={styles.taskTable__body}>
-          {timeoff.length === 0 && (
+          {showingTimeOff.length === 0 && (
             <Row className={styles.eachRow} justify="space-between" align="middle">
               <Col span={24} className={styles.taskName}>
                 <span>No Timeoff</span>
@@ -56,21 +77,31 @@ const TimeoffPopover = (props) => {
             </Row>
           )}
 
-          {timeoff.length !== 0 &&
-            showingTimeOff.map((timeoffProp) => {
+          {showingTimeOff.length !== 0 &&
+            sortedDate(showingTimeOff).map((timeoffProp) => {
               return (
-                <Row className={styles.eachRow} justify="space-between" align="middle">
-                  <Col span={18} className={styles.taskName}>
-                    <span>
-                      Timeoff (
-                      <Link to={`/time-off/overview/personal-timeoff/view/${timeoffProp.leaveId}`}>
-                        {timeoffProp.id}
-                      </Link>
-                      )
-                    </span>
+                <Row key={timeoffProp?.date} className={styles.eachRow} justify="space-between" align="middle">
+                  <Col span={16} className={styles.taskName}>
+                    {timeoffProp?.isHoliday ? (
+                      <span> Timeoff - {holidayFormatDate(timeoffProp?.date)} </span>
+                    ) : (
+                      <span>
+                        Timeoff - {holidayFormatDate(timeoffProp?.date)} (
+                        <Link
+                          to={`/time-off/overview/personal-timeoff/view/${timeoffProp.leaveId}`}
+                        >
+                          {timeoffProp.id}
+                        </Link>
+                        )
+                      </span>
+                    )}
                   </Col>
-                  <Col span={6} className={styles.right}>
-                    {convertMsToTime(getTimeOffTotalHours(timeoffProp) * 3600000)}
+                  <Col span={8} className={styles.right}>
+                    {timeoffProp?.isHoliday ? (
+                      <div className={styles.holidayTxt}>{timeoffProp?.holiday}</div>
+                    ) : (
+                      convertMsToTime(getTimeOffTotalHours(timeoffProp) * 3600000)
+                    )}
                   </Col>
                 </Row>
               );

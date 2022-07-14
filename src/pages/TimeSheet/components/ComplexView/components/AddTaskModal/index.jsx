@@ -10,36 +10,55 @@ import {
   notification,
   Row,
   Select,
-  // TimePicker,
 } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import AddIcon from '@/assets/timeSheet/add.svg';
 import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
-import styles from './index.less';
 import CustomTimePicker from '@/components/CustomTimePicker';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import {
+  checkHolidayInWeek,
+  dateFormatAPI,
+  holidayFormatDate,
+  hourFormat,
+  hourFormatAPI,
+  TIMESHEET_ADD_TASK_ALERT,
+  TIME_DEFAULT,
+  VIEW_TYPE,
+} from '@/utils/timeSheet';
+import styles from './index.less';
 
 const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
 const countryIdUS = 'US';
 const TASKS = [];
+const { RangePicker } = DatePicker;
 
 const AddTaskModal = (props) => {
   const [form] = Form.useForm();
-
-  const [disabledHourBefore, setDisabledHourBefore] = useState([]); // for end time validation
-
   const {
     visible = false,
     title = 'Add Task',
     onClose = () => {},
-    date = '',
-    projectName = '',
     mode = 'single',
-    timeSheet: { projectList = [] } = {},
+    timeSheet: {
+      projectList = [],
+      myTimesheetByDay = [],
+      myTimesheetByWeek = [],
+      myTimesheetByMonth = [],
+    } = {},
+    date = '',
+    taskDetail: {
+      projectId = '',
+      endTime = '',
+      clientLocation = false,
+      breakTime = 0,
+      overTime = 0,
+      forDate = '',
+    } = {},
+    loadingTime = false,
   } = props;
 
   const {
@@ -53,35 +72,30 @@ const AddTaskModal = (props) => {
   const { headQuarterAddress: { country: { _id: countryID = '' } = {} } = {} } = location;
   const viewUS = countryID === countryIdUS;
 
+  // state
+  const [disabledHourBefore, setDisabledHourBefore] = useState([]); // for end time validation
+  const [dates, setDates] = useState(null);
+  const myTimesheet = myTimesheetByDay[0]?.timesheet;
+  const [notice, setNotice] = useState(TIMESHEET_ADD_TASK_ALERT.DEFAULT);
+  const [holidays, setHolidays] = useState([]);
+
+  // api
   const fetchProjectList = () => {
     dispatch({
       type: 'timeSheet/fetchProjectListEffect',
     });
   };
 
-  useEffect(() => {
-    if (visible) {
-      if (projectList.length === 0) {
-        fetchProjectList();
-      }
-      if (date) {
-        form.setFieldsValue({
-          date: moment(date),
-        });
-      }
-    }
-  }, [visible]);
-
-  const renderModalHeader = () => {
-    return (
-      <div className={styles.header}>
-        <p className={styles.header__text}>{title}</p>
-      </div>
-    );
-  };
-
-  const handleCancel = () => {
-    onClose();
+  const fetchHolidaysByDate = async (startDate, endDate) => {
+    const holidaysResponse = await dispatch({
+      type: 'timeSheet/fetchHolidaysByDate',
+      payload: {
+        companyId: getCurrentCompany(),
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+      },
+    });
+    setHolidays(holidaysResponse);
   };
 
   const refreshData = () => {
@@ -89,6 +103,86 @@ const AddTaskModal = (props) => {
       type: 'timeSheet/fetchMyTimesheetByTypeEffect',
       isRefreshing: true,
     });
+  };
+
+  // functions
+  const getDisabledHourBefore = (et, minimum) => {
+    return moment(et, hourFormat)
+      .add(minimum - 15, 'minutes')
+      .format(hourFormat);
+  };
+
+  const formatStartTimeShow = (timeFormat) => {
+    return moment(timeFormat, hourFormatAPI).format(hourFormat);
+  };
+
+  const formatEndTimeShow = (timeFormat) => {
+    return moment(timeFormat, hourFormat).add(30, 'minutes').format(hourFormat);
+  };
+
+  const getLastEndTimeElement = (lastEle) => {
+    return lastEle[lastEle.length - 1]?.endTime;
+  };
+
+  // get value timesheet of date when changed date
+  const getDetailValueStartTime = (val = []) => {
+    if (val?.length && formatStartTimeShow(getLastEndTimeElement(val)) >= TIME_DEFAULT.END_TIME) {
+      return TIME_DEFAULT.TIME_WORK_LATE;
+    }
+    if (val?.length && formatStartTimeShow(getLastEndTimeElement(val)) < TIME_DEFAULT.END_TIME) {
+      return formatStartTimeShow(getLastEndTimeElement(val));
+    }
+    return TIME_DEFAULT.START_TIME;
+  };
+
+  const getDefaultValueStartTime = () => {
+    if (
+      myTimesheet?.length &&
+      formatStartTimeShow(getLastEndTimeElement(myTimesheet)) < TIME_DEFAULT.END_TIME
+    ) {
+      return formatStartTimeShow(getLastEndTimeElement(myTimesheet));
+    }
+    if (
+      myTimesheet?.length &&
+      formatStartTimeShow(getLastEndTimeElement(myTimesheet)) >= TIME_DEFAULT.END_TIME
+    ) {
+      return TIME_DEFAULT.TIME_WORK_LATE;
+    }
+    return TIME_DEFAULT.START_TIME;
+  };
+
+  const getTimeSheetByDay = async (day) => {
+    const res = await dispatch({
+      type: 'timeSheet/fetchMyTimesheetByDay',
+      payload: {
+        companyId: getCurrentCompany(),
+        employeeId,
+        fromDate: moment(day[0]).format(dateFormatAPI),
+        toDate: moment(day[0]).format(dateFormatAPI),
+        viewType: VIEW_TYPE.D,
+      },
+    });
+    if (res.code === 200) {
+      form.setFieldsValue({
+        tasks: [
+          {
+            startTime: getDetailValueStartTime(res.data[0].timesheet || []),
+            endTime: formatEndTimeShow(getDetailValueStartTime(res.data[0].timesheet || [])),
+          },
+        ],
+      });
+    }
+  };
+
+  const handleChangeDate = async (val) => {
+    await setDates(val);
+    if (val && val.length > 1 && val[0] && val[1]) {
+      getTimeSheetByDay(val);
+    }
+  };
+
+  const handleCancel = () => {
+    onClose();
   };
 
   const onStartTimeChange = (index) => {
@@ -99,7 +193,7 @@ const AddTaskModal = (props) => {
         if (i === index) {
           return {
             ...x,
-            endTime: null,
+            endTime: moment(x.startTime, hourFormat).add(30, 'minutes').format(hourFormat),
           };
         }
         return x;
@@ -109,12 +203,58 @@ const AddTaskModal = (props) => {
 
   const onValuesChange = (changedValues, allValues) => {
     const { tasks = [] } = allValues;
-    const disabledHourBeforeTemp = tasks.map((x = {}) => x.startTime);
+    const disabledHourBeforeTemp = tasks.map((x = {}) => {
+      // minimum 30 minutes per task
+      const temp = getDisabledHourBefore(x.startTime, 30);
+      return temp;
+    });
     setDisabledHourBefore(disabledHourBeforeTemp);
   };
 
+  const disabledDate = (current) => {
+    if (!dates) {
+      return false;
+    }
+    const values = form.getFieldsValue();
+    const { tasks = [] } = values;
+
+    let tooLate = '';
+    let tooEarly = '';
+    // if tasks length > 1, only allow to select from date === to date
+    if (tasks.length > 1) {
+      tooLate = dates[0] && current.diff(dates[0], 'days') > 0;
+      tooEarly = dates[1] && dates[1].diff(current, 'days') > 0;
+    } else {
+      tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
+      tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
+    }
+
+    return !!tooEarly || !!tooLate;
+  };
+
+  const onOpenChange = (open) => {
+    const values = form.getFieldsValue();
+    const { tasks = [] } = values;
+    if (tasks.length > 1) {
+      setNotice(TIMESHEET_ADD_TASK_ALERT.WARNING);
+    } else {
+      setNotice(TIMESHEET_ADD_TASK_ALERT.DEFAULT);
+    }
+    if (open) {
+      form.setFieldsValue({
+        dates: [null, null],
+      });
+      setDates([null, null]);
+    }
+  };
+
+  const checkHolidayBetweenDates = () => {
+    if (dates && dates.length > 1) return checkHolidayInWeek(dates[0], dates[1], holidays);
+    return false;
+  };
+
   // main function
-  const addMultipleActivityEffect = (submitDate, tasks) => {
+  const addMultipleActivityEffect = (submitDates, tasks) => {
     if (!employee?.managerInfo) {
       notification.error({ message: 'User does not have manager' });
       return {};
@@ -129,7 +269,6 @@ const AddTaskModal = (props) => {
         endTime: moment(item.endTime, hourFormat).format(hourFormatAPI),
         breakTime: item.breakTime || 0,
         overTime: item.overTime || 0,
-        date: moment(submitDate).locale('en').format(dateFormatAPI),
         clientLocation: item.clientLocation || false,
         project: {
           projectName: findPrj?.projectName,
@@ -165,18 +304,117 @@ const AddTaskModal = (props) => {
         employeeId,
         companyId: getCurrentCompany(),
         data,
+        fromDate: moment(submitDates[0], hourFormat).format(dateFormatAPI),
+        toDate: moment(submitDates[1], hourFormat).format(dateFormatAPI),
       },
     });
   };
 
   const handleFinish = async (values) => {
-    const { date: submitDate, tasks = [] } = values;
-    const res = await addMultipleActivityEffect(submitDate, tasks);
+    const { dates: submitDates = [], tasks = [] } = values;
+    const res = await addMultipleActivityEffect(submitDates, tasks);
     if (res.code === 200) {
       onClose();
       form.resetFields();
       refreshData();
     }
+  };
+
+  // use effect
+  useEffect(() => {
+    if (dates && dates.length > 1 && dates[0] && dates[1]) {
+      fetchHolidaysByDate(dates[0], dates[1]);
+    }
+  }, [dates]);
+
+  useEffect(() => {
+    if (visible) {
+      if (projectList.length === 0) {
+        fetchProjectList();
+      }
+
+      const datesTemp = forDate ? [moment(forDate), moment(forDate)] : [moment(date), moment(date)];
+      setDates(datesTemp);
+      form.setFieldsValue({
+        dates: datesTemp,
+        tasks: [
+          {
+            projectId: projectId || null,
+            startTime: endTime
+              ? moment(endTime, hourFormatAPI).format(hourFormat)
+              : getDefaultValueStartTime(),
+            endTime: endTime
+              ? moment(endTime, hourFormatAPI).add(30, 'minutes').format(hourFormat)
+              : formatEndTimeShow(getDefaultValueStartTime()),
+            clientLocation,
+            breakTime,
+            overTime,
+          },
+        ],
+      });
+    }
+  }, [visible, JSON.stringify(myTimesheetByMonth), JSON.stringify(myTimesheetByWeek)]);
+
+  useEffect(() => {
+    const temp = endTime
+      ? getDisabledHourBefore(endTime, 30)
+      : getDisabledHourBefore(getDefaultValueStartTime(), 30);
+
+    setDisabledHourBefore([temp]);
+  }, [visible, endTime]);
+
+  // render ui
+  const renderModalHeader = () => {
+    return (
+      <div className={styles.header}>
+        <p className={styles.header__text}>{title}</p>
+      </div>
+    );
+  };
+
+  const renderAddButton = (fields, add) => {
+    let check = false;
+    if (mode === 'multiple') {
+      check = true;
+      if (dates) {
+        if (dates.length < 2) {
+          check = false;
+        } else if (moment(dates[0]).format(dateFormat) !== moment(dates[1]).format(dateFormat)) {
+          check = false;
+        }
+      }
+    }
+
+    return (
+      <div
+        className={styles.addButton}
+        onClick={
+          check
+            ? () => {
+                const values = form.getFieldsValue();
+                const { tasks = [] } = values;
+                const { endTime: endTimeTemp = '' } = values.tasks[tasks.length - 1];
+                add({
+                  projectId: values.tasks[fields.length - 1].projectId,
+                  startTime: endTimeTemp
+                    ? moment(endTimeTemp, hourFormat).format(hourFormat)
+                    : null,
+                  endTime: endTimeTemp
+                    ? moment(endTimeTemp, hourFormat).add(30, 'minutes').format(hourFormat)
+                    : null,
+                });
+              }
+            : () => {}
+        }
+        style={{
+          cursor: check ? 'pointer' : 'not-allowed',
+          opacity: check ? 1 : 0.5,
+        }}
+      >
+        <img src={AddIcon} alt="" />
+        <span>Add another task</span>
+      </div>
+    );
   };
 
   const renderFormList = () => {
@@ -185,7 +423,7 @@ const AddTaskModal = (props) => {
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name, fieldKey }, index) => (
-              <>
+              <div key={key}>
                 {key !== 0 && <div className={styles.divider} />}
                 <Row gutter={[24, 0]} className={styles.belowPart}>
                   <Col xs={24} md={12}>
@@ -205,7 +443,7 @@ const AddTaskModal = (props) => {
                           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         {projectList.map((val) => (
-                          <Option value={val.id}>
+                          <Option key={val.id} value={val.id}>
                             {`${val.projectName} - ${val.customerName}`}
                           </Option>
                         ))}
@@ -228,7 +466,9 @@ const AddTaskModal = (props) => {
                       {TASKS.length !== 0 ? (
                         <Select showSearch placeholder="Select the task">
                           {TASKS.map((val) => (
-                            <Option value={val}>{val}</Option>
+                            <Option key={val} value={val}>
+                              {val}
+                            </Option>
                           ))}
                         </Select>
                       ) : (
@@ -248,6 +488,8 @@ const AddTaskModal = (props) => {
                       <CustomTimePicker
                         placeholder="Select the start time"
                         showSearch
+                        loading={loadingTime}
+                        disabled={loadingTime}
                         onChange={() => onStartTimeChange(index)}
                       />
                     </Form.Item>
@@ -265,6 +507,8 @@ const AddTaskModal = (props) => {
                         placeholder="Select the end time"
                         showSearch
                         disabledHourBefore={disabledHourBefore[index]}
+                        loading={loadingTime}
+                        disabled={loadingTime}
                       />
                     </Form.Item>
                   </Col>
@@ -318,6 +562,7 @@ const AddTaskModal = (props) => {
                       <Input.TextArea
                         autoSize={{ minRows: 4 }}
                         placeholder="Enter the description"
+                        maxLength={255}
                       />
                     </Form.Item>
                   </Col>
@@ -340,22 +585,9 @@ const AddTaskModal = (props) => {
                     )}
                   </Col>
                 </Row>
-              </>
-            ))}
-            {mode === 'multiple' && (
-              <div
-                className={styles.addButton}
-                onClick={() => {
-                  const values = form.getFieldsValue();
-                  add({
-                    projectId: values.tasks[fields.length - 1].projectId,
-                  });
-                }}
-              >
-                <img src={AddIcon} alt="" />
-                <span>Add another task</span>
               </div>
-            )}
+            ))}
+            {renderAddButton(fields, add)}
           </>
         )}
       </Form.List>
@@ -370,9 +602,6 @@ const AddTaskModal = (props) => {
           form={form}
           id="myForm"
           onFinish={handleFinish}
-          initialValues={{
-            tasks: [{ projectName: projectName || null }],
-          }}
           onValuesChange={onValuesChange}
         >
           <Row gutter={[24, 0]} className={styles.abovePart}>
@@ -380,21 +609,42 @@ const AddTaskModal = (props) => {
               <Form.Item
                 rules={[{ required: true, message: 'Please select Timesheet Period' }]}
                 label="Select Timesheet Period"
-                name="date"
-                fieldKey="date"
+                name="dates"
+                fieldKey="dates"
                 labelCol={{ span: 24 }}
               >
-                <DatePicker format={dateFormat} />
+                <RangePicker
+                  format={dateFormat}
+                  ranges={{
+                    Today: [moment(), moment()],
+                    'This Week': [moment().startOf('week'), moment().endOf('week')],
+                  }}
+                  disabledDate={disabledDate}
+                  onCalendarChange={(val) => handleChangeDate(val)}
+                  onOpenChange={onOpenChange}
+                  allowClear={false}
+                />
               </Form.Item>
             </Col>
-            <Col xs={24} md={12}>
-              <Alert
-                message="Info"
-                showIcon
-                type="info"
-                description="The same tasks will be updated for the selected date range"
-                closable
-              />
+            <Col xs={24} md={12} className={styles.alertContainer}>
+              {checkHolidayBetweenDates() ? (
+                <Alert
+                  message={
+                    holidays.length > 1
+                      ? holidays
+                          .map((holiday) => holidayFormatDate(holiday.date))
+                          .join(', ')
+                          .concat(' are Holidays')
+                      : `${holidayFormatDate(holidays[0].date)} is ${holidays[0].holiday}`
+                  }
+                  showIcon
+                  type="warning"
+                  description={`Did you work on ${holidays.length > 1 ? 'these' : 'this'} day?`}
+                  closable
+                />
+              ) : (
+                <Alert message="Info" showIcon type={notice.type} description={notice.content} />
+              )}
             </Col>
           </Row>
           {renderFormList()}
@@ -409,7 +659,7 @@ const AddTaskModal = (props) => {
         className={`${styles.AddTaskModal} ${styles.noPadding}`}
         onCancel={handleCancel}
         destroyOnClose
-        width={650}
+        width={700}
         maskClosable={false}
         footer={
           <>
@@ -444,4 +694,5 @@ export default connect(({ loading, timeSheet, location, user }) => ({
   location,
   loadingAddTask: loading.effects['timeSheet/addMultipleActivityEffect'],
   loadingFetchProject: loading.effects['timeSheet/fetchProjectListEffect'],
+  loadingTime: loading.effects['timeSheet/fetchMyTimesheetByDay'],
 }))(AddTaskModal);

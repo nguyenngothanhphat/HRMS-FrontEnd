@@ -1,14 +1,18 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, isObject } from 'lodash';
 
 const moment = require('moment-timezone');
 const cityTimezones = require('city-timezones');
 
-export const getTimezoneViaCity = (city) => {
-  // check if city is empty return the current timezone
-  if(!city) {
-    return ''
+export const getTimezoneViaCity = (cityProp = '') => {
+  let city = cityProp;
+  if (isObject(city)) {
+    city = city.name || '';
   }
-  const cityWords = city.split(' ');
+  // check if city is empty return the current timezone
+  if (!city || isEmpty(city)) {
+    return '';
+  }
+  const cityWords = city?.split(' ');
   let cityLookup = [];
   cityWords.forEach((c) => {
     const result = cityTimezones.findFromCityStateProvince(c);

@@ -174,7 +174,7 @@ class Edit extends PureComponent {
                 pattern:
                   // eslint-disable-next-line no-useless-escape
                   /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?$/gm,
-                message: 'Phone number is not a validate phone number!',
+                message: 'The phone number is invalid!',
               },
             ]}
           >

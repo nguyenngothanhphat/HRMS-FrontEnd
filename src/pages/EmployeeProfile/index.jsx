@@ -20,14 +20,8 @@ const EmployeeProfile = (props) => {
     currentUser: { employee: { generalInfo: { userId = '' } = {} } = {} },
     permissions = {},
     location: { state: { location = '' } = {} } = {},
-    employeeProfile: { employee = '' } = {},
+    employeeProfile: { employee = '', isProfileOwner = false } = {},
   } = props;
-
-  const checkProfileOwner = (currentUserID, employeeID) => {
-    return currentUserID === employeeID;
-  };
-
-  const isProfileOwner = checkProfileOwner(userId, reId);
 
   const fetchData = async (id) => {
     dispatch({
@@ -68,17 +62,27 @@ const EmployeeProfile = (props) => {
     };
   }, []);
 
+  useEffect(() => {
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: {
+        isProfileOwner: userId === reId,
+      },
+    });
+  }, [employee, reId, userId]);
+
   const renderListMenu = () => {
     let listMenu = [];
+
     listMenu.push({
       name: 'General Info',
-      component: <GeneralInfo permissions={permissions} profileOwner={isProfileOwner} />,
+      component: <GeneralInfo permissions={permissions} />,
       link: 'general-info',
     });
     if (permissions.viewTabEmployment !== -1 || isProfileOwner) {
       listMenu.push({
         name: `Employment Info`,
-        component: <EmploymentTab profileOwner={isProfileOwner} />,
+        component: <EmploymentTab />,
         link: 'employment-info',
       });
     }
@@ -87,7 +91,7 @@ const EmployeeProfile = (props) => {
       if (permissions.viewTabEmployment !== -1 || isProfileOwner) {
         listMenu.push({
           name: `Compensation`,
-          component: <Compensation profileOwner={isProfileOwner} />,
+          component: <Compensation />,
           link: 'compensation',
         });
       }
@@ -107,7 +111,7 @@ const EmployeeProfile = (props) => {
     if (permissions.viewTabBenefitPlans !== -1 || isProfileOwner) {
       listMenu.push({
         name: 'Benefits',
-        component: <BenefitTab profileOwner={isProfileOwner} />,
+        component: <BenefitTab />,
         link: 'benefits',
       });
     }
@@ -122,8 +126,6 @@ const EmployeeProfile = (props) => {
     return listMenu;
   };
 
-  const listMenu = renderListMenu();
-
   if (!tabName) return null;
   return (
     <PageContainer>
@@ -135,12 +137,11 @@ const EmployeeProfile = (props) => {
         </Affix>
 
         <LayoutEmployeeProfile
-          listMenu={listMenu}
+          listMenu={renderListMenu()}
           tabName={tabName}
           reId={reId}
           employeeLocation={location}
           permissions={permissions}
-          profileOwner={isProfileOwner}
         />
       </div>
     </PageContainer>

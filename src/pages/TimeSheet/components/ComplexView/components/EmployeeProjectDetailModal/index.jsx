@@ -101,6 +101,7 @@ const EmployeeProjectDetailModal = (props) => {
       setLoadingSearch(false);
     }
   }, [nameSearch]);
+
   // RENDER UI
   const renderModalHeader = () => {
     return (

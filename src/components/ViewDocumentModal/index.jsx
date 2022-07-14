@@ -5,10 +5,12 @@ import axios from 'axios';
 import React, { PureComponent } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import ReactToPrint from 'react-to-print';
+import { connect } from 'umi';
 import PrintIcon from '@/assets/printIconTimeOff.svg';
 import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
 import CloseIcon from '@/assets/closeIconTimeOff.svg';
 import styles from './index.less';
+import { getCountryId } from '@/utils/utils';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -19,6 +21,15 @@ class ViewDocumentModal extends PureComponent {
       numPages: null,
     };
   }
+
+  componentDidUpdate = (prevProps) => {
+    const { dispatch, visible = false } = this.props;
+    if (visible !== prevProps.visible && visible) {
+      dispatch({
+        type: 'adminSetting/getDomain',
+      });
+    }
+  };
 
   onDownload = (url) => {
     const fileName = url.split('/').pop();
@@ -131,12 +142,36 @@ class ViewDocumentModal extends PureComponent {
     );
   };
 
+  getCountryName = () => {
+    const { location = {}, candidatePortal: { data: { workLocation = {} } } = {} } = this.props;
+
+    const employeeLocation = getCountryId(location);
+    const candidateLocation = getCountryId(workLocation);
+
+    const id = employeeLocation || candidateLocation;
+
+    switch (id) {
+      case 'VN':
+        return 'vn';
+      case 'US':
+        return 'us';
+      case 'IN':
+        return 'ind';
+
+      default:
+        return '';
+    }
+  };
+
   _renderStickyFooter = () => {
+    const { emailDomain } = this.props;
     return (
       <div className={styles.stickyFooter}>
         <span>
-          For any queries, e-mail at{' '}
-          <span style={{ fontWeight: 'bold' }}>hrmanager@companyname.com</span>
+          For any queries, email at{' '}
+          <span style={{ fontWeight: 'bold' }}>
+            {`hr-${this.getCountryName()}@${emailDomain || 'terralogic.com'}`}
+          </span>
         </span>
       </div>
     );
@@ -174,4 +209,14 @@ class ViewDocumentModal extends PureComponent {
     );
   }
 }
-export default ViewDocumentModal;
+export default connect(
+  ({
+    adminSetting: { originData: { emailDomain = '' } = {} } = {},
+    user: { currentUser: { location = {} } = {} } = {},
+    candidatePortal,
+  }) => ({
+    emailDomain,
+    location,
+    candidatePortal,
+  }),
+)(ViewDocumentModal);

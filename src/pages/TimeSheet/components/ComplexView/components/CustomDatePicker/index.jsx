@@ -9,7 +9,7 @@ import { rangePickerFormat } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const CustomDatePicker = (props) => {
-  const { selectedDate, setSelectedDate = () => {} } = props;
+  const { selectedDate, setSelectedDate = () => {}, disableBtn = false } = props;
 
   // HEADER AREA
   const onPrevDateClick = () => {
@@ -29,7 +29,15 @@ const CustomDatePicker = (props) => {
   // MAIN AREA
   return (
     <div className={styles.CustomDatePicker}>
-      <div className={styles.prevWeek} onClick={onPrevDateClick}>
+      <div
+        className={styles.prevWeek}
+        onClick={onPrevDateClick}
+        style={{
+          cursor: disableBtn ? 'default' : 'pointer',
+          pointerEvents: disableBtn ? 'none' : 'auto',
+          opacity: disableBtn ? 0.7 : 1,
+        }}
+      >
         <img src={PrevIcon} alt="" />
       </div>
       <div className={styles.rangePicker}>
@@ -43,7 +51,15 @@ const CustomDatePicker = (props) => {
           }
         />
       </div>
-      <div className={styles.nextWeek} onClick={onNextDateClick}>
+      <div
+        className={styles.nextWeek}
+        onClick={onNextDateClick}
+        style={{
+          cursor: disableBtn ? 'default' : 'pointer',
+          pointerEvents: disableBtn ? 'none' : 'auto',
+          opacity: disableBtn ? 0.7 : 1,
+        }}
+      >
         <img src={NextIcon} alt="" />
       </div>
     </div>

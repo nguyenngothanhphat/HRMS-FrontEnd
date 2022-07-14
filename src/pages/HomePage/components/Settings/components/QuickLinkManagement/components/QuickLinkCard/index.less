@@ -1,0 +1,61 @@
+@darkColour: #161c29;
+@blueColour: #2c6df9;
+@lightGrayColor: #707177;
+@commonPadding: 24px;
+@borderColor: #d6dce0;
+
+.QuickLinkCard {
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  border-radius: 8px;
+  // box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.1);
+
+  :global {
+    .ant-tabs-nav {
+      height: 57px;
+      padding-right: @commonPadding;
+      padding-left: @commonPadding;
+      .ant-tabs-tab-btn {
+        font-weight: 500;
+        font-size: 14px;
+        font-style: normal;
+
+        line-height: 16px;
+      }
+      .ant-tabs-tab-active {
+        .ant-tabs-tab-btn {
+          color: @blueColour;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .ant-tabs-content-holder {
+      //
+    }
+    .ant-tabs-top > .ant-tabs-nav::before,
+    .ant-tabs-bottom > .ant-tabs-nav::before,
+    .ant-tabs-top > div > .ant-tabs-nav::before,
+    .ant-tabs-bottom > div > .ant-tabs-nav::before {
+      border-color: @borderColor;
+    }
+
+    // media
+    .ant-image:not(:first-child) {
+      margin-left: -20px;
+    }
+    .ant-image {
+      border: 3px solid rgba(255, 255, 255);
+      border-radius: 5px;
+      .ant-image-img {
+        height: 100% !important;
+        object-fit: cover;
+      }
+      .ant-image-mask-info {
+        font-size: 0;
+      }
+    }
+  }
+}

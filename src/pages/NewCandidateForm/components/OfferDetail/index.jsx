@@ -563,6 +563,11 @@ const OfferDetail = (props) => {
     });
   };
 
+  const handlePreviewOffer = () => {
+    const { reId = '' } = props;
+    history.push(`/onboarding/list/view/${reId}/${ONBOARDING_FORM_LINK.OFFER_LETTER}`);
+  };
+
   if (loadingFetchCandidate) return <Skeleton />;
   return (
     <>
@@ -571,11 +576,24 @@ const OfferDetail = (props) => {
           <div className={styles.leftContainer}>
             <div className={styles.offerDetail}>
               <div className={styles.top}>
-                <h3 className={styles.header}>
-                  {formatMessage({ id: 'component.offerDetail.title' })}
-                </h3>
+                <div>
+                  <h3 className={styles.header}>
+                    {formatMessage({ id: 'component.offerDetail.title' })}
+                  </h3>
 
-                <p>{formatMessage({ id: 'component.offerDetail.subtitle' })}</p>
+                  <p>{formatMessage({ id: 'component.offerDetail.subtitle' })}</p>
+                </div>
+                <div className={styles.btnPreviewOffer}>
+                  <Button
+                    type="primary"
+                    ghost
+                    onClick={() => {
+                      handlePreviewOffer();
+                    }}
+                  >
+                    Preview offer letter
+                  </Button>
+                </div>
               </div>
 
               <div className={styles.middle}>

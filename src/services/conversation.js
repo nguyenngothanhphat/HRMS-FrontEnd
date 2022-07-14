@@ -8,6 +8,20 @@ export async function addNewConversation(payload) {
   });
 }
 
+export async function getConversationUnSeen(params) {
+  return request('/api/messagetenant/notify-message', {
+    method: 'GET',
+    params,
+  });
+}
+
+export async function seenMessage(payload) {
+  return request('/api/messagetenant/seen-messages', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getUserConversations(payload) {
   return request('/api/conversationtenant/get-user-conversation', {
     method: 'POST',

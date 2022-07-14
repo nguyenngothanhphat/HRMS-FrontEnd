@@ -15,7 +15,7 @@ const FilterResourcesContent = (props) => {
     needResetFilterForm = false,
     setNeedResetFilterForm = () => {},
     setIsFiltering = () => {},
-    setApplied = () => {}
+    setApplied = () => {},
   } = props;
 
   const fetchDataList = () => {
@@ -64,7 +64,7 @@ const FilterResourcesContent = (props) => {
       form.resetFields();
       setNeedResetFilterForm(false);
       setIsFiltering(false);
-      setApplied(0)
+      setApplied(0);
     }
   }, [needResetFilterForm]);
 
@@ -76,16 +76,30 @@ const FilterResourcesContent = (props) => {
       onValuesChange={onValuesChange}
       className={styles.FilterResourcesContent}
     >
-      <Form.Item label="By designation" name="designation">
-        <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
+      <Form.Item label="By designation" name="title">
+        <Select
+          mode="multiple"
+          allowClear
+          style={{ width: '100%' }}
+          placeholder="Please select"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
           {titleList.map((x) => (
             <Option value={x._id}>{x.name}</Option>
           ))}
         </Select>
       </Form.Item>
 
-      <Form.Item label="By billing status" name="billingStatus">
-        <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
+      <Form.Item label="By billing status" name="status">
+        <Select
+          mode="multiple"
+          allowClear
+          style={{ width: '100%' }}
+          placeholder="Please select"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
           {billingStatusList.map((x) => (
             <Option value={x}>{x}</Option>
           ))}
@@ -95,7 +109,7 @@ const FilterResourcesContent = (props) => {
       <Form.Item label="By Start Date">
         <Row>
           <Col span={11}>
-            <Form.Item name="s_fromDate">
+            <Form.Item name="startFromDate">
               <DatePicker format="MMM DD, YYYY" />
             </Form.Item>
           </Col>
@@ -103,7 +117,7 @@ const FilterResourcesContent = (props) => {
             <span>to</span>
           </Col>
           <Col span={11}>
-            <Form.Item name="s_toDate">
+            <Form.Item name="startToDate">
               <DatePicker format="MMM DD, YYYY" />
             </Form.Item>
           </Col>
@@ -113,7 +127,7 @@ const FilterResourcesContent = (props) => {
       <Form.Item label="By End Date">
         <Row style={{ width: '100%' }}>
           <Col span={11}>
-            <Form.Item name="e_fromDate">
+            <Form.Item name="endFromDate">
               <DatePicker format="MMM DD, YYYY" />
             </Form.Item>
           </Col>
@@ -121,7 +135,7 @@ const FilterResourcesContent = (props) => {
             <span>to</span>
           </Col>
           <Col span={11}>
-            <Form.Item name="e_toDate">
+            <Form.Item name="endToDate">
               <DatePicker format="MMM DD, YYYY" />
             </Form.Item>
           </Col>
@@ -131,7 +145,7 @@ const FilterResourcesContent = (props) => {
       <Form.Item label="By Revised Date">
         <Row>
           <Col span={11}>
-            <Form.Item name="r_fromDate">
+            <Form.Item name="revisedFromDate">
               <DatePicker format="MMM DD, YYYY" />
             </Form.Item>
           </Col>
@@ -139,7 +153,7 @@ const FilterResourcesContent = (props) => {
             <span>to</span>
           </Col>
           <Col span={11}>
-            <Form.Item name="r_toDate">
+            <Form.Item name="revisedToDate">
               <DatePicker format="MMM DD, YYYY" />
             </Form.Item>
           </Col>

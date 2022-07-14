@@ -71,10 +71,12 @@
   }
 
   .timeStamp {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    height: 100%;
     .weekName {
       color: #333333;
       font-weight: 500;
@@ -87,6 +89,13 @@
       font-size: 10px;
       line-height: 20px;
       opacity: 0.5;
+    }
+    .holidayIconWarning {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 16px;
+      height: 16px;
     }
   }
 
@@ -195,7 +204,11 @@
     height: 70px;
     background-color: #fff;
     .item {
+      display: flex;
       flex-basis: 100%;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
       text-align: center;
       cursor: pointer;
     }
@@ -236,7 +249,7 @@
       background: unset;
     }
     td.ant-table-cell {
-      width: 84px;
+      // width: 84px;
       height: 80px;
       color: #464646;
       font-weight: normal;

@@ -45,7 +45,7 @@ const CurrentInfo = (props) => {
   const data = {
     title: title?.name || '',
     department: department?.name || '',
-    grade: titleInfo?.grade || '',
+    grade: titleInfo?.gradeInfo?.name || '',
     initialJoiningDate: getInitialJoiningDate(),
     joiningDate: joinDate ? moment(joinDate).locale('en').format('Do MMMM YYYY') : '',
     location: location?.name || '',

@@ -59,7 +59,7 @@ class CandidateChangePassword extends PureComponent {
     });
     if (conversations.statusCode === 200) {
       dispatch({
-        type: 'conversation/getNumberUnseenConversationEffect',
+        type: 'conversation/getConversationUnSeenEffect',
         payload: {
           userId: candidate._id,
         },

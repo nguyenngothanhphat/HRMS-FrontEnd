@@ -62,7 +62,7 @@ class PassportDetails extends PureComponent {
   };
 
   render() {
-    const { openPassport, profileOwner = false, permissions = {} } = this.props;
+    const { openPassport, isProfileOwner = false, permissions = {} } = this.props;
     const renderComponent = openPassport ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
@@ -76,7 +76,7 @@ class PassportDetails extends PureComponent {
       <div className={styles.PassportDetails}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Passport Details</p>
-          {!openPassport && (!profileOwner || editPassportPermission) && (
+          {!openPassport && (!isProfileOwner || editPassportPermission) && (
             <div className={styles.flexEdit} onClick={disabledFields ? null : this.handleEdit}>
               <img src={EditBtn} alt="" className={styles.IconEdit} />
               <p className={styles.Edit}>Edit</p>

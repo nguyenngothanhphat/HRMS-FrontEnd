@@ -2,13 +2,15 @@ import { history } from 'umi';
 import { fetchCompanyOfUser, query as queryUsers, queryCurrent } from '@/services/user';
 import {
   getCurrentCompany,
-  getCurrentLocation,
   getCurrentTenant,
   getIsSigninGoogle,
   setAuthority,
+  setCompanyOfUser,
+  setCountry,
   setCurrentCompany,
   setCurrentLocation,
   setFirstChangePassword,
+  setIsFirstLogin,
   setIsSwitchingRole,
   setTenantId,
 } from '@/utils/authority';
@@ -40,6 +42,8 @@ const UserModel = {
         };
         const response = yield call(queryCurrent, payload);
         const { statusCode, data = {} } = response;
+        const { country = '' } = data?.location?.headQuarterAddress || {};
+        setCountry(JSON.stringify(country));
         if (statusCode !== 200) {
           history.push('/login');
           throw response;
@@ -48,6 +52,9 @@ const UserModel = {
         let formatArrRoles = [];
         let switchRoleAbility = false;
         const { signInRole = [], roles = [], candidate = {}, isFirstLogin = false } = data;
+
+        setIsFirstLogin(isFirstLogin);
+
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
         const candidateLinkMode = localStorage.getItem('candidate-link-mode') === 'true';
@@ -232,6 +239,7 @@ const UserModel = {
             companiesOfUser: data?.listCompany,
           },
         });
+        setCompanyOfUser(data?.listCompany || []);
       } catch (errors) {
         // error
       }

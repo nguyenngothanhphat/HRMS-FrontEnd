@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import {
   Button,
   Form,
@@ -178,7 +179,7 @@ class SignatureModal extends PureComponent {
     }).then((response) => {
       const { data: imageData = [] } = response;
       const { id = '' } = imageData[0];
-      onFinish(id);
+      onFinish(id, imageData[0]);
       setTimeout(() => {
         this.clearState();
       }, 200);
@@ -196,7 +197,7 @@ class SignatureModal extends PureComponent {
     });
     const { data: imageData = [] } = response;
     const { id = '' } = imageData[0];
-    onFinish(id);
+    onFinish(id, imageData[0]);
     this.clearState();
   };
 
@@ -214,7 +215,7 @@ class SignatureModal extends PureComponent {
     });
     const { data: imageData = [] } = response;
     const { id = '' } = imageData[0];
-    onFinish(id);
+    onFinish(id, imageData[0]);
     this.clearState();
   };
 
@@ -400,7 +401,11 @@ class SignatureModal extends PureComponent {
                         {['Airin', 'GermanyScript', 'SH Imogen Agnes', 'AudreyAndReynold'].map(
                           (item, index) => (
                             // <Col span={12}>
-                            <Radio value={index} style={{ display: 'flex', alignItems: 'center' }}>
+                            <Radio
+                              key={index}
+                              value={index}
+                              style={{ display: 'flex', alignItems: 'center' }}
+                            >
                               <TextSignature
                                 name={digitalSignatureName}
                                 getImage={this.getImg}

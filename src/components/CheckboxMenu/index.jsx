@@ -17,24 +17,29 @@ const CheckboxMenu = (props) => {
   const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
-    // if (selectedItems.length === 0 && defaultChecks.length > 0) {
     if (defaultChecks.length > 0) {
       setSelectedItems([...defaultChecks]);
     }
   }, [JSON.stringify(defaultChecks)]);
 
+  useEffect(() => {
+    if (selectedItems.length && selectedItems.length === options.length) {
+      setCheckAll(true);
+      setIndeterminate(false);
+    } else {
+      setCheckAll(false);
+      if (selectedItems.length && selectedItems.length < options.length) setIndeterminate(true);
+    }
+  }, [selectedItems]);
+
   const onCheckAllChange = (e) => {
     const selectedItemsTemp = e.target.checked ? options.map((x) => x._id) : [];
     setSelectedItems(selectedItemsTemp);
-    setIndeterminate(false);
-    setCheckAll(e.target.checked);
     return onChangeProp([...selectedItemsTemp]);
   };
 
   const onChange = (selection) => {
     setSelectedItems([...selection]);
-    setIndeterminate(!!selection.length && selection.length < options.length);
-    setCheckAll(selection.length === options.length);
     return onChangeProp([...selection]);
   };
 

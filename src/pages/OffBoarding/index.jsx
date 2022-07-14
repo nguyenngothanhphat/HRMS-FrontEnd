@@ -1,11 +1,18 @@
-import React, { PureComponent } from 'react';
+import React, { useEffect } from 'react';
 import { initViewOffboarding } from '@/utils/authority';
-import EmployeeOffBoading from './EmployeeOffBoarding';
-import ManagerOffBoading from './ManagerOffBoarding';
-import HrOffboarding from './HrOffboarding';
+import { goToTop } from '@/utils/utils';
+import EmployeeView from './components/EmployeeView';
+import HRView from './components/HRView';
+import ManagerView from './components/ManagerView';
+import styles from './index.less';
 
-class OffBoarding extends PureComponent {
-  findRole = (roles) => {
+const Offboarding = (props) => {
+  const {
+    match: { params: { tabName = '', type = '' } = {} },
+    location: { state: { isEmployeeMode = false } = {} } = {},
+  } = props;
+
+  const findRole = (roles) => {
     const hrManager = roles.find((item) => item === 'hr-manager');
     const hr = roles.find((item) => item === 'hr');
     const manager = roles.find((item) => item === 'manager');
@@ -14,28 +21,26 @@ class OffBoarding extends PureComponent {
     return role;
   };
 
-  render() {
-    const {
-      match: { params: { tabName = '', type = '' } = {} },
-      location: { state: { isEmployeeMode = false } = {} } = {},
-    } = this.props;
+  const renderComponent = {
+    'hr-manager': <HRView tabName={tabName} type={type} />,
+    hr: <HRView tabName={tabName} type={type} />,
+    // hr: <WorkInProgress />,
+    manager: <ManagerView tabName={tabName} />,
+    employee: <EmployeeView tabName={tabName} />,
+  };
 
-    const viewOffboarding = initViewOffboarding();
-    const renderComponent = {
-      'hr-manager': <HrOffboarding tabName={tabName} type={type} />,
-      hr: <HrOffboarding tabName={tabName} type={type} />,
-      manager: <ManagerOffBoading tabName={tabName} />,
-      employee: <EmployeeOffBoading tabName={tabName} />,
-    };
+  const listRole = localStorage.getItem('antd-pro-authority');
+  const role = findRole(JSON.parse(listRole));
 
-    const listRole = localStorage.getItem('antd-pro-authority');
-    const role = this.findRole(JSON.parse(listRole));
+  useEffect(() => {
+    goToTop();
+  }, []);
 
-    if (!isEmployeeMode && !viewOffboarding) {
-      return renderComponent[role];
-    }
-    return renderComponent.employee;
-  }
-}
+  return (
+    <div className={styles.Offboarding}>
+      {!isEmployeeMode && !initViewOffboarding() ? renderComponent[role] : renderComponent.employee}
+    </div>
+  );
+};
 
-export default OffBoarding;
+export default Offboarding;

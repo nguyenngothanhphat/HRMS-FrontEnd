@@ -1,4 +1,4 @@
-import { Upload } from 'antd';
+import { Upload, message } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -12,13 +12,14 @@ const UploadComponent = (props) => {
     getResponse = () => {},
   } = props;
 
-  const imageType = (fileName) => {
+  const isFileValid = (fileName) => {
     const parts = fileName.split('.');
     const ext = parts[parts.length - 1];
     switch (ext.toLowerCase()) {
       case 'jpg':
       case 'jpeg':
       case 'png':
+      case 'pdf':
         return true;
       default:
         return false;
@@ -26,8 +27,14 @@ const UploadComponent = (props) => {
   };
 
   const beforeUpload = (f) => {
-    const checkType = imageType(f.name);
+    const checkType = isFileValid(f.name);
+    if (!checkType) {
+      message.error('You can only upload JPEG/JPG, PNG, PDF file!');
+    }
     const isLt5M = f.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
+      message.error('Image must smaller than 5MB!');
+    }
     return checkType && isLt5M;
   };
 

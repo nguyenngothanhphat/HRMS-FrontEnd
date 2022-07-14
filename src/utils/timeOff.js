@@ -21,6 +21,19 @@ export const TIMEOFF_STATUS_NAME = {
   [TIMEOFF_STATUS.WITHDRAWN]: 'Withdrawn',
 };
 
+export const TIMEOFF_HISTORY_STATUS = {
+  APPLIED: 'APPLIED',
+  EDITED: 'EDITED',
+  WITHDRAW: 'WITHDRAW',
+  WAITING: 'WAITING',
+  WAITING_WITHDRAW: 'WAITING_WITHDRAW',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  WITHDRAW_APPROVED: 'WITHDRAW_APPROVED',
+  WITHDRAW_REJECTED: 'WITHDRAW_REJECTED',
+  WITHDRAW_ACCEPTED: 'WITHDRAW_ACCEPTED',
+};
+
 export const TIMEOFF_LINK_ACTION = {
   EDIT_LEAVE_REQUEST: 'edit',
   NEW_LEAVE_REQUEST: 'new',
@@ -66,12 +79,8 @@ export const TIMEOFF_COLOR = {
   Holiday: '#6a0dad',
 };
 
-export const addZeroToNumber = (number) => {
-  if (number < 10 && number >= 0) return `0${number}`.slice(-2);
-  return number;
-};
-
 export const TIMEOFF_DATE_FORMAT = 'MM/DD/YYYY';
+export const TIMEOFF_DATE_FORMAT_API = 'YYYY-MM-DD';
 
 export const TIMEOFF_COL_SPAN_1 = {
   DATE: 7,
@@ -106,6 +115,11 @@ export const convert12To24 = (time) => {
   if (!time) return null;
   return moment(time, TIMEOFF_12H_FORMAT).format(TIMEOFF_24H_FORMAT);
 };
+
+export const checkNormalTypeTimeoff = (type) => {
+  return type !== TIMEOFF_TYPE.C && type !== TIMEOFF_TYPE.D;
+};
+
 export const WORKING_HOURS = {
   START: '08:00',
   END: '17:00',
@@ -235,4 +249,34 @@ export const convertHoursToDays = (numberHourPerDay, value) => {
 
 export const isFutureDay = (date) => {
   return moment(date).isAfter(moment());
+};
+
+export const getShortType = (tab) => {
+  switch (tab) {
+    case '1':
+      return 'A';
+    case '2':
+      return 'C';
+    case '3':
+      return 'B';
+    case '4':
+      return 'D';
+    default:
+      return '';
+  }
+};
+
+export const TIMEOFF_NEW_REQUEST_DAYS = 4;
+
+export const isNewRequest = (status, onDate) => {
+  const createdDate = moment(onDate).format('YYYY/MM/DD');
+  const nowDate = moment().format('YYYY/MM/DD');
+  return (
+    status === TIMEOFF_STATUS.IN_PROGRESS &&
+    moment(nowDate).subtract(TIMEOFF_NEW_REQUEST_DAYS, 'days').isSameOrBefore(moment(createdDate))
+  );
+};
+
+export const isUpdatedRequest = (status, updated = false) => {
+  return status === TIMEOFF_STATUS.IN_PROGRESS && updated;
 };

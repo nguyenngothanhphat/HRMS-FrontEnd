@@ -1,0 +1,136 @@
+.TaskPopover {
+  :global {
+    .ant-popover-inner {
+      min-width: 400px;
+      max-width: 400px;
+      padding: 0;
+      border: 1px solid #eaecef;
+      border-radius: 8px;
+    }
+    .ant-popover-inner-content {
+      padding: 0 !important;
+    }
+    .ant-popover-arrow {
+      //   left: -2.5px !important;
+      width: 18px;
+      height: 18px;
+      .ant-popover-arrow-content {
+        width: 12px;
+        height: 12px;
+        box-shadow: none;
+      }
+    }
+    .ant-btn {
+      width: 100%;
+      height: 41px;
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 14px;
+      background: #eaf0fe;
+      border: none;
+      border-radius: 4px;
+      outline: none;
+      box-shadow: none;
+      img {
+        width: 24px;
+        height: 24px;
+        margin-top: -2px;
+        margin-right: 10px;
+      }
+    }
+  }
+  .popupContainer {
+    position: relative;
+    .closeButton {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 5;
+      display: block;
+      cursor: pointer;
+    }
+    .divider {
+      border-bottom: 1px solid #eaecef;
+    }
+    .header {
+      padding: 20px 16px 16px;
+      span {
+        color: #3e3e3e;
+        font-weight: 500;
+        font-size: 13px;
+      }
+    }
+    .taskTable {
+      padding: 16px 16px 0;
+      .right {
+        text-align: right;
+      }
+      &__header {
+        padding-bottom: 5px;
+        color: #3e3e3e;
+        font-size: 12px;
+        border-bottom: 1px solid #eaecef;
+      }
+      &__body {
+        max-height: 400px;
+        overflow-y: auto;
+        .eachRow {
+          min-height: 49px;
+          padding: 7px;
+          color: #3e3e3e;
+          font-weight: 500;
+          font-size: 13px;
+          border-bottom: 1px solid #eaecef;
+          .taskName {
+            display: inline-flex;
+            align-items: center;
+            span {
+              display: block;
+              display: -webkit-box;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+            }
+            .actionBtn {
+              display: none;
+              img {
+                cursor: pointer;
+              }
+            }
+          }
+          &:hover {
+            background: #f6f7f9;
+            .actionBtn {
+              display: flex;
+              align-items: center;
+              justify-content: flex-end;
+              padding-left: 10px;
+            }
+            .right {
+              color: #2c6df9;
+            }
+          }
+        }
+        .eachRow:last-child {
+          border-bottom: none;
+        }
+      }
+      &__viewMoreTask {
+        &:hover {
+          opacity: 0.8;
+        }
+        color: #2c6df9;
+        font-weight: 500;
+        font-size: 14px;
+        border-top: 1px solid #eaecef;
+        cursor: pointer;
+        padding-block: 16px;
+        padding-inline: 7px;
+      }
+    }
+    .addTaskBtn {
+      padding: 16px;
+    }
+  }
+}

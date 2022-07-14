@@ -4,6 +4,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { TAB_IDS } from '@/utils/homePage';
+import { beforeUpload } from '@/utils/upload';
 import AnnouncementContent from './components/AnnouncementContent';
 import BannerContent from './components/BannerContent';
 import BirthdayContent from './components/BirthdayContent';
@@ -68,7 +69,13 @@ const AddPost = (props) => {
   };
 
   const handleChangeLocation = (val) => {
-    setLocation(val);
+    let result = [...val];
+    if (val.includes('all')) {
+      result = companyLocationList.map((x) => x._id);
+    }
+    form.setFieldsValue({
+      location: result,
+    });
   };
 
   const onReset = () => {
@@ -92,12 +99,13 @@ const AddPost = (props) => {
       const fileListTemp = () => {
         return attachments.map((x, i) => {
           return {
+            ...x,
             uid: i,
             name: x.name,
             status: 'done',
             url: x.url,
             thumbUrl: x.url,
-            id: x.id,
+            id: x.id || x._id,
           };
         });
       };
@@ -107,7 +115,7 @@ const AddPost = (props) => {
           tempFormValues = {
             postType: TAB_IDS.ANNOUNCEMENTS,
             descriptionA: record.description,
-            uploadFilesA: [...fileListTemp()],
+            uploadFilesA: { fileList: [...fileListTemp()] },
           };
           break;
         }
@@ -115,7 +123,7 @@ const AddPost = (props) => {
           tempFormValues = {
             postType: TAB_IDS.ANNIVERSARY,
             descriptionB: record.description,
-            uploadFilesB: [...fileListTemp()],
+            uploadFilesB: { fileList: [...fileListTemp()] },
           };
 
           break;
@@ -125,14 +133,14 @@ const AddPost = (props) => {
             postType: TAB_IDS.IMAGES,
             titleI: record.title,
             descriptionI: record.description,
-            uploadFilesI: [...fileListTemp()],
+            uploadFilesI: { fileList: [...fileListTemp()] },
           };
           break;
         }
         case TAB_IDS.BANNER: {
           tempFormValues = {
             postType: TAB_IDS.BANNER,
-            uploadFilesBN: [...fileListTemp()],
+            uploadFilesBN: { fileList: [...fileListTemp()] },
           };
           break;
         }
@@ -172,14 +180,46 @@ const AddPost = (props) => {
     setFormValues(values);
   }, 1000);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    setFormValuesDebounce(values);
+  const checkUploadFiles = (allValues) => {
+    const tempAllValues = { ...allValues };
+
+    const commonFunc = (name) => {
+      let { fileList: fileListTemp = [] } = tempAllValues[name] || {};
+      fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
+      setFileList([...fileListTemp]);
+      if (tempAllValues[name]) {
+        tempAllValues[name].fileList = fileListTemp;
+      }
+      return tempAllValues;
+    };
+
+    switch (mode) {
+      case TAB_IDS.ANNOUNCEMENTS: {
+        return commonFunc('uploadFilesA');
+      }
+      case TAB_IDS.ANNIVERSARY: {
+        return commonFunc('uploadFilesB');
+      }
+      case TAB_IDS.IMAGES: {
+        return commonFunc('uploadFilesI');
+      }
+      case TAB_IDS.BANNER: {
+        return commonFunc('uploadFilesBN');
+      }
+
+      default:
+        return tempAllValues;
+    }
+  };
+
+  const onValuesChange = (changedValues, allValues) => {
+    const newValues = checkUploadFiles(allValues);
+    setFormValuesDebounce(newValues);
   };
 
   const onUploadFiles = async (files) => {
     if (Array.isArray(files)) {
-      return files.map((x) => x.id);
+      return files.map((x) => x.id || x._id);
     }
     const list = [];
     if (Array.isArray(files?.fileList)) {
@@ -188,13 +228,14 @@ const AddPost = (props) => {
         await Promise.all(
           files.fileList.map(async (x) => {
             if (x.url) {
-              list.push({ id: x.id });
+              list.push({ id: x.id || x._id });
             } else {
               const formData = new FormData();
               formData.append('uri', x.originFileObj);
               const upload = await dispatch({
                 type: 'upload/uploadFile',
                 payload: formData,
+                showNotification: false,
               });
               if (upload.statusCode === 200) {
                 list.push(upload.data[0]);
@@ -294,7 +335,7 @@ const AddPost = (props) => {
           attachments,
           postType: TAB_IDS.ANNOUNCEMENTS,
           description: values.descriptionA,
-          location,
+          location: values.location,
         };
         break;
       }
@@ -304,7 +345,7 @@ const AddPost = (props) => {
           attachments,
           postType: TAB_IDS.ANNIVERSARY,
           description: values.descriptionB,
-          location,
+          location: values.location,
         };
         break;
       }
@@ -315,7 +356,7 @@ const AddPost = (props) => {
           postType: TAB_IDS.IMAGES,
           title: values.titleI,
           description: values.descriptionI,
-          location,
+          location: values.location,
         };
         break;
       }
@@ -330,7 +371,7 @@ const AddPost = (props) => {
       case TAB_IDS.POLL:
         payload = {
           postType: TAB_IDS.POLL,
-          location,
+          location: values.location,
           pollDetail: {
             question: values.questionP,
             response1: values.responsesP[0]?.response,
@@ -392,7 +433,7 @@ const AddPost = (props) => {
           onFinish={editing ? onEdit : onPost}
         >
           <Form.Item label="Post Type" name="postType">
-            <Select disabled={editing} showArrow style={{ width: '100%' }} onChange={onModeChange}>
+            <Select disabled showArrow style={{ width: '100%' }} onChange={onModeChange}>
               {TABS.map((x) => {
                 return (
                   <Select.Option value={x.id} key={x.id}>
@@ -416,6 +457,7 @@ const AddPost = (props) => {
                 style={{ width: '100%' }}
                 onChange={handleChangeLocation}
               >
+                <Select.Option value="all">All Location</Select.Option>
                 {companyLocationList.map((x) => {
                   return (
                     <Select.Option value={x._id} key={x._id}>

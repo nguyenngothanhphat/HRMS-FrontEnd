@@ -185,7 +185,7 @@ const EditTaskModal = (props) => {
             <Col xs={24} md={12}>
               <Form.Item
                 rules={[{ required: true, message: 'Please select Timesheet Period' }]}
-                label="Select Timesheet Period"
+                label="Select Timesheet Date"
                 name="date"
                 fieldKey="date"
                 labelCol={{ span: 24 }}
@@ -215,7 +215,9 @@ const EditTaskModal = (props) => {
                   }
                 >
                   {projectList.map((val) => (
-                    <Option value={val.id}>{val.projectName}</Option>
+                    <Option value={val.id} key={val.id}>
+                      {val.projectName}
+                    </Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -230,7 +232,9 @@ const EditTaskModal = (props) => {
                 {TASKS.length !== 0 ? (
                   <Select showSearch placeholder="Select the task">
                     {TASKS.map((val) => (
-                      <Option value={val}>{val}</Option>
+                      <Option value={val} key={val}>
+                        {val}
+                      </Option>
                     ))}
                   </Select>
                 ) : (
@@ -312,7 +316,11 @@ const EditTaskModal = (props) => {
                 rules={[{ required: true, message: 'Please enter the description' }]}
                 name="notes"
               >
-                <Input.TextArea autoSize={{ minRows: 4 }} placeholder="Enter the description" />
+                <Input.TextArea
+                  autoSize={{ minRows: 4 }}
+                  placeholder="Enter the description"
+                  maxLength={255}
+                />
               </Form.Item>
             </Col>
             <Col xs={24}>

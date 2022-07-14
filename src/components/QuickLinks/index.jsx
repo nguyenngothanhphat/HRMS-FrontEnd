@@ -1,38 +1,13 @@
 import React, { Component } from 'react';
-import { history } from 'umi';
+import { history, connect } from 'umi';
+import { flattenDeep } from 'lodash';
+import { Spin } from 'antd';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
+import { TAB_IDS_QUICK_LINK } from '@/utils/homePage';
 import s from './index.less';
+import EmptyComponent from '../Empty';
 
-const listQuickLinks = [
-  {
-    name: 'Coronavirus resources',
-    href: 'https://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
-    isNew: true,
-  },
-  {
-    name: 'Work From Home guidelines',
-    href: 'https://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
-    isNew: true,
-  },
-  {
-    name: 'Employee Handbook',
-    href: 'https://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
-  },
-  {
-    name: 'Annual Report 2020',
-    href: 'https://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
-  },
-  {
-    name: 'Training Program 2020',
-    href: 'https://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
-  },
-  {
-    name: 'Submit Commuter Claim',
-    href: 'https://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
-  },
-];
-
-export default class QuickLinks extends Component {
+class QuickLinks extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -78,19 +53,21 @@ export default class QuickLinks extends Component {
   };
 
   renderViewPDF = (item) => {
-    const { name = '', href = '', isNew = false } = item;
+    const { name = '', url = '', isRead = false } = item;
     return (
       <div style={{ display: 'flex' }} key={item}>
-        <p onClick={() => this.openModalViewPDF(href, name)}>{name}</p>
-        {isNew && <div className={s.new}>New</div>}
+        <p onClick={() => this.openModalViewPDF(url, name)}>{name.slice(0, -4)}</p>
+        {isRead && <div className={s.new}>New</div>}
       </div>
     );
   };
 
   renderContent = () => {
-    const { type = '' } = this.props;
+    const { type = '', quickLinkListHomePage = [] } = this.props;
+    const listQuickLinks = flattenDeep(quickLinkListHomePage.map((x) => x.attachmentInfo));
     return (
       <div className={s.QuickLinks}>
+        {!listQuickLinks.length > 0 && <EmptyComponent />}
         {listQuickLinks.map((item) =>
           type === 'link' ? this.renderLink(item) : this.renderViewPDF(item),
         )}
@@ -98,8 +75,21 @@ export default class QuickLinks extends Component {
     );
   };
 
+  componentDidMount = () => {
+    const { dispatch, location: { _id: locationId = '' } = {} } = this.props;
+    dispatch({
+      type: 'homePage/fetchQuickLinkHomePageEffect',
+      payload: {
+        type: TAB_IDS_QUICK_LINK.GENERAL.toLowerCase(),
+        location: [locationId],
+      },
+    });
+  };
+
   render() {
     const { visible = false, linkPDF = '', title: titleNews = '' } = this.state;
+    const { loadingFetchQuickLinkList } = this.props;
+    if (loadingFetchQuickLinkList) return <Spin />;
     return (
       <>
         {this.renderContent()}
@@ -113,3 +103,15 @@ export default class QuickLinks extends Component {
     );
   }
 }
+
+export default connect(
+  ({
+    homePage: { quickLinkListHomePage = [] } = {},
+    loading,
+    user: { currentUser: { location = {} } = {} } = {},
+  }) => ({
+    quickLinkListHomePage,
+    location,
+    loadingFetchQuickLinkList: loading.effects['homePage/fetchQuickLinkHomePageEffect'],
+  }),
+)(QuickLinks);

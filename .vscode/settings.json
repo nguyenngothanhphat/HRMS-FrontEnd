@@ -21,15 +21,17 @@
   "git.ignoreLimitWarning": true,
   "cSpell.words": [
     "admincla",
+    "camelize",
     "Compoff",
     "Joinees",
     "preffered",
     "Req",
     "Req’ted",
+    "requestee",
     "ted",
     "Timeoff",
     "timesheet",
     "Unmount",
     "Upsert"
-  ],
+  ]
 }

@@ -1,51 +1,43 @@
 import { notification } from 'antd';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { dialog } from '@/utils/utils';
 import {
-  getRoleList,
-  getPermissionList,
-  getListTitle,
-  removeTitle,
-  getListDepartments,
-  getListPermissionOfRole,
-  updateRole,
-  getRoleByID,
-  // POSITION
-  addPosition,
-  getPositionByID,
-  updatePosition,
-
-  // DEPARTMENT
   addDepartment,
-  removeDepartment,
-  getDepartmentByID,
-  updateDepartment,
-  getRolesByCompany,
-  setupComplete,
-  countEmployee,
-  addRole,
-  removeRole,
-
-  // employee list
-  getEmployeeList,
-
-  // grade
-  getListGrade,
   addGrade,
-  updateGrade,
-  removeGrade,
-  getGradeByID,
-
-  // domain
-  setEmailDomain,
+  addPosition,
+  addRole,
+  countEmployee,
   getCompanyById,
-
-  // ticket management
+  getDepartmentByID,
+  getDomains,
+  getEmployeeList,
+  getGradeByID,
+  getListDepartments,
+  getListGrade,
+  getListPermissionOfRole,
+  getListTitle,
+  getPermissionList,
+  getPositionByID,
+  getRoleByID,
+  getRoleList,
+  getRolesByCompany,
   getSettingTicketById,
   getSettingTicketList,
-  upsertSettingTicket,
+  removeDepartment,
+  removeDomains,
+  removeGrade,
+  removeRole,
   removeSettingTicket,
-} from '../services/adminSetting';
+  removeTitle,
+  setDomains,
+  setEmailDomain,
+  setupComplete,
+  updateDepartment,
+  updateGrade,
+  updatePosition,
+  updateRole,
+  upsertSettingTicket,
+} from '@/services/adminSetting';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { dialog } from '@/utils/utils';
 
 const adminSetting = {
   namespace: 'adminSetting',
@@ -60,9 +52,11 @@ const adminSetting = {
       listRoles: [],
       listPermissions: [],
       listDepartments: [],
+      totalDepartmentList: 0,
       listGrades: [],
       listSupportTeam: [],
       emailDomain: '',
+      listDomain: [],
     },
     tempData: {
       listTitles: [],
@@ -70,6 +64,7 @@ const adminSetting = {
       listRoles: [],
       listPermissions: [],
       listDepartments: [],
+      totalDepartmentList: 0,
       listGrades: [],
       listSupportTeam: [
         {
@@ -176,10 +171,10 @@ const adminSetting = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data: listDepartments = [] } = response;
+        const { statusCode, data: listDepartments = [], total: totalDepartmentList = 0 } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveOrigin', payload: { listDepartments } });
-        yield put({ type: 'saveTemp', payload: { listDepartments } });
+        yield put({ type: 'saveOrigin', payload: { listDepartments, totalDepartmentList } });
+        yield put({ type: 'saveTemp', payload: { listDepartments, totalDepartmentList } });
       } catch (errors) {
         dialog(errors);
       }
@@ -623,6 +618,58 @@ const adminSetting = {
         notification.success({ message });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+    *fetchListDomain(_, { call, put }) {
+      try {
+        const response = yield call(getDomains, {
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { listDomain: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateListDomain({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(
+          setDomains,
+          { company: getCurrentCompany(), tenantId: getCurrentTenant() },
+          payload,
+        );
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'fetchListDomain',
+        });
+        notification.success({ message });
+      } catch (error) {
+        const { statusCode } = error;
+        if (statusCode !== 400) dialog(error);
+      }
+      return response;
+    },
+    *removeListDomain({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(removeDomains, { tenantId: getCurrentTenant() }, payload);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'fetchListDomain',
+        });
+        notification.success({ message });
+      } catch (error) {
+        const { statusCode } = error;
+        if (statusCode !== 400) dialog(error);
       }
       return response;
     },

@@ -1,16 +1,17 @@
-import { Checkbox, Tabs } from 'antd';
+import { Checkbox, Skeleton, Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
 import ModalImage from '@/assets/timeSheet/modalImage1.png';
-import CheckboxMenu from '@/components/CheckboxMenu';
 import CommonModal from '@/components/CommonModal';
+import CustomBlueButton from '@/components/CustomBlueButton';
+import CustomDropdownSelector from '@/components/CustomDropdownSelector';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentLocation } from '@/utils/authority';
 import { TAB_NAME } from '@/utils/timeSheet';
 import FinanceReport from './components/FinanceReport';
 import HumanResourceReport from './components/HumanResourceReport';
 import ManagerReport from './components/ManagerReport';
+import MyRequest from './components/MyRequest';
 import MyTimeSheet from './components/MyTimeSheet';
 import Settings from './components/Settings';
 import styles from './index.less';
@@ -23,19 +24,40 @@ const ComplexView = (props) => {
     tabName = '',
     showMyTimeSheet = true,
     companyLocationList = [],
-    timeSheet: { divisionList = [] } = {},
+    timeSheet: {
+      divisionList = [],
+      selectedLocations: selectedLocationsProp = [],
+      isLocationLoaded = false,
+    } = {},
     currentDateProp = '',
     dispatch,
   } = props;
 
   const [navToTimeoffModalVisible, setNavToTimeoffModalVisible] = useState(false);
   const [selectedDivisions, setSelectedDivisions] = useState([]);
-  const [selectedLocations, setSelectedLocation] = useState([getCurrentLocation()]);
+  const [selectedLocations, setSelectedLocations] = useState([]);
   const [isIncompleteTimeSheet, setIsIncompleteTimeSheet] = useState(false);
 
   // PERMISSIONS TO VIEW LOCATION
   const viewLocationHR = permissions.viewLocationHRTimesheet === 1;
   const viewLocationFinance = permissions.viewLocationFinanceTimesheet === 1;
+
+  useEffect(() => {
+    setSelectedLocations(selectedLocationsProp);
+  }, [JSON.stringify(selectedLocationsProp)]);
+
+  useEffect(() => {
+    const currentLocation = getCurrentLocation();
+    if (currentLocation) {
+      dispatch({
+        type: 'timeSheet/save',
+        payload: {
+          selectedLocations: [currentLocation],
+          isLocationLoaded: true,
+        },
+      });
+    }
+  }, []);
 
   const requestLeave = () => {
     history.push('/time-off/overview/personal-timeoff/new');
@@ -48,7 +70,7 @@ const ComplexView = (props) => {
         selectedLocations: [...selection],
       },
     });
-    setSelectedLocation([...selection]);
+    setSelectedLocations([...selection]);
   };
 
   const onDivisionChange = (selection) => {
@@ -59,32 +81,6 @@ const ComplexView = (props) => {
       },
     });
     setSelectedDivisions([...selection]);
-  };
-
-  const getSelectedLocationName = () => {
-    if (selectedLocations.length === 1) {
-      return companyLocationList.find((x) => x._id === selectedLocations[0])?.name || '';
-    }
-    if (selectedLocations.length > 0 && selectedLocations.length < companyLocationList.length) {
-      return `${selectedLocations.length} locations selected`;
-    }
-    if (selectedLocations.length === companyLocationList.length) {
-      return 'All';
-    }
-    return 'None';
-  };
-
-  const getSelectedDivisionName = () => {
-    if (selectedDivisions.length === 1) {
-      return divisionList.find((x) => x._id === selectedDivisions[0])?.name || '';
-    }
-    if (selectedDivisions.length > 0 && selectedDivisions.length < divisionList.length) {
-      return `${selectedDivisions.length} divisions selected`;
-    }
-    if (selectedDivisions.length === divisionList.length) {
-      return 'All';
-    }
-    return 'None';
   };
 
   const onChangeIncompleteTimeSheet = (e) => {
@@ -141,9 +137,6 @@ const ComplexView = (props) => {
 
   const renderFilterBar = (isHRTab) => {
     // if only one selected
-    const selectedLocationName = getSelectedLocationName();
-    const selectedDivisionName = getSelectedDivisionName();
-
     const divisionOptions = divisionList.map((x) => {
       return {
         _id: x._id,
@@ -159,43 +152,22 @@ const ComplexView = (props) => {
             </Checkbox>
           </div>
         )}
-        <div className={styles.item}>
-          <span className={styles.label}>Location</span>
+        <CustomDropdownSelector
+          options={renderLocationOptions()}
+          onChange={onLocationChange}
+          disabled={renderLocationOptions().length < 2}
+          selectedList={selectedLocations}
+          label="Location"
+        />
 
-          <CheckboxMenu
-            options={renderLocationOptions()}
-            onChange={onLocationChange}
-            list={companyLocationList}
-            default={selectedLocations}
-            disabled={renderLocationOptions().length < 2}
-          >
-            <div
-              className={`${
-                renderLocationOptions().length < 2 ? styles.noDropdown : styles.dropdown
-              }`}
-              onClick={(e) => e.preventDefault()}
-            >
-              <span>{selectedLocationName}</span>
-              {renderLocationOptions().length < 2 ? null : <img src={SmallDownArrow} alt="" />}
-            </div>
-          </CheckboxMenu>
-        </div>
         {renderDivisionOptions() && (
-          <div className={styles.item}>
-            <span className={styles.label}>Division</span>
-
-            <CheckboxMenu
-              options={divisionOptions}
-              onChange={onDivisionChange}
-              default={selectedDivisions}
-              disabled
-            >
-              <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
-                <span>{selectedDivisionName}</span>
-                <img src={SmallDownArrow} alt="" />
-              </div>
-            </CheckboxMenu>
-          </div>
+          <CustomDropdownSelector
+            options={divisionOptions}
+            onChange={onDivisionChange}
+            disabled
+            label="Division"
+            selectedList={selectedDivisions}
+          />
         )}
       </div>
     );
@@ -210,9 +182,12 @@ const ComplexView = (props) => {
         return renderFilterBar();
 
       case TAB_NAME.MY:
+      case TAB_NAME.MY_REQUESTS:
         return (
-          <div className={styles.requestLeave} onClick={() => setNavToTimeoffModalVisible(true)}>
-            <span className={styles.title}>Request Leave</span>
+          <div className={styles.options}>
+            <CustomBlueButton onClick={() => setNavToTimeoffModalVisible(true)}>
+              Request Leave
+            </CustomBlueButton>
           </div>
         );
 
@@ -226,8 +201,12 @@ const ComplexView = (props) => {
   const viewHRReport = permissions.viewHRReportCVTimesheet === 1;
   const viewFinanceReport = permissions.viewFinanceReportCVTimesheet === 1;
   const viewPeopleManagerReport = permissions.viewPeopleManagerCVTimesheet === 1;
-  const viewPMReport = permissions.viewProjectManagerCVTimesheet === 1;
+  const viewPMReport =
+    permissions.viewProjectManagerCVTimesheet === 1 ||
+    permissions?.viewReportProjectViewTimesheet === 1 ||
+    permissions?.viewReportTeamViewTimesheet === 1;
   const viewSettingTimesheet = permissions.viewSettingTimesheet === 1;
+  const viewMyRequest = 1;
 
   const getActiveKey = () => {
     if (showMyTimeSheet) return tabName || TAB_NAME.MY;
@@ -235,6 +214,7 @@ const ComplexView = (props) => {
     if (viewFinanceReport) return TAB_NAME.FINANCE_REPORTS;
     if (viewPeopleManagerReport || viewPMReport) return TAB_NAME.PM_REPORTS;
     if (viewSettingTimesheet) return TAB_NAME.SETTINGS;
+    if (viewMyRequest) return TAB_NAME.MY_REQUESTS;
     return tabName;
   };
 
@@ -291,6 +271,11 @@ const ComplexView = (props) => {
             <ManagerReport />
           </TabPane>
         )}
+        {viewMyRequest && (
+          <TabPane tab="My Requests" key={TAB_NAME.MY_REQUESTS}>
+            <MyRequest />
+          </TabPane>
+        )}
 
         {viewSettingTimesheet && (
           <TabPane tab="Settings" key={TAB_NAME.SETTINGS}>
@@ -313,13 +298,22 @@ const ComplexView = (props) => {
           }}
           destroyInactiveTabPane
         >
-          {showMyTimeSheet && (
-            <TabPane tab="My Timesheet" key={TAB_NAME.MY}>
-              <MyTimeSheet currentDateProp={currentDateProp} />
-            </TabPane>
+          {isLocationLoaded ? (
+            <>
+              {showMyTimeSheet && (
+                <TabPane tab="My Timesheet" key={TAB_NAME.MY}>
+                  <MyTimeSheet currentDateProp={currentDateProp} />
+                </TabPane>
+              )}
+              {renderOtherTabs()}
+            </>
+          ) : (
+            <div style={{ padding: 24 }}>
+              <Skeleton active />
+            </div>
           )}
-          {renderOtherTabs()}
         </Tabs>
+
         <CommonModal
           visible={navToTimeoffModalVisible}
           onClose={() => setNavToTimeoffModalVisible(false)}

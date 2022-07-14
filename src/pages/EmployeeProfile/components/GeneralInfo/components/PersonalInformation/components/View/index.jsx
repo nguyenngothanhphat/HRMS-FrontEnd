@@ -45,18 +45,18 @@ class View extends PureComponent {
     label,
     value,
     permissions,
-    profileOwner,
+    isProfileOwner,
     isShowPersonalNumber,
     isShowPersonalEmail,
   ) => {
     if (label === 'Personal Number') {
-      if (isShowPersonalNumber || permissions.viewPersonalNumber !== -1 || profileOwner) {
+      if (isShowPersonalNumber || permissions.viewPersonalNumber !== -1 || isProfileOwner) {
         return value;
       }
       return <LockFilled />;
     }
     if (label === 'Personal Email') {
-      if (isShowPersonalEmail || permissions.viewPersonalEmail !== -1 || profileOwner) {
+      if (isShowPersonalEmail || permissions.viewPersonalEmail !== -1 || isProfileOwner) {
         return value;
       }
       return <LockFilled />;
@@ -85,11 +85,11 @@ class View extends PureComponent {
       dataAPI,
       generalData,
       permissions = {},
-      profileOwner = false,
+      isProfileOwner = false,
       currentUser: { employee: { _id: idEmployee = '' } = {} || {} } = {},
       employee = '',
     } = this.props;
-    const { isShowPersonalNumber, isShowPersonalEmail } = generalData;
+    const { isShowPersonalNumber = false, isShowPersonalEmail = false } = generalData;
 
     const {
       residentAddress: {
@@ -176,17 +176,17 @@ class View extends PureComponent {
                 item.label,
                 item.value,
                 permissions,
-                profileOwner,
+                isProfileOwner,
                 isShowPersonalNumber,
                 isShowPersonalEmail,
               )}
             </Col>
             {item.label === 'Personal Number' &&
-            (permissions.editPersonalInfo !== -1 || profileOwner) ? (
+            (permissions.editPersonalInfo !== -1 || isProfileOwner) ? (
               <Col span={2}>
                 <div className={styles.iconBox}>
                   <Radio.Group
-                    defaultValue={isShowPersonalNumber}
+                    value={isShowPersonalNumber}
                     buttonStyle="solid"
                     size="small"
                     className={styles.iconRadio}
@@ -206,11 +206,11 @@ class View extends PureComponent {
             )}
 
             {item.label === 'Personal Email' &&
-            (permissions.editPersonalInfo !== -1 || profileOwner) ? (
+            (permissions.editPersonalInfo !== -1 || isProfileOwner) ? (
               <Col span={2}>
                 <div className={styles.iconBox}>
                   <Radio.Group
-                    defaultValue={isShowPersonalEmail}
+                    value={isShowPersonalEmail}
                     buttonStyle="solid"
                     size="small"
                     className={styles.iconRadio}

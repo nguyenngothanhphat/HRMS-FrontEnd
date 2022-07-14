@@ -37,6 +37,7 @@ const MyTimeSheet = (props) => {
     timeoffList = [],
     employee: { _id: employeeId = '' } = {},
     currentDateProp = '',
+    loadingFetch = false,
   } = props;
 
   // FUNCTION AREA
@@ -115,6 +116,7 @@ const MyTimeSheet = (props) => {
             selectedView={selectedView}
             setSelectedView={setSelectedView}
             viewChangeComponent={viewChangeComponent}
+            loadingFetch={loadingFetch}
           />
         );
       case VIEW_TYPE.W:
@@ -125,6 +127,9 @@ const MyTimeSheet = (props) => {
             setStartDate={setStartDateWeek}
             setEndDate={setEndDateWeek}
             viewChangeComponent={viewChangeComponent}
+            setSelectedDate={setSelectedDate}
+            selectedDate={selectedDate}
+            loadingFetch={loadingFetch}
           />
         );
 
@@ -132,10 +137,13 @@ const MyTimeSheet = (props) => {
         return (
           <MonthlyHeader
             startDate={startDateMonth}
+            selectedDate={selectedDate}
             endDate={endDateMonth}
             setStartDate={setStartDateMonth}
             setEndDate={setEndDateMonth}
             viewChangeComponent={viewChangeComponent}
+            setSelectedDate={setSelectedDate}
+            loadingFetch={loadingFetch}
           />
         );
 
@@ -206,11 +214,13 @@ export default connect(
       timeoffList = [],
     } = {},
     user: { currentUser: { employee = {} } = {} },
+    loading,
   }) => ({
     employee,
     myTimesheetByDay,
     myTimesheetByWeek,
     myTimesheetByMonth,
     timeoffList,
+    loadingFetch: loading.effects['timeSheet/fetchMyTimesheetByTypeEffect'],
   }),
 )(MyTimeSheet);

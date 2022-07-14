@@ -83,8 +83,8 @@ const TicketManagement = (props) => {
         render: (queryType = []) => {
           return (
             <div>
-              {queryType.map((name) => (
-                <span className={styles.queryTypeTag}>{name}</span>
+              {queryType.map((type) => (
+                <span className={styles.queryTypeTag}>{type.name}</span>
               ))}
             </div>
           );

@@ -1,8 +1,7 @@
 import { Breadcrumb, Button, Dropdown, Layout, Menu, Result, Skeleton } from 'antd';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, history, Link } from 'umi';
-import { io } from 'socket.io-client';
-import avtDefault from '@/assets/defaultAvatar.png';
+import avtDefault from '@/assets/avtDefault.jpg';
 import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
 import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
 import Footer from '@/components/Footer';
@@ -10,9 +9,8 @@ import Footer from '@/components/Footer';
 import CommonModal from '@/pages/CandidatePortal/components/Dashboard/components/CommonModal';
 import { getCurrentCompany, getFirstChangePassword } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
-import { CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
-import { ChatEvent, SOCKET_URL } from '@/utils/chatSocket';
-
+import { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
+import { ChatEvent, socket, disconnectSocket } from '@/utils/socket';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import s from './CandidatePortalLayout.less';
 
@@ -32,7 +30,6 @@ const noMatch = (
 );
 
 const CandidatePortalLayout = React.memo((props) => {
-  const socket = useRef();
   const {
     children,
     location = {
@@ -46,11 +43,13 @@ const CandidatePortalLayout = React.memo((props) => {
     ticketId = '',
     // data: { title: { name: titleName = '' } = {} } = {},
     data: { firstName = '', lastName = '', middleName = '' },
-    conversation: { unseenTotal = 0 } = {},
     pendingTasks = [],
     events = [],
+    unseenTotal,
+    activeConversationUnseen,
   } = props;
 
+  const [notification, setNotification] = useState(0);
   const [openUpcomingEventModal, setOpenUpcomingEventModal] = useState(false);
   let candidateFullName = `${firstName} ${middleName} ${lastName}`;
   if (!middleName) candidateFullName = `${firstName} ${lastName}`;
@@ -63,14 +62,28 @@ const CandidatePortalLayout = React.memo((props) => {
   };
   const disablePage = getFirstChangePassword();
 
-  const fetchUnseenTotal = (candidateId) => {
-    dispatch({
-      type: 'conversation/getNumberUnseenConversationEffect',
-      payload: {
-        userId: candidateId,
-      },
-    });
+  const fetchNotificationList = async () => {
+    if (candidate) {
+      await dispatch({
+        type: 'conversation/getConversationUnSeenEffect',
+        payload: {
+          userId: candidate?._id,
+        },
+      });
+    }
   };
+
+  useEffect(() => {
+    fetchNotificationList();
+  }, [JSON.stringify(candidate)]);
+
+  useEffect(() => {
+    setNotification(Number(unseenTotal));
+  }, [JSON.stringify(activeConversationUnseen)]);
+
+  useEffect(() => {
+    document.title = 'Terralogic Candidate Portal';
+  }, []);
 
   const saveNewMessage = (message) => {
     dispatch({
@@ -94,8 +107,26 @@ const CandidatePortalLayout = React.memo((props) => {
         type: 'user/fetchCurrent',
       });
     }
+    return () => {
+      disconnectSocket();
+    };
   }, []);
 
+  const initialSocket = () => {
+    socket.emit(ChatEvent.ADD_USER, candidate?._id);
+    socket.on(ChatEvent.GET_MESSAGE, (message) => {
+      saveNewMessage(message);
+      fetchNotificationList();
+      getListLastMessage();
+    });
+  };
+
+  const getViewingTask = () => {
+    const currentLink = window.location.href;
+    return pendingTasks.find((task) => currentLink.includes(task.id));
+  } 
+  const viewingTask = getViewingTask()
+  
   useEffect(() => {
     if (candidate) {
       dispatch({
@@ -105,17 +136,7 @@ const CandidatePortalLayout = React.memo((props) => {
         },
       });
 
-      // realtime message
-      socket.current = io(SOCKET_URL);
-      socket.current.emit(ChatEvent.ADD_USER, candidate._id);
-
-      socket.current.on(ChatEvent.GET_MESSAGE, (message) => {
-        saveNewMessage(message);
-        setTimeout(() => {
-          fetchUnseenTotal(candidate._id);
-          getListLastMessage();
-        }, 500);
-      });
+      initialSocket();
     }
   }, [JSON.stringify(candidate)]);
 
@@ -125,8 +146,6 @@ const CandidatePortalLayout = React.memo((props) => {
   }, [window.location.href]);
 
   useEffect(() => {
-    const currentLink = window.location.href;
-    const viewingTask = pendingTasks.find((task) => currentLink.includes(task.id));
     if (
       viewingTask &&
       [CANDIDATE_TASK_STATUS.DONE, CANDIDATE_TASK_STATUS.UPCOMING].includes(viewingTask?.status)
@@ -163,6 +182,15 @@ const CandidatePortalLayout = React.memo((props) => {
     return currentCompany.name || '';
   };
 
+  const getBreadcrumbName = () => {
+    switch (viewingTask?.id) {
+      case CANDIDATE_TASK_LINK.DOCUMENTS_CHECKLIST:
+        return 'Upload Documents'
+      default:
+        return 'Employee Onboarding'
+    }
+  }
+  
   const avatarMenu = (
     <Menu
       className={s.dropdownMenu}
@@ -252,7 +280,7 @@ const CandidatePortalLayout = React.memo((props) => {
             }
           >
             <img src={MessageIcon} alt="message" />
-            {unseenTotal > 0 && <div className={s.badgeNumber}>{unseenTotal}</div>}
+            {notification > 0 && <div className={s.badgeNumber}>{notification}</div>}
           </div>
 
           <Dropdown
@@ -296,7 +324,7 @@ const CandidatePortalLayout = React.memo((props) => {
                     <a href="/candidate-portal">Home</a>
                   </Breadcrumb.Item>
                   <Breadcrumb.Item>
-                    <a href="">Employee Onboarding</a>
+                    <a href="">{getBreadcrumbName()}</a>
                   </Breadcrumb.Item>
                 </Breadcrumb>
               </div>
@@ -326,9 +354,12 @@ export default connect(
       nextSteps: steps = [],
     } = {},
     conversation,
+    conversation: { activeConversationUnseen = [], unseenTotal = 0 },
     user: { companiesOfUser = [], currentUser: { candidate = '' } = {} } = {},
     loading,
   }) => ({
+    activeConversationUnseen,
+    unseenTotal,
     conversation,
     listPage,
     data,

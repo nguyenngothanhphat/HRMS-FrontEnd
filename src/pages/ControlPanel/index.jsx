@@ -4,7 +4,7 @@ import { Avatar, Button, Skeleton, Input, Tooltip, Upload, message } from 'antd'
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import { debounce } from 'lodash';
-import avtDefault from '@/assets/defaultAvatar.png';
+import avtDefault from '@/assets/avtDefault.jpg';
 import ItemCompany from './components/ItemCompany';
 import s from './index.less';
 
@@ -138,7 +138,7 @@ class ControlPanel extends Component {
     const res = await dispatch({
       type: 'upload/uploadFile',
       payload: formData,
-      isUploadAvatar: true,
+      showNotification: false,
     });
     const { statusCode, data = [] } = res;
     if (statusCode === 200 && data.length > 0) {

@@ -1,4 +1,4 @@
-import { Form, Select } from 'antd';
+import { Form, Input, Select } from 'antd';
 import React, { useEffect } from 'react';
 import { debounce } from 'lodash';
 import { connect } from 'umi';
@@ -10,12 +10,13 @@ const FilterResourcesListContent = (props) => {
   const [form] = Form.useForm();
   const {
     dispatch,
-    projectDetails: { divisionList = [], titleList = [] } = {},
+    projectDetails: { divisionList = [], projectId = '' } = {},
+    projectManagement: { projectList = [] },
     onFilter = () => {},
     needResetFilterForm = false,
     setNeedResetFilterForm = () => {},
     setIsFiltering = () => {},
-    setApplied = () => {}
+    setApplied = () => {},
   } = props;
 
   const fetchDataList = () => {
@@ -27,6 +28,9 @@ const FilterResourcesListContent = (props) => {
     });
     dispatch({
       type: 'projectDetails/fetchBillingStatusListEffect',
+    });
+    dispatch({
+      type: 'projectManagement/fetchProjectListEffect',
     });
   };
 
@@ -66,7 +70,7 @@ const FilterResourcesListContent = (props) => {
       form.resetFields();
       setNeedResetFilterForm(false);
       setIsFiltering(false);
-      setApplied(0)
+      setApplied(0);
     }
   }, [needResetFilterForm]);
 
@@ -79,25 +83,71 @@ const FilterResourcesListContent = (props) => {
       className={styles.FilterResourcesListContent}
     >
       <Form.Item label="By division" name="division">
-        <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
+        <Select
+          mode="multiple"
+          allowClear
+          style={{ width: '100%' }}
+          placeholder="Please select"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
           {divisionList.map((x) => (
             <Option value={x.name}>{x.name}</Option>
           ))}
         </Select>
       </Form.Item>
 
-      <Form.Item label="By designation" name="designation">
-        <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
-          {titleList.map((x) => (
-            <Option value={x._id}>{x.name}</Option>
-          ))}
+      <Form.Item
+        label="By Experience"
+        name="expYearBegin"
+        style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginRight: '8px' }}
+        rules={[
+          {
+            pattern: /^[0-9]*$/,
+            message: 'Exp is invalid',
+          },
+        ]}
+      >
+        <Input placeholder="Years of Exp" />
+      </Form.Item>
+      <Form.Item
+        label="To"
+        name="expYearEnd"
+        style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginLeft: '8px' }}
+        rules={[
+          {
+            pattern: /^[0-9]*$/,
+            message: 'Exp is invalid',
+          },
+        ]}
+      >
+        <Input placeholder="Years of Exp" />
+      </Form.Item>
+
+      <Form.Item label="By Project" name="project">
+        <Select
+          mode="multiple"
+          allowClear
+          style={{ width: '100%' }}
+          placeholder="Please select"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {projectList
+            .filter((i) => i.projectId !== projectId)
+            .map((x) => (
+              <Option value={x.id}>{x.projectName}</Option>
+            ))}
         </Select>
       </Form.Item>
     </Form>
   );
 };
 
-export default connect(({ projectDetails, user: { currentUser: { employee = {} } = {} } }) => ({
-  employee,
-  projectDetails,
-}))(FilterResourcesListContent);
+export default connect(
+  ({ projectDetails, user: { currentUser: { employee = {} } = {} }, projectManagement }) => ({
+    employee,
+    projectDetails,
+    projectManagement,
+  }),
+)(FilterResourcesListContent);

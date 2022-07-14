@@ -2,49 +2,46 @@
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 1000;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   // background-color: rgba(67,72,83, 0.8); // as same as #434853
-  cursor:  url('../../../assets/screenshotPointer.svg'), auto;
-  z-index: 1000;
-
+  cursor: url('../../../assets/screenshotPointer.svg'), auto;
 }
 
-.loadingScreenshot{
+.loadingScreenshot {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
   z-index: 1000;
+  transform: translate(-50%, -50%);
 }
 
 .initialBtn {
-  border: 1px solid #FFFFFF;
-  padding: 12px 24px;
-  border-radius: 25px;
-  height: 40px;
-
   position: absolute;
   right: 34px;
   bottom: 52px;
   z-index: 1000;
-  
-  font-family: Roboto;
-  font-style: normal;
+  height: 40px;
+  padding: 12px 24px;
+
+  color: #161c29;
   font-weight: 500;
   font-size: 14px;
+
+  font-style: normal;
   line-height: 16px;
   letter-spacing: 0.13125px;
-
-  color: #161C29;
+  border: 1px solid #ffffff;
+  border-radius: 25px;
 }
 
-.disabledBtn{
+.disabledBtn {
   color: rgb(0 0 0) !important;
+  text-shadow: none;
   background: #8f8f8fd4 !important;
   border-color: #8f8f8fd4 !important;
-  text-shadow: none;
   box-shadow: none;
 }
 
@@ -62,8 +59,8 @@
 .modal__header button {
   margin-left: auto;
   font-size: 30px;
-  border: none;
   background: #ffffff;
+  border: none;
   cursor: pointer;
 }
 
@@ -80,21 +77,20 @@
   overflow: auto;
 }
 
-.highlightNote{
-  font-family: Roboto;
-  font-style: normal;
-  color: #FFFFFF;
-
+.highlightNote {
   position: absolute;
   top: 72px;
   left: 80px;
   z-index: 1000;
+  color: #ffffff;
+
+  font-style: normal;
 
   &__title {
+    padding-bottom: 14px;
     font-weight: bold;
     font-size: 16px;
     line-height: 19px;
-    padding-bottom: 14px;
   }
 
   &__subtitle {

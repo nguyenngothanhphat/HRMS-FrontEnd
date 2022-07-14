@@ -1,19 +1,21 @@
 /* eslint-disable no-nested-ternary */
 import { Carousel, Spin } from 'antd';
 import moment from 'moment';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import BirthdayImage from '@/assets/homePage/birthday.png';
+import CommentIcon from '@/assets/homePage/comment.svg';
+import LikeIcon from '@/assets/homePage/like.svg';
 import NextIcon from '@/assets/homePage/next.svg';
 import PrevIcon from '@/assets/homePage/prev.svg';
-import UserProfilePopover from '@/components/UserProfilePopover';
-import styles from './index.less';
-import LikeIcon from '@/assets/homePage/like.svg';
-import CommentIcon from '@/assets/homePage/comment.svg';
+import PlaceholderImage from '@/assets/homePage/previewImage.png';
 import CommonModal from '@/components/CommonModal';
+import PostLikedModalContent from '@/components/PostLikedModalContent';
+import UserProfilePopover from '@/components/UserProfilePopover';
+import { CELEBRATE_TYPE, roundNumber, roundNumber2 } from '@/utils/homePage';
+import { getCompanyName, singularify } from '@/utils/utils';
 import CelebratingDetailModalContent from '../CelebratingDetailModalContent';
-import LikedModalContent from '../LikedModalContent';
-import { CELEBRATE_TYPE } from '@/utils/homePage';
+import styles from './index.less';
 
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -40,6 +42,7 @@ const Card = (props) => {
   const [celebratingDetailModalVisible, setCelebratingDetailModalVisible] = useState(false);
   const [viewingItem, setViewingItem] = useState('');
   const [likedModalVisible, setLikedModalVisible] = useState(false);
+  const [data, setData] = useState([]);
 
   // functions
   const onViewProfileClick = (userId) => {
@@ -60,10 +63,18 @@ const Card = (props) => {
   };
 
   const onLikeClick = async (item) => {
-    const { likesComments: { likes = [] } = {} } = item;
+    const { likes = [] } = item;
 
     const employeeId = employee?._id;
     if (!likes.includes(employeeId)) {
+      setData((prevData) => {
+        const newData = [...prevData];
+        const index = newData.findIndex((x) => x._id === item._id);
+        if (index > -1) {
+          newData[index].likes.push({ _id: employeeId });
+        }
+        return newData;
+      });
       const payload = {
         employee: item._id,
         likes: [employeeId],
@@ -76,54 +87,57 @@ const Card = (props) => {
     }
   };
 
+  const formatData = (arr) => {
+    return arr.map((x) => {
+      return {
+        ...x,
+        likes: x.likesComments?.likes || [],
+        comments: x.likesComments?.comments || [],
+      };
+    });
+  };
+
   useEffect(() => {
+    const dataTemp = formatData(list);
+    setData(dataTemp);
     if (viewingItem) {
-      const find = list.find((item) => item._id === viewingItem._id);
+      const find = dataTemp.find((item) => item._id === viewingItem._id);
       setViewingItem(find);
     }
   }, [JSON.stringify(list)]);
 
   // render UI
-  const renderEmployeeName = (data) => {
+  const renderEmployeeName = (emp) => {
     return (
       <UserProfilePopover
         placement="left"
         data={{
-          ...data,
-          ...data.generalInfoInfo,
+          ...emp,
+          ...emp.generalInfoInfo,
         }}
       >
         <span
           className={styles.employeeName}
-          onClick={() => onViewProfileClick(data?.generalInfoInfo?.userId)}
+          onClick={() => onViewProfileClick(emp?.generalInfoInfo?.userId)}
         >
-          {data?.generalInfoInfo.legalName}
+          {emp?.generalInfoInfo.legalName}
         </span>
       </UserProfilePopover>
     );
   };
 
-  const getGender = (gender) => {
-    switch (gender) {
-      case 'Male':
-        return 'his';
-      case 'Female':
-        return 'her';
-      default:
-        return 'his/her';
-    }
-  };
-  const renderCardContent = (data = {}) => {
-    const employeeName = renderEmployeeName(data);
+  const renderCardContent = (emp = {}) => {
+    const employeeName = renderEmployeeName(emp);
+    const { joinDate = '' } = emp;
 
-    if (data.type === CELEBRATE_TYPE.BIRTHDAY) {
-      const { DOB = '', gender = '' } = data?.generalInfoInfo || {};
+    if (emp.type === CELEBRATE_TYPE.BIRTHDAY) {
+      const { DOB = '' } = emp?.generalInfoInfo || {};
       const isToday = isTheSameDay(moment(), moment(DOB));
       const birthday = moment.utc(DOB).locale('en').format('MMM Do');
       if (isToday)
         return (
           <span>
-            {employeeName} is celebrating {getGender(gender)} birthday today. ({birthday})
+            Happy Birthday {employeeName} ({birthday}) !!!
           </span>
         );
       return (
@@ -132,28 +146,40 @@ const Card = (props) => {
         </span>
       );
     }
-    if (data.type === CELEBRATE_TYPE.ANNIVERSARY) {
-      const { joinDate = '' } = data;
+    if (emp.type === CELEBRATE_TYPE.ANNIVERSARY) {
+      const yearCount = moment.utc().diff(moment.utc(joinDate).format('YYYY-MM-DD'), 'years', true);
       return (
         <span>
-          {employeeName} joined our company on{' '}
-          {moment.utc(joinDate).locale('en').format('MMM Do, YYYY')}.
+          Congratulations {employeeName} on completing{' '}
+          {yearCount < 1 ? roundNumber2(yearCount) : roundNumber(yearCount)}{' '}
+          {singularify('year', yearCount)} with {getCompanyName()} !!!
         </span>
       );
     }
-    if (data.type === CELEBRATE_TYPE.NEWJOINEE) {
-      return <span>Welcome to new member: {employeeName}.</span>;
+    if (emp.type === CELEBRATE_TYPE.NEWJOINEE) {
+      return (
+        <span>
+          {employeeName} ({moment.utc(joinDate).locale('en').format('MMM Do, YYYY')}) - Welcome to
+          the team Newbie !!!
+        </span>
+      );
     }
     return '';
   };
 
   const renderCard = (card) => {
-    const { likesComments: { likes = [], comments = [] } = {} } = card;
+    const { likes = [], comments = [] } = card;
     const likedIds = likes.map((x) => x._id);
     return (
       <div className={styles.cardContainer}>
         <div className={styles.image}>
-          <img src={card.generalInfoInfo?.avatar || BirthdayImage} alt="" />
+          <img
+            src={card.generalInfoInfo?.avatar || BirthdayImage}
+            alt=""
+            onError={(e) => {
+              e.target.src = PlaceholderImage;
+            }}
+          />
         </div>
         <div className={styles.content}>
           <p className={styles.caption}>{renderCardContent(card)}</p>
@@ -174,7 +200,7 @@ const Card = (props) => {
                   setLikedModalVisible(true);
                 }}
               >
-                {likes.length || 0} Likes
+                {likes.length || 0} {singularify('Like', likes.length)}
               </span>
             </div>
             <div
@@ -185,7 +211,9 @@ const Card = (props) => {
               }}
             >
               <img src={CommentIcon} alt="" />
-              <span>{comments.length || 0} Comments</span>
+              <span>
+                {comments.length || 0} {singularify('Comment', comments.length)}
+              </span>
             </div>
           </div>
         </div>
@@ -197,7 +225,13 @@ const Card = (props) => {
     return (
       <div className={styles.cardContainer}>
         <div className={styles.image}>
-          <img src={BirthdayImage} alt="" />
+          <img
+            src={BirthdayImage}
+            alt=""
+            onError={(e) => {
+              e.target.src = PlaceholderImage;
+            }}
+          />
         </div>
         <div className={styles.content}>
           <p className={styles.caption}>No birthday today</p>
@@ -210,7 +244,13 @@ const Card = (props) => {
     return (
       <div className={styles.cardContainer}>
         <div className={styles.image}>
-          <img src={previewImage || BirthdayImage} alt="" />
+          <img
+            src={previewImage || BirthdayImage}
+            alt=""
+            onError={(e) => {
+              e.target.src = PlaceholderImage;
+            }}
+          />
         </div>
         <div className={styles.content}>
           <p className={styles.caption}>{previewDescription || 'Content here'}</p>
@@ -233,8 +273,8 @@ const Card = (props) => {
           prevArrow={<PrevArrow />}
         >
           {!previewing
-            ? list.length > 0
-              ? list.map((x) => renderCard(x))
+            ? data.length > 0
+              ? data.map((x) => renderCard(x))
               : renderEmpty()
             : renderPreview()}
           {/* FOR PREVIEWING IN SETTINGS PAGE */}
@@ -243,8 +283,16 @@ const Card = (props) => {
       <CommonModal
         visible={celebratingDetailModalVisible}
         onClose={() => setCelebratingDetailModalVisible(false)}
-        title="Say Happy Birthday!"
-        content={<CelebratingDetailModalContent item={viewingItem} refreshData={refreshData} />}
+        title={
+          viewingItem.type === CELEBRATE_TYPE.BIRTHDAY
+            ? 'Say Happy Birthday!'
+            : 'Say Congratulations!'
+        }
+        content={
+          celebratingDetailModalVisible ? (
+            <CelebratingDetailModalContent item={viewingItem} refreshData={refreshData} />
+          ) : null
+        }
         width={500}
         hasFooter={false}
       />
@@ -252,8 +300,9 @@ const Card = (props) => {
         visible={likedModalVisible}
         onClose={() => setLikedModalVisible(false)}
         title="Likes"
-        content={<LikedModalContent list={viewingItem?.likesComments?.likes || []} />}
+        content={<PostLikedModalContent list={viewingItem?.likes || []} />}
         width={500}
+        maskClosable
         hasFooter={false}
       />
     </div>

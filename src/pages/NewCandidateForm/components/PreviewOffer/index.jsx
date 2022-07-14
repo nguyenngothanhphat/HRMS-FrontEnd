@@ -34,8 +34,8 @@ const PreviewOffer = (props) => {
     loading2,
     loading3,
     loadingFetchCandidate = false,
-    loadingExtendOfferDate = false,
-    loadingWithdrawOffer = false,
+    // loadingExtendOfferDate = false,
+    // loadingWithdrawOffer = false,
   } = props;
 
   const {
@@ -116,11 +116,12 @@ const PreviewOffer = (props) => {
   const isRejectedOffer = processStatus === NEW_PROCESS_STATUS.OFFER_REJECTED;
   const isWithdrawnOffer = processStatus === NEW_PROCESS_STATUS.OFFER_WITHDRAWN;
   const isSentOffer = processStatus === NEW_PROCESS_STATUS.OFFER_RELEASED;
+  const isDocumentCheckList = processStatus === NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION;
 
   // MODALS
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
-  const [extendOfferModalVisible, setExtendOfferModalVisible] = useState(false);
-  const [withdrawOfferModalVisible, setWithdrawOfferModalVisible] = useState(false);
+  // const [extendOfferModalVisible, setExtendOfferModalVisible] = useState(false);
+  // const [withdrawOfferModalVisible, setWithdrawOfferModalVisible] = useState(false);
   // FUNCTIONS
 
   const resetImg = (type) => {
@@ -267,36 +268,6 @@ const PreviewOffer = (props) => {
         setOpenModal(true);
       }
     });
-  };
-
-  const handleExtendOfferDate = async (newDate) => {
-    const { candidate } = data;
-    const res = await dispatch({
-      type: 'newCandidateForm/extendOfferLetterEffect',
-      payload: {
-        candidate,
-        expiryDate: newDate,
-        oldExpiryDate: expiryDateProp,
-      },
-    });
-    if (res.statusCode === 200) {
-      setExtendOfferModalVisible(false);
-    }
-  };
-
-  const handleWithdrawOffer = async (reason) => {
-    const { candidate } = data;
-    const res = await dispatch({
-      type: 'newCandidateForm/withdrawOfferEffect',
-      payload: {
-        candidate,
-        reasonForWithdraw: reason,
-      },
-    });
-    if (res.statusCode === 200) {
-      setWithdrawOfferModalVisible(false);
-      setOpenModal4(true);
-    }
   };
 
   const handleRejectOffer = async (reason) => {
@@ -825,9 +796,6 @@ const PreviewOffer = (props) => {
     // HR MANAGER IS TICKET MANAGER or HR MANAGER IS BOTH ASSIGNEE & MANAGER
     if (isTicketManager) {
       const managerSecondaryButtonText = () => {
-        if (isSentOffer) {
-          return 'Extend Offer Date';
-        }
         if (isAwaitingOffer || isNewOffer) {
           return 'Needs Changes';
         }
@@ -836,24 +804,11 @@ const PreviewOffer = (props) => {
         //   return 'Offer Rejected';
         // }
 
-        if (isWithdrawnOffer) {
-          return 'Offer Withdrawn';
-        }
         return 'Previous';
       };
 
       const managerPrimaryButtonText = () => {
-        if (isSentOffer || isAcceptedOffer) {
-          return 'Withdraw';
-        }
-        // if (isRejectedOffer) {
-        //   return 'Rejected';
-        // }
-        // if (isWithdrawnOffer) {
-        //   return 'Withdrawn';
-        // }
-
-        if (isNeedsChanges) {
+        if (isSentOffer || isAcceptedOffer || isNeedsChanges || isDocumentCheckList) {
           return 'Next';
         }
 
@@ -863,22 +818,21 @@ const PreviewOffer = (props) => {
       const onSecondaryButtonClick = () => {
         if (isAwaitingOffer || isNewOffer) {
           setRejectModalVisible(true);
-        } else if (isSentOffer) {
-          setExtendOfferModalVisible(true);
         } else {
           history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.OFFER_DETAILS}`);
         }
       };
 
       const onPrimaryButtonClick = () => {
-        if (isSentOffer || isAcceptedOffer) {
-          setWithdrawOfferModalVisible(true);
+        if (isSentOffer || isAcceptedOffer || isDocumentCheckList) {
+          history.push(
+            `/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.DOCUMENT_CHECKLIST_VERIFICATION}`,
+          );
         }
         if (isNewOffer || isAwaitingOffer) {
           // HR MANAGER APPROVES A TICKET HERE
           handleSendFinalOffer();
         }
-
         if (isNeedsChanges) {
           handleSentForApproval();
         }
@@ -889,6 +843,9 @@ const PreviewOffer = (props) => {
           if (!hrManagerSignature.url || !hrSignature.url) {
             return true;
           }
+        }
+        if (isSentOffer) {
+          return true;
         }
 
         return false;
@@ -1416,26 +1373,6 @@ const PreviewOffer = (props) => {
           onClose={() => setRejectModalVisible(false)}
           onFinish={handleRejectOffer}
           loading={loading2}
-        />
-
-        {/* EXTEND OFFER  */}
-        <ExtendOfferModal
-          title="Extend offer letter date"
-          visible={extendOfferModalVisible}
-          onClose={() => setExtendOfferModalVisible(false)}
-          onFinish={handleExtendOfferDate}
-          currentExpiryDate={expiryDateProp}
-          loading={loadingExtendOfferDate}
-        />
-
-        {/* WITHDRAW MODAL  */}
-
-        <WithdrawOfferModal
-          title="Offer Withdraw"
-          visible={withdrawOfferModalVisible}
-          onClose={() => setWithdrawOfferModalVisible(false)}
-          loading={loadingWithdrawOffer}
-          onFinish={handleWithdrawOffer}
         />
       </Col>
     </Row>

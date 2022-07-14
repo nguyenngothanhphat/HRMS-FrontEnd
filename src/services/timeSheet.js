@@ -94,6 +94,18 @@ export async function getMyTimesheetByType(payload, params) {
   );
 }
 
+export async function getHolidaysByDate(params) {
+  return request(
+    `/api/holidays`,
+    {
+      method: 'GET',
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
 // import
 export async function getImportData(payload, params) {
   // date, week, month
@@ -113,6 +125,19 @@ export async function importTimesheet(payload, params) {
   // date, week, month
   return request(
     `/api/import`,
+    {
+      method: 'POST',
+      data: payload,
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+export async function duplicateTimesheet(payload, params) {
+  // date, week, month
+  return request(
+    `/api/duplicated`,
     {
       method: 'POST',
       data: payload,
@@ -297,4 +322,40 @@ export async function getEmployeeScheduleByLocation(payload) {
     method: 'POST',
     data: payload,
   });
+}
+
+export async function getMyRequest(params) {
+  return request(
+    '/api/listReport',
+    {
+      method: 'GET',
+      params,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
+export async function resubmitMyRequest(payload) {
+  return request(
+    '/api/updateReport',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
+}
+
+export async function sendMailInCompleteTimeSheet(payload) {
+  return request(
+    '/api/sendMail/incomplete',
+    {
+      method: 'GET',
+      params: payload,
+    },
+    false,
+    API_KEYS.TIMESHEET_API,
+  );
 }

@@ -6,6 +6,7 @@ import { connect } from 'umi';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import SearchIcon from '@/assets/directory/search.svg';
+import { dateFormatAPI } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -22,11 +23,11 @@ const FilterForm = (props) => {
     employeeList = [],
     divisions = [],
     titleList = [],
-    certificationsList = [],
     loadingFetchEmployeeNameList = false,
     visible = false,
     setApplied = () => {},
     setForm,
+    listSkill = [],
   } = props;
 
   const [durationFrom, setDurationFrom] = useState('');
@@ -128,6 +129,18 @@ const FilterForm = (props) => {
             ((a[k] = v), a),
       {},
     );
+    if (result.startFromDate) {
+      result.startFromDate = moment(result.startFromDate).format(dateFormatAPI);
+    }
+    if (result.startToDate) {
+      result.startToDate = moment(result.startToDate).format(dateFormatAPI);
+    }
+    if (result.tentativeEndDateStart) {
+      result.tentativeEndDateStart = moment(result.tentativeEndDateStart).format(dateFormatAPI);
+    }
+    if (result.tentativeEndDateEnd) {
+      result.tentativeEndDateEnd = moment(result.tentativeEndDateEnd).format(dateFormatAPI);
+    }
 
     onFilterChange({ ...filter, ...result });
   };
@@ -209,7 +222,7 @@ const FilterForm = (props) => {
     return { _id: x._id, name: x.name };
   });
 
-  const certifications = certificationsList.map((x) => {
+  const tagDefaultLis = listSkill.map((x) => {
     return { _id: x._id, name: x.name };
   });
   const dateFormat = 'MMM DD, YYYY';
@@ -230,17 +243,10 @@ const FilterForm = (props) => {
     },
     {
       label: 'BY SKILL',
-      name: 'skill',
+      name: 'skills',
       placeholder: 'Select the location',
       mode: 'multiple',
-      optionArray: statuses,
-    },
-    {
-      label: 'BY CERTIFICATIONS ',
-      name: 'Certifications ',
-      placeholder: 'Select the certifications ',
-      mode: 'multiple',
-      optionArray: certifications,
+      optionArray: tagDefaultLis,
     },
     {
       label: 'BY CURRENT PROJECT',
@@ -355,7 +361,7 @@ const FilterForm = (props) => {
               <div className={styles.labelText}>By Start Date</div>
             </div>
             <div className={styles.doj__date}>
-              <Form.Item name="fromDate">
+              <Form.Item name="startFromDate">
                 <DatePicker
                   disabledDate={(currentDate) => disabledDate(currentDate, 'fromDate')}
                   format={dateFormat}
@@ -366,7 +372,7 @@ const FilterForm = (props) => {
                 />
               </Form.Item>
               <div className={`${styles.labelText} ${styles.labelTo}`}>to</div>
-              <Form.Item name="toDate">
+              <Form.Item name="startToDate">
                 <DatePicker
                   disabledDate={(currentDate) => disabledDate(currentDate, 'toDate')}
                   format={dateFormat}
@@ -421,7 +427,7 @@ export default connect(
       divisions = [],
       statusList = [],
       titleList = [],
-      certificationsList = [],
+      listSkill = [],
     } = {},
   }) => ({
     loadingFetchEmployeeNameList: loading.effects['resourceManagement/getListEmployee'],
@@ -429,7 +435,7 @@ export default connect(
     employeeList,
     divisions,
     statusList,
+    listSkill,
     titleList,
-    certificationsList,
   }),
 )(FilterForm);

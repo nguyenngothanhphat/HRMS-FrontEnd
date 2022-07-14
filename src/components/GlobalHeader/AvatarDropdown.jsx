@@ -3,7 +3,7 @@ import { Avatar, Button, Menu, Spin, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
-import avtDefault from '@/assets/defaultAvatar.png';
+import avtDefault from '@/assets/avtDefault.jpg';
 import {
   setCurrentLocation,
   setTenantId,
@@ -25,7 +25,6 @@ const AvatarDropdown = (props) => {
     currentUser = {},
     dispatch,
     signInRole = [],
-    manageTenant = [],
     currentUser: {
       employee: { _id: employeeID = '', generalInfo: { userId = '' } = {} } = {},
     } = {},
@@ -54,7 +53,7 @@ const AvatarDropdown = (props) => {
         type: 'location/fetchLocationListByParentCompany',
         payload: {
           company: companyId,
-          tenantIds: manageTenant,
+          tenantId,
         },
       });
     } else {

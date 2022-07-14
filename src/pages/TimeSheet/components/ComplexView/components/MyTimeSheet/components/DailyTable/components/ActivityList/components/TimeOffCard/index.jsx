@@ -105,7 +105,9 @@ const TimeOffCard = (props) => {
         y = moment(endTimeTemp, 'HH:mm').format('h:mm a');
       }
     } else {
-      hours = moment.duration(moment(endTimeTemp, 'HH:mm').diff(moment(startTimeTemp, 'HH:mm')));
+      hours = moment
+        .duration(moment(endTimeTemp, 'HH:mm').diff(moment(startTimeTemp, 'HH:mm')))
+        .asHours();
       x = moment(startTimeTemp, 'HH:mm').format('h:mm a');
       y = moment(endTimeTemp, 'HH:mm').format('h:mm a');
     }

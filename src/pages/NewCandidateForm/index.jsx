@@ -15,6 +15,7 @@ import SalaryStructure from './components/SalaryStructure';
 import styles from './index.less';
 import { goToTop } from '@/utils/utils';
 import References from './components/References';
+import DocumentCheckList from './components/DocumentCheckList';
 
 @connect(({ newCandidateForm = {}, user, loading }) => ({
   newCandidateForm,
@@ -67,13 +68,13 @@ class NewCandidateForm extends PureComponent {
           },
         });
       });
-
       dispatch({
         type: 'newCandidateForm/fetchEmployeeTypeList',
       });
       dispatch({
         type: 'newCandidateForm/fetchDocumentList',
       });
+
       dispatch({
         type: 'newCandidateForm/fetchDefaultTemplateList',
         payload: {
@@ -183,12 +184,24 @@ class NewCandidateForm extends PureComponent {
         name: 'Offer Details',
         key: 'offerDetails',
         component: (
-          <OfferDetail processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />
+          <OfferDetail
+            reId={reId}
+            processStatus={processStatus}
+            valueToFinalOffer={valueToFinalOffer}
+          />
         ),
         link: ONBOARDING_FORM_LINK.OFFER_DETAILS,
       },
+
       {
         id: 8,
+        name: 'Documents Checklist',
+        key: 'documentsChecklist',
+        component: <DocumentCheckList />,
+        link: ONBOARDING_FORM_LINK.DOCUMENT_CHECKLIST_VERIFICATION,
+      },
+      {
+        id: 9,
         name: 'Preview Offer Letter',
         key: 'offerLetter',
         component: <PreviewOffer />,

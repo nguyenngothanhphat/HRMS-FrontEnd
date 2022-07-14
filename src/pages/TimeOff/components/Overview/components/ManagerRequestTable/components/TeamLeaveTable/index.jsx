@@ -1,24 +1,28 @@
-import React, { PureComponent } from 'react';
-import { Table, Tag, Tooltip, Spin, Popover } from 'antd';
-import { history, connect, Link } from 'umi';
-import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
+import { Spin, Table, Tag, Tooltip } from 'antd';
+import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect, history, Link } from 'umi';
 import ApproveIcon from '@/assets/approveTR.svg';
-import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
-import { roundNumber, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
+import OpenIcon from '@/assets/openTR.svg';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
-
+import UserProfilePopover from '@/components/UserProfilePopover';
+import {
+  isNewRequest,
+  isUpdatedRequest,
+  roundNumber,
+  TIMEOFF_DATE_FORMAT,
+  TIMEOFF_STATUS,
+} from '@/utils/timeOff';
 import RejectCommentModal from '../RejectCommentModal';
-
 import styles from './index.less';
-import UserProfile from '../UserProfile';
 
 const { IN_PROGRESS, REJECTED, ON_HOLD } = TIMEOFF_STATUS;
 
 const COLUMN_WIDTH = {
   TYPE_A: {
-    TICKET_ID: '15%',
+    TICKET_ID: '17%',
     REQUESTEE: '15%',
     TYPE: '17%',
     // LEAVE_DATES: '25%',
@@ -66,8 +70,54 @@ class TeamLeaveTable extends PureComponent {
     });
   };
 
+  dataHover = (employee) => {
+    const {
+      generalInfo: {
+        legalName = '',
+        avatar: avatar1 = '',
+        userId = '',
+        workEmail = '',
+        workNumber = '',
+        skills = [],
+      } = {},
+      generalInfo = {},
+      department = {},
+      locationInfo = {},
+      managerInfo = {},
+      titleInfo = {},
+    } = employee;
+    return {
+      legalName,
+      userId,
+      department,
+      workEmail,
+      workNumber,
+      locationInfo,
+      generalInfo,
+      managerInfo,
+      titleInfo,
+      avatar1,
+      skills,
+    };
+  };
+
+  getListDate = (listDate) => {
+    return listDate.map((x) => (
+      <div>
+        {`${moment(x.date).locale('en').format('DD')} ${moment(x.date)
+          .locale('en')
+          .format('MMM')} (${x.timeOfDay})`}
+      </div>
+    ));
+  };
+
+  formatDate = (date1, date2) => {
+    return `${moment(date1).locale('en').format(TIMEOFF_DATE_FORMAT)} - ${moment(date2)
+      .locale('en')
+      .format(TIMEOFF_DATE_FORMAT)}`;
+  };
+
   getColumns = (TYPE) => {
-    const { category } = this.props;
     return [
       {
         title: 'Ticket ID',
@@ -76,18 +126,17 @@ class TeamLeaveTable extends PureComponent {
         fixed: 'left',
         width: COLUMN_WIDTH[TYPE].TICKET_ID,
         render: (_, record) => {
-          const { ticketID = '', _id = '', onDate = '', status = '' } = record;
-          const createdDate = moment(onDate).locale('en').format('YYYY/MM/DD');
-          const nowDate = moment().locale('en').format('YYYY/MM/DD');
-          const isNewRequest =
-            status === IN_PROGRESS &&
-            moment(nowDate).subtract(2, 'days').isSameOrBefore(moment(createdDate));
-
+          const { ticketID = '', _id = '', onDate = '', updated = false, status = '' } = record;
+          const isUpdated = isUpdatedRequest(status, updated);
+          const isNew = isNewRequest(status, onDate);
           return (
-            <Link to={`/time-off/overview/manager-timeoff/view/${_id}`} className={styles.ID}>
-              <span className={styles.text}>{ticketID}</span>
-              {isNewRequest && <Tag color="#2C6DF9">New</Tag>}
-            </Link>
+            <span className={styles.ID}>
+              <Link to={`/time-off/overview/manager-timeoff/view/${_id}`}>
+                <span className={styles.text}>{ticketID}</span>
+              </Link>
+              {isUpdated && <Tag color="#2C6DF9">Updated</Tag>}
+              {isNew && !isUpdated && <Tag color="#2C6DF9">New</Tag>}
+            </span>
           );
         },
       },
@@ -98,14 +147,9 @@ class TeamLeaveTable extends PureComponent {
         align: 'left',
         render: (employee) => {
           return (
-            <Popover
-              placement="bottomRight"
-              overlayClassName={styles.UserProfilePopover}
-              content={<UserProfile category={category} employeeId={employee.employeeId} />}
-              trigger="hover"
-            >
+            <UserProfilePopover data={this.dataHover(employee)}>
               <span style={{ cursor: 'pointer' }}>{employee?.generalInfo?.legalName}</span>
-            </Popover>
+            </UserProfilePopover>
           );
         },
       },
@@ -126,18 +170,17 @@ class TeamLeaveTable extends PureComponent {
         dataIndex: 'leaveTimes',
         align: 'left',
         render: (_, record) => {
-          return `${moment(record.fromDate).locale('en').format(TIMEOFF_DATE_FORMAT)} - ${moment(
-            record.toDate,
-          )
-            .locale('en')
-            .format(TIMEOFF_DATE_FORMAT)}`;
+          const { fromDate = '', toDate = '', leaveDates = [] } = record;
+          const listLeave = leaveDates.sort((a, b) => moment(a.date) - moment(b.date));
+          if (fromDate && toDate) {
+            return this.formatDate(fromDate, toDate);
+          }
+          return (
+            <Tooltip title={() => this.getListDate(leaveDates)}>
+              {this.formatDate(listLeave[0].date, listLeave[listLeave.length - 1].date)}
+            </Tooltip>
+          );
         },
-        defaultSortOrder: ['ascend'],
-        sorter: {
-          compare: (a, b) =>
-            a.fromDate && b.fromDate ? moment(a.fromDate).isAfter(moment(b.fromDate)) : false,
-        },
-        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: 'Duration',
@@ -402,7 +445,7 @@ class TeamLeaveTable extends PureComponent {
             </>
           );
         case 3:
-          return <>You have not applied for any LWP requests.</>;
+          return <>You have not applied for any LOP requests.</>;
         case 4:
           return <>You have not applied any request to Work from home or Client’s place.</>;
         case 5:
@@ -431,7 +474,7 @@ class TeamLeaveTable extends PureComponent {
       case 3:
         return (
           <>
-            No LWP requests received. <br />
+            No LOP requests received. <br />
           </>
         );
       case 4:
@@ -490,7 +533,7 @@ class TeamLeaveTable extends PureComponent {
     };
 
     const scroll = {
-      x: selectedTab !== REJECTED ? '50vw' : '58vw',
+      x: selectedTab !== REJECTED ? '50vw' : '64vw',
       y: 'max-content',
     };
 

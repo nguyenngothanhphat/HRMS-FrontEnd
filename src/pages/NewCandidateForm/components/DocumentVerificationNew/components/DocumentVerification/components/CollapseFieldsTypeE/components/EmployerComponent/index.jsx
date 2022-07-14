@@ -58,7 +58,16 @@ const EmployerComponent = (props) => {
       >
         <Row gutter={[5, 0]}>
           <Col span={24}>
-            <Form.Item label="Name of the employer*" name="employer">
+            <Form.Item
+              label="Name of the employer"
+              name="employer"
+              // rules={[
+              //   {
+              //     required: true,
+              //     message: 'Please input the name of the employer',
+              //   },
+              // ]}
+            >
               <Input
                 disabled={disabled}
                 onChange={onChangeEmployer}

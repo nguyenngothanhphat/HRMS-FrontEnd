@@ -3,7 +3,7 @@ import { Table, Avatar, Tooltip, Spin } from 'antd';
 import { history, connect } from 'umi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 
 import styles from './index.less';
 import { roundNumber } from '@/utils/timeOff';

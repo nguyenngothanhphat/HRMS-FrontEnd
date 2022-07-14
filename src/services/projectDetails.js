@@ -132,6 +132,30 @@ export async function addResourceType(payload) {
   );
 }
 
+export async function editResourceType(payload) {
+  return request(
+    `/api-project/resourcetypetenant/update`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}
+
+export async function deleteResourceType(payload) {
+  return request(
+    `/api-project/resourcetypetenant/delete`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}
+
 export async function getTechnologyList(payload) {
   return request(
     `/api-project/technologytenant/default-list`,

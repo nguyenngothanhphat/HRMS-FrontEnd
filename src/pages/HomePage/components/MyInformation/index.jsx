@@ -37,6 +37,7 @@ const MyInformation = (props) => {
     [TAB_NAME.MY_TEAM]: 0,
     [TAB_NAME.MY_TICKETS]: 0,
   });
+  const [myTickets, setMyTickets] = useState([]);
 
   // USE EFFECT
   useEffect(() => {
@@ -65,6 +66,12 @@ const MyInformation = (props) => {
         company: [companyInfo],
       },
     });
+    dispatch({
+      type: 'dashboard/fetchLeaveRequestOfEmployee',
+      payload: {
+        status: ['IN-PROGRESS'],
+      },
+    });
   }, []);
 
   const addZeroToNumber = (number) => {
@@ -72,34 +79,40 @@ const MyInformation = (props) => {
     return number;
   };
 
-  const dataMyTicket = () => {
-    const listMyTicketNew =
-      listMyTicket.length > 0
-        ? listMyTicket.filter((val) => {
-            return val.employee_raise === _id;
-          })
-        : [];
-    const dataMyTickets = listMyTicketNew.filter((element) =>
-      statusTickets.includes(element.status),
-    );
-    const newListLeaveRequest = leaveRequests.filter((element) =>
+  const getMyTickets = () => {
+    let list = [];
+
+    // tickets
+    const tempTicket = listMyTicket.filter((val) => {
+      return val.employee_raise === _id;
+    });
+
+    list = tempTicket.filter((element) => statusTickets.includes(element.status));
+
+    // leave requests
+    const tempLeaveRequest = leaveRequests.filter((element) =>
       statusRequestTimeoff.includes(element.status),
     );
-    const dataToTal = [...dataMyTickets];
-    newListLeaveRequest.forEach((element) => {
-      dataToTal.push(element);
+
+    tempLeaveRequest.forEach((element) => {
+      list.push(element);
     });
-    return dataToTal;
+
+    return list;
   };
 
   useEffect(() => {
     const tempTotal = {
       [TAB_NAME.MY_CALENDAR]: googleCalendarList.length,
       [TAB_NAME.MY_TEAM]: myTeam.length,
-      [TAB_NAME.MY_TICKETS]: dataMyTicket().length,
+      [TAB_NAME.MY_TICKETS]: myTickets.length,
     };
     setTotal(tempTotal);
-  }, [JSON.stringify(myTeam), JSON.stringify(listMyTicket), JSON.stringify(googleCalendarList)]);
+  }, [JSON.stringify(myTeam), JSON.stringify(myTickets), JSON.stringify(googleCalendarList)]);
+
+  useEffect(() => {
+    setMyTickets(getMyTickets());
+  }, [JSON.stringify(listMyTicket), JSON.stringify(leaveRequests)]);
 
   const getTabName = (key) => {
     switch (key) {
@@ -125,7 +138,7 @@ const MyInformation = (props) => {
           <MyTeam />
         </TabPane>
         <TabPane tab={getTabName(TAB_NAME.MY_TICKETS)} key={TAB_NAME.MY_TICKETS}>
-          <MyTicket data={dataMyTicket()} />
+          <MyTicket data={myTickets} />
         </TabPane>
       </Tabs>
     </div>

@@ -1,5 +1,2 @@
-
-
-
-/label ~"Customer Found"
-/cc @aashwij @christine.nguyen @thang.nguyen
+/label ~"Customer Found" ~"Backlog - Unscheduled"
+/cc @aashwij @christine.nguyen @luke.nguyen @atlin.joys

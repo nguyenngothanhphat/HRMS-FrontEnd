@@ -66,9 +66,9 @@ class ProfessionalAcademicBackground extends PureComponent {
   };
 
   render() {
-    const { openAcademic, permissions = {}, profileOwner = false } = this.props;
+    const { openAcademic, permissions = {}, isProfileOwner = false } = this.props;
     const renderComponent = openAcademic ? (
-      <Edit profileOwner={profileOwner} handleCancel={this.handleCancel} />
+      <Edit isProfileOwner={isProfileOwner} handleCancel={this.handleCancel} />
     ) : (
       <View />
     );
@@ -76,7 +76,7 @@ class ProfessionalAcademicBackground extends PureComponent {
       <div className={styles.root}>
         <div className={styles.viewTitle}>
           <p className={styles.viewTitle__text}>Professional &amp; Academic Background</p>
-          {!openAcademic && (permissions.editProfessionalAcademic !== -1 || profileOwner) && (
+          {!openAcademic && (permissions.editProfessionalAcademic !== -1 || isProfileOwner) && (
             <div className={styles.viewTitle__edit} onClick={this.handleEdit}>
               <img src={EditBtn} alt="" className={styles.viewTitle__edit__icon} />
               <p className={styles.viewTitle__edit__text}>Edit</p>

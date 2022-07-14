@@ -41,7 +41,7 @@
     padding: 4px 8px;
     color: #fff;
     font-size: 8px;
-    font-family: Roboto;
+
     font-style: normal;
     background: #00c598;
     border-radius: 48px;
@@ -53,7 +53,7 @@
     color: #000;
     font-size: 8px;
     // height: 18px;
-    font-family: Roboto;
+
     font-style: normal;
     background: #ffa100;
     border-radius: 48px;
@@ -92,19 +92,27 @@
 
   .ticketID,
   .employeeName {
-    width: 200px;
-    color: #2c6df9;
-    font-weight: 500;
-    font-size: 13px;
-    font-family: Roboto;
-    font-style: normal;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    color: #2c6df9 !important;
+    font-weight: 500 !important;
     line-height: 15px;
     letter-spacing: 0em;
     white-space: nowrap;
-    text-align: left;
     &:hover {
       cursor: pointer;
     }
+  }
+
+  .emptyItem {
+    padding-left: 8px;
+    text-align: left;
+  }
+  .billStatus {
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
   }
 
   .resourceStatus {
@@ -132,7 +140,7 @@
     width: 140px;
     overflow: hidden;
     font-weight: 400;
-    //font-family: Roboto;
+    //
     font-size: 13px;
     font-style: normal;
     line-height: 18px;
@@ -146,11 +154,12 @@
   }
   .buttonContainer {
     position: absolute;
-    top: 50% - 25%;
+    top: 50%;
     right: 10px;
     width: 40px;
     height: fit-content;
     margin: auto;
+    transform: translateY(-50%);
     cursor: pointer;
   }
 
@@ -168,7 +177,7 @@
     color: #000;
     font-weight: 400;
     font-size: 13px;
-    font-family: Roboto;
+
     font-style: normal;
     line-height: 15px;
     letter-spacing: 0em;
@@ -181,21 +190,19 @@
     color: #000;
     font-weight: 400;
     font-size: 13px;
-    font-family: Roboto;
+
     font-style: normal;
     line-height: 15px;
     letter-spacing: 0em;
     text-align: left;
-    // text-align: left;
-    // display: flex;
-    // justify-content: center;
-    // border-radius: 12px;
   }
-  .basicCellFieldShowEdit:hover {
-    color: white;
-    //background-image: linear-gradient(to right, white, #e5e5e5);
+
+  .editRow {
+    position: relative;
+    height: 100%;
+  }
+  .editRow:hover {
     .resourceManagementEdit {
-      left: -600px;
       display: flex;
     }
   }
@@ -209,9 +216,7 @@
     position: absolute;
     top: 0px;
     right: 0px;
-    left: -600px;
     display: none;
-    // width: 100%;
     height: 100%;
     margin-top: 0px;
     text-align: right;
@@ -323,6 +328,10 @@
       display: flex;
       justify-content: flex-end;
       margin-left: 24px !important;
+    }
+    .ant-tag-has-color {
+      margin-bottom: 8px;
+      border-radius: 4px;
     }
   }
   .buttonAdd {

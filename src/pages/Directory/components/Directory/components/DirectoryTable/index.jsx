@@ -6,9 +6,9 @@ import React, { Component } from 'react';
 import { connect, formatMessage, Link } from 'umi';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { isOwner } from '@/utils/authority';
-import avtDefault from '@/assets/defaultAvatar.png';
+import UserProfilePopover from '@/components/UserProfilePopover';
+import avtDefault from '@/assets/avtDefault.jpg';
 import ModalTerminate from './components/ModalTerminate';
-import PopoverInfo from './components/ModalTerminate/PopoverInfo';
 import styles from './index.less';
 
 const departmentTag = [
@@ -44,9 +44,6 @@ class DirectoryTable extends Component {
     super(props);
     this.state = {
       sortedName: {},
-      // pageSelected: 1,
-      // rowSize: 10,
-      isSort: false,
       openModal: false,
       rowData: {},
       valueReason: '',
@@ -61,10 +58,7 @@ class DirectoryTable extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    const { list = [], companyLocationList = [] } = this.props;
-    if (JSON.stringify(prevProps.list) !== JSON.stringify(list)) {
-      this.setFirstPage();
-    }
+    const { companyLocationList = [] } = this.props;
     if (JSON.stringify(prevProps.companyLocationList) !== JSON.stringify(companyLocationList)) {
       this.fetchTimezone();
     }
@@ -195,9 +189,39 @@ class DirectoryTable extends Component {
   //   this.setState({ valueReason: value });
   // };
 
+  dataHover = (manager = {}) => {
+    const {
+      generalInfo: {
+        legalName = '',
+        avatar: avatar1 = '',
+        userId = '',
+        workEmail = '',
+        workNumber = '',
+        skills = [],
+      } = {},
+      generalInfo = {},
+      department = {},
+      location: locationInfo = {},
+      managerInfo = {},
+      title = {},
+    } = manager;
+    return {
+      legalName,
+      userId,
+      department,
+      workEmail,
+      workNumber,
+      locationInfo,
+      generalInfo,
+      managerInfo,
+      title,
+      avatar1,
+      skills,
+    };
+  };
+
   generateColumns = (sortedName, keyTab) => {
-    const { permissions = {}, companyLocationList } = this.props;
-    const { currentTime, timezoneList } = this.state;
+    const { permissions = {} } = this.props;
 
     const columns = [
       {
@@ -345,17 +369,7 @@ class DirectoryTable extends Component {
         dataIndex: 'manager',
         key: 'manager',
         render: (manager) => (
-          <Popover
-            content={
-              <PopoverInfo
-                companyLocationList={companyLocationList}
-                propsState={{ currentTime, timezoneList }}
-                data={manager}
-              />
-            }
-            placement="bottomRight"
-            trigger="hover"
-          >
+          <UserProfilePopover data={this.dataHover(manager)}>
             <Link
               className={styles.managerName}
               to={() =>
@@ -363,7 +377,7 @@ class DirectoryTable extends Component {
             >
               {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
             </Link>
-          </Popover>
+          </UserProfilePopover>
         ),
         align: 'left',
         width: '14%',
@@ -452,46 +466,13 @@ class DirectoryTable extends Component {
   };
 
   handleChangeTable = (_pagination, _filters, sorter) => {
-    // const descend = 'descend';
-    // const ascend = 'ascend';
-    // let isSort = false;
-    // if (sorter.order === descend || sorter.order === ascend) {
-    //   isSort = true;
-    // }
     this.setState({
       sortedName: sorter,
-      // isSort,
-    });
-  };
-
-  // onChangePagination = (pageNumber) => {
-  //   const { getPageSelected } = this.props;
-  //   this.setState({
-  //     pageSelected: pageNumber,
-  //   });
-  //   getPageSelected(pageNumber);
-  // };
-
-  setFirstPage = () => {
-    this.setState({
-      pageSelected: 1,
     });
   };
 
   handleProfileEmployee = (_id, tenant, userId) => {
-    // const { _id = '', location: { name = '' } = {}, tenant = '', company = {} } = row;
-    // const { dispatch } = this.props;
-    // await dispatch({
-    //   type: 'employeeProfile/save',
-    //   payload: {
-    //     tenantCurrentEmployee: tenant,
-    //     companyCurrentEmployee: company?._id,
-    //   },
-    // });
-
     localStorage.setItem('tenantCurrentEmployee', tenant);
-    // localStorage.setItem('companyCurrentEmployee', company?._id);
-    // localStorage.setItem('idCurrentEmployee', _id);
 
     const pathname = isOwner()
       ? `/employees/employee-profile/${userId}`

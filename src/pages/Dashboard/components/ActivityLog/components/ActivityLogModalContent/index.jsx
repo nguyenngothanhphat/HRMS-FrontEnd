@@ -15,6 +15,8 @@ const ActivityLogModalContent = (props) => {
         return <CommonTab isInModal type={tabKey} data={data} />;
       case '3':
         return <CommonTab isInModal type={tabKey} data={data} />;
+      case '4':
+        return <CommonTab isInModal type={tabKey} data={data} {...props} />;
       default:
         return '';
     }

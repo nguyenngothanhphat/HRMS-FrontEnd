@@ -1,0 +1,41 @@
+.ViewCommentModalContent {
+  padding: 24px;
+  .commentContent {
+    margin-top: 24px;
+    :global {
+      .ant-form-item-explain {
+        div {
+          font-size: 13px;
+        }
+      }
+
+      .ant-input {
+        height: 42px !important;
+        padding: 5px 11px !important;
+        font-size: 13px;
+        // background: transparent !important;
+        border-radius: 5px !important;
+      }
+      .ant-form-item-label
+        > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+        display: none;
+      }
+      .ant-form-item-label label {
+        height: 0;
+        color: #707177;
+        font-size: 13px;
+      }
+      .ant-form-item .ant-upload.ant-upload-drag {
+        background-color: #fff;
+      }
+
+      .ant-form-item {
+        margin-bottom: 12px;
+      }
+
+      .ant-select-selection-overflow-item .ant-select-selection-overflow-item-suffix {
+        display: none;
+      }
+    }
+  }
+}

@@ -97,7 +97,7 @@ class ModalUploadFeedBack extends Component {
     dispatch({
       type: 'upload/uploadFile',
       payload: formData,
-      isUploadAvatar: true,
+      showNotification: false,
     }).then((resp) => {
       handleUploadScreenshot(resp);
       this.setState({

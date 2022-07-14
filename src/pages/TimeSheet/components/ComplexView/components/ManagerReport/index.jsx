@@ -6,6 +6,7 @@ import DownloadIcon from '@/assets/timeSheet/download.svg';
 import ProjectView from './components/ProjectView';
 import TeamView from './components/TeamView';
 import styles from './index.less';
+import { exportRawDataToCSV } from '@/utils/utils';
 
 const { TabPane } = Tabs;
 
@@ -34,37 +35,31 @@ const ManagerReport = (props) => {
 
   const project = projectList.find((list) => list.id === projectId);
 
-  const [activeKey, setActiveKey] = useState(VIEW_TYPE.PROJECT_VIEW);
-
   // PERMISSIONS TO VIEW PROJECT OR TEAM
   const viewReportProject = permissions.viewReportProjectViewTimesheet === 1;
   const viewReportTeam = permissions.viewReportTeamViewTimesheet === 1;
 
-  const exportToExcel = async (type, fileName) => {
+  const [activeKey, setActiveKey] = useState(
+    (viewReportProject && VIEW_TYPE.PROJECT_VIEW) || (viewReportTeam && VIEW_TYPE.TEAM_VIEW),
+  );
+
+  const exportToCSV = async (type, fileName) => {
     const getListExport = await dispatch({
       type,
       payload: payloadExport,
     });
     const getDataExport = getListExport ? getListExport.data : '';
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getDataExport,
-    )}`;
-    downloadLink.download = fileName;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    exportRawDataToCSV(getDataExport, fileName);
   };
 
   const exportTag = () => {
     if (activeKey === VIEW_TYPE.PROJECT_VIEW) {
-      return exportToExcel(
+      return exportToCSV(
         'timeSheet/exportReportProject',
-        `ProjectView-${project.projectName}-${startDate}-${endDate}.xlsx`,
+        `ProjectView-${project?.projectName || ''}-${startDate}-${endDate}.csv`,
       );
     }
-    return exportToExcel('timeSheet/exportReportTeam', 'team-view.xlsx');
+    return exportToCSV('timeSheet/exportReportTeam', `TeamView-${startDate}-${endDate}.csv`);
   };
 
   const options = () => {

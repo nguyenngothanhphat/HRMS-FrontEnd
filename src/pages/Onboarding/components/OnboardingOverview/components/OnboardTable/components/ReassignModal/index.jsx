@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Modal, Form, Button, Select, Input } from 'antd';
 import { connect } from 'umi';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 

@@ -11,6 +11,7 @@ import {
   // complex view
   getMyTimesheetByType,
   importTimesheet,
+  duplicateTimesheet,
   exportTimeSheet,
   removeActivity,
   updateActivity,
@@ -21,6 +22,7 @@ import {
   // complex view hr & finance
   getHRTimesheet,
   getFinanceTimesheet,
+  sendMailInCompleteTimeSheet,
   // export manager report (my project)
   exportProject,
   exportTeam,
@@ -32,9 +34,13 @@ import {
   getDivisionList,
   // common
   getEmployeeScheduleByLocation,
+  // my request
+  getMyRequest,
+  resubmitMyRequest,
+  getHolidaysByDate,
 } from '@/services/timeSheet';
-import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils/authority';
-import { convertMsToTime, isTheSameDay } from '@/utils/timeSheet';
+import { getCountry, getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { convertMsToTime, isTheSameDay, pushSuccess } from '@/utils/timeSheet';
 import { dialog } from '@/utils/utils';
 
 const tenantId = getCurrentTenant();
@@ -50,6 +56,7 @@ const pushError = (errors) => {
 const initialState = {
   myTimesheet: [],
   managerTimesheet: [],
+  myRequest: [],
   // myTotalHours: '',
   managerTotalHours: 0,
   employeeList: [],
@@ -58,6 +65,7 @@ const initialState = {
   myTimesheetByWeek: [],
   myTimesheetByMonth: [],
   timeoffList: [],
+  detailTimesheet: [],
   // store payload for refreshing
   viewingPayload: {},
   // for importing
@@ -72,6 +80,7 @@ const initialState = {
   // hr & finance complex view
   hrViewList: [],
   financeViewList: [],
+  financeViewListTotal: 0,
   payloadExport: {},
   // filter
   employeeNameList: [],
@@ -85,7 +94,8 @@ const initialState = {
 
   // common
   selectedDivisions: [],
-  selectedLocations: [getCurrentLocation()],
+  selectedLocations: [],
+  isLocationLoaded: false,
   isIncompleteTimesheet: false,
   employeeSchedule: {},
 };
@@ -145,9 +155,15 @@ const TimeSheet = {
           const { viewingPayload } = yield select((state) => state.timeSheet);
           payloadTemp = viewingPayload;
         }
-        const res = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
+        const { _id: countryId = '' } = getCountry();
+        const res = yield call(
+          getMyTimesheetByType,
+          {},
+          { ...payloadTemp, tenantId, country: countryId },
+        );
         const { code, data } = res;
         if (code !== 200) throw res;
+        const { holidays = [] } = data;
         const { viewType } = payloadTemp;
         let stateVar = 'myTimesheetByDay';
         let dataTemp = null;
@@ -176,6 +192,7 @@ const TimeSheet = {
             viewingPayload: payloadTemp,
             [stateVar]: dataTemp,
             timeoffList,
+            holidays,
           },
         });
       } catch (errors) {
@@ -183,6 +200,39 @@ const TimeSheet = {
         return [];
       }
       return response;
+    },
+
+    *fetchMyTimesheetByDay({ payload, isRefreshing }, { call, select }) {
+      let response = {};
+      try {
+        let payloadTemp = payload;
+        if (isRefreshing) {
+          const { viewingPayload } = yield select((state) => state.timeSheet);
+          payloadTemp = viewingPayload;
+        }
+        response = yield call(getMyTimesheetByType, {}, { ...payloadTemp, tenantId });
+        const { code } = response;
+        if (code !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
+    *fetchHolidaysByDate({ payload }, { call }) {
+      try {
+        const payloadTemp = payload;
+        const { _id: countryId = '' } = getCountry();
+
+        const res = yield call(getHolidaysByDate, { ...payloadTemp, country: countryId });
+        const { code, data = [] } = res;
+        if (code !== 200) throw res;
+        return data;
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
     },
 
     // update/edit
@@ -225,14 +275,14 @@ const TimeSheet = {
       try {
         const adding = date ? message.loading('Adding...', 0) : () => {}; // only loading in simple view
         response = yield call(addActivity, { ...payload, tenantId });
-        const { code, data = {}, msg = '', errors = [] } = response;
+        const { code, data = {}, errors = [] } = response;
+        const { errorList = [] } = data;
         adding();
         if (code !== 200) {
           pushError(errors);
           return [];
         }
-        notification.success({ message: msg });
-
+        pushSuccess(errorList, 'added', 'Create timesheet successfully');
         if (date) {
           // for refresh immediately - no need to call API to refresh list
           yield put({
@@ -257,14 +307,17 @@ const TimeSheet = {
         const params = {
           companyId: payload.companyId,
           employeeId: payload.employeeId,
+          fromDate: payload.fromDate,
+          toDate: payload.toDate,
         };
         response = yield call(addMultipleActivity, payload.data, params);
-        const { code, msg = '', errors = [] } = response;
+        const { code, data = {}, errors = [] } = response;
+        const { errorList = [] } = data;
         if (code !== 200) {
           pushError(errors);
           return [];
         }
-        notification.success({ message: msg });
+        pushSuccess(errorList, 'added', 'Create timesheet successfully');
       } catch (errors) {
         dialog(errors);
         return [];
@@ -323,13 +376,18 @@ const TimeSheet = {
     *importTimesheet({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(importTimesheet, { ids: payload.ids }, { ...payload, tenantId });
-        const { code, msg = '', errors = [] } = response;
+        response = yield call(
+          importTimesheet,
+          { ids: payload.ids, dates: payload.dates },
+          { ...payload, tenantId },
+        );
+        const { code, data = {}, errors = [] } = response;
+        const { error = [] } = data;
         if (code !== 200) {
           pushError(errors);
           return [];
         }
-        notification.success({ message: msg });
+        pushSuccess(error, 'imported', 'Import timesheet successfully');
 
         yield put({
           type: 'save',
@@ -341,6 +399,35 @@ const TimeSheet = {
       }
       return response;
     },
+
+    *duplicateTimesheet({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(
+          duplicateTimesheet,
+          { id: payload.id, dateTimes: payload.dateTimes },
+          { ...payload, tenantId },
+        );
+        const { code, data = {}, errors = [] } = response;
+        const { error = [] } = data;
+
+        if (code !== 200) {
+          pushError(errors);
+          return [];
+        }
+        pushSuccess(error, 'imported', 'Import timesheet successfully');
+
+        yield put({
+          type: 'save',
+          payload: {},
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
     // EXPORT TIMESHEET
     *exportTimeSheet(_, { call }) {
       let response = '';
@@ -484,13 +571,14 @@ const TimeSheet = {
       const response = {};
       try {
         const res = yield call(getFinanceTimesheet, {}, { ...payload, tenantId });
-        const { code, data = [] } = res;
+        const { code, data = [], pagination={} } = res;
         if (code !== 200) throw res;
 
         yield put({
           type: 'save',
           payload: {
             financeViewList: data,
+            financeViewListTotal:pagination?.rowCount || 0,
           },
         });
       } catch (errors) {
@@ -627,6 +715,64 @@ const TimeSheet = {
           type: 'save',
           payload: { employeeSchedule },
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchMyRequest({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getMyRequest, {
+          ...payload,
+          roles: ['EMPLOYEE'],
+          tenantId: getCurrentTenant(),
+          companyId: getCurrentCompany(),
+          types: ['timesheet'],
+        });
+        const { code, data: { reports: myRequest = [] } = {} } = response;
+        if (code !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { myRequest },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *resubmitMyRequest({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(resubmitMyRequest, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          companyId: getCurrentCompany(),
+          status: 'PENDING',
+        });
+        const { code, msg, myRequest } = response;
+        if (code !== 200) throw response;
+        notification.success({ message: msg });
+        yield put({
+          type: 'save',
+          payload: { ...myRequest },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *sendMailInCompleteTimeSheet({ payload = {} }, { call }) {
+      let response;
+      try {
+        response = yield call(sendMailInCompleteTimeSheet, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          companyId: getCurrentCompany(),
+        });
+        const { code, msg } = response;
+        if (code !== 200) throw response;
+        notification.success({ message: msg });
       } catch (errors) {
         dialog(errors);
       }

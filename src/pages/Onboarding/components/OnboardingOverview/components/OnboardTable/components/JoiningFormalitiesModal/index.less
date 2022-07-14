@@ -7,7 +7,7 @@
       color: #ffffff;
       font-weight: 500;
       font-size: 14px;
-      font-family: Roboto;
+
       letter-spacing: 0.13px;
       // display: none;
       text-shadow: none;
@@ -28,7 +28,7 @@
       color: #ffa100;
       font-weight: 500;
       font-size: 14px;
-      font-family: Roboto;
+
       letter-spacing: 0.13px;
       border: solid 0;
       border-radius: 25px;
@@ -38,9 +38,9 @@
       border-top-left-radius: 8px;
     }
     .ant-modal-content {
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
       border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
     }
     .ant-form-item {
       margin-bottom: 0;
@@ -50,13 +50,13 @@
     }
     .ant-modal-close-x {
       position: absolute;
-      background-color: #2c6df9;
-      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 54px;
       height: 48px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: #fff;
+      background-color: #2c6df9;
       border-top-right-radius: 8px;
       border-bottom-right-radius: 8px;
       &:active {
@@ -64,45 +64,45 @@
       }
     }
 
-    .ant-checkbox-inner{
+    .ant-checkbox-inner {
       width: 18px;
       height: 18px;
       background-color: #fff;
-      border: 1px solid #D8D8D8;
+      border: 1px solid #d8d8d8;
       border-radius: 4px;
     }
-    
-    .ant-checkbox-checked .ant-checkbox-inner{
-      background-color: #F0F3F9;
+
+    .ant-checkbox-checked .ant-checkbox-inner {
+      background-color: #f0f3f9;
     }
 
-    .ant-checkbox-checked .ant-checkbox-inner::after{
-      border: 2px solid #2C6DF9;
+    .ant-checkbox-checked .ant-checkbox-inner::after {
+      border: 2px solid #2c6df9;
       border-top: 0;
       border-left: 0;
     }
   }
   .btnSubmit {
-    font-size: 14px;
     width: fit-content;
+    color: #fff;
     // height: 40px;
     font-weight: 600;
-    border-radius: 25px;
-    color: #fff;
+    font-size: 14px;
     background-color: #ffa100;
     border: none;
+    border-radius: 25px;
   }
   .btnSubmit:disabled {
     color: #fff;
     opacity: 0.5;
   }
   .btnCancel {
-    border: none;
     display: inline-block;
-    color: #ffa100;
-    font-size: 14px;
-    font-weight: 500;
     margin-right: 20px;
+    color: #ffa100;
+    font-weight: 500;
+    font-size: 14px;
+    border: none;
     cursor: pointer;
     &:active {
       opacity: 0.5;
@@ -110,70 +110,66 @@
   }
 
   .headerContent {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 13px;
-    line-height: 20px;
-    padding-bottom: 24PX;
+    padding-bottom: 24px;
 
     color: #464646;
+    font-weight: normal;
+    font-size: 13px;
 
-    span{
+    font-style: normal;
+    line-height: 20px;
+
+    span {
       font-weight: 700;
     }
   }
 
-  .headerText{
-    font-family: Roboto;
-    font-style: normal;
+  .headerText {
+    color: #161c29;
     font-weight: bold;
     font-size: 16px;
-    line-height: 19px;
 
-    color: #161C29;
+    font-style: normal;
+    line-height: 19px;
   }
 
-  .labelCheckbox{
-    font-family: Roboto;
-    font-style: normal;
+  .labelCheckbox {
+    color: #161c29;
     font-weight: normal;
     font-size: 14px;
-    line-height: 16px;
 
-    color: #161C29;
+    font-style: normal;
+    line-height: 16px;
   }
 
-  .documentVerification{
+  .documentVerification {
     display: flex;
     align-items: center;
 
-    .tooltip{
+    .tooltip {
       margin-top: 1px;
       cursor: pointer;
     }
   }
 }
 
-.tooltipOverlay{
-  
-  :global{
-    .ant-tooltip-inner{
-      background: #FFFFFF;
-      box-shadow: 1px 0px 6px rgba(0, 0, 0, 0.15);
-      border-radius: 5px;
+.tooltipOverlay {
+  :global {
+    .ant-tooltip-inner {
       padding: 14px;
+      background: #ffffff;
+      border-radius: 5px;
+      box-shadow: 1px 0px 6px rgba(0, 0, 0, 0.15);
     }
   }
 }
 
-.contentTooltip{
-  font-family: Roboto;
-  font-style: normal;
+.contentTooltip {
+  color: #707177;
   font-weight: normal;
   font-size: 11px;
+
+  font-style: normal;
   line-height: 18px;
   letter-spacing: 0.121875px;
-
-  color: #707177;
 }

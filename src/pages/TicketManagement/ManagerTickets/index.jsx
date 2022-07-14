@@ -1,41 +1,49 @@
-import { Tabs } from 'antd';
-import React, { useState, useEffect } from 'react';
+import { Skeleton, Tabs } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { PageContainer } from '@/layouts/layout/src';
-import CheckboxMenu from '@/components/CheckboxMenu';
-import AllTicket from './components/AllTickets';
-import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
-import styles from './index.less';
+import CustomDropdownSelector from '@/components/CustomDropdownSelector';
 import WorkInProgress from '@/components/WorkInProgress';
+import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentLocation } from '@/utils/authority';
+import AllTicket from './components/AllTickets';
+import styles from './index.less';
 
 const ManagerTicket = (props) => {
   const { TabPane } = Tabs;
-  const { dispatch, tabName = '', companyLocationList = [], permissions = [], role = '' } = props;
+  const {
+    dispatch,
+    tabName = '',
+    companyLocationList = [],
+    permissions = [],
+    role = '',
+    selectedLocations: selectedLocationsProp = [],
+    isLocationLoaded = false,
+  } = props;
 
-  const [selectedLocationsState, setSelectedLocationsState] = useState([getCurrentLocation()]);
+  const [selectedLocationsState, setSelectedLocationsState] = useState([]);
+
+  useEffect(() => {
+    setSelectedLocationsState(selectedLocationsProp);
+  }, [JSON.stringify(selectedLocationsProp)]);
+
+  useEffect(() => {
+    const currentLocation = getCurrentLocation();
+    if (currentLocation) {
+      dispatch({
+        type: 'ticketManagement/save',
+        payload: {
+          selectedLocations: [currentLocation],
+          isLocationLoaded: true,
+        },
+      });
+    }
+  }, []);
 
   const fetchLocationList = () => {
     dispatch({
       type: 'ticketManagement/fetchLocationList',
       payload: {},
     });
-  };
-
-  const getSelectedLocationName = () => {
-    if (selectedLocationsState.length === 1) {
-      return companyLocationList.find((x) => x._id === selectedLocationsState[0])?.name || '';
-    }
-    if (
-      selectedLocationsState.length > 0 &&
-      selectedLocationsState.length < companyLocationList.length
-    ) {
-      return `${selectedLocationsState.length} locations selected`;
-    }
-    if (selectedLocationsState.length === companyLocationList.length) {
-      return 'All';
-    }
-    return 'None';
   };
 
   const onLocationChange = (selection) => {
@@ -49,7 +57,6 @@ const ManagerTicket = (props) => {
   };
 
   const renderFilterLocation = () => {
-    const selectedLocationName = getSelectedLocationName();
     const locationOptions = companyLocationList.map((x) => {
       return {
         _id: x._id,
@@ -57,20 +64,14 @@ const ManagerTicket = (props) => {
       };
     });
     return (
-      <div className={styles.item}>
-        <span className={styles.label}>Location</span>
-
-        <CheckboxMenu
+      <div className={styles.options}>
+        <CustomDropdownSelector
           options={locationOptions}
           onChange={onLocationChange}
-          list={companyLocationList}
-          default={selectedLocationsState}
-        >
-          <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
-            <span>{selectedLocationName}</span>
-            <img src={SmallDownArrow} alt="" />
-          </div>
-        </CheckboxMenu>
+          disabled={locationOptions.length < 2}
+          label="Location"
+          selectedList={selectedLocationsState}
+        />
       </div>
     );
   };
@@ -85,7 +86,7 @@ const ManagerTicket = (props) => {
       dispatch({
         type: 'ticketManagement/save',
         payload: {
-          selectedLocations: [getCurrentLocation()],
+          selectedLocations: [],
         },
       });
     };
@@ -102,12 +103,20 @@ const ManagerTicket = (props) => {
           }}
           tabBarExtraContent={renderFilterLocation()}
         >
-          <TabPane tab="Overview" key="overview">
-            <WorkInProgress />;
-          </TabPane>
-          <TabPane tab="All Tickets" key="all-tickets">
-            <AllTicket role={role} permissions={permissions} />
-          </TabPane>
+          {isLocationLoaded ? (
+            <>
+              <TabPane tab="Overview" key="overview">
+                <WorkInProgress />
+              </TabPane>
+              <TabPane tab="All Tickets" key="all-tickets">
+                <AllTicket role={role} permissions={permissions} />
+              </TabPane>
+            </>
+          ) : (
+            <div style={{ padding: 24 }}>
+              <Skeleton active />
+            </div>
+          )}
         </Tabs>
       </PageContainer>
     </div>
@@ -124,8 +133,12 @@ export default connect(
       } = {},
     },
     location: { companyLocationList = [] },
-
-    ticketManagement: { listOffAllTicket = [], totalList = [], selectedLocations = [] } = {},
+    ticketManagement: {
+      listOffAllTicket = [],
+      totalList = [],
+      selectedLocations = [],
+      isLocationLoaded = false,
+    } = {},
   }) => ({
     listOffAllTicket,
     totalList,
@@ -133,5 +146,6 @@ export default connect(
     companyLocationList,
     locationId,
     selectedLocations,
+    isLocationLoaded,
   }),
 )(ManagerTicket);

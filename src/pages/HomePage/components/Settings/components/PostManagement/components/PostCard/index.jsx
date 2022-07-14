@@ -46,7 +46,7 @@ const PostCard = (props) => {
     });
   };
 
-  const fetchData = () => {
+  const fetchData = ({ page } = {}) => {
     let type = '';
 
     switch (selectedTab) {
@@ -73,14 +73,15 @@ const PostCard = (props) => {
       type,
       payload: {
         postType: selectedTab,
+        page,
       },
     });
     fetchTotalPostsOfType();
   };
 
-  const getTabName = (tab) => {
+  const getTotalTab = (tabId) => {
     let count = 0;
-    switch (tab.id) {
+    switch (tabId) {
       case TAB_IDS.ANNOUNCEMENTS:
         count = totalPostsOfType.find((x) => x._id === TAB_IDS.ANNOUNCEMENTS)?.count || 0;
         break;
@@ -103,7 +104,11 @@ const PostCard = (props) => {
       default:
         break;
     }
-    return `${tab.name} (${addZeroToNumber(count)})`;
+    return count;
+  };
+
+  const getTabName = (tab) => {
+    return `${tab.name} (${addZeroToNumber(getTotalTab(tab.id))})`;
   };
 
   const tableTabs = [
@@ -116,6 +121,7 @@ const PostCard = (props) => {
           loading={loadingFetchPostList}
           refreshData={fetchData}
           onEditPost={onEditPost}
+          totalType={getTotalTab(TAB_IDS.ANNOUNCEMENTS)}
         />
       ),
     },
@@ -140,6 +146,7 @@ const PostCard = (props) => {
           loading={loadingFetchPostList}
           refreshData={fetchData}
           onEditPost={onEditPost}
+          totalType={getTotalTab(TAB_IDS.IMAGES)}
         />
       ),
     },
@@ -153,6 +160,7 @@ const PostCard = (props) => {
           refreshData={fetchData}
           onEditPost={onEditPost}
           onAddPost={onAddPost}
+          totalType={getTotalTab(TAB_IDS.BANNER)}
         />
       ),
     },
@@ -165,6 +173,7 @@ const PostCard = (props) => {
           loading={loadingFetchPostList}
           refreshData={fetchData}
           onEditPost={onEditPost}
+          totalType={getTotalTab(TAB_IDS.POLL)}
         />
       ),
     },
@@ -177,7 +186,7 @@ const PostCard = (props) => {
   }, []);
 
   useEffect(() => {
-    fetchData();
+    fetchData({});
   }, [selectedTab]);
 
   const options = () => {

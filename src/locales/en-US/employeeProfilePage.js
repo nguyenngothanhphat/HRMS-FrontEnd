@@ -4,8 +4,7 @@ export default {
     'Just only number & this field maximun be 16 number, please!',
   'pages.employeeProfile.validateSocialSecurityNumber':
     'Just only number and "-" character & this field maximun be 12 number, please!',
-  'pages.employeeProfile.validateWorkNumber':
-    'Just only number & this field maximun be 10 number, please!',
+  'pages.employeeProfile.validateWorkNumber': 'Just only number & Area code, please!',
   'pages.employeeProfile.validateVisaNumber': 'Invalid visa number!',
   'pages.employeeProfile.validateVisaType': 'Invalid visa type!',
   'pages.employeeProfile.validatePassPortNumber': 'Invalid passport number',

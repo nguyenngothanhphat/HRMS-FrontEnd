@@ -1,9 +1,11 @@
-import React from 'react';
-import { Radio, DatePicker } from 'antd';
 import { CalendarOutlined } from '@ant-design/icons';
+import { DatePicker, Radio } from 'antd';
 import moment from 'moment';
+import React from 'react';
+import { MAKE_CHANGE_TYPE } from '@/utils/employeeProfile';
 import styles from './styles.less';
 
+const { ALREADY_CHANGE, SCHEDULE_CHANGE } = MAKE_CHANGE_TYPE;
 export default function FirstStep(props) {
   const { onDateChange, onRadioChange, changeData, radio } = props;
 
@@ -17,8 +19,8 @@ export default function FirstStep(props) {
           </Radio>
           {radio === 1 ? (
             <DatePicker
-              value={changeData.stepOne === 'Before' ? null : moment(changeData.stepOne)}
-              onChange={(value) => onDateChange(value, 'Before')}
+              value={moment(changeData.stepOne.effectDate)}
+              onChange={(value) => onDateChange(value, ALREADY_CHANGE)}
               suffixIcon={<CalendarOutlined style={{ color: '#161c29' }} />}
               style={{
                 width: '250px',
@@ -27,7 +29,7 @@ export default function FirstStep(props) {
                 border: '1px solid #d6dce4',
                 color: '#000',
               }}
-              format="MM.DD.YY"
+              format="MM/DD/YYYY"
             />
           ) : null}
         </div>
@@ -43,8 +45,8 @@ export default function FirstStep(props) {
           </Radio>
           {radio === 3 ? (
             <DatePicker
-              value={changeData.stepOne === 'Later' ? null : moment(changeData.stepOne)}
-              onChange={(value) => onDateChange(value, 'Later')}
+              value={moment(changeData.stepOne.effectDate)}
+              onChange={(value) => onDateChange(value, SCHEDULE_CHANGE)}
               suffixIcon={<CalendarOutlined style={{ color: '#161c29' }} />}
               style={{
                 width: '250px',
@@ -53,7 +55,7 @@ export default function FirstStep(props) {
                 border: '1px solid #d6dce4',
                 color: '#000',
               }}
-              format="MM.DD.YY"
+              format="MM/DD/YYYY"
             />
           ) : null}
         </div>

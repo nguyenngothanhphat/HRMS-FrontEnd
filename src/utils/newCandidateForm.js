@@ -13,3 +13,9 @@ export const mapType = {
   D: 'documentTypeD',
   E: 'documentTypeE',
 };
+
+export const DOCUMENTS_CHECKLIST_TYPE = {
+  SCAN_UPLOAD: 'Scan & Upload',
+  ELECTRONICALLY: 'Electronically Sign',
+  HARD_COPY: 'Hard Copy',
+};

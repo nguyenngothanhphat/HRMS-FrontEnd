@@ -7,6 +7,7 @@ import DocumentsAndTemplates from './components/DocumentsAndTemplates';
 // import NonExtempNotice from './components/NonExtempNotice';
 import OptionalOnboardingQuestions from './components/OptionalOnboardingQuestions';
 import BenefitsManagement from './components/BenefitsManagement';
+import DocumentsChecklist from './components/DocumentsChecklist';
 import SalaryStructure from './components/SalaryStructure/index';
 import JoiningFormalities from './components/JoiningFormalities/index';
 
@@ -72,6 +73,13 @@ export const listMenu = [
     key: 'joiningFormalities',
     component: <JoiningFormalities />,
     link: 'joining-formalities',
+  },
+  {
+    id: 8,
+    name: 'Documents Checklist',
+    key: 'documentsChecklist',
+    component: <DocumentsChecklist />,
+    link: 'documents-checklist',
   },
 ];
 

@@ -16,12 +16,13 @@ import { goToTop } from '@/utils/utils';
   ({
     loading,
     companiesManagement: { selectedNewCompanyTab = 1 },
-    employeeProfile: { isModified } = {},
+    employeeProfile: { isModified, isProfileOwner = false } = {},
     user: { currentUser } = {},
   }) => ({
     isModified,
     currentUser,
     selectedNewCompanyTab,
+    isProfileOwner,
     loadingFetchEmployee:
       loading.effects['employeeProfile/fetchGeneralInfo'] ||
       loading.effects['employeeProfile/fetchEmployeeIdByUserId'] ||
@@ -122,11 +123,12 @@ class CommonLayout extends PureComponent {
       listMenu = [],
       employeeLocation = '',
       permissions = {},
-      profileOwner = false,
+      isProfileOwner = false,
       isCompanyProfile = false,
       isAddingCompany = false,
       loadingFetchEmployee = false,
     } = this.props;
+
     const { displayComponent, selectedItemId, displayComponentActions } = this.state;
 
     return (
@@ -166,7 +168,7 @@ class CommonLayout extends PureComponent {
             ) : (
               <ViewInformation
                 permissions={permissions}
-                profileOwner={profileOwner}
+                isProfileOwner={isProfileOwner}
                 employeeLocation={employeeLocation}
                 handleClickOnActions={this.handleClickOnActions}
                 loadingFetchEmployee={loadingFetchEmployee}

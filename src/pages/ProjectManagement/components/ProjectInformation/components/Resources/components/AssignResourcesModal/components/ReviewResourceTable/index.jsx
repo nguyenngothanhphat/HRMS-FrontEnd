@@ -2,7 +2,7 @@ import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
 import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
-import CommonTable from '@/pages/ProjectManagement/components/ProjectInformation/components/CommonTable';
+import CommonTable from '@/components/CommonTable';
 import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import styles from './index.less';
 

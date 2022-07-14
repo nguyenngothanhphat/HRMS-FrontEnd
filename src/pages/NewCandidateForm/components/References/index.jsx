@@ -1,4 +1,4 @@
-import { Button, Card, Col, Divider, Form, Input, Row, Spin } from 'antd';
+import { Button, Card, Col, Divider, Form, Input, message, Row, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 // import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import { connect, history } from 'umi';
@@ -86,6 +86,10 @@ const References = (props) => {
           numReferences,
           candidateId,
         },
+      }).then(({ statusCode }) => {
+        if (statusCode === 200) {
+          message.success('Add number of references successfully');
+        }
       });
       setDisabled(true);
     } else {

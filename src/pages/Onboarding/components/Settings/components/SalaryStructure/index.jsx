@@ -96,6 +96,7 @@ const SalaryStructure = (props) => {
     });
     if (responsive.statusCode === 200) onChangeLocation(selectedLocation);
     onCancel();
+    fetchListSalaryByLocation(selectedLocation);
   };
   const onSubmitImport = async (data) => {
     const responsive = await dispatch({
@@ -346,6 +347,16 @@ const SalaryStructure = (props) => {
             >
               {listCountry.map((item) => (
                 <Option key={item._id} value={item._id}>
+                  <img
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '50%',
+                      marginRight: '8px',
+                    }}
+                    src={item.flag}
+                    alt="flag"
+                  />
                   {item.name}
                 </Option>
               ))}

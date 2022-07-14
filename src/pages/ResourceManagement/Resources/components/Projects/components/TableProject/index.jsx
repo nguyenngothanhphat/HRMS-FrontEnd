@@ -4,7 +4,7 @@ import moment from 'moment';
 import { connect, formatMessage, history, Link } from 'umi';
 import AddComment from './components/AddComment';
 import OverviewComment from './components/OverviewComment';
-import UserProfilePopover from './components/UserProfilePopover';
+import UserProfilePopover from '@/components/UserProfilePopover';
 import PopupProjectName from './components/PopupProjectName';
 import PopupCustomer from './components/PopupCustomer';
 
@@ -121,6 +121,37 @@ class TableProject extends Component {
       };
     });
 
+    const dataHover = (value) => {
+      const {
+        generalInfo: {
+          legalName = '',
+          avatar: avatar1 = '',
+          userId = '',
+          workEmail = '',
+          workNumber = '',
+          skills = [],
+        } = {},
+        generalInfo = {},
+        department = {},
+        location: locationInfo = {},
+        manager: managerInfo = {},
+        title = {},
+      } = value;
+      return {
+        legalName,
+        userId,
+        department,
+        workEmail,
+        workNumber,
+        locationInfo,
+        generalInfo,
+        managerInfo,
+        title,
+        avatar1,
+        skills,
+      };
+    };
+
     const columns = [
       {
         title: 'Project Name',
@@ -171,7 +202,7 @@ class TableProject extends Component {
         dataIndex: 'projectManager',
         key: 'projectManager',
         render: (value) => (
-          <UserProfilePopover data={{ ...value, ...value.generalInfo }}>
+          <UserProfilePopover data={dataHover(value)}>
             <Link className={styles.projectName} to={this.viewProfile(value?.generalInfo?.userId)}>
               {value?.generalInfo?.legalName || '-'}
             </Link>

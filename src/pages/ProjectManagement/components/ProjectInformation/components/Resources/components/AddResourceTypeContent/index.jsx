@@ -13,6 +13,16 @@ const AddResourceTypeContent = (props) => {
   const {
     visible = false,
     dispatch,
+    editRecord: {
+      estimatedEffort = '',
+      billingStatus = '',
+      noOfResources = '',
+      division = '',
+      comments = '',
+      resourceType: { _id = '' } = {},
+      technologies = [],
+      id = '',
+    } = {},
     projectDetails: {
       divisionList = [],
       skillList = [],
@@ -23,6 +33,7 @@ const AddResourceTypeContent = (props) => {
     loadingFetchTitleList = false,
     onClose = () => {},
     refreshData = () => {},
+    action = '',
     employee: { generalInfo: { legalName: ownerName = '' } = {} } = {} || {},
   } = props;
 
@@ -53,6 +64,20 @@ const AddResourceTypeContent = (props) => {
     }
   }, [visible]);
 
+  const initialValues = () => {
+    if (action === 'edit') {
+      return {
+        division,
+        resourceType: _id,
+        noOfResources,
+        billingStatus,
+        estimatedEffort,
+        technologies,
+        comments,
+      };
+    }
+    return {};
+  };
   // search
   const onSearchDebounce = debounce((value) => {
     dispatch({
@@ -68,13 +93,19 @@ const AddResourceTypeContent = (props) => {
   };
 
   const handleFinish = async (values) => {
+    const payload = {
+      ...values,
+      projectId,
+      ownerName,
+    };
+    let type = 'projectDetails/addResourceTypeEffect';
+    if (action === 'edit') {
+      payload.id = id;
+      type = 'projectDetails/editResourceTypeEffect';
+    }
     const res = await dispatch({
-      type: 'projectDetails/addResourceTypeEffect',
-      payload: {
-        ...values,
-        projectId,
-        ownerName,
-      },
+      type,
+      payload,
     });
     if (res.statusCode === 200) {
       form.resetFields();
@@ -85,7 +116,13 @@ const AddResourceTypeContent = (props) => {
 
   return (
     <div className={styles.AddResourceTypeContent}>
-      <Form name="basic" form={form} id="myForm" onFinish={handleFinish} initialValues={{}}>
+      <Form
+        name="basic"
+        form={form}
+        id="myForm"
+        onFinish={handleFinish}
+        initialValues={initialValues()}
+      >
         <Row gutter={[24, 0]} className={styles.abovePart}>
           <Col xs={24} md={7}>
             <div className={styles.item}>
@@ -105,8 +142,16 @@ const AddResourceTypeContent = (props) => {
               <span className={styles.label}>Tags:</span>
               <div className={styles.tags}>
                 {typeof tags === 'object'
-                  ? tags.map((t, i) => <CustomTag color={getColor(i)}>{t.tag_name}</CustomTag>)
-                  : tags.map((t, i) => <CustomTag color={getColor(i)}>{t}</CustomTag>)}
+                  ? tags.map((t, i) => (
+                    <CustomTag key={t.tag_name} color={getColor(i)}>
+                      {t.tag_name}
+                    </CustomTag>
+                    ))
+                  : tags.map((t, i) => (
+                    <CustomTag key={t.tag_name} color={getColor(i)}>
+                      {t}
+                    </CustomTag>
+                    ))}
               </div>
             </div>
           </Col>
@@ -119,9 +164,11 @@ const AddResourceTypeContent = (props) => {
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: 'Required field!' }]}
             >
-              <Select placeholder="Select Division">
+              <Select showSearch placeholder="Select Division">
                 {divisionList.map((x) => (
-                  <Option value={x.name}>{x.name}</Option>
+                  <Option key={x.name} value={x.name}>
+                    {x.name}
+                  </Option>
                 ))}
               </Select>
             </Form.Item>
@@ -142,7 +189,9 @@ const AddResourceTypeContent = (props) => {
                 showSearch
               >
                 {titleList.map((x) => (
-                  <Option value={x._id}>{x.name}</Option>
+                  <Option key={x._id} value={x._id}>
+                    {x.name}
+                  </Option>
                 ))}
               </Select>
             </Form.Item>
@@ -164,9 +213,11 @@ const AddResourceTypeContent = (props) => {
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: 'Required field!' }]}
             >
-              <Select placeholder="Select Billing Status">
+              <Select showSearch placeholder="Select Billing Status">
                 {billingStatusList.map((x) => (
-                  <Option value={x}>{x}</Option>
+                  <Option key={x} value={x}>
+                    {x}
+                  </Option>
                 ))}
               </Select>
             </Form.Item>
@@ -182,15 +233,28 @@ const AddResourceTypeContent = (props) => {
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
-            <Form.Item label="Technologies Used" name="technologies" labelCol={{ span: 24 }}>
-              <Select mode="multiple" placeholder="Select Technologies Used">
+            <Form.Item
+              rules={[{ required: true, message: 'Required field!' }]}
+              label="Technologies Used"
+              name="technologies"
+              labelCol={{ span: 24 }}
+            >
+              <Select
+                allowClear
+                showSearch
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                mode="multiple"
+                placeholder="Select Technologies Used"
+              >
                 {skillList.map((x) => (
-                  <Option value={x._id}>{x.name}</Option>
+                  <Option key={x._id} value={x._id}>
+                    {x.name}
+                  </Option>
                 ))}
               </Select>
             </Form.Item>
           </Col>
-
           <Col xs={24}>
             <Form.Item label="Comments/Notes" name="comments" labelCol={{ span: 24 }}>
               <Input.TextArea placeholder="Add comments/notes" autoSize={{ minRows: 4 }} />

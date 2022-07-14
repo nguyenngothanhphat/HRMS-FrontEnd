@@ -1,17 +1,19 @@
-import { Button, Form, Input, Skeleton } from 'antd';
+import { Button, Form, Input, Spin, Popover } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
-import { io } from 'socket.io-client';
 import { connect } from 'umi';
-import { ChatEvent, SOCKET_URL } from '@/utils/chatSocket';
-import UnseenIcon from '@/assets/candidatePortal/unseen.svg';
 import SeenIcon from '@/assets/candidatePortal/seen.svg';
-import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
+import UnseenIcon from '@/assets/candidatePortal/unseen.svg';
+import { ChatEvent, socket } from '@/utils/socket';
 import styles from './index.less';
 
 @connect(
   ({
-    conversation: { conversationList = [], activeConversationMessages = [] } = {},
+    conversation: {
+      conversationList = [],
+      activeConversationMessages = [],
+      activeConversationUnseen = [],
+    } = {},
     user: { currentUser: { candidate = {} } } = {},
     candidatePortal: {
       // candidate = '',
@@ -28,6 +30,7 @@ import styles from './index.less';
     candidate,
     candidateFN,
     candidateLN,
+    activeConversationUnseen,
     assignTo,
     candidatePortal,
     activeConversationMessages,
@@ -36,8 +39,6 @@ import styles from './index.less';
 )
 class ActiveChat extends PureComponent {
   formRef = React.createRef();
-
-  socket = React.createRef();
 
   constructor(props) {
     super(props);
@@ -48,24 +49,11 @@ class ActiveChat extends PureComponent {
 
   componentDidMount() {
     this.scrollToBottom();
-    // realtime get message
-    // const { candidate } = this.props;
-    this.socket.current = io(SOCKET_URL);
-    // this.socket.current.emit(ChatEvent.ADD_USER, candidate._id);
-    // this.socket.current.on(ChatEvent.GET_USER, (users) => {
-    //   console.log('users messages', users);
-    // });
-    // this.socket.current.on(ChatEvent.GET_MESSAGE, (message) => {
-    //   console.log('message a', message);
-    //   this.saveNewMessage(message);
-    // });
   }
 
   componentDidUpdate = () => {};
 
   componentWillUnmount = () => {
-    // socket.on(ChatEvent.DISCONNECT, () => {});
-    // socket.disconnect();
     const { dispatch } = this.props;
     dispatch({
       type: 'conversation/clearState',
@@ -239,30 +227,77 @@ class ActiveChat extends PureComponent {
     );
   };
 
+  onSeenMessage = () => {
+    const {
+      dispatch,
+      activeId: conversationId = '',
+      activeConversationUnseen,
+      candidate: { _id: userId = '' } = {},
+    } = this.props;
+    activeConversationUnseen.forEach(async (item) => {
+      if (item._id === conversationId) {
+        await dispatch({
+          type: 'conversation/seenMessageEffect',
+          payload: {
+            userId,
+            conversationId,
+          },
+        });
+        await dispatch({
+          type: 'conversation/getConversationUnSeenEffect',
+          payload: {
+            userId,
+          },
+        });
+      }
+    });
+  };
+
   // chat input
   renderInput = () => {
     const { loadingMessages, activeId = '', isReplyable = true } = this.props;
     const disabled = loadingMessages || !activeId || !isReplyable;
+    const renderBtn = (
+      <Button
+        disabled={disabled}
+        // className={isReplyable ? '' : styles.disabledBtn}
+        htmlType="submit"
+      >
+        Send
+      </Button>
+    );
+
+    const renderInputText = (
+      <Input.TextArea
+        onFocus={this.onSeenMessage}
+        autoSize={{ minRows: 1, maxRows: 4 }}
+        maxLength={255}
+        placeholder="Type a message..."
+        disabled={disabled}
+      />
+    );
+
     // if (!isReplyable) return '';
     return (
       <div className={styles.inputContainer}>
         <Form ref={this.formRef} name="inputChat" onFinish={this.onSendClick}>
           <Form.Item name="message">
-            <Input.TextArea
-              autoSize={{ minRows: 1, maxRows: 4 }}
-              maxLength={255}
-              placeholder="Type a message..."
-              disabled={disabled}
-            />
+            {disabled ? (
+              <Popover content="Direct Messaging to this user has been disabled. Please raise all questions or concerns with the HR.">
+                {renderInputText}
+              </Popover>
+            ) : (
+              renderInputText
+            )}
           </Form.Item>
           <Form.Item>
-            <Button
-              disabled={disabled}
-              className={isReplyable ? '' : styles.disabledBtn}
-              htmlType="submit"
-            >
-              Send
-            </Button>
+            {disabled ? (
+              <Popover content="Direct Messaging to this user has been disabled. Please raise all questions or concerns with the HR.">
+                {renderBtn}
+              </Popover>
+            ) : (
+              renderBtn
+            )}
           </Form.Item>
         </Form>
       </div>
@@ -273,38 +308,37 @@ class ActiveChat extends PureComponent {
     const {
       dispatch,
       activeId = '',
-      candidate: { _id: candidateId = '' } = {},
+      candidate: { _id: candidateId = '', ticketID = '' } = {},
       assignTo = '',
     } = this.props;
     const { message } = values;
     if (activeId && message) {
-      this.socket.current.emit(ChatEvent.SEND_MESSAGE, {
+      socket.emit(ChatEvent.SEND_MESSAGE, {
         conversationId: activeId,
         senderId: candidateId,
         receiverId: assignTo?._id || assignTo || '',
         text: message,
       });
 
-      const res = await dispatch({
+      dispatch({
         type: 'conversation/addNewMessageEffect',
         payload: {
           conversationId: activeId,
           sender: candidateId,
           text: message,
           isSeen: true,
+          ticketID,
         },
       });
 
-      if (res.statusCode === 200) {
-        this.formRef.current.setFieldsValue({
-          message: '',
-        });
-        const { fetchUnseenTotal = () => {}, getListLastMessage = () => {} } = this.props;
-        setTimeout(() => {
-          fetchUnseenTotal();
-          getListLastMessage();
-        }, 100);
-      }
+      this.formRef.current.setFieldsValue({
+        message: '',
+      });
+      const { fetchUnseenTotal = () => {}, getListLastMessage = () => {} } = this.props;
+      setTimeout(() => {
+        fetchUnseenTotal();
+        getListLastMessage();
+      }, 100);
     }
     this.scrollToBottom();
   };
@@ -327,21 +361,13 @@ class ActiveChat extends PureComponent {
       );
     }
     return (
-      <div className={styles.ActiveChat}>
-        <div className={styles.chatContainer}>
-          {loadingMessages ? (
-            <div style={{ margin: '32px' }}>
-              <Skeleton />
-            </div>
-          ) : (
-            <>
-              {this.renderSender(messages)}
-              {this.renderChatContent(messages)}
-            </>
-          )}
+      <Spin spinning={loadingMessages}>
+        <div className={styles.ActiveChat}>
+          {this.renderSender(messages)}
+          {this.renderChatContent(messages)}
+          {this.renderInput()}
         </div>
-        {this.renderInput()}
-      </div>
+      </Spin>
     );
   }
 }

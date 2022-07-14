@@ -2,15 +2,16 @@ import { Spin, Tabs, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { isEmpty } from 'lodash';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
 import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
 import { isFutureDay, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
-import styles from './index.less';
-import HolidayList from './components/HolidayList';
 import HolidayCalendar from './components/HolidayCalendar';
-import LeaveHistoryList from './components/LeaveHistoryList';
+import HolidayList from './components/HolidayList';
 import LeaveHistoryCalendar from './components/LeaveHistoryCalendar';
+import LeaveHistoryList from './components/LeaveHistoryList';
+import styles from './index.less';
 
 const { TabPane } = Tabs;
 
@@ -106,6 +107,7 @@ const LeaveHistoryAndHoliday = (props) => {
         type: { name: typeName = '' } = {},
         _id = '',
         subject = '',
+        leaveDates = [],
       } = each;
 
       if (
@@ -114,8 +116,17 @@ const LeaveHistoryAndHoliday = (props) => {
         status === IN_PROGRESS ||
         status === IN_PROGRESS_NEXT
       ) {
-        const fromDate = moment(from).locale('en').format(TIMEOFF_DATE_FORMAT);
-        const toDate = moment(to).locale('en').format(TIMEOFF_DATE_FORMAT);
+        let fromDate = from;
+        let toDate = to;
+        let listLeaves = [];
+
+        if (!isEmpty(leaveDates)) {
+          listLeaves = leaveDates.sort((a, b) => moment(a.date) - moment(b.date));
+          fromDate = listLeaves[0].date;
+          toDate = listLeaves[listLeaves.length - 1].date;
+        }
+        fromDate = moment(fromDate).locale('en').format(TIMEOFF_DATE_FORMAT);
+        toDate = moment(toDate).locale('en').format(TIMEOFF_DATE_FORMAT);
         return {
           _id,
           fromDate,
@@ -124,6 +135,7 @@ const LeaveHistoryAndHoliday = (props) => {
           typeName,
           status,
           subject,
+          leaveDates: listLeaves,
         };
       }
       return null;
@@ -143,11 +155,20 @@ const LeaveHistoryAndHoliday = (props) => {
         type: { name: typeName = '' } = {},
         _id = '',
         subject,
+        leaveDates = [],
       } = each;
 
       if (status !== DRAFTS && status !== ON_HOLD && status !== DELETED && status !== WITHDRAWN) {
-        const fromDate = moment(from).locale('en').format(TIMEOFF_DATE_FORMAT);
-        const toDate = moment(to).locale('en').format(TIMEOFF_DATE_FORMAT);
+        let fromDate = from;
+        let toDate = to;
+        let listLeaves = [];
+        if (!isEmpty(leaveDates)) {
+          listLeaves = leaveDates.sort((a, b) => moment(a.date) - moment(b.date));
+          fromDate = listLeaves[0].date;
+          toDate = listLeaves[listLeaves.length - 1].date;
+        }
+        fromDate = moment(fromDate).locale('en').format(TIMEOFF_DATE_FORMAT);
+        toDate = moment(toDate).locale('en').format(TIMEOFF_DATE_FORMAT);
         return {
           _id,
           fromDate,
@@ -156,6 +177,7 @@ const LeaveHistoryAndHoliday = (props) => {
           typeName,
           status,
           subject,
+          leaveDates: listLeaves,
         };
       }
       return null;

@@ -6,7 +6,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 import { roundNumber, TIMEOFF_STATUS } from '@/utils/timeOff';
 import RejectCommentModal from '../RejectCommentModal';
 

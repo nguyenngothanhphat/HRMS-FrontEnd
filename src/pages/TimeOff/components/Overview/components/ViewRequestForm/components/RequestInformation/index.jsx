@@ -1,12 +1,22 @@
-import { Button, Col, Row } from 'antd';
+import { Button, Col, Row, Tag } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
-import { roundNumber, TIMEOFF_STATUS, TIMEOFF_TYPE } from '@/utils/timeOff';
+import { isEmpty } from 'lodash';
+import {
+  roundNumber,
+  TIMEOFF_STATUS,
+  TIMEOFF_TYPE,
+  checkNormalTypeTimeoff,
+  isUpdatedRequest,
+  isNewRequest,
+} from '@/utils/timeOff';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import Withdraw2Modal from '../Withdraw2Modal';
 import WithdrawModal from '../WithdrawModal';
+import PDFIcon from '@/assets/pdf_icon.png';
+import ArrowDownIcon from '@/assets/arrowDownCollapseIcon.svg';
 import styles from './index.less';
 
 const { IN_PROGRESS, ACCEPTED, REJECTED, DRAFTS } = TIMEOFF_STATUS;
@@ -26,6 +36,7 @@ class RequestInformation extends PureComponent {
       showWithdrawModal: false,
       showWithdraw2Modal: false,
       viewDocumentModal: false,
+      isShowMore: false,
     };
   }
 
@@ -149,10 +160,46 @@ class RequestInformation extends PureComponent {
     return from > now;
   };
 
+  attachmentsContent = () => {
+    const { timeOff: { viewingLeaveRequest: { attachments = [] } = {} } = {} } = this.props;
+    return (
+      <span className={styles.attachments}>
+        {!isEmpty(attachments)
+          ? attachments.map((val) => {
+              const attachmentSlice = () => {
+                if (val.attachmentName) {
+                  if (val.attachmentName.length > 70) {
+                    return `${val.attachmentName.substr(0, 8)}...${val.attachmentName.substr(
+                      val.attachmentName.length - 6,
+                      val.attachmentName.length,
+                    )}`;
+                  }
+                  return val.attachmentName;
+                }
+                return '';
+              };
+
+              return (
+                <div className={styles.attachments__file}>
+                  <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
+                    {attachmentSlice()}
+                  </a>
+                  <img className={styles.attachmentsImg} src={PDFIcon} alt="pdf" />
+                </div>
+              );
+            })
+          : 'N/A'}
+      </span>
+    );
+  };
+
   render() {
-    const { showWithdrawModal, showWithdraw2Modal, viewDocumentModal } = this.state;
+    const { showWithdrawModal, showWithdraw2Modal, viewDocumentModal, isShowMore } = this.state;
     const {
-      timeOff: { viewingLeaveRequest = {} } = {},
+      timeOff: {
+        viewingLeaveRequest = {},
+        viewingLeaveRequest: { type: { type: leaveType = '' } = {} } = {},
+      } = {},
       loadingFetchLeaveRequestById,
       loadingEmployeeWithdrawInProgress,
       loadingEmployeeWithdrawApproved,
@@ -165,26 +212,35 @@ class RequestInformation extends PureComponent {
       fromDate = '',
       toDate = '',
       duration: durationProp = '',
-      // onDate = '',
+      onDate = '',
       description = '',
       type: { name = '', type = '' } = {},
       comment = '',
+      leaveDates = [],
+      updated = false,
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
+    const listTime = leaveDates.map((x) => moment(x.date).format('MM/DD/YYYY'));
 
     const checkWithdrawValid =
-      status === IN_PROGRESS || (status === ACCEPTED && this.checkWithdrawValid(fromDate));
+      status === IN_PROGRESS ||
+      (status === ACCEPTED &&
+        this.checkWithdrawValid(fromDate || moment(leaveDates[0]?.date, 'YYYY-MM-DD')));
 
     const duration = roundNumber(durationProp);
+    const isUpdated = isUpdatedRequest(status, updated);
+    const isNew = isNewRequest(status, onDate);
 
     return (
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
           <span className={styles.title}>
-            {loadingFetchLeaveRequestById
-              ? 'Getting data...'
-              : `[Ticket ID: ${ticketID}]: ${subject}`}
+            <span className={styles.ticketID}>
+              {loadingFetchLeaveRequestById ? '' : `[Ticket ID: ${ticketID}]: ${subject}`}
+            </span>
+            {isUpdated && <Tag color="#2C6DF9">Updated</Tag>}
+            {isNew && !isUpdated && <Tag color="#2C6DF9">New</Tag>}
           </span>
           {(status === DRAFTS || status === IN_PROGRESS) && (
             <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
@@ -195,7 +251,7 @@ class RequestInformation extends PureComponent {
         </div>
 
         <div className={styles.formContent}>
-          <Row align="middle" gutter={[24, 12]}>
+          <Row align="middle" gutter={[24, 16]}>
             <Col span={6}>Timeoff Type</Col>
             <Col span={18} className={styles.detailColumn}>
               <span className={styles.fieldValue}>{`${name}`}</span>
@@ -217,13 +273,45 @@ class RequestInformation extends PureComponent {
             </Col>
 
             <Col span={6}>Duration</Col>
-            {formatDurationTime ? (
+            {formatDurationTime || listTime ? (
               <>
                 <Col span={18} className={styles.detailColumn}>
-                  <span>{formatDurationTime}</span>{' '}
+                  {formatDurationTime && !checkNormalTypeTimeoff(leaveType) ? (
+                    <span>{formatDurationTime}</span>
+                  ) : (
+                    <>
+                      {listTime.slice(0, 4).map((y, index) => (
+                        <>
+                          {y}
+                          {!(listTime.length - 1 < index) && ' | '}
+                        </>
+                      ))}
+                      {listTime.length > 4 && !isShowMore ? (
+                        <span
+                          style={{ color: '#2c6df9', fontWeight: 700, cursor: 'pointer' }}
+                          onClick={() => this.setState({ isShowMore: true })}
+                        >
+                          View More
+                          <img
+                            style={{ margin: '0 3px' }}
+                            src={ArrowDownIcon}
+                            alt="arrow-down-icon"
+                          />
+                        </span>
+                      ) : (
+                        listTime.slice(4, listTime.length).map((z, i) => (
+                          <>
+                            {z}
+                            {!(listTime.length - 1 < i) && ' | '}
+                          </>
+                        ))
+                      )}
+                    </>
+                  )}
                   <span
                     style={{
                       fontWeight: 'bold',
+                      marginLeft: 3,
                     }}
                     className={styles.fieldValue}
                   >
@@ -243,6 +331,11 @@ class RequestInformation extends PureComponent {
             <Col span={6}>Description</Col>
             <Col span={18} className={styles.detailColumn}>
               <span>{description}</span>
+            </Col>
+
+            <Col span={6}>Attachments</Col>
+            <Col span={18} className={styles.detailColumn}>
+              {this.attachmentsContent()}
             </Col>
 
             {status === REJECTED && (

@@ -1,0 +1,62 @@
+.Notes {
+  width: 100%;
+  background: #fff;
+  background-color: #fff;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
+  .NoteHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 32px;
+
+    .NoteTitle {
+      display: flex;
+      align-items: center;
+      .title {
+        display: block;
+        margin-left: 20px;
+        color: #161c29;
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+    .NoteCollapse {
+      cursor: pointer;
+      .collapseIcon {
+        color: #2c6df9;
+        font-weight: 500;
+        font-size: 24px;
+      }
+    }
+  }
+  .noteData {
+    &__content {
+      padding: 24px 32px;
+      padding-top: 0;
+    }
+
+    &__divider {
+      margin: 0;
+      border-top: 1px solid #d6dce0;
+    }
+  }
+  :global {
+    span.ant-typography {
+      color: #707177;
+      font-weight: normal;
+      font-size: 13px;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.77;
+      letter-spacing: normal;
+      span {
+        color: #2c6df9;
+        font-weight: 500;
+      }
+      .bold-text {
+        color: #707177;
+      }
+    }
+  }
+}

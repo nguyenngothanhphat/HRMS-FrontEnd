@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
 import { Carousel as CarouselAntd, Spin } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import Banner1 from '@/assets/homePage/banner1.png';
 import NextIcon from '@/assets/homePage/next.svg';
 import PrevIcon from '@/assets/homePage/prev.svg';
-import styles from './index.less';
 import EmptyComponent from '@/components/Empty';
 import { TAB_IDS } from '@/utils/homePage';
-import { getCurrentLocation } from '@/utils/authority';
+import styles from './index.less';
 
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -67,7 +66,7 @@ const Carousel = (props) => {
   }, [JSON.stringify(banners)]);
 
   // RENDER UI
-  if (!previewing && bannerState.length === 0) {
+  if (!loadingFetchBanners && !previewing && bannerState.length === 0) {
     return (
       <div className={styles.Carousel}>
         <EmptyComponent description="No banners" />
@@ -123,5 +122,5 @@ const Carousel = (props) => {
 
 export default connect(({ homePage, loading }) => ({
   homePage,
-  loadingFetchBanners: loading.effects['homePage/fetchBannersEffect1'],
+  loadingFetchBanners: loading.effects['homePage/fetchBannersEffect'],
 }))(Carousel);

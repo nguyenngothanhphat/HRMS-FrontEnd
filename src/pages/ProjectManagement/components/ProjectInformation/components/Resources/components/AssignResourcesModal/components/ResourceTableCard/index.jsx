@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import TimeIcon from '@/assets/projectManagement/time.svg';
-import CommonTable from '@/pages/ProjectManagement/components/ProjectInformation/components/CommonTable';
+import CommonTable from '@/components/CommonTable';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import CustomSearchBox from '@/components/CustomSearchBox';
@@ -29,10 +29,13 @@ const ResourceTableCard = (props) => {
   // if reselect project status or search, clear filter form
   const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
   const [isFiltering, setIsFiltering] = useState(false);
+  const [filter, setFilter] = useState({});
 
-  useEffect(() => {
-    fetchData(searchValue, page, limit);
-  }, [page, limit]);
+  useEffect(
+    () =>
+      filter ? fetchData(searchValue, page, limit, filter) : fetchData(searchValue, page, limit),
+    [page, limit],
+  );
 
   const onChangePage = (p, l) => {
     setPage(p);
@@ -58,9 +61,11 @@ const ResourceTableCard = (props) => {
     fetchData(searchValue, page, limit, filterPayload);
     if (Object.keys(filterPayload).length > 0) {
       setIsFiltering(true);
+      setFilter(filterPayload);
       setApplied(Object.keys(filterPayload).length);
     } else {
       setIsFiltering(false);
+      setFilter(null);
       setApplied(0);
     }
   };

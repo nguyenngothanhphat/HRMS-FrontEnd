@@ -42,7 +42,7 @@ class UsersManagement extends PureComponent {
   };
 
   fetchData = async () => {
-    const { dispatch, manageTenant = [] } = this.props;
+    const { dispatch } = this.props;
     const companyId = getCurrentCompany();
     const tenantId = getCurrentTenant();
     const checkIsOwner = isOwner();
@@ -52,7 +52,7 @@ class UsersManagement extends PureComponent {
         type: 'location/fetchLocationListByParentCompany',
         payload: {
           company: companyId,
-          tenantIds: manageTenant,
+          tenantId,
         },
       });
     } else {

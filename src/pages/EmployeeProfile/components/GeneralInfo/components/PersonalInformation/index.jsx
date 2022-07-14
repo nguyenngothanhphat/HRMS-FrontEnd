@@ -65,17 +65,17 @@ class PersonalInformation extends PureComponent {
   };
 
   render() {
-    const { generalData, openPersonalInfo, permissions = {}, profileOwner } = this.props;
+    const { generalData, openPersonalInfo, permissions = {}, isProfileOwner } = this.props;
     const renderComponent = openPersonalInfo ? (
-      <Edit handleCancel={this.handleCancel} profileOwner={profileOwner} />
+      <Edit handleCancel={this.handleCancel} isProfileOwner={isProfileOwner} />
     ) : (
-      <View dataAPI={generalData} permissions={permissions} profileOwner={profileOwner} />
+      <View dataAPI={generalData} permissions={permissions} isProfileOwner={isProfileOwner} />
     );
     return (
       <div className={styles.PersonalInformation}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Personal Information</p>
-          {!openPersonalInfo && (permissions.editPersonalInfo !== -1 || profileOwner) && (
+          {!openPersonalInfo && (permissions.editPersonalInfo !== -1 || isProfileOwner) && (
             <div className={styles.flexEdit} onClick={this.handleEdit}>
               <img src={EditBtn} alt="" className={styles.IconEdit} />
               <p className={styles.Edit}>Edit</p>

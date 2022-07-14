@@ -15,10 +15,14 @@ const CollapseFieldsTypeABC = (props) => {
 
   const [checkedList, setCheckedList] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [indeterminate, setIndeterminate] = useState(false);
+  const [checkAll, setCheckAll] = useState(false);
 
   useEffect(() => {
     const checkedListTemp = items.filter((x) => x.value).map((x) => x.alias);
     setCheckedList(checkedListTemp);
+    setIndeterminate(!!checkedListTemp.length && checkedListTemp.length < items.length);
+    setCheckAll(checkedListTemp.length === items.length);
   }, [JSON.stringify(items)]);
 
   const onSaveRedux = (result) => {
@@ -38,6 +42,14 @@ const CollapseFieldsTypeABC = (props) => {
       };
     });
     onSaveRedux(result);
+  };
+
+  const onCheckAllChange = (e) => {
+    const selectedItemsTemp = items.map((x) => {
+      if (x.required) return x;
+      return { ...x, value: e.target.checked };
+    });
+    onSaveRedux(selectedItemsTemp);
   };
 
   const renderHeader = () => {
@@ -62,7 +74,6 @@ const CollapseFieldsTypeABC = (props) => {
     ];
 
     onSaveRedux(result);
-
     setVisible(!visible);
     form.resetFields();
   };
@@ -89,27 +100,41 @@ const CollapseFieldsTypeABC = (props) => {
         >
           <Panel header={renderHeader()} key="1">
             {items.length > 0 && (
-              <CheckboxGroup
-                direction="vertical"
-                onChange={onCheckBoxChange}
-                value={checkedList}
-                disabled={disabled}
-                className={styles.checkBoxesGroup}
-              >
-                {items.map((val) => {
-                  return (
-                    <Checkbox value={val.alias} disabled={val.required}>
-                      {val.alias}
-                      {val.required && <span className={styles.starSymbol}>*</span>}
-                      {!disabled && val.new && (
-                        <Popconfirm onConfirm={() => handleRemove(val.key)} title="Sure to remove?">
-                          <DeleteOutlined className={styles.removeIcon} />
-                        </Popconfirm>
-                      )}
-                    </Checkbox>
-                  );
-                })}
-              </CheckboxGroup>
+              <div className={styles.checkBoxesGroup}>
+                {!disabled && (
+                  <Checkbox
+                    indeterminate={indeterminate}
+                    onChange={onCheckAllChange}
+                    checked={checkAll}
+                    disabled={disabled}
+                  >
+                    Select All
+                  </Checkbox>
+                )}
+                <CheckboxGroup
+                  direction="vertical"
+                  onChange={onCheckBoxChange}
+                  value={checkedList}
+                  disabled={disabled}
+                >
+                  {items.map((val) => {
+                    return (
+                      <Checkbox value={val.alias} disabled={val.required}>
+                        {val.alias}
+                        {val.required && <span className={styles.starSymbol}>*</span>}
+                        {!disabled && val.new && (
+                          <Popconfirm
+                            onConfirm={() => handleRemove(val.key)}
+                            title="Sure to remove?"
+                          >
+                            <DeleteOutlined className={styles.removeIcon} />
+                          </Popconfirm>
+                        )}
+                      </Checkbox>
+                    );
+                  })}
+                </CheckboxGroup>
+              </div>
             )}
 
             {!disabled && items.length > 0 && <div className={styles.addBtn__divider} />}

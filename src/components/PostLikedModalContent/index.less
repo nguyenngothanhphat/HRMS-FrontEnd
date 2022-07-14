@@ -1,0 +1,86 @@
+@commonPadding: 24px;
+@blue: #2c6df9;
+@black: #171924;
+
+.PostLikedModalContent {
+  padding: 16px 24px 24px;
+  .user {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 16px 0;
+    background: #ffffff;
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      margin-right: 12px;
+      overflow: hidden;
+      border: 1px solid #f1f1f1;
+      border-radius: 50%;
+      img {
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+    .information {
+      .name {
+        color: #161c29;
+        font-weight: 500;
+        font-size: 14px;
+
+        font-style: normal;
+        line-height: 17px;
+        cursor: pointer;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+      .isMe {
+        color: #2c6df9;
+      }
+      .title {
+        display: block;
+        // margin-top: 10px;
+        color: #707177;
+        font-weight: normal;
+        font-size: 12px;
+
+        font-style: normal;
+        line-height: 15px;
+      }
+    }
+  }
+  .user:not(:last-child) {
+    border-bottom: 1px solid #d6dce0;
+  }
+  .loadMore {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    :global {
+      .ant-btn {
+        height: 32px;
+        padding-right: 25px;
+        padding-left: 25px;
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        span {
+          color: #2c6df9;
+          font-weight: 500;
+          font-size: 13px;
+          font-style: normal;
+          line-height: 19px;
+        }
+        img {
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+}

@@ -15,11 +15,12 @@ const Gallery = (props) => {
   } = props;
 
   const fetchData = () => {
+    const location = getCurrentLocation();
     return dispatch({
       type: 'homePage/fetchImagesEffect',
       payload: {
         postType: TAB_IDS.IMAGES,
-        location: [getCurrentLocation()],
+        location: location ? [location] : [],
       },
     });
   };

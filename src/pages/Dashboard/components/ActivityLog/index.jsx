@@ -18,12 +18,14 @@ const ActivityLog = (props) => {
   const {
     dispatch,
     listTicket: listPendingApprovals = [],
+    listTimeSheetTicket = [],
     permissions = {},
     employee: { _id = '' } = {},
     listMyTicket = [],
     status = '',
     statusApproval = '',
     leaveRequests = [],
+    activeConversationUnseen = [],
   } = props;
 
   const viewPendingApprovalDashboard = permissions.viewPendingApprovalDashboard !== -1;
@@ -32,6 +34,12 @@ const ActivityLog = (props) => {
   useEffect(() => {
     dispatch({
       type: 'dashboard/fetchListTicket',
+    });
+    dispatch({
+      type: 'dashboard/fetchListTimeSheetTicket',
+      payload: {
+        employeeId: _id,
+      },
     });
   }, [statusApproval]);
 
@@ -53,6 +61,13 @@ const ActivityLog = (props) => {
   const fetchListTicket = () => {
     dispatch({
       type: 'dashboard/fetchListTicket',
+    });
+    dispatch({
+      type: 'dashboard/fetchListTimeSheetTicket',
+      payload: {
+        roles: ['MANAGER'],
+        employeeId: _id,
+      },
     });
   };
 
@@ -144,7 +159,7 @@ const ActivityLog = (props) => {
         return '';
     }
   };
-
+  const data = listPendingApprovals.concat(listTimeSheetTicket);
   // MAIN
   return (
     <div className={styles.ActivityLog}>
@@ -156,12 +171,23 @@ const ActivityLog = (props) => {
           <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
             {/* only manager / hr manager see this tab */}
             {viewPendingApprovalDashboard && (
-              <TabPane tab={renderTabName('1', listPendingApprovals.length)} key="1">
-                <CommonTab type="1" data={listPendingApprovals} refreshData={fetchListTicket} />
+              <TabPane
+                tab={renderTabName('1', listPendingApprovals.length + listTimeSheetTicket.length)}
+                key="1"
+              >
+                <CommonTab type="1" data={data} refreshData={fetchListTicket} />
               </TabPane>
             )}
-            <TabPane tab={renderTabName('2', mockNotification.length)} key="2">
-              <CommonTab type="2" data={mockNotification} />
+            <TabPane
+              tab={renderTabName('2', mockNotification.length + activeConversationUnseen.length)}
+              key="2"
+            >
+              {mockNotification.length > 0 ? <CommonTab type="2" data={mockNotification} /> : <></>}
+              {activeConversationUnseen.length > 0 ? (
+                <CommonTab type="4" data={activeConversationUnseen} />
+              ) : (
+                <></>
+              )}
             </TabPane>
             <TabPane tab={renderTabName('3', dataMyTicket().length)} key="3">
               <CommonTab type="3" data={dataMyTicket()} />
@@ -213,17 +239,21 @@ export default connect(
       status = '',
       statusApproval = '',
       leaveRequests = [],
+      listTimeSheetTicket = [],
     } = {},
     loading,
+    conversation: { activeConversationUnseen = [] },
     user: { permissions = {}, currentUser: { employee = {} } } = {},
   }) => ({
     status,
     statusApproval,
     listTicket,
     listMyTicket,
+    listTimeSheetTicket,
     leaveRequests,
     permissions,
     employee,
+    activeConversationUnseen,
     loadingFetchListTicket: loading.effects['dashboard/fetchListTicket'],
     loadingFetchListMyTicket: loading.effects['dashboard/fetchListMyTicket'],
   }),

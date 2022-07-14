@@ -20,6 +20,7 @@ const formItemLayout = {
       originData: { generalData: generalDataOrigin = {}, compensationData = {} } = {},
       tempData: { generalData = {} } = {},
       listSkill = [],
+      employee = '',
       // listTitle = [],
     } = {},
     user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
@@ -32,6 +33,7 @@ const formItemLayout = {
     listSkill,
     // listTitle,
     compensationData,
+    employee,
   }),
 )
 class Edit extends PureComponent {
@@ -131,11 +133,11 @@ class Edit extends PureComponent {
   };
 
   handleUpdateCertification = (list) => {
-    const { dispatch, compensationData = {} } = this.props;
-    const { employee = {}, company = {} } = compensationData;
+    const { dispatch, compensationData = {}, employee = '' } = this.props;
+    const { company = {} } = compensationData;
 
     list.forEach((element) => {
-      if (element._id) {
+      if (element._id && element.name) {
         dispatch({
           type: 'employeeProfile/updateCertification',
           payload: {
@@ -152,6 +154,13 @@ class Edit extends PureComponent {
             urlFile: element?.urlFile,
             employee,
             company,
+          },
+        });
+      } else if (element._id) {
+        dispatch({
+          type: 'employeeProfile/removeCertification',
+          payload: {
+            id: element?._id,
           },
         });
       }
@@ -210,7 +219,7 @@ class Edit extends PureComponent {
       listSkill = [],
       loading,
       // listTitle = [],
-      profileOwner = false,
+      isProfileOwner = false,
     } = this.props;
     const { notValid } = this.state;
     const {
@@ -258,16 +267,16 @@ class Edit extends PureComponent {
         >
           <div className={s.formContainer}>
             <Form.Item label="Previous Job Tilte" name="preJobTitle">
-              <Input disabled={!profileOwner} placeholder="Type the previous job title" />
+              <Input disabled={!isProfileOwner} placeholder="Type the previous job title" />
             </Form.Item>
             <Form.Item label="Previous Company" name="preCompany">
-              <Input disabled={!profileOwner} placeholder="Type the previous company" />
+              <Input disabled={!isProfileOwner} placeholder="Type the previous company" />
             </Form.Item>
             <Form.Item label="Total Experience" name="totalExp">
-              <Input disabled={!profileOwner} placeholder="Type the total experience" />
+              <Input disabled={!isProfileOwner} placeholder="Type the total experience" />
             </Form.Item>
             <Form.Item label="Highest Qualification" name="qualification">
-              <Input disabled={!profileOwner} placeholder="Type the highest qualification" />
+              <Input disabled={!isProfileOwner} placeholder="Type the highest qualification" />
             </Form.Item>
             <Form.Item label="Linkedin" name="linkedIn">
               <Input className={s.linkedIn} placeholder="Type the linkedin url" />

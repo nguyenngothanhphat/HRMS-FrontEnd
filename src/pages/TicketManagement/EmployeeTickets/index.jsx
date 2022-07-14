@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Tabs } from 'antd';
+import { Skeleton, Tabs } from 'antd';
 import { history, connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import TicketQueue from './components/TicketQueue';
@@ -17,12 +17,32 @@ const EmployeeTicket = (props) => {
     companyLocationList = [],
     listOffAllTicket = [],
     totalList = [],
+    totalStatus = [],
     tabName = '',
     permissions = [],
     role = '',
+    selectedLocations: selectedLocationsProp = [],
+    isLocationLoaded = false,
   } = props;
 
-  const [selectedLocationsState, setSelectedLocationsState] = useState([getCurrentLocation()]);
+  const [selectedLocationsState, setSelectedLocationsState] = useState([]);
+
+  useEffect(() => {
+    setSelectedLocationsState(selectedLocationsProp);
+  }, [JSON.stringify(selectedLocationsProp)]);
+
+  useEffect(() => {
+    const currentLocation = getCurrentLocation();
+    if (currentLocation) {
+      dispatch({
+        type: 'ticketManagement/save',
+        payload: {
+          selectedLocations: [currentLocation],
+          isLocationLoaded: true,
+        },
+      });
+    }
+  }, []);
 
   const fetchLocation = () => {
     dispatch({
@@ -97,7 +117,7 @@ const EmployeeTicket = (props) => {
       dispatch({
         type: 'ticketManagement/save',
         payload: {
-          selectedLocations: [getCurrentLocation()],
+          selectedLocations: [],
         },
       });
     };
@@ -115,22 +135,31 @@ const EmployeeTicket = (props) => {
           destroyInactiveTabPane
           tabBarExtraContent={renderFilterLocation()}
         >
-          <TabPane tab="Ticket Queue" key="ticket-queue">
-            <TicketQueue
-              role={role}
-              data={listOffAllTicket}
-              countData={totalList}
-              permissions={permissions}
-            />
-          </TabPane>
-          <TabPane tab="My Tickets" key="my-tickets">
-            <MyTickets
-              role={role}
-              data={listOffAllTicket}
-              countData={totalList}
-              permissions={permissions}
-            />
-          </TabPane>
+          {isLocationLoaded ? (
+            <>
+              <TabPane tab="Ticket Queue" key="ticket-queue">
+                <TicketQueue
+                  role={role}
+                  data={listOffAllTicket}
+                  countData={totalList}
+                  permissions={permissions}
+                />
+              </TabPane>
+              <TabPane tab="My Tickets" key="my-tickets">
+                <MyTickets
+                  role={role}
+                  data={listOffAllTicket}
+                  totalStatus={totalStatus}
+                  countData={totalList}
+                  permissions={permissions}
+                />
+              </TabPane>
+            </>
+          ) : (
+            <div style={{ padding: 24 }}>
+              <Skeleton active />
+            </div>
+          )}
         </Tabs>
       </PageContainer>
     </div>
@@ -139,14 +168,22 @@ const EmployeeTicket = (props) => {
 
 export default connect(
   ({
-    ticketManagement: { listOffAllTicket = [], totalList = [], selectedLocations = [] } = {},
+    ticketManagement: {
+      listOffAllTicket = [],
+      totalList = [],
+      totalStatus = [],
+      selectedLocations = [],
+      isLocationLoaded = false,
+    } = {},
     user: { currentUser: { employee = {} } = {} } = {},
     location: { companyLocationList = [] },
   }) => ({
     employee,
     listOffAllTicket,
     totalList,
+    totalStatus,
     companyLocationList,
     selectedLocations,
+    isLocationLoaded,
   }),
 )(EmployeeTicket);

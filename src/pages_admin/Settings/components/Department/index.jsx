@@ -9,10 +9,16 @@ import CommonTable from '../CommonTable';
 import EditModal from './components/EditModal';
 import styles from './index.less';
 
-@connect(({ loading, adminSetting: { tempData: { listDepartments = [] } = {} } = {} }) => ({
-  listDepartments,
-  loadingFetchDepartmentList: loading.effects['adminSetting/fetchDepartmentList'],
-}))
+@connect(
+  ({
+    loading,
+    adminSetting: { tempData: { listDepartments = [], totalDepartmentList = 0 } = {} } = {},
+  }) => ({
+    listDepartments,
+    totalDepartmentList,
+    loadingFetchDepartmentList: loading.effects['adminSetting/fetchDepartmentList'],
+  }),
+)
 class Department extends PureComponent {
   constructor(props) {
     super(props);
@@ -20,22 +26,38 @@ class Department extends PureComponent {
       modalVisible: false,
       selectedDepartmentID: '',
       searchValue: '',
+      limit: 10,
+      page: 1,
     };
     this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
   }
 
   fetchDepartmentList = (name = '') => {
     const { dispatch } = this.props;
+    const { limit, page } = this.state;
     dispatch({
       type: 'adminSetting/fetchDepartmentList',
       payload: {
         name,
+        limit,
+        page,
       },
     });
   };
 
   componentDidMount = () => {
     this.fetchDepartmentList();
+  };
+
+  componentDidUpdate = (prevProps, prevState) => {
+    const { page, size } = this.state;
+    if (prevState.page !== page || prevState.size !== size) {
+      this.fetchDepartmentList();
+    }
+  };
+
+  onChangePage = (page, limit) => {
+    this.setState({ page, limit });
   };
 
   handleModalVisible = (value) => {
@@ -200,8 +222,12 @@ class Department extends PureComponent {
   };
 
   render() {
-    const { modalVisible, selectedDepartmentID } = this.state;
-    const { listDepartments = [], loadingFetchDepartmentList = false } = this.props;
+    const { modalVisible, selectedDepartmentID, page, size } = this.state;
+    const {
+      listDepartments = [],
+      loadingFetchDepartmentList = false,
+      totalDepartmentList = 0,
+    } = this.props;
     return (
       <div
         className={styles.Department}
@@ -212,6 +238,11 @@ class Department extends PureComponent {
           columns={this.generateColumns()}
           list={listDepartments}
           loading={loadingFetchDepartmentList}
+          total={totalDepartmentList}
+          isBackendPaging
+          page={page}
+          size={size}
+          onChangePage={this.onChangePage}
         />
         <EditModal
           visible={modalVisible}

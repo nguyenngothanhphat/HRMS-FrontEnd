@@ -4,6 +4,7 @@ import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
 import {
+  checkNormalTypeTimeoff,
   getHours,
   MAX_NO_OF_DAYS_TO_SHOW,
   TIMEOFF_12H_FORMAT,
@@ -18,6 +19,7 @@ import {
 } from '@/utils/timeOff';
 import TimeOffModal from '@/components/TimeOffModal';
 import Project from './components/Project';
+import PDFIcon from '@/assets/pdf_icon.png';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -53,15 +55,16 @@ class RequestInformation extends PureComponent {
     }, 500);
   };
 
-  // FETCH LEAVE REQUEST DETAIL
-  componentDidMount = () => {
-    const { dispatch, currentUser: { employee: { _id = '' } = {} } = {} } = this.props;
-    dispatch({
-      type: 'timeOff/fetchProjectsListByEmployee',
-      payload: {
-        employee: _id,
-      },
-    });
+  componentDidUpdate = (prevPorps) => {
+    const { employeeId = '', dispatch } = this.props;
+    if (prevPorps.employeeId !== employeeId) {
+      dispatch({
+        type: 'timeOff/fetchProjectsListByEmployee',
+        payload: {
+          employee: employeeId,
+        },
+      });
+    }
   };
 
   // ON FINISH & SHOW SUCCESS MODAL WHEN CLICKING ON SUBMIT
@@ -238,6 +241,7 @@ class RequestInformation extends PureComponent {
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate, type);
+    const listTime = leaveDates.map((x) => moment(x.date).format('MM/DD/YYYY'));
     const showAllDateList = duration <= MAX_NO_OF_DAYS_TO_SHOW;
 
     const BY_HOUR =
@@ -326,7 +330,7 @@ class RequestInformation extends PureComponent {
       if (showAllDateList)
         return (
           <>
-            {formatDurationTime.map((date, index) => {
+            {(!checkNormalTypeTimeoff(type) ? formatDurationTime : listTime).map((date, index) => {
               return (
                 <Row
                   className={styles.duration}
@@ -367,7 +371,7 @@ class RequestInformation extends PureComponent {
       <>
         <Row style={{ paddingBottom: '5px' }}>
           <Col span={6}>Duration</Col>
-          {!isEmpty(formatDurationTime) && (
+          {!isEmpty(listTime || formatDurationTime) && (
             <>
               <Col span={18} className={styles.detailColumn}>
                 <div className={styles.extraTimeSpent}>{renderTableHeader()}</div>
@@ -380,6 +384,39 @@ class RequestInformation extends PureComponent {
           <Col span={18}>{renderTableContent()}</Col>
         </Row>
       </>
+    );
+  };
+
+  attachmentsContent = () => {
+    const { timeOff: { viewingLeaveRequest: { attachments = [] } = {} } = {} } = this.props;
+    return (
+      <span className={styles.attachments}>
+        {!isEmpty(attachments)
+          ? attachments.map((val) => {
+              const attachmentSlice = () => {
+                if (val.attachmentName) {
+                  if (val.attachmentName.length > 70) {
+                    return `${val.attachmentName.substr(0, 8)}...${val.attachmentName.substr(
+                      val.attachmentName.length - 6,
+                      val.attachmentName.length,
+                    )}`;
+                  }
+                  return val.attachmentName;
+                }
+                return '';
+              };
+
+              return (
+                <div className={styles.attachments__file}>
+                  <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
+                    {attachmentSlice()}
+                  </a>
+                  <img className={styles.attachmentsImg} src={PDFIcon} alt="pdf" />
+                </div>
+              );
+            })
+          : 'N/A'}
+      </span>
     );
   };
 
@@ -402,9 +439,9 @@ class RequestInformation extends PureComponent {
       type: { name = '' } = {},
       employee: {
         // _id: employeeId = '',
-        generalInfo: { legalName = '', userId = '' } = {},
+        generalInfoInfo: { legalName = '', userId = '' } = {},
         employeeId: employeeIdText = '',
-        position: { name: position = '' } = {},
+        titleInfo: { name: position = '' } = {},
       } = {},
       comment = '',
       withdraw: {
@@ -454,9 +491,15 @@ class RequestInformation extends PureComponent {
             <div className={styles.projectList}>
               {/* <span className={styles.title}>Projects</span> */}
               <Row>
-                <Col span={6}>Current Project</Col>
-                <Col span={6}>Project Manager</Col>
-                <Col span={12}>Project Health</Col>
+                <Col span={5}>Current Project</Col>
+                {!isEmpty(projectsList) && (
+                  <>
+                    <Col span={5}>Project Manager</Col>
+                    <Col span={5}>Start Date</Col>
+                    <Col span={5}>End Date</Col>
+                    <Col span={4}>Project Health</Col>
+                  </>
+                )}
               </Row>
 
               {projectsList.length === 0 ? (
@@ -470,22 +513,22 @@ class RequestInformation extends PureComponent {
               ) : (
                 <>
                   {projectsList.map((x) => {
-                    const { project = {} } = x;
                     const {
-                      projectName: prName = '',
-                      projectManager: {
-                        // _id: pjManagerId = '',
-                        generalInfo: { legalName: pmLn = '', userId: managerUserId = '' } = {},
-                      } = {},
+                      projectManager = {},
                       projectHealth = 0,
-                    } = project;
+                      startDate = '',
+                      endDate = '',
+                      project = {},
+                    } = x;
                     return (
                       <>
                         <Project
-                          name={prName}
-                          projectManager={pmLn}
+                          project={project}
+                          projectManager={projectManager}
                           projectHealth={projectHealth}
-                          employeeId={managerUserId}
+                          startDate={startDate}
+                          endDate={endDate}
+                          item={x}
                         />
                         {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
                       </>
@@ -520,6 +563,12 @@ class RequestInformation extends PureComponent {
               <Col span={6}>Description</Col>
               <Col span={18} className={styles.detailColumn}>
                 <span>{description}</span>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={6}>Attachments</Col>
+              <Col span={18} className={styles.detailColumn}>
+                {this.attachmentsContent()}
               </Col>
             </Row>
             {status === REJECTED && (

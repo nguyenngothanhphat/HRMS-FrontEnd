@@ -13,6 +13,8 @@ import {
   // resource type + resource
   addResourceType,
   addResource,
+  editResourceType,
+  deleteResourceType,
   assignResources,
   getResourceList,
   getResourceTypeList,
@@ -500,6 +502,42 @@ const ProjectDetails = {
       let response = {};
       try {
         response = yield call(addResource, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *editResourceTypeEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(editResourceType, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *deleteResourceTypeEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(deleteResourceType, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),

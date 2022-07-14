@@ -5,7 +5,7 @@ import moment from 'moment';
 import React, { memo, Suspense, useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
-import UserProfilePopover from '@/pages/TicketManagement/components/UserProfilePopover';
+import UserProfilePopover from '@/components/UserProfilePopover';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import TicketsItem from '../TicketsItem';
 import styles from './index.less';
@@ -26,7 +26,6 @@ const TableTickets = (props) => {
     size,
     getPageAndSize = () => {},
     refreshFetchTicketList = () => {},
-    refreshFetchTotalList = () => {},
     employeeFilterList = [],
     loadingFetchEmployee = false,
     role = '',
@@ -36,6 +35,7 @@ const TableTickets = (props) => {
   const [currentTimeState, setCurrentTimeState] = useState(moment());
   const [nameSearch, setNameSearch] = useState('');
   const [oldName, setOldName] = useState('');
+  const [selected, setSelected] = useState(true);
 
   const openViewTicket = (ticketID) => {
     let id = '';
@@ -68,6 +68,7 @@ const TableTickets = (props) => {
       attachments = [],
       department_assign: departmentAssign = '',
     } = ticket;
+    setSelected(false);
     if (value !== undefined) {
       dispatch({
         type: 'ticketManagement/updateTicket',
@@ -91,14 +92,9 @@ const TableTickets = (props) => {
       }).then((res) => {
         const { statusCode = '' } = res;
         if (statusCode === 200) {
+          setSelected(true);
           refreshFetchTicketList();
-          refreshFetchTotalList();
-          dispatch({
-            type: 'ticketManagement/save',
-            payload: {
-              employeeFilterList: [],
-            },
-          });
+          setNameSearch('');
         }
       });
     }
@@ -224,6 +220,37 @@ const TableTickets = (props) => {
     );
   };
 
+  const dataHover = (values) => {
+    const {
+      generalInfo: {
+        legalName = '',
+        avatar: avatar1 = '',
+        userId = '',
+        workEmail = '',
+        workNumber = '',
+        skills = [],
+      } = {},
+      generalInfo = {},
+      department = {},
+      location: locationInfo = {},
+      manager: managerInfo = {},
+      title = {},
+    } = values;
+    return {
+      legalName,
+      userId,
+      department,
+      workEmail,
+      workNumber,
+      locationInfo,
+      generalInfo,
+      managerInfo,
+      title,
+      avatar1,
+      skills,
+    };
+  };
+
   const getColumns = () => {
     return [
       {
@@ -290,20 +317,23 @@ const TableTickets = (props) => {
         dataIndex: 'employeeRaise',
         key: 'requesterName',
         render: (employeeRaise = {}) => {
+          const { generalInfo = {}, generalInfo: { legalName = '', userId = '' } = {} } =
+            employeeRaise;
           return (
-            <UserProfilePopover
-              placement="top"
-              trigger="hover"
-              data={{ ...employeeRaise, ...employeeRaise?.generalInfo }}
-            >
-              <span
-                className={styles.userID}
-                onClick={() => viewProfile(employeeRaise?.generalInfo?.userId || '')}
-              >
-                {!isEmpty(employeeRaise?.generalInfo)
-                  ? `${employeeRaise?.generalInfo?.legalName} (${employeeRaise?.generalInfo?.userId})`
+            <UserProfilePopover placement="top" trigger="hover" data={dataHover(employeeRaise)}>
+              <span className={styles.userID} onClick={() => viewProfile(userId || '')}>
+                {!isEmpty(generalInfo)
+                  ? `${
+                      legalName.length > 20
+                        ? `${legalName.substr(0, 4)}...${legalName.substr(
+                            legalName.length - 8,
+                            legalName.length,
+                          )}`
+                        : legalName
+                    }`
                   : ''}
               </span>
+              <div className={styles.userID}>{`(${userId})`}</div>
             </UserProfilePopover>
           );
         },
@@ -365,8 +395,8 @@ const TableTickets = (props) => {
                 viewProfile={viewProfile}
                 handleClickSelect={handleClickSelect}
                 refreshFetchTicketList={refreshFetchTicketList}
-                refreshFetchTotalList={refreshFetchTotalList}
                 row={row}
+                selected={selected}
                 setOldAssignName={setOldName}
               />
             );
@@ -422,20 +452,11 @@ const TableTickets = (props) => {
       employee: employeeId,
       company: [companyInfo],
     };
-    // if (nameSearch) {
     payload.name = nameSearch;
     dispatch({
       type: 'ticketManagement/searchEmployee',
       payload,
     });
-    // } else {
-    //   dispatch({
-    //     type: 'ticketManagement/save',
-    //     payload: {
-    //       employeeFilterList: [],
-    //     },
-    //   });
-    // }
   }, [nameSearch]);
 
   const pagination = {

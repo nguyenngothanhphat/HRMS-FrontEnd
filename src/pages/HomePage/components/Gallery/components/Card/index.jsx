@@ -1,5 +1,6 @@
-import { Carousel } from 'antd';
+import { Carousel, Spin } from 'antd';
 import React from 'react';
+import { connect } from 'umi';
 import NextIcon from '@/assets/homePage/next.svg';
 import PrevIcon from '@/assets/homePage/prev.svg';
 import SampleImage from '@/assets/homePage/samplePhoto.png';
@@ -21,6 +22,7 @@ const Card = (props) => {
     // FOR PREVIEWING IN SETTINGS PAGE
     previewing = false,
     contentPreview = [],
+    loadingRefresh = false,
   } = props;
 
   const renderCard = (card) => {
@@ -56,20 +58,26 @@ const Card = (props) => {
 
   return (
     <div className={styles.Card}>
-      <Carousel
-        infinite
-        arrows
-        dots
-        autoplay
-        autoplaySpeed={10000}
-        lazyLoad="ondemand"
-        nextArrow={<NextArrow />}
-        prevArrow={<PrevArrow />}
-      >
-        {renderData()}
-      </Carousel>
+      <Spin spinning={loadingRefresh}>
+        <Carousel
+          infinite
+          arrows
+          dots
+          autoplay
+          autoplaySpeed={10000}
+          lazyLoad="ondemand"
+          nextArrow={<NextArrow />}
+          prevArrow={<PrevArrow />}
+        >
+          {renderData()}
+        </Carousel>
+      </Spin>
     </div>
   );
 };
 
-export default Card;
+export default connect(({ loading, user: { currentUser = {}, permissions = {} } = {} }) => ({
+  currentUser,
+  permissions,
+  loadingRefresh: loading.effects['homePage/fetchImagesEffect'],
+}))(Card);

@@ -9,7 +9,7 @@ import styles from './index.less';
 
 @connect(
   ({
-    conversation: { conversationList = [], listLastMessage = [] } = {},
+    conversation: { conversationList = [], listLastMessage = [], activeConversationUnseen } = {},
     user: { currentUser: { candidate: { _id: candidate = '' } = {} } } = {},
     candidatePortal: { data: { assignTo = {} } } = {},
     candidatePortal = {},
@@ -18,6 +18,7 @@ import styles from './index.less';
   }) => ({
     data,
     conversationList,
+    activeConversationUnseen,
     listLastMessage,
     candidate,
     assignTo,
@@ -90,7 +91,6 @@ class Messages extends PureComponent {
   };
 
   onChangeActiveId = (activeId, isReplyable, hrAvatar) => {
-    console.log('hrAvatar', hrAvatar);
     this.setState({
       activeId,
       isReplyable,
@@ -104,23 +104,49 @@ class Messages extends PureComponent {
     this.setSeenStatus(activeId);
   };
 
+  onSeenMessage = () => {
+    const {
+      dispatch,
+      activeId: conversationId = '',
+      activeConversationUnseen,
+      candidate: { _id: userId = '' } = {},
+    } = this.props;
+    activeConversationUnseen.forEach(async (item) => {
+      if (item._id === conversationId) {
+        await dispatch({
+          type: 'conversation/seenMessageEffect',
+          payload: {
+            userId,
+            conversationId,
+          },
+        });
+        await dispatch({
+          type: 'conversation/getConversationUnSeenEffect',
+          payload: {
+            userId,
+          },
+        });
+      }
+    });
+  };
+
   setSeenStatus = async (conversationId) => {
-    const { dispatch } = this.props;
-    const res1 = await dispatch({
-      type: 'conversation/setSeenEffect',
+    const { dispatch, candidate: candidateId = '' } = this.props;
+    dispatch({
+      type: 'conversation/seenMessageEffect',
       payload: {
         conversationId,
+        userId: candidateId,
       },
     });
-    if (res1.statusCode === 200) {
-      this.fetchUnseenTotal();
-    }
+
+    this.fetchUnseenTotal();
   };
 
   fetchUnseenTotal = () => {
     const { dispatch, candidate: candidateId = '' } = this.props;
     dispatch({
-      type: 'conversation/getNumberUnseenConversationEffect',
+      type: 'conversation/getConversationUnSeenEffect',
       payload: {
         userId: candidateId,
       },
@@ -142,6 +168,7 @@ class Messages extends PureComponent {
       data: {
         CEOInfo: { generalInfoInfo: { firstName = '', lastName = '' } = {} || {} } = {} || {},
       },
+      activeConversationUnseen = [],
     } = this.props;
     const charCeoName = firstName.charAt(0) + lastName.charAt(0);
     return (
@@ -156,6 +183,7 @@ class Messages extends PureComponent {
               listLastMessage={listLastMessage}
               changeHrAvatar={this.changeHrAvatar}
               charCeoName={charCeoName}
+              activeConversationUnseen={activeConversationUnseen}
             />
           </Col>
           <Col xs={24} lg={16}>

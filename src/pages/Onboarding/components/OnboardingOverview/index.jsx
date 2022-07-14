@@ -18,6 +18,9 @@ class OnboardingOverview extends Component {
         activeTabCustomEmail: '1',
       },
     });
+    dispatch({
+      type: 'newCandidateForm/fetchDocumentsCheckList',
+    });
   }
 
   render() {
