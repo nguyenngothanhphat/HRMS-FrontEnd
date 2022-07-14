@@ -89,6 +89,8 @@ const TimeOff = (props) => {
     const viewSettingTimeoff = permissions.viewSettingTimeoff !== -1;
     const viewHRTimeoff = permissions.viewHRTimeoff !== -1;
     const viewManagerTimeoff = permissions.viewManagerTimeoff !== -1;
+    // const viewRequestOnBehalfOf= permissions.viewRequestOnBehalfOf !== -1;
+    const viewRequestOnBehalfOf=true
 
     return (
       <>
@@ -97,6 +99,7 @@ const TimeOff = (props) => {
             eligibleForCompOff={eligibleForCompOff}
             viewHRTimeoff={viewHRTimeoff}
             viewManagerTimeoff={viewManagerTimeoff}
+            viewRequestOnBehalfOf={viewRequestOnBehalfOf}
           />
         </TabPane>
 

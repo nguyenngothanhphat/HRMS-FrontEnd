@@ -11,7 +11,7 @@ export default class ApplyRequest extends PureComponent {
       buttonText = 'Button',
       onClick = {},
       onBehalfOf = () => {},
-      requestOnBehalf = true,
+      viewRequestOnBehalfOf = false,
     } = this.props;
     return (
       <div
@@ -33,7 +33,7 @@ export default class ApplyRequest extends PureComponent {
           <Button className="" onClick={onClick}>
             {buttonText}
           </Button>
-          {requestOnBehalf && (
+          {viewRequestOnBehalfOf && (
             <div className={styles.btnBehalfOf}>
               <Button onClick={onBehalfOf}> Request On Behalf Of</Button>
             </div>

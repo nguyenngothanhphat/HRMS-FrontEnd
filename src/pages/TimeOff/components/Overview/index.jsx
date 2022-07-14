@@ -15,7 +15,12 @@ import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 // import FeedbackBar from './components/FeedbackBar';
 
 const Overview = (props) => {
-  const { eligibleForCompOff = false, viewHRTimeoff = false, viewManagerTimeoff = false } = props;
+  const {
+    eligibleForCompOff = false,
+    viewHRTimeoff = false,
+    viewManagerTimeoff = false,
+    viewRequestOnBehalfOf = false,
+  } = props;
 
   const [isViewingInformation, setIsViewingInformation] = useState(false);
 
@@ -75,7 +80,7 @@ const Overview = (props) => {
                   onClick={buttonOnClickLeave}
                   onBehalfOf={buttonOnClickBehalfOf}
                   type={1}
-                  requestOnBehalf
+                  viewRequestOnBehalfOf={viewRequestOnBehalfOf}
                 />
               </Col>
               {eligibleForCompOff && (
