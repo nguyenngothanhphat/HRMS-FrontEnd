@@ -370,7 +370,10 @@ const RequestInformation = (props) => {
         if (!isEditingDrafts) {
           dispatch({
             type: 'timeOff/saveDraftLeaveRequest',
-            payload: data,
+            payload: {
+              ...data,
+              status: DRAFTS,
+            },
           }).then((statusCode) => {
             if (statusCode === 200) setShowSuccessModal(true);
           });
