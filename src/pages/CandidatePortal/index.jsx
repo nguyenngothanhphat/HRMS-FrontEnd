@@ -178,7 +178,7 @@ class CandidatePortal extends PureComponent {
           </Button>
           {index > 0 && (
             <Button {...backProps} style={{ float: 'right', border: 'none', background: 'none' }}>
-              back
+              Back
             </Button>
           )}
         </p>
