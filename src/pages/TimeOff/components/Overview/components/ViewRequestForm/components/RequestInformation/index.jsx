@@ -16,6 +16,7 @@ import EditIcon from '@/assets/editBtnBlue.svg';
 import Withdraw2Modal from '../Withdraw2Modal';
 import WithdrawModal from '../WithdrawModal';
 import PDFIcon from '@/assets/pdf_icon.png';
+import ArrowDownIcon from '@/assets/arrowDownCollapseIcon.svg';
 import styles from './index.less';
 
 const { IN_PROGRESS, ACCEPTED, REJECTED, DRAFTS } = TIMEOFF_STATUS;
@@ -35,6 +36,7 @@ class RequestInformation extends PureComponent {
       showWithdrawModal: false,
       showWithdraw2Modal: false,
       viewDocumentModal: false,
+      isShowMore: false,
     };
   }
 
@@ -192,7 +194,7 @@ class RequestInformation extends PureComponent {
   };
 
   render() {
-    const { showWithdrawModal, showWithdraw2Modal, viewDocumentModal } = this.state;
+    const { showWithdrawModal, showWithdraw2Modal, viewDocumentModal, isShowMore } = this.state;
     const {
       timeOff: {
         viewingLeaveRequest = {},
@@ -277,14 +279,34 @@ class RequestInformation extends PureComponent {
                   {formatDurationTime && !checkNormalTypeTimeoff(leaveType) ? (
                     <span>{formatDurationTime}</span>
                   ) : (
-                    listTime.map((y, index) => (
-                      <span>
-                        {y}
-                        {!(listTime.length - 1 <= index) && (
-                          <span style={{ margin: '0 3px' }}>|</span>
-                        )}
-                      </span>
-                    ))
+                    <>
+                      {listTime.slice(0, 4).map((y, index) => (
+                        <>
+                          {y}
+                          {!(listTime.length - 1 < index) && ' | '}
+                        </>
+                      ))}
+                      {listTime.length > 4 && !isShowMore ? (
+                        <span
+                          style={{ color: '#2c6df9', fontWeight: 700, cursor: 'pointer' }}
+                          onClick={() => this.setState({ isShowMore: true })}
+                        >
+                          View More
+                          <img
+                            style={{ margin: '0 3px' }}
+                            src={ArrowDownIcon}
+                            alt="arrow-down-icon"
+                          />
+                        </span>
+                      ) : (
+                        listTime.slice(4, listTime.length).map((z, i) => (
+                          <>
+                            {z}
+                            {!(listTime.length - 1 < i) && ' | '}
+                          </>
+                        ))
+                      )}
+                    </>
                   )}
                   <span
                     style={{

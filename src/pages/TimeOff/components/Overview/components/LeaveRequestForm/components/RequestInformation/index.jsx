@@ -1130,7 +1130,7 @@ const RequestInformation = (props) => {
                       <Form.Item name="listDate">
                         <Select
                           mode="tags"
-                          placeholder="Select days you want to off"
+                          placeholder="Select the days you want to take off"
                           onFocus={() => setVisible(true)}
                           onBlur={() => setVisible(false)}
                           open={visible}

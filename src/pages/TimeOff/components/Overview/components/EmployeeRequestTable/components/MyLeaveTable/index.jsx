@@ -63,10 +63,7 @@ class MyLeaveTable extends PureComponent {
       align: 'left',
       render: (_, record) => {
         const { fromDate = '', toDate = '', leaveDates = [] } = record;
-        const listLeave = leaveDates.sort(
-          (a, b) =>
-            moment(a.date).locale('en').format('DD') - moment(b.date).locale('en').format('DD'),
-        );
+        const listLeave = leaveDates.sort((a, b) => moment(a.date) - moment(b.date));
         if (fromDate && toDate) {
           return this.formatDate(fromDate, toDate);
         }
