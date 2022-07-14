@@ -14,7 +14,7 @@ import {
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 import TimeOffModal from '@/components/TimeOffModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -370,7 +370,10 @@ const RequestInformation = (props) => {
         if (!isEditingDrafts) {
           dispatch({
             type: 'timeOff/saveDraftLeaveRequest',
-            payload: data,
+            payload: {
+              ...data,
+              status: DRAFTS,
+            },
           }).then((statusCode) => {
             if (statusCode === 200) setShowSuccessModal(true);
           });
@@ -1130,7 +1133,7 @@ const RequestInformation = (props) => {
                       <Form.Item name="listDate">
                         <Select
                           mode="tags"
-                          placeholder="Select days you want to off"
+                          placeholder="Select the days you want to take off"
                           onFocus={() => setVisible(true)}
                           onBlur={() => setVisible(false)}
                           open={visible}
@@ -1152,8 +1155,7 @@ const RequestInformation = (props) => {
                                 dateRender={dateRender}
                                 style={{ visibility: 'hidden' }}
                                 getPopupContainer={() =>
-                                  document.getElementsByClassName('multipleDropdown')[0]
-                                }
+                                  document.getElementsByClassName('multipleDropdown')[0]}
                               />
                             );
                           }}

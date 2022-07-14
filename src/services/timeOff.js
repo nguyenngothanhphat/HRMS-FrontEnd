@@ -91,7 +91,7 @@ export async function addLeaveRequest(payload) {
 }
 
 export async function saveDraftLeaveRequest(payload) {
-  return request('/api/leaverequesttenant/save-draft', {
+  return request('/api/leaverequesttenant', {
     method: 'POST',
     data: payload,
   });
@@ -212,6 +212,13 @@ export async function getAllLeaveRequests(payload) {
   return request('/api/leaverequesttenant/get-all-request', {
     method: 'POST',
     data: payload,
+  });
+}
+
+export async function getTotalByType(params) {
+  return request('/api/leaverequesttenant/group-type', {
+    method: 'GET',
+    params,
   });
 }
 

@@ -1,19 +1,21 @@
 /* eslint-disable no-nested-ternary */
 import { Carousel, Spin } from 'antd';
 import moment from 'moment';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import BirthdayImage from '@/assets/homePage/birthday.png';
+import CommentIcon from '@/assets/homePage/comment.svg';
+import LikeIcon from '@/assets/homePage/like.svg';
 import NextIcon from '@/assets/homePage/next.svg';
 import PrevIcon from '@/assets/homePage/prev.svg';
-import UserProfilePopover from '@/components/UserProfilePopover';
-import styles from './index.less';
-import LikeIcon from '@/assets/homePage/like.svg';
-import CommentIcon from '@/assets/homePage/comment.svg';
+import PlaceholderImage from '@/assets/homePage/previewImage.png';
 import CommonModal from '@/components/CommonModal';
-import CelebratingDetailModalContent from '../CelebratingDetailModalContent';
 import PostLikedModalContent from '@/components/PostLikedModalContent';
-import { CELEBRATE_TYPE } from '@/utils/homePage';
+import UserProfilePopover from '@/components/UserProfilePopover';
+import { CELEBRATE_TYPE, roundNumber, roundNumber2 } from '@/utils/homePage';
+import { getCompanyName, singularify } from '@/utils/utils';
+import CelebratingDetailModalContent from '../CelebratingDetailModalContent';
+import styles from './index.less';
 
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -124,27 +126,18 @@ const Card = (props) => {
     );
   };
 
-  const getGender = (gender) => {
-    switch (gender) {
-      case 'Male':
-        return 'his';
-      case 'Female':
-        return 'her';
-      default:
-        return 'his/her';
-    }
-  };
   const renderCardContent = (emp = {}) => {
     const employeeName = renderEmployeeName(emp);
+    const { joinDate = '' } = emp;
 
     if (emp.type === CELEBRATE_TYPE.BIRTHDAY) {
-      const { DOB = '', gender = '' } = emp?.generalInfoInfo || {};
+      const { DOB = '' } = emp?.generalInfoInfo || {};
       const isToday = isTheSameDay(moment(), moment(DOB));
       const birthday = moment.utc(DOB).locale('en').format('MMM Do');
       if (isToday)
         return (
           <span>
-            {employeeName} is celebrating {getGender(gender)} birthday today. ({birthday})
+            Happy Birthday {employeeName} ({birthday}) !!!
           </span>
         );
       return (
@@ -154,16 +147,22 @@ const Card = (props) => {
       );
     }
     if (emp.type === CELEBRATE_TYPE.ANNIVERSARY) {
-      const { joinDate = '' } = emp;
+      const yearCount = moment.utc().diff(moment.utc(joinDate).format('YYYY-MM-DD'), 'years', true);
       return (
         <span>
-          {employeeName} joined our company on{' '}
-          {moment.utc(joinDate).locale('en').format('MMM Do, YYYY')}.
+          Congratulations {employeeName} on completing{' '}
+          {yearCount < 1 ? roundNumber2(yearCount) : roundNumber(yearCount)}{' '}
+          {singularify('year', yearCount)} with {getCompanyName()} !!!
         </span>
       );
     }
     if (emp.type === CELEBRATE_TYPE.NEWJOINEE) {
-      return <span>Welcome to new member: {employeeName}.</span>;
+      return (
+        <span>
+          {employeeName} ({moment.utc(joinDate).locale('en').format('MMM Do, YYYY')}) - Welcome to
+          the team Newbie !!!
+        </span>
+      );
     }
     return '';
   };
@@ -174,7 +173,13 @@ const Card = (props) => {
     return (
       <div className={styles.cardContainer}>
         <div className={styles.image}>
-          <img src={card.generalInfoInfo?.avatar || BirthdayImage} alt="" />
+          <img
+            src={card.generalInfoInfo?.avatar || BirthdayImage}
+            alt=""
+            onError={(e) => {
+              e.target.src = PlaceholderImage;
+            }}
+          />
         </div>
         <div className={styles.content}>
           <p className={styles.caption}>{renderCardContent(card)}</p>
@@ -195,7 +200,7 @@ const Card = (props) => {
                   setLikedModalVisible(true);
                 }}
               >
-                {likes.length || 0} Likes
+                {likes.length || 0} {singularify('Like', likes.length)}
               </span>
             </div>
             <div
@@ -206,7 +211,9 @@ const Card = (props) => {
               }}
             >
               <img src={CommentIcon} alt="" />
-              <span>{comments.length || 0} Comments</span>
+              <span>
+                {comments.length || 0} {singularify('Comment', comments.length)}
+              </span>
             </div>
           </div>
         </div>
@@ -218,7 +225,13 @@ const Card = (props) => {
     return (
       <div className={styles.cardContainer}>
         <div className={styles.image}>
-          <img src={BirthdayImage} alt="" />
+          <img
+            src={BirthdayImage}
+            alt=""
+            onError={(e) => {
+              e.target.src = PlaceholderImage;
+            }}
+          />
         </div>
         <div className={styles.content}>
           <p className={styles.caption}>No birthday today</p>
@@ -231,7 +244,13 @@ const Card = (props) => {
     return (
       <div className={styles.cardContainer}>
         <div className={styles.image}>
-          <img src={previewImage || BirthdayImage} alt="" />
+          <img
+            src={previewImage || BirthdayImage}
+            alt=""
+            onError={(e) => {
+              e.target.src = PlaceholderImage;
+            }}
+          />
         </div>
         <div className={styles.content}>
           <p className={styles.caption}>{previewDescription || 'Content here'}</p>
@@ -269,7 +288,11 @@ const Card = (props) => {
             ? 'Say Happy Birthday!'
             : 'Say Congratulations!'
         }
-        content={<CelebratingDetailModalContent item={viewingItem} refreshData={refreshData} />}
+        content={
+          celebratingDetailModalVisible ? (
+            <CelebratingDetailModalContent item={viewingItem} refreshData={refreshData} />
+          ) : null
+        }
         width={500}
         hasFooter={false}
       />
@@ -279,6 +302,7 @@ const Card = (props) => {
         title="Likes"
         content={<PostLikedModalContent list={viewingItem?.likes || []} />}
         width={500}
+        maskClosable
         hasFooter={false}
       />
     </div>

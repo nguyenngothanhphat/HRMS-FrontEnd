@@ -15,7 +15,7 @@ export default class Summary extends PureComponent {
   };
 
   getCount = (value) => {
-    const { countData: { totalStatus = [] } = {} } = this.props;
+    const { totalStatus = [] } = this.props;
     const find = totalStatus.find((val) => val.status === value);
     return find?.total || 0;
   };

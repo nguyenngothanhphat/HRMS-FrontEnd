@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Popover, Avatar } from 'antd';
 import { formatMessage, history, connect } from 'umi';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 import UserProfilePopover from '../UserProfilePopover';
 import DeleteCustomerModalContent from './components/DeleteCustomerModalContent';
 import DeleteIcon from '@/assets/customerManagement/delete.svg';

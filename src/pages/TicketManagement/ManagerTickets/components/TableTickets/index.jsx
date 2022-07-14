@@ -26,7 +26,6 @@ const TableTickets = (props) => {
     size,
     getPageAndSize = () => {},
     refreshFetchTicketList = () => {},
-    refreshFetchTotalList = () => {},
     employeeFilterList = [],
     loadingFetchEmployee = false,
     role = '',
@@ -95,13 +94,7 @@ const TableTickets = (props) => {
         if (statusCode === 200) {
           setSelected(true);
           refreshFetchTicketList();
-          refreshFetchTotalList();
-          dispatch({
-            type: 'ticketManagement/save',
-            payload: {
-              employeeFilterList: [],
-            },
-          });
+          setNameSearch('');
         }
       });
     }
@@ -402,7 +395,6 @@ const TableTickets = (props) => {
                 viewProfile={viewProfile}
                 handleClickSelect={handleClickSelect}
                 refreshFetchTicketList={refreshFetchTicketList}
-                refreshFetchTotalList={refreshFetchTotalList}
                 row={row}
                 selected={selected}
                 setOldAssignName={setOldName}
@@ -460,20 +452,11 @@ const TableTickets = (props) => {
       employee: employeeId,
       company: [companyInfo],
     };
-    // if (nameSearch) {
     payload.name = nameSearch;
     dispatch({
       type: 'ticketManagement/searchEmployee',
       payload,
     });
-    // } else {
-    //   dispatch({
-    //     type: 'ticketManagement/save',
-    //     payload: {
-    //       employeeFilterList: [],
-    //     },
-    //   });
-    // }
   }, [nameSearch]);
 
   const pagination = {

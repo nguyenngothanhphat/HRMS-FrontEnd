@@ -1,10 +1,9 @@
-import { Col } from 'antd';
 import moment from 'moment';
 import React from 'react';
 import { connect, history } from 'umi';
-import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
-import styles from './index.less';
 import { dateFormat } from '@/utils/homePage';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
+import styles from './index.less';
 
 const EmployeeTag = (props) => {
   const {
@@ -32,7 +31,13 @@ const EmployeeTag = (props) => {
     <div className={styles.EmployeeTag} onClick={onViewProfileClick}>
       <div className={styles.container}>
         <div className={styles.avatar}>
-          <img src={avatar || MockAvatar} alt="" />
+          <img
+            src={avatar || DefaultAvatar}
+            alt=""
+            onError={(e) => {
+              e.target.src = DefaultAvatar;
+            }}
+          />
         </div>
         <div className={styles.information}>
           <span className={styles.name}>{legalName}</span>

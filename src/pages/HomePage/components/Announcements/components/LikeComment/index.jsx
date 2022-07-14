@@ -14,6 +14,7 @@ import PostLikedModalContent from '@/components/PostLikedModalContent';
 import UserComment from '@/components/UserComment';
 import { LIKE_ACTION, POST_OR_CMT } from '@/utils/homePage';
 import styles from './index.less';
+import { singularify } from '@/utils/utils';
 
 const { Panel } = Collapse;
 const ACTION = {
@@ -252,7 +253,9 @@ const LikeComment = ({
       >
         <div>
           <img src={CommentIcon} alt="" />
-          <span>{post.totalComment} Comments</span>
+          <span>
+            {post.totalComment || 0} {singularify('Comment', post.totalComment)}
+          </span>
         </div>
       </div>
     );
@@ -274,7 +277,7 @@ const LikeComment = ({
               onClick={() => onLikePost(LIKE_ACTION.LIKE)}
             />
             <span onClick={() => onViewWhoLiked(LIKE_ACTION.LIKE)}>
-              {likeCount} {likeCount > 1 ? 'Likes' : 'Like'}
+              {likeCount} {singularify('Like', likeCount)}
             </span>
           </div>
           <div className={disliked ? styles.likes__pressed : null}>
