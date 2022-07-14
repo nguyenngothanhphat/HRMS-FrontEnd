@@ -13,6 +13,7 @@ import FilterButton from '@/components/FilterButton';
 // import FilterContent from '../FilterContent';
 
 import styles from './index.less';
+import { exportRawDataToCSV } from '@/utils/utils';
 
 const FilterContent = React.lazy(() => import('./components/FilterContent'));
 
@@ -244,17 +245,7 @@ const DirectoryComponent = (props) => {
     });
 
     const getListExport = getData.data || '';
-
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    // downloadLink.href = `data:text/csv;charset=utf-8,${escape(getListExport)}`;
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getListExport,
-    )}`;
-    downloadLink.download = 'listEmployee.csv';
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    exportRawDataToCSV(getListExport, 'listEmployee.csv');
   };
 
   const openFormImportEmployees = () => {

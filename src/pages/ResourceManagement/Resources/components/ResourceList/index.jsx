@@ -7,6 +7,7 @@ import SearchTable from '../SearchTable';
 import TableResources from '../TableResources';
 import ResourceStatus from './components/ResourceStatus';
 import styles from './index.less';
+import { exportRawDataToCSV } from '@/utils/utils';
 
 const ResourceList = (props) => {
   const {
@@ -169,15 +170,7 @@ const ResourceList = (props) => {
       },
     });
     const getDataExport = getListExport ? getListExport.data : '';
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
-      universalBOM + getDataExport,
-    )}`;
-    downloadLink.download = fileName;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    exportRawDataToCSV(getDataExport, fileName);
   };
 
   useEffect(() => {

@@ -1,11 +1,14 @@
+import { notification } from 'antd';
+import moment from 'moment';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { exportCSV } from '@/utils/timeOffManagement';
-import { dialog } from '@/utils/utils';
+import { dialog, exportRawDataToCSV } from '@/utils/utils';
 import {
   getListEmployees,
   getListTimeOff,
   getLocationsOfCountries,
   getTimeOffTypeList,
+  getMissingLeaveDates,
 } from '../services/timeOffManagement';
 
 const timeOffManagement = {
@@ -17,6 +20,7 @@ const timeOffManagement = {
     selectedLocations: [],
     locationsOfCountries: [],
     typeList: [],
+    missingLeaveDates: [],
   },
   effects: {
     *getListEmployeesEffect({ payload = {} }, { call, put }) {
@@ -104,6 +108,34 @@ const timeOffManagement = {
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
         exportCSV(data);
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *getMissingLeaveDatesEffect({ payload }, { call, select }) {
+      let response = {};
+      try {
+        const { listTotal = 0, selectedLocations = [] } = yield select(
+          (state) => state.timeOffManagement,
+        );
+        response = yield call(getMissingLeaveDates, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          limit: listTotal,
+          page: 1,
+          selectedLocations,
+        });
+        if (response) {
+          exportRawDataToCSV(
+            response,
+            `Time-Off-Missing-Leave-Dates-Report-${moment().format('YYYY-MM-DD')}`,
+          );
+        } else {
+          notification.error('Something failed. Please try again.');
+        }
       } catch (error) {
         dialog(error);
       }
