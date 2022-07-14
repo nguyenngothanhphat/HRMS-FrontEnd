@@ -2,21 +2,16 @@ import { Spin, Tabs, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { isEmpty } from 'lodash';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
 import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
-import {
-  checkNormalTypeTimeoff,
-  isFutureDay,
-  TIMEOFF_DATE_FORMAT,
-  TIMEOFF_STATUS,
-  TIMEOFF_TYPE,
-} from '@/utils/timeOff';
-import styles from './index.less';
-import HolidayList from './components/HolidayList';
+import { isFutureDay, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
 import HolidayCalendar from './components/HolidayCalendar';
-import LeaveHistoryList from './components/LeaveHistoryList';
+import HolidayList from './components/HolidayList';
 import LeaveHistoryCalendar from './components/LeaveHistoryCalendar';
+import LeaveHistoryList from './components/LeaveHistoryList';
+import styles from './index.less';
 
 const { TabPane } = Tabs;
 
@@ -109,7 +104,7 @@ const LeaveHistoryAndHoliday = (props) => {
         duration = 0,
         fromDate: from = '',
         toDate: to = '',
-        type: { name: typeName = '', type = '' } = {},
+        type: { name: typeName = '' } = {},
         _id = '',
         subject = '',
         leaveDates = [],
@@ -121,28 +116,17 @@ const LeaveHistoryAndHoliday = (props) => {
         status === IN_PROGRESS ||
         status === IN_PROGRESS_NEXT
       ) {
-        const listLeave = leaveDates.sort((a, b) => moment(a.date) - moment(b.date));
-        const fromDate = from
-          ? moment(from).locale('en').format(TIMEOFF_DATE_FORMAT)
-          : moment(listLeave[0].date).locale('en').format(TIMEOFF_DATE_FORMAT);
-        const toDate = to
-          ? moment(to).locale('en').format(TIMEOFF_DATE_FORMAT)
-          : moment(listLeave[listLeave.length - 1].date)
-              .locale('en')
-              .format(TIMEOFF_DATE_FORMAT);
-        if (!from && !to && checkNormalTypeTimeoff(type)) {
-          return {
-            _id,
-            leaveDates: listLeave,
-            normalType: checkNormalTypeTimeoff(type),
-            duration,
-            typeName,
-            status,
-            subject,
-            fromDate,
-            toDate,
-          };
+        let fromDate = from;
+        let toDate = to;
+        let listLeaves = [];
+
+        if (!isEmpty(leaveDates)) {
+          listLeaves = leaveDates.sort((a, b) => moment(a.date) - moment(b.date));
+          fromDate = listLeaves[0].date;
+          toDate = listLeaves[listLeaves.length - 1].date;
         }
+        fromDate = moment(fromDate).locale('en').format(TIMEOFF_DATE_FORMAT);
+        toDate = moment(toDate).locale('en').format(TIMEOFF_DATE_FORMAT);
         return {
           _id,
           fromDate,
@@ -151,6 +135,7 @@ const LeaveHistoryAndHoliday = (props) => {
           typeName,
           status,
           subject,
+          leaveDates: listLeaves,
         };
       }
       return null;
@@ -167,29 +152,23 @@ const LeaveHistoryAndHoliday = (props) => {
         duration = 0,
         fromDate: from = '',
         toDate: to = '',
-        type: { name: typeName = '', type = '' } = {},
+        type: { name: typeName = '' } = {},
         _id = '',
         subject,
         leaveDates = [],
       } = each;
 
       if (status !== DRAFTS && status !== ON_HOLD && status !== DELETED && status !== WITHDRAWN) {
-        const fromDate = moment(from).locale('en').format(TIMEOFF_DATE_FORMAT);
-        const toDate = moment(to).locale('en').format(TIMEOFF_DATE_FORMAT);
-        const listLeave = leaveDates
-          .sort((a, b) => moment(a.date) - moment(b.date))
-          .map((x) => x.date);
-        if (!from && !to && checkNormalTypeTimeoff(type)) {
-          return {
-            _id,
-            listLeave,
-            duration,
-            typeName,
-            status,
-            subject,
-            leaveDates,
-          };
+        let fromDate = from;
+        let toDate = to;
+        let listLeaves = [];
+        if (!isEmpty(leaveDates)) {
+          listLeaves = leaveDates.sort((a, b) => moment(a.date) - moment(b.date));
+          fromDate = listLeaves[0].date;
+          toDate = listLeaves[listLeaves.length - 1].date;
         }
+        fromDate = moment(fromDate).locale('en').format(TIMEOFF_DATE_FORMAT);
+        toDate = moment(toDate).locale('en').format(TIMEOFF_DATE_FORMAT);
         return {
           _id,
           fromDate,
@@ -198,6 +177,7 @@ const LeaveHistoryAndHoliday = (props) => {
           typeName,
           status,
           subject,
+          leaveDates: listLeaves,
         };
       }
       return null;
