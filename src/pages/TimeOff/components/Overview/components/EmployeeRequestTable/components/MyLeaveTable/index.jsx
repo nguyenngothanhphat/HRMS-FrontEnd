@@ -4,9 +4,10 @@ import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, Link } from 'umi';
 import {
+  isNewRequest,
+  isUpdatedRequest,
   roundNumber,
   TIMEOFF_DATE_FORMAT,
-  TIMEOFF_NEW_REQUEST_DAYS,
   TIMEOFF_STATUS,
 } from '@/utils/timeOff';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
@@ -14,7 +15,7 @@ import DefaultAvatar from '@/assets/defaultAvatar.png';
 
 import styles from './index.less';
 
-const { IN_PROGRESS, ON_HOLD } = TIMEOFF_STATUS;
+const { ON_HOLD } = TIMEOFF_STATUS;
 // loading
 @connect(({ loading, dispatch, timeOff: { paging } }) => ({
   paging,
@@ -31,22 +32,15 @@ class MyLeaveTable extends PureComponent {
       width: '15%',
       render: (_, record) => {
         const { ticketID = '', _id = '', onDate = '', updated = false, status = '' } = record;
-        const checkUpdated = status === IN_PROGRESS && updated;
-        const createdDate = moment(onDate).format('YYYY/MM/DD');
-        const nowDate = moment().format('YYYY/MM/DD');
-        const isNewRequest =
-          status === IN_PROGRESS &&
-          moment(nowDate)
-            .subtract(TIMEOFF_NEW_REQUEST_DAYS, 'days')
-            .isSameOrBefore(moment(createdDate));
-
+        const isUpdated = isUpdatedRequest(status, updated);
+        const isNew = isNewRequest(status, onDate);
         return (
           <span className={styles.ID}>
             <Link to={`/time-off/overview/personal-timeoff/view/${_id}`}>
               <span className={styles.text}>{ticketID}</span>
             </Link>
-            {checkUpdated && <Tag color="#2C6DF9">Updated</Tag>}
-            {isNewRequest && !checkUpdated && <Tag color="#2C6DF9">New</Tag>}
+            {isUpdated && <Tag color="#2C6DF9">Updated</Tag>}
+            {isNew && !isUpdated && <Tag color="#2C6DF9">New</Tag>}
           </span>
         );
       },

@@ -9,9 +9,10 @@ import OpenIcon from '@/assets/openTR.svg';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import {
+  isNewRequest,
+  isUpdatedRequest,
   roundNumber,
   TIMEOFF_DATE_FORMAT,
-  TIMEOFF_NEW_REQUEST_DAYS,
   TIMEOFF_STATUS,
 } from '@/utils/timeOff';
 import RejectCommentModal from '../RejectCommentModal';
@@ -126,21 +127,15 @@ class TeamLeaveTable extends PureComponent {
         width: COLUMN_WIDTH[TYPE].TICKET_ID,
         render: (_, record) => {
           const { ticketID = '', _id = '', onDate = '', updated = false, status = '' } = record;
-          const checkUpdated = status === IN_PROGRESS && updated;
-          const createdDate = moment(onDate).format('YYYY/MM/DD');
-          const nowDate = moment().format('YYYY/MM/DD');
-          const isNewRequest =
-            status === IN_PROGRESS &&
-            moment(nowDate)
-              .subtract(TIMEOFF_NEW_REQUEST_DAYS, 'days')
-              .isSameOrBefore(moment(createdDate));
+          const isUpdated = isUpdatedRequest(status, updated);
+          const isNew = isNewRequest(status, onDate);
           return (
             <span className={styles.ID}>
               <Link to={`/time-off/overview/manager-timeoff/view/${_id}`}>
                 <span className={styles.text}>{ticketID}</span>
               </Link>
-              {checkUpdated && <Tag color="#2C6DF9">Updated</Tag>}
-              {isNewRequest && <Tag color="#2C6DF9">New</Tag>}
+              {isUpdated && <Tag color="#2C6DF9">Updated</Tag>}
+              {isNew && !isUpdated && <Tag color="#2C6DF9">New</Tag>}
             </span>
           );
         },
