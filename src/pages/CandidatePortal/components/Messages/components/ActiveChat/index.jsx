@@ -1,10 +1,10 @@
-import { Button, Form, Input, Skeleton, Spin } from 'antd';
+import { Button, Form, Input, Spin, Popover } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { ChatEvent, socket } from '@/utils/socket';
-import UnseenIcon from '@/assets/candidatePortal/unseen.svg';
 import SeenIcon from '@/assets/candidatePortal/seen.svg';
+import UnseenIcon from '@/assets/candidatePortal/unseen.svg';
+import { ChatEvent, socket } from '@/utils/socket';
 import styles from './index.less';
 
 @connect(
@@ -257,27 +257,47 @@ class ActiveChat extends PureComponent {
   renderInput = () => {
     const { loadingMessages, activeId = '', isReplyable = true } = this.props;
     const disabled = loadingMessages || !activeId || !isReplyable;
+    const renderBtn = (
+      <Button
+        disabled={disabled}
+        // className={isReplyable ? '' : styles.disabledBtn}
+        htmlType="submit"
+      >
+        Send
+      </Button>
+    );
+
+    const renderInputText = (
+      <Input.TextArea
+        onFocus={this.onSeenMessage}
+        autoSize={{ minRows: 1, maxRows: 4 }}
+        maxLength={255}
+        placeholder="Type a message..."
+        disabled={disabled}
+      />
+    );
+
     // if (!isReplyable) return '';
     return (
       <div className={styles.inputContainer}>
         <Form ref={this.formRef} name="inputChat" onFinish={this.onSendClick}>
           <Form.Item name="message">
-            <Input.TextArea
-              onFocus={this.onSeenMessage}
-              autoSize={{ minRows: 1, maxRows: 4 }}
-              maxLength={255}
-              placeholder="Type a message..."
-              disabled={disabled}
-            />
+            {disabled ? (
+              <Popover content="Direct Messaging to this user has been disabled. Please raise all questions or concerns with the HR.">
+                {renderInputText}
+              </Popover>
+            ) : (
+              renderInputText
+            )}
           </Form.Item>
           <Form.Item>
-            <Button
-              disabled={disabled}
-              className={isReplyable ? '' : styles.disabledBtn}
-              htmlType="submit"
-            >
-              Send
-            </Button>
+            {disabled ? (
+              <Popover content="Direct Messaging to this user has been disabled. Please raise all questions or concerns with the HR.">
+                {renderBtn}
+              </Popover>
+            ) : (
+              renderBtn
+            )}
           </Form.Item>
         </Form>
       </div>

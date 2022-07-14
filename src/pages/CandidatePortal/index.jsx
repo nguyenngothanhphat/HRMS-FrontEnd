@@ -1,4 +1,6 @@
-import { Tabs } from 'antd';
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable react/button-has-type */
+import { Tabs, Button } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
 import ReactJoyride from 'react-joyride';
@@ -146,6 +148,42 @@ class CandidatePortal extends PureComponent {
       match: { params: { tabName = '' } = {} },
     } = this.props;
     const isFirstLogin = getIsFirstLogin();
+    const CustomTooltip = ({
+      index,
+      step,
+      size,
+      backProps,
+      closeProps,
+      primaryProps,
+      tooltipProps,
+      isLastStep,
+    }) => (
+      <div
+        {...tooltipProps}
+        style={{backgroundColor: 'white', width: '350px', padding: '10px'}}
+      >
+        <div>{step.content}</div>
+        <br />
+        <p style={{ paddingBottom: isLastStep ? '20px' : '0px' }}>
+          {!isLastStep && (
+            <Button {...closeProps} style={{ border: 'none', background: 'none' }}>
+              skip
+            </Button>
+          )}
+          <Button
+            {...primaryProps}
+            style={{ float: 'right', color: 'white', backgroundColor: 'orange' }}
+          >
+            {isLastStep ? `End (${index + 1}/${size})` : `Next (${index + 1}/${size})`}
+          </Button>
+          {index > 0 && (
+            <Button {...backProps} style={{ float: 'right', border: 'none', background: 'none' }}>
+              back
+            </Button>
+          )}
+        </p>
+      </div>
+    );
 
     return (
       <div className={styles.CandidatePortal}>
@@ -173,7 +211,8 @@ class CandidatePortal extends PureComponent {
           steps={NEW_COMER_STEPS}
           continuous
           showProgress
-          showSkipButton
+          // showSkipButton
+          tooltipComponent={CustomTooltip}
           run={isFirstLogin && openJoyrde}
           callback={this.handleJoyrideCallback}
           close
