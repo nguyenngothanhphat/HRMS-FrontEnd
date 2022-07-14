@@ -1,16 +1,33 @@
-import React, { PureComponent } from 'react';
-import { Row, Col, Tooltip } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
+import { Col, Row, Tooltip } from 'antd';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
 import { history } from 'umi';
-import styles from './index.less';
+import { isEmpty } from 'lodash';
 import { TIMEOFF_COLOR } from '@/utils/timeOff';
+import styles from './index.less';
 
 export default class EventDetailBox extends PureComponent {
   goToLeaveRequest = (_id) => {
     history.push({
       pathname: `/time-off/overview/personal-timeoff/view/${_id}`,
     });
+  };
+
+  renderRow = (fromDate, toDate) => {
+    return (
+      <Col xs={8} className={styles.dateAndMonth} style={{ justifyContent: 'space-evenly' }}>
+        <span className={styles.container}>
+          <span className={styles.day}>{moment(fromDate).locale('en').format('DD')}</span>
+          <span className={styles.month}>{moment(fromDate).locale('en').format('MMM')}</span>
+        </span>
+        <span className={styles.subtractSymbol}>-</span>
+        <span className={styles.container}>
+          <span className={styles.day}>{moment(toDate).locale('en').format('DD')}</span>
+          <span className={styles.month}>{moment(toDate).locale('en').format('MMM')}</span>
+        </span>
+      </Col>
+    );
   };
 
   render() {
@@ -26,8 +43,8 @@ export default class EventDetailBox extends PureComponent {
     };
 
     const {
-      fromDate: from = '',
-      toDate: to = '',
+      fromDate = '',
+      toDate = '',
       type = '',
       duration = '',
       typeName = '',
@@ -38,46 +55,10 @@ export default class EventDetailBox extends PureComponent {
 
     return (
       <Row onClick={() => this.goToLeaveRequest(_id)} className={styles.EventDetailBox}>
-        {!from && !to ? (
-          <Tooltip title={() => getTitle(leaveDates)}>
-            <Col xs={8} className={styles.dateAndMonth} style={{ justifyContent: 'space-evenly' }}>
-              {' '}
-              <span className={styles.container}>
-                <span className={styles.day}>
-                  {moment(leaveDates[0].date).locale('en').format('DD')}
-                </span>
-                <span className={styles.month}>
-                  {moment(leaveDates[0].date).locale('en').format('MMM')}
-                </span>
-              </span>
-              <span className={styles.subtractSymbol}>-</span>
-              <span className={styles.container}>
-                <span className={styles.day}>
-                  {moment(leaveDates[leaveDates.length - 1].date)
-                    .locale('en')
-                    .format('DD')}
-                </span>
-                <span className={styles.month}>
-                  {moment(leaveDates[leaveDates.length - 1].date)
-                    .locale('en')
-                    .format('MMM')}
-                </span>
-              </span>
-            </Col>
-          </Tooltip>
+        {!isEmpty(leaveDates) ? (
+          <Tooltip title={() => getTitle(leaveDates)}>{this.renderRow(fromDate, toDate)}</Tooltip>
         ) : (
-          <Col xs={8} className={styles.dateAndMonth} style={{ justifyContent: 'space-evenly' }}>
-            {' '}
-            <span className={styles.container}>
-              <span className={styles.day}>{moment(from).locale('en').format('DD')}</span>
-              <span className={styles.month}>{moment(from).locale('en').format('MMM')}</span>
-            </span>
-            <span className={styles.subtractSymbol}>-</span>
-            <span className={styles.container}>
-              <span className={styles.day}>{moment(to).locale('en').format('DD')}</span>
-              <span className={styles.month}>{moment(to).locale('en').format('MMM')}</span>
-            </span>
-          </Col>
+          this.renderRow(fromDate, toDate)
         )}
         <Col xs={9} className={styles.eventOfDay}>
           {typeName}
