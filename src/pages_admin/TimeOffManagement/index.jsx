@@ -19,6 +19,9 @@ const TimeOffManagement = (props) => {
       selectedLocations: selectedLocationsProp = [],
     } = {},
     loadingExport = false,
+    loadingGetMissingLeaveDates = false,
+    loadingList = false,
+    loadingFetchLocation = false,
   } = props;
 
   const [selectedLocations, setSelectedLocation] = useState([]);
@@ -37,6 +40,13 @@ const TimeOffManagement = (props) => {
   const onExport = () => {
     dispatch({
       type: 'timeOffManagement/exportCSVEffect',
+      payload,
+    });
+  };
+
+  const onGetMissingLeaveDates = () => {
+    dispatch({
+      type: 'timeOffManagement/getMissingLeaveDatesEffect',
       payload,
     });
   };
@@ -114,6 +124,9 @@ const TimeOffManagement = (props) => {
               alt=""
             />
           }
+          onClick={onGetMissingLeaveDates}
+          loading={loadingGetMissingLeaveDates}
+          disabled={loadingList || loadingFetchLocation}
         >
           Missing Leave days
         </CustomBlueButton>
@@ -131,6 +144,7 @@ const TimeOffManagement = (props) => {
           }
           loading={loadingExport}
           onClick={onExport}
+          disabled={loadingList || loadingFetchLocation}
         >
           Download
         </CustomBlueButton>
@@ -156,5 +170,8 @@ export default connect(
     permissions,
     timeOffManagement,
     loadingExport: loading.effects['timeOffManagement/exportCSVEffect'],
+    loadingGetMissingLeaveDates: loading.effects['timeOffManagement/getMissingLeaveDatesEffect'],
+    loadingList: loading.effects['timeOffManagement/getListTimeOffEffect'],
+    loadingFetchLocation: loading.effects['timeOffManagement/getLocationsOfCountriesEffect'],
   }),
 )(TimeOffManagement);

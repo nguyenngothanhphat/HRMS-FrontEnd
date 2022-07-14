@@ -186,3 +186,13 @@ export const getCountryId = (locationObj) => {
       return '';
   }
 };
+
+export const exportRawDataToCSV = (data, fileName) => {
+  const downloadLink = document.createElement('a');
+  const universalBOM = '\uFEFF';
+  downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(universalBOM + data)}`;
+  downloadLink.download = `${fileName}.csv`;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+};

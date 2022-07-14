@@ -6,7 +6,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import Projects from './components/Projects';
 import styles from './index.less';
 import WorkInProgress from '@/components/WorkInProgress';
-import { goToTop } from '@/utils/utils';
+import { exportRawDataToCSV, goToTop } from '@/utils/utils';
 
 const { TabPane } = Tabs;
 
@@ -35,21 +35,14 @@ const ProjectManagement = (props) => {
     const getListDataExport = await dispatch({
       type: 'projectManagement/fetchProjectToExport',
       payload: {
-        ...projectListPayload
-      }
+        ...projectListPayload,
+      },
     });
-    let data = ''
+    let data = '';
     if (getListDataExport.statusCode === 200) {
-      data = getListDataExport.data
+      data = getListDataExport.data;
     }
-    // const { data = '' } = getListDataExport;
-    const downloadLink = document.createElement('a');
-    const universalBOM = '\uFEFF';
-    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(universalBOM + data)}`;
-    downloadLink.download = 'projects.csv';
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    exportRawDataToCSV(data, 'projects.csv');
   };
 
   if (!tabName) return '';
