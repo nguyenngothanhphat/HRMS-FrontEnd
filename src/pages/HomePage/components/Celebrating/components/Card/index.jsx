@@ -13,7 +13,8 @@ import CommentIcon from '@/assets/homePage/comment.svg';
 import CommonModal from '@/components/CommonModal';
 import CelebratingDetailModalContent from '../CelebratingDetailModalContent';
 import PostLikedModalContent from '@/components/PostLikedModalContent';
-import { CELEBRATE_TYPE } from '@/utils/homePage';
+import { CELEBRATE_TYPE, roundNumber, roundNumber2 } from '@/utils/homePage';
+import { getCompanyName } from '@/utils/utils';
 
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -136,15 +137,16 @@ const Card = (props) => {
   };
   const renderCardContent = (emp = {}) => {
     const employeeName = renderEmployeeName(emp);
+    const { joinDate = '' } = emp;
 
     if (emp.type === CELEBRATE_TYPE.BIRTHDAY) {
-      const { DOB = '', gender = '' } = emp?.generalInfoInfo || {};
+      const { DOB = '' } = emp?.generalInfoInfo || {};
       const isToday = isTheSameDay(moment(), moment(DOB));
       const birthday = moment.utc(DOB).locale('en').format('MMM Do');
       if (isToday)
         return (
           <span>
-            {employeeName} is celebrating {getGender(gender)} birthday today. ({birthday})
+            Happy Birthday {employeeName} ({birthday}) !!!
           </span>
         );
       return (
@@ -154,16 +156,22 @@ const Card = (props) => {
       );
     }
     if (emp.type === CELEBRATE_TYPE.ANNIVERSARY) {
-      const { joinDate = '' } = emp;
+      const yearCount = moment.utc().diff(moment.utc(joinDate).format('YYYY-MM-DD'), 'years', true);
       return (
         <span>
-          {employeeName} joined our company on{' '}
-          {moment.utc(joinDate).locale('en').format('MMM Do, YYYY')}.
+          Congratulations {employeeName} on completing{' '}
+          {yearCount < 1 ? roundNumber2(yearCount) : roundNumber(yearCount)} years with{' '}
+          {getCompanyName()} !!!
         </span>
       );
     }
     if (emp.type === CELEBRATE_TYPE.NEWJOINEE) {
-      return <span>Welcome to new member: {employeeName}.</span>;
+      return (
+        <span>
+          {employeeName} ({moment.utc(joinDate).locale('en').format('MMM Do, YYYY')}) - Welcome to
+          the team Newbie !!!
+        </span>
+      );
     }
     return '';
   };

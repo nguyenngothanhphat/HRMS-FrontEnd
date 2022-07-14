@@ -6,6 +6,7 @@ import pathRegexp from 'path-to-regexp';
 import { List, notification } from 'antd';
 import moment from 'moment';
 import { formatMessage } from 'umi';
+import { getCompanyOfUser, getCurrentCompany } from './authority';
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg =
@@ -185,4 +186,14 @@ export const getCountryId = (locationObj) => {
     default:
       return '';
   }
+};
+
+const getCurrentCompanyObj = () => {
+  const companyOfUser = getCompanyOfUser() || [];
+  const currentCompanyId = getCurrentCompany();
+  return companyOfUser.find((item) => item._id === currentCompanyId);
+};
+
+export const getCompanyName = () => {
+  return getCurrentCompanyObj()?.name || '';
 };
