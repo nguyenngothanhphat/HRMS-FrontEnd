@@ -347,6 +347,16 @@ const SalaryStructure = (props) => {
             >
               {listCountry.map((item) => (
                 <Option key={item._id} value={item._id}>
+                  <img
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '50%',
+                      marginRight: '8px',
+                    }}
+                    src={item.flag}
+                    alt="flag"
+                  />
                   {item.name}
                 </Option>
               ))}
