@@ -20,7 +20,6 @@ const LeaveHistoryCalendar = (props) => {
   const renderData = (id) => {
     const upcomingData = [];
     const leaveTakenData = [];
-    console.log(leavingList);
     leavingList.forEach((x) => {
       let check = false;
       if (x.fromDate) {
