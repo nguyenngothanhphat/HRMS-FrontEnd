@@ -1,13 +1,13 @@
 import { Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import DownloadIcon from '@/assets/timeOffManagement/ic_download.svg';
+import CustomBlueButton from '@/components/CustomBlueButton';
 import { PageContainer } from '@/layouts/layout/src';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import LocationDropdownSelector from './components/LocationDropdownSelector';
 import TableContainer from './components/TableContainer';
 import styles from './index.less';
-import CustomBlueButton from '@/components/CustomBlueButton';
-import DownloadIcon from '@/assets/timeOffManagement/ic_download.svg';
 
 const { TabPane } = Tabs;
 
@@ -22,6 +22,7 @@ const TimeOffManagement = (props) => {
     loadingGetMissingLeaveDates = false,
     loadingList = false,
     loadingFetchLocation = false,
+    companyLocationList = [],
   } = props;
 
   const [selectedLocations, setSelectedLocation] = useState([]);
@@ -36,6 +37,44 @@ const TimeOffManagement = (props) => {
       },
     });
   };
+
+  const getCountryId = (locationObj) => {
+    const type = typeof locationObj?.headQuarterAddress?.country;
+    switch (type) {
+      case 'string':
+        return locationObj?.headQuarterAddress?.country;
+      case 'object':
+        return locationObj?.headQuarterAddress?.country?._id;
+      default:
+        return '';
+    }
+  };
+
+  const fetchTimeoffType = () => {
+    if (selectedLocations.length > 0) {
+      const selectedLocationObj = companyLocationList.find((x) => x._id === selectedLocations[0]);
+      const country = getCountryId(selectedLocationObj);
+      dispatch({
+        type: 'timeOffManagement/fetchTimeOffTypesByCountry',
+        payload: {
+          country,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        },
+      });
+    } else {
+      dispatch({
+        type: 'timeOffManagement/save',
+        payload: {
+          timeOffTypesByCountry: [],
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchTimeoffType();
+  }, [JSON.stringify(selectedLocations)]);
 
   const onExport = () => {
     dispatch({
@@ -165,9 +204,15 @@ const TimeOffManagement = (props) => {
   );
 };
 export default connect(
-  ({ loading, user: { currentUser = {}, permissions = {} } = {}, timeOffManagement }) => ({
+  ({
+    loading,
+    user: { currentUser = {}, permissions = {} } = {},
+    timeOffManagement,
+    location: { companyLocationList = [] },
+  }) => ({
     currentUser,
     permissions,
+    companyLocationList,
     timeOffManagement,
     loadingExport: loading.effects['timeOffManagement/exportCSVEffect'],
     loadingGetMissingLeaveDates: loading.effects['timeOffManagement/getMissingLeaveDatesEffect'],
