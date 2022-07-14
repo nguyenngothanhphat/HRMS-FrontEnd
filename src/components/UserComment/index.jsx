@@ -156,12 +156,16 @@ const UserComment = ({
 
   return (
     <div className={styles.UserComment}>
-      <div className={styles.author}>
+      <div
+        className={styles.author}
+        style={{
+          borderColor: isMe ? '#f50' : '#f1f1f1',
+        }}
+      >
         <img
           src={owner?.generalInfoInfo?.avatar || DefaultAvatar}
           alt=""
           style={{
-            borderColor: isMe ? '#f50' : 'transparent',
             backgroundColor: isMe ? '#f50' : 'transparent',
           }}
         />

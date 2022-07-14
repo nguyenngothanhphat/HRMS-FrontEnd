@@ -10,17 +10,17 @@
     box-sizing: border-box;
     width: 100%;
     cursor: pointer;
-    // &:hover {
-    //   opacity: 0.8;
-    // }
     .avatar {
-      img {
-        width: 42px;
-        height: 42px;
-        object-fit: cover;
-        border-radius: 50%;
-      }
+      width: 42px;
+      height: 42px;
       margin-right: 16px;
+      overflow: hidden;
+      border: 1px solid #f1f1f1;
+      border-radius: 50%;
+      img {
+        height: 100%;
+        object-fit: cover;
+      }
     }
     .information {
       margin-top: -3px;

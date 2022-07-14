@@ -14,7 +14,7 @@ import CommonModal from '@/components/CommonModal';
 import CelebratingDetailModalContent from '../CelebratingDetailModalContent';
 import PostLikedModalContent from '@/components/PostLikedModalContent';
 import { CELEBRATE_TYPE, roundNumber, roundNumber2 } from '@/utils/homePage';
-import { getCompanyName } from '@/utils/utils';
+import { getCompanyName, singularify } from '@/utils/utils';
 
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -125,16 +125,6 @@ const Card = (props) => {
     );
   };
 
-  const getGender = (gender) => {
-    switch (gender) {
-      case 'Male':
-        return 'his';
-      case 'Female':
-        return 'her';
-      default:
-        return 'his/her';
-    }
-  };
   const renderCardContent = (emp = {}) => {
     const employeeName = renderEmployeeName(emp);
     const { joinDate = '' } = emp;
@@ -203,7 +193,7 @@ const Card = (props) => {
                   setLikedModalVisible(true);
                 }}
               >
-                {likes.length || 0} Likes
+                {likes.length || 0} {singularify('Like', likes.length)}
               </span>
             </div>
             <div
@@ -214,7 +204,9 @@ const Card = (props) => {
               }}
             >
               <img src={CommentIcon} alt="" />
-              <span>{comments.length || 0} Comments</span>
+              <span>
+                {comments.length || 0} {singularify('Comment', comments.length)}
+              </span>
             </div>
           </div>
         </div>
@@ -277,7 +269,11 @@ const Card = (props) => {
             ? 'Say Happy Birthday!'
             : 'Say Congratulations!'
         }
-        content={<CelebratingDetailModalContent item={viewingItem} refreshData={refreshData} />}
+        content={
+          celebratingDetailModalVisible ? (
+            <CelebratingDetailModalContent item={viewingItem} refreshData={refreshData} />
+          ) : null
+        }
         width={500}
         hasFooter={false}
       />
@@ -287,6 +283,7 @@ const Card = (props) => {
         title="Likes"
         content={<PostLikedModalContent list={viewingItem?.likes || []} />}
         width={500}
+        maskClosable
         hasFooter={false}
       />
     </div>

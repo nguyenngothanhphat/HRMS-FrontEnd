@@ -1,12 +1,11 @@
-import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import AnniversaryImage from '@/assets/homePage/anniversary.png';
 import BirthdayImage from '@/assets/homePage/birthday.png';
 import BirthdayImage2 from '@/assets/homePage/birthday2.png';
 import BirthdayImage3 from '@/assets/homePage/birthday3.png';
 import BirthdayImage4 from '@/assets/homePage/birthday4.png';
 import NewJoineeImage from '@/assets/homePage/welcomeNewJoinee.png';
-import AnniversaryImage from '@/assets/homePage/anniversary.png';
 import { CELEBRATE_TYPE } from '@/utils/homePage';
 import Card from './components/Card';
 import styles from './index.less';
@@ -27,24 +26,6 @@ const Celebrating = (props) => {
     fetchCelebrationList();
   }, []);
 
-  const compare = (a, b) => {
-    if (moment(a) > moment(b)) return 1;
-    if (moment(a) < moment(b)) return -1;
-    return 0;
-  };
-
-  const isPastDate = (date1, date2) => {
-    return moment(date1).isBefore(moment(date2), 'day');
-  };
-
-  const addCurrentYearToExistingDate = (date) => {
-    const currentYear = moment.utc().year();
-    return moment(
-      `${currentYear}/${moment.utc(date).format('MM')}/${moment.utc(date).format('DD')}`,
-      'YYYY/MM/DD',
-    );
-  };
-
   const getAvatarImage = (type, avatarIndex) => {
     switch (type) {
       case CELEBRATE_TYPE.BIRTHDAY:
@@ -55,15 +36,6 @@ const Celebrating = (props) => {
         return NewJoineeImage;
       default:
         return '';
-    }
-  };
-
-  const assignSortValue = (item, type) => {
-    switch (type) {
-      case CELEBRATE_TYPE.BIRTHDAY:
-        return item.generalInfoInfo?.DOB;
-      default:
-        return item.joinDate;
     }
   };
 
@@ -83,19 +55,8 @@ const Celebrating = (props) => {
           },
         };
       }
-      return { ...x, sortValue: assignSortValue(x, type) };
+      return x;
     });
-
-    tempList = tempList.filter(
-      (x) => !isPastDate(moment(addCurrentYearToExistingDate(x.sortValue)), moment()),
-    );
-
-    tempList.sort((a, b) =>
-      compare(
-        moment(addCurrentYearToExistingDate(a.sortValue)),
-        moment(addCurrentYearToExistingDate(b.sortValue)),
-      ),
-    );
 
     setList(tempList);
   };

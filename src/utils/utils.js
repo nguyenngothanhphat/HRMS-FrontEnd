@@ -188,7 +188,7 @@ export const getCountryId = (locationObj) => {
   }
 };
 
-const getCurrentCompanyObj = () => {
+export const getCurrentCompanyObj = () => {
   const companyOfUser = getCompanyOfUser() || [];
   const currentCompanyId = getCurrentCompany();
   return companyOfUser.find((item) => item._id === currentCompanyId);
@@ -196,4 +196,9 @@ const getCurrentCompanyObj = () => {
 
 export const getCompanyName = () => {
   return getCurrentCompanyObj()?.name || '';
+};
+
+export const singularify = (str, count) => {
+  if (count > 1) return `${str}s`;
+  return str;
 };
