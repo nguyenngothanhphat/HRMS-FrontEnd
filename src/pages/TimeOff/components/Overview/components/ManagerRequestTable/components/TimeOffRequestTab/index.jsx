@@ -140,7 +140,7 @@ const TimeOffRequestTab = (props) => {
   const getTotalByType = () => {
     const payload = {
       type: getShortType(currentLeaveTypeTab),
-      status: TIMEOFF_STATUS.IN_PROGRESS,
+      status: [IN_PROGRESS, ON_HOLD],
     };
     if (category !== 'MY') {
       payload.isTeam = category === 'TEAM' ? true : null;
