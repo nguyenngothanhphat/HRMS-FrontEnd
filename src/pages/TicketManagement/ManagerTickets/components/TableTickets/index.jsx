@@ -94,12 +94,7 @@ const TableTickets = (props) => {
         if (statusCode === 200) {
           setSelected(true);
           refreshFetchTicketList();
-          dispatch({
-            type: 'ticketManagement/save',
-            payload: {
-              employeeFilterList: [],
-            },
-          });
+          setNameSearch('');
         }
       });
     }
@@ -457,20 +452,11 @@ const TableTickets = (props) => {
       employee: employeeId,
       company: [companyInfo],
     };
-    // if (nameSearch) {
     payload.name = nameSearch;
     dispatch({
       type: 'ticketManagement/searchEmployee',
       payload,
     });
-    // } else {
-    //   dispatch({
-    //     type: 'ticketManagement/save',
-    //     payload: {
-    //       employeeFilterList: [],
-    //     },
-    //   });
-    // }
   }, [nameSearch]);
 
   const pagination = {
