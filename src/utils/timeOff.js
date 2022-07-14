@@ -254,3 +254,16 @@ export const getShortType = (tab) => {
 };
 
 export const TIMEOFF_NEW_REQUEST_DAYS = 4;
+
+export const isNewRequest = (status, onDate) => {
+  const createdDate = moment(onDate).format('YYYY/MM/DD');
+  const nowDate = moment().format('YYYY/MM/DD');
+  return (
+    status === TIMEOFF_STATUS.IN_PROGRESS &&
+    moment(nowDate).subtract(TIMEOFF_NEW_REQUEST_DAYS, 'days').isSameOrBefore(moment(createdDate))
+  );
+};
+
+export const isUpdatedRequest = (status, updated = false) => {
+  return status === TIMEOFF_STATUS.IN_PROGRESS && updated;
+};
