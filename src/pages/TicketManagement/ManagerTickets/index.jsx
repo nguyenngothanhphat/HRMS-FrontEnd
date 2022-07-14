@@ -1,4 +1,4 @@
-import { Tabs } from 'antd';
+import { Skeleton, Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
@@ -17,6 +17,7 @@ const ManagerTicket = (props) => {
     permissions = [],
     role = '',
     selectedLocations: selectedLocationsProp = [],
+    isLocationLoaded = false,
   } = props;
 
   const [selectedLocationsState, setSelectedLocationsState] = useState([]);
@@ -32,6 +33,7 @@ const ManagerTicket = (props) => {
         type: 'ticketManagement/save',
         payload: {
           selectedLocations: [currentLocation],
+          isLocationLoaded: true,
         },
       });
     }
@@ -101,12 +103,20 @@ const ManagerTicket = (props) => {
           }}
           tabBarExtraContent={renderFilterLocation()}
         >
-          <TabPane tab="Overview" key="overview">
-            <WorkInProgress />;
-          </TabPane>
-          <TabPane tab="All Tickets" key="all-tickets">
-            <AllTicket role={role} permissions={permissions} />
-          </TabPane>
+          {isLocationLoaded ? (
+            <>
+              <TabPane tab="Overview" key="overview">
+                <WorkInProgress />;
+              </TabPane>
+              <TabPane tab="All Tickets" key="all-tickets">
+                <AllTicket role={role} permissions={permissions} />
+              </TabPane>
+            </>
+          ) : (
+            <div style={{ padding: 24 }}>
+              <Skeleton active />
+            </div>
+          )}
         </Tabs>
       </PageContainer>
     </div>
@@ -123,7 +133,12 @@ export default connect(
       } = {},
     },
     location: { companyLocationList = [] },
-    ticketManagement: { listOffAllTicket = [], totalList = [], selectedLocations = [] } = {},
+    ticketManagement: {
+      listOffAllTicket = [],
+      totalList = [],
+      selectedLocations = [],
+      isLocationLoaded = false,
+    } = {},
   }) => ({
     listOffAllTicket,
     totalList,
@@ -131,5 +146,6 @@ export default connect(
     companyLocationList,
     locationId,
     selectedLocations,
+    isLocationLoaded,
   }),
 )(ManagerTicket);
