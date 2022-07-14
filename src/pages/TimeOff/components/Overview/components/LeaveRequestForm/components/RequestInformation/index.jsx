@@ -47,7 +47,7 @@ const { TextArea } = Input;
 const { A, B, C, D } = TIMEOFF_TYPE;
 const { AFTERNOON, MORNING, WHOLE_DAY, HOUR } = TIMEOFF_PERIOD;
 const { IN_PROGRESS, DRAFTS } = TIMEOFF_STATUS;
-const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
+const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST, NEW_BEHALF_OF } = TIMEOFF_LINK_ACTION;
 
 const RequestInformation = (props) => {
   const {
@@ -1057,6 +1057,69 @@ const RequestInformation = (props) => {
           className={styles.form}
           onValuesChange={onValuesChange}
         >
+          {action === NEW_BEHALF_OF && (
+            <Row className={styles.eachRow}>
+              <Col className={styles.label} lg={6} sm={8}>
+                <span>Select Employee</span> <span className={styles.mandatoryField}>*</span>
+              </Col>
+              <Col lg={12} sm={16}>
+                <Form.Item
+                  name="employee"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please select Employee!',
+                    },
+                    // { validator: typeValidator },
+                  ]}
+                >
+                  <Select
+                    // mode="multiple"
+                    showSearch
+                    allowClear
+                    placeholder="Search a person you want to loop"
+                    // disabled={!selectedTypeName}
+                    filterOption={(input, option) => {
+                      return (
+                        option.children[1].props.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                  >
+                    {formatListEmail.map((value) => {
+                      const { _id = '', workEmail = '', avatar = '' } = value;
+
+                      return (
+                        <Option key={_id} value={_id}>
+                          <div style={{ display: 'inline', marginRight: '10px' }}>
+                            <img
+                              style={{
+                                borderRadius: '50%',
+                                width: '30px',
+                                height: '30px',
+                              }}
+                              src={avatar}
+                              alt="user"
+                              onError={(e) => {
+                                e.target.src = DefaultAvatar;
+                              }}
+                            />
+                          </div>
+                          <span
+                            style={{ fontSize: '13px', color: '#161C29' }}
+                            className={styles.ccEmail}
+                          >
+                            {workEmail}
+                          </span>
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+          )}
           <Row className={styles.eachRow}>
             <Col className={styles.label} lg={6} sm={8}>
               <span>Select Timeoff Type</span> <span className={styles.mandatoryField}>*</span>
@@ -1152,8 +1215,7 @@ const RequestInformation = (props) => {
                                 dateRender={dateRender}
                                 style={{ visibility: 'hidden' }}
                                 getPopupContainer={() =>
-                                  document.getElementsByClassName('multipleDropdown')[0]
-                                }
+                                  document.getElementsByClassName('multipleDropdown')[0]}
                               />
                             );
                           }}

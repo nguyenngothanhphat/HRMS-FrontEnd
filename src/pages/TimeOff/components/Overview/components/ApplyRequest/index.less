@@ -36,6 +36,7 @@
     font-size: 18px;
   }
   .button {
+    display: flex;
     :global {
       .ant-btn {
         height: 40px;
@@ -73,6 +74,31 @@
         &:hover span:after {
           right: 0;
           opacity: 1;
+        }
+      }
+    }
+  }
+  .btnBehalfOf {
+    margin-left: 16px;
+    :global {
+      .ant-btn {
+        height: 40px;
+        padding-right: 28px;
+        padding-left: 28px;
+        background: rgba(255, 161, 0, 0.15);
+        border: none;
+        border-radius: 25px;
+        transition: 0.5s;
+        span {
+          position: relative;
+          display: inline-block;
+          color: #ffa100;
+          font-weight: 700;
+          cursor: pointer;
+          transition: 0.5s;
+        }
+        &:hover {
+          background-color: rgba(255, 161, 0, 0.15); // hex with alpha 0.8
         }
       }
     }

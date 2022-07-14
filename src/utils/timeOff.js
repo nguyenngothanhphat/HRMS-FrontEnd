@@ -26,6 +26,7 @@ export const TIMEOFF_LINK_ACTION = {
   NEW_LEAVE_REQUEST: 'new',
   EDIT_COMPOFF_REQUEST: 'edit',
   NEW_COMPOFF_REQUEST: 'new',
+  NEW_BEHALF_OF: 'new-behalf-of',
 };
 export const MAX_NO_OF_DAYS_TO_SHOW = 5;
 export const TIMEOFF_TYPE = {

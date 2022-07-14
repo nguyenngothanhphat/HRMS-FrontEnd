@@ -12,7 +12,7 @@ import Icon1 from '@/assets/timeOff/icon1.svg';
 import styles from './index.less';
 
 const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DRAFTS, WITHDRAWN } = TIMEOFF_STATUS;
-const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
+const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST, NEW_BEHALF_OF } = TIMEOFF_LINK_ACTION;
 
 const LeaveRequestForm = (props) => {
   const {
@@ -167,25 +167,26 @@ const LeaveRequestForm = (props) => {
           )}
 
         {(action === NEW_LEAVE_REQUEST ||
+        action === NEW_BEHALF_OF ||
           (action === EDIT_LEAVE_REQUEST &&
             !loadingFetchLeaveRequestById &&
             (status === DRAFTS || status === IN_PROGRESS))) && (
-          <>
-            <Row className={styles.container} gutter={[20, 20]}>
-              <Col xs={24} xl={18}>
-                <RequestInformation
-                  action={action}
-                  status={status}
-                  ticketID={ticketID}
-                  invalidDates={invalidDates}
-                  viewingLeaveRequest={viewingLeaveRequest}
-                />
-              </Col>
-              <Col xs={24} xl={6}>
-                <NoteComponent note={Note} />
-              </Col>
-            </Row>
-          </>
+            <>
+              <Row className={styles.container} gutter={[20, 20]}>
+                <Col xs={24} xl={18}>
+                  <RequestInformation
+                    action={action}
+                    status={status}
+                    ticketID={ticketID}
+                    invalidDates={invalidDates}
+                    viewingLeaveRequest={viewingLeaveRequest}
+                  />
+                </Col>
+                <Col xs={24} xl={6}>
+                  <NoteComponent note={Note} />
+                </Col>
+              </Row>
+            </>
         )}
       </div>
     </PageContainer>
