@@ -105,7 +105,7 @@ const TableTimeOff = ({
       title: 'Count (in days)',
       dataIndex: 'duration',
       width: '10%',
-      align: 'center',
+      align: 'left',
     },
     {
       title: 'Leave Type',
