@@ -7,7 +7,7 @@ import { connect, formatMessage, Link } from 'umi';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { isOwner } from '@/utils/authority';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import avtDefault from '@/assets/defaultAvatar.png';
+import avtDefault from '@/assets/avtDefault.jpg';
 import ModalTerminate from './components/ModalTerminate';
 import styles from './index.less';
 

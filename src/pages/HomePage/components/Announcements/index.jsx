@@ -18,7 +18,7 @@ const Announcements = (props) => {
   const { homePage: { announcements = [], announcementTotal = 0 } = {} } = props;
 
   const [activePostID, setActivePostID] = useState('');
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(5);
 
   const fetchData = () => {
     const location = getCurrentLocation();

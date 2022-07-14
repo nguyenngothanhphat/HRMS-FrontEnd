@@ -5,6 +5,7 @@ import {
   getCurrentTenant,
   getIsSigninGoogle,
   setAuthority,
+  setCompanyOfUser,
   setCountry,
   setCurrentCompany,
   setCurrentLocation,
@@ -238,6 +239,7 @@ const UserModel = {
             companiesOfUser: data?.listCompany,
           },
         });
+        setCompanyOfUser(data?.listCompany || []);
       } catch (errors) {
         // error
       }

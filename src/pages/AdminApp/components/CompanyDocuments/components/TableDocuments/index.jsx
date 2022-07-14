@@ -2,7 +2,7 @@ import { Table, Avatar } from 'antd';
 import React, { Component } from 'react';
 import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import avtDefault from '@/assets/defaultAvatar.png';
+import avtDefault from '@/assets/avtDefault.jpg';
 import Download from '@/components/DownloadFile';
 import ModalViewPDF from '@/components/ModalViewPDF';
 import s from './index.less';

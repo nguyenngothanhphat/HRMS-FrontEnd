@@ -2,7 +2,7 @@ import { Avatar, Card, Col, Popover, Row, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect, history } from 'umi';
-import avtDefault from '@/assets/defaultAvatar.png';
+import avtDefault from '@/assets/avtDefault.jpg';
 import IconPopup from '@/assets/offboarding/popupIcon.svg';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
