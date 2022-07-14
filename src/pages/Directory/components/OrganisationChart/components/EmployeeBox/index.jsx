@@ -7,7 +7,7 @@ import { CopyOutlined } from '@ant-design/icons';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { getCurrentCompany } from '@/utils/authority';
 import SearchIcon from '@/assets/searchOrgChart.svg';
-import avtDefault from '@/assets/defaultAvatar.png';
+import avtDefault from '@/assets/avtDefault.jpg';
 import styles from './index.less';
 
 const { Option } = Select;

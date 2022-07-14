@@ -3,7 +3,7 @@ import { Avatar, Button, Menu, Spin, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
-import avtDefault from '@/assets/defaultAvatar.png';
+import avtDefault from '@/assets/avtDefault.jpg';
 import {
   setCurrentLocation,
   setTenantId,

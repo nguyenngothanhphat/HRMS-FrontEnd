@@ -1,28 +1,10 @@
-import { Avatar, Col, Popover, Row, Tooltip } from 'antd';
+import { Col, Popover, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import CloseX from '@/assets/dashboard/closeX.svg';
-import SampleAvatar1 from '@/assets/dashboard/sampleAvatar1.png';
-import SampleAvatar2 from '@/assets/dashboard/sampleAvatar2.png';
-import SampleAvatar3 from '@/assets/dashboard/sampleAvatar3.png';
 import { convertMsToTime } from '@/utils/timeSheet';
+import CloseX from '@/assets/dashboard/closeX.svg';
 import styles from './index.less';
-
-const members = [
-  {
-    name: 'Lewis',
-    avatar: SampleAvatar1,
-  },
-  {
-    name: 'Trung',
-    avatar: SampleAvatar2,
-  },
-  {
-    name: 'Anh',
-    avatar: SampleAvatar3,
-  },
-];
 
 const TaskPopover = (props) => {
   const { children, tasks = [], startDate = '', endDate = '', placement = 'top' } = props;
@@ -37,16 +19,6 @@ const TaskPopover = (props) => {
   useEffect(() => {
     generateShowingTask(4);
   }, [JSON.stringify(tasks)]);
-
-  const renderTooltipTitle = (list) => {
-    return (
-      <div>
-        {list.map((member) => (
-          <span style={{ display: 'block' }}>{member.name}</span>
-        ))}
-      </div>
-    );
-  };
 
   const renderTaskTable = () => {
     return (

@@ -7,7 +7,7 @@ import DislikedIcon from '@/assets/homePage/disliked.svg';
 import LikeIcon from '@/assets/homePage/like.svg';
 import LikedIcon from '@/assets/homePage/liked.svg';
 import MenuIcon from '@/assets/homePage/menuDots.svg';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 import CommentBox from '@/components/CommentBox';
 import { dateFormat, hashtagify, POST_OR_CMT, LIKE_ACTION, urlify } from '@/utils/homePage';
 import styles from './index.less';
@@ -167,6 +167,9 @@ const UserComment = ({
           alt=""
           style={{
             backgroundColor: isMe ? '#f50' : 'transparent',
+          }}
+          onError={(e) => {
+            e.target.src = DefaultAvatar;
           }}
         />
       </div>

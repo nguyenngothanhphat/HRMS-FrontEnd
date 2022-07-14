@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 import { Collapse } from 'react-collapse';
 import { Popover, Spin } from 'antd';
-import avtDefault from '@/assets/defaultAvatar.png';
+import avtDefault from '@/assets/avtDefault.jpg';
 import line from '@/assets/lineParent.svg';
 import lines from '@/assets/lines.svg';
 import bigLines from '@/assets/bigLines.svg';

@@ -1,20 +1,21 @@
 /* eslint-disable no-nested-ternary */
 import { Carousel, Spin } from 'antd';
 import moment from 'moment';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import BirthdayImage from '@/assets/homePage/birthday.png';
+import CommentIcon from '@/assets/homePage/comment.svg';
+import LikeIcon from '@/assets/homePage/like.svg';
 import NextIcon from '@/assets/homePage/next.svg';
 import PrevIcon from '@/assets/homePage/prev.svg';
-import UserProfilePopover from '@/components/UserProfilePopover';
-import styles from './index.less';
-import LikeIcon from '@/assets/homePage/like.svg';
-import CommentIcon from '@/assets/homePage/comment.svg';
+import PlaceholderImage from '@/assets/homePage/previewImage.png';
 import CommonModal from '@/components/CommonModal';
-import CelebratingDetailModalContent from '../CelebratingDetailModalContent';
 import PostLikedModalContent from '@/components/PostLikedModalContent';
+import UserProfilePopover from '@/components/UserProfilePopover';
 import { CELEBRATE_TYPE, roundNumber, roundNumber2 } from '@/utils/homePage';
 import { getCompanyName, singularify } from '@/utils/utils';
+import CelebratingDetailModalContent from '../CelebratingDetailModalContent';
+import styles from './index.less';
 
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -150,8 +151,8 @@ const Card = (props) => {
       return (
         <span>
           Congratulations {employeeName} on completing{' '}
-          {yearCount < 1 ? roundNumber2(yearCount) : roundNumber(yearCount)} years with{' '}
-          {getCompanyName()} !!!
+          {yearCount < 1 ? roundNumber2(yearCount) : roundNumber(yearCount)}{' '}
+          {singularify('year', yearCount)} with {getCompanyName()} !!!
         </span>
       );
     }
@@ -172,7 +173,13 @@ const Card = (props) => {
     return (
       <div className={styles.cardContainer}>
         <div className={styles.image}>
-          <img src={card.generalInfoInfo?.avatar || BirthdayImage} alt="" />
+          <img
+            src={card.generalInfoInfo?.avatar || BirthdayImage}
+            alt=""
+            onError={(e) => {
+              e.target.src = PlaceholderImage;
+            }}
+          />
         </div>
         <div className={styles.content}>
           <p className={styles.caption}>{renderCardContent(card)}</p>
@@ -218,7 +225,13 @@ const Card = (props) => {
     return (
       <div className={styles.cardContainer}>
         <div className={styles.image}>
-          <img src={BirthdayImage} alt="" />
+          <img
+            src={BirthdayImage}
+            alt=""
+            onError={(e) => {
+              e.target.src = PlaceholderImage;
+            }}
+          />
         </div>
         <div className={styles.content}>
           <p className={styles.caption}>No birthday today</p>
@@ -231,7 +244,13 @@ const Card = (props) => {
     return (
       <div className={styles.cardContainer}>
         <div className={styles.image}>
-          <img src={previewImage || BirthdayImage} alt="" />
+          <img
+            src={previewImage || BirthdayImage}
+            alt=""
+            onError={(e) => {
+              e.target.src = PlaceholderImage;
+            }}
+          />
         </div>
         <div className={styles.content}>
           <p className={styles.caption}>{previewDescription || 'Content here'}</p>
