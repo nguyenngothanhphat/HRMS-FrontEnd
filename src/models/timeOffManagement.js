@@ -9,6 +9,8 @@ import {
   getLocationsOfCountries,
   getTimeOffTypeList,
   getMissingLeaveDates,
+  getTimeOffTypeByCountry,
+  // getListTimeOffManagement,
 } from '../services/timeOffManagement';
 
 const timeOffManagement = {
@@ -21,6 +23,7 @@ const timeOffManagement = {
     locationsOfCountries: [],
     typeList: [],
     missingLeaveDates: [],
+    timeOffTypesByCountry: [],
   },
   effects: {
     *getListEmployeesEffect({ payload = {} }, { call, put }) {
@@ -136,6 +139,21 @@ const timeOffManagement = {
         } else {
           notification.error('Something failed. Please try again.');
         }
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchTimeOffTypesByCountry({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getTimeOffTypeByCountry, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { timeOffTypesByCountry: data },
+        });
       } catch (error) {
         dialog(error);
       }

@@ -53,11 +53,15 @@ const History = (props) => {
       case TIMEOFF_HISTORY_STATUS.EDITED:
         return { color: '#2C6DF9' };
       case TIMEOFF_HISTORY_STATUS.REJECTED:
+      case TIMEOFF_HISTORY_STATUS.WITHDRAW_REJECTED:
         return { color: '#F04438' };
       case TIMEOFF_HISTORY_STATUS.APPROVED:
+      case TIMEOFF_HISTORY_STATUS.WITHDRAW_ACCEPTED:
         return { color: '#12B76A' };
       case TIMEOFF_HISTORY_STATUS.WAITING:
       case TIMEOFF_HISTORY_STATUS.WITHDRAW:
+      case TIMEOFF_HISTORY_STATUS.WAITING_WITHDRAW:
+      case TIMEOFF_HISTORY_STATUS.WITHDRAW_APPROVED:
         return { color: '#FFA100' };
       default:
         return { color: '#2C6DF9' };
@@ -74,10 +78,17 @@ const History = (props) => {
         return 'Rejected';
       case TIMEOFF_HISTORY_STATUS.APPROVED:
         return 'Approved';
+      case TIMEOFF_HISTORY_STATUS.WITHDRAW_ACCEPTED:
+        return 'Approved Withdrawn Request';
       case TIMEOFF_HISTORY_STATUS.WAITING:
         return 'Waiting for Approval';
+      case TIMEOFF_HISTORY_STATUS.WAITING_WITHDRAW:
+        return 'Waiting for Withdrawn';
+      case TIMEOFF_HISTORY_STATUS.WITHDRAW_REJECTED:
+        return 'Rejected Withdrawn Request';
       case TIMEOFF_HISTORY_STATUS.WITHDRAW:
-        return 'Withdraw';
+      case TIMEOFF_HISTORY_STATUS.WITHDRAW_APPROVED:
+        return 'Withdrawn';
       default:
         return 'Applied';
     }
@@ -100,11 +111,12 @@ const History = (props) => {
             <span className={styles.status} style={renderColorStatus(statusProp)}>
               {renderStatusName(statusProp)}
             </span>{' '}
-            {statusProp !== TIMEOFF_HISTORY_STATUS.WAITING && (
-              <span className={styles.date}>
-                on {moment(updatedAt).format('MM DD YYYY')} | {moment(updatedAt).format('H:mm a')}
-              </span>
-            )}
+            {statusProp !== TIMEOFF_HISTORY_STATUS.WAITING &&
+              statusProp !== TIMEOFF_HISTORY_STATUS.WAITING_WITHDRAW && (
+                <span className={styles.date}>
+                  on {moment(updatedAt).format('MM DD YYYY')} | {moment(updatedAt).format('H:mm a')}
+                </span>
+              )}
           </div>
         </div>
       </>
@@ -116,10 +128,15 @@ const History = (props) => {
       case TIMEOFF_HISTORY_STATUS.APPLIED:
       case TIMEOFF_HISTORY_STATUS.EDITED:
       case TIMEOFF_HISTORY_STATUS.APPROVED:
+      case TIMEOFF_HISTORY_STATUS.WITHDRAW_APPROVED:
+      case TIMEOFF_HISTORY_STATUS.WITHDRAW_REJECTED:
+      case TIMEOFF_HISTORY_STATUS.WITHDRAW_ACCEPTED:
         return <img src={CheckIcon} alt="" />;
       case TIMEOFF_HISTORY_STATUS.REJECTED:
       case TIMEOFF_HISTORY_STATUS.WITHDRAW:
         return <img src={ErrorIcon} alt="" />;
+      case TIMEOFF_HISTORY_STATUS.WAITING_WITHDRAW:
+        return <img src={DotIcon} alt="" />;
       default:
         return <img src={DotIcon} alt="" />;
     }
@@ -132,12 +149,15 @@ const History = (props) => {
       return (
         <Step
           className={`${
-            people[index + 1]?.statusHistory !== TIMEOFF_HISTORY_STATUS.WAITING
+            people[index + 1]?.statusHistory !==
+            (TIMEOFF_HISTORY_STATUS.WAITING && TIMEOFF_HISTORY_STATUS.WAITING_WITHDRAW)
               ? styles.steps__solid
               : styles.step__dashed
           } 
               ${
-                status === TIMEOFF_STATUS.WITHDRAWN && index > indexWithdraw
+                status === TIMEOFF_STATUS.WITHDRAWN &&
+                index > indexWithdraw &&
+                statusHistory === TIMEOFF_HISTORY_STATUS.WAITING
                   ? styles.steps__withdraw
                   : ''
               }`}
