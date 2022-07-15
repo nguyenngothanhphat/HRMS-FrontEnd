@@ -469,6 +469,7 @@ const dashboard = {
         const result = data.filter((val) => val.projectManager !== null);
         const newProjectList = result.filter((val) => val.projectManager.generalInfo._id === myId);
         const projectId = [];
+        // eslint-disable-next-line no-restricted-syntax
         for (const item of newProjectList) {
           projectId.push(item.id);
         }
