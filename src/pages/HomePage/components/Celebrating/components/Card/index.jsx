@@ -6,13 +6,14 @@ import { connect, history } from 'umi';
 import BirthdayImage from '@/assets/homePage/birthday.png';
 import CommentIcon from '@/assets/homePage/comment.svg';
 import LikeIcon from '@/assets/homePage/like.svg';
+import LikedIcon from '@/assets/homePage/liked.svg';
 import NextIcon from '@/assets/homePage/next.svg';
 import PrevIcon from '@/assets/homePage/prev.svg';
 import PlaceholderImage from '@/assets/homePage/previewImage.png';
 import CommonModal from '@/components/CommonModal';
 import PostLikedModalContent from '@/components/PostLikedModalContent';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { CELEBRATE_TYPE, roundNumber, roundNumber2 } from '@/utils/homePage';
+import { CELEBRATE_TYPE, LIKE_ACTION, POST_OR_CMT, roundNumber, TAB_IDS } from '@/utils/homePage';
 import { getCompanyName, singularify } from '@/utils/utils';
 import CelebratingDetailModalContent from '../CelebratingDetailModalContent';
 import styles from './index.less';
@@ -34,15 +35,20 @@ const Card = (props) => {
     previewing = false,
     // FOR PREVIEWING IN SETTINGS PAGE
     contentPreview: { previewImage = '', previewDescription = '' } = {},
-    currentUser: { employee = {} } = {},
-    refreshData = () => {},
     loadingRefresh = false,
+    loadingReactPost = false,
+    homePage: { reactionList = [], reactionTotal = 0 } = {},
+    loadingFetchReactList = false,
+    activePostID = '',
+    setActivePostID = () => {},
+    loadingFetchOnePost = false,
   } = props;
 
   const [celebratingDetailModalVisible, setCelebratingDetailModalVisible] = useState(false);
   const [viewingItem, setViewingItem] = useState('');
   const [likedModalVisible, setLikedModalVisible] = useState(false);
   const [data, setData] = useState([]);
+  const [isReactPostOrCmt, setIsReactPostOrCmt] = useState('');
 
   // functions
   const onViewProfileClick = (userId) => {
@@ -55,35 +61,46 @@ const Card = (props) => {
     return moment(date1).format('MM/DD') === moment(date2).format('MM/DD');
   };
 
-  const upsertCelebrationConversationEffect = (payload) => {
+  const getPostReactionListEffect = (postId, type) => {
     return dispatch({
-      type: 'homePage/upsertCelebrationConversationEffect',
-      payload,
+      type: 'homePage/fetchPostReactionListEffect',
+      payload: {
+        post: postId,
+        type,
+        page: 1,
+        limit: Math.floor(reactionList.length / 5) * 5 + 5,
+      },
     });
   };
 
-  const onLikeClick = async (item) => {
-    const { likes = [] } = item;
+  const reactAnniversaryEffect = (postIdProp, type = LIKE_ACTION.LIKE) => {
+    return dispatch({
+      type: 'homePage/reactAnniversaryEffect',
+      payload: {
+        post: postIdProp,
+        type,
+      },
+    });
+  };
 
-    const employeeId = employee?._id;
-    if (!likes.includes(employeeId)) {
-      setData((prevData) => {
-        const newData = [...prevData];
-        const index = newData.findIndex((x) => x._id === item._id);
-        if (index > -1) {
-          newData[index].likes.push({ _id: employeeId });
-        }
-        return newData;
-      });
-      const payload = {
-        employee: item._id,
-        likes: [employeeId],
-        type: item.type,
-      };
-      const res = await upsertCelebrationConversationEffect(payload);
-      if (res.statusCode === 200) {
-        refreshData();
-      }
+  const refreshThisPost = (postId) => {
+    return dispatch({
+      type: 'homePage/fetchAnniversaryByIdEffect',
+      payload: {
+        post: postId,
+      },
+      varName: TAB_IDS.ANNIVERSARY,
+    });
+  };
+
+  // add comment
+  const onLikePost = async (postId, type) => {
+    setIsReactPostOrCmt(POST_OR_CMT.POST);
+    setActivePostID(postId);
+    const res = await reactAnniversaryEffect(postId, type);
+    if (res.statusCode === 200) {
+      await refreshThisPost(postId);
+      setIsReactPostOrCmt('');
     }
   };
 
@@ -106,8 +123,14 @@ const Card = (props) => {
     }
   }, [JSON.stringify(list)]);
 
+  const onViewWhoLiked = (card) => {
+    getPostReactionListEffect(card?._id);
+    setViewingItem(card);
+    setLikedModalVisible(true);
+  };
+
   // render UI
-  const renderEmployeeName = (emp) => {
+  const renderEmployeeName = (emp = {}) => {
     return (
       <UserProfilePopover
         placement="left"
@@ -120,20 +143,19 @@ const Card = (props) => {
           className={styles.employeeName}
           onClick={() => onViewProfileClick(emp?.generalInfoInfo?.userId)}
         >
-          {emp?.generalInfoInfo.legalName}
+          {emp?.generalInfoInfo?.legalName}
         </span>
       </UserProfilePopover>
     );
   };
 
-  const renderCardContent = (emp = {}) => {
-    const employeeName = renderEmployeeName(emp);
-    const { joinDate = '' } = emp;
+  const renderCardContent = (card = {}) => {
+    const { createdBy = {}, eventType = '', eventDate = '' } = card;
+    const employeeName = renderEmployeeName(createdBy);
 
-    if (emp.type === CELEBRATE_TYPE.BIRTHDAY) {
-      const { DOB = '' } = emp?.generalInfoInfo || {};
-      const isToday = isTheSameDay(moment(), moment(DOB));
-      const birthday = moment.utc(DOB).locale('en').format('MMM Do');
+    if (eventType === CELEBRATE_TYPE.BIRTHDAY) {
+      const isToday = isTheSameDay(moment(), moment(eventDate));
+      const birthday = moment.utc(eventDate).locale('en').format('MMM Do');
       if (isToday)
         return (
           <span>
@@ -146,20 +168,21 @@ const Card = (props) => {
         </span>
       );
     }
-    if (emp.type === CELEBRATE_TYPE.ANNIVERSARY) {
-      const yearCount = moment.utc().diff(moment.utc(joinDate).format('YYYY-MM-DD'), 'years', true);
+    if (eventType === CELEBRATE_TYPE.ANNIVERSARY) {
+      const yearCount = roundNumber(
+        moment.utc().diff(moment.utc(createdBy?.joinDate).format('YYYY-MM-DD'), 'years', true),
+      );
       return (
         <span>
-          Congratulations {employeeName} on completing{' '}
-          {yearCount < 1 ? roundNumber2(yearCount) : roundNumber(yearCount)}{' '}
-          {singularify('year', yearCount)} with {getCompanyName()} !!!
+          Congratulations {employeeName} on completing {yearCount} {singularify('year', yearCount)}{' '}
+          with {getCompanyName()} !!!
         </span>
       );
     }
-    if (emp.type === CELEBRATE_TYPE.NEWJOINEE) {
+    if (eventType === CELEBRATE_TYPE.NEWJOINEE) {
       return (
         <span>
-          {employeeName} ({moment.utc(joinDate).locale('en').format('MMM Do, YYYY')}) - Welcome to
+          {employeeName} ({moment.utc(eventDate).locale('en').format('MMM Do, YYYY')}) - Welcome to
           the team Newbie !!!
         </span>
       );
@@ -168,13 +191,14 @@ const Card = (props) => {
   };
 
   const renderCard = (card) => {
-    const { likes = [], comments = [] } = card;
-    const likedIds = likes.map((x) => x._id);
+    const { totalReact: { asObject = {} } = {}, totalComment = 0 } = card;
+    const liked = card.react === LIKE_ACTION.LIKE;
+
     return (
       <div className={styles.cardContainer}>
         <div className={styles.image}>
           <img
-            src={card.generalInfoInfo?.avatar || BirthdayImage}
+            src={card.createdBy?.generalInfoInfo?.avatar || BirthdayImage}
             alt=""
             onError={(e) => {
               e.target.src = PlaceholderImage;
@@ -185,24 +209,30 @@ const Card = (props) => {
           <p className={styles.caption}>{renderCardContent(card)}</p>
 
           <div className={styles.actions}>
-            <div className={styles.likes}>
-              <img
-                src={LikeIcon}
-                alt=""
-                onClick={likedIds.includes(employee?._id) ? () => {} : () => onLikeClick(card)}
-              />
-              <span
-                style={
-                  likedIds.includes(employee?._id) ? { fontWeight: 500, color: '#2C6DF9' } : {}
-                }
-                onClick={() => {
-                  setViewingItem(card);
-                  setLikedModalVisible(true);
-                }}
-              >
-                {likes.length || 0} {singularify('Like', likes.length)}
-              </span>
-            </div>
+            <Spin
+              spinning={
+                (loadingFetchOnePost ||
+                  (loadingReactPost && isReactPostOrCmt === POST_OR_CMT.POST) ||
+                  loadingRefresh) &&
+                card._id === activePostID
+              }
+              indicator={null}
+            >
+              <div className={styles.likes}>
+                <img
+                  src={liked ? LikedIcon : LikeIcon}
+                  alt=""
+                  onClick={() => onLikePost(card?._id, LIKE_ACTION.LIKE)}
+                />
+                <span
+                  style={liked ? { fontWeight: 500, color: '#2C6DF9' } : {}}
+                  onClick={() => onViewWhoLiked(card)}
+                >
+                  {asObject[LIKE_ACTION.LIKE] || 0}{' '}
+                  {singularify('Like', asObject[LIKE_ACTION.LIKE])}
+                </span>
+              </div>
+            </Spin>
             <div
               className={styles.comments}
               onClick={() => {
@@ -212,7 +242,7 @@ const Card = (props) => {
             >
               <img src={CommentIcon} alt="" />
               <span>
-                {comments.length || 0} {singularify('Comment', comments.length)}
+                {totalComment || 0} {singularify('Comment', totalComment)}
               </span>
             </div>
           </div>
@@ -284,23 +314,39 @@ const Card = (props) => {
         visible={celebratingDetailModalVisible}
         onClose={() => setCelebratingDetailModalVisible(false)}
         title={
-          viewingItem.type === CELEBRATE_TYPE.BIRTHDAY
+          viewingItem.eventType === CELEBRATE_TYPE.BIRTHDAY
             ? 'Say Happy Birthday!'
             : 'Say Congratulations!'
         }
         content={
           celebratingDetailModalVisible ? (
-            <CelebratingDetailModalContent item={viewingItem} refreshData={refreshData} />
+            <CelebratingDetailModalContent
+              item={viewingItem}
+              onLikePost={onLikePost}
+              setIsReactPostOrCmt={setIsReactPostOrCmt}
+              isReactPostOrCmt={isReactPostOrCmt}
+              getPostReactionListEffect={getPostReactionListEffect}
+              activePostID={activePostID}
+              setActivePostID={setActivePostID}
+            />
           ) : null
         }
-        width={500}
+        width={600}
         hasFooter={false}
+        maskClosable
       />
       <CommonModal
         visible={likedModalVisible}
         onClose={() => setLikedModalVisible(false)}
         title="Likes"
-        content={<PostLikedModalContent list={viewingItem?.likes || []} />}
+        content={
+          <PostLikedModalContent
+            list={reactionList.map((x) => x.employee)}
+            loading={loadingFetchReactList}
+            total={reactionTotal}
+            loadMore={getPostReactionListEffect}
+          />
+        }
         width={500}
         maskClosable
         hasFooter={false}
@@ -309,8 +355,14 @@ const Card = (props) => {
   );
 };
 
-export default connect(({ loading, user: { currentUser = {}, permissions = {} } = {} }) => ({
-  currentUser,
-  permissions,
-  loadingRefresh: loading.effects['homePage/fetchCelebrationList'],
-}))(Card);
+export default connect(
+  ({ loading, homePage, user: { currentUser = {}, permissions = {} } = {} }) => ({
+    currentUser,
+    permissions,
+    homePage,
+    loadingRefresh: loading.effects['homePage/fetchCelebrationList'],
+    loadingReactPost: loading.effects['homePage/reactAnniversaryEffect'],
+    loadingFetchReactList: loading.effects['homePage/fetchPostReactionListEffect'],
+    loadingFetchOnePost: loading.effects['homePage/fetchAnniversaryByIdEffect'],
+  }),
+)(Card);
