@@ -6,7 +6,12 @@ import { isEmpty } from 'lodash';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
 import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
-import { isFutureDay, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
+import {
+  checkNormalTypeTimeoff,
+  isFutureDay,
+  TIMEOFF_DATE_FORMAT,
+  TIMEOFF_STATUS,
+} from '@/utils/timeOff';
 import HolidayCalendar from './components/HolidayCalendar';
 import HolidayList from './components/HolidayList';
 import LeaveHistoryCalendar from './components/LeaveHistoryCalendar';
@@ -104,7 +109,7 @@ const LeaveHistoryAndHoliday = (props) => {
         duration = 0,
         fromDate: from = '',
         toDate: to = '',
-        type: { name: typeName = '' } = {},
+        type: { name: typeName = '', type = '' } = {},
         _id = '',
         subject = '',
         leaveDates = [],
@@ -116,7 +121,10 @@ const LeaveHistoryAndHoliday = (props) => {
         status === IN_PROGRESS ||
         status === IN_PROGRESS_NEXT
       ) {
-        const listLeave = leaveDates.sort((a, b) => moment(a.date) - moment(b.date));
+        const listLeave = leaveDates.sort(
+          (a, b) =>
+            moment(a.date).locale('en').format('DD') - moment(b.date).locale('en').format('DD'),
+        );
         const fromDate = from
           ? moment(from).locale('en').format(TIMEOFF_DATE_FORMAT)
           : moment(listLeave[0].date).locale('en').format(TIMEOFF_DATE_FORMAT);
@@ -138,8 +146,6 @@ const LeaveHistoryAndHoliday = (props) => {
             toDate,
           };
         }
-        fromDate = moment(fromDate).locale('en').format(TIMEOFF_DATE_FORMAT);
-        toDate = moment(toDate).locale('en').format(TIMEOFF_DATE_FORMAT);
         return {
           _id,
           fromDate,
@@ -148,7 +154,6 @@ const LeaveHistoryAndHoliday = (props) => {
           typeName,
           status,
           subject,
-          leaveDates: listLeaves,
         };
       }
       return null;
@@ -165,7 +170,7 @@ const LeaveHistoryAndHoliday = (props) => {
         duration = 0,
         fromDate: from = '',
         toDate: to = '',
-        type: { name: typeName = '' } = {},
+        type: { name: typeName = '', type = '' } = {},
         _id = '',
         subject,
         leaveDates = [],
@@ -175,7 +180,10 @@ const LeaveHistoryAndHoliday = (props) => {
         const fromDate = moment(from).locale('en').format(TIMEOFF_DATE_FORMAT);
         const toDate = moment(to).locale('en').format(TIMEOFF_DATE_FORMAT);
         const listLeave = leaveDates
-          .sort((a, b) => moment(a.date) - moment(b.date))
+          .sort(
+            (a, b) =>
+              moment(a.date).locale('en').format('DD') - moment(b.date).locale('en').format('DD'),
+          )
           .map((x) => x.date);
         if (checkNormalTypeTimeoff(type)) {
           return {
@@ -188,8 +196,6 @@ const LeaveHistoryAndHoliday = (props) => {
             leaveDates,
           };
         }
-        fromDate = moment(fromDate).locale('en').format(TIMEOFF_DATE_FORMAT);
-        toDate = moment(toDate).locale('en').format(TIMEOFF_DATE_FORMAT);
         return {
           _id,
           fromDate,
@@ -198,7 +204,6 @@ const LeaveHistoryAndHoliday = (props) => {
           typeName,
           status,
           subject,
-          leaveDates: listLeaves,
         };
       }
       return null;
