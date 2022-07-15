@@ -9,7 +9,7 @@ import {
   deleteQuickLink,
   editComment,
   // portal
-  getCelebrationList,
+  // getCelebrationList,
   getPollResult,
   // social activities
   getPostComments,
@@ -29,7 +29,20 @@ import {
   votePoll,
 } from '../services/homePage';
 import { getCurrentCompany, getCurrentTenant } from '../utils/authority';
+import { TAB_IDS } from '@/utils/homePage';
 // import { TAB_IDS } from '@/utils/homePage';
+
+const getVarStateName = (type) => {
+  switch (type) {
+    case TAB_IDS.ANNIVERSARY:
+      return 'celebrationList';
+
+    case TAB_IDS.ANNOUNCEMENTS:
+      return 'announcements';
+    default:
+      return '';
+  }
+};
 
 const defaultState = {
   // portal
@@ -60,7 +73,7 @@ const homePage = {
     *fetchCelebrationList({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getCelebrationList, {
+        response = yield call(getPostsByType, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
@@ -299,7 +312,7 @@ const homePage = {
       }
       return response;
     },
-    *fetchPostByIdEffect({ payload }, { call, put }) {
+    *fetchPostByIdEffect({ payload, varName = TAB_IDS.ANNOUNCEMENTS }, { call, put }) {
       let response = {};
       try {
         response = yield call(getPostsByType, {
@@ -311,7 +324,27 @@ const homePage = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'refreshPost',
-          payload: { data },
+          payload: { data, varName },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *fetchAnniversaryByIdEffect({ payload, varName = TAB_IDS.ANNOUNCEMENTS }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getPostsByType, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'refreshPost',
+          payload: { data, varName },
         });
       } catch (errors) {
         dialog(errors);
@@ -398,8 +431,34 @@ const homePage = {
       }
       return response;
     },
+    *fetchAnniversaryCommentsEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        const { post } = payload;
 
-    *addCommentEffect({ payload }, { call, put }) {
+        response = yield call(getPostComments, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'saveCommentToPost',
+          payload: {
+            postId: post,
+            comments: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+      return response;
+    },
+
+    *addCommentEffect({ payload, varName = TAB_IDS.ANNOUNCEMENTS }, { call, put }) {
       let response = {};
       try {
         const { post } = payload;
@@ -416,6 +475,7 @@ const homePage = {
           payload: {
             postId: post,
             length: 1,
+            varName,
           },
         });
       } catch (errors) {
@@ -450,7 +510,7 @@ const homePage = {
       }
       return response;
     },
-    *removeCommentEffect({ params, postId }, { call, put }) {
+    *removeCommentEffect({ params, postId, varName = TAB_IDS.ANNOUNCEMENTS }, { call, put }) {
       let response = {};
       try {
         response = yield call(removeComment, {
@@ -473,6 +533,7 @@ const homePage = {
           payload: {
             postId,
             length: -1,
+            varName,
           },
         });
       } catch (errors) {
@@ -482,6 +543,22 @@ const homePage = {
     },
 
     *reactPostEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(reactPost, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *reactAnniversaryEffect({ payload }, { call }) {
       let response = {};
       try {
         response = yield call(reactPost, {
@@ -647,8 +724,10 @@ const homePage = {
       };
     },
     refreshPost(state, action) {
-      const { data = {} } = action.payload;
-      const announcementsTemp = state.announcements.map((item) => {
+      const { data = {}, varName = TAB_IDS.ANNOUNCEMENTS } = action.payload;
+      const varStateName = getVarStateName(varName);
+
+      const tempList = state[varStateName].map((item) => {
         if (item._id === data?._id) {
           return data;
         }
@@ -656,7 +735,7 @@ const homePage = {
       });
       return {
         ...state,
-        announcements: announcementsTemp,
+        [varStateName]: tempList,
       };
     },
     saveCommentToPost(state, action) {
@@ -735,9 +814,10 @@ const homePage = {
       };
     },
     updateCommentTotal(state, action) {
-      const { postId = '', length = 0 } = action.payload;
+      const { postId = '', length = 0, varName = TAB_IDS.ANNOUNCEMENTS } = action.payload;
+      const varStateName = getVarStateName(varName);
 
-      const newAnnouncements = state.announcements.map((item) => {
+      const newAnnouncements = state[varStateName].map((item) => {
         if (item._id === postId) {
           return {
             ...item,
@@ -749,7 +829,7 @@ const homePage = {
 
       return {
         ...state,
-        announcements: newAnnouncements,
+        [varStateName]: newAnnouncements,
       };
     },
 

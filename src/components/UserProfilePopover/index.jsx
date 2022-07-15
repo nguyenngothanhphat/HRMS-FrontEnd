@@ -72,7 +72,13 @@ const UserProfilePopover = (props) => {
     return (
       <div className={styles.header}>
         <div className={styles.avatar}>
-          <img src={avatar || avatar1 || DefaultAvatar} alt="" />
+          <img
+            src={avatar || avatar1 || DefaultAvatar}
+            alt=""
+            onError={(e) => {
+              e.target.src = DefaultAvatar;
+            }}
+          />
         </div>
         <div className={styles.information}>
           <span className={styles.name}>
