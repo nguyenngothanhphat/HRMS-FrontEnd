@@ -25,8 +25,8 @@ import CandidateUserName from './components/CandidateUserName/index';
 import ConfirmModal from './components/ConfirmModal/index';
 
 import EyeIcon from '@/assets/eyes.svg';
-// import JoiningIcon from '@/assets/Vector.svg';
-// import LaunchIcon from '@/assets/launchIcon.svg';
+import JoiningIcon from '@/assets/Vector.svg';
+import LaunchIcon from '@/assets/launchIcon.svg';
 import DeleteIcon from '@/assets/bin.svg';
 
 const compare = (dateTimeA, dateTimeB) => {
@@ -57,6 +57,7 @@ class OnboardTable extends Component {
       openModalName: '',
       dateJoinCandidate: '',
       selectedCandidateId: '',
+      selectRookieId: '',
 
       // popup hover name
       timezoneList: [],
@@ -456,7 +457,7 @@ class OnboardTable extends Component {
             return (
               <Dropdown
                 className={styles.menuIcon}
-                overlay={this.actionMenu(payload, candidate)}
+                overlay={this.actionMenu(payload, candidate, id)}
                 placement="bottomRight"
               >
                 <img src={MenuIcon} alt="menu" />
@@ -507,7 +508,7 @@ class OnboardTable extends Component {
     });
   };
 
-  actionMenu = (payload = {}, candidate) => {
+  actionMenu = (payload = {}, candidate, candidateId) => {
     const {
       id = '',
       assignToId: currentEmpId = '',
@@ -569,7 +570,7 @@ class OnboardTable extends Component {
                 className={styles.actionText}
                 onClick={() => this.handleSendPreJoining(id, candidate, processStatusId)}
               >
-                <img className={styles.actionIcon} src="JoiningIcon" alt="joiningIcon" />
+                <img className={styles.actionIcon} src={JoiningIcon} alt="joiningIcon" />
                 <span>Send Pre-Joining Documents</span>
               </Link>
             </Menu.Item>
@@ -579,15 +580,25 @@ class OnboardTable extends Component {
                 <span>{actionText}</span>
               </Link>
             </Menu.Item>
+          </>
+        );
+        break;
+
+      case JOINED:
+        menuItem = (
+          <>
             <Menu.Item>
-              <img className={styles.actionIcon} src="LaunchIcon" alt="launchIcon" />
-              <span
-                onClick={() =>
-                  this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate)
-                }
-              >
-                Initiate joining formalities
-              </span>
+              <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
+                <img className={styles.actionIcon} src={EyeIcon} alt="eyesIcon" />
+                <span>{actionText}</span>
+              </Link>
+            </Menu.Item>
+            <Menu.Item
+              onClick={() =>
+                this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate, candidateId)}
+            >
+              <img className={styles.actionIcon} src={LaunchIcon} alt="launchIcon" />
+              <span>Initiate joining formalities</span>
             </Menu.Item>
           </>
         );
@@ -617,8 +628,7 @@ class OnboardTable extends Component {
                   id,
                   processStatusId,
                   type,
-                )
-              }
+                )}
               className={styles.actionText}
             >
               Re-assign
@@ -655,11 +665,12 @@ class OnboardTable extends Component {
   };
 
   // JoiningFormalitiesModal
-  handleOpenJoiningFormalitiesModal = (value, dateJoin = '', selectedId = '') => {
+  handleOpenJoiningFormalitiesModal = (value, dateJoin = '', selectedId = '', rookieId = '') => {
     this.setState({
       openModalName: value,
       dateJoinCandidate: dateJoin,
       selectedCandidateId: selectedId,
+      selectRookieId: rookieId,
     });
   };
 
@@ -668,6 +679,7 @@ class OnboardTable extends Component {
       openModalName: '',
       dateJoinCandidate: '',
       selectedCandidateId: '',
+      selectRookieId: '',
     });
   };
 
@@ -771,6 +783,7 @@ class OnboardTable extends Component {
       renewModalVisible,
       dateJoinCandidate,
       selectedCandidateId,
+      selectRookieId,
       expiryStatus,
       expiryType,
     } = this.state;
@@ -875,20 +888,25 @@ class OnboardTable extends Component {
         />
         <JoiningFormalitiesModal
           visible={openModalName === 'initiate'}
-          onCancel={this.cancelJoiningFormalities}
-          onOk={this.onConvertEmployee}
-          candidate={{ dateOfJoining: dateJoinCandidate, candidateId: selectedCandidateId }}
+          onOk={this.onSubmitUserName}
+          candidate={{
+            dateOfJoining: dateJoinCandidate,
+            candidateId: selectedCandidateId,
+            rookieId: selectRookieId,
+          }}
+          onClose={this.cancelJoiningFormalities}
         />
-        <CandidateUserName
+        {/* <CandidateUserName
           visible={openModalName === 'username'}
           onCancel={this.cancelCandidateUserName}
           onOk={this.onSubmitUserName}
           candidateId={selectedCandidateId}
-        />
+        /> */}
         <ConfirmModal
           visible={openModalName === 'detail'}
-          onCancel={this.onMaybeLater}
+          onCancel={this.cancelCandidateUserName}
           onOk={this.onMaybeLater}
+          onClose={this.cancelJoiningFormalities}
         />
       </>
     );

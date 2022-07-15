@@ -3,7 +3,7 @@ import { isEmpty } from 'lodash';
 import React, { useState } from 'react';
 import { connect, Link } from 'umi';
 import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 import CloseX from '@/assets/dashboard/closeX.svg';
 import styles from './index.less';
 

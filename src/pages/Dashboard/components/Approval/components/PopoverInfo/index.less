@@ -1,95 +1,91 @@
-.popupContent{
-  width: 346px; 
+.popupContent {
+  width: 346px;
 
-  .generalInfo{
-    width: 100%;
+  .generalInfo {
     display: flex;
-    justify-content: flex-start;
     align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
 
-    .employeeInfo{
-      text-align: left;
+    .employeeInfo {
       padding-left: 16px;
+      text-align: left;
 
-      &__name{
+      &__name {
         margin-bottom: 0;
-        font-family: Roboto;
-        font-style: normal;
+
+        padding-bottom: 6px;
+        color: #161c29;
         font-weight: 500;
         font-size: 18px;
-        line-height: 21px;
-        color: #161C29;
 
-        padding-bottom: 6px;
-      }
-  
-      &__department, &__emplId{
-        font-family: Roboto;
         font-style: normal;
+        line-height: 21px;
+      }
+
+      &__department,
+      &__emplId {
+        padding-bottom: 6px;
+        color: #707177;
         font-weight: normal;
         font-size: 13px;
-        line-height: 15px;
-        color: #707177;
 
-        padding-bottom: 6px;
+        font-style: normal;
+        line-height: 15px;
       }
     }
 
-
-    .avatar{
-      
+    .avatar {
     }
   }
 
-  .contact{
+  .contact {
     &__title {
-      font-family: Roboto;
-      font-style: normal;
+      color: #707177;
       font-weight: 500;
       font-size: 13px;
-      line-height: 15px;
 
-      color: #707177;
+      font-style: normal;
+      line-height: 15px;
     }
 
-    &__value{
-      font-style: normal;
+    &__value {
+      color: #161c29;
       font-weight: normal;
       font-size: 14px;
+      font-style: normal;
       line-height: 16px;
-
-      color: #161C29;
 
       opacity: 0.91;
     }
   }
 
-  .divider{
+  .divider {
     padding: 1px 0;
   }
 
-  .popupActions{
+  .popupActions {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     width: 100%;
     padding-bottom: 8px;
 
-    &__link{
+    &__link {
       color: #2c6df9;
       font-weight: 500;
       font-size: 13px;
       font-style: normal;
       line-height: 15px;
-      text-decoration-line: underline;
       cursor: pointer;
+      text-decoration-line: underline;
     }
 
     &__actions {
-      width: 106px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      width: 106px;
     }
   }
 }

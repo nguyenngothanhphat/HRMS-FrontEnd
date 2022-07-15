@@ -562,6 +562,7 @@ const AddTaskModal = (props) => {
                       <Input.TextArea
                         autoSize={{ minRows: 4 }}
                         placeholder="Enter the description"
+                        maxLength={255}
                       />
                     </Form.Item>
                   </Col>

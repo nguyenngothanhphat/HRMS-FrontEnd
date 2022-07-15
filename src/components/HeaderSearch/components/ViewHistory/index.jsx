@@ -3,7 +3,7 @@ import { SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Col, Row } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
-import avtDefault from '@/assets/defaultAvatar.png';
+import avtDefault from '@/assets/avtDefault.jpg';
 
 import docIcon from '@/assets/advanceSearchDocs.svg';
 import reportIcon from '@/assets/advanceSearchReport.svg';

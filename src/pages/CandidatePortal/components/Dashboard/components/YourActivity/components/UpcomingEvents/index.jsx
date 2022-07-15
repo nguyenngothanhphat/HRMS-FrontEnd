@@ -28,7 +28,7 @@ class UpcomingEvents extends PureComponent {
 
   render() {
     const data = this.getData();
-    if (data.length === 0) return <EmptyComponent />;
+    if (data.length === 0) return <EmptyComponent description='No Upcoming Events' />;
     return (
       <div className={styles.UpcomingEvents}>
         {data.map((val, index) => this.renderItem(val, data.length, index))}

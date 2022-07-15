@@ -20,7 +20,7 @@ import styles from './index.less';
 const MonthlyTable = (props) => {
   const {
     loadingFetchMyTimesheetByType = false,
-    weeksOfMonth = [],
+    // weeksOfMonth = [],
     timeoffList = [],
     timeSheet: { holidays = [] },
     data: { weeks: weeksProp = [], summary: summaryProp = [] } = {},
@@ -87,7 +87,7 @@ const MonthlyTable = (props) => {
   };
 
   const columns = () => {
-    const columnLength = weeksOfMonth.length + 1;
+    const columnLength = summaryProp.length + 1;
     const dateColumns = summaryProp.map((weekItem) => {
       return {
         title: renderTitle(weekItem, 2),
@@ -178,9 +178,8 @@ const MonthlyTable = (props) => {
         <div className={styles.item}>
           <span className={styles.text}>Total</span>
         </div>
-        {weeksOfMonth.map((weekItem) => {
-          const find = summaryProp.find((w) => w.week === weekItem.week) || {};
-          const { week = '', dailies = [], weekTotalTime = '' } = find;
+        {summaryProp.map((weekItem) => {
+          const { week = '', dailies = [], weekTotalTime = '' } = weekItem;
           return (
             <TaskPopover
               key={weekItem.week}

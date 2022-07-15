@@ -1,4 +1,3 @@
-import { UpOutlined } from '@ant-design/icons';
 import { Button, Popover } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -12,13 +11,14 @@ function TicketsItem(props) {
   const {
     dispatch,
     employeeAssignee = {},
-    employeeAssignee: { generalInfo: { userIdProps = '', legalNameProps = '' } = {} } = {},
+    employeeAssignee: {
+      generalInfo: { userId: userIdProps = '', legalName: legalNameProps = '' } = {},
+    } = {},
     renderMenuDropdown = () => {},
     viewProfile = () => {},
     handleClickSelect = () => {},
     row = {},
     refreshFetchTicketList = () => {},
-    refreshFetchTotalList = () => {},
     setOldAssignName = () => {},
     selected = true,
   } = props;
@@ -40,7 +40,6 @@ function TicketsItem(props) {
       const { statusCode = '' } = res;
       if (statusCode === 200) {
         refreshFetchTicketList();
-        refreshFetchTotalList();
       }
     });
   };
@@ -96,7 +95,7 @@ function TicketsItem(props) {
                 legalNameProps.length,
               )}`
             : legalNameProps}{' '}
-          {isEdit && <UpOutlined />}
+          {/* {isEdit && <UpOutlined />} */}
         </span>
       </UserProfilePopover>
       <div style={{ display: 'flex' }}>

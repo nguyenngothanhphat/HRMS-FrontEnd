@@ -52,7 +52,7 @@ const processCSVData = (array = []) => {
 };
 
 export const exportCSV = (data) => {
-  exportToCsv(`TimeOff-Report-${Date.now()}.csv`, processCSVData(data));
+  exportToCsv(`Time-Off-Report-${moment().format('YYYY-MM-DD')}.csv`, processCSVData(data));
 };
 
 export const dateFormat = 'MM/DD/YYYY';

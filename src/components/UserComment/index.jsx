@@ -7,7 +7,7 @@ import DislikedIcon from '@/assets/homePage/disliked.svg';
 import LikeIcon from '@/assets/homePage/like.svg';
 import LikedIcon from '@/assets/homePage/liked.svg';
 import MenuIcon from '@/assets/homePage/menuDots.svg';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 import CommentBox from '@/components/CommentBox';
 import { dateFormat, hashtagify, POST_OR_CMT, LIKE_ACTION, urlify } from '@/utils/homePage';
 import styles from './index.less';
@@ -156,13 +156,20 @@ const UserComment = ({
 
   return (
     <div className={styles.UserComment}>
-      <div className={styles.author}>
+      <div
+        className={styles.author}
+        style={{
+          borderColor: isMe ? '#f50' : '#f1f1f1',
+        }}
+      >
         <img
           src={owner?.generalInfoInfo?.avatar || DefaultAvatar}
           alt=""
           style={{
-            borderColor: isMe ? '#f50' : 'transparent',
             backgroundColor: isMe ? '#f50' : 'transparent',
+          }}
+          onError={(e) => {
+            e.target.src = DefaultAvatar;
           }}
         />
       </div>

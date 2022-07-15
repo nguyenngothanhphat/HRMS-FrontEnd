@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Steps } from 'antd';
 import { history } from 'umi';
 import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 // import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
@@ -54,8 +54,8 @@ class RightContent extends PureComponent {
   getFlow = () => {
     const {
       data: {
-        employee: { generalInfo: { legalName: ln1 = '', avatar: av1 = '' } = {} } = {},
-        approvalManager: { generalInfo: { legalName: ln2 = '', avatar: av2 = '' } = {} } = {},
+        employee: { generalInfoInfo: { legalName: ln1 = '', avatar: av1 = '' } = {} } = {},
+        approvalManager: { generalInfoInfo: { legalName: ln2 = '', avatar: av2 = '' } = {} } = {},
       } = {},
     } = this.props;
 

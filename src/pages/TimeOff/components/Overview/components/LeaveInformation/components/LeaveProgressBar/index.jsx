@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Progress } from 'antd';
 import styles from './index.less';
-import { addZeroToNumber, roundNumber } from '@/utils/timeOff';
 
 export default class LeaveProgressBar extends PureComponent {
   renderCircle = (color) => {

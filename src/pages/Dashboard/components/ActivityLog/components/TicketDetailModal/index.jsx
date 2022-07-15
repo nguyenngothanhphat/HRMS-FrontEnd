@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import PDFIcon from '@/assets/pdf_icon.png';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 import MessageBox from '../MessageBox';
 import styles from './index.less';
 

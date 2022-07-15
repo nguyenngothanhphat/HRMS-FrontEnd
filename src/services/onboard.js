@@ -159,3 +159,31 @@ export async function getCandidateById(payload) {
     data: payload,
   });
 }
+
+export async function getDomain(params) {
+  return request('/api/domaintenant', {
+    method: 'GET',
+    params,
+  });
+}
+
+export async function getEmployeeIdFormatByLocation(params) {
+  return request('/api/locationtenant', {
+    method: 'GET',
+    params,
+  });
+}
+
+export async function updateEmployeeFormatByLocation(payload) {
+  return request('/api/locationtenant', {
+    method: 'PATCH',
+    data: payload,
+  });
+}
+
+export async function updateEmployeeFormatByGlobal(payload) {
+  return request('/api/locationtenant/multiple', {
+    method: 'PATCH',
+    data: payload,
+  });
+}

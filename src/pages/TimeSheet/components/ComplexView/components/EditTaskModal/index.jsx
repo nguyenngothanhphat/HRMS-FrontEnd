@@ -316,7 +316,11 @@ const EditTaskModal = (props) => {
                 rules={[{ required: true, message: 'Please enter the description' }]}
                 name="notes"
               >
-                <Input.TextArea autoSize={{ minRows: 4 }} placeholder="Enter the description" />
+                <Input.TextArea
+                  autoSize={{ minRows: 4 }}
+                  placeholder="Enter the description"
+                  maxLength={255}
+                />
               </Form.Item>
             </Col>
             <Col xs={24}>

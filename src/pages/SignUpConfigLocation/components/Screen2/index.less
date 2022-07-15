@@ -8,28 +8,28 @@
 .container {
   width: 100%;
   height: 100%;
-  font-family: 'Roboto', san-serif;
+
   color: @black;
 
   h2,
   p,
   button {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
   }
 
   .card {
-    background-color: white;
+    position: relative;
+    margin-bottom: 30px;
     padding: 33px;
+    background-color: white;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
-    margin-bottom: 30px;
-    position: relative;
 
     .header {
-      font-size: 16px;
       font-weight: 500;
+      font-size: 16px;
 
       &:nth-of-type(1) {
         margin-bottom: 21px;
@@ -45,8 +45,8 @@
     label {
       color: @gray;
       font-size: 14px;
-      letter-spacing: 0.17px;
       line-height: 1.57;
+      letter-spacing: 0.17px;
       text-transform: capitalize;
     }
   }
@@ -61,36 +61,36 @@
   }
 
   input {
-    border-radius: 5px;
-    padding: 0 16px;
     height: 42px;
+    padding: 0 16px;
     font-size: 14px;
+    border-radius: 5px;
   }
 
   .add {
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 1.19;
     color: @blue;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.19;
   }
 
   .btnWrapper {
-    margin-top: 37px;
     display: flex;
     justify-content: space-between;
+    margin-top: 37px;
 
     button {
       width: 121px;
       height: 40px;
-      background-color: @orange;
-      border-radius: 25px;
       color: white;
       font-weight: 500;
       letter-spacing: 0.13px;
+      text-transform: capitalize;
+      background-color: @orange;
+      border: 1px solid @orange;
+      border-radius: 25px;
       outline: none;
       transition: background-color 0.2s ease-in;
-      border: 1px solid @orange;
-      text-transform: capitalize;
 
       //   &:hover {
       //     background-color: @dark-orange;
@@ -138,9 +138,9 @@
     }
 
     .ant-select-selector {
-      height: 42px !important;
       display: flex;
       align-items: center;
+      height: 42px !important;
     }
 
     .ant-form-item-required::before {

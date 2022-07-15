@@ -108,7 +108,17 @@ class MessageList extends PureComponent {
 
   render() {
     const data = this.getData();
-    const { loading = false } = this.props;
+    const { loading = false, activeConversationUnseen = [] } = this.props;
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < data.length; i++) {
+      const findNewMess = activeConversationUnseen.find((x) => x._id === data[i]._id)
+      // swap list message
+      const temp = data[i]
+      if (findNewMess && i > 0) {
+        data[i] = data[i-1]
+        data[i-1] = temp
+      }
+    }
     return (
       <div className={styles.MessageList}>
         <div className={styles.header}>

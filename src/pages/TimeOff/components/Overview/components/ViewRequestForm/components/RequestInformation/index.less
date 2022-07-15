@@ -3,18 +3,38 @@
   background-color: white;
   border: 1px solid #ebeff2;
   border-radius: 5px;
-
+  :global {
+    .ant-tag {
+      margin-right: 0;
+      color: #fff;
+      font-weight: normal;
+      font-size: 10px;
+      border-radius: 13px;
+    }
+  }
   .formTitle {
     display: flex;
+    gap: 24px;
     align-items: center;
     justify-content: space-between;
     padding: 16px 24px;
     color: #161c29;
     border-bottom: 1px solid #e2e4e8;
+
     .title {
-      color: #464646;
-      font-weight: 700;
-      font-size: 16px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      overflow: hidden;
+      .ticketID {
+        display: block;
+        overflow: hidden;
+        color: #464646;
+        font-weight: 700;
+        font-size: 16px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
     }
     .editButton {
       display: flex;
@@ -40,6 +60,12 @@
     font-size: 13px;
     .detailColumn {
       color: #707177;
+      white-space: pre-wrap;
+      word-break: break-word;
+      span {
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
       .fieldValue {
         margin-right: 10px;
       }
