@@ -42,6 +42,7 @@ import AddAttachments from './components/AddAttachments';
 import LeaveTimeRow from './components/LeaveTimeRow';
 import LeaveTimeRow2 from './components/LeaveTimeRow2';
 import styles from './index.less';
+import DebounceSelect from './components/DebounceSelect';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -51,49 +52,7 @@ const { AFTERNOON, MORNING, WHOLE_DAY, HOUR } = TIMEOFF_PERIOD;
 const { IN_PROGRESS, DRAFTS } = TIMEOFF_STATUS;
 const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST, NEW_BEHALF_OF } = TIMEOFF_LINK_ACTION;
 
-const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
-  const [fetching, setFetching] = useState(false);
-  const [options, setOptions] = useState([]);
-  const fetchRef = useRef(0);
-  const debounceFetcher = useMemo(() => {
-    const loadOptions = (value) => {
-      fetchRef.current += 1;
-      const fetchId = fetchRef.current;
-      setOptions([]);
-      setFetching(true);
-      fetchOptions(value).then((newOptions) => {
-        if (fetchId !== fetchRef.current) {
-          // for fetch callback order
-          return;
-        }
-        setOptions(newOptions);
-        setFetching(false);
-      });
-    };
 
-    return debounce(loadOptions, debounceTimeout);
-  }, [fetchOptions, debounceTimeout]);
-
-  return (
-    <Select
-      labelInValue
-      filterOption={false}
-      onSearch={debounceFetcher}
-      notFoundContent={
-        <Spin size="small" spinning={fetching}>
-          <Empty description="No data, type to search" />
-        </Spin>
-      }
-      {...props}
-    >
-      {options.map((option) => (
-        <Select.Option key={option._id} value={option._id}>
-          {option.generalInfoInfo?.legalName}
-        </Select.Option>
-      ))}
-    </Select>
-  );
-};
 
 const RequestInformation = (props) => {
   const {
