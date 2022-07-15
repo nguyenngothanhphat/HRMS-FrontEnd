@@ -37,6 +37,7 @@ const LikeComment = ({
   loadingRemoveComment = false,
   loadingFetchOnePost = false,
   loadingFetchReactList = false,
+  loadingReactPost = false,
   activePostID = '',
   setActivePostID = () => {},
 }) => {
@@ -49,6 +50,7 @@ const LikeComment = ({
 
   const [viewingPostOrCommentLiked, setViewingPostOrCommentLiked] = useState();
   const [isLikeOrDislike, setIsLikeOrDislike] = useState('');
+  const [isReactPostOrCmt, setIsReactPostOrCmt] = useState('');
 
   // API
   const getPostCommentsEffect = (postIdProp, loadType) => {
@@ -81,7 +83,7 @@ const LikeComment = ({
   };
 
   const refreshComments = () => {
-    getPostCommentsEffect(post?._id);
+    return getPostCommentsEffect(post?._id);
   };
 
   const addNewCommentEffect = (content) => {
@@ -165,10 +167,12 @@ const LikeComment = ({
   // function
   // likes
   const onLikePost = async (type) => {
+    setIsReactPostOrCmt(POST_OR_CMT.POST);
     setActivePostID(post?._id);
     const res = await reactPostEffect(post?._id, type);
     if (res.statusCode === 200) {
-      refreshThisPost();
+      await refreshThisPost();
+      setIsReactPostOrCmt('');
     }
   };
 
@@ -268,7 +272,13 @@ const LikeComment = ({
     const dislikeCount = post.totalReact?.asObject?.[LIKE_ACTION.DISLIKE] || 0;
 
     return (
-      <Spin spinning={loadingFetchOnePost && activePostID === post._id} indicator={null}>
+      <Spin
+        spinning={
+          (loadingFetchOnePost || (loadingReactPost && isReactPostOrCmt === POST_OR_CMT.POST)) &&
+          activePostID === post._id
+        }
+        indicator={null}
+      >
         <div className={styles.likes}>
           <div className={liked ? styles.likes__pressed : null}>
             <img
@@ -335,7 +345,12 @@ const LikeComment = ({
             disabled={action === ACTION.EDIT}
           />
           <Spin
-            spinning={(loadingFetchComments || loadingAddComment) && activePostID === post?._id}
+            spinning={
+              (loadingFetchComments ||
+                loadingAddComment ||
+                (loadingReactPost && isReactPostOrCmt === POST_OR_CMT.COMMENT)) &&
+              activePostID === post?._id
+            }
           >
             <Row className={styles.commentContainer} gutter={[24, 16]}>
               {post.totalComment === 0 && (
@@ -380,6 +395,7 @@ const LikeComment = ({
                         setViewingPostOrCommentLiked={setViewingPostOrCommentLiked}
                         setIsLikeOrDislike={setIsLikeOrDislike}
                         hasPermission={viewSettingHomePage !== -1}
+                        setIsReactPostOrCmt={setIsReactPostOrCmt}
                       />
                     </Spin>
                   </Col>
