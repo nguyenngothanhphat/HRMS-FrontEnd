@@ -13,7 +13,6 @@ const TableContainer = (props) => {
     dispatch,
     timeOffManagement: { listTimeOff = [], selectedLocations = [], listTotal = 0 },
     loadingList = false,
-    loadingExport = false,
     payload = {},
     setPayload = () => {},
     loadingFetchLocation = false,
@@ -48,13 +47,6 @@ const TableContainer = (props) => {
     });
   };
 
-  const onExport = () => {
-    dispatch({
-      type: 'timeOffManagement/exportCSVEffect',
-      payload,
-    });
-  };
-
   useEffect(() => {
     if (selectedLocations.length || !didMount.current) {
       getDataTable(payload);
@@ -73,8 +65,6 @@ const TableContainer = (props) => {
             setToDate={setToDate}
             fromDate={fromDate}
             toDate={toDate}
-            onExport={onExport}
-            loadingExport={loadingExport}
           />
         </div>
         <div className={styles.contentContainer}>
@@ -104,7 +94,6 @@ export default connect(
     companiesOfUser,
     companyLocationList,
     loadingList: loading.effects['timeOffManagement/getListTimeOffEffect'],
-    loadingExport: loading.effects['timeOffManagement/exportCSVEffect'],
     loadingFetchLocation: loading.effects['timeOffManagement/getLocationsOfCountriesEffect'],
   }),
 )(TableContainer);

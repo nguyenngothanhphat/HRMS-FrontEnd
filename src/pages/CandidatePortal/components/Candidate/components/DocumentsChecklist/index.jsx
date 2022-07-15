@@ -213,7 +213,7 @@ const DocumentsChecklist = (props) => {
           <NoteComponent
             note={{
               title: 'Note',
-              data: 'All the documents that are marked as mandatory need to be uploaded and one or more of the documents that are optional can be uploaded.',
+              data: 'All the documents on the left need to be uploaded. If you don`t have any of these documents, please select the Not Available button and provide a reason',
             }}
           />
           <MessageBox />

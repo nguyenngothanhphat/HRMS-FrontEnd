@@ -2,21 +2,16 @@ import { Spin, Tabs, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { isEmpty } from 'lodash';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
 import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
-import {
-  checkNormalTypeTimeoff,
-  isFutureDay,
-  TIMEOFF_DATE_FORMAT,
-  TIMEOFF_STATUS,
-  TIMEOFF_TYPE,
-} from '@/utils/timeOff';
-import styles from './index.less';
-import HolidayList from './components/HolidayList';
+import { isFutureDay, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
 import HolidayCalendar from './components/HolidayCalendar';
-import LeaveHistoryList from './components/LeaveHistoryList';
+import HolidayList from './components/HolidayList';
 import LeaveHistoryCalendar from './components/LeaveHistoryCalendar';
+import LeaveHistoryList from './components/LeaveHistoryList';
+import styles from './index.less';
 
 const { TabPane } = Tabs;
 
@@ -109,7 +104,7 @@ const LeaveHistoryAndHoliday = (props) => {
         duration = 0,
         fromDate: from = '',
         toDate: to = '',
-        type: { name: typeName = '', type = '' } = {},
+        type: { name: typeName = '' } = {},
         _id = '',
         subject = '',
         leaveDates = [],
@@ -143,6 +138,8 @@ const LeaveHistoryAndHoliday = (props) => {
             toDate,
           };
         }
+        fromDate = moment(fromDate).locale('en').format(TIMEOFF_DATE_FORMAT);
+        toDate = moment(toDate).locale('en').format(TIMEOFF_DATE_FORMAT);
         return {
           _id,
           fromDate,
@@ -151,6 +148,7 @@ const LeaveHistoryAndHoliday = (props) => {
           typeName,
           status,
           subject,
+          leaveDates: listLeaves,
         };
       }
       return null;
@@ -167,7 +165,7 @@ const LeaveHistoryAndHoliday = (props) => {
         duration = 0,
         fromDate: from = '',
         toDate: to = '',
-        type: { name: typeName = '', type = '' } = {},
+        type: { name: typeName = '' } = {},
         _id = '',
         subject,
         leaveDates = [],
@@ -190,6 +188,8 @@ const LeaveHistoryAndHoliday = (props) => {
             leaveDates,
           };
         }
+        fromDate = moment(fromDate).locale('en').format(TIMEOFF_DATE_FORMAT);
+        toDate = moment(toDate).locale('en').format(TIMEOFF_DATE_FORMAT);
         return {
           _id,
           fromDate,
@@ -198,6 +198,7 @@ const LeaveHistoryAndHoliday = (props) => {
           typeName,
           status,
           subject,
+          leaveDates: listLeaves,
         };
       }
       return null;

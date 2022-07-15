@@ -23,6 +23,7 @@ const ticketManagement = {
   state: {
     listOffAllTicket: [],
     currentStatus: [],
+    totalStatus: [],
     totalList: [],
     totalAll: [],
     listEmployee: [],
@@ -33,6 +34,7 @@ const ticketManagement = {
     employeeAssignedList: [],
     filter: {},
     selectedLocations: [],
+    isLocationLoaded: false,
     supportTeamList: [],
     employeeFilterList: [],
   },
@@ -130,11 +132,11 @@ const ticketManagement = {
           };
         }
         response = yield call(getOffAllTicketList, tempPayload);
-        const { statusCode, data } = response;
+        const { statusCode, data = [], total = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { listOffAllTicket: data, currentStatus: payload.status },
+          payload: { listOffAllTicket: data, currentStatus: payload.status, totalStatus: total },
         });
       } catch (error) {
         dialog(error);

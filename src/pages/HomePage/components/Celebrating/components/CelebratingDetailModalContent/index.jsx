@@ -10,6 +10,8 @@ import CommonModal from '@/components/CommonModal';
 import PostLikedModalContent from '@/components/PostLikedModalContent';
 import styles from './index.less';
 import { CELEBRATE_TYPE } from '@/utils/homePage';
+import CommentBox from '@/components/CommentBox';
+import { singularify } from '@/utils/utils';
 
 const COMMENT_DEFAULT_COUNT = 3;
 const ACTION = {
@@ -101,8 +103,8 @@ const CelebratingDetailModalContent = (props) => {
     }
   };
 
-  const onChangeCommentInput = (e = {}) => {
-    setCommentContent(e.target.value);
+  const onChangeCommentInput = (value) => {
+    setCommentContent(value);
   };
 
   const onViewMoreClick = () => {
@@ -222,39 +224,36 @@ const CelebratingDetailModalContent = (props) => {
           </div>
         </div>
         <div className={styles.actions}>
-          <div className={styles.likes}>
-            <img
-              src={LikeIcon}
-              alt=""
-              onClick={likedIds.includes(employee?._id) ? () => {} : () => onLikeClick(card)}
-            />
-            <span
-              style={likedIds.includes(employee?._id) ? { fontWeight: 500, color: '#2C6DF9' } : {}}
-              onClick={() => setLikedModalVisible(true)}
-            >
-              {likes.length || 0} Likes
-            </span>
-          </div>
+          <Spin spinning={action === ACTION.LIKE && loadingRefresh} indicator={null}>
+            <div className={styles.likes}>
+              <img
+                src={LikeIcon}
+                alt=""
+                onClick={likedIds.includes(employee?._id) ? () => {} : () => onLikeClick(card)}
+              />
+              <span
+                style={
+                  likedIds.includes(employee?._id) ? { fontWeight: 500, color: '#2C6DF9' } : {}
+                }
+                onClick={() => setLikedModalVisible(true)}
+              >
+                {likes.length || 0} {singularify('Like', likes.length)}
+              </span>
+            </div>
+          </Spin>
           <div className={styles.comments}>
             <img src={CommentIcon} alt="" />
-            <span>{comments.length || 0} Comments</span>
+            <span>
+              {comments.length || 0} {singularify('Comment', comments.length)}
+            </span>
           </div>
         </div>
         <div className={styles.commentBox}>
-          <Input
-            className={styles.commentInput}
-            placeholder="Add a comment..."
+          <CommentBox
             onChange={onChangeCommentInput}
             value={commentContent}
-            suffix={
-              <Button
-                className={styles.commentBtn}
-                onClick={onCommentClick}
-                disabled={action === ACTION.COMMENT && (loadingComment || !commentContent)}
-              >
-                Submit
-              </Button>
-            }
+            onSubmit={onCommentClick}
+            disabled={loadingComment}
           />
         </div>
         <Spin spinning={action === ACTION.COMMENT && (loadingRefresh || loadingComment)}>
@@ -284,7 +283,7 @@ const CelebratingDetailModalContent = (props) => {
 
   return (
     <div className={styles.CelebratingDetailModalContent}>
-      <Spin spinning={loadingRefresh && action === ACTION.LIKE}>{renderCard(item)}</Spin>
+      {renderCard(item)}
       <CommonModal
         visible={likedModalVisible}
         onClose={() => setLikedModalVisible(false)}
@@ -292,6 +291,7 @@ const CelebratingDetailModalContent = (props) => {
         content={<PostLikedModalContent list={likes} />}
         width={500}
         hasFooter={false}
+        maskClosable
       />
     </div>
   );

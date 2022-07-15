@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Steps, Spin } from 'antd';
 import NoteIcon from '@/assets/NoteIcon.svg';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 
 import styles from './index.less';
 

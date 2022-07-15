@@ -1,10 +1,10 @@
-import { Button, Checkbox, Col, DatePicker, Form, Row, Select } from 'antd';
+import { Checkbox, Col, DatePicker, Form, Row, Select } from 'antd';
 import { debounce } from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
 import { dateFormat, TIMEOFF_NAME_BY_ID } from '@/utils/timeOffManagement';
-import DownloadIcon from '@/assets/timeOffManagement/ic_download.svg';
+// import DownloadIcon from '@/assets/timeOffManagement/ic_download.svg';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -13,16 +13,20 @@ const Header = (props) => {
   const [form] = Form.useForm();
 
   const {
-    timeOffManagement: { typeList = [], listTimeOff = [], listEmployees = [] } = {},
+    timeOffManagement: {
+      typeList = [],
+      // listTimeOff = [],
+      listEmployees = [],
+    } = {},
     setPayload = () => {},
     disabled = false,
     toDate = '',
     fromDate = '',
     setFromDate = () => {},
     setToDate = () => {},
-    onExport = () => {},
+    // onExport = () => {},
     loadingEmployeeList = false,
-    loadingExport = false,
+    // loadingExport = false,
     loadingFetchTimeoffTypes = false,
   } = props;
 
@@ -56,7 +60,7 @@ const Header = (props) => {
           }}
         >
           <Row gutter={[24, 12]}>
-            <Col xs={{ span: 8, order: 1 }} xl={{ span: 6, order: 1 }}>
+            <Col span={6}>
               <span className={styles.itemLabel}>User ID - Name</span>
               <Form.Item name="user">
                 <Select
@@ -78,7 +82,7 @@ const Header = (props) => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col xs={{ span: 16, order: 2 }} xl={{ span: 9, order: 2 }}>
+            <Col span={12}>
               <span className={styles.itemLabel}>Duration</span>
               <div>
                 <Row gutter={[24, 24]}>
@@ -108,7 +112,7 @@ const Header = (props) => {
                 </Row>
               </div>
             </Col>
-            <Col xs={{ span: 18, order: 3 }} xl={{ span: 5, order: 3 }}>
+            <Col span={6}>
               <span className={styles.itemLabel}>Leave Type</span>
               <div>
                 <Row gutter={[24, 24]}>
@@ -136,7 +140,7 @@ const Header = (props) => {
                 </Row>
               </div>
             </Col>
-            <Col xs={{ span: 6, order: 4 }} xl={{ span: 4, order: 4 }} justify="end">
+            {/* <Col xs={{ span: 6, order: 4 }} xl={{ span: 4, order: 4 }} justify="end">
               <span className={styles.itemLabel} />
               <div className={styles.buttons}>
                 <Row gutter={[24, 24]}>
@@ -156,7 +160,7 @@ const Header = (props) => {
                   </Col>
                 </Row>
               </div>
-            </Col>
+            </Col> */}
           </Row>
           <Row
             gutter={[24, 24]}

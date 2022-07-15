@@ -1,9 +1,9 @@
-@darkColour: #161C29;
-@blueColour: #2C6DF9;
+@darkColour: #161c29;
+@blueColour: #2c6df9;
 @lightGrayColor: #707177;
 @commonPadding: 15px;
 @contentPadding: 32px;
-@borderColor: #D6DCE0;
+@borderColor: #d6dce0;
 
 .SendQueryModal {
   textarea:focus {
@@ -13,8 +13,8 @@
   :global {
     .ant-modal-body {
       max-height: 500px;
-      overflow-y: auto;
       padding: @contentPadding;
+      overflow-y: auto;
     }
     .ant-form-item-explain {
       div {
@@ -28,8 +28,8 @@
       width: 100%;
       padding: 5px 11px !important;
       background: transparent !important;
-      border-radius: 5px !important;
       border-color: @borderColor;
+      border-radius: 5px !important;
     }
     .ant-form-item-label
       > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
@@ -41,13 +41,13 @@
       font-size: 12px;
     }
     .ant-btn-primary {
-      padding: 0 30px;
       height: 40px;
+      padding: 0 30px;
       object-fit: contain;
       color: #ffffff;
       font-weight: 500;
       font-size: 14px;
-      font-family: Roboto;
+
       letter-spacing: 0.13px;
 
       text-shadow: none;
@@ -68,7 +68,7 @@
       color: #ffa100;
       font-weight: 500;
       font-size: 14px;
-      font-family: Roboto;
+
       letter-spacing: 0.13px;
       border: solid 0;
       border-radius: 25px;
@@ -145,11 +145,11 @@
 
   .queryContent {
     .describeText {
-      font-size: 13px;
-      line-height: 20px;
-      color: @lightGrayColor;
       display: block;
       margin-bottom: @commonPadding;
+      color: @lightGrayColor;
+      font-size: 13px;
+      line-height: 20px;
     }
   }
 }

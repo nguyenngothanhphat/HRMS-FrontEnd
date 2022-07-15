@@ -263,7 +263,7 @@ const FilterForm = (props) => {
               >
                 {queryTypeList.map((option) => {
                   return (
-                    <Option key={option.id} value={option.query_type}>
+                    <Option key={option.query_type_id} value={option.query_type_id}>
                       {option.query_type}
                     </Option>
                   );

@@ -49,3 +49,6 @@ export const getUrlFromString = (text) => {
 };
 
 export const dateFormat = 'MMMM DD YYYY, HH:mm A';
+
+export const roundNumber = (x) => Math.round(x * 10) / 10;
+export const roundNumber2 = (x) => Math.round(x * 100) / 100;

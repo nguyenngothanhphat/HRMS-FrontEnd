@@ -1,6 +1,7 @@
-import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
+import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { addZeroToNumber } from '@/utils/utils';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -11,12 +12,6 @@ class FilterBar extends PureComponent {
   onChangeTab = (activeKey) => {
     const { setSelectedFilterTab } = this.props;
     setSelectedFilterTab(activeKey);
-  };
-
-  addZeroToNumber = (number) => {
-    if (number === 0) return 0;
-    if (number < 10 && number > 0) return `0${number}`.slice(-2);
-    return number;
   };
 
   render() {
@@ -39,11 +34,11 @@ class FilterBar extends PureComponent {
           onChange={(activeKey) => this.onChangeTab(activeKey)}
           tabBarExtraContent={this.renderTableTitle}
         >
-          <TabPane tab={`In Progress (${this.addZeroToNumber(inProgressLength)})`} key="1" />
-          <TabPane tab={`Approved (${this.addZeroToNumber(approvedLength)})`} key="2" />
-          <TabPane tab={`Rejected (${this.addZeroToNumber(rejectedLength)})`} key="3" />
-          <TabPane tab={`Drafts (${this.addZeroToNumber(draftLength)})`} key="4" />
-          <TabPane tab={`Withdrawn (${this.addZeroToNumber(withdrawnLength)})`} key="5" />
+          <TabPane tab={`In Progress (${addZeroToNumber(inProgressLength)})`} key="1" />
+          <TabPane tab={`Approved (${addZeroToNumber(approvedLength)})`} key="2" />
+          <TabPane tab={`Rejected (${addZeroToNumber(rejectedLength)})`} key="3" />
+          <TabPane tab={`Drafts (${addZeroToNumber(draftLength)})`} key="4" />
+          <TabPane tab={`Withdrawn (${addZeroToNumber(withdrawnLength)})`} key="5" />
         </Tabs>
       </div>
     );

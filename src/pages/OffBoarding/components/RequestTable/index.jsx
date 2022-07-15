@@ -4,7 +4,7 @@ import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 import MenuIcon from '@/assets/offboarding/menuIcon.png';
 import CommonTable from '@/components/CommonTable';
 import CustomSearchBox from '@/components/CustomSearchBox';

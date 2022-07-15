@@ -94,7 +94,6 @@ class TableTickets extends PureComponent {
       dispatch,
       employee: { _id = '', generalInfo: { legalName = '' } = {} } = {},
       refreshFetchData = () => {},
-      refreshFetchTotalList = () => {},
       role = '',
     } = this.props;
     const {
@@ -130,7 +129,6 @@ class TableTickets extends PureComponent {
       const { statusCode } = res;
       if (statusCode === 200) {
         refreshFetchData();
-        refreshFetchTotalList();
       }
     });
   };

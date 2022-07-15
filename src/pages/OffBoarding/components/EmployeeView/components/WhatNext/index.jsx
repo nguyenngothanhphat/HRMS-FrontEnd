@@ -2,7 +2,7 @@ import { Card, Avatar, Col, Row } from 'antd';
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'umi';
-import avtDefault from '@/assets/defaultAvatar.png';
+import avtDefault from '@/assets/avtDefault.jpg';
 import styles from './index.less';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import { OFFBOARDING, onJoinMeeting } from '@/utils/offboarding';

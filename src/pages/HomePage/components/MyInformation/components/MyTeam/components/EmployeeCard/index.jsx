@@ -1,7 +1,7 @@
 import { Col } from 'antd';
 import React from 'react';
 import { connect, history } from 'umi';
-import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 import styles from './index.less';
 
 const EmployeeCard = (props) => {
@@ -26,7 +26,13 @@ const EmployeeCard = (props) => {
     >
       <div className={styles.container}>
         <div className={styles.avatar}>
-          <img src={avatar || MockAvatar} alt="" />
+          <img
+            src={avatar || DefaultAvatar}
+            alt=""
+            onError={(e) => {
+              e.target.src = DefaultAvatar;
+            }}
+          />
         </div>
         <div className={styles.information}>
           <span
