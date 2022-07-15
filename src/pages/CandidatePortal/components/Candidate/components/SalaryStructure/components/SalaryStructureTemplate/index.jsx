@@ -4,6 +4,7 @@ import { trimStart, toString, trim, isEmpty } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
+import { listNoteSalary } from '@/utils/newCandidateForm';
 import NotifyModal from '../NotifyModal';
 import styles from './index.less';
 import { JOINING_BONUS, MIDTERM_HIKE, SALARY_STRUCTURE_OPTION } from '@/utils/onboardingSetting';
@@ -236,7 +237,12 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   render() {
-    const { settings, loadingSalary, salaryStructureSetting = {} } = this.props;
+    const {
+      settings,
+      loadingSalary,
+      salaryStructureSetting = {},
+      data: { salaryNote = '' } = {},
+    } = this.props;
     const { notifyModalVisible, actionType } = this.state;
 
     const settingsFormat = settings.filter((setting) => setting.value);
@@ -248,6 +254,12 @@ class SalaryStructureTemplate extends PureComponent {
     const { option = '' } = salaryStructureSetting || {};
 
     const isTotalCompensation = option === SALARY_STRUCTURE_OPTION.TOTAL_COMPENSATION;
+
+    const arrListNoteSalary = listNoteSalary(
+      isJoiningBonus && this.convertValue(joiningBonus.value),
+      isMidtermHike && this.convertValue(midtermHike.value),
+      salaryNote,
+    );
 
     const modalTitle =
       actionType === 'accept'
@@ -351,26 +363,12 @@ class SalaryStructureTemplate extends PureComponent {
           </div>
         )}
 
-        {(isJoiningBonus || isMidtermHike) && (
+        {(isJoiningBonus || isMidtermHike || salaryNote) && (
           <div className={styles.containerNote}>
             Note-
-            {isJoiningBonus && (
-              <div className={styles.noteField}>
-                1. As a part of this offer the candidate shall be entitled to a Joining Bonus of INR{' '}
-                {this.convertValue(joiningBonus.value)}. Post Joining 50% of this amount shall be
-                paid along with the second month&#39s salary (or the applicable first payroll). And
-                on completion of three months of service the balance 50% shall be paid along with
-                the immediate next payroll.
-              </div>
-            )}
-            {isMidtermHike && (
-              <div className={styles.noteField}>
-                2. As a part of this offer the candidate shall be entitled to a one time Mid Term
-                Hike of INR {this.convertValue(midtermHike.value)}. Upon completion of 6 months
-                duration of employment with full standing and meeting the Project and Management
-                expectations.
-              </div>
-            )}
+            {arrListNoteSalary.map((x, index) => (
+              <div className={styles.noteField}>{`${index + 1}. ${x}`}</div>
+            ))}
           </div>
         )}
         {this._renderBottomBar()}

@@ -10,7 +10,7 @@ const FilterResourcesListContent = (props) => {
   const [form] = Form.useForm();
   const {
     dispatch,
-    projectDetails: { divisionList = [], projectId = '',titleList=[] } = {},
+    projectDetails: { divisionList = [], projectId = '', titleList = [] } = {},
     projectManagement: { projectList = [] },
     onFilter = () => {},
     needResetFilterForm = false,
@@ -137,7 +137,7 @@ const FilterResourcesListContent = (props) => {
         <Input placeholder="Years of Exp" />
       </Form.Item>
 
-      <Form.Item label="By Project" name="project">
+      <Form.Item label="By Project" name="projects">
         <Select
           mode="multiple"
           allowClear
