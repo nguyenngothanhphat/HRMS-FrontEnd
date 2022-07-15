@@ -92,14 +92,14 @@ const LeaveRequestForm = (props) => {
       dispatch({
         type: 'timeOff/fetchLeaveRequestOfId',
         payload: {
-          employee: { employeeBehalfOf },
+          employee: employeeBehalfOf,
           status: [IN_PROGRESS, ACCEPTED],
         },
       }).then((res) => {
         if (res.statusCode === 200) {
           let invalidDatesTemp = [];
-          const { items: leaveRequests = [] } = res?.data;
-          leaveRequests.forEach((x) => {
+          const { data = [] } = res;
+          data.forEach((x) => {
             const temp = x.leaveDates.map((y) => {
               return {
                 date: y.date,
@@ -122,29 +122,30 @@ const LeaveRequestForm = (props) => {
         id: reId,
       });
     }
-
-    dispatch({
-      type: 'timeOff/fetchLeaveRequestOfEmployee',
-      payload: {
-        status: [IN_PROGRESS, ACCEPTED],
-      },
-    }).then((res) => {
-      if (res.statusCode === 200) {
-        let invalidDatesTemp = [];
-        const { items: leaveRequests = [] } = res?.data;
-        leaveRequests.forEach((x) => {
-          const temp = x.leaveDates.map((y) => {
-            return {
-              date: y.date,
-              timeOfDay: y.timeOfDay,
-            };
+    if (action !== NEW_BEHALF_OF) {
+      dispatch({
+        type: 'timeOff/fetchLeaveRequestOfEmployee',
+        payload: {
+          status: [IN_PROGRESS, ACCEPTED],
+        },
+      }).then((res) => {
+        if (res.statusCode === 200) {
+          let invalidDatesTemp = [];
+          const { items: leaveRequests = [] } = res?.data;
+          leaveRequests.forEach((x) => {
+            const temp = x.leaveDates.map((y) => {
+              return {
+                date: y.date,
+                timeOfDay: y.timeOfDay,
+              };
+            });
+            invalidDatesTemp = [...invalidDatesTemp, ...temp];
           });
-          invalidDatesTemp = [...invalidDatesTemp, ...temp];
-        });
 
-        setInvalidDates(invalidDatesTemp);
-      }
-    });
+          setInvalidDates(invalidDatesTemp);
+        }
+      });
+    }
 
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   }, []);

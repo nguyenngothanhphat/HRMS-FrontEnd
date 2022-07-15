@@ -2,6 +2,7 @@ import {
   Button,
   Col,
   DatePicker,
+  Empty,
   Form,
   Input,
   message,
@@ -12,9 +13,9 @@ import {
   Tooltip,
 } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { connect, history } from 'umi';
-import { isEmpty } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import TimeOffModal from '@/components/TimeOffModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
@@ -50,6 +51,50 @@ const { AFTERNOON, MORNING, WHOLE_DAY, HOUR } = TIMEOFF_PERIOD;
 const { IN_PROGRESS, DRAFTS } = TIMEOFF_STATUS;
 const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST, NEW_BEHALF_OF } = TIMEOFF_LINK_ACTION;
 
+const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
+  const [fetching, setFetching] = useState(false);
+  const [options, setOptions] = useState([]);
+  const fetchRef = useRef(0);
+  const debounceFetcher = useMemo(() => {
+    const loadOptions = (value) => {
+      fetchRef.current += 1;
+      const fetchId = fetchRef.current;
+      setOptions([]);
+      setFetching(true);
+      fetchOptions(value).then((newOptions) => {
+        if (fetchId !== fetchRef.current) {
+          // for fetch callback order
+          return;
+        }
+        setOptions(newOptions);
+        setFetching(false);
+      });
+    };
+
+    return debounce(loadOptions, debounceTimeout);
+  }, [fetchOptions, debounceTimeout]);
+
+  return (
+    <Select
+      labelInValue
+      filterOption={false}
+      onSearch={debounceFetcher}
+      notFoundContent={
+        <Spin size="small" spinning={fetching}>
+          <Empty description="No data, type to search" />
+        </Spin>
+      }
+      {...props}
+    >
+      {options.map((option) => (
+        <Select.Option key={option._id} value={option._id}>
+          {option.generalInfoInfo?.legalName}
+        </Select.Option>
+      ))}
+    </Select>
+  );
+};
+
 const RequestInformation = (props) => {
   const {
     dispatch,
@@ -58,6 +103,7 @@ const RequestInformation = (props) => {
     invalidDates: invalidDatesProps = [],
     timeOff: {
       viewingLeaveRequest = {},
+      employeeBehalfOf,
       viewingLeaveRequest: {
         _id: viewingId = '',
         leaveDates: viewingLeaveDates = [],
@@ -141,11 +187,20 @@ const RequestInformation = (props) => {
   };
 
   // fetch email list of company
-  const fetchEmailsListByCompany = () => {
-    dispatch({
-      type: 'timeOff/fetchEmailsListByCompany',
-      payload: [getCurrentCompany()],
-    });
+  const fetchEmailsListByCompany = async (values) => {
+    let emailList = [];
+    if (!isEmpty(values)) {
+      const res = await dispatch({
+        type: 'timeOff/fetchEmailsListByCompany',
+        payload: {
+          search: values,
+        },
+      });
+      if (res.statusCode === 200) {
+        emailList = res.data;
+      }
+    }
+    return emailList;
   };
 
   const generateHours = (list) => {
@@ -440,7 +495,7 @@ const RequestInformation = (props) => {
         }
 
         let type = '';
-        if (action === NEW_LEAVE_REQUEST) {
+        if (action === NEW_LEAVE_REQUEST || action === NEW_BEHALF_OF) {
           payload.employee = employeeId;
           payload.approvalManager = managerId; // id
           type = 'timeOff/addLeaveRequest';
@@ -621,7 +676,7 @@ const RequestInformation = (props) => {
       }
     }
 
-    if (action === NEW_LEAVE_REQUEST) {
+    if (action === NEW_LEAVE_REQUEST || action === NEW_BEHALF_OF) {
       if (buttonState === 1) {
         content = `${selectedTypeName} request saved as draft.`;
       } else if (buttonState === 2)
@@ -790,7 +845,7 @@ const RequestInformation = (props) => {
     if (viewingId) {
       fetchData();
     }
-    fetchEmailsListByCompany();
+    // fetchEmailsListByCompany();
   }, [viewingId, JSON.stringify(workingDays)]);
 
   const generateSecondNotice = () => {
@@ -875,6 +930,19 @@ const RequestInformation = (props) => {
     });
     setWorkingDays(workingDaysTemp);
   }, [JSON.stringify(workDay)]);
+
+  useEffect(() => {
+    if (!isEmpty(employeeBehalfOf)) {
+      form.setFieldsValue({
+        timeOffType: null,
+        durationFrom: null,
+        durationTo: null,
+        listDate: [],
+        leaveTimeLists: [],
+      });
+      setListDate([]);
+    }
+  }, [employeeBehalfOf]);
 
   const dateRender = (currentDate) => {
     let isSelected;
@@ -1083,6 +1151,12 @@ const RequestInformation = (props) => {
                     // { validator: typeValidator },
                   ]}
                 >
+                  <DebounceSelect
+                    placeholder="Search a person you want to loop"
+                    fetchOptions={fetchEmailsListByCompany}
+                    showSearch
+                  />
+                  {/* 
                   <Select
                     // mode="multiple"
                     showSearch
@@ -1096,6 +1170,7 @@ const RequestInformation = (props) => {
                           .indexOf(input.toLowerCase()) >= 0
                       );
                     }}
+                    onSearch={debounceFetcher}
                   >
                     {formatListEmail.map((value) => {
                       const { _id = '', workEmail = '', avatar = '' } = value;
@@ -1125,7 +1200,7 @@ const RequestInformation = (props) => {
                         </Option>
                       );
                     })}
-                  </Select>
+                  </Select> */}
                 </Form.Item>
               </Col>
             </Row>
@@ -1350,6 +1425,7 @@ const RequestInformation = (props) => {
                           .indexOf(input.toLowerCase()) >= 0
                       );
                     }}
+                    onChange={fetchEmailsListByCompany}
                   >
                     {formatListEmail.map((value) => {
                       const { _id = '', workEmail = '', avatar = '' } = value;

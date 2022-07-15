@@ -146,10 +146,10 @@ export async function withdrawCompoffRequest(payload) {
   });
 }
 
-export async function getEmailsListByCompany(payload) {
-  return request('/api/employeetenant/admin-list', {
-    method: 'POST',
-    data: payload,
+export async function getEmailsListByCompany(params) {
+  return request('/api/employeetenant', {
+    method: 'GET',
+    params,
   });
 }
 

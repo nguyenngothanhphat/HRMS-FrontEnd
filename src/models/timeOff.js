@@ -418,25 +418,26 @@ const timeOff = {
       }
     },
 
-    *fetchLeaveRequestOfId({ id = '' }, { call, put }) {
+    *fetchLeaveRequestOfId({ payload }, { call, put }) {
+      let response = {};
       try {
         const tenantId = getCurrentTenant();
-        if (id !== '') {
-          const response = yield call(getLeaveRequestOfId, {
-            id,
-            tenantId,
-            company: getCurrentCompany(),
-          });
-          const { statusCode, data: viewingLeaveRequest = [] } = response;
-          if (statusCode !== 200) throw response;
-          yield put({
-            type: 'save',
-            payload: { viewingLeaveRequest },
-          });
-        }
+
+        response = yield call(getLeaveRequestOfId, {
+          ...payload,
+          tenantId,
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data: viewingLeaveRequest = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { viewingLeaveRequest },
+        });
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
 
     *updateLeaveRequestById({ payload = {} }, { call }) {
@@ -670,11 +671,11 @@ const timeOff = {
       return 0;
     },
 
-    *fetchEmailsListByCompany({ payload: { company = [] } = {} }, { call, put }) {
+    *fetchEmailsListByCompany({ payload= {} }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getEmailsListByCompany, {
-          company,
-          tenantId: getCurrentTenant(),
+        response = yield call(getEmailsListByCompany, {
+          ...payload
         });
         // console.log('email res', response);
         const { statusCode, data: emailsList = [] } = response;
@@ -686,6 +687,7 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *fetchProjectsListByEmployee({ payload = {} }, { call, put }) {
       try {
