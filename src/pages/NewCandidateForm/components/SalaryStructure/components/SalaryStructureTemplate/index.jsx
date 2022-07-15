@@ -251,7 +251,7 @@ const SalaryStructureTemplate = (props) => {
       const PF = pf;
 
       // step 9
-      const insurance = getValue(INSURANCE) || 7382;
+      const insurance = getValue(INSURANCE);
 
       // step 10
       const gratuity = roundNumber2(basic / 12 / 2);
@@ -524,11 +524,14 @@ const SalaryStructureTemplate = (props) => {
   };
 
   const _renderCommonSalaryTable = () => {
+    const settingsData = settingsTempData.filter((setting) =>
+      isEditingSalary ? true : setting.value,
+    );
     return (
       <div className={styles.salaryStructureTemplate_table}>
         <Row className={styles.salary}>
           <Col span={12} className={styles.salary__left}>
-            {settingsTempData.map(
+            {settingsData.map(
               (item) =>
                 item.key !== TOTAL_COMPENSATION && (
                   <div
@@ -557,7 +560,7 @@ const SalaryStructureTemplate = (props) => {
                 : styles.salary__right
             }
           >
-            {settingsTempData.map((item) => {
+            {settingsData.map((item) => {
               if (item.key !== TOTAL_COMPENSATION) {
                 if (item.key === 'salary_13')
                   return (
@@ -575,7 +578,7 @@ const SalaryStructureTemplate = (props) => {
         </Row>
         <Row className={styles.salaryTotal}>
           <Col span={12} className={styles.salaryTotal__left}>
-            {settingsTempData.map(
+            {settingsData.map(
               (item) =>
                 item.key === TOTAL_COMPENSATION && (
                   <div key={item.key} className={styles.salaryTotal__left__text}>
@@ -585,7 +588,7 @@ const SalaryStructureTemplate = (props) => {
             )}
           </Col>
           <Col span={12} className={styles.salaryTotal__right}>
-            {settingsTempData.map(
+            {settingsData.map(
               (item) =>
                 item.key === TOTAL_COMPENSATION && (
                   <div key={item.key} className={styles.salaryTotal__right__text}>
@@ -620,7 +623,7 @@ const SalaryStructureTemplate = (props) => {
           ANNUAL_RETENTION_BONUS,
           JOINING_BONUS,
           MIDTERM_HIKE,
-        ].includes(x.key) && x.value,
+        ].includes(x.key) && (isEditingSalary ? true : x.value),
     );
 
     return (

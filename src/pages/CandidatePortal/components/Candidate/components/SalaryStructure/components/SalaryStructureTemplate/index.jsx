@@ -6,7 +6,7 @@ import { connect, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import NotifyModal from '../NotifyModal';
 import styles from './index.less';
-import { SALARY_STRUCTURE_OPTION } from '@/utils/onboardingSetting';
+import { JOINING_BONUS, MIDTERM_HIKE, SALARY_STRUCTURE_OPTION } from '@/utils/onboardingSetting';
 
 @connect(
   ({
@@ -239,9 +239,10 @@ class SalaryStructureTemplate extends PureComponent {
     const { settings, loadingSalary, salaryStructureSetting = {} } = this.props;
     const { notifyModalVisible, actionType } = this.state;
 
-    const data = settings.filter((x) => x.key !== 'midterm_hike' && x.key !== 'joining_bonus');
-    const joiningBonus = settings.find((x) => x.key === 'joining_bonus') || {};
-    const midtermHike = settings.find((x) => x.key === 'midterm_hike') || {};
+    const settingsFormat = settings.filter((setting) => setting.value);
+    const data = settingsFormat.filter((x) => x.key !== MIDTERM_HIKE && x.key !== JOINING_BONUS);
+    const joiningBonus = settingsFormat.find((x) => x.key === JOINING_BONUS) || {};
+    const midtermHike = settingsFormat.find((x) => x.key === MIDTERM_HIKE) || {};
     const isJoiningBonus = !isEmpty(joiningBonus) ? joiningBonus.value !== 0 : false;
     const isMidtermHike = !isEmpty(midtermHike) ? midtermHike.value !== 0 : false;
     const { option = '' } = salaryStructureSetting || {};
@@ -357,9 +358,9 @@ class SalaryStructureTemplate extends PureComponent {
               <div className={styles.noteField}>
                 1. As a part of this offer the candidate shall be entitled to a Joining Bonus of INR{' '}
                 {this.convertValue(joiningBonus.value)}. Post Joining 50% of this amount shall be
-                paid along with the second month's salary (or the applicable first payroll). And on
-                completion of three months of service the balance 50% shall be paid along with the
-                immediate next payroll.
+                paid along with the second month&#39s salary (or the applicable first payroll). And
+                on completion of three months of service the balance 50% shall be paid along with
+                the immediate next payroll.
               </div>
             )}
             {isMidtermHike && (
