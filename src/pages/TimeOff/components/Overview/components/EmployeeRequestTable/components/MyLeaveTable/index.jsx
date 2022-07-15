@@ -11,7 +11,7 @@ import {
   TIMEOFF_DATE_FORMAT,
   TIMEOFF_STATUS,
 } from '@/utils/timeOff';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 
 import styles from './index.less';
