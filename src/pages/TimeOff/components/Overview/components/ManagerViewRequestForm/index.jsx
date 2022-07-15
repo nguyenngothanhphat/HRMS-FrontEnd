@@ -56,6 +56,7 @@ class ManagerViewRequestForm extends PureComponent {
         viewingLeaveRequest = {},
       } = {},
       loadingFetchLeaveRequestById = false,
+      match: { params: { reId: id = '' } = {} },
     } = this.props;
 
     return (
@@ -86,7 +87,7 @@ class ManagerViewRequestForm extends PureComponent {
           <Spin spinning={loadingFetchLeaveRequestById}>
             <Row className={styles.container} gutter={[20, 20]}>
               <Col xs={24} lg={16}>
-                <RequestInformation employeeId={employeeId} />
+                <RequestInformation employeeId={employeeId} reId={id} />
               </Col>
               <Col xs={24} lg={8}>
                 {!isEmpty(history) ? (
