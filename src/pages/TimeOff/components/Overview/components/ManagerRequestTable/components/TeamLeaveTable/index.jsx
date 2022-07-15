@@ -9,6 +9,8 @@ import OpenIcon from '@/assets/openTR.svg';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import {
+  isNewRequest,
+  isUpdatedRequest,
   checkNormalTypeTimeoff,
   roundNumber,
   TIMEOFF_DATE_FORMAT,

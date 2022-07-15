@@ -1,5 +1,11 @@
 import { LoadingOutlined } from '@ant-design/icons';
+import { Avatar, Spin, Table, Tag, Tooltip } from 'antd';
+import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect, Link } from 'umi';
 import {
+  isNewRequest,
+  isUpdatedRequest,
   checkNormalTypeTimeoff,
   roundNumber,
   TIMEOFF_DATE_FORMAT,
@@ -7,7 +13,6 @@ import {
 } from '@/utils/timeOff';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
-import DefaultAvatar from '@/assets/avtDefault.jpg';
 
 import styles from './index.less';
 
