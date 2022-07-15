@@ -107,7 +107,7 @@ const ResourcesCard = (props) => {
     return tempData.map((item) => {
       const { projects = [] } = item;
       if (projects.length > 0) {
-        const [firstProject] = projects;
+        const firstProject = projects.find((x) => x.project.id === id);
         return {
           ...item,
           startDate: firstProject.startDate,
@@ -408,7 +408,7 @@ const ResourcesCard = (props) => {
         {allowModify && (
           <OrangeAddButton text="Add Resources" onClick={() => setAddResourceModalVisible(true)} />
         )}
-        <CustomSearchBox onSearch={onSearch} placeholder="Search by Resource Type" />
+        <CustomSearchBox onSearch={onSearch} placeholder="Search by Name, Resource Type" />
       </div>
     );
   };
