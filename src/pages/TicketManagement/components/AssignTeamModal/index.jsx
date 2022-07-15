@@ -1,5 +1,5 @@
 import { Form, Select } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { getAuthority, getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import CommonModal from '@/components/CommonModal';
@@ -28,6 +28,7 @@ const AssignTeamModal = (props) => {
     ticket = {},
   } = props;
   const [form] = Form.useForm();
+  const [queryTypeList, setQueryTypeList] = useState([]);
 
   useEffect(() => {
     if (visible) {
@@ -47,21 +48,24 @@ const AssignTeamModal = (props) => {
         },
       });
     }
-    return form.setFieldsValue({ newTeam: '', ccList: [] });
+
+    return () => {
+      form.setFieldsValue({ newTeam: '', ccList: [], queryType: '' });
+      setQueryTypeList([]);
+    };
   }, [visible]);
 
   const handleFinish = (value) => {
-    const { newTeam = '', ccList = [] } = value;
+    const { newTeam = '', ccList = [], queryType = '' } = value;
     const nTeam = supportTeamList.find((x) => x.name === newTeam);
     const newTeamId = nTeam._id;
-    const queryTypeId = nTeam.queryType.find((y) => y.name === 'Other Query')._id;
+    const queryTypeId = nTeam.queryType.find((y) => y.name === queryType)._id;
     const tempData = Object.keys(ticket).length ? ticket : ticketDetail;
 
     const {
       id = '',
       employee_raise: employeeRaise = '',
       employee_assignee: employeeAssignee = '',
-      query_type: queryType = '',
       priority = '',
       subject = '',
       description = '',
@@ -110,6 +114,13 @@ const AssignTeamModal = (props) => {
     });
   };
 
+  const onNewTeamChange = (value) => {
+    const find = supportTeamList.find((x) => x.name === value);
+    if (find) {
+      setQueryTypeList(find?.queryType || []);
+    }
+  };
+
   const content = (
     <Form
       layout="vertical"
@@ -129,11 +140,31 @@ const AssignTeamModal = (props) => {
           showSearch
           loading={loadingFetchSupportTeam}
           disabled={loadingFetchSupportTeam}
+          onChange={onNewTeamChange}
           allowClear
           filterOption={(input, option) =>
             option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {supportTeamList.map((val) => (
+            <Select.Option value={val.name}>{val.name}</Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+      <Form.Item
+        label="Query Type"
+        rules={[{ required: true, message: 'Please select the query type' }]}
+        name="queryType"
+      >
+        <Select
+          placeholder="Search by query type"
+          showArrow={false}
+          showSearch
+          disabled={!queryTypeList.length}
+          allowClear
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {queryTypeList.map((val) => (
             <Select.Option value={val.name}>{val.name}</Select.Option>
           ))}
         </Select>
