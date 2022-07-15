@@ -124,7 +124,7 @@ const FilterResourcesListContent = (props) => {
         <Input placeholder="Years of Exp" />
       </Form.Item>
 
-      <Form.Item label="By Project" name="project">
+      <Form.Item label="By Project" name="projects">
         <Select
           mode="multiple"
           allowClear

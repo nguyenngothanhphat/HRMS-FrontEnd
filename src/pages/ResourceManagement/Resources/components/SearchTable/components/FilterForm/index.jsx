@@ -259,6 +259,7 @@ const FilterForm = (props) => {
       label: 'BY BILLING STATUS',
       name: 'statuses',
       placeholder: 'Select the billing status',
+      mode: 'multiple',
       optionArray: statuses,
     },
   ];

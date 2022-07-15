@@ -33,7 +33,7 @@ const ViewResourceTable = (props) => {
         adminMode,
         countryMode,
         title: [_id],
-        project: [projectNumberId],
+        projects: [projectNumberId],
       },
     });
   }, []);
