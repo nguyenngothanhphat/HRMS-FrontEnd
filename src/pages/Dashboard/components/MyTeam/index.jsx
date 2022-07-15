@@ -9,7 +9,6 @@ import TeamLeaveCalendar from './components/TeamLeaveCalendar';
 import SmallRightArrow from '@/assets/dashboard/smallRightArrow.svg';
 import SmallLeftArrow from '@/assets/dashboard/smallLeftArrow.svg';
 import { getCurrentTenant } from '@/utils/authority';
-import { TIMEOFF_TYPE } from '@/utils/timeOff';
 
 const { TabPane } = Tabs;
 const HR_MANAGER = 'HR-MANAGER';
@@ -90,9 +89,7 @@ const MyTeam = (props) => {
     );
   };
   // const filterListTimeOffType = timeOffTypesByCountry.filter((timeOffType) => timeOffType.type === 'A');
-  const listTimeOffType = timeOffTypesByCountry
-    .filter((t) => t.type === TIMEOFF_TYPE.A)
-    .map((item) => item._id);
+  const listTimeOffType = timeOffTypesByCountry.map((item) => item._id);
   return (
     <div className={styles.MyTeam}>
       <div>
