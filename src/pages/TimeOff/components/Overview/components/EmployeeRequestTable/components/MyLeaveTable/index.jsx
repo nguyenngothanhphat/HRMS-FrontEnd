@@ -3,7 +3,12 @@ import { Table, Avatar, Tooltip, Tag, Spin } from 'antd';
 import { history, connect, Link } from 'umi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
-import { roundNumber, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
+import {
+  checkNormalTypeTimeoff,
+  roundNumber,
+  TIMEOFF_DATE_FORMAT,
+  TIMEOFF_STATUS,
+} from '@/utils/timeOff';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 
@@ -62,9 +67,9 @@ class MyLeaveTable extends PureComponent {
       dataIndex: 'startDate',
       align: 'left',
       render: (_, record) => {
-        const { fromDate = '', toDate = '', leaveDates = [] } = record;
+        const { fromDate = '', toDate = '', leaveDates = [], type: { type = '' } = {} } = record;
         const listLeave = leaveDates.sort((a, b) => moment(a.date) - moment(b.date));
-        if (fromDate && toDate) {
+        if (!checkNormalTypeTimeoff(type)) {
           return this.formatDate(fromDate, toDate);
         }
         return (

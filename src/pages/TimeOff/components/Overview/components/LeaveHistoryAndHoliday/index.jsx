@@ -130,7 +130,7 @@ const LeaveHistoryAndHoliday = (props) => {
           : moment(listLeave[listLeave.length - 1].date)
               .locale('en')
               .format(TIMEOFF_DATE_FORMAT);
-        if (!from && !to && checkNormalTypeTimeoff(type)) {
+        if (checkNormalTypeTimeoff(type)) {
           return {
             _id,
             leaveDates: listLeave,
@@ -179,7 +179,7 @@ const LeaveHistoryAndHoliday = (props) => {
         const listLeave = leaveDates
           .sort((a, b) => moment(a.date) - moment(b.date))
           .map((x) => x.date);
-        if (!from && !to && checkNormalTypeTimeoff(type)) {
+        if (checkNormalTypeTimeoff(type)) {
           return {
             _id,
             listLeave,
