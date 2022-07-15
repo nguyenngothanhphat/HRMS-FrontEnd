@@ -14,6 +14,7 @@ import {
   getEmailsListByCompany,
   getProjectsListByEmployee,
   getLeaveRequestById,
+  getLeaveRequestOfId,
   updateLeaveRequestById,
   saveDraftLeaveRequest,
   updateDraftLeaveRequest,
@@ -119,6 +120,7 @@ const timeOff = {
     itemTimeOffType: {},
     viewingLeaveType: {},
     employeeTypeList: [],
+    employeeBehalfOf: '',
     pageStart: true,
     locationByCompany: [],
     tempData: {
@@ -415,6 +417,28 @@ const timeOff = {
         dialog(errors);
       }
     },
+
+    *fetchLeaveRequestOfId({ id = '' }, { call, put }) {
+      try {
+        const tenantId = getCurrentTenant();
+        if (id !== '') {
+          const response = yield call(getLeaveRequestOfId, {
+            id,
+            tenantId,
+            company: getCurrentCompany(),
+          });
+          const { statusCode, data: viewingLeaveRequest = [] } = response;
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { viewingLeaveRequest },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *updateLeaveRequestById({ payload = {} }, { call }) {
       try {
         const response = yield call(updateLeaveRequestById, {

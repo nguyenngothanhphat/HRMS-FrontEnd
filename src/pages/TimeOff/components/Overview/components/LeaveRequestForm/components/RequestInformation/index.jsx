@@ -14,6 +14,7 @@ import {
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
+import { isEmpty } from 'lodash';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import TimeOffModal from '@/components/TimeOffModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
@@ -720,7 +721,16 @@ const RequestInformation = (props) => {
   // auto generate hours when select start time & end time for US
   const onValuesChange = () => {
     const values = form.getFieldsValue();
-    const { leaveTimeLists = [] } = values;
+    const { leaveTimeLists = [], employee: employeeBehalf = '' } = values;
+    if (action === NEW_BEHALF_OF && !isEmpty(employeeBehalf)) {
+      dispatch({
+        type: 'timeOff/save',
+        payload: {
+          employeeBehalfOf: employeeBehalf,
+        },
+      });
+    }
+
     generateHours(leaveTimeLists);
     setIsModified(true);
   };

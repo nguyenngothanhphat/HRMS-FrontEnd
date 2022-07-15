@@ -399,3 +399,9 @@ export async function getLocationById(payload) {
     data: payload,
   });
 }
+export async function getLeaveRequestOfId(payload) {
+  return request('/api/leaverequesttenant/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}

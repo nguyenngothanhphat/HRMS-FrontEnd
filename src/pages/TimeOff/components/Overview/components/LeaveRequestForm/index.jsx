@@ -4,6 +4,7 @@
 import { Affix, Col, Row, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { isEmpty } from 'lodash';
 import { PageContainer } from '@/layouts/layout/src';
 import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/utils/timeOff';
 import RequestInformation from './components/RequestInformation';
@@ -21,6 +22,7 @@ const LeaveRequestForm = (props) => {
       viewingLeaveRequest = {},
       viewingLeaveRequest: { status = '', ticketID = '' } = {},
       yourTimeOffTypes = {},
+      employeeBehalfOf = '',
     } = {},
     match: { params: { action = '', reId = '' } = {} },
     user: { currentUser: { employee = {} } = {} } = {},
@@ -34,7 +36,7 @@ const LeaveRequestForm = (props) => {
       dispatch({
         type: 'timeOff/fetchTimeOffTypeByEmployeeEffect',
         payload: {
-          employee: employee._id,
+          employee: action === NEW_BEHALF_OF ? employeeBehalfOf : employee._id,
         },
       });
     }
@@ -79,10 +81,41 @@ const LeaveRequestForm = (props) => {
   };
 
   useEffect(() => {
-    if (Object.keys(yourTimeOffTypes).length === 0) {
+    if (action === NEW_BEHALF_OF && !isEmpty(employeeBehalfOf)) {
+      fetchTimeOffTypes();
+    }
+    if (Object.keys(yourTimeOffTypes).length === 0 && action !== NEW_BEHALF_OF) {
       fetchTimeOffTypes();
     }
 
+    if (action === NEW_BEHALF_OF && !isEmpty(employeeBehalfOf)) {
+      dispatch({
+        type: 'timeOff/fetchLeaveRequestOfId',
+        payload: {
+          employee: { employeeBehalfOf },
+          status: [IN_PROGRESS, ACCEPTED],
+        },
+      }).then((res) => {
+        if (res.statusCode === 200) {
+          let invalidDatesTemp = [];
+          const { items: leaveRequests = [] } = res?.data;
+          leaveRequests.forEach((x) => {
+            const temp = x.leaveDates.map((y) => {
+              return {
+                date: y.date,
+                timeOfDay: y.timeOfDay,
+              };
+            });
+            invalidDatesTemp = [...invalidDatesTemp, ...temp];
+          });
+
+          setInvalidDates(invalidDatesTemp);
+        }
+      });
+    }
+  }, [employeeBehalfOf]);
+
+  useEffect(() => {
     if (action === EDIT_LEAVE_REQUEST) {
       dispatch({
         type: 'timeOff/fetchLeaveRequestById',
@@ -167,7 +200,7 @@ const LeaveRequestForm = (props) => {
           )}
 
         {(action === NEW_LEAVE_REQUEST ||
-        action === NEW_BEHALF_OF ||
+          action === NEW_BEHALF_OF ||
           (action === EDIT_LEAVE_REQUEST &&
             !loadingFetchLeaveRequestById &&
             (status === DRAFTS || status === IN_PROGRESS))) && (
