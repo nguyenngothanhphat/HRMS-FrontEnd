@@ -7,7 +7,7 @@ import { getCurrentTenant } from '@/utils/authority';
 import { listNoteSalary } from '@/utils/newCandidateForm';
 import NotifyModal from '../NotifyModal';
 import styles from './index.less';
-import { SALARY_STRUCTURE_OPTION } from '@/utils/onboardingSetting';
+import { JOINING_BONUS, MIDTERM_HIKE, SALARY_STRUCTURE_OPTION } from '@/utils/onboardingSetting';
 
 @connect(
   ({
@@ -245,9 +245,10 @@ class SalaryStructureTemplate extends PureComponent {
     } = this.props;
     const { notifyModalVisible, actionType } = this.state;
 
-    const data = settings.filter((x) => x.key !== 'midterm_hike' && x.key !== 'joining_bonus');
-    const joiningBonus = settings.find((x) => x.key === 'joining_bonus') || {};
-    const midtermHike = settings.find((x) => x.key === 'midterm_hike') || {};
+    const settingsFormat = settings.filter((setting) => setting.value);
+    const data = settingsFormat.filter((x) => x.key !== MIDTERM_HIKE && x.key !== JOINING_BONUS);
+    const joiningBonus = settingsFormat.find((x) => x.key === JOINING_BONUS) || {};
+    const midtermHike = settingsFormat.find((x) => x.key === MIDTERM_HIKE) || {};
     const isJoiningBonus = !isEmpty(joiningBonus) ? joiningBonus.value !== 0 : false;
     const isMidtermHike = !isEmpty(midtermHike) ? midtermHike.value !== 0 : false;
     const { option = '' } = salaryStructureSetting || {};

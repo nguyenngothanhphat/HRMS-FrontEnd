@@ -272,7 +272,7 @@ const ComplexView = (props) => {
           </TabPane>
         )}
         {viewMyRequest && (
-          <TabPane tab="My Requests" key={TAB_NAME.MY_REQUESTS}>
+          <TabPane tab="My Weekly Reports" key={TAB_NAME.MY_REQUESTS}>
             <MyRequest />
           </TabPane>
         )}

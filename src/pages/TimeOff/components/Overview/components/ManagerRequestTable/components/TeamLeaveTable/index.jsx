@@ -11,6 +11,7 @@ import UserProfilePopover from '@/components/UserProfilePopover';
 import {
   isNewRequest,
   isUpdatedRequest,
+  checkNormalTypeTimeoff,
   roundNumber,
   TIMEOFF_DATE_FORMAT,
   TIMEOFF_STATUS,
@@ -170,9 +171,9 @@ class TeamLeaveTable extends PureComponent {
         dataIndex: 'leaveTimes',
         align: 'left',
         render: (_, record) => {
-          const { fromDate = '', toDate = '', leaveDates = [] } = record;
+          const { fromDate = '', toDate = '', leaveDates = [], type: { type = '' } = {} } = record;
           const listLeave = leaveDates.sort((a, b) => moment(a.date) - moment(b.date));
-          if (fromDate && toDate) {
+          if (!checkNormalTypeTimeoff(type)) {
             return this.formatDate(fromDate, toDate);
           }
           return (

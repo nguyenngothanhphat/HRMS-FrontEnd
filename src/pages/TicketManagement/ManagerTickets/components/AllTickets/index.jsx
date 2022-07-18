@@ -6,6 +6,7 @@ import SearchTable from '../../../components/SearchTable';
 import Summary from '../Summary';
 import TableTickets from '../TableTickets';
 import styles from './index.less';
+import { debouncedChangeLocation } from '@/utils/ticketManagement';
 
 const AllTicket = (props) => {
   const {
@@ -96,7 +97,7 @@ const AllTicket = (props) => {
   };
 
   useEffect(() => {
-    initDataTable();
+    debouncedChangeLocation(initDataTable);
     return () => {
       setApplied(0);
       setIsFiltering(false);

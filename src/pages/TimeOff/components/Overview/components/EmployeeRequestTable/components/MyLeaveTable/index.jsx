@@ -6,12 +6,13 @@ import { connect, Link } from 'umi';
 import {
   isNewRequest,
   isUpdatedRequest,
+  checkNormalTypeTimeoff,
   roundNumber,
   TIMEOFF_DATE_FORMAT,
   TIMEOFF_STATUS,
 } from '@/utils/timeOff';
-import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
+import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 
 import styles from './index.less';
 
@@ -62,9 +63,9 @@ class MyLeaveTable extends PureComponent {
       dataIndex: 'startDate',
       align: 'left',
       render: (_, record) => {
-        const { fromDate = '', toDate = '', leaveDates = [] } = record;
+        const { fromDate = '', toDate = '', leaveDates = [], type: { type = '' } = {} } = record;
         const listLeave = leaveDates.sort((a, b) => moment(a.date) - moment(b.date));
-        if (fromDate && toDate) {
+        if (!checkNormalTypeTimeoff(type)) {
           return this.formatDate(fromDate, toDate);
         }
         return (

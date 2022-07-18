@@ -56,7 +56,9 @@ export default class EventDetailBox extends PureComponent {
     return (
       <Row onClick={() => this.goToLeaveRequest(_id)} className={styles.EventDetailBox}>
         {!isEmpty(leaveDates) ? (
-          <Tooltip title={() => getTitle(leaveDates)}>{this.renderRow(fromDate, toDate)}</Tooltip>
+          <Tooltip title={() => getTitle(leaveDates)}>
+            {this.renderRow(leaveDates[0].date, leaveDates[leaveDates.length - 1].date)}
+          </Tooltip>
         ) : (
           this.renderRow(fromDate, toDate)
         )}

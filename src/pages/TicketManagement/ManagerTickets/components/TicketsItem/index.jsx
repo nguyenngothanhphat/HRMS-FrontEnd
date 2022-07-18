@@ -139,7 +139,6 @@ function TicketsItem(props) {
             </Button>
           ) : (
             <>
-              {' '}
               <img
                 width={32}
                 height={32}

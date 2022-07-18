@@ -146,7 +146,9 @@ const AssignTeamModal = (props) => {
             option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {supportTeamList.map((val) => (
-            <Select.Option value={val.name}>{val.name}</Select.Option>
+            <Select.Option value={val.name} key={val._id}>
+              {val.name}
+            </Select.Option>
           ))}
         </Select>
       </Form.Item>
@@ -165,7 +167,9 @@ const AssignTeamModal = (props) => {
             option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {queryTypeList.map((val) => (
-            <Select.Option value={val.name}>{val.name}</Select.Option>
+            <Select.Option value={val.name} key={val._id}>
+              {val.name}
+            </Select.Option>
           ))}
         </Select>
       </Form.Item>
@@ -182,7 +186,9 @@ const AssignTeamModal = (props) => {
             option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {listEmployee.map((val) => (
-            <Select.Option value={val._id}>{val.generalInfo.legalName}</Select.Option>
+            <Select.Option value={val._id} key={val._id}>
+              {val.generalInfo.legalName}
+            </Select.Option>
           ))}
         </Select>
       </Form.Item>
