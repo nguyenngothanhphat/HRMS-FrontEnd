@@ -28,7 +28,7 @@ const MyInformation = (props) => {
       listMyTicket = [],
       leaveRequests = [],
     } = {},
-    currentUser: { employee, employee: { _id = '' } = {} } = {},
+    currentUser: { employee, roles = [], employee: { _id = '' } = {} } = {},
   } = props;
 
   const [activeKey, setActiveKey] = useState(TAB_NAME.MY_CALENDAR);
@@ -53,14 +53,14 @@ const MyInformation = (props) => {
   }, [status]);
 
   useEffect(() => {
-    const roleEmployee = employee && employee?.title ? employee.title.roles : [];
+    // const roleEmployee = employee && employee?.title ? employee.title.roles : [];
     const employeeId = employee ? employee._id : '';
     const companyInfo = employee ? employee.company : {};
     dispatch({
       type: 'dashboard/fetchMyTeam',
       payload: {
         tenantId: getCurrentTenant(),
-        roles: roleEmployee,
+        roles,
         employee: employeeId,
         status: ['ACTIVE'],
         company: [companyInfo],
