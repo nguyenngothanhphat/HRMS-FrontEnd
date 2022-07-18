@@ -64,12 +64,12 @@ export async function getPollResult(payload) {
 }
 
 // HOME PAGE
-export async function getCelebrationList(params) {
-  return request('/api/employeetenant/list-celebration', {
-    method: 'GET',
-    params,
-  });
-}
+// export async function getCelebrationList(params) {
+//   return request('/api/employeetenant/list-celebration', {
+//     method: 'GET',
+//     params,
+//   });
+// }
 
 export async function updateBannerPosition(data) {
   return request('/api/posttenant/update-banner-position', {

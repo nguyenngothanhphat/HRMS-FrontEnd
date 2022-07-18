@@ -15,6 +15,7 @@ import {
   TOTAL_COST_COMPANY,
 } from '@/utils/onboardingSetting';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { listNoteSalary } from '@/utils/newCandidateForm';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { Page } from '../../../../utils';
 import styles from './index.less';
@@ -44,12 +45,12 @@ const SalaryStructureTemplate = (props) => {
       tempData: {
         salaryStructure: { salaryTemplate = {}, settings: settingsTempData = [] } = {},
         ticketID = '',
+        salaryNote = '',
       } = {},
     },
     dispatch,
     loadingEditSalary = false,
   } = props;
-
   const {
     country: salaryCountry = '',
     base_salary: { minimum = 0, maximum = 0 } = {},
@@ -251,7 +252,7 @@ const SalaryStructureTemplate = (props) => {
       const PF = pf;
 
       // step 9
-      const insurance = getValue(INSURANCE) || 7382;
+      const insurance = getValue(INSURANCE);
 
       // step 10
       const gratuity = roundNumber2(basic / 12 / 2);
@@ -524,78 +525,92 @@ const SalaryStructureTemplate = (props) => {
   };
 
   const _renderCommonSalaryTable = () => {
+    const arrListNoteSalary = listNoteSalary('', '', salaryNote);
+    const settingsFormat = settingsTempData.filter((setting) =>
+      isEditingSalary ? true : setting.value,
+    );
     return (
-      <div className={styles.salaryStructureTemplate_table}>
-        <Row className={styles.salary}>
-          <Col span={12} className={styles.salary__left}>
-            {settingsTempData.map(
-              (item) =>
-                item.key !== TOTAL_COMPENSATION && (
-                  <div
-                    key={item.key}
-                    className={
-                      isEditingSalary &&
-                      salaryCountry === 'VN' &&
-                      (item.key === 'basic' ||
-                        item.key === 'lunch_allowance' ||
-                        item.key === 'petrol_allowance' ||
-                        item.key === 'mobile_internet_allowance')
-                        ? styles.salary__left__textEdit
-                        : styles.salary__left__text
-                    }
-                  >
-                    {item.title}
-                  </div>
-                ),
-            )}
-          </Col>
-          <Col
-            span={12}
-            className={
-              isEditingSalary && salaryCountry === 'VN'
-                ? styles.salary__right && styles.salary__right__VN
-                : styles.salary__right
-            }
-          >
-            {settingsTempData.map((item) => {
-              if (item.key !== TOTAL_COMPENSATION) {
-                if (item.key === 'salary_13')
-                  return (
-                    <div key={item.key} className={styles.salary__right__text}>
-                      {item.value !== 0
-                        ? renderSingle(item.value, item.unit)
-                        : '(Basic/12) x The number of months work'}
+      <>
+        <div className={styles.salaryStructureTemplate_table}>
+          <Row className={styles.salary}>
+            <Col span={12} className={styles.salary__left}>
+              {settingsFormat.map(
+                (item) =>
+                  item.key !== TOTAL_COMPENSATION && (
+                    <div
+                      key={item.key}
+                      className={
+                        isEditingSalary &&
+                        salaryCountry === 'VN' &&
+                        (item.key === 'basic' ||
+                          item.key === 'lunch_allowance' ||
+                          item.key === 'petrol_allowance' ||
+                          item.key === 'mobile_internet_allowance')
+                          ? styles.salary__left__textEdit
+                          : styles.salary__left__text
+                      }
+                    >
+                      {item.title}
                     </div>
-                  );
-                return _renderValue(item);
+                  ),
+              )}
+            </Col>
+            <Col
+              span={12}
+              className={
+                isEditingSalary && salaryCountry === 'VN'
+                  ? styles.salary__right && styles.salary__right__VN
+                  : styles.salary__right
               }
-              return '';
-            })}
-          </Col>
-        </Row>
-        <Row className={styles.salaryTotal}>
-          <Col span={12} className={styles.salaryTotal__left}>
-            {settingsTempData.map(
-              (item) =>
-                item.key === TOTAL_COMPENSATION && (
-                  <div key={item.key} className={styles.salaryTotal__left__text}>
-                    {item.title}
-                  </div>
-                ),
-            )}
-          </Col>
-          <Col span={12} className={styles.salaryTotal__right}>
-            {settingsTempData.map(
-              (item) =>
-                item.key === TOTAL_COMPENSATION && (
-                  <div key={item.key} className={styles.salaryTotal__right__text}>
-                    {renderSingle(item.value, item.unit)}
-                  </div>
-                ),
-            )}
-          </Col>
-        </Row>
-      </div>
+            >
+              {settingsFormat.map((item) => {
+                if (item.key !== TOTAL_COMPENSATION) {
+                  if (item.key === 'salary_13')
+                    return (
+                      <div key={item.key} className={styles.salary__right__text}>
+                        {item.value !== 0
+                          ? renderSingle(item.value, item.unit)
+                          : '(Basic/12) x The number of months work'}
+                      </div>
+                    );
+                  return _renderValue(item);
+                }
+                return '';
+              })}
+            </Col>
+          </Row>
+          <Row className={styles.salaryTotal}>
+            <Col span={12} className={styles.salaryTotal__left}>
+              {settingsFormat.map(
+                (item) =>
+                  item.key === TOTAL_COMPENSATION && (
+                    <div key={item.key} className={styles.salaryTotal__left__text}>
+                      {item.title}
+                    </div>
+                  ),
+              )}
+            </Col>
+            <Col span={12} className={styles.salaryTotal__right}>
+              {settingsFormat.map(
+                (item) =>
+                  item.key === TOTAL_COMPENSATION && (
+                    <div key={item.key} className={styles.salaryTotal__right__text}>
+                      {renderSingle(item.value, item.unit)}
+                    </div>
+                  ),
+              )}
+            </Col>
+          </Row>
+        </div>
+        {salaryNote && (
+          <div className={styles.containerNote}>
+            Note-
+            {arrListNoteSalary.map((x, index) => (
+              <div className={styles.noteField}>{`${index + 1}. ${x}`}</div>
+            ))}
+          </div>
+        )}
+      </>
     );
   };
 
@@ -620,7 +635,13 @@ const SalaryStructureTemplate = (props) => {
           ANNUAL_RETENTION_BONUS,
           JOINING_BONUS,
           MIDTERM_HIKE,
-        ].includes(x.key) && x.value,
+        ].includes(x.key) && (isEditingSalary ? true : x.value),
+    );
+
+    const arrListNoteSalary = listNoteSalary(
+      isJoiningBonus && convertValue(joiningBonus.value),
+      isMidtermHike && convertValue(midtermHike.value),
+      salaryNote,
     );
 
     return (
@@ -756,26 +777,13 @@ const SalaryStructureTemplate = (props) => {
             </div>
           </div>
         </div>
-        {(isJoiningBonus || isMidtermHike) && (
+
+        {(isJoiningBonus || isMidtermHike || salaryNote) && (
           <div className={styles.containerNote}>
             Note-
-            {isJoiningBonus && (
-              <div className={styles.noteField}>
-                1. As a part of this offer the candidate shall be entitled to a Joining Bonus of INR{' '}
-                {convertValue(joiningBonus.value)}. Post Joining 50% of this amount shall be paid
-                along with the second month&apos;s salary (or the applicable first payroll). And on
-                completion of three months of service the balance 50% shall be paid along with the
-                immediate next payroll.
-              </div>
-            )}
-            {isMidtermHike && (
-              <div className={styles.noteField}>
-                2. As a part of this offer the candidate shall be entitled to a one time Mid Term
-                Hike of INR {convertValue(midtermHike.value)}. Upon completion of 6 months duration
-                of employment with full standing and meeting the Project and Management
-                expectations.
-              </div>
-            )}
+            {arrListNoteSalary.map((x, index) => (
+              <div className={styles.noteField}>{`${index + 1}. ${x}`}</div>
+            ))}
           </div>
         )}
       </>

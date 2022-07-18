@@ -289,23 +289,26 @@ class LayoutAddCandidateForm extends Component {
       openModal2,
       openModal5,
     } = this.state;
-    const listMenuWithoutOfferLetter = listMenu.filter((l) => l.key !== 'offerLetter');
+    // const listMenuWithoutOfferLetter = listMenu.filter((l) => l.key !== 'offerLetter');
 
     return (
       <>
         <Row className={s.containerLayoutAddCandidateForm} gutter={[0, 24]}>
           <Col xs={24} md={6} xl={4} className={s.viewLeft}>
             <div className={s.viewLeft__menu}>
-              {listMenuWithoutOfferLetter.map((item, index) => (
-                <ItemMenu
-                  key={item.id}
-                  item={item}
-                  handelClick={this._handleClick}
-                  selectedItemId={selectedItemId}
-                  isDisabled={currentStep < index}
-                  isCompleted={currentStep > index}
-                />
-              ))}
+              {listMenu.map(
+                (item, index) =>
+                  !item.hide && (
+                    <ItemMenu
+                      key={item.id}
+                      item={item}
+                      handelClick={this._handleClick}
+                      selectedItemId={selectedItemId}
+                      isDisabled={currentStep < index}
+                      isCompleted={currentStep > index}
+                    />
+                  ),
+              )}
 
               <div className={s.viewLeft__menu__btn}>
                 <Button
@@ -317,7 +320,7 @@ class LayoutAddCandidateForm extends Component {
                   Extend Offer Date
                 </Button>
                 <Button type="primary" onClick={this.onPrimaryButtonClick}>
-                  Offer Withdrawn
+                  Withdraw Offer
                 </Button>
               </div>
             </div>

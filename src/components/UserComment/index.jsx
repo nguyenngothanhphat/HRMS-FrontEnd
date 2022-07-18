@@ -9,7 +9,14 @@ import LikedIcon from '@/assets/homePage/liked.svg';
 import MenuIcon from '@/assets/homePage/menuDots.svg';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import CommentBox from '@/components/CommentBox';
-import { dateFormat, hashtagify, POST_OR_CMT, LIKE_ACTION, urlify } from '@/utils/homePage';
+import {
+  dateFormat,
+  hashtagify,
+  POST_OR_CMT,
+  LIKE_ACTION,
+  urlify,
+  TAB_IDS,
+} from '@/utils/homePage';
 import styles from './index.less';
 
 const UserComment = ({
@@ -27,7 +34,9 @@ const UserComment = ({
   getCommentReactionListEffect = () => {},
   setViewingPostOrCommentLiked = () => {},
   setIsLikeOrDislike = () => {},
+  setIsReactPostOrCmt = () => {},
   hasPermission = false,
+  varName = TAB_IDS.ANNOUNCEMENTS,
 }) => {
   const { _id: commentId = '', content = '', employee: owner = {}, totalReact = {} } = item;
 
@@ -36,8 +45,12 @@ const UserComment = ({
   const [time, setTime] = useState('');
 
   const reactCommentEffect = (commentIdProp, type) => {
+    const dispatchType =
+      varName === TAB_IDS.ANNIVERSARY
+        ? 'homePage/reactAnniversaryEffect'
+        : 'homePage/reactPostEffect';
     return dispatch({
-      type: 'homePage/reactPostEffect',
+      type: dispatchType,
       payload: {
         comment: commentIdProp,
         type,
@@ -104,10 +117,12 @@ const UserComment = ({
 
   // function
   const onLikeComment = async (type) => {
+    setIsReactPostOrCmt(POST_OR_CMT.COMMENT);
     setActivePostID(postId);
     const res = await reactCommentEffect(commentId, type);
     if (res.statusCode === 200) {
-      refreshComments();
+      await refreshComments();
+      setIsReactPostOrCmt('');
     }
   };
 
@@ -159,14 +174,14 @@ const UserComment = ({
       <div
         className={styles.author}
         style={{
-          borderColor: isMe ? '#f50' : '#f1f1f1',
+          borderColor: isMe ? '#2c6df9' : '#f1f1f1',
         }}
       >
         <img
           src={owner?.generalInfoInfo?.avatar || DefaultAvatar}
           alt=""
           style={{
-            backgroundColor: isMe ? '#f50' : 'transparent',
+            backgroundColor: isMe ? '#f1f1f1' : 'transparent',
           }}
           onError={(e) => {
             e.target.src = DefaultAvatar;
@@ -176,7 +191,7 @@ const UserComment = ({
 
       <div
         className={styles.content}
-        style={isEdit ? { borderColor: '#00C59880', backgroundColor: '#f1f2f356' } : null}
+        style={isEdit ? { borderColor: '#2c6df9', backgroundColor: '#f1f2f356' } : null}
       >
         <div className={styles.top}>
           <div className={styles.authorName}>

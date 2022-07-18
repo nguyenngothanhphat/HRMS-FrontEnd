@@ -392,7 +392,8 @@ class JobDetails extends PureComponent {
                 </Col>
                 <Col span={24} className={styles.verifyCheckbox}>
                   <Checkbox checked={isVerifiedJobDetail} onChange={this.onVerifyThisForm}>
-                    I have verified that the above details are correct
+                    I have verified that the above details are correct{' '}
+                    <span style={{ color: 'red', marginLeft: 3 }}>*</span>
                   </Checkbox>
                 </Col>
               </Row>

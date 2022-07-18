@@ -192,22 +192,21 @@ class NewCandidateForm extends PureComponent {
         ),
         link: ONBOARDING_FORM_LINK.OFFER_DETAILS,
       },
-
-      {
-        id: 8,
-        name: 'Documents Checklist',
-        key: 'documentsChecklist',
-        component: <DocumentCheckList />,
-        link: ONBOARDING_FORM_LINK.DOCUMENT_CHECKLIST_VERIFICATION,
-      },
       {
         id: 9,
         name: 'Preview Offer Letter',
         key: 'offerLetter',
         component: <PreviewOffer />,
         link: ONBOARDING_FORM_LINK.OFFER_LETTER,
-
         isOfferLetter: !!offerLetterId,
+        hide: true,
+      },
+      {
+        id: 8,
+        name: 'Documents Checklist',
+        key: 'documentsChecklist',
+        component: <DocumentCheckList />,
+        link: ONBOARDING_FORM_LINK.DOCUMENT_CHECKLIST_VERIFICATION,
       },
     ];
 
