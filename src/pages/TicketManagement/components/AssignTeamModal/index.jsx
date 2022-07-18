@@ -57,9 +57,9 @@ const AssignTeamModal = (props) => {
 
   const handleFinish = (value) => {
     const { newTeam = '', ccList = [], queryType = '' } = value;
-    const nTeam = supportTeamList.find((x) => x.name === newTeam);
-    const newTeamId = nTeam._id;
-    const queryTypeId = nTeam.queryType.find((y) => y.name === queryType)._id;
+    const newTeamObj = supportTeamList.find((x) => x.name === newTeam);
+    const newTeamId = newTeamObj?._id;
+    const queryTypeId = newTeamObj.queryType.find((y) => y.name === queryType)?._id;
     const tempData = Object.keys(ticket).length ? ticket : ticketDetail;
 
     const {
@@ -72,7 +72,7 @@ const AssignTeamModal = (props) => {
       attachments = [],
       department_assign: oldTeamId = '',
     } = tempData;
-    const oldTeam = supportTeamList.find((x) => x._id === oldTeamId).name;
+    const oldTeam = supportTeamList.find((x) => x._id === oldTeamId)?.name;
 
     dispatch({
       type: 'ticketManagement/updateTicket',
@@ -176,7 +176,6 @@ const AssignTeamModal = (props) => {
       <Form.Item label="CC to" name="ccList">
         <Select
           placeholder="Search a person you want to loop"
-          showArrow={false}
           mode="multiple"
           allowClear
           showSearch
@@ -201,7 +200,7 @@ const AssignTeamModal = (props) => {
       onClose={onClose}
       hasCancelButton={false}
       firstText="Re-Assign"
-      loading={loadingAssign || loadingFetchListEmployee || loadingFetchSupportTeam}
+      loading={loadingAssign}
       withPadding
       title="Move To Another Team"
       content={content}
