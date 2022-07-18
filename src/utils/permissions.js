@@ -235,10 +235,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_ONBOARDING_T_ONBOARDING_OVERVIEW_VIEW',
     'P_ONBOARDING_ALL',
   ]);
-  const indexNewJoinees = isAuthorized(permissionList, [
-    'P_ONBOARDING_T_NEW_JOINEES_VIEW',
-  ]);
-
+  const indexNewJoinees = isAuthorized(permissionList, ['P_ONBOARDING_T_NEW_JOINEES_VIEW']);
 
   // TIME OFF
   const indexMyTimeoff = 1; // everyone has time off employee page
@@ -247,6 +244,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   ]);
   const indexHRTimeoff = isAuthorized(permissionList, ['P_TIMEOFF_T_TEAM_REQUEST_HR_VIEW']);
   const indexSettingTimeoff = isAuthorized(permissionList, ['P_TIMEOFF_T_SETTING_VIEW']);
+  const indexRequestOnBehalfOf = isAuthorized(permissionList, [
+    'P_TIMEOFF_B_CREATE_TIME_OFF_ON_BEHALF_OF_ANOTHER_USER',
+  ]);
 
   // TIMESHEET
   const indexMyTimesheet = 1; // everyone has time sheet
@@ -418,6 +418,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewManagerTimeoff: indexManagerTimeoff,
     viewHRTimeoff: indexHRTimeoff,
     viewSettingTimeoff: indexSettingTimeoff,
+    viewRequestOnBehalfOf: indexRequestOnBehalfOf,
 
     // timesheet
     viewMyTimesheet: indexMyTimesheet,

@@ -512,6 +512,13 @@ const routes = [
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
           },
           {
+            path: '/time-off/overview/personal-timeoff/:action(new-behalf-of)',
+            name: 'requestForTimeOff',
+            hideInMenu: true,
+            component: './TimeOff/components/Overview/components/LeaveRequestForm',
+            authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
+          },
+          {
             path: '/time-off/overview/personal-timeoff/:action(edit)/:reId',
             name: 'editTimeoffRequest',
             hideInMenu: true,

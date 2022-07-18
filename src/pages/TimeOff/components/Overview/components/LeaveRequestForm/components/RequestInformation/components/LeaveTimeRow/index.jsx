@@ -51,7 +51,7 @@ const LeaveTimeRow = (props) => {
       setDisabledHourAfter(endTimeForm);
       setDisabledHourBefore(startTimeForm);
     }
-  }, [JSON.stringify(form.getFieldsValue())]);
+  }, [JSON.stringify(formValues.leaveTimeLists)]);
 
   if (BY_HOUR) {
     return (

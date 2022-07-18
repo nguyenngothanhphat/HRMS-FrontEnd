@@ -139,7 +139,7 @@ const dashboard = {
         dialog(errors);
       }
     },
-    *fetchLeaveRequestOfEmployee({ payload }, { call, put }) {
+    *fetchMyLeaveRequest({ payload }, { call, put }) {
       try {
         const tenantId = getCurrentTenant();
         const response = yield call(getLeaveRequestOfEmployee, {

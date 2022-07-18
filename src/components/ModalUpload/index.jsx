@@ -166,8 +166,8 @@ class ModalUpload extends Component {
   getCroppedImg = (image, crop) => {
     const { fileUploaded: { name = '', type = '' } = {} } = this.state;
     const canvas = document.createElement('canvas');
-    canvas.width = crop.width;
-    canvas.height = crop.height;
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
     return new Promise((resolve, reject) => {
