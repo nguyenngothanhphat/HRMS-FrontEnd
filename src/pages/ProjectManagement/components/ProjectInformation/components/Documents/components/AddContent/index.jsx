@@ -1,7 +1,8 @@
-import { Col, Form, Input, message, Row, Select, Upload } from 'antd';
+import { Col, Form, Input, Row, Select, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { connect } from 'umi';
+import { beforeUpload, compressImage, FILE_TYPE } from '@/utils/upload';
 import UploadIcon from '@/assets/upload-icon.svg';
 import styles from './index.less';
 
@@ -50,40 +51,6 @@ const AddContent = (props) => {
     setUploadedFile(file);
   };
 
-  const identifyImageOrPdf = (name) => {
-    const parts = name.split('.');
-    const ext = parts[parts.length - 1];
-    switch (ext.toLowerCase()) {
-      case 'jpg':
-      case 'jpeg':
-      case 'png':
-        return 0;
-      case 'pdf':
-        return 1;
-      default:
-        return 2;
-    }
-  };
-
-  const beforeUpload = (file) => {
-    const maxFileSize = 25;
-    const checkType = identifyImageOrPdf(file.name) === 0 || identifyImageOrPdf(file.name) === 1;
-
-    if (!checkType) {
-      message.error('You can only upload JPG/PNG/PDF file!');
-    }
-    const isLtMaxFileSize = file.size / 1024 / 1024 < maxFileSize;
-    if (!isLtMaxFileSize) {
-      if (file.type === 'image/jpeg') {
-        message.error(`Image must smaller than ${maxFileSize}MB!`);
-      }
-      if (file.type === 'application/pdf') {
-        message.error(`File must smaller than ${maxFileSize}MB!`);
-      }
-    }
-    return checkType && isLtMaxFileSize;
-  };
-
   // finish
   const addDocument = async (values, attachment) => {
     const res = await dispatch({
@@ -102,9 +69,10 @@ const AddContent = (props) => {
     }
   };
 
-  const handleFinish = (values) => {
+  const handleFinish = async (values) => {
+    const compressedFile = await compressImage(uploadedFile);
     const formData = new FormData();
-    formData.append('uri', uploadedFile);
+    formData.append('blob', compressedFile, uploadedFile.name);
     dispatch({
       type: 'upload/uploadFile',
       payload: formData,
@@ -188,7 +156,7 @@ const AddContent = (props) => {
                 multiple={false}
                 showUploadList={false}
                 action={(file) => handleUpload(file)}
-                beforeUpload={beforeUpload}
+                beforeUpload={(file) => beforeUpload(file, [FILE_TYPE.IMAGE, FILE_TYPE.PDF], 25)}
               >
                 {uploadedPreview ? (
                   _renderPreview()

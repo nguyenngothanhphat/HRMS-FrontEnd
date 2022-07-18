@@ -7,7 +7,7 @@ import { connect } from 'umi';
 import moment from 'moment';
 import _ from 'lodash';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
-import ImportCSV from '@/components/ImportCSV';
+import ImportCSV from './components/ImportCSV';
 import exportToCsv from '@/utils/exportToCsv';
 
 import styles from './index.less';

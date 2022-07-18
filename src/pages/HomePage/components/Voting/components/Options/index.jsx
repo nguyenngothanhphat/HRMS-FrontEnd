@@ -37,7 +37,7 @@ const Options = (props) => {
           {previewOptions.length > 0
             ? previewOptions.map((reply, index) => {
                 return (
-                  <Col span={24}>
+                  <Col span={24} key={`${index + 1}`}>
                     <div className={styles.reply}>
                       <span>{reply.response || `Response ${index + 1}`}</span>
                     </div>
@@ -46,7 +46,7 @@ const Options = (props) => {
               })
             : [1, 2, 3].map((reply, index) => {
                 return (
-                  <Col span={24}>
+                  <Col span={24} key={`${index + 1}`}>
                     <div className={styles.reply}>
                       <span>Response {index + 1}</span>
                     </div>
@@ -86,7 +86,7 @@ const Options = (props) => {
       <p className={styles.questionText}>{question}</p>
       <Row gutter={[0, 10]} className={styles.poll}>
         {options.map((reply) => (
-          <Col span={24}>
+          <Col span={24} key={reply.id}>
             <div className={styles.reply} onClick={() => onVote(reply.id)}>
               <span>{reply.text}</span>
             </div>

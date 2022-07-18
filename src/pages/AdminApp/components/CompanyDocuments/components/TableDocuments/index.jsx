@@ -1,10 +1,10 @@
-import { Table, Avatar } from 'antd';
-import React, { Component } from 'react';
 import { UserOutlined } from '@ant-design/icons';
+import { Avatar, Table } from 'antd';
 import moment from 'moment';
-import avtDefault from '@/assets/avtDefault.jpg';
+import React, { Component } from 'react';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import Download from '@/components/DownloadFile';
-import ModalViewPDF from '@/components/ModalViewPDF';
+import avtDefault from '@/assets/avtDefault.jpg';
 import s from './index.less';
 
 class TableDocuments extends Component {
@@ -157,12 +157,7 @@ class TableDocuments extends Component {
           scroll={{ x: 'max-content' }}
           loading={loading}
         />
-        <ModalViewPDF
-          visible={modalVisible}
-          handleCancel={this.handleCancel}
-          link={linkFile}
-          title="View Document"
-        />
+        <ViewDocumentModal visible={modalVisible} url={linkFile} onClose={this.handleCancel} />
       </div>
     );
   }

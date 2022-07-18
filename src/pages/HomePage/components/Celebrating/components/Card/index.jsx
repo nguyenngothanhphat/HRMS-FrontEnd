@@ -195,7 +195,7 @@ const Card = (props) => {
     const liked = card.react === LIKE_ACTION.LIKE;
 
     return (
-      <div className={styles.cardContainer}>
+      <div className={styles.cardContainer} key={card?._id}>
         <div className={styles.image}>
           <img
             src={card.createdBy?.generalInfoInfo?.avatar || BirthdayImage}

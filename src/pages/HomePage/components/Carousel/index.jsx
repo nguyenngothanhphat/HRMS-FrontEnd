@@ -94,8 +94,8 @@ const Carousel = (props) => {
           prevArrow={<PrevArrow />}
         >
           {!previewing &&
-            bannerState.map((x) => (
-              <div className={styles.image}>
+            bannerState.map((x, i) => (
+              <div className={styles.image} key={`${i + 1}`}>
                 <img src={x.url} alt="" />
               </div>
             ))}
@@ -103,8 +103,8 @@ const Carousel = (props) => {
           {/* FOR PREVIEWING IN SETTINGS PAGE  */}
           {previewing &&
             contentPreview.length > 0 &&
-            contentPreview.map((x) => (
-              <div className={styles.image}>
+            contentPreview.map((x, i) => (
+              <div className={styles.image} key={`${i + 1}`}>
                 <img src={x} alt="" />
               </div>
             ))}

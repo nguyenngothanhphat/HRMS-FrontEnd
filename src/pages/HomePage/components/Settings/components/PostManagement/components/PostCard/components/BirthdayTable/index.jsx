@@ -57,7 +57,7 @@ const BirthdayTable = (props) => {
           return (
             <Image.PreviewGroup>
               {attachments.map((x) => {
-                return <Image width={32} height={32} src={x.url} />;
+                return <Image width={32} height={32} src={x.url} key={x._id || x.id} />;
               })}
             </Image.PreviewGroup>
           );

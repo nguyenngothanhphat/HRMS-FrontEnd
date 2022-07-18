@@ -13,6 +13,7 @@ import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';
 
 import styles from './index.less';
+import { beforeUpload, compressImage, FILE_TYPE, identifyFile } from '@/utils/upload';
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
@@ -52,28 +53,6 @@ class TicketDetailsForm extends Component {
     this.setState({ value });
   };
 
-  identifyImageOrPdf = (fileNameList) => {
-    const parts = fileNameList.split('.');
-    const ext = parts[parts.length - 1];
-    switch (ext.toLowerCase()) {
-      case 'jpg':
-      case 'jpeg':
-      case 'svg':
-      case 'webp':
-      case 'tiff':
-      case 'png':
-        return 0;
-      case 'pdf':
-        return 1;
-      case 'doc':
-      case 'docx':
-        return 2;
-
-      default:
-        return 0;
-    }
-  };
-
   handlePreview = (nameFile, idFile) => {
     const { fileNameList } = this.state;
     const arrFileName = [...fileNameList];
@@ -84,30 +63,13 @@ class TicketDetailsForm extends Component {
     });
   };
 
-  beforeUpload = (file) => {
-    const { setSizeImageMatch = () => {} } = this.props;
-    const checkType =
-      this.identifyImageOrPdf(file.name) === 0 || this.identifyImageOrPdf(file.name) === 1;
-    if (!checkType) {
-      message.error('You can only upload image and PDF file!');
-    }
-    const isLt5M = file.size / 1024 / 1024 < 2;
-    if (!isLt5M) {
-      message.error('Image must smaller than 2MB!');
-      setSizeImageMatch(isLt5M);
-    }
-    setTimeout(() => {
-      setSizeImageMatch(isLt5M);
-    }, 2000);
-    return checkType && isLt5M;
-  };
-
-  handleUpload = (file) => {
+  handleUpload = async (file) => {
     const { dispatch } = this.props;
     const { uploadedFileList } = this.state;
     const arrFile = [...uploadedFileList];
+    const compressedFile = await compressImage(file);
     const formData = new FormData();
-    formData.append('uri', file);
+    formData.append('blob', compressedFile, file.name);
 
     dispatch({
       type: 'ticketManagement/uploadFileAttachments',
@@ -395,7 +357,7 @@ class TicketDetailsForm extends Component {
               />
               <Col xs={24} className={styles.btnAttach}>
                 <Dragger
-                  beforeUpload={this.beforeUpload}
+                  beforeUpload={(file) => beforeUpload(file, [FILE_TYPE.IMAGE, FILE_TYPE.PDF], 2)}
                   showUploadList={false}
                   action={(file) => this.handleUpload(file)}
                   multiple
@@ -423,7 +385,7 @@ class TicketDetailsForm extends Component {
                     <div className={styles.fileUploadedContainer__listFiles}>
                       <div className={styles.fileUploadedContainer__listFiles__files}>
                         <div className={styles.previewIcon}>
-                          {this.identifyImageOrPdf(item.nameFile) === 1 ? (
+                          {identifyFile(item.nameFile) === FILE_TYPE.PDF ? (
                             <img src={AttachmenUploadtIcon} alt="pdf" />
                           ) : (
                             <img src={ImageIcon} alt="img" />

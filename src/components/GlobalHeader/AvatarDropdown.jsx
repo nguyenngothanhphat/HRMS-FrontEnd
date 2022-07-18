@@ -17,7 +17,7 @@ import {
   // getIsSwitchingRole,
   getSwitchRoleAbility,
 } from '@/utils/authority';
-import HeaderDropdown from '../HeaderDropdown';
+import HeaderDropdown from './components/HeaderDropdown';
 import styles from './index.less';
 
 const AvatarDropdown = (props) => {

@@ -29,7 +29,7 @@ const Card = (props) => {
     const { attachments = [], description = '', title = '' } = card;
     const [firstImage] = attachments;
     return (
-      <div className={styles.cardContainer}>
+      <div className={styles.cardContainer} key={card?._id}>
         <div className={styles.image}>
           <img src={firstImage?.url || SampleImage} alt="" />
         </div>

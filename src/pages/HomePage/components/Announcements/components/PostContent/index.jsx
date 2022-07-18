@@ -42,9 +42,9 @@ const PostContent = (props) => {
             </Col>
             <Col span={10}>
               <Row gutter={[4, 4]}>
-                {restImages.map((x) => {
+                {restImages.map((x, i) => {
                   return (
-                    <Col span={24}>
+                    <Col span={24} key={`${i + 1}`}>
                       <Image src={x} />
                     </Col>
                   );

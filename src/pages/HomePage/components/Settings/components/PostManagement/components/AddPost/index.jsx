@@ -4,7 +4,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { TAB_IDS } from '@/utils/homePage';
-import { beforeUpload } from '@/utils/upload';
+import { beforeUpload, compressImage, FILE_TYPE } from '@/utils/upload';
 import AnnouncementContent from './components/AnnouncementContent';
 import BannerContent from './components/BannerContent';
 import BirthdayContent from './components/BirthdayContent';
@@ -185,7 +185,7 @@ const AddPost = (props) => {
 
     const commonFunc = (name) => {
       let { fileList: fileListTemp = [] } = tempAllValues[name] || {};
-      fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
+      fileListTemp = fileListTemp.filter((x) => beforeUpload(x, [FILE_TYPE.IMAGE]));
       setFileList([...fileListTemp]);
       if (tempAllValues[name]) {
         tempAllValues[name].fileList = fileListTemp;
@@ -230,8 +230,9 @@ const AddPost = (props) => {
             if (x.url) {
               list.push({ id: x.id || x._id });
             } else {
+              const compressedFile = await compressImage(x.originFileObj);
               const formData = new FormData();
-              formData.append('uri', x.originFileObj);
+              formData.append('blob', compressedFile, x.originFileObj?.name);
               const upload = await dispatch({
                 type: 'upload/uploadFile',
                 payload: formData,

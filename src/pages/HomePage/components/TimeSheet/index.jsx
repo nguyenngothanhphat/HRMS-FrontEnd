@@ -120,7 +120,7 @@ const TimeSheet = (props) => {
 
     if (isHoliday) {
       return (
-        <Tooltip title={isHoliday.name} placement="bottomLeft">
+        <Tooltip title={isHoliday.name} placement="bottomLeft" key={value}>
           <div className={`${styles.dateRender} ${styles.disabledDate}`}>
             <span>{date}</span>
             {renderDateAction(value, isDisabled, isHoliday)}
@@ -134,6 +134,7 @@ const TimeSheet = (props) => {
         className={`${styles.dateRender} ${disabledClassName} ${
           !isDone && !isDisabled ? styles.blueBorder : ''
         } ${isToday ? styles.today : ''}`}
+        key={value}
       >
         <span>{date}</span>
         {renderDateAction(value, isDisabled, isHoliday)}

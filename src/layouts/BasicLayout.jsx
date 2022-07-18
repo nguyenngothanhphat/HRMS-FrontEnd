@@ -9,7 +9,7 @@ import classnames from 'classnames';
 import React from 'react';
 import { connect, Link, Redirect, useIntl } from 'umi';
 import Feedback from '@/components/Feedback';
-import Footer from '@/components/Footer';
+import AppFooter from '@/components/AppFooter';
 import RightContent from '@/components/GlobalHeader/RightContent';
 // import { getCurrentCompany, getSwitchRoleAbility } from '@/utils/authority';
 import { getCurrentCompany } from '@/utils/authority';
@@ -232,7 +232,7 @@ const BasicLayout = (props) => {
         </ProLayout>
       </div>
       <Feedback />
-      <Footer />
+      <AppFooter />
     </>
   );
 };

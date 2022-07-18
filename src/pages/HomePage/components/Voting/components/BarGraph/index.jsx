@@ -20,7 +20,7 @@ const BarGraph = (props) => {
       {showTitle && <p className={styles.questionText}>{question}</p>}
       <Row gutter={[0, 10]} className={styles.poll}>
         {options.map((reply) => (
-          <Col span={24}>
+          <Col span={24} key={reply.id}>
             <div
               className={`${styles.reply} ${votedOption === reply.id ? styles.votedOption : ''}`}
             >

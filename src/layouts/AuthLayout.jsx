@@ -2,7 +2,7 @@ import { SmileOutlined } from '@ant-design/icons';
 import { Avatar, Col, Layout, Row } from 'antd';
 import React from 'react';
 import { formatMessage, Link } from 'umi';
-import Footer from '@/components/Footer';
+import AppFooter from '@/components/AppFooter';
 import LoginImage from '../assets/Intranet_01.png';
 import Separator from '../assets/login/separator.svg';
 import TerralogicImage from '../assets/login/terralogic.png';
@@ -142,7 +142,7 @@ const AuthLayout = ({ children }) => {
           </Col>
         </Row>
       </Content>
-      <Footer className={styles.footerLogin} />
+      <AppFooter className={styles.footerLogin} />
     </Layout>
   );
 };

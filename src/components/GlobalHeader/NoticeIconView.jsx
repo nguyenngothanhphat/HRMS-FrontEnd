@@ -3,7 +3,7 @@ import { connect } from 'umi';
 import { Tag, message } from 'antd';
 import groupBy from 'lodash/groupBy';
 import moment from 'moment';
-import NoticeIcon from '../NoticeIcon';
+import NoticeIcon from './components/NoticeIcon';
 import styles from './index.less';
 
 class GlobalHeaderRight extends Component {

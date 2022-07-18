@@ -1,11 +1,11 @@
-import img from '@/assets/sign-up-img.png';
 import { Col, Layout, Row } from 'antd';
 import React from 'react';
 import { Link, formatMessage } from 'umi';
-import Footer from '@/components/Footer';
 import Avatar from 'antd/lib/avatar/avatar';
 
 import { SmileOutlined } from '@ant-design/icons';
+import AppFooter from '@/components/AppFooter';
+import img from '@/assets/sign-up-img.png';
 import styles from './SignUpLayout1.less';
 
 const { Header, Content } = Layout;
@@ -50,7 +50,7 @@ const SignUpLayout1 = (props) => {
         </Row>
       </Content>
 
-      <Footer />
+      <AppFooter />
     </Layout>
   );
 };

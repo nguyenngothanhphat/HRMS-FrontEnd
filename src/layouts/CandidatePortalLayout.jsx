@@ -4,7 +4,7 @@ import { connect, history, Link } from 'umi';
 import avtDefault from '@/assets/avtDefault.jpg';
 import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
 import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
-import Footer from '@/components/Footer';
+import AppFooter from '@/components/AppFooter';
 // import BottomBar from '../components/BottomBar';
 import CommonModal from '@/pages/CandidatePortal/components/Dashboard/components/CommonModal';
 import { getCurrentCompany, getFirstChangePassword } from '@/utils/authority';
@@ -333,7 +333,7 @@ const CandidatePortalLayout = React.memo((props) => {
           </>
         )}
       </Authorized>
-      <Footer />
+      <AppFooter />
     </div>
   );
 });

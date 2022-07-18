@@ -8,7 +8,7 @@ import QuickLinkIcon from '@/assets/dashboard/quickLink.svg';
 import RaiseTicketIcon from '@/assets/dashboard/raiseTicket.svg';
 import CommonModal from '@/components/CommonModal';
 import QuickLinks from '@/components/QuickLinks';
-import HeaderDropdown from '../HeaderDropdown';
+import HeaderDropdown from './components/HeaderDropdown';
 import styles from './index.less';
 import { isOwner } from '@/utils/authority';
 import RaiseTicketModal from '../RaiseTicketModal';
