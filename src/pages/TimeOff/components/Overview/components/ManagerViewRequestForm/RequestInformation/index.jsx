@@ -122,6 +122,15 @@ class RequestInformation extends PureComponent {
     });
   };
 
+  // REFRESH PAGE
+  refreshGetById = () => {
+    const { dispatch, reId = '' } = this.props;
+    dispatch({
+      type: 'timeOff/fetchLeaveRequestById',
+      id: reId,
+    });
+  };
+
   // REJECT CLICKED
   onRejectClicked = () => {
     this.setState({
@@ -194,6 +203,7 @@ class RequestInformation extends PureComponent {
       this.setState({
         acceptWithdraw: true,
       });
+      this.refreshGetById();
     }
   };
 
@@ -211,6 +221,7 @@ class RequestInformation extends PureComponent {
       this.setState({
         acceptWithdraw: false,
       });
+      this.refreshGetById();
     }
   };
 

@@ -8,7 +8,13 @@ import CancelIcon from '@/assets/cancelTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { roundNumber, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
+import {
+  isNewRequest,
+  isUpdatedRequest,
+  roundNumber,
+  TIMEOFF_DATE_FORMAT,
+  TIMEOFF_STATUS,
+} from '@/utils/timeOff';
 import RejectCommentModal from '../RejectCommentModal';
 import styles from './index.less';
 
@@ -16,7 +22,7 @@ const { IN_PROGRESS, REJECTED, ON_HOLD } = TIMEOFF_STATUS;
 
 const COLUMN_WIDTH = {
   TYPE_A: {
-    TICKET_ID: '15%',
+    TICKET_ID: '17%',
     REQUESTEE: '15%',
     TYPE: '17%',
     // LEAVE_DATES: '25%',
@@ -112,7 +118,6 @@ class TeamLeaveTable extends PureComponent {
   };
 
   getColumns = (TYPE) => {
-    const { category } = this.props;
     return [
       {
         title: 'Ticket ID',
@@ -121,18 +126,17 @@ class TeamLeaveTable extends PureComponent {
         fixed: 'left',
         width: COLUMN_WIDTH[TYPE].TICKET_ID,
         render: (_, record) => {
-          const { ticketID = '', _id = '', onDate = '', status = '' } = record;
-          const createdDate = moment(onDate).locale('en').format('YYYY/MM/DD');
-          const nowDate = moment().locale('en').format('YYYY/MM/DD');
-          const isNewRequest =
-            status === IN_PROGRESS &&
-            moment(nowDate).subtract(2, 'days').isSameOrBefore(moment(createdDate));
-
+          const { ticketID = '', _id = '', onDate = '', updated = false, status = '' } = record;
+          const isUpdated = isUpdatedRequest(status, updated);
+          const isNew = isNewRequest(status, onDate);
           return (
-            <Link to={`/time-off/overview/manager-timeoff/view/${_id}`} className={styles.ID}>
-              <span className={styles.text}>{ticketID}</span>
-              {isNewRequest && <Tag color="#2C6DF9">New</Tag>}
-            </Link>
+            <span className={styles.ID}>
+              <Link to={`/time-off/overview/manager-timeoff/view/${_id}`}>
+                <span className={styles.text}>{ticketID}</span>
+              </Link>
+              {isUpdated && <Tag color="#2C6DF9">Updated</Tag>}
+              {isNew && !isUpdated && <Tag color="#2C6DF9">New</Tag>}
+            </span>
           );
         },
       },
@@ -167,10 +171,7 @@ class TeamLeaveTable extends PureComponent {
         align: 'left',
         render: (_, record) => {
           const { fromDate = '', toDate = '', leaveDates = [] } = record;
-          const listLeave = leaveDates.sort(
-            (a, b) =>
-              moment(a.date).locale('en').format('DD') - moment(b.date).locale('en').format('DD'),
-          );
+          const listLeave = leaveDates.sort((a, b) => moment(a.date) - moment(b.date));
           if (fromDate && toDate) {
             return this.formatDate(fromDate, toDate);
           }
@@ -180,16 +181,6 @@ class TeamLeaveTable extends PureComponent {
             </Tooltip>
           );
         },
-        defaultSortOrder: ['ascend'],
-        sorter: {
-          compare: (a, b) =>
-            a.fromDate && b.fromDate
-              ? moment(a.fromDate).isAfter(moment(b.fromDate))
-              : moment(a.leaveDates[0].date)
-                  .format(TIMEOFF_DATE_FORMAT)
-                  .localeCompare(moment(b.leaveDates[0].date).format(TIMEOFF_DATE_FORMAT)),
-        },
-        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: 'Duration',
@@ -454,7 +445,7 @@ class TeamLeaveTable extends PureComponent {
             </>
           );
         case 3:
-          return <>You have not applied for any LWP requests.</>;
+          return <>You have not applied for any LOP requests.</>;
         case 4:
           return <>You have not applied any request to Work from home or Client’s place.</>;
         case 5:
@@ -483,7 +474,7 @@ class TeamLeaveTable extends PureComponent {
       case 3:
         return (
           <>
-            No LWP requests received. <br />
+            No LOP requests received. <br />
           </>
         );
       case 4:
@@ -542,7 +533,7 @@ class TeamLeaveTable extends PureComponent {
     };
 
     const scroll = {
-      x: selectedTab !== REJECTED ? '50vw' : '58vw',
+      x: selectedTab !== REJECTED ? '50vw' : '64vw',
       y: 'max-content',
     };
 

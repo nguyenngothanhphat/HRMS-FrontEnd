@@ -14,6 +14,7 @@ import PostLikedModalContent from '@/components/PostLikedModalContent';
 import UserComment from '@/components/UserComment';
 import { LIKE_ACTION, POST_OR_CMT } from '@/utils/homePage';
 import styles from './index.less';
+import { singularify } from '@/utils/utils';
 
 const { Panel } = Collapse;
 const ACTION = {
@@ -36,6 +37,7 @@ const LikeComment = ({
   loadingRemoveComment = false,
   loadingFetchOnePost = false,
   loadingFetchReactList = false,
+  loadingReactPost = false,
   activePostID = '',
   setActivePostID = () => {},
 }) => {
@@ -48,6 +50,7 @@ const LikeComment = ({
 
   const [viewingPostOrCommentLiked, setViewingPostOrCommentLiked] = useState();
   const [isLikeOrDislike, setIsLikeOrDislike] = useState('');
+  const [isReactPostOrCmt, setIsReactPostOrCmt] = useState('');
 
   // API
   const getPostCommentsEffect = (postIdProp, loadType) => {
@@ -80,7 +83,7 @@ const LikeComment = ({
   };
 
   const refreshComments = () => {
-    getPostCommentsEffect(post?._id);
+    return getPostCommentsEffect(post?._id);
   };
 
   const addNewCommentEffect = (content) => {
@@ -164,10 +167,12 @@ const LikeComment = ({
   // function
   // likes
   const onLikePost = async (type) => {
+    setIsReactPostOrCmt(POST_OR_CMT.POST);
     setActivePostID(post?._id);
     const res = await reactPostEffect(post?._id, type);
     if (res.statusCode === 200) {
-      refreshThisPost();
+      await refreshThisPost();
+      setIsReactPostOrCmt('');
     }
   };
 
@@ -252,7 +257,9 @@ const LikeComment = ({
       >
         <div>
           <img src={CommentIcon} alt="" />
-          <span>{post.totalComment} Comments</span>
+          <span>
+            {post.totalComment || 0} {singularify('Comment', post.totalComment)}
+          </span>
         </div>
       </div>
     );
@@ -265,7 +272,13 @@ const LikeComment = ({
     const dislikeCount = post.totalReact?.asObject?.[LIKE_ACTION.DISLIKE] || 0;
 
     return (
-      <Spin spinning={loadingFetchOnePost && activePostID === post._id} indicator={null}>
+      <Spin
+        spinning={
+          (loadingFetchOnePost || (loadingReactPost && isReactPostOrCmt === POST_OR_CMT.POST)) &&
+          activePostID === post._id
+        }
+        indicator={null}
+      >
         <div className={styles.likes}>
           <div className={liked ? styles.likes__pressed : null}>
             <img
@@ -274,7 +287,7 @@ const LikeComment = ({
               onClick={() => onLikePost(LIKE_ACTION.LIKE)}
             />
             <span onClick={() => onViewWhoLiked(LIKE_ACTION.LIKE)}>
-              {likeCount} {likeCount > 1 ? 'Likes' : 'Like'}
+              {likeCount} {singularify('Like', likeCount)}
             </span>
           </div>
           <div className={disliked ? styles.likes__pressed : null}>
@@ -332,7 +345,12 @@ const LikeComment = ({
             disabled={action === ACTION.EDIT}
           />
           <Spin
-            spinning={(loadingFetchComments || loadingAddComment) && activePostID === post?._id}
+            spinning={
+              (loadingFetchComments ||
+                loadingAddComment ||
+                (loadingReactPost && isReactPostOrCmt === POST_OR_CMT.COMMENT)) &&
+              activePostID === post?._id
+            }
           >
             <Row className={styles.commentContainer} gutter={[24, 16]}>
               {post.totalComment === 0 && (
@@ -377,6 +395,7 @@ const LikeComment = ({
                         setViewingPostOrCommentLiked={setViewingPostOrCommentLiked}
                         setIsLikeOrDislike={setIsLikeOrDislike}
                         hasPermission={viewSettingHomePage !== -1}
+                        setIsReactPostOrCmt={setIsReactPostOrCmt}
                       />
                     </Spin>
                   </Col>

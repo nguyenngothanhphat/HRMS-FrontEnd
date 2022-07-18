@@ -1,9 +1,10 @@
-import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
+import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { getShortType } from '@/utils/timeOff';
+import SearchContent from '../../../../../SearchContent';
 import TimeOffRequestTab from '../TimeOffRequestTab';
 import styles from './index.less';
-import SearchContent from '../../../../../SearchContent/index';
 
 const { TabPane } = Tabs;
 
@@ -52,13 +53,18 @@ class RequestScopeTabs extends PureComponent {
     const {
       tab = 0,
       type = 0,
-      timeOff: { currentScopeTab = '' } = {},
+      timeOff: { currentScopeTab = '', currentLeaveTypeTab = '' } = {},
       permissions = {},
       saveCurrentTypeTab = () => {},
     } = this.props;
 
     const renderTableTitle = {
-      right: <SearchContent saveCurrentTypeTab={saveCurrentTypeTab} />,
+      right: (
+        <SearchContent
+          saveCurrentTypeTab={saveCurrentTypeTab}
+          shortType={getShortType(currentLeaveTypeTab)}
+        />
+      ),
     };
 
     const viewManagerTimeoff = permissions.viewManagerTimeoff !== -1;

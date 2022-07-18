@@ -4,7 +4,7 @@ import { connect, history } from 'umi';
 import moment from 'moment';
 import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
 import TimeOffModal from '@/components/TimeOffModal';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 import ExtraTimeSpentRow from './ExtraTimeSpentRow';
 
 import styles from './index.less';

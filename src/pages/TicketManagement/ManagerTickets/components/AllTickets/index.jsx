@@ -6,15 +6,15 @@ import styles from './index.less';
 import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
 import Summary from '../Summary';
+import { debouncedChangeLocation } from '@/utils/ticketManagement';
 
 const AllTicket = (props) => {
   const {
     dispatch,
     country = '',
     loadingFetchTicketList = false,
-    loadingFetchTotalList = false,
     listOffAllTicket: data = [],
-    totalList: countData = [],
+    totalStatus = [],
     selectedLocations = [],
     permissions = [],
     role = '',
@@ -73,18 +73,6 @@ const AllTicket = (props) => {
     });
   };
 
-  const fetchTotalList = () => {
-    const payload = {
-      location: selectedLocations,
-      permissions,
-      country,
-    };
-    dispatch({
-      type: 'ticketManagement/fetchToTalList',
-      payload,
-    });
-  };
-
   const setSelectedTab = (id) => {
     setSelectedFilterTab(id);
   };
@@ -109,7 +97,7 @@ const AllTicket = (props) => {
   };
 
   useEffect(() => {
-    initDataTable();
+    debouncedChangeLocation(initDataTable);
     return () => {
       setApplied(0);
       setIsFiltering(false);
@@ -119,14 +107,10 @@ const AllTicket = (props) => {
     };
   }, [pageSelected, size, selectedFilterTab, nameSearch, JSON.stringify(selectedLocations)]);
 
-  useEffect(() => {
-    fetchTotalList();
-  }, [nameSearch, JSON.stringify(selectedLocations)]);
-
   return (
     <div className={styles.containerTickets}>
       <div className={styles.tabTickets}>
-        <Summary setSelectedTab={setSelectedTab} countData={countData} />
+        <Summary setSelectedTab={setSelectedTab} totalStatus={totalStatus} />
         <div className={styles.filterTable}>
           <FilterCount
             applied={applied}
@@ -151,12 +135,11 @@ const AllTicket = (props) => {
       <TableTickets
         data={data}
         role={role}
-        loading={loadingFetchTicketList || loadingFetchTotalList}
+        loading={loadingFetchTicketList}
         pageSelected={pageSelected}
         size={size}
         getPageAndSize={getPageAndSize}
         refreshFetchTicketList={initDataTable}
-        refreshFetchTotalList={fetchTotalList}
       />
     </div>
   );
@@ -170,13 +153,12 @@ export default connect(
         employee: { location: { headQuarterAddress: { country = '' } = {} } = {} } = {},
       } = {},
     },
-    ticketManagement: { selectedLocations = [], listOffAllTicket = [], totalList = [] } = {},
+    ticketManagement: { selectedLocations = [], listOffAllTicket = [], totalStatus = [] } = {},
   }) => ({
     listOffAllTicket,
-    totalList,
+    totalStatus,
     selectedLocations,
     country,
     loadingFetchTicketList: loading.effects['ticketManagement/fetchListAllTicket'],
-    loadingFetchTotalList: loading.effects['ticketManagement/fetchToTalList'],
   }),
 )(AllTicket);

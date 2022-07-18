@@ -1,89 +1,90 @@
 .TicketDetails {
-    .formDetails {
-        background: #FFFFFF;
-        border: 1px solid #D6DCE0;
-        border-radius: 8px;
-        .formTitle {
-            font-family: Roboto;
-            font-style: normal;
-            font-weight: 500;
-            font-size: 16px;
-            line-height: 19px;
-            padding: 24px;
-            color: #161C29;
-            border-bottom: 1px solid #D6DCE0;
-        }
-        .formContent{
-            border-bottom: 1px solid #D6DCE0;
-            &__container{
-                padding: 32px 33px;
-                :global{
-                    .ant-row:nth-child(1), .ant-row:nth-child(2), .ant-row:nth-child(3), .ant-row:nth-child(4) {
-                        padding-bottom: 24px;
-                    }
-                }
-                .formContent__title{
-                    font-family: Roboto;
-                    font-style: normal;
-                    font-weight: 500;
-                    font-size: 14px;
-                    line-height: 16px;
-                    color: #707177;
-                    span{
-                        font-family: Roboto;
-                        font-style: normal;
-                        font-weight: normal;
-                        font-size: 14px;
-                        line-height: 16px;
-                        color: #161C29;
-                        padding-left: 8px;
-                    }
-                }
-            }
-        }
-        .note{
-            padding: 0 24px  48px 24px;
-            &__title{
-                padding: 24px 0 27px 0;
-                font-family: Roboto;
-                font-style: normal;
-                font-weight: 500;
-                font-size: 14px;
-                line-height: 16px;
-                color: #161C29;
-            }
-            &__textareaContent{
-                position: relative;
-                :global{
-                    .ant-input{
-                        padding: 20px 8px 20px 20px;
-                    }
-                }
-                .note__textarea{
-                    background: #FFFFFF;
-                    border: 1px solid #D6DCE0;
-                    border-radius: 8px;
-                }
-                :global{
-                    .ant-btn{
-                        position: absolute;
-                        bottom: 16px;
-                        right: 16px;
-                        background-color:#F1F6FF;;
-                        border: none;
-                        border-radius: 50%;
-                        height: 40px;
-                    &:hover{
-                        cursor: pointer;
-                    }
-                        img{
-                            background: #F1F6FF;
-                        }
-                    }
-    
-                }
-             
-            }
-        }
+  .formDetails {
+    background: #ffffff;
+    border: 1px solid #d6dce0;
+    border-radius: 8px;
+    .formTitle {
+      padding: 24px;
+      color: #161c29;
+      font-weight: 500;
+      font-size: 16px;
+
+      font-style: normal;
+      line-height: 19px;
+      border-bottom: 1px solid #d6dce0;
     }
+    .formContent {
+      border-bottom: 1px solid #d6dce0;
+      &__container {
+        padding: 32px 33px;
+        :global {
+          .ant-row:nth-child(1),
+          .ant-row:nth-child(2),
+          .ant-row:nth-child(3),
+          .ant-row:nth-child(4) {
+            padding-bottom: 24px;
+          }
+        }
+        .formContent__title {
+          color: #707177;
+          font-weight: 500;
+          font-size: 14px;
+
+          font-style: normal;
+          line-height: 16px;
+          span {
+            padding-left: 8px;
+            color: #161c29;
+            font-weight: normal;
+            font-size: 14px;
+
+            font-style: normal;
+            line-height: 16px;
+          }
+        }
+      }
+    }
+    .note {
+      padding: 0 24px 48px 24px;
+      &__title {
+        padding: 24px 0 27px 0;
+        color: #161c29;
+        font-weight: 500;
+        font-size: 14px;
+
+        font-style: normal;
+        line-height: 16px;
+      }
+      &__textareaContent {
+        position: relative;
+        :global {
+          .ant-input {
+            padding: 20px 8px 20px 20px;
+          }
+        }
+        .note__textarea {
+          background: #ffffff;
+          border: 1px solid #d6dce0;
+          border-radius: 8px;
+        }
+        :global {
+          .ant-btn {
+            position: absolute;
+            right: 16px;
+            bottom: 16px;
+            height: 40px;
+            background-color: #f1f6ff;
+            border: none;
+            border-radius: 50%;
+            &:hover {
+              cursor: pointer;
+            }
+            img {
+              background: #f1f6ff;
+            }
+          }
+        }
+      }
+    }
+  }
 }

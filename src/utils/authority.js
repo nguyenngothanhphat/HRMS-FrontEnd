@@ -64,10 +64,19 @@ export function setCurrentCompany(companyId) {
   reloadAuthorized();
 }
 
+export function setCompanyOfUser(list) {
+  localStorage.setItem('companyOfUser', JSON.stringify(list));
+}
+
 export function getCurrentCompany() {
   const currentCompanyId = localStorage.getItem('currentCompanyId');
   if (currentCompanyId === 'undefined') return null;
   return currentCompanyId;
+}
+
+export function getCompanyOfUser() {
+  const companyOfUser = localStorage.getItem('companyOfUser');
+  return JSON.parse(companyOfUser);
 }
 
 export function setCurrentLocation(locationId) {

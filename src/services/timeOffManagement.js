@@ -27,3 +27,17 @@ export async function getTimeOffTypeList(params) {
     params,
   });
 }
+
+export async function getMissingLeaveDates(params) {
+  return request('/api/leaverequesttenant/report-missing-leave-dates', {
+    method: 'GET',
+    params,
+  });
+}
+
+export async function getTimeOffTypeByCountry(payload) {
+  return request('/api/timeofftypetenant/get-by-country', {
+    method: 'POST',
+    data: payload,
+  });
+}

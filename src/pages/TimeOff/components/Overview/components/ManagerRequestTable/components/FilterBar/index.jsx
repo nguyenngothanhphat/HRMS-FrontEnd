@@ -1,6 +1,7 @@
+import { Badge, Tabs } from 'antd';
 import React, { PureComponent } from 'react';
-import { Tabs, Badge } from 'antd';
 import { connect } from 'umi';
+import { addZeroToNumber } from '@/utils/utils';
 import MultipleCheckTablePopup from '@/components/MultipleCheckTablePopup';
 import styles from './index.less';
 
@@ -13,12 +14,6 @@ class FilterBar extends PureComponent {
   onChangeTab = (activeKey) => {
     const { setSelectedFilterTab } = this.props;
     setSelectedFilterTab(activeKey);
-  };
-
-  addZeroToNumber = (number) => {
-    if (number === 0) return 0;
-    if (number < 10 && number > 0) return `0${number}`.slice(-2);
-    return number;
   };
 
   renderActionBtn = () => {
@@ -66,22 +61,22 @@ class FilterBar extends PureComponent {
             tab={
               inProgressExist ? (
                 <Badge dot>
-                  <span>In Progress ({this.addZeroToNumber(inProgressLength)}) </span>
+                  <span>In Progress ({addZeroToNumber(inProgressLength)}) </span>
                 </Badge>
               ) : (
-                <span>In Progress ({this.addZeroToNumber(inProgressLength)}) </span>
+                <span>In Progress ({addZeroToNumber(inProgressLength)}) </span>
               )
             }
             key="1"
           />
-          <TabPane tab={`Approved (${this.addZeroToNumber(approvedLength)})`} key="2" />
-          <TabPane tab={`Rejected (${this.addZeroToNumber(rejectedLength)})`} key="3" />
+          <TabPane tab={`Approved (${addZeroToNumber(approvedLength)})`} key="2" />
+          <TabPane tab={`Rejected (${addZeroToNumber(rejectedLength)})`} key="3" />
           {category === 'MY' && (
-            <TabPane tab={`Drafts (${this.addZeroToNumber(draftLength)})`} key="4" />
+            <TabPane tab={`Drafts (${addZeroToNumber(draftLength)})`} key="4" />
           )}
-          <TabPane tab={`Withdrawn (${this.addZeroToNumber(withdrawnLength)})`} key="5" />
+          <TabPane tab={`Withdrawn (${addZeroToNumber(withdrawnLength)})`} key="5" />
           {category !== 'MY' && (
-            <TabPane tab={`Deleted (${this.addZeroToNumber(deletedLength)})`} key="6" />
+            <TabPane tab={`Deleted (${addZeroToNumber(deletedLength)})`} key="6" />
           )}
         </Tabs>
       </div>

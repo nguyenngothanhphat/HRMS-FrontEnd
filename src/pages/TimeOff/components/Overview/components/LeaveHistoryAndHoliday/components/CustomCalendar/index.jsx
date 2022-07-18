@@ -20,7 +20,7 @@ const CustomCalendar = (props) => {
   const checkIfSameDay = (a, b, c = []) => {
     return (
       moment(a).format('MM/DD/YYYY') === moment(b).format('MM/DD/YYYY') ||
-      c.some((d) => moment(d).format('MM/DD/YYYY') === moment(b).format('MM/DD/YYYY'))
+      c.some((d) => moment(d, 'YYYY-MM-DD').format('MM/DD/YYYY') === moment(b).format('MM/DD/YYYY'))
     );
   };
   const checkCurrentDay = (val) => {
@@ -82,7 +82,7 @@ const CustomCalendar = (props) => {
           return checkIfSameDay(x.fromDate, value);
         }
         if (x?.listLeave?.length) {
-          return x.listLeave.map((z) => checkIfSameDay(z, value));
+          return checkIfSameDay('', value, x.listLeave);
         }
         return false;
       }),

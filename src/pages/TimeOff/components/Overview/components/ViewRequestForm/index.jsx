@@ -1,11 +1,13 @@
 import { Affix, Col, Row, Spin } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { isEmpty } from 'lodash';
 import { TIMEOFF_COLOR, TIMEOFF_STATUS_NAME } from '@/utils/timeOff';
 import { PageContainer } from '@/layouts/layout/src';
 import RequestInformation from './components/RequestInformation';
 import RightContent from './components/RightContent';
 import styles from './index.less';
+import History from '../../../History';
 
 @connect(({ timeOff, loading }) => ({
   timeOff,
@@ -41,7 +43,7 @@ class ViewRequestForm extends PureComponent {
   render() {
     const {
       timeOff: {
-        viewingLeaveRequest: { status = '', ticketID = '' } = {},
+        viewingLeaveRequest: { status = '', ticketID = '', history = [] } = {},
         viewingLeaveRequest = {},
       } = {},
       loadingFetchLeaveRequestById = false,
@@ -77,7 +79,15 @@ class ViewRequestForm extends PureComponent {
                 <RequestInformation />
               </Col>
               <Col xs={24} lg={8}>
-                <RightContent data={viewingLeaveRequest} status={status} />
+                {!isEmpty(history) ? (
+                  <>
+                    <History data={viewingLeaveRequest} status={status} />
+                  </>
+                ) : (
+                  <>
+                    <RightContent data={viewingLeaveRequest} status={status} />
+                  </>
+                )}
               </Col>
             </Row>
           </Spin>

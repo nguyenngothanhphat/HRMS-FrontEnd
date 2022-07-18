@@ -2,7 +2,7 @@ import { Card, Col, Row, Divider, Avatar, Tooltip, Popover } from 'antd';
 import React, { useState } from 'react';
 import moment from 'moment';
 import { history, connect } from 'umi';
-import avtDefault from '@/assets/defaultAvatar.png';
+import avtDefault from '@/assets/avtDefault.jpg';
 import IconPopup from '@/assets/offboarding/popupIcon.svg';
 import styles from './index.less';
 import { dateFormat, OFFBOARDING } from '@/utils/offboarding';

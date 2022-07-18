@@ -20,6 +20,7 @@ import {
   updateDraftLeaveRequest,
   getTeamCompoffRequests,
   getTeamLeaveRequests,
+  getTotalByType,
   uploadFile,
   uploadBalances,
   withdrawCompoffRequest,
@@ -70,6 +71,7 @@ const timeOff = {
     currentLeaveTypeTab: '1',
     currentScopeTab: '1',
     currentFilterTab: '1',
+    totalByType: {},
     holidaysList: [],
     holidaysListByLocation: [],
     holidaysListByCountry: [],
@@ -78,7 +80,8 @@ const timeOff = {
     leaveRequests: [],
     compoffRequests: [],
     timeOffTypes: [],
-    yourTimeOffTypes: [],
+    yourTimeOffTypes: {},
+    currentPayloadTypes: [],
     timeOffTypesByCountry: [],
     employeeInfo: {},
     emailsList: [],
@@ -92,31 +95,14 @@ const timeOff = {
     urlExcel: undefined,
     updateSchedule: {},
     balances: {},
-    filter: {
-      type: [],
-      search: '',
-      fromDate: '',
-      toDate: '',
-      isSearch: false,
-    },
+    filter: {},
     compoffApprovalFlow: {},
     employeeSchedule: {},
     currentUserRole: '', // employee, manager, hr-manager
     // account settings
     defaultTimeoffTypesList: [],
     selectedConfigCountry: null,
-    setupPack: [
-      // {
-      //   shortType: 'CL',
-      //   totalPerYear: 12,
-      //   whenToAdd: 'month',
-      // },
-      // {
-      //   shortType: 'SL',
-      //   totalPerYear: 7,
-      //   whenToAdd: 'year',
-      // },
-    ],
+    setupPack: [],
     itemTimeOffType: {},
     viewingLeaveType: {},
     employeeTypeList: [],
@@ -133,8 +119,6 @@ const timeOff = {
       limit: 10,
       total: 0,
     },
-    countTotal: [],
-    typeLeaveCount: {},
   },
   effects: {
     *getTimeOffTypeByLocation(_, { call }) {
@@ -347,30 +331,17 @@ const timeOff = {
           tenantId,
           company: getCurrentCompany(),
         });
-        const {
-          statusCode,
-          data: { items: leaveRequests = [], total: totalType = [] } = {},
-          total = 0,
-        } = response;
+        const { statusCode, data: { items: leaveRequests = [] } = {}, total = 0 } = response;
         if (statusCode !== 200) throw response;
 
-        if (payload.isCountTotal) {
-          yield put({
-            type: 'save',
-            payload: { countTotal: totalType },
-          });
-        }
-
-        if (!payload.isCountTotal) {
-          yield put({
-            type: 'save',
-            payload: { leaveRequests },
-          });
-          yield put({
-            type: 'savePaging',
-            payload: { total },
-          });
-        }
+        yield put({
+          type: 'save',
+          payload: { leaveRequests },
+        });
+        yield put({
+          type: 'savePaging',
+          payload: { total },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -746,29 +717,20 @@ const timeOff = {
         });
         const {
           statusCode,
-          data: { items: teamLeaveRequests = [], total: totalType = [] },
+          data: { items: teamLeaveRequests = [] },
           total = 0,
         } = response;
         // console.log('response', response);
         if (statusCode !== 200) throw response;
 
-        if (payload.isCountTotal) {
-          yield put({
-            type: 'save',
-            payload: { countTotal: totalType },
-          });
-        }
-
-        if (!payload.isCountTotal) {
-          yield put({
-            type: 'save',
-            payload: { teamLeaveRequests },
-          });
-          yield put({
-            type: 'savePaging',
-            payload: { total },
-          });
-        }
+        yield put({
+          type: 'save',
+          payload: { teamLeaveRequests },
+        });
+        yield put({
+          type: 'savePaging',
+          payload: { total },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -785,29 +747,41 @@ const timeOff = {
         });
         const {
           statusCode,
-          data: { items: allLeaveRequests = [], total: totalType = [] },
+          data: { items: allLeaveRequests = [] },
           total = 0,
         } = response;
 
         if (statusCode !== 200) throw response;
 
-        if (payload.isCountTotal) {
-          yield put({
-            type: 'save',
-            payload: { countTotal: totalType },
-          });
-        }
+        yield put({
+          type: 'save',
+          payload: { allLeaveRequests },
+        });
+        yield put({
+          type: 'savePaging',
+          payload: { total },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
 
-        if (!payload.isCountTotal) {
-          yield put({
-            type: 'save',
-            payload: { allLeaveRequests },
-          });
-          yield put({
-            type: 'savePaging',
-            payload: { total },
-          });
-        }
+    *getTotalByTypeEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getTotalByType, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: { totalByType: data },
+        });
       } catch (errors) {
         dialog(errors);
       }

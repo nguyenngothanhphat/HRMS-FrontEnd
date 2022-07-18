@@ -1,4 +1,5 @@
 export default {
   'footer.div1': '© 2022 Paxanimi Inc',
-  'footer.div2': 'Version 1.1',
+  // eslint-disable-next-line global-require
+  'footer.div2': `Version ${require('../../../package.json').version}`,
 };

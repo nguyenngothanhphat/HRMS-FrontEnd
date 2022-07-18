@@ -17,6 +17,7 @@ const MonthlyHeader = (props) => {
     setEndDate = () => {},
     viewChangeComponent = '',
     selectedDate = '',
+    loadingFetch = false,
   } = props;
   const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
   const [importModalVisible, setImportModalVisible] = useState(false);
@@ -52,6 +53,7 @@ const MonthlyHeader = (props) => {
           onNextClick={onNextMonthClick}
           onChange={onDatePickerChange}
           disabled
+          disableBtn={loadingFetch}
         />
       </div>
       <div className={styles.MonthlyHeader__middle}>{viewChangeComponent()}</div>

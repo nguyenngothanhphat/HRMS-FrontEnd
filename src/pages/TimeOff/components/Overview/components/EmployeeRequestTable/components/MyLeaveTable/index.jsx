@@ -1,15 +1,21 @@
-import React, { PureComponent } from 'react';
-import { Table, Avatar, Tooltip, Tag, Spin } from 'antd';
-import { history, connect, Link } from 'umi';
-import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
-import { roundNumber, TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/utils/timeOff';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import { Avatar, Spin, Table, Tag, Tooltip } from 'antd';
+import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect, Link } from 'umi';
+import {
+  isNewRequest,
+  isUpdatedRequest,
+  roundNumber,
+  TIMEOFF_DATE_FORMAT,
+  TIMEOFF_STATUS,
+} from '@/utils/timeOff';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 
 import styles from './index.less';
 
-const { IN_PROGRESS, ON_HOLD } = TIMEOFF_STATUS;
+const { ON_HOLD } = TIMEOFF_STATUS;
 // loading
 @connect(({ loading, dispatch, timeOff: { paging } }) => ({
   paging,
@@ -23,37 +29,31 @@ class MyLeaveTable extends PureComponent {
       dataIndex: 'ticketId',
       align: 'left',
       fixed: 'left',
-      // width: '12%',
+      width: '15%',
       render: (_, record) => {
-        const { ticketID = '', _id = '', updated = false, status = '' } = record;
-        const checkUpdated = status === IN_PROGRESS && updated;
-
+        const { ticketID = '', _id = '', onDate = '', updated = false, status = '' } = record;
+        const isUpdated = isUpdatedRequest(status, updated);
+        const isNew = isNewRequest(status, onDate);
         return (
-          <Link to={`/time-off/overview/personal-timeoff/view/${_id}`} className={styles.ID}>
-            <span className={styles.text}>{ticketID}</span>
-            {checkUpdated && <Tag color="#2C6DF9">Updated</Tag>}
-          </Link>
+          <span className={styles.ID}>
+            <Link to={`/time-off/overview/personal-timeoff/view/${_id}`}>
+              <span className={styles.text}>{ticketID}</span>
+            </Link>
+            {isUpdated && <Tag color="#2C6DF9">Updated</Tag>}
+            {isNew && !isUpdated && <Tag color="#2C6DF9">New</Tag>}
+          </span>
         );
       },
     },
     {
       title: 'Type',
       dataIndex: 'type',
-      width: '20%',
-      align: 'center',
+      width: '15%',
+      align: 'left',
       render: (type, record) => {
         if (record.status === ON_HOLD) return <span>Withdraw Request</span>;
         return <span>{type ? type.name : '-'}</span>;
       },
-      // defaultSortOrder: ['ascend'],
-      sorter: {
-        compare: (a, b) => {
-          const { type: { shortType: s1 = '' } = {} } = a;
-          const { type: { shortType: s2 = '' } = {} } = b;
-          return s1.localeCompare(s2);
-        },
-      },
-      sortDirections: ['ascend', 'descend', 'ascend'],
     },
 
     {
@@ -63,10 +63,7 @@ class MyLeaveTable extends PureComponent {
       align: 'left',
       render: (_, record) => {
         const { fromDate = '', toDate = '', leaveDates = [] } = record;
-        const listLeave = leaveDates.sort(
-          (a, b) =>
-            moment(a.date).locale('en').format('DD') - moment(b.date).locale('en').format('DD'),
-        );
+        const listLeave = leaveDates.sort((a, b) => moment(a.date) - moment(b.date));
         if (fromDate && toDate) {
           return this.formatDate(fromDate, toDate);
         }
@@ -76,16 +73,6 @@ class MyLeaveTable extends PureComponent {
           </Tooltip>
         );
       },
-      defaultSortOrder: ['ascend'],
-      sorter: {
-        compare: (a, b) =>
-          a.fromDate && b.fromDate
-            ? moment(a.fromDate).isAfter(moment(b.fromDate))
-            : moment(a.leaveDates[0].date)
-                .format(TIMEOFF_DATE_FORMAT)
-                .localeCompare(moment(b.leaveDates[0].date).format(TIMEOFF_DATE_FORMAT)),
-      },
-      sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: `Requested on `,
@@ -93,11 +80,6 @@ class MyLeaveTable extends PureComponent {
       align: 'center',
       // width: '30%',
       render: (onDate) => <span>{moment(onDate).locale('en').format(TIMEOFF_DATE_FORMAT)}</span>,
-      sorter: {
-        compare: (a, b) =>
-          a.onDate && b.onDate ? moment(a.onDate).isAfter(moment(b.onDate)) : false,
-      },
-      sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: 'Duration',
@@ -202,7 +184,7 @@ class MyLeaveTable extends PureComponent {
           </>
         );
       case 3:
-        return <>You have not applied for any LWP requests.</>;
+        return <>You have not applied for any LOP requests.</>;
       case 4:
         return <>You have not applied any request to Work from home or Client’s place.</>;
       case 5:

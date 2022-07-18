@@ -4,6 +4,7 @@ import styles from './index.less';
 // import ActivityLogModalContent from '@/pages/Dashboard/components/ActivityLog/components/ActivityLogModalContent';
 import CommonTab from '@/pages/Dashboard/components/ActivityLog/components/CommonTab';
 import CommonModal from '@/components/CommonModal';
+import { singularify } from '@/utils/utils';
 
 const Welcome = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -20,7 +21,7 @@ const Welcome = (props) => {
       <span className={styles.Welcome__notificationText}>
         You have{' '}
         <span className={styles.number} onClick={() => setModalVisible(true)}>
-          {unseenTotal} notifications
+          {unseenTotal} {singularify('notification', unseenTotal)}
         </span>{' '}
         today
       </span>
@@ -32,6 +33,7 @@ const Welcome = (props) => {
         data={activeConversationUnseen}
         // content={<ActivityLogModalContent tabKey="2" data={[]} />}
         content={<CommonTab type="4" data={activeConversationUnseen} isInModal />}
+        maskClosable
       />
     </div>
   );

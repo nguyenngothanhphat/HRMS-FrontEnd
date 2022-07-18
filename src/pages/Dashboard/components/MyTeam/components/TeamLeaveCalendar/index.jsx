@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import mockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 
 const TeamLeaveCalendar = (props) => {
@@ -20,7 +21,7 @@ const TeamLeaveCalendar = (props) => {
     dispatch({
       type: 'dashboard/fetchTeamLeaveRequests',
       payload: {
-        status: ['ACCEPTED'],
+        status: [TIMEOFF_STATUS.ACCEPTED],
         fromDate: startOfMonth,
         toDate: endOfMonth,
         type: listTimeOffType,
@@ -36,7 +37,7 @@ const TeamLeaveCalendar = (props) => {
     return (
       listDate.filter(
         (val) =>
-          moment(val.date).utcOffset(0).format('MM/DD/YYYY') === moment(date).format('MM/DD/YYYY'),
+          moment(val.date).format('MM/DD/YYYY') === moment(date).format('MM/DD/YYYY'),
       ) || []
     );
   };

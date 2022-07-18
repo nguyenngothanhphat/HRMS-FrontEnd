@@ -144,7 +144,7 @@ const LeaveTimeRow = (props) => {
             },
           ]}
         >
-          <Select disabled={BY_WHOLE_DAY}>
+          <Select disabled={BY_WHOLE_DAY} showArrow={!BY_WHOLE_DAY}>
             <Option value={WHOLE_DAY} disabled={disableAfternoon || disableMorning}>
               <span style={{ fontSize: 13 }}>Whole day</span>
             </Option>
