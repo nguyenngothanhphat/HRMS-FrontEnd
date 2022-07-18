@@ -2,7 +2,6 @@ import {
   Button,
   Col,
   DatePicker,
-  Empty,
   Form,
   Input,
   message,
@@ -13,13 +12,12 @@ import {
   Tooltip,
 } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { debounce, isEmpty } from 'lodash';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import { isEmpty } from 'lodash';
 import TimeOffModal from '@/components/TimeOffModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentTenant } from '@/utils/authority';
 import {
   convert24To12,
   getHours,
@@ -52,8 +50,6 @@ const { AFTERNOON, MORNING, WHOLE_DAY, HOUR } = TIMEOFF_PERIOD;
 const { IN_PROGRESS, DRAFTS } = TIMEOFF_STATUS;
 const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST, NEW_BEHALF_OF } = TIMEOFF_LINK_ACTION;
 
-
-
 const RequestInformation = (props) => {
   const {
     dispatch,
@@ -75,7 +71,6 @@ const RequestInformation = (props) => {
         attachments: viewingAttachmentList = [],
         status: viewingStatus = '',
       } = {},
-      emailsList = [],
       employeeSchedule: { startWorkDay = {}, endWorkDay = {}, workDay = [] } = {},
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
     } = {},
@@ -86,8 +81,6 @@ const RequestInformation = (props) => {
     loadingUpdateDraft = false,
     loadingMain = false,
   } = props;
-
-  const currentLocationID = location?.headQuarterAddress?.country?._id;
 
   const [form] = Form.useForm();
   const [selectedTypeName, setSelectedTypeName] = useState('');
@@ -106,7 +99,13 @@ const RequestInformation = (props) => {
   const [workingDays, setWorkingDays] = useState([]);
   const [isNormalType, setIsNormalType] = useState(false);
   const [listDate, setListDate] = useState([]);
+  const [locationEmployeeBehalfOf, setLocationEmployeeBehalfOf] = useState('');
   const [visible, setVisible] = useState(false);
+
+  const currentLocationID =
+    action === NEW_LEAVE_REQUEST
+      ? location?.headQuarterAddress?.country?._id
+      : locationEmployeeBehalfOf;
 
   const BY_HOUR = TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.HOUR;
   const BY_WHOLE_DAY =
@@ -406,6 +405,7 @@ const RequestInformation = (props) => {
   const onFinish = (values) => {
     const { _id: employeeId = '', managerInfo: { _id: managerId = '' } = {} } = employee;
     const {
+      employee: employeeBehalf = {},
       timeOffType = '',
       subject = '',
       description = '',
@@ -431,7 +431,7 @@ const RequestInformation = (props) => {
             leaveDates: leaveDatesPayload,
             onDate: moment().format('YYYY-MM-DD'),
             description,
-            cc: personCC,
+            cc: action === NEW_BEHALF_OF ? personCC.map((item) => item?.value[0]) || [] : personCC,
             tenantId: getCurrentTenant(),
             company: employee.company,
             attachments,
@@ -446,23 +446,32 @@ const RequestInformation = (props) => {
             leaveDates: leaveDatesPayload,
             onDate: moment().format('YYYY-MM-DD'),
             description,
-            cc: personCC,
+            cc: action === NEW_BEHALF_OF ? personCC.map((item) => item?.value[0]) || [] : personCC,
             tenantId: getCurrentTenant(),
             company: employee.company,
             attachments,
           };
         }
 
+        const { employee: { _id = '' } = {} } = viewingLeaveRequest;
         let type = '';
-        if (action === NEW_LEAVE_REQUEST || action === NEW_BEHALF_OF) {
-          payload.employee = employeeId;
-          payload.approvalManager = managerId; // id
-          type = 'timeOff/addLeaveRequest';
-        } else if (action === EDIT_LEAVE_REQUEST) {
-          const { employee: { _id = '' } = {} } = viewingLeaveRequest;
-          payload.employee = _id;
-          payload._id = viewingId;
-          type = 'timeOff/updateLeaveRequestById';
+        switch (action) {
+          case NEW_LEAVE_REQUEST:
+            payload.employee = employeeId;
+            payload.approvalManager = managerId; // id
+            type = 'timeOff/addLeaveRequest';
+            break;
+          case NEW_BEHALF_OF:
+            payload.employee = employeeBehalf?.value[0] || '';
+            type = 'timeOff/addLeaveRequest';
+            break;
+          case EDIT_LEAVE_REQUEST:
+            payload.employee = _id;
+            payload._id = viewingId;
+            type = 'timeOff/updateLeaveRequestById';
+            break;
+          default:
+            break;
         }
 
         dispatch({
@@ -603,17 +612,6 @@ const RequestInformation = (props) => {
     );
   };
 
-  // RENDER EMAILS LIST
-  const renderEmailsList = () => {
-    const list = emailsList.map((user) => {
-      const { _id = '', generalInfo: { legalName = '', workEmail = '', avatar = '' } = {} } = user;
-      let newAvatar = avatar;
-      if (avatar === '') newAvatar = DefaultAvatar;
-      return { workEmail, legalName, _id, avatar: newAvatar };
-    });
-    return list;
-  };
-
   // ON CANCEL EDIT
   const onCancelEdit = () => {
     history.push(`/time-off/overview/personal-timeoff/view/${viewingId}`);
@@ -735,14 +733,15 @@ const RequestInformation = (props) => {
   // auto generate hours when select start time & end time for US
   const onValuesChange = () => {
     const values = form.getFieldsValue();
-    const { leaveTimeLists = [], employee: employeeBehalf = '' } = values;
+    const { leaveTimeLists = [], employee: employeeBehalf = {} } = values;
     if (action === NEW_BEHALF_OF && !isEmpty(employeeBehalf)) {
       dispatch({
         type: 'timeOff/save',
         payload: {
-          employeeBehalfOf: employeeBehalf,
+          employeeBehalfOf: employeeBehalf?.value[0] || '',
         },
       });
+      setLocationEmployeeBehalfOf(employeeBehalf?.value[1] || '');
     }
 
     generateHours(leaveTimeLists);
@@ -871,6 +870,12 @@ const RequestInformation = (props) => {
       dispatch({
         type: 'timeOff/clearViewingLeaveRequest',
       });
+      dispatch({
+        type: 'timeOff/save',
+        payload: {
+          employeeBehalfOf: '',
+        },
+      });
     };
   }, []);
 
@@ -920,8 +925,6 @@ const RequestInformation = (props) => {
       span: 10,
     },
   };
-
-  const formatListEmail = renderEmailsList() || [];
 
   // if save as draft, no need to validate forms
   const needValidate = buttonState === 2;
@@ -1107,59 +1110,14 @@ const RequestInformation = (props) => {
                       required: true,
                       message: 'Please select Employee!',
                     },
-                    // { validator: typeValidator },
                   ]}
                 >
                   <DebounceSelect
                     placeholder="Search a person you want to loop"
                     fetchOptions={fetchEmailsListByCompany}
                     showSearch
-                  />
-                  {/* 
-                  <Select
-                    // mode="multiple"
-                    showSearch
                     allowClear
-                    placeholder="Search a person you want to loop"
-                    // disabled={!selectedTypeName}
-                    filterOption={(input, option) => {
-                      return (
-                        option.children[1].props.children
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onSearch={debounceFetcher}
-                  >
-                    {formatListEmail.map((value) => {
-                      const { _id = '', workEmail = '', avatar = '' } = value;
-
-                      return (
-                        <Option key={_id} value={_id}>
-                          <div style={{ display: 'inline', marginRight: '10px' }}>
-                            <img
-                              style={{
-                                borderRadius: '50%',
-                                width: '30px',
-                                height: '30px',
-                              }}
-                              src={avatar}
-                              alt="user"
-                              onError={(e) => {
-                                e.target.src = DefaultAvatar;
-                              }}
-                            />
-                          </div>
-                          <span
-                            style={{ fontSize: '13px', color: '#161C29' }}
-                            className={styles.ccEmail}
-                          >
-                            {workEmail}
-                          </span>
-                        </Option>
-                      );
-                    })}
-                  </Select> */}
+                  />
                 </Form.Item>
               </Col>
             </Row>
@@ -1184,6 +1142,7 @@ const RequestInformation = (props) => {
                     onSelectTimeOffTypeChange(value);
                   }}
                   placeholder="Timeoff Type"
+                  disabled={action === NEW_BEHALF_OF ? !employeeBehalfOf : null}
                 >
                   {renderCommonLeaves()}
                   {renderSpecialLeaves()}
@@ -1372,49 +1331,14 @@ const RequestInformation = (props) => {
                     },
                   ]}
                 >
-                  <Select
-                    mode="multiple"
-                    allowClear
+                  <DebounceSelect
                     placeholder="Search a person you want to loop"
+                    fetchOptions={fetchEmailsListByCompany}
+                    showSearch
+                    allowClear
+                    mode="multiple"
                     disabled={!selectedTypeName}
-                    filterOption={(input, option) => {
-                      return (
-                        option.children[1].props.children
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onChange={fetchEmailsListByCompany}
-                  >
-                    {formatListEmail.map((value) => {
-                      const { _id = '', workEmail = '', avatar = '' } = value;
-
-                      return (
-                        <Option key={_id} value={_id}>
-                          <div style={{ display: 'inline', marginRight: '10px' }}>
-                            <img
-                              style={{
-                                borderRadius: '50%',
-                                width: '30px',
-                                height: '30px',
-                              }}
-                              src={avatar}
-                              alt="user"
-                              onError={(e) => {
-                                e.target.src = DefaultAvatar;
-                              }}
-                            />
-                          </div>
-                          <span
-                            style={{ fontSize: '13px', color: '#161C29' }}
-                            className={styles.ccEmail}
-                          >
-                            {workEmail}
-                          </span>
-                        </Option>
-                      );
-                    })}
-                  </Select>
+                  />
                 </Form.Item>,
               )}
             </Col>
@@ -1433,16 +1357,17 @@ const RequestInformation = (props) => {
             department head.
           </span>
           <div className={styles.formButtons}>
-            {action === NEW_LEAVE_REQUEST && (
-              <Button
-                className={styles.cancelButton}
-                type="link"
-                htmlType="button"
-                onClick={onCancelLeaveRequest}
-              >
-                <span>Cancel</span>
-              </Button>
-            )}
+            {action === NEW_LEAVE_REQUEST ||
+              (action === NEW_BEHALF_OF && (
+                <Button
+                  className={styles.cancelButton}
+                  type="link"
+                  htmlType="button"
+                  onClick={onCancelLeaveRequest}
+                >
+                  <span>Cancel</span>
+                </Button>
+              ))}
             {action === EDIT_LEAVE_REQUEST && (
               <Button
                 className={styles.cancelButton}

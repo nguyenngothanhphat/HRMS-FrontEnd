@@ -37,12 +37,18 @@ const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
           <Empty description="No data, type to search" />
         </Spin>
       }
+      // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
     >
       {options.map((option) => {
-        const { generalInfoInfo: { avatar = '', workEmail = '' } = {} } = option;
+        const {
+          generalInfoInfo: { avatar = '', workEmail = '' } = {},
+          locationInfo: { headQuarterAddress: { country: { _id: countryId } = {} } = {} } = {},
+          _id = '',
+        } = option;
+
         return (
-          <Select.Option key={option._id} value={option._id}>
+          <Select.Option key={_id} value={[_id, countryId]}>
             <>
               <div style={{ display: 'inline', marginRight: '10px' }}>
                 <img
