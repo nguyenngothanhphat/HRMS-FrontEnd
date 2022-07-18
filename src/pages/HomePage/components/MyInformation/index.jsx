@@ -67,7 +67,7 @@ const MyInformation = (props) => {
       },
     });
     dispatch({
-      type: 'dashboard/fetchLeaveRequestOfEmployee',
+      type: 'dashboard/fetchMyLeaveRequest',
       payload: {
         status: ['IN-PROGRESS'],
       },

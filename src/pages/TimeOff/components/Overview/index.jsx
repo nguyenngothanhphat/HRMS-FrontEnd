@@ -10,7 +10,6 @@ import ManagerRequestTable from './components/ManagerRequestTable';
 import QuickLinks from './components/QuickLinks';
 import TimeOffTypesInfo from './components/TimeOffTypesInfo';
 import styles from './index.less';
-import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 // import FeedbackBar from './components/FeedbackBar';
 

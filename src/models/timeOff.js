@@ -3,7 +3,7 @@ import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils
 import { dialog } from '@/utils/utils';
 import {
   getHolidaysList,
-  getLeaveRequestOfEmployee,
+  getMyLeaveRequest,
   addLeaveRequest,
   removeLeaveRequestOnDatabase,
   addCompoffRequest,
@@ -14,7 +14,7 @@ import {
   getEmailsListByCompany,
   getProjectsListByEmployee,
   getLeaveRequestById,
-  getLeaveRequestOfId,
+  getLeaveRequestOfEmployee,
   updateLeaveRequestById,
   saveDraftLeaveRequest,
   updateDraftLeaveRequest,
@@ -322,11 +322,11 @@ const timeOff = {
       }
       return response;
     },
-    *fetchLeaveRequestOfEmployee({ payload }, { call, put }) {
+    *fetchMyLeaveRequest({ payload }, { call, put }) {
       let response = {};
       try {
         const tenantId = getCurrentTenant();
-        response = yield call(getLeaveRequestOfEmployee, {
+        response = yield call(getMyLeaveRequest, {
           ...payload,
           tenantId,
           company: getCurrentCompany(),
@@ -351,7 +351,7 @@ const timeOff = {
     *fetchLeaveHistory({ employee = '', status = '' }, { call, put }) {
       try {
         const tenantId = getCurrentTenant();
-        const response = yield call(getLeaveRequestOfEmployee, {
+        const response = yield call(getMyLeaveRequest, {
           employee,
           status,
           tenantId,
@@ -389,12 +389,12 @@ const timeOff = {
       }
     },
 
-    *fetchLeaveRequestOfId({ payload }, { call, put }) {
+    *fetchLeaveRequestOfEmployee({ payload }, { call, put }) {
       let response = {};
       try {
         const tenantId = getCurrentTenant();
 
-        response = yield call(getLeaveRequestOfId, {
+        response = yield call(getLeaveRequestOfEmployee, {
           ...payload,
           tenantId,
           company: getCurrentCompany(),
@@ -642,11 +642,11 @@ const timeOff = {
       return 0;
     },
 
-    *fetchEmailsListByCompany({ payload= {} }, { call, put }) {
+    *fetchEmailsListByCompany({ payload = {} }, { call, put }) {
       let response = {};
       try {
         response = yield call(getEmailsListByCompany, {
-          ...payload
+          ...payload,
         });
         // console.log('email res', response);
         const { statusCode, data: emailsList = [] } = response;

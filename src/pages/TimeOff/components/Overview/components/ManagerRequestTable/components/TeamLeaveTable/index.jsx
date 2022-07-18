@@ -44,7 +44,7 @@ const COLUMN_WIDTH = {
   currentUser,
   paging,
   loading1: loading.effects['timeOff/fetchTeamLeaveRequests'],
-  // loading2: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+  // loading2: loading.effects['timeOff/fetchMyLeaveRequest'],
   loading3: loading.effects['timeOff/approveMultipleRequests'],
   loading4: loading.effects['timeOff/rejectMultipleRequests'],
   loading5: loading.effects['timeOff/approveRequest'],

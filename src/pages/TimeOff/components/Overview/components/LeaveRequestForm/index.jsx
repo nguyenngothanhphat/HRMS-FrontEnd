@@ -80,39 +80,42 @@ const LeaveRequestForm = (props) => {
     }
   };
 
+  const setInvalidDate = (res) => {
+    let invalidDatesTemp = [];
+    const { data = [] } = res;
+    data.forEach((x) => {
+      const temp = x.leaveDates.map((y) => {
+        return {
+          date: y.date,
+          timeOfDay: y.timeOfDay,
+        };
+      });
+      invalidDatesTemp = [...invalidDatesTemp, ...temp];
+    });
+
+    setInvalidDates(invalidDatesTemp);
+  };
+
   useEffect(() => {
     if (action === NEW_BEHALF_OF && !isEmpty(employeeBehalfOf)) {
       fetchTimeOffTypes();
-    }
-    if (Object.keys(yourTimeOffTypes).length === 0 && action !== NEW_BEHALF_OF) {
-      fetchTimeOffTypes();
-    }
 
-    if (action === NEW_BEHALF_OF && !isEmpty(employeeBehalfOf)) {
       dispatch({
-        type: 'timeOff/fetchLeaveRequestOfId',
+        type: 'timeOff/fetchLeaveRequestOfEmployee',
         payload: {
           employee: employeeBehalfOf,
           status: [IN_PROGRESS, ACCEPTED],
         },
       }).then((res) => {
         if (res.statusCode === 200) {
-          let invalidDatesTemp = [];
-          const { data = [] } = res;
-          data.forEach((x) => {
-            const temp = x.leaveDates.map((y) => {
-              return {
-                date: y.date,
-                timeOfDay: y.timeOfDay,
-              };
-            });
-            invalidDatesTemp = [...invalidDatesTemp, ...temp];
-          });
-
-          setInvalidDates(invalidDatesTemp);
+          setInvalidDate(res);
         }
       });
     }
+    if (Object.keys(yourTimeOffTypes).length === 0 && action !== NEW_BEHALF_OF) {
+      fetchTimeOffTypes();
+    }
+
   }, [employeeBehalfOf]);
 
   useEffect(() => {
@@ -124,25 +127,13 @@ const LeaveRequestForm = (props) => {
     }
     if (action !== NEW_BEHALF_OF) {
       dispatch({
-        type: 'timeOff/fetchLeaveRequestOfEmployee',
+        type: 'timeOff/fetchMyLeaveRequest',
         payload: {
           status: [IN_PROGRESS, ACCEPTED],
         },
       }).then((res) => {
         if (res.statusCode === 200) {
-          let invalidDatesTemp = [];
-          const { items: leaveRequests = [] } = res?.data;
-          leaveRequests.forEach((x) => {
-            const temp = x.leaveDates.map((y) => {
-              return {
-                date: y.date,
-                timeOfDay: y.timeOfDay,
-              };
-            });
-            invalidDatesTemp = [...invalidDatesTemp, ...temp];
-          });
-
-          setInvalidDates(invalidDatesTemp);
+          setInvalidDate(res);
         }
       });
     }

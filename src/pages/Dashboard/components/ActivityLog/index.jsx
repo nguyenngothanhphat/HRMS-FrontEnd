@@ -51,7 +51,7 @@ const ActivityLog = (props) => {
 
   useEffect(() => {
     dispatch({
-      type: 'dashboard/fetchLeaveRequestOfEmployee',
+      type: 'dashboard/fetchMyLeaveRequest',
       payload: {
         status: ['IN-PROGRESS'],
       },

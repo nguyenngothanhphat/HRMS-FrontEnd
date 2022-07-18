@@ -408,7 +408,7 @@ const RequestInformation = (props) => {
   const onFinish = (values) => {
     const { _id: employeeId = '', managerInfo: { _id: managerId = '' } = {} } = employee;
     const {
-      employee: employeeBehalf = {},
+      employeeBehalf = {},
       timeOffType = '',
       subject = '',
       description = '',
@@ -736,7 +736,7 @@ const RequestInformation = (props) => {
   // auto generate hours when select start time & end time for US
   const onValuesChange = () => {
     const values = form.getFieldsValue();
-    const { leaveTimeLists = [], employee: employeeBehalf = {} } = values;
+    const { leaveTimeLists = [], employeeBehalf = {} } = values;
     if (action === NEW_BEHALF_OF && !isEmpty(employeeBehalf)) {
       dispatch({
         type: 'timeOff/save',
@@ -1107,7 +1107,7 @@ const RequestInformation = (props) => {
               </Col>
               <Col lg={12} sm={16}>
                 <Form.Item
-                  name="employee"
+                  name="employeeBehalf"
                   rules={[
                     {
                       required: true,
@@ -1145,7 +1145,7 @@ const RequestInformation = (props) => {
                     onSelectTimeOffTypeChange(value);
                   }}
                   placeholder="Timeoff Type"
-                  disabled={action === NEW_BEHALF_OF ? !employeeBehalfOf : null}
+                  disabled={action === NEW_BEHALF_OF && !employeeBehalfOf}
                 >
                   {renderCommonLeaves()}
                   {renderSpecialLeaves()}
@@ -1360,17 +1360,16 @@ const RequestInformation = (props) => {
             department head.
           </span>
           <div className={styles.formButtons}>
-            {action === NEW_LEAVE_REQUEST ||
-              (action === NEW_BEHALF_OF && (
-                <Button
-                  className={styles.cancelButton}
-                  type="link"
-                  htmlType="button"
-                  onClick={onCancelLeaveRequest}
-                >
-                  <span>Cancel</span>
-                </Button>
-              ))}
+            {(action === NEW_LEAVE_REQUEST || action === NEW_BEHALF_OF) && (
+              <Button
+                className={styles.cancelButton}
+                type="link"
+                htmlType="button"
+                onClick={onCancelLeaveRequest}
+              >
+                <span>Cancel</span>
+              </Button>
+            )}
             {action === EDIT_LEAVE_REQUEST && (
               <Button
                 className={styles.cancelButton}

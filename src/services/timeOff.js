@@ -62,7 +62,7 @@ export function getEmployeeTypeList() {
   });
 }
 
-export async function getLeaveRequestOfEmployee(payload) {
+export async function getMyLeaveRequest(payload) {
   return request('/api/leaverequesttenant/get-my-request', {
     method: 'POST',
     data: payload,
@@ -406,7 +406,7 @@ export async function getLocationById(payload) {
     data: payload,
   });
 }
-export async function getLeaveRequestOfId(payload) {
+export async function getLeaveRequestOfEmployee(payload) {
   return request('/api/leaverequesttenant/get-by-employee', {
     method: 'POST',
     data: payload,
