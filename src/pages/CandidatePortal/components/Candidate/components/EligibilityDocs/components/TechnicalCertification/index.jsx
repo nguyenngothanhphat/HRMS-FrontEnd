@@ -95,7 +95,9 @@ const TechnicalCertification = (props) => {
 
           <div className={styles.addBtn} onClick={onAdd}>
             <PlusOutlined className={styles.plusIcon} />
-            <span className={styles.title}>Please Add any relevant Certifications Info</span>
+            <span className={styles.title}>
+              Please upload relevant Certifications Info (if any)
+            </span>
           </div>
         </Collapse.Panel>
       </Collapse>
