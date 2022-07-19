@@ -1116,7 +1116,7 @@ const RequestInformation = (props) => {
                   ]}
                 >
                   <DebounceSelect
-                    placeholder="Search a person you want to loop"
+                    placeholder="Select the employee who you want to request for"
                     fetchOptions={fetchEmailsListByCompany}
                     showSearch
                     allowClear
