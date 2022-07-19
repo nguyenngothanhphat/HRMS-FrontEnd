@@ -6,14 +6,14 @@ import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
 import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
 import AppFooter from '@/components/AppFooter';
 // import BottomBar from '../components/BottomBar';
+import { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS } from '@/constants/candidatePortal';
+import { CHAT_EVENT } from '@/constants/socket';
 import CommonModal from '@/pages/CandidatePortal/components/Dashboard/components/CommonModal';
 import { getCurrentCompany, getFirstChangePassword } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
-import { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS } from '@/constants/candidatePortal';
-import { socket, disconnectSocket } from '@/utils/socket';
+import { disconnectSocket, socket } from '@/utils/socket';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import s from './CandidatePortalLayout.less';
-import { CHAT_EVENT } from '@/constants/socket';
+import s from './index.less';
 
 const { Header, Content } = Layout;
 

@@ -3,7 +3,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import styles from './index.less';
 import TableContainer from './components/TableContainer';
 
-export default class OffBoardingManagement extends PureComponent {
+export default class OffboardingManagement extends PureComponent {
   operations = () => {
     return <div />;
   };

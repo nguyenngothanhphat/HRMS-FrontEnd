@@ -4,7 +4,7 @@ import { Link } from 'umi';
 import AppFooter from '@/components/AppFooter';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import styles from './AccountSetupLayout.less';
+import styles from './index.less';
 
 const { Header, Content } = Layout;
 

@@ -1,3 +1,9 @@
+export const ONBOARDING_TABS = {
+  OVERVIEW: 'list',
+  SETTINGS: 'settings',
+  NEW_JOINEES: 'new-joinees',
+};
+
 export const NEW_PROCESS_STATUS = {
   DRAFT: 'DRAFT',
   PROFILE_VERIFICATION: 'PROFILE_VERIFICATION',

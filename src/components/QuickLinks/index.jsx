@@ -36,7 +36,7 @@ class QuickLinks extends Component {
   mapItemMenu = (value) => {
     const { _id } = value;
     history.push({
-      pathname: `/faqpage`,
+      pathname: `/faq`,
       query: {
         id: _id,
       },

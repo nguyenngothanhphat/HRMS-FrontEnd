@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-import { Input, Table, Popover } from 'antd';
-import { formatMessage, history, connect } from 'umi';
+import { Input, Popover, Table } from 'antd';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { connect, formatMessage, history } from 'umi';
+import { removeEmptyFields } from '@/utils/utils';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import filterIcon from '@/assets/offboarding-filter.svg';
 import closeIcon from '@/assets/closeIcon.svg';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
-import Filter from './Filter';
-
+import Filter from './components/Filter';
 import styles from './index.less';
-import { removeEmptyFields } from '@/utils/utils';
+import CommonTable from '@/components/CommonTable';
 
 const NewJoinees = (props) => {
   const {
@@ -38,71 +38,6 @@ const NewJoinees = (props) => {
     title: [],
   });
   const [isSearch, setIsSearch] = useState(true);
-
-  // const fetchListEmployee = () => {
-  //   const currentCompany = getCurrentCompany();
-  //   const currentLocation = getCurrentLocation();
-
-  //   const companyPayload = companiesOfUser.filter((lo) => lo?._id === currentCompany);
-  //   let locationPayload = [];
-
-  //   if (!currentLocation) {
-  //     locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
-  //       let stateList = [];
-  //       listCountry.forEach(
-  //         ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
-  //           if (countryItem1 === countryItem2) {
-  //             stateList = [...stateList, stateItem2];
-  //           }
-  //         },
-  //       );
-  //       return {
-  //         country: countryItem1,
-  //         state: stateList,
-  //       };
-  //     });
-  //   } else {
-  //     const currentLocationObj = companyLocationList.find((loc) => loc?._id === currentLocation);
-  //     const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
-  //     const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
-
-  //     locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
-  //       let stateList = [];
-  //       listCountry.forEach(
-  //         ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
-  //           if (
-  //             countryItem1 === countryItem2 &&
-  //             currentLocationCountry === countryItem2 &&
-  //             currentLocationState === stateItem2
-  //           ) {
-  //             stateList = [...stateList, stateItem2];
-  //           }
-  //         },
-  //       );
-  //       return {
-  //         country: countryItem1,
-  //         state: stateList,
-  //       };
-  //     });
-  //   }
-  //   dispatch({
-  //     type: 'onboard/fetchEmployeeList',
-  //     payload: {
-  //       company: companyPayload,
-  //       department: ['HR'],
-  //       location: locationPayload,
-  //     },
-  //   });
-  //   dispatch({
-  //     type: 'onboard/fetchHRManagerList',
-  //     payload: {
-  //       company: companyPayload,
-  //       department: ['HR'],
-  //       roles: ['HR-MANAGER'],
-  //       location: locationPayload,
-  //     },
-  //   });
-  // };
 
   const fetchListEmployee = () => {
     const currentCompany = getCurrentCompany();
@@ -232,7 +167,7 @@ const NewJoinees = (props) => {
 
   const columns = [
     {
-      title: <div style={{ paddingLeft: '10px' }}> Candidate ID</div>,
+      title: <div style={{ paddingLeft: '10px' }}>Candidate ID</div>,
       key: 'ticketID',
       dataIndex: 'candidate',
       width: 150,
@@ -345,12 +280,10 @@ const NewJoinees = (props) => {
           />
         </div>
         <div className={styles.table}>
-          <Table
+          <CommonTable
             columns={columns}
-            dataSource={listNewComer}
-            size="small"
+            list={listNewComer}
             loading={loadingTable}
-            pagination={pagination}
             onRow={(record) => {
               const { _id = '' } = record;
               return {

@@ -1,17 +1,8 @@
 import ROLES from '../src/constants/roles';
 const {
-  HR_MANAGER,
-  HR,
   EMPLOYEE,
-  REGION_HEAD,
-  CEO,
-  MANAGER,
   ADMIN,
-  DEPARTMENT_HEAD,
   OWNER,
-  PROJECT_MANAGER,
-  PEOPLE_MANAGER,
-  FINANCE,
   CANDIDATE,
 } = ROLES;
 
@@ -38,7 +29,7 @@ const routes = [
   },
   {
     path: '/login',
-    component: '../layouts/AuthLayout',
+    component: '../layouts/components/AuthLayout',
     routes: [
       {
         path: '/login',
@@ -47,38 +38,38 @@ const routes = [
     ],
   },
   {
-    path: '/signup',
-    component: '../layouts/SignUpLayout1',
+    path: '/sign-up',
+    component: '../layouts/components/SignUpLayout1',
     routes: [
       {
-        path: '/signup',
+        path: '/sign-up',
         component: './SignUp1',
       },
     ],
   },
   {
-    path: '/signup-verify',
-    component: '../layouts/SignUpLayout1',
+    path: '/sign-up/verify',
+    component: '../layouts/components/SignUpLayout1',
     routes: [
       {
-        path: '/signup-verify',
+        path: '/sign-up/verify',
         component: './SignUp2',
       },
     ],
   },
   {
-    path: '/signup-configlocation',
-    component: '../layouts/SignUpLayout2',
+    path: '/sign-up/location-config',
+    component: '../layouts/components/SignUpLayout2',
     routes: [
       {
-        path: '/signup-configlocation',
+        path: '/sign-up/location-config',
         component: './SignUpConfigLocation',
       },
     ],
   },
   {
     path: '/candidate',
-    component: '../layouts/TerralogicCandidateLoginLayout',
+    component: '../layouts/components/TerralogicCandidateLoginLayout',
     routes: [
       {
         path: '/candidate',
@@ -88,7 +79,7 @@ const routes = [
   },
   {
     path: '/forgot-password',
-    component: '../layouts/AuthLayout',
+    component: '../layouts/components/AuthLayout',
     routes: [
       {
         path: '/forgot-password',
@@ -98,7 +89,7 @@ const routes = [
   },
   {
     path: '/reset-password/:reId',
-    component: '../layouts/AuthLayout',
+    component: '../layouts/components/AuthLayout',
     routes: [
       {
         path: '/reset-password/:reId',
@@ -108,7 +99,7 @@ const routes = [
   },
   {
     path: '/active-user/:id',
-    component: '../layouts/ActiveUserLayout',
+    component: '../layouts/components/ActiveUserLayout',
     routes: [
       {
         path: '/active-user/:id',
@@ -127,7 +118,7 @@ const routes = [
   },
   {
     path: '/first-change-password',
-    component: '../layouts/AccountSetupLayout',
+    component: '../layouts/components/AccountSetupLayout',
     routes: [
       {
         path: '/first-change-password',
@@ -141,7 +132,7 @@ const routes = [
   },
   {
     path: '/candidate-portal',
-    component: '../layouts/CandidatePortalLayout',
+    component: '../layouts/components/CandidatePortalLayout',
     authority: [CANDIDATE],
     routes: [
       {
@@ -170,7 +161,7 @@ const routes = [
   },
   {
     path: '/candidate-change-password',
-    component: '../layouts/CandidatePortalLayout',
+    component: '../layouts/components/CandidatePortalLayout',
     authority: [CANDIDATE],
     routes: [
       // for change password
@@ -185,11 +176,11 @@ const routes = [
   },
   {
     path: '/',
-    component: '../layouts/SecurityLayout',
+    component: '../layouts/components/SecurityLayout',
     routes: [
       {
         path: '/control-panel',
-        component: '../layouts/AccountSetupLayout',
+        component: '../layouts/components/AccountSetupLayout',
         // authority: [ADMIN, OWNER, EMPLOYEE, CANDIDATE],
         routes: [
           {
@@ -222,7 +213,7 @@ const routes = [
       },
       {
         // path: '/',
-        component: '../layouts/BasicLayout',
+        component: '../layouts/components/BasicLayout',
         routes: [
           {
             path: '/home',
@@ -333,10 +324,10 @@ const routes = [
             name: 'add-team-member',
           },
           {
-            path: '/onboarding/newJoinees/view-detail/:userId',
+            path: '/onboarding/new-joinees/view-detail/:userId',
             name: 'candidate-profile',
             hideInMenu: true,
-            component: './Onboarding/components/NewJoinees/CandidateProfile',
+            component: './Onboarding/components/NewJoinees/components/CandidateProfile',
             authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'P_ONBOARDING_ALL'],
           },
           {
@@ -405,7 +396,7 @@ const routes = [
             path: '/users-management',
             name: 'users',
             icon: '/assets/images/menuIcons/user.svg',
-            component: '../pages_admin/UsersManagement',
+            component: '../pages/UsersManagement',
             authority: ['M_USER_MANAGEMENT_VIEW', OWNER],
           },
           {
@@ -430,20 +421,20 @@ const routes = [
             path: '/companies-management',
             name: 'companies',
             icon: '/assets/images/menuIcons/company.svg',
-            component: '../pages_admin/CompaniesManagement',
+            component: '../pages/CompaniesManagement',
             authority: ['M_COMPANY_MANAGEMENT_VIEW', OWNER],
           },
           {
             path: '/companies-management/add-company',
             name: 'add-company',
             hideInMenu: true,
-            component: '../pages_admin/CompaniesManagement/components/AddCompany',
+            component: '../pages/CompaniesManagement/components/AddCompany',
             authority: [OWNER],
           },
           {
             path: '/companies-management/company-detail/:reId',
             name: 'company-detail',
-            component: '../pages_admin/CompaniesManagement/components/CompanyDetail',
+            component: '../pages/CompaniesManagement/components/CompanyDetail',
             hideInMenu: true,
             authority: [OWNER],
           },
@@ -451,7 +442,7 @@ const routes = [
             path: '/candidates-management',
             name: 'candidates',
             icon: '/assets/images/menuIcons/candidate.svg',
-            component: '../pages_admin/CandidatesManagement',
+            component: '../pages/CandidatesManagement',
             authority: ['M_CANDIDATE_MANAGEMENT_VIEW', OWNER],
           },
           {
@@ -467,7 +458,7 @@ const routes = [
             name: 'documents',
             // icon: '/assets/images/menuIcons/documents.svg',
             icon: '/assets/images/menuIcons/icon3.svg',
-            component: '../pages_admin/DocumentsManagement',
+            component: '../pages/DocumentsManagement',
             // authority: ['admin-sa'],
             authority: ['M_DOCUMENT_MANAGEMENT_VIEW', OWNER],
           },
@@ -475,14 +466,14 @@ const routes = [
             path: '/time-off-management',
             name: 'timeoff-management',
             icon: '/assets/images/timeOff.svg',
-            component: '../pages_admin/TimeOffManagement',
+            component: '../pages/TimeOffManagement',
             authority: ['M_TIMEOFF_MANAGEMENT_VIEW', OWNER],
           },
           {
             path: '/offboarding-management',
             name: 'offboarding-management',
             icon: '/assets/images/iconOffboarding.svg',
-            component: '../pages_admin/OffBoardingManagement',
+            component: '../pages/OffboardingManagement',
             authority: ['M_OFFBOARDING_MANAGEMENT_VIEW', OWNER],
           },
 
@@ -490,7 +481,7 @@ const routes = [
             path: '/documents/upload-document',
             name: 'upload-document',
             hideInMenu: true,
-            component: '../pages_admin/DocumentsManagement/components/UploadDocument',
+            component: '../pages/DocumentsManagement/components/UploadDocument',
             // authority: ['admin-sa'],
             authority: ['M_DOCUMENT_MANAGEMENT_VIEW', OWNER],
           },
@@ -498,7 +489,7 @@ const routes = [
             path: '/documents/create-template',
             name: 'create-template',
             hideInMenu: true,
-            component: '../pages_admin/DocumentsManagement/components/CreateNewTemplate',
+            component: '../pages/DocumentsManagement/components/CreateNewTemplate',
             // authority: ['admin-sa'],
             authority: ['M_DOCUMENT_MANAGEMENT_VIEW', OWNER],
           },
@@ -898,13 +889,13 @@ const routes = [
             component: './ChangePassword',
           },
           {
-            path: '/faqpage',
+            path: '/faq',
             name: 'faqs',
             hideInMenu: true,
             component: './FAQs',
           },
           {
-            path: '/faqpage/settings',
+            path: '/faq/settings',
             name: 'settings',
             hideInMenu: true,
             component: './FAQs/components/SettingFAQ',
@@ -948,12 +939,12 @@ const routes = [
             path: '/settings',
             name: 'settings',
             icon: '/assets/images/menuIcons/settings.svg',
-            component: '../pages_admin/Settings',
+            component: '../pages/Settings',
             authority: ['M_SETTING_VIEW', OWNER, 'M_SETTINGS_ALL'],
           },
           {
             path: '/settings/:tabName',
-            component: '../pages_admin/Settings',
+            component: '../pages/Settings',
             hideInMenu: true,
             authority: ['M_SETTING_VIEW', OWNER, 'M_SETTINGS_ALL'],
           },

@@ -3,12 +3,12 @@ import { Avatar, Col, Layout, Row } from 'antd';
 import React from 'react';
 import { formatMessage, Link } from 'umi';
 import AppFooter from '@/components/AppFooter';
-import LoginImage from '../assets/Intranet_01.png';
-import Separator from '../assets/login/separator.svg';
-import TerralogicImage from '../assets/login/terralogic.png';
-import TerralogicLogo from '../assets/login/terralogic_logo.svg';
+import LoginImage from '../../../assets/Intranet_01.png';
+import Separator from '../../../assets/login/separator.svg';
+import TerralogicImage from '../../../assets/login/terralogic.png';
+import TerralogicLogo from '../../../assets/login/terralogic_logo.svg';
 import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
-import styles from './AuthLayout.less';
+import styles from './index.less';
 
 const { Header, Content } = Layout;
 
@@ -118,7 +118,7 @@ const AuthLayout = ({ children }) => {
         </div>
         <div className={styles.rightContent}>
           <span>{formatMessage({ id: 'layout.authLayout.newUser' })}</span>
-          <Link to="/signup" className={styles.textSignUp}>
+          <Link to="/sign-up" className={styles.textSignUp}>
             {formatMessage({ id: 'layout.authLayout.signUp' })}
           </Link>
         </div>

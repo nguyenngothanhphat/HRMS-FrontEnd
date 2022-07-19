@@ -1,7 +1,7 @@
+import { Col, Layout, Row } from 'antd';
 import React from 'react';
-import { Row, Col, Layout } from 'antd';
-import RightImage from '../../public/assets/images/Intranet_01@3x.png';
-import styles from './SignUpLayout2.less';
+import RightImage from '../../../../public/assets/images/Intranet_01@3x.png';
+import styles from './index.less';
 
 const { Header, Content } = Layout;
 

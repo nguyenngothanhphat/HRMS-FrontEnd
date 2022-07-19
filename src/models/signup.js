@@ -1,7 +1,7 @@
 /* eslint-disable compat/compat */
-import { dialog } from '@/utils/utils';
 import { history } from 'umi';
 import { notification } from 'antd';
+import { dialog } from '@/utils/utils';
 import {
   signupAdmin,
   getUserInfo,
@@ -65,7 +65,7 @@ const signup = {
           throw response;
         }
         yield put({ type: 'save', payload: { user: userInfo } });
-        history.replace('/signup-verify');
+        history.replace('/sign-up/verify');
       } catch (errors) {
         dialog(errors);
       }
@@ -86,7 +86,7 @@ const signup = {
           yield put({
             type: 'clearStateLastSignUp',
           });
-          history.replace('/signup-configlocation');
+          history.replace('/sign-up/location-config');
         }
       } catch (errors) {
         dialog(errors);

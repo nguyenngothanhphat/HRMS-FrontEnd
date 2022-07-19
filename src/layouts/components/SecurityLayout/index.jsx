@@ -1,8 +1,8 @@
 import React from 'react';
 import { Redirect, connect } from 'umi';
 import { PageLoading } from '@/layouts/layout/src';
-import { getToken } from '../utils/token';
-import { getIsSwitchingRole } from '../utils/authority';
+import { getToken } from '../../../utils/token';
+import { getIsSwitchingRole } from '../../../utils/authority';
 
 class SecurityLayout extends React.Component {
   constructor(props) {

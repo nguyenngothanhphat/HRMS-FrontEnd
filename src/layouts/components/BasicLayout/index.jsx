@@ -8,20 +8,15 @@ import { Button, Result } from 'antd';
 import classnames from 'classnames';
 import React from 'react';
 import { connect, Link, Redirect, useIntl } from 'umi';
-import Feedback from '@/components/Feedback';
 import AppFooter from '@/components/AppFooter';
+import Feedback from '@/components/Feedback';
 import RightContent from '@/components/GlobalHeader/RightContent';
-// import { getCurrentCompany, getSwitchRoleAbility } from '@/utils/authority';
 import { getCurrentCompany } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
-// import { UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
-// import { Affix, Button, notification, Result, Spin, Switch, Tooltip } from 'antd';
-// import React, { useEffect, useState } from 'react';
-import logo from '../assets/logo.svg';
-// import iconMenu from '../assets/menuIcon.svg';
-import styles from './BasicLayout.less';
-import ProLayout from './layout/src';
+import logo from '../../../assets/logo.svg';
+import ProLayout from '../../layout/src';
+import styles from './index.less';
 
 const noMatch = (
   <Result
@@ -90,27 +85,7 @@ const BasicLayout = (props) => {
     }
   };
 
-  // const handleClickMenuSideBar = () => {
-  //   setOpenMenu(!openMenu);
-  //   if (dispatch) {
-  //     dispatch({
-  //       type: 'global/collapseExpandMenuSidebar',
-  //       payload: !openMenu,
-  //     });
-  //   }
-  // };
-
   const _renderLogo = () => {
-    // const checkRole = (roleName) => {
-    //   const { signInRole = [] } = currentUser;
-    //   const formatRole = signInRole.map((role) => role.toLowerCase());
-    //   if (formatRole.includes(roleName)) return true;
-    //   return false;
-    // };
-
-    // const isOwner = checkRole('owner');
-    // const isAdmin = checkRole('admin');
-
     const logoUrl = getCurrentLogo();
     const currentName = getCurrentName();
     return (

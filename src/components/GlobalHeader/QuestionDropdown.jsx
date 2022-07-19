@@ -46,7 +46,7 @@ class QuestionDropdown extends React.Component {
       this.onToggleQuickLinkModal();
     }
     if (key === FAQ) {
-      history.push('/faqpage');
+      history.push('/faq');
     }
     if (key === RAISE_TICKET) {
       this.onToggleRaiseTicketModal();

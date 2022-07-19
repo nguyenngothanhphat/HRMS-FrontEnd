@@ -1,12 +1,11 @@
-import { Col, Layout, Row } from 'antd';
-import React from 'react';
-import { Link, formatMessage } from 'umi';
-import Avatar from 'antd/lib/avatar/avatar';
-
 import { SmileOutlined } from '@ant-design/icons';
+import { Col, Layout, Row } from 'antd';
+import Avatar from 'antd/lib/avatar/avatar';
+import React from 'react';
+import { formatMessage, Link } from 'umi';
 import AppFooter from '@/components/AppFooter';
 import img from '@/assets/sign-up-img.png';
-import styles from './SignUpLayout1.less';
+import styles from './index.less';
 
 const { Header, Content } = Layout;
 

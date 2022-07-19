@@ -1,14 +1,14 @@
 import { Carousel, Col, Layout, Row } from 'antd';
 import React from 'react';
-import InstagramIcon from '../assets/login/instagram.svg';
-import LinkedInIcon from '../assets/login/linkedin.svg';
-import LollypopLogo from '../assets/login/lollypop_logo.svg';
-import Image1 from '../assets/login/mock_up.svg';
-import TerralogicLogo from '../assets/login/terralogic_logo.svg';
-import TwitterIcon from '../assets/login/twitter.svg';
-import Image2 from '../assets/login/vr_man.svg';
-import YoutubeIcon from '../assets/login/youtube.svg';
-import styles from './TerralogicCandidateLoginLayout.less';
+import InstagramIcon from '../../../assets/login/instagram.svg';
+import LinkedInIcon from '../../../assets/login/linkedin.svg';
+import LollypopLogo from '../../../assets/login/lollypop_logo.svg';
+import Image1 from '../../../assets/login/mock_up.svg';
+import TerralogicLogo from '../../../assets/login/terralogic_logo.svg';
+import TwitterIcon from '../../../assets/login/twitter.svg';
+import Image2 from '../../../assets/login/vr_man.svg';
+import YoutubeIcon from '../../../assets/login/youtube.svg';
+import styles from './index.less';
 
 const { Content } = Layout;
 
@@ -104,7 +104,7 @@ const TerralogicCandidateLoginLayout = ({ children }) => {
                 <div className={styles.icons}>
                   {icons.map((x) => (
                     <div className={styles.icon}>
-                      <a href={x.link} target='_blank' rel="noreferrer">
+                      <a href={x.link} target="_blank" rel="noreferrer">
                         <img src={x.icon} alt="" />
                       </a>
                     </div>

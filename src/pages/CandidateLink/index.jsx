@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import { setToken } from '@/utils/token';
 import { history } from 'umi';
+import { setToken } from '@/utils/token';
 
 class CandidateLink extends PureComponent {
   componentDidMount = () => {

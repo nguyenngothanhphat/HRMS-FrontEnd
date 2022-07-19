@@ -50,7 +50,7 @@ const ActivityList = (props) => {
         {!isOldTimeSheet &&
           hourList.map((hour) => {
             return (
-              <div className={styles.hourBlock}>
+              <div className={styles.hourBlock} key={hour}>
                 <span>{renderHour(hour)}</span>
               </div>
             );
@@ -66,9 +66,9 @@ const ActivityList = (props) => {
       ) : (
         <Col span={REMAINING} className={styles.ActivityList__remainColumn}>
           {!isOldTimeSheet &&
-            hourList.map(() => {
+            hourList.map((_, i) => {
               return (
-                <div className={styles.row}>
+                <div className={styles.row} key={`${i+1}`}>
                   <div className={styles.divider} />
                 </div>
               );
@@ -86,6 +86,7 @@ const ActivityList = (props) => {
           ))}
           {timeoff.map((item, index) => (
             <TimeOffCard
+              key={item.id || item._id}
               card={item}
               cardDay={date}
               cardIndex={index}

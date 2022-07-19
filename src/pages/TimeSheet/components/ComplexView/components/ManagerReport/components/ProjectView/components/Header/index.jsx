@@ -128,7 +128,7 @@ const Header = (props) => {
             }}
           >
             {projectList.map((v, index) => (
-              <Option value={v.id}>
+              <Option value={v.id} key={v.id}>
                 <div
                   className={styles.projectName}
                   style={{
