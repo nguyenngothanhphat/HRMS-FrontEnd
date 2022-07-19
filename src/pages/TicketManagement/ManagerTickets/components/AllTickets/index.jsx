@@ -1,12 +1,12 @@
 import { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { debouncedChangeLocation } from '@/utils/ticketManagement';
 import FilterCount from '../../../components/FilterCount/FilterCount';
 import SearchTable from '../../../components/SearchTable';
 import Summary from '../Summary';
 import TableTickets from '../TableTickets';
 import styles from './index.less';
-import { debouncedChangeLocation } from '@/utils/ticketManagement';
 
 const AllTicket = (props) => {
   const {
