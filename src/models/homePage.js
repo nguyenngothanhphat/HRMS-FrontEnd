@@ -27,6 +27,7 @@ import {
   updateQuickLink,
   upsertCelebrationConversation,
   votePoll,
+  getListPolicy,
 } from '../services/homePage';
 import { getCurrentCompany, getCurrentTenant } from '../utils/authority';
 import { TAB_IDS } from '@/utils/homePage';
@@ -45,6 +46,7 @@ const getVarStateName = (type) => {
 };
 
 const defaultState = {
+  listPolicy: [],
   // portal
   celebrationList: [],
   // setting page
@@ -712,6 +714,27 @@ const homePage = {
         notification.success({ message });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+    *fetchListPolicy({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getListPolicy, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            listPolicy: data,
+          },
+        });
+      } catch (error) {
+        dialog(error);
       }
       return response;
     },
