@@ -2,7 +2,8 @@ import { Col, DatePicker, Form, Row, Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { dateFormat, getEmployeeName } from '@/utils/offboarding';
+import { getEmployeeName } from '@/utils/offboarding';
+import { DATE_FORMAT } from '@/constants/offboarding';
 import CustomEmployeeTag from '@/components/CustomEmployeeTag';
 import styles from './index.less';
 
@@ -75,7 +76,7 @@ const SetMeetingModalContent = ({
           <Col span={12}>
             <Form.Item name="date" label="Date" rules={[{ required: true }]}>
               <DatePicker
-                format={dateFormat}
+                format={DATE_FORMAT}
                 placeholder="Select the date"
                 onChange={onDateChange}
                 disabledDate={disabledDate}

@@ -15,7 +15,7 @@ import OrangeAddButton from '../../../OrangeAddButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import AddResourcesModal from '../AddResourcesModal';
 import FilterResourcesContent from './components/FilterResourcesContent';
-import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
+import { DATE_FORMAT_LIST } from '@/constants/projectManagement';
 import styles from './index.less';
 import CommonModal from '@/components/CommonModal';
 

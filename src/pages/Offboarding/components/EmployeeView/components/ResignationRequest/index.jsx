@@ -1,7 +1,7 @@
 import { Col, Row, Spin, Tabs } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { OFFBOARDING } from '@/utils/offboarding';
+import { OFFBOARDING } from '@/constants/offboarding';
 import { PageContainer } from '@/layouts/layout/src';
 import YourRequest from '../YourRequest';
 import OffboardingWorkFlow from '../OffboardingWorkFlow';

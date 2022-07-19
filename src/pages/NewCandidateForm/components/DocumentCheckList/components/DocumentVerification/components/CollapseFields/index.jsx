@@ -2,7 +2,7 @@ import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { Col, Collapse } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import { DOCUMENTS_CHECKLIST_TYPE } from '@/utils/newCandidateForm';
+import { DOCUMENTS_CHECKLIST_TYPE } from '@/constants/newCandidateForm';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import styles from './index.less';
 

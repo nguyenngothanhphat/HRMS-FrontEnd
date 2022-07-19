@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import BlueAddIcon from '@/assets/dashboard/blueAdd.svg';
 import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
-import { beforeUpload, compressImage, FILE_TYPE } from '@/utils/upload';
+import { FILE_TYPE } from '@/constants/upload';
+import { beforeUpload, compressImage } from '@/utils/upload';
 import s from './index.less';
 
 const AddAttachments = ({

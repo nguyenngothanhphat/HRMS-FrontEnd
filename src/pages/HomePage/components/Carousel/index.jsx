@@ -5,7 +5,7 @@ import Banner1 from '@/assets/homePage/banner1.png';
 import NextIcon from '@/assets/homePage/next.svg';
 import PrevIcon from '@/assets/homePage/prev.svg';
 import EmptyComponent from '@/components/Empty';
-import { TAB_IDS } from '@/utils/homePage';
+import { TAB_IDS } from '@/constants/homePage';
 import styles from './index.less';
 
 const NextArrow = (props) => {

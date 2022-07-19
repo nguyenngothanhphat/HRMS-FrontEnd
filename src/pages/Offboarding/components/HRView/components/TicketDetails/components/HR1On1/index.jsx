@@ -5,8 +5,9 @@ import { connect } from 'umi';
 import CustomEmployeeTag from '@/components/CustomEmployeeTag';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import { DATE_FORMAT, OFFBOARDING } from '@/constants/offboarding';
 import SetMeetingModal from '@/pages/Offboarding/components/SetMeetingModal';
-import { dateFormat, getEmployeeName, OFFBOARDING, onJoinMeeting } from '@/utils/offboarding';
+import { getEmployeeName, onJoinMeeting } from '@/utils/offboarding';
 import styles from './index.less';
 
 const HR1On1 = (props) => {
@@ -88,7 +89,7 @@ const HR1On1 = (props) => {
               <div className={styles.rightPart}>
                 <span className={styles.label}>Scheduled on</span>
                 <span className={styles.time}>
-                  {moment(hrDate).format(`${dateFormat} | h:mm a`)}
+                  {moment(hrDate).format(`${DATE_FORMAT} | h:mm a`)}
                 </span>
               </div>
             </Col>

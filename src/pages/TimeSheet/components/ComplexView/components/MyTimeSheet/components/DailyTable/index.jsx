@@ -9,7 +9,7 @@ import {
   hourFormatAPI,
   WORKING_HOURS,
   DEFAULT_TOP_HOUR,
-} from '@/utils/timeSheet';
+} from '@/constants/timeSheet';
 import ActivityList from './components/ActivityList';
 import styles from './index.less';
 

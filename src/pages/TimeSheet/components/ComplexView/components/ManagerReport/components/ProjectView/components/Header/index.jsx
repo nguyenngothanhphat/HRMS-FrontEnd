@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import FilterButton from '@/components/FilterButton';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
-import { projectColor, VIEW_TYPE } from '@/utils/timeSheet';
+import { projectColor, VIEW_TYPE } from '@/constants/timeSheet';
 import styles from './index.less';
 
 const { Option } = Select;

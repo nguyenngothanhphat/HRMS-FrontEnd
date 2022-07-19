@@ -3,7 +3,7 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
 import { goToTop } from '@/utils/utils';
 import { Page } from '../../../../utils';
 import MessageBox from '../../../MessageBox';
@@ -12,8 +12,8 @@ import styles from './index.less';
 import CollapseField from './components/CollapseFields';
 import CommonModal from '@/components/CommonModal';
 import VerifyDocumentModalContent from './components/VerifyDocumentModalContent';
-import { mapType } from '@/utils/newCandidateForm';
-import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
+import { MAP_TYPE } from '@/constants/newCandidateForm';
+import { DOCUMENT_TYPES } from '@/constants/candidatePortal';
 import ViewCommentModalContent from './components/ViewCommentModalContent';
 import TechnicalCertification from './components/TechnicalCertification';
 import PreviousEmployment from './components/PreviousEmployment';
@@ -279,7 +279,7 @@ const BackgroundRecheck = (props) => {
     dispatch({
       type: 'newCandidateForm/saveTemp',
       payload: {
-        [mapType[type]]: result,
+        [MAP_TYPE[type]]: result,
       },
     });
   };
@@ -292,7 +292,7 @@ const BackgroundRecheck = (props) => {
   };
 
   const assignPayloadToData = (payload) => {
-    let items = [...tempData[mapType[selectingFile?.type]]];
+    let items = [...tempData[MAP_TYPE[selectingFile?.type]]];
 
     const func = (arr1) => {
       return arr1.map((x) => {

@@ -1,12 +1,13 @@
 import { Card, Col, Row } from 'antd';
+import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
 import CustomEmployeeTag from '@/components/CustomEmployeeTag';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import { DATE_FORMAT, OFFBOARDING } from '@/constants/offboarding';
 import SetMeetingModal from '@/pages/Offboarding/components/SetMeetingModal';
-import { dateFormat, getEmployeeName, OFFBOARDING, onJoinMeeting } from '@/utils/offboarding';
+import { getEmployeeName, onJoinMeeting } from '@/utils/offboarding';
 import styles from './index.less';
 
 const WhatNext = (props) => {
@@ -112,7 +113,7 @@ const WhatNext = (props) => {
               <div className={styles.rightPart}>
                 <span className={styles.label}>Scheduled on</span>
                 <span className={styles.time}>
-                  {moment(managerDate).format(`${dateFormat} | h:mm a`)}
+                  {moment(managerDate).format(`${DATE_FORMAT} | h:mm a`)}
                 </span>
               </div>
             </Col>
@@ -138,7 +139,7 @@ const WhatNext = (props) => {
               <div className={styles.rightPart}>
                 <span className={styles.label}>Scheduled on</span>
                 <span className={styles.time}>
-                  {moment(employeeDate).format(`${dateFormat} | h:mm a`)}
+                  {moment(employeeDate).format(`${DATE_FORMAT} | h:mm a`)}
                 </span>
                 {!isAccept && (
                   <div className={styles.notification}>

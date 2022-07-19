@@ -2,7 +2,7 @@ import { CalendarOutlined } from '@ant-design/icons';
 import { DatePicker, Radio } from 'antd';
 import moment from 'moment';
 import React from 'react';
-import { MAKE_CHANGE_TYPE } from '@/utils/employeeProfile';
+import { MAKE_CHANGE_TYPE } from '@/constants/employeeProfile';
 import styles from './styles.less';
 
 const { ALREADY_CHANGE, SCHEDULE_CHANGE } = MAKE_CHANGE_TYPE;

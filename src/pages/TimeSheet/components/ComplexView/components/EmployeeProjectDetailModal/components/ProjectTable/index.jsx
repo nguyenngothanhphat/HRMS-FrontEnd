@@ -1,11 +1,12 @@
 import { Table } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import { convertMsToTime, employeeColor } from '@/utils/timeSheet';
+import { convertMsToTime } from '@/utils/timeSheet';
+import { employeeColor } from '@/constants/timeSheet';
 import styles from './index.less';
 
 const ProjectTable = (props) => {
-  const { list = [], loading = false, date } = props;
+  const { list = [], loading = false } = props;
   const [pageSelected, setPageSelected] = useState(1);
 
   const getColorByIndex = (index) => {

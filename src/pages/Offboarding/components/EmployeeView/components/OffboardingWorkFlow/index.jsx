@@ -2,7 +2,7 @@ import { Button, Card, Divider, Steps } from 'antd';
 import { history } from 'umi';
 import React from 'react';
 import styles from './index.less';
-import { OFFBOARDING } from '@/utils/offboarding';
+import { OFFBOARDING } from '@/constants/offboarding';
 
 const { Step } = Steps;
 const { STEP, STATUS } = OFFBOARDING;

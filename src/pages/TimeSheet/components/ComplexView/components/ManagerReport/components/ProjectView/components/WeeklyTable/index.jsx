@@ -3,22 +3,21 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
-import IconWarning from '@/assets/timeSheet/ic_warning.svg';
 import IconHoliday from '@/assets/timeSheet/ic_holiday.svg';
+import IconWarning from '@/assets/timeSheet/ic_warning.svg';
+import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import EmptyComponent from '@/components/Empty';
+import UserProfilePopover from '@/components/UserProfilePopover';
+import { dateFormatAPI, projectColor } from '@/constants/timeSheet';
+import { getCurrentCompany } from '@/utils/authority';
 import {
   checkHoliday,
   convertMsToTime,
-  dateFormatAPI,
   getHolidayNameByDate,
   holidayFormatDate,
-  projectColor,
 } from '@/utils/timeSheet';
 import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
-import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
-import UserProfilePopover from '@/components/UserProfilePopover';
-import { getCurrentCompany } from '@/utils/authority';
 
 const WeeklyTable = (props) => {
   const { dispatch, startDate = '', endDate = '', loadingFetch = false, data = [] } = props;

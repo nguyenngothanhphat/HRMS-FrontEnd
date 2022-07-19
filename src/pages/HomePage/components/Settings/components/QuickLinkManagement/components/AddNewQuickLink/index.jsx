@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 // import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { TAB_IDS_QUICK_LINK } from '@/utils/homePage';
+import { TAB_IDS_QUICK_LINK } from '@/constants/homePage';
 import QuickLinkContent from './components/QuickLinkContent';
 import QuickLinkTimeOffContent from './components/QuickLinkTimeOffContent';
 import styles from './index.less';

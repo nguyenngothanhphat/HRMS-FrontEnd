@@ -3,7 +3,7 @@ import { Steps } from 'antd';
 import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 // import CheckIcon from '@/assets/offboarding/check.svg';
-import { OFFBOARDING } from '@/utils/offboarding';
+import { OFFBOARDING } from '@/constants/offboarding';
 import styles from './index.less';
 
 const { Step } = Steps;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Select, Tooltip } from 'antd';
 import moment from 'moment';
-import { hourFormat, WORKING_HOURS } from '@/utils/timeSheet';
+import { hourFormat, WORKING_HOURS } from '@/constants/timeSheet';
 
 const { Option } = Select;
 

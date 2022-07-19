@@ -1,16 +1,11 @@
 import * as axios from 'axios';
 import { message } from 'antd';
 import imageCompression from 'browser-image-compression';
+import { FILE_TYPE } from '@/constants/upload';
 
 export default async function uploadFile(files, params) {
   return axios.post('/file/upload', { files, params });
 }
-
-export const FILE_TYPE = {
-  IMAGE: 0,
-  PDF: 1,
-  OTHER: -1,
-};
 
 export const identifyFile = (fileName = '') => {
   if (fileName) {

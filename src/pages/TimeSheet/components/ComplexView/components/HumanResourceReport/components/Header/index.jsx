@@ -1,19 +1,20 @@
+import { CloseOutlined } from '@ant-design/icons';
+import { Button, Skeleton, Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { Suspense, useEffect, useState } from 'react';
-import { Button, Skeleton, Tag, Tooltip } from 'antd';
 import { connect } from 'umi';
-import { CloseOutlined } from '@ant-design/icons';
-import exportToCSV from '@/utils/exportAsExcel';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
-import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
-import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
-import { checkHolidayInWeek, dateFormatAPI, holidayFormatDate, VIEW_TYPE } from '@/utils/timeSheet';
-import styles from './index.less';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
-import FilterContent from './components/FilterContent';
+import { dateFormatAPI, VIEW_TYPE } from '@/constants/timeSheet';
+import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
+import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
 import { getCurrentCompany } from '@/utils/authority';
+import exportToCSV from '@/utils/exportAsExcel';
+import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
+import FilterContent from './components/FilterContent';
+import styles from './index.less';
 
 const Header = (props) => {
   const {

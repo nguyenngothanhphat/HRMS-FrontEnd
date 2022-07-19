@@ -1,7 +1,7 @@
 import { Button, Modal, Row, notification } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { connect, history } from 'umi';
-import { WIDGETS } from '@/utils/dashboard';
+import { WIDGETS } from '@/constants/dashboard';
 import styles from './index.less';
 import WidgetCard from './components/WidgetCard';
 import SettingIcon from '@/assets/dashboard/setting.svg';
@@ -116,7 +116,14 @@ const ManageWidgetsModal = (props) => {
           <Row gutter={[60, 30]}>
             {showingWidgets.map((wg) => {
               const checked = selectedWidgets.includes(wg.id);
-              return <WidgetCard item={wg} onSelectWidget={onSelectWidget} checked={checked} />;
+              return (
+                <WidgetCard
+                  item={wg}
+                  onSelectWidget={onSelectWidget}
+                  checked={checked}
+                  key={wg.id}
+                />
+              );
             })}
           </Row>
         </div>

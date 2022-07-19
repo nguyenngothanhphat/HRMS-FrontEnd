@@ -1,11 +1,12 @@
-import { Card, Avatar, Col, Row } from 'antd';
-import React from 'react';
+import { Avatar, Card, Col, Row } from 'antd';
 import moment from 'moment';
+import React from 'react';
 import { connect } from 'umi';
 import avtDefault from '@/assets/avtDefault.jpg';
-import styles from './index.less';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
-import { OFFBOARDING, onJoinMeeting } from '@/utils/offboarding';
+import { OFFBOARDING } from '@/constants/offboarding';
+import { onJoinMeeting } from '@/utils/offboarding';
+import styles from './index.less';
 
 const { MEETING_STATUS = {}, UPDATE_ACTION = {}, STATUS } = OFFBOARDING;
 

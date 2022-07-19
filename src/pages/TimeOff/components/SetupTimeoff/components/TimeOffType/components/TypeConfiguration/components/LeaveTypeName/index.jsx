@@ -2,7 +2,7 @@ import { Card, Col, Form, Input, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
-import { FORM_ITEM_NAME } from '@/utils/timeOff';
+import { FORM_ITEM_NAME } from '@/constants/timeOff';
 
 const LeaveTypeName = () => {
   return (

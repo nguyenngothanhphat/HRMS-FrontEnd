@@ -4,9 +4,9 @@ import React from 'react';
 import { connect, history } from 'umi';
 import PlusIcon from '@/assets/dashboard/timesheetPlus.svg';
 import DoneIcon from '@/assets/dashboard/timesheetCheck.svg';
-import { dateFormatAPI } from '@/utils/timeSheet';
+import { dateFormatAPI } from '@/constants/timeSheet';
 import styles from './index.less';
-import { TIMESHEET_DATE_FORMAT } from '@/utils/dashboard';
+import { TIMESHEET_DATE_FORMAT } from '@/constants/dashboard';
 
 // const dateFormat = 'MM/DD/YYYY';
 

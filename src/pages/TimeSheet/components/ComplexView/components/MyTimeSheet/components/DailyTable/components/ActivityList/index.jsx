@@ -1,7 +1,8 @@
 import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { checkHoliday, EMP_MT_MAIN_COL_SPAN } from '@/utils/timeSheet';
+import { EMP_MT_MAIN_COL_SPAN } from '@/constants/timeSheet';
+import { checkHoliday } from '@/utils/timeSheet';
 import ActivityCard from './components/ActivityCard';
 import TimeOffCard from './components/TimeOffCard';
 import IconHoliday from '@/assets/timeSheet/ic_holiday.svg';

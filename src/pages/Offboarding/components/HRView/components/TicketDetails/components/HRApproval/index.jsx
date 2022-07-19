@@ -6,7 +6,7 @@ import SuccessIcon from '@/assets/offboarding/successIcon.png';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import NotificationModal from '@/components/NotificationModal';
-import { OFFBOARDING } from '@/utils/offboarding';
+import { OFFBOARDING } from '@/constants/offboarding';
 import styles from './index.less';
 
 const HRApproval = (props) => {

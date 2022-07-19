@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { connect } from 'umi';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import CommonTable from '@/components/CommonTable';
-import { employeeColor } from '@/utils/timeSheet';
+import { employeeColor } from '@/constants/timeSheet';
 import ProjectDetailModal from '../../../ProjectDetailModal';
 import styles from './index.less';
 

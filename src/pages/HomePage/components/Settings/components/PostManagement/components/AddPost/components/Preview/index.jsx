@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Parser from 'html-react-parser';
 import styles from './index.less';
-import { TAB_IDS } from '@/utils/homePage';
+import { TAB_IDS } from '@/constants/homePage';
 import EmployeeTag from '@/pages/HomePage/components/Announcements/components/EmployeeTag';
 import PostContent from '@/pages/HomePage/components/Announcements/components/PostContent';
 import PreviewImage from '@/assets/homePage/previewImage.png';

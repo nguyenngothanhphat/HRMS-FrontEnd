@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import EmptyComponent from '@/components/Empty';
-import { employeeColor } from '@/utils/timeSheet';
+import { employeeColor } from '@/constants/timeSheet';
 import EmployeeDetailModal from '../../../EmployeeDetailModal';
 import styles from './index.less';
 // import UserPopover from './components/UserPopover';

@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'umi';
 import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
 import CommonTable from '@/components/CommonTable';
-import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
+import { DATE_FORMAT_LIST } from '@/constants/projectManagement';
 import styles from './index.less';
 
 const ReviewResourceTable = (props) => {

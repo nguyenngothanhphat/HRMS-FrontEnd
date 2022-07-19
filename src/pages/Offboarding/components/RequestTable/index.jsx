@@ -12,11 +12,11 @@ import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import {
-  dateFormat,
+  DATE_FORMAT,
   OFFBOARDING,
   OFFBOARDING_MANAGER_TABS,
   OFFBOARDING_TABS,
-} from '@/utils/offboarding';
+} from '@/constants/offboarding';
 import { addZeroToNumber, removeEmptyFields } from '@/utils/utils';
 import SetMeetingModal from '../SetMeetingModal';
 import FilterContent from './components/FilterContent';
@@ -332,7 +332,7 @@ const RequestTable = (props) => {
                 textTransform: 'uppercase',
               }}
             >
-              {moment(managerDate || employeeDate).format(`${dateFormat} h:mm a`)}
+              {moment(managerDate || employeeDate).format(`${DATE_FORMAT} h:mm a`)}
             </span>
           );
         }

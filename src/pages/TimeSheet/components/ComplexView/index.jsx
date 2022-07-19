@@ -7,7 +7,7 @@ import CustomBlueButton from '@/components/CustomBlueButton';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentLocation } from '@/utils/authority';
-import { TAB_NAME } from '@/utils/timeSheet';
+import { TAB_NAME } from '@/constants/timeSheet';
 import FinanceReport from './components/FinanceReport';
 import HumanResourceReport from './components/HumanResourceReport';
 import ManagerReport from './components/ManagerReport';

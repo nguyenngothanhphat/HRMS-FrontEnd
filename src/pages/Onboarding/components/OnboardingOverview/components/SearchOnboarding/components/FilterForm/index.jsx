@@ -5,7 +5,7 @@ import moment from 'moment';
 import { connect } from 'umi';
 import { isEmpty, values } from 'lodash';
 
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 

@@ -41,7 +41,7 @@ const MyApps = () => {
         <div className={styles.content}>
           <Row gutter={[24, 24]}>
             {listMyApps.map((app) => (
-              <AppCard app={app} />
+              <AppCard app={app} key={app.name} />
             ))}
           </Row>
         </div>

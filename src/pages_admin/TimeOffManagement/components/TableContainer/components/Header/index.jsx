@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import { dateFormat, TIMEOFF_NAME_BY_ID } from '@/utils/timeOffManagement';
+import { DATE_FORMAT, TIMEOFF_NAME_BY_ID } from '@/constants/timeOffManagement';
 // import DownloadIcon from '@/assets/timeOffManagement/ic_download.svg';
 import styles from './index.less';
 
@@ -90,7 +90,7 @@ const Header = (props) => {
                     <Form.Item name="fromDate">
                       <DatePicker
                         placeholder="From Date"
-                        format={dateFormat}
+                        format={DATE_FORMAT}
                         disabledDate={disabledFromDate}
                         disabled={disabled}
                         onChange={(val) => setFromDate(val)}
@@ -102,7 +102,7 @@ const Header = (props) => {
                     <Form.Item name="toDate">
                       <DatePicker
                         placeholder="To Date"
-                        format={dateFormat}
+                        format={DATE_FORMAT}
                         disabledDate={disabledToDate}
                         disabled={disabled}
                         onChange={(val) => setToDate(val)}

@@ -25,23 +25,23 @@ const CommonTab = (props) => {
   const renderTagByType = (type) => {
     switch (type) {
       case '1': {
-        return data.map((item) => {
-          return <PendingApprovalTag item={item} refreshData={refreshData} />;
+        return data.map((item, i) => {
+          return <PendingApprovalTag item={item} refreshData={refreshData} key={`${i + 1}`} />;
         });
       }
       case '2': {
-        return data.map((item) => {
-          return <NotificationTag item={item} />;
+        return data.map((item, i) => {
+          return <NotificationTag item={item} key={`${i + 1}`} />;
         });
       }
       case '3': {
-        return data.map((item) => {
-          return <TicketTag item={item} />;
+        return data.map((item, i) => {
+          return <TicketTag item={item} key={`${i + 1}`} />;
         });
       }
       case '4': {
-        return data.map((item) => {
-          return <NotificationMessageTag item={item} {...props} />;
+        return data.map((item, i) => {
+          return <NotificationMessageTag item={item} key={`${i + 1}`} {...props} />;
         });
       }
       default:

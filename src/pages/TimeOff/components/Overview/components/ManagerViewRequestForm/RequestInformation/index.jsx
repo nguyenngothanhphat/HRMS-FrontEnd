@@ -3,9 +3,8 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
+import { checkNormalTypeTimeoff, getHours } from '@/utils/timeOff';
 import {
-  checkNormalTypeTimeoff,
-  getHours,
   MAX_NO_OF_DAYS_TO_SHOW,
   TIMEOFF_12H_FORMAT,
   TIMEOFF_24H_FORMAT,
@@ -16,10 +15,10 @@ import {
   TIMEOFF_INPUT_TYPE_BY_LOCATION,
   TIMEOFF_STATUS,
   TIMEOFF_TYPE,
-} from '@/utils/timeOff';
+} from '@/constants/timeOff';
 import TimeOffModal from '@/components/TimeOffModal';
-import Project from './components/Project';
 import PDFIcon from '@/assets/pdf_icon.png';
+import Project from './components/Project';
 import styles from './index.less';
 
 const { TextArea } = Input;

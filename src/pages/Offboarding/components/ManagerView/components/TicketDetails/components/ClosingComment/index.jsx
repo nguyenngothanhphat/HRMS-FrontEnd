@@ -7,7 +7,7 @@ import SuccessIcon from '@/assets/offboarding/successIcon.png';
 import FailedIcon from '@/assets/offboarding/failedIcon.svg';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
-import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
+import { DATE_FORMAT, OFFBOARDING } from '@/constants/offboarding';
 import NotificationModal from '@/components/NotificationModal';
 import styles from './index.less';
 
@@ -101,8 +101,8 @@ const ClosingComment = (props) => {
   };
 
   const disabledLWD = (current) => {
-    const customDate = moment().format(dateFormat);
-    return current && current < moment(customDate, dateFormat);
+    const customDate = moment().format(DATE_FORMAT);
+    return current && current < moment(customDate, DATE_FORMAT);
   };
 
   useEffect(() => {
@@ -239,7 +239,7 @@ const ClosingComment = (props) => {
                   label="Last working date (Manager requested)"
                   rules={[{ required: true }]}
                 >
-                  <DatePicker format={dateFormat} disabled={disabled} disabledDate={disabledLWD} />
+                  <DatePicker format={DATE_FORMAT} disabled={disabled} disabledDate={disabledLWD} />
                 </Form.Item>
               </Col>
               <Col span={12} />
@@ -267,7 +267,7 @@ const ClosingComment = (props) => {
     const time = updatedAt ? moment(updatedAt) : moment();
     return (
       <div className={styles.currentTime}>
-        <span>{moment(time).format(`${dateFormat} | h:mm a`)}</span>
+        <span>{moment(time).format(`${DATE_FORMAT} | h:mm a`)}</span>
       </div>
     );
   };

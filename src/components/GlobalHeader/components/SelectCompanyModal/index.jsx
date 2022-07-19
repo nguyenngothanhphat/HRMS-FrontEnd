@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Button, Modal, notification } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
-import { setCurrentCompany, setTenantId, isOwner, getCurrentCompany } from '@/utils/authority';
 import { connect, history } from 'umi';
+import { setCurrentCompany, setTenantId, isOwner, getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(({ user: { companiesOfUser = [] } = {} }) => ({ companiesOfUser }))
@@ -47,6 +47,7 @@ class SelectCompanyModal extends PureComponent {
             <div
               className={`${className} ${className1}`}
               onClick={currentCompany === _id ? '' : () => this.setActiveCompany(_id, tenant)}
+              key={_id}
             >
               <div className={styles.leftPart}>
                 <div className={styles.logo}>

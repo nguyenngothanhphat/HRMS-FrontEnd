@@ -5,7 +5,7 @@ import { history, connect } from 'umi';
 import avtDefault from '@/assets/avtDefault.jpg';
 import IconPopup from '@/assets/offboarding/popupIcon.svg';
 import styles from './index.less';
-import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
+import { DATE_FORMAT, OFFBOARDING } from '@/constants/offboarding';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import SetMeetingModal from '../../../SetMeetingModal';
@@ -251,7 +251,7 @@ const YourRequest = (props) => {
                     Last Edited
                   </Col>
                   <Col span={20} style={{ color: '#464646' }}>
-                    {moment(updatedAt).format(dateFormat)}
+                    {moment(updatedAt).format(DATE_FORMAT)}
                   </Col>
                 </Row>
               </Col>
@@ -301,13 +301,13 @@ const YourRequest = (props) => {
                     Requested on
                   </Col>
                   <Col span={20} style={{ color: '#464646' }}>
-                    {moment(createdAt).format(dateFormat)}
+                    {moment(createdAt).format(DATE_FORMAT)}
                   </Col>
                   <Col span={4} className={styles.title}>
                     Tentative LWD
                   </Col>
                   <Col span={20} style={{ color: '#464646' }}>
-                    {moment(LWD).format(dateFormat)}
+                    {moment(LWD).format(DATE_FORMAT)}
                   </Col>
                 </Row>
               </Col>

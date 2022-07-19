@@ -4,15 +4,14 @@ import { Table, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { projectColor, VIEW_TYPE } from '@/constants/timeSheet';
 import {
-  projectColor,
   convertMsToTime,
-  VIEW_TYPE,
   checkHoliday,
   holidayFormatDate,
   getHolidayNameByDate,
 } from '@/utils/timeSheet';
-import AirPlanIcon from '@/assets/timeSheet/airplanIcon.svg';
+import AirPlaneIcon from '@/assets/timeSheet/airplanIcon.svg';
 import TaskPopover from './components/TaskPopover';
 import TimeoffPopover from './components/TimeoffPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
@@ -284,7 +283,7 @@ const WeeklyTable = (props) => {
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
                 <span>
                   {projectName === 'Timeoff' ? (
-                    <img src={AirPlanIcon} alt="" />
+                    <img src={AirPlaneIcon} alt="" />
                   ) : projectName ? (
                     projectName.toString()?.charAt(0)
                   ) : (

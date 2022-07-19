@@ -9,10 +9,11 @@ import AppFooter from '@/components/AppFooter';
 import CommonModal from '@/pages/CandidatePortal/components/Dashboard/components/CommonModal';
 import { getCurrentCompany, getFirstChangePassword } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
-import { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
-import { ChatEvent, socket, disconnectSocket } from '@/utils/socket';
+import { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS } from '@/constants/candidatePortal';
+import { socket, disconnectSocket } from '@/utils/socket';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import s from './CandidatePortalLayout.less';
+import { CHAT_EVENT } from '@/constants/socket';
 
 const { Header, Content } = Layout;
 
@@ -113,8 +114,8 @@ const CandidatePortalLayout = React.memo((props) => {
   }, []);
 
   const initialSocket = () => {
-    socket.emit(ChatEvent.ADD_USER, candidate?._id);
-    socket.on(ChatEvent.GET_MESSAGE, (message) => {
+    socket.emit(CHAT_EVENT.ADD_USER, candidate?._id);
+    socket.on(CHAT_EVENT.GET_MESSAGE, (message) => {
       saveNewMessage(message);
       fetchNotificationList();
       getListLastMessage();
@@ -124,9 +125,9 @@ const CandidatePortalLayout = React.memo((props) => {
   const getViewingTask = () => {
     const currentLink = window.location.href;
     return pendingTasks.find((task) => currentLink.includes(task.id));
-  } 
-  const viewingTask = getViewingTask()
-  
+  };
+  const viewingTask = getViewingTask();
+
   useEffect(() => {
     if (candidate) {
       dispatch({
@@ -185,12 +186,12 @@ const CandidatePortalLayout = React.memo((props) => {
   const getBreadcrumbName = () => {
     switch (viewingTask?.id) {
       case CANDIDATE_TASK_LINK.DOCUMENTS_CHECKLIST:
-        return 'Upload Documents'
+        return 'Upload Documents';
       default:
-        return 'Employee Onboarding'
+        return 'Employee Onboarding';
     }
-  }
-  
+  };
+
   const avatarMenu = (
     <Menu
       className={s.dropdownMenu}

@@ -5,7 +5,7 @@ import { Skeleton, Tag } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
-import { VIEW_TYPE } from '@/utils/timeSheet';
+import { VIEW_TYPE } from '@/constants/timeSheet';
 import styles from './index.less';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';

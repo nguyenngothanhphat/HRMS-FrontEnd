@@ -2,15 +2,13 @@ import { Spin, Tabs, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { isEmpty } from 'lodash';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
+import { TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/constants/timeOff';
 import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
 import {
   checkNormalTypeTimeoff,
-  isFutureDay,
-  TIMEOFF_DATE_FORMAT,
-  TIMEOFF_STATUS,
+  isFutureDay
 } from '@/utils/timeOff';
 import HolidayCalendar from './components/HolidayCalendar';
 import HolidayList from './components/HolidayList';

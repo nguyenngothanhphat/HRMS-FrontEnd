@@ -1,26 +1,26 @@
 import { Button, Col, Input, Row, Slider, Space, Spin } from 'antd';
-import { toNumber, toString, trim, trimStart, isEmpty } from 'lodash';
+import { isEmpty, toNumber, toString, trim, trimStart } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import {
-  roundNumber2,
-  SALARY_STRUCTURE_OPTION,
   ANNUAL_RETENTION_BONUS,
   ELIGIBLE_VARIABLE_PAY,
   INSURANCE,
   JOINING_BONUS,
   MIDTERM_HIKE,
+  SALARY_STRUCTURE_OPTION,
   TOTAL_COMPENSATION,
   TOTAL_COST_COMPANY,
-} from '@/utils/onboardingSetting';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
+} from '@/constants/onboardingSetting';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
 import { listNoteSalary } from '@/utils/newCandidateForm';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { Page } from '../../../../utils';
 import styles from './index.less';
 import ModalWaitAccept from './ModalWaitAccept/index';
 import SalaryReference from './SalaryReference/index';
+import { roundNumber2 } from '@/utils/onboardingSetting';
 
 const reg = /^\d*(\.\d*)?$/;
 

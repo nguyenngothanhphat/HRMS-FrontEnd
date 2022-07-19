@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import mockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import styles from './index.less';
 
 const TeamLeaveCalendar = (props) => {
@@ -36,8 +36,7 @@ const TeamLeaveCalendar = (props) => {
   const checkDate = (date, listDate) => {
     return (
       listDate.filter(
-        (val) =>
-          moment(val.date).format('MM/DD/YYYY') === moment(date).format('MM/DD/YYYY'),
+        (val) => moment(val.date).format('MM/DD/YYYY') === moment(date).format('MM/DD/YYYY'),
       ) || []
     );
   };
@@ -76,8 +75,8 @@ const TeamLeaveCalendar = (props) => {
   const renderTooltipTitle = (list) => {
     return (
       <div>
-        {list.map((member) => (
-          <span style={{ display: 'block' }}>
+        {list.map((member, i) => (
+          <span style={{ display: 'block' }} key={`${i + 1}`}>
             {/* {member.name} ({getDateDuration(member.duration)}) */}
             {member.employeeInfo.generalInfo.firstName} {member.employeeInfo.generalInfo.lastName}{' '}
             {member ? `(${getDateDuration(member)})` : ''}
@@ -103,9 +102,13 @@ const TeamLeaveCalendar = (props) => {
       >
         <div className={styles.projectMembers}>
           <Avatar.Group maxCount={4}>
-            {find.map((member) => {
+            {find.map((member, i) => {
               return (
-                <Avatar size="large" src={member.employeeInfo.generalInfo.avatar || mockAvatar} />
+                <Avatar
+                  size="large"
+                  src={member.employeeInfo?.generalInfo?.avatar || mockAvatar}
+                  key={`${i + 1}`}
+                />
               );
             })}
             {/* <Avatar size='large' src={find.employeeInfo.generalInfo.avatar} /> */}

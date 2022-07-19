@@ -3,9 +3,10 @@ import { Badge, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import BellIcon from '@/assets/homePage/Bell-icon.svg';
+import { CHAT_EVENT } from '@/constants/socket';
 import ActivityLogModalContent from '@/pages/Dashboard/components/ActivityLog/components/ActivityLogModalContent';
 import { isOwner } from '@/utils/authority';
-import { ChatEvent, socket, disconnectSocket } from '@/utils/socket';
+import { disconnectSocket, socket } from '@/utils/socket';
 import CommonModal from '../CommonModal';
 import AvatarDropdown from './AvatarDropdown';
 import GlobalSearchNew from './components/GlobalSearchNew/index';
@@ -41,8 +42,8 @@ const GlobalHeaderRight = (props) => {
   };
 
   const initialSocket = () => {
-    socket.emit(ChatEvent.ADD_USER, currentUser?.employee?._id || '');
-    socket.on(ChatEvent.GET_MESSAGE, async (data) => {
+    socket.emit(CHAT_EVENT.ADD_USER, currentUser?.employee?._id || '');
+    socket.on(CHAT_EVENT.GET_MESSAGE, async (data) => {
       saveNewMessage(data);
       fetchNotificationList();
     });

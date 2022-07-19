@@ -6,7 +6,8 @@ import LikeIcon from '@/assets/offboarding/like.svg';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import EditButton from '@/components/EditButton';
-import { dateFormat, getEmployeeName, OFFBOARDING } from '@/utils/offboarding';
+import { DATE_FORMAT, OFFBOARDING } from '@/constants/offboarding';
+import { getEmployeeName } from '@/utils/offboarding';
 import styles from './index.less';
 
 const HRClosingComment = (props) => {
@@ -82,7 +83,7 @@ const HRClosingComment = (props) => {
       <div className={styles.options}>
         {!isEnterClosingComment && <EditButton onClick={() => setIsEnterClosingComment(true)} />}
         <div className={styles.currentTime}>
-          <span>{moment(time).format(`${dateFormat} | h:mm a`)}</span>
+          <span>{moment(time).format(`${DATE_FORMAT} | h:mm a`)}</span>
         </div>
       </div>
     );

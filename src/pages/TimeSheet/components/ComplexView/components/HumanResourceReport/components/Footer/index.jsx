@@ -5,7 +5,7 @@ import moment from 'moment';
 import exportToCSV from '@/utils/exportAsExcel';
 import DownloadIcon from '@/assets/timeSheet/solidDownload.svg';
 import styles from './index.less';
-import { dateFormatAPI } from '@/utils/timeSheet';
+import { dateFormatAPI } from '@/constants/timeSheet';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const Footer = (props) => {

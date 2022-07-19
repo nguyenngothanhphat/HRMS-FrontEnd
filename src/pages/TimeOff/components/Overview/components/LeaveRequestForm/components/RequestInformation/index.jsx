@@ -21,6 +21,8 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
   convert24To12,
   getHours,
+} from '@/utils/timeOff';
+import {
   MAX_NO_OF_DAYS_TO_SHOW,
   TIMEOFF_12H_FORMAT,
   TIMEOFF_24H_FORMAT,
@@ -35,7 +37,7 @@ import {
   TIMEOFF_TYPE,
   TIMEOFF_WORK_DAYS,
   WORKING_HOURS,
-} from '@/utils/timeOff';
+} from '@/constants/timeOff';
 import AddAttachments from './components/AddAttachments';
 import LeaveTimeRow from './components/LeaveTimeRow';
 import LeaveTimeRow2 from './components/LeaveTimeRow2';

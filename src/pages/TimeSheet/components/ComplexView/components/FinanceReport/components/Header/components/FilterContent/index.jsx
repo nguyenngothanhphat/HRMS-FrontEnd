@@ -3,7 +3,7 @@ import { Form, Select } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { VIEW_TYPE } from '@/utils/timeSheet';
+import { VIEW_TYPE } from '@/constants/timeSheet';
 import styles from './index.less';
 
 const FilterContent = (props) => {

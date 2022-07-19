@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import PDFIcon from '@/assets/pdf_icon.png';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import MessageBox from '../MessageBox';
@@ -101,7 +101,11 @@ const TicketDetailModal = (props) => {
     const intersection = listEmployee.filter((element) => ccList.includes(element._id));
     return intersection.map((val) => {
       const { generalInfo: { legalName = '' } = {} } = val;
-      return <span style={{ paddingRight: '8px' }}>{legalName || ''}</span>;
+      return (
+        <span style={{ paddingRight: '8px' }} key={val._id}>
+          {legalName || ''}
+        </span>
+      );
     });
   };
   const getColor = () => {
@@ -122,7 +126,7 @@ const TicketDetailModal = (props) => {
     return (
       <span className={styles.attachments}>
         {!isEmpty(attachments)
-          ? attachments.map((val) => {
+          ? attachments.map((val, i) => {
               const attachmentSlice = () => {
                 if (val.attachmentName) {
                   if (val.attachmentName.length > 35) {
@@ -137,7 +141,7 @@ const TicketDetailModal = (props) => {
               };
 
               return (
-                <div className={styles.attachments__file}>
+                <div className={styles.attachments__file} key={`${i+1}`}>
                   <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
                     {attachmentSlice()}
                   </a>
@@ -263,7 +267,7 @@ const TicketDetailModal = (props) => {
               {content.map(
                 (val) =>
                   !val.disabled && (
-                    <Col span={val.span}>
+                    <Col span={val.span} key={val.name}>
                       <div>
                         <span className={styles.title}>{val.name}</span>:{' '}
                         <span className={styles.value}>{val.value}</span>

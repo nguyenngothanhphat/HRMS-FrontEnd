@@ -1,14 +1,14 @@
 import { Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { history, connect } from 'umi';
+import { connect, history } from 'umi';
 import DoneIcon from '@/assets/dashboard/timesheetCheck.svg';
 import PlusIcon from '@/assets/dashboard/timesheetPlus.svg';
 import CalendarImage from '@/assets/homePage/calendarImage.png';
-import { TIMESHEET_DATE_FORMAT } from '@/utils/dashboard';
-import { dateFormatAPI } from '@/utils/timeSheet';
-import styles from './index.less';
+import { TIMESHEET_DATE_FORMAT } from '@/constants/dashboard';
+import { dateFormatAPI } from '@/constants/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
+import styles from './index.less';
 
 const TimeSheet = (props) => {
   const {

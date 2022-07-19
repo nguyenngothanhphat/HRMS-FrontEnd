@@ -6,11 +6,17 @@ import styles from './index.less';
 
 const AppCard = (props) => {
   const { app: { name = '', icon = '', link = '' } = {} } = props;
-  let directlyClick = '';  
+  let directlyClick = '';
 
-  if(name === 'Timesheets') {directlyClick = '/time-sheet'}
-  if(name === 'Directory') {directlyClick = '/directory/org-chart'}
-  if(name === 'Timeoff') {directlyClick = '/time-off/overview'}
+  if (name === 'Timesheets') {
+    directlyClick = '/time-sheet';
+  }
+  if (name === 'Directory') {
+    directlyClick = '/directory/org-chart';
+  }
+  if (name === 'Timeoff') {
+    directlyClick = '/time-off/overview';
+  }
   const onAppClick = () => {
     history.push(directlyClick);
   };

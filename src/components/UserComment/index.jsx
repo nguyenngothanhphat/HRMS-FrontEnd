@@ -9,15 +9,10 @@ import LikedIcon from '@/assets/homePage/liked.svg';
 import MenuIcon from '@/assets/homePage/menuDots.svg';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import CommentBox from '@/components/CommentBox';
-import {
-  dateFormat,
-  hashtagify,
-  POST_OR_CMT,
-  LIKE_ACTION,
-  urlify,
-  TAB_IDS,
-} from '@/utils/homePage';
+import { hashtagify, urlify } from '@/utils/homePage';
+
 import styles from './index.less';
+import { DATE_FORMAT, LIKE_ACTION, POST_OR_CMT, TAB_IDS } from '@/constants/homePage';
 
 const UserComment = ({
   dispatch,
@@ -201,7 +196,7 @@ const UserComment = ({
 
             <Tooltip
               placement="right"
-              title={moment(item.createdAt).locale('en').format(dateFormat)}
+              title={moment(item.createdAt).locale('en').format(DATE_FORMAT)}
             >
               <span className={styles.time}>{time}</span>
             </Tooltip>

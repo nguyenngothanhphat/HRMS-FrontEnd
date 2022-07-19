@@ -3,9 +3,9 @@ import { Button, Row, Col, Spin, Progress, Input } from 'antd';
 import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import styles from './index.less';
-import ROLES from '@/utils/roles';
+import ROLES from '@/constants/roles';
 
 const { REGION_HEAD } = ROLES;
 const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, REJECTED } = TIMEOFF_STATUS;

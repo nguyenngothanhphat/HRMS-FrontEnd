@@ -7,7 +7,7 @@ import { connect } from 'umi';
 import TypeColorTag from '../TypeColorTag';
 import NextIcon from '@/assets/timeOff/next.svg';
 import PrevIcon from '@/assets/timeOff/previous.svg';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import styles from './index.less';
 
 const { IN_PROGRESS, ACCEPTED, REJECTED } = TIMEOFF_STATUS;

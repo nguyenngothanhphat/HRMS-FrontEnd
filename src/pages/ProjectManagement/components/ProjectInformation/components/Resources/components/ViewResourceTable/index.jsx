@@ -2,7 +2,7 @@ import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import CommonTable from '@/components/CommonTable';
-import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
+import { DATE_FORMAT_LIST } from '@/constants/projectManagement';
 import styles from './index.less';
 
 const ViewResourceTable = (props) => {

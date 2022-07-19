@@ -1,7 +1,7 @@
 import React from 'react';
 import HintIcon from '@/assets/offboarding/hint.svg';
 import ProcessDot from '@/components/ProgressDot';
-import { OFFBOARDING_COLOR, PROGRESS_NAME, OFFBOARDING } from '@/utils/offboarding';
+import { OFFBOARDING_COLOR, PROGRESS_NAME, OFFBOARDING } from '@/constants/offboarding';
 import styles from './index.less';
 
 const ProcessStatus = (props) => {

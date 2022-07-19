@@ -2,7 +2,7 @@ import { Spin, Tabs } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import { addZeroToNumber } from '@/utils/utils';
-import { TIMEOFF_TYPE } from '@/utils/timeOff';
+import { TIMEOFF_TYPE } from '@/constants/timeOff';
 import RequestScopeTabs from './components/RequestScopeTabs';
 import styles from './index.less';
 

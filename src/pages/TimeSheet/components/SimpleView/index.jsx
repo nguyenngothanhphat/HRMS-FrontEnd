@@ -5,7 +5,7 @@ import ModalImage from '@/assets/timeSheet/modalImage1.png';
 import CommonModal from '@/components/CommonModal';
 import CustomBlueButton from '@/components/CustomBlueButton';
 import { PageContainer } from '@/layouts/layout/src';
-import { TAB_NAME } from '@/utils/timeSheet';
+import { TAB_NAME } from '@/constants/timeSheet';
 import ManagerView from './components/ManagerView';
 import MyTimeSheet from './components/MyTimeSheet';
 import Settings from './components/Settings';

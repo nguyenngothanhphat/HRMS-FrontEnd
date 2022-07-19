@@ -1,4 +1,4 @@
-import ROLES from '../src/utils/roles';
+import ROLES from '../src/constants/roles';
 const {
   HR_MANAGER,
   HR,

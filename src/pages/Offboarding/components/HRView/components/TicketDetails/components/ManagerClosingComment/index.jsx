@@ -3,7 +3,8 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { dateFormat, getEmployeeName, OFFBOARDING } from '@/utils/offboarding';
+import { getEmployeeName } from '@/utils/offboarding';
+import { DATE_FORMAT, OFFBOARDING } from '@/constants/offboarding';
 import styles from './index.less';
 
 const SmallNotice = ({ text }) => {
@@ -116,7 +117,7 @@ const ManagerClosingComment = (props) => {
     const time = updatedAt ? moment(updatedAt) : moment();
     return (
       <div className={styles.currentTime}>
-        <span>Last updated on {moment(time).format(`${dateFormat} | h:mm a`)}</span>
+        <span>Last updated on {moment(time).format(`${DATE_FORMAT} | h:mm a`)}</span>
       </div>
     );
   };

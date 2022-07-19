@@ -1,13 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable compat/compat */
+import UploadImage from '@/assets/uploadIcon.svg';
+import { FILE_TYPE } from '@/constants/upload';
+import { beforeUpload, compressImage } from '@/utils/upload';
+import { Button, message, Modal, Upload } from 'antd';
 import React, { Component } from 'react';
-import { Modal, Button, Upload, message } from 'antd';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { connect } from 'umi';
-import UploadImage from '@/assets/uploadIcon.svg';
 import styles from './index.less';
-import { beforeUpload, compressImage, FILE_TYPE } from '@/utils/upload';
 
 const { Dragger } = Upload;
 const propsUpload = {

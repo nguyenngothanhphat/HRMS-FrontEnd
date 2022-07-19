@@ -6,7 +6,6 @@ import {
   getAllListTicket,
   getListMyTicket,
   getLeaveRequestOfEmployee,
-  aprovalCompoffRequest,
   approveRequest,
   rejectRequest,
   approveTimeSheetRequest,
@@ -16,7 +15,7 @@ import {
   uploadFile,
   addNotes,
   getProjectList,
-  getMyResoucreList,
+  getMyResourceList,
 
   // NEW DASHBOARD
   syncGoogleCalendar,
@@ -166,13 +165,6 @@ const dashboard = {
       let response;
       try {
         switch (typeTicket) {
-          case 'compoffRequest':
-            response = yield call(aprovalCompoffRequest, {
-              _id,
-              tenantId: getCurrentTenant(),
-              company: getCurrentCompany(),
-            });
-            break;
           case 'leaveRequest':
             response = yield call(approveRequest, {
               _id,
@@ -491,11 +483,11 @@ const dashboard = {
       }
       return response;
     },
-    // RESOUCRE MANAGEMENT
+    // RESOUrcE MANAGEMENT
     *fetchResourceList({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getMyResoucreList, {
+        response = yield call(getMyResourceList, {
           ...payload,
           company: [getCurrentCompany()],
           tenantId: getCurrentTenant(),
@@ -505,7 +497,7 @@ const dashboard = {
         yield put({
           type: 'save',
           payload: {
-            resoucreList: data,
+            resourceList: data,
           },
         });
       } catch (errors) {

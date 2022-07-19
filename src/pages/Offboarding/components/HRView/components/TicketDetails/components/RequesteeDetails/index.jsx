@@ -2,7 +2,8 @@ import { Card, Col, Row } from 'antd';
 import moment from 'moment';
 import React from 'react';
 import { Link } from 'umi';
-import { dateFormat, getEmployeeName } from '@/utils/offboarding';
+import { getEmployeeName } from '@/utils/offboarding';
+import { DATE_FORMAT } from '@/constants/offboarding';
 import styles from './index.less';
 
 const RequesteeDetails = ({ item = {} }) => {
@@ -40,7 +41,7 @@ const RequesteeDetails = ({ item = {} }) => {
     },
     {
       label: 'Date of Joining',
-      value: joinDate ? moment(joinDate).format(dateFormat) : '',
+      value: joinDate ? moment(joinDate).format(DATE_FORMAT) : '',
     },
     {
       label: 'Reporting Manager',

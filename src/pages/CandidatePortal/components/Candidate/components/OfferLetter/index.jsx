@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { NEW_PROCESS_STATUS, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_STEPS } from '@/constants/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import NoteComponent from '@/pages/NewCandidateForm/components/NoteComponent';
 import FileContent from '../FileContent';

@@ -1,13 +1,14 @@
-import React, { PureComponent } from 'react';
-import { Table, Avatar, Tooltip, Spin } from 'antd';
-import { history, connect } from 'umi';
-import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
+import { Avatar, Spin, Table, Tooltip } from 'antd';
+import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect, history } from 'umi';
 import ApproveIcon from '@/assets/approveTR.svg';
-import OpenIcon from '@/assets/openTR.svg';
-import CancelIcon from '@/assets/cancelTR.svg';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
-import { roundNumber, TIMEOFF_STATUS } from '@/utils/timeOff';
+import CancelIcon from '@/assets/cancelTR.svg';
+import OpenIcon from '@/assets/openTR.svg';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
+import { roundNumber } from '@/utils/timeOff';
 import RejectCommentModal from '../RejectCommentModal';
 
 import styles from './index.less';

@@ -2,7 +2,7 @@ import { Col, DatePicker, Form, Row } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { dateFormat } from '@/utils/offboarding';
+import { DATE_FORMAT } from '@/constants/offboarding';
 import styles from './index.less';
 
 const FilterContent = ({ onFinish = () => {}, setFilterForm = () => {} }) => {
@@ -34,7 +34,7 @@ const FilterContent = ({ onFinish = () => {}, setFilterForm = () => {} }) => {
         <Row>
           <Col span={11}>
             <Form.Item name="fromDate">
-              <DatePicker placeholder="From" format={dateFormat} />
+              <DatePicker placeholder="From" format={DATE_FORMAT} />
             </Form.Item>
           </Col>
           <Col span={2} className={styles.separator}>
@@ -42,7 +42,7 @@ const FilterContent = ({ onFinish = () => {}, setFilterForm = () => {} }) => {
           </Col>
           <Col span={11}>
             <Form.Item name="toDate">
-              <DatePicker placeholder="To" format={dateFormat} />
+              <DatePicker placeholder="To" format={DATE_FORMAT} />
             </Form.Item>
           </Col>
         </Row>

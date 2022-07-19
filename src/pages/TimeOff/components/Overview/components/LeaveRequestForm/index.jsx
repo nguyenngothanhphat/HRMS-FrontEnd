@@ -5,7 +5,7 @@ import { Affix, Col, Row, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/constants/timeOff';
 import RequestInformation from './components/RequestInformation';
 import NoteComponent from '@/components/NoteComponent';
 import Icon1 from '@/assets/timeOff/icon1.svg';
@@ -170,22 +170,22 @@ const LeaveRequestForm = (props) => {
           (action === EDIT_LEAVE_REQUEST &&
             !loadingFetchLeaveRequestById &&
             (status === DRAFTS || status === IN_PROGRESS))) && (
-          <>
-            <Row className={styles.container} gutter={[20, 20]}>
-              <Col xs={24} xl={18}>
-                <RequestInformation
-                  action={action}
-                  status={status}
-                  ticketID={ticketID}
-                  invalidDates={invalidDates}
-                  viewingLeaveRequest={viewingLeaveRequest}
-                />
-              </Col>
-              <Col xs={24} xl={6}>
-                <NoteComponent note={Note} />
-              </Col>
-            </Row>
-          </>
+            <>
+              <Row className={styles.container} gutter={[20, 20]}>
+                <Col xs={24} xl={18}>
+                  <RequestInformation
+                    action={action}
+                    status={status}
+                    ticketID={ticketID}
+                    invalidDates={invalidDates}
+                    viewingLeaveRequest={viewingLeaveRequest}
+                  />
+                </Col>
+                <Col xs={24} xl={6}>
+                  <NoteComponent note={Note} />
+                </Col>
+              </Row>
+            </>
         )}
       </div>
     </PageContainer>

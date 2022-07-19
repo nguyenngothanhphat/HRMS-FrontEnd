@@ -4,11 +4,12 @@ import { connect } from 'umi';
 import { debounce } from 'lodash';
 import ViewTypeSelector from '@/pages/TimeSheet/components/ComplexView/components/ViewTypeSelector';
 import { getCurrentCompany } from '@/utils/authority';
-import { dateFormatAPI, VIEW_TYPE, generateAllWeeks } from '@/utils/timeSheet';
+import { dateFormatAPI, VIEW_TYPE } from '@/constants/timeSheet';
 import Header from './components/Header';
 import MonthlyTable from './components/MonthlyTable';
 import WeeklyTable from './components/WeeklyTable';
 import styles from './index.less';
+import { generateAllWeeks } from '@/utils/timeSheet';
 
 const ProjectView = (props) => {
   // weekly

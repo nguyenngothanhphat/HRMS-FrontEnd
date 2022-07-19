@@ -7,7 +7,7 @@ import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import NotificationModal from '@/components/NotificationModal';
 import { PageContainer } from '@/layouts/layout/src';
-import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
+import { DATE_FORMAT, OFFBOARDING } from '@/constants/offboarding';
 import { goToTop } from '@/utils/utils';
 import Notes from '../Notes';
 import styles from './index.less';
@@ -110,7 +110,7 @@ const ReasonForm = (props) => {
                 </div>
                 <div className={styles.lastWorkingDay}>
                   <Form.Item name="LWD">
-                    <DatePicker disabled format={dateFormat} />
+                    <DatePicker disabled format={DATE_FORMAT} />
                   </Form.Item>
 
                   <div className={styles.textTentative}>

@@ -9,6 +9,7 @@ const EmployeeCard = (props) => {
     employee: {
       generalInfo: { avatar = '', legalName = '', userId = '' } = {},
       title = {} || {},
+      _id = '',
     } = {},
   } = props;
 

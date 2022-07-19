@@ -6,7 +6,7 @@ import CheckIcon from '@/assets/offboarding/check.svg';
 import FailedIcon from '@/assets/offboarding/fail.svg';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
-import { dateFormat, OFFBOARDING } from '@/utils/offboarding';
+import { DATE_FORMAT, OFFBOARDING } from '@/constants/offboarding';
 import styles from './index.less';
 
 const RequestDifferentLWD = (props) => {
@@ -91,7 +91,7 @@ const RequestDifferentLWD = (props) => {
           <Row align="middle" gutter={[0, 0]}>
             <Col span={12}>
               <Form.Item name="LWD" label="Last working date">
-                <DatePicker format={dateFormat} disabled />
+                <DatePicker format={DATE_FORMAT} disabled />
               </Form.Item>
             </Col>
             <Col span={12} />

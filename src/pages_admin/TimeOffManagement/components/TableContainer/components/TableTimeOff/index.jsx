@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React from 'react';
 import { Link } from 'umi';
-import { TIMEOFF_NAME_BY_ID } from '@/utils/timeOffManagement';
+import { TIMEOFF_NAME_BY_ID } from '@/constants/timeOffManagement';
 import CommonTable from '@/components/CommonTable';
 import styles from './index.less';
 

@@ -2,7 +2,8 @@ import { Col, Form, Input, Row, Select, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { connect } from 'umi';
-import { beforeUpload, compressImage, FILE_TYPE } from '@/utils/upload';
+import { beforeUpload, compressImage } from '@/utils/upload';
+import { FILE_TYPE } from '@/constants/upload';
 import UploadIcon from '@/assets/upload-icon.svg';
 import styles from './index.less';
 

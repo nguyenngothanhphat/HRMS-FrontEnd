@@ -1,19 +1,17 @@
-import React, { Component } from 'react';
-import { Row, Col, Input, Upload, message, Avatar, Tooltip, Spin, Button, Timeline } from 'antd';
-import moment from 'moment';
-
-import { isEmpty } from 'lodash';
-import { connect } from 'umi';
 import { UserOutlined } from '@ant-design/icons';
-
-import AttachmentIcon from '@/assets/ticketsManagement-attach.svg';
+import { Avatar, Button, Col, Input, Row, Spin, Timeline, Tooltip, Upload } from 'antd';
+import { isEmpty } from 'lodash';
+import moment from 'moment';
+import React, { Component } from 'react';
+import { connect } from 'umi';
 import AttachmenUploadtIcon from '@/assets/attach-upload.svg';
-import TrashIcon from '@/assets/ticketManagement-trashIcon.svg';
 import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';
-
+import TrashIcon from '@/assets/ticketManagement-trashIcon.svg';
+import AttachmentIcon from '@/assets/ticketsManagement-attach.svg';
+import { FILE_TYPE } from '@/constants/upload';
+import { beforeUpload, compressImage, identifyFile } from '@/utils/upload';
 import styles from './index.less';
-import { beforeUpload, compressImage, FILE_TYPE, identifyFile } from '@/utils/upload';
 
 const { TextArea } = Input;
 const { Dragger } = Upload;

@@ -27,7 +27,7 @@ const HolidayCalendar = (props) => {
   // RENDER UI
   const renderTag = (name, span) => {
     return (
-      <Col span={span} className={styles.tag}>
+      <Col span={span} className={styles.tag} key={name}>
         <div>{name}</div>
       </Col>
     );
@@ -77,6 +77,7 @@ const HolidayCalendar = (props) => {
           }`}
           justify="center"
           align="middle"
+          key={item._id}
         >
           <Col xs={4} className={styles.eachRow__left}>
             <div>

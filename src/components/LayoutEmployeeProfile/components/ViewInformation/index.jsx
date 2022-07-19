@@ -7,7 +7,7 @@ import CustomModal from '@/components/CustomModal';
 import s from '@/components/LayoutEmployeeProfile/index.less';
 import ModalUpload from '@/components/ModalUpload';
 import { getCurrentTenant } from '@/utils/authority';
-import ROLES from '@/utils/roles';
+import ROLES from '@/constants/roles';
 
 const { TextArea } = Input;
 const { SubMenu } = Menu;

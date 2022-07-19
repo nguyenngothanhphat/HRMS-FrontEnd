@@ -2,7 +2,7 @@ import { Button } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
+import { DATE_FORMAT_LIST } from '@/constants/projectManagement';
 import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
 import EditIcon from '@/assets/projectManagement/edit2.svg';
 import DeleteIcon from '@/assets/projectManagement/delete.svg';

@@ -30,7 +30,7 @@ import {
   updateEmployeeFormatByGlobal,
 } from '@/services/onboard';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { PROCESS_STATUS, PROCESS_STATUS_TABLE_NAME } from '@/utils/onboarding';
+import { PROCESS_STATUS, PROCESS_STATUS_TABLE_NAME } from '@/constants/onboarding';
 import { dialog } from '@/utils/utils';
 
 // const employeeList = rookieList.filter(

@@ -3,7 +3,7 @@ import { Button, Row, Col, Spin, Input } from 'antd';
 import { connect, history } from 'umi';
 import moment from 'moment';
 import EditIcon from '@/assets/editBtnBlue.svg';
-import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
+import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/constants/timeOff';
 import WithdrawModal from '../WithdrawModal';
 
 import styles from './index.less';

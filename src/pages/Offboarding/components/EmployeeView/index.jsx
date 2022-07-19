@@ -1,7 +1,7 @@
 import { Col, Row, Spin, Tabs } from 'antd';
 import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
-import { OFFBOARDING } from '@/utils/offboarding';
+import { OFFBOARDING } from '@/constants/offboarding';
 import { PageContainer } from '@/layouts/layout/src';
 import DidYouKnow from './components/DidYouKnow';
 import FirstSchedule from './components/FirstSchedule';

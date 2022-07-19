@@ -16,7 +16,7 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { PRIORITY } from '@/utils/dashboard';
+import { PRIORITY } from '@/constants/dashboard';
 import {
   getAuthority,
   getCurrentCompany,
@@ -245,7 +245,9 @@ const RaiseTicketModal = (props) => {
                   placeholder="Select the support team"
                 >
                   {supportTeamList.map((val) => (
-                    <Option value={val._id}>{val.name}</Option>
+                    <Option value={val._id} key={val._id}>
+                      {val.name}
+                    </Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -264,7 +266,9 @@ const RaiseTicketModal = (props) => {
               >
                 <Select showSearch placeholder="Select the query type">
                   {queryTypeList.map((val) => (
-                    <Option value={val._id}>{val.name}</Option>
+                    <Option value={val._id} key={val._id}>
+                      {val.name}
+                    </Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -285,7 +289,9 @@ const RaiseTicketModal = (props) => {
               >
                 <Select showSearch placeholder="Select the priority">
                   {PRIORITY.map((val) => (
-                    <Option value={val}>{val}</Option>
+                    <Option value={val} key={val}>
+                      {val}
+                    </Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -342,7 +348,11 @@ const RaiseTicketModal = (props) => {
                 >
                   {listEmployee
                     ? listEmployee.map((val) => {
-                        return <Option value={val?._id}>{val?.generalInfo?.legalName}</Option>;
+                        return (
+                          <Option value={val?._id} key={val._id}>
+                            {val?.generalInfo?.legalName}
+                          </Option>
+                        );
                       })
                     : ''}
                 </Select>

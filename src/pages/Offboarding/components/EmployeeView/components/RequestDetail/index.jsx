@@ -6,7 +6,8 @@ import avtDefault from '@/assets/avtDefault.jpg';
 import IconPopup from '@/assets/offboarding/popupIcon.svg';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
-import { dateFormat, OFFBOARDING, onJoinMeeting } from '@/utils/offboarding';
+import { OFFBOARDING, DATE_FORMAT } from '@/constants/offboarding';
+import { onJoinMeeting } from '@/utils/offboarding';
 
 import SetMeetingModal from '../../../SetMeetingModal';
 import styles from './index.less';
@@ -272,7 +273,7 @@ const RequestDetail = (props) => {
               <Col span={8} xs={24} md={8}>
                 <div className={styles.item}>
                   <span className={styles.title}>Tentative Last Working Date:</span>
-                  <span style={{ color: '#464646' }}>{moment(LWD).format(dateFormat)}</span>
+                  <span style={{ color: '#464646' }}>{moment(LWD).format(DATE_FORMAT)}</span>
                 </div>
               </Col>
             </Row>

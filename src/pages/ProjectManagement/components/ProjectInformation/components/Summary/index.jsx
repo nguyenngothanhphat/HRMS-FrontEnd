@@ -9,7 +9,7 @@ import CommonModal from '@/components/CommonModal';
 import EditEndDateContent from './components/EditEndDateContent';
 import EditBillableHeadCountContent from './components/EditBillableHeadCountContent';
 import EditBufferHeadCountContent from './components/EditBufferHeadCountContent';
-import { DATE_FORMAT_2 } from '@/utils/projectManagement';
+import { DATE_FORMAT_2 } from '@/constants/projectManagement';
 import styles from './index.less';
 
 const Summary = (props) => {

@@ -11,7 +11,7 @@ import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { TYPE_TICKET_APPROVAL } from '@/utils/dashboard';
+import { TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
 import { getTimezoneViaCity } from '@/utils/times';
 import RejectCommentModal from '../../../ActivityLog/components/PendingApprovalTag/components/RejectCommentModal';
 import DetailTicket from '../DetailTicket';

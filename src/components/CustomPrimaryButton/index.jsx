@@ -5,9 +5,11 @@ import styles from './index.less';
 
 const CustomPrimaryButton = ({ children, ...props }) => {
   return (
-    <div className={styles.CustomPrimaryButton}>
-      <Button {...props}>{children}</Button>
-    </div>
+    // <div className={styles.CustomPrimaryButton}>
+    <Button {...props} className={styles.CustomPrimaryButton}>
+      {children}
+    </Button>
+    // </div>
   );
 };
 export default CustomPrimaryButton;

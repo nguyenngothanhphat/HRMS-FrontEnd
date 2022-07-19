@@ -1,7 +1,7 @@
 import { UserOutlined } from '@ant-design/icons';
 import { Avatar, Button, Menu, Spin, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { connect, formatMessage, history } from 'umi';
+import { connect, useIntl, history } from 'umi';
 import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
 import avtDefault from '@/assets/avtDefault.jpg';
 import {
@@ -21,6 +21,8 @@ import HeaderDropdown from './components/HeaderDropdown';
 import styles from './index.less';
 
 const AvatarDropdown = (props) => {
+  const intl = useIntl();
+
   const {
     currentUser = {},
     dispatch,
@@ -337,7 +339,7 @@ const AvatarDropdown = (props) => {
         <Menu.Item className={styles.menu__customItem}>
           <div className={styles.viewProfileBtn}>
             <Button onClick={viewProfile} className={styles.buttonLink}>
-              {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
+              {intl.formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
             </Button>
           </div>
         </Menu.Item>
@@ -349,7 +351,7 @@ const AvatarDropdown = (props) => {
         <>
           <Menu.Divider className={styles.firstDivider} />
           <Menu.Item key={CHANGE_PASSWORD} className={styles.menuItemLink}>
-            {formatMessage({ id: 'component.globalHeader.avatarDropdown.change-password' })}
+            {intl.formatMessage({ id: 'component.globalHeader.avatarDropdown.change-password' })}
           </Menu.Item>
         </>
       )}
@@ -362,7 +364,7 @@ const AvatarDropdown = (props) => {
       <Menu.Divider className={styles.secondDivider} />
       <Menu.ItemGroup className={styles.groupMenuItem}>
         <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>
-          {formatMessage({ id: 'component.globalHeader.avatarDropdown.logout' })}
+          {intl.formatMessage({ id: 'component.globalHeader.avatarDropdown.logout' })}
         </Menu.Item>
       </Menu.ItemGroup>
     </Menu>

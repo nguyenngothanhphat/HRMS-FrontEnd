@@ -19,8 +19,8 @@ import {
   CANDIDATE_TASK_LINK,
   CANDIDATE_TASK_STATUS,
   DOCUMENT_TYPES,
-} from '@/utils/candidatePortal';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+} from '@/constants/candidatePortal';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 

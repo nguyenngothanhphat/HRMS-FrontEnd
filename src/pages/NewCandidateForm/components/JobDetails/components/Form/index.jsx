@@ -6,7 +6,7 @@ import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import CheckBoxIcon from '@/assets/onboarding/checkbox.svg';
 import UnCheckBoxIcon from '@/assets/onboarding/uncheckbox.svg';
 

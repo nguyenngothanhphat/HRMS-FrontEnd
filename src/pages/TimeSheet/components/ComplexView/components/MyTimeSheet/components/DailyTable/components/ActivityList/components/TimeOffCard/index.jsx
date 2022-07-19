@@ -2,8 +2,8 @@ import { Col, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import { EMP_ROW_HEIGHT } from '@/utils/timeSheet';
-import { TIMEOFF_PERIOD } from '@/utils/timeOff';
+import { EMP_ROW_HEIGHT } from '@/constants/timeSheet';
+import { TIMEOFF_PERIOD } from '@/constants/timeOff';
 import styles from './index.less';
 
 const TimeOffCard = (props) => {

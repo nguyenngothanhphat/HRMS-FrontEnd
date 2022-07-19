@@ -1,17 +1,18 @@
+import { CloseOutlined } from '@ant-design/icons';
+import { Skeleton, Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { Skeleton, Tag, Tooltip } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
-import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
-import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
-import styles from './index.less';
+import IconWarning from '@/assets/timeSheet/ic_warning.svg';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
-import FilterContent from './components/FilterContent';
-import IconWarning from '@/assets/timeSheet/ic_warning.svg';
-import { checkHolidayInWeek, dateFormatAPI, holidayFormatDate } from '@/utils/timeSheet';
+import { dateFormatAPI } from '@/constants/timeSheet';
+import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
+import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
 import { getCurrentCompany } from '@/utils/authority';
+import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
+import FilterContent from './components/FilterContent';
+import styles from './index.less';
 
 const Header = (props) => {
   const {

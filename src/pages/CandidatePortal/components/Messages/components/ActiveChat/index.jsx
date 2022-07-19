@@ -4,8 +4,9 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import SeenIcon from '@/assets/candidatePortal/seen.svg';
 import UnseenIcon from '@/assets/candidatePortal/unseen.svg';
-import { ChatEvent, socket } from '@/utils/socket';
+import { socket } from '@/utils/socket';
 import styles from './index.less';
+import { CHAT_EVENT } from '@/constants/socket';
 
 @connect(
   ({
@@ -313,7 +314,7 @@ class ActiveChat extends PureComponent {
     } = this.props;
     const { message } = values;
     if (activeId && message) {
-      socket.emit(ChatEvent.SEND_MESSAGE, {
+      socket.emit(CHAT_EVENT.SEND_MESSAGE, {
         conversationId: activeId,
         senderId: candidateId,
         receiverId: assignTo?._id || assignTo || '',

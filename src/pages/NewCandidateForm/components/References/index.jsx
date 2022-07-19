@@ -1,8 +1,8 @@
 import { Button, Card, Col, Divider, Form, Input, message, Row, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
-// import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+// import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import { connect, history } from 'umi';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';
 import ReferenceForm from './components/ReferenceForm';

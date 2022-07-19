@@ -7,7 +7,7 @@ import {
   NEW_PROCESS_STATUS,
   ONBOARDING_FORM_LINK,
   ONBOARDING_FORM_STEP_LINK,
-} from '@/utils/onboarding';
+} from '@/constants/onboarding';
 import { getAuthority, getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { getTimezoneViaCity } from '@/utils/times';
 import AcceptIcon from '@/assets/Accept-icon-onboarding.svg';
@@ -569,6 +569,7 @@ class OnboardTable extends Component {
               <Link
                 className={styles.actionText}
                 onClick={() => this.handleSendPreJoining(id, candidate, processStatusId)}
+                to="#"
               >
                 <img className={styles.actionIcon} src={JoiningIcon} alt="joiningIcon" />
                 <span>Send Pre-Joining Documents</span>

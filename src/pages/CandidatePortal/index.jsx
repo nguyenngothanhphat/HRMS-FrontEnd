@@ -4,7 +4,7 @@ import { Tabs, Button } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
 import ReactJoyride from 'react-joyride';
-import { NEW_COMER_CLASS, NEW_COMER_STEPS, PORTAL_TAB_NAME } from '@/utils/candidatePortal';
+import { NEW_COMER_CLASS, NEW_COMER_STEPS, PORTAL_TAB_NAME } from '@/constants/candidatePortal';
 import { getCurrentTenant, getIsFirstLogin, setIsFirstLogin } from '@/utils/authority';
 import Dashboard from './components/Dashboard';
 import Messages from './components/Messages';
@@ -158,10 +158,7 @@ class CandidatePortal extends PureComponent {
       tooltipProps,
       isLastStep,
     }) => (
-      <div
-        {...tooltipProps}
-        style={{backgroundColor: 'white', width: '350px', padding: '10px'}}
-      >
+      <div {...tooltipProps} style={{ backgroundColor: 'white', width: '350px', padding: '10px' }}>
         <div>{step.content}</div>
         <br />
         <p style={{ paddingBottom: isLastStep ? '20px' : '0px' }}>

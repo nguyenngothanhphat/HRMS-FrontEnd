@@ -1,9 +1,5 @@
 import moment from 'moment';
-
-const availableStatus = {
-  AVAILABLE_NOW: 'Available Now',
-  AVAILABLE_SOON: 'Available Soon',
-};
+import { AVAILABLE_STATUS } from '@/constants/resourceManagement';
 
 const handleLongText = (text, length) => {
   if (!text) {
@@ -37,22 +33,22 @@ export function formatData(rawData) {
     const { titleInfo, generalInfo, projects } = obj;
     const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
     const employeeName = `${generalInfo.legalName} ${userName ? `(${userName})` : ''}`;
-    
-    const projectList = projects.filter(item => {
-      const revisedEndDate = item?.revisedEndDate
-      const endDate = item?.endDate
-      if(revisedEndDate){
-        if(moment(revisedEndDate).isAfter(moment())) return item
-      } else if(moment(endDate).isAfter(moment())) return item
-      return null
-    })
+
+    const projectList = projects.filter((item) => {
+      const revisedEndDate = item?.revisedEndDate;
+      const endDate = item?.endDate;
+      if (revisedEndDate) {
+        if (moment(revisedEndDate).isAfter(moment())) return item;
+      } else if (moment(endDate).isAfter(moment())) return item;
+      return null;
+    });
 
     const newObj = {
       avatar: generalInfo.avatar,
       employeeSkills: generalInfo?.skills,
       employeeId: obj?._id,
       employeeName: handleLongText(employeeName.trim(), 25),
-      availableStatus: availableStatus[obj?.availableStatus] || '',
+      availableStatus: AVAILABLE_STATUS[obj?.availableStatus] || '',
       division: obj?.departmentInfo?.name,
       designation: titleInfo?.name,
       experience: generalInfo?.totalExp,
@@ -104,17 +100,17 @@ export function handlingResourceAvailableStatus(data) {
 }
 
 export const setSelectedLocations = (data) => {
-  localStorage.setItem('resourceSelectedLocations',JSON.stringify(data))
-}
+  localStorage.setItem('resourceSelectedLocations', JSON.stringify(data));
+};
 
 export const getSelectedLocations = () => {
-  return JSON.parse(localStorage.getItem('resourceSelectedLocations'))
-}
+  return JSON.parse(localStorage.getItem('resourceSelectedLocations'));
+};
 
 export const setSelectedDivisions = (data) => {
-  localStorage.setItem('resourceSelectedDivision',JSON.stringify(data))
-}
+  localStorage.setItem('resourceSelectedDivision', JSON.stringify(data));
+};
 
 export const getSelectedDivisions = () => {
-  return JSON.parse(localStorage.getItem('resourceSelectedDivision'))
-}
+  return JSON.parse(localStorage.getItem('resourceSelectedDivision'));
+};

@@ -1,12 +1,13 @@
 import { Button } from 'antd';
+import { isEmpty } from 'lodash';
+import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
-import { isEmpty } from 'lodash';
+import { convertMsToTime } from '@/utils/timeSheet';
 import exportToCSV from '@/utils/exportAsExcel';
+import { VIEW_TYPE } from '@/constants/timeSheet';
 import DownloadIcon from '@/assets/timeSheet/solidDownload.svg';
 import styles from './index.less';
-import { convertMsToTime, VIEW_TYPE } from '@/utils/timeSheet';
 
 const Footer = (props) => {
   const { selectedProjects = [], data = [], selectedView = '' } = props;

@@ -1,13 +1,14 @@
 /* eslint-disable compat/compat */
+import { Button, Form, Input, Modal, notification, Spin, Upload } from 'antd';
 import React, { Component } from 'react';
-import { Upload, message, Button, Spin, Modal, Input, Form, notification } from 'antd';
 import { connect } from 'umi';
-import FileUploadIcon from '@/assets/uploadFile_icon.svg';
-import PDFIcon from '@/assets/pdf_icon.png';
 import ImageIcon from '@/assets/image_icon.png';
+import PDFIcon from '@/assets/pdf_icon.png';
+import FileUploadIcon from '@/assets/uploadFile_icon.svg';
 // import { LogoutOutlined } from '@ant-design/icons';
+import { FILE_TYPE } from '@/constants/upload';
+import { beforeUpload, compressImage, identifyFile } from '@/utils/upload';
 import styles from './index.less';
-import { beforeUpload, compressImage, FILE_TYPE, identifyFile } from '@/utils/upload';
 
 const { Dragger } = Upload;
 @connect(({ loading, employeeProfile, user: { currentUser: { employeeId = '' } = {} } } = {}) => ({

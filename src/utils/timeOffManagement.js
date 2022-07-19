@@ -1,17 +1,6 @@
 import moment from 'moment';
+import { TIMEOFF_NAME_BY_ID } from '@/constants/timeOffManagement';
 import exportToCsv from '@/utils/exportToCsv';
-import { TIMEOFF_STATUS } from './timeOff';
-
-export const TIMEOFF_NAME_BY_ID = [
-  { value: TIMEOFF_STATUS.ACCEPTED, label: 'Approved' },
-  { value: TIMEOFF_STATUS.IN_PROGRESS, label: 'In Progress' },
-  // { value: TIMEOFF_STATUS.IN_PROGRESS_NEXT, label: 'In Progress' },
-  { value: TIMEOFF_STATUS.REJECTED, label: 'Rejected' },
-  { value: TIMEOFF_STATUS.DRAFTS, label: 'Draft' },
-  { value: TIMEOFF_STATUS.ON_HOLD, label: 'On-hold' },
-  { value: TIMEOFF_STATUS.DELETED, label: 'Deleted' },
-  { value: TIMEOFF_STATUS.WITHDRAWN, label: 'Withdrawn' },
-];
 
 const processCSVData = (array = []) => {
   if (array.length > 0) {
@@ -55,4 +44,6 @@ export const exportCSV = (data) => {
   exportToCsv(`Time-Off-Report-${moment().format('YYYY-MM-DD')}.csv`, processCSVData(data));
 };
 
-export const dateFormat = 'MM/DD/YYYY';
+export default {
+  exportCSV,
+};

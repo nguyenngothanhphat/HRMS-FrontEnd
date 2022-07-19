@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import CustomTimePicker from '@/components/CustomTimePicker';
 import EmptyComponent from '@/components/Empty';
 import { getCurrentCompany } from '@/utils/authority';
-import { commonDateFormat, dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
+import { commonDateFormat, dateFormatAPI, hourFormat, hourFormatAPI } from '@/constants/timeSheet';
 import styles from './index.less';
 
 const { RangePicker } = DatePicker;

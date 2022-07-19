@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import SearchIcon from '@/assets/directory/search.svg';
 import styles from './index.less';
-import { TYPE_TICKET_APPROVAL } from '@/utils/dashboard';
+import { TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
 
 const FilterContent = (props) => {
   const [form] = Form.useForm();
@@ -224,8 +224,7 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by Department"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
           {listDepartmentName.map((x) => {
@@ -246,8 +245,7 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by request type"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
           {listTypes.map((x) => {

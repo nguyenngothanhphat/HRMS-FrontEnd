@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Select, DatePicker, Input, Button, Row, Col, Form } from 'antd';
 import { connect, history } from 'umi';
 import moment from 'moment';
-import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
+import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/constants/timeOff';
 import TimeOffModal from '@/components/TimeOffModal';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import ExtraTimeSpentRow from './ExtraTimeSpentRow';

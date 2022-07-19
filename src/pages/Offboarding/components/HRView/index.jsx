@@ -4,7 +4,7 @@ import { connect, history } from 'umi';
 import CustomBlueButton from '@/components/CustomBlueButton';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
 import { PageContainer } from '@/layouts/layout/src';
-import { OFFBOARDING_TABS } from '@/utils/offboarding';
+import { OFFBOARDING_TABS } from '@/constants/offboarding';
 import RequestTable from '../RequestTable';
 import Settings from '../Settings';
 import styles from './index.less';

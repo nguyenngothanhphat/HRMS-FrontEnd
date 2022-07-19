@@ -6,7 +6,8 @@ import { connect } from 'umi';
 import DownArrowIcon from '@/assets/offboarding/downArrow.png';
 import CustomEmployeeTag from '@/components/CustomEmployeeTag';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
-import { getEmployeeName, OFFBOARDING } from '@/utils/offboarding';
+import { OFFBOARDING } from '@/constants/offboarding';
+import { getEmployeeName } from '@/utils/offboarding';
 import styles from './index.less';
 
 const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {

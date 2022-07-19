@@ -3,22 +3,24 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import DeleteIcon from '@/assets/timeSheet/del.svg';
-import EditIcon from '@/assets/timeSheet/edit.svg';
 import DuplicateIcon from '@/assets/timeSheet/duplicate.svg';
+import EditIcon from '@/assets/timeSheet/edit.svg';
 import ModalImage from '@/assets/timeSheet/modalImage2.png';
 import CommonModal from '@/components/CommonModal';
-import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/EditTaskModal';
-import { getCurrentCompany } from '@/utils/authority';
 import {
   activityColor,
-  convertMsToTime,
   dateFormatAPI,
   EMP_MT_SECONDARY_COL_SPAN,
   EMP_ROW_HEIGHT,
-  hourFormat,
+  hourFormat
+} from '@/constants/timeSheet';
+import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/EditTaskModal';
+import { getCurrentCompany } from '@/utils/authority';
+import {
+  convertMsToTime
 } from '@/utils/timeSheet';
-import styles from './index.less';
 import DuplicateTaskModal from '../../../../../../../DuplicateTaskModal';
+import styles from './index.less';
 
 const { PROJECT, TASK, DESCRIPTION, TIME, TOTAL_HOURS, ACTIONS } = EMP_MT_SECONDARY_COL_SPAN;
 const ORIGINAL_TEXT_LONG = 48;

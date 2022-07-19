@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
-import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
+import { DATE_FORMAT_LIST } from '@/constants/projectManagement';
 import AddButton from '../AddButton';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';

@@ -2,7 +2,7 @@ import { Col, Row } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { Link } from 'umi';
-import { CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
+import { CANDIDATE_TASK_STATUS } from '@/constants/candidatePortal';
 import styles from './index.less';
 
 class PendingTaskTable extends PureComponent {

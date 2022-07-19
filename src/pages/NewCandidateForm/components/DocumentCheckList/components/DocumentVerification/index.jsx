@@ -2,7 +2,7 @@
 import { Button, Col, Row, Skeleton, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/constants/onboarding';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { Page } from '../../../../utils';
 import MessageBox from '../../../MessageBox';
@@ -10,7 +10,7 @@ import NoteComponent from '../../../NewNoteComponent';
 import CollapseFields from './components/CollapseFields';
 import Title from './components/Title';
 import styles from './styles.less';
-import { DOCUMENTS_CHECKLIST_TYPE } from '@/utils/newCandidateForm';
+import { DOCUMENTS_CHECKLIST_TYPE } from '@/constants/newCandidateForm';
 import CollapseFieldsTypeH from './components/CollapseFieldsTypeH';
 
 const DocumentVerification = (props) => {

@@ -3,7 +3,7 @@ import { Row, Col, message } from 'antd';
 import moment from 'moment';
 import axios from 'axios';
 import ViewIcon from '@/assets/candidatePortal/viewIcon.svg';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import styles from './index.less';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 

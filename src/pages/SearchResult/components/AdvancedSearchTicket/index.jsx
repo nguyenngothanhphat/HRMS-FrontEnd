@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input, Form, Button, Select, DatePicker } from 'antd';
 import { connect, history } from 'umi';
-import { LIST_TYPE_TICKET, LIST_STATUS_TICKET } from '@/utils/globalSearch';
+import { LIST_TYPE_TICKET, LIST_STATUS_TICKET } from '@/constants/globalSearch';
 import styles from '../../index.less';
 
 const AdvancedSearchTicket = (props) => {

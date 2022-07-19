@@ -3,7 +3,7 @@ import { connect } from 'umi';
 import { Tabs } from 'antd';
 import { debounce } from 'lodash';
 
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import ProfileVerificationTab from './components/ProfileVerificationTab';
 
 import styles from '../index.less';

@@ -1,4 +1,4 @@
-import ROLES from '@/utils/roles';
+import ROLES from '@/constants/roles';
 
 const { HR_MANAGER, HR, MANAGER } = ROLES;
 
@@ -235,10 +235,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_ONBOARDING_T_ONBOARDING_OVERVIEW_VIEW',
     'P_ONBOARDING_ALL',
   ]);
-  const indexNewJoinees = isAuthorized(permissionList, [
-    'P_ONBOARDING_T_NEW_JOINEES_VIEW',
-  ]);
-
+  const indexNewJoinees = isAuthorized(permissionList, ['P_ONBOARDING_T_NEW_JOINEES_VIEW']);
 
   // TIME OFF
   const indexMyTimeoff = 1; // everyone has time off employee page

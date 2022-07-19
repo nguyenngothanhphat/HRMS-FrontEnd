@@ -9,7 +9,7 @@ import {
   Modal,
   notification,
   Row,
-  Select,
+  Select
 } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -17,16 +17,11 @@ import { connect } from 'umi';
 import AddIcon from '@/assets/timeSheet/add.svg';
 import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
 import CustomTimePicker from '@/components/CustomTimePicker';
+import { dateFormatAPI, hourFormat, hourFormatAPI, TIMESHEET_ADD_TASK_ALERT, TIME_DEFAULT, VIEW_TYPE } from '@/constants/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
   checkHolidayInWeek,
-  dateFormatAPI,
-  holidayFormatDate,
-  hourFormat,
-  hourFormatAPI,
-  TIMESHEET_ADD_TASK_ALERT,
-  TIME_DEFAULT,
-  VIEW_TYPE,
+  holidayFormatDate
 } from '@/utils/timeSheet';
 import styles from './index.less';
 

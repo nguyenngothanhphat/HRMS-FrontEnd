@@ -2,7 +2,7 @@ import { Col, Row, Spin } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { MT_MAIN_COL_SPAN, MT_SECONDARY_COL_SPAN } from '@/utils/timeSheet';
+import { MT_MAIN_COL_SPAN, MT_SECONDARY_COL_SPAN } from '@/constants/timeSheet';
 import ActivityList from './components/ActivityList';
 import styles from './index.less';
 

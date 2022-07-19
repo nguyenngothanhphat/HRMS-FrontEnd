@@ -8,7 +8,7 @@ import { isOwner } from '@/utils/authority';
 import filterIcon from '@/assets/offboarding-filter.svg';
 import { getTimezoneViaCity } from '@/utils/times';
 import PopoverInfo from '@/pages/Directory/components/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
-import { LIST_STATUS_TICKET } from '@/utils/globalSearch';
+import { LIST_STATUS_TICKET } from '@/constants/globalSearch';
 import styles from '../../index.less';
 
 const TicketResult = React.memo((props) => {

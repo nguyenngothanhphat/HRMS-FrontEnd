@@ -5,8 +5,6 @@ import { connect, history } from 'umi';
 import { isEmpty } from 'lodash';
 import {
   roundNumber,
-  TIMEOFF_STATUS,
-  TIMEOFF_TYPE,
   checkNormalTypeTimeoff,
   isUpdatedRequest,
   isNewRequest,
@@ -18,6 +16,7 @@ import WithdrawModal from '../WithdrawModal';
 import PDFIcon from '@/assets/pdf_icon.png';
 import ArrowDownIcon from '@/assets/arrowDownCollapseIcon.svg';
 import styles from './index.less';
+import { TIMEOFF_STATUS, TIMEOFF_TYPE } from '@/constants/timeOff';
 
 const { IN_PROGRESS, ACCEPTED, REJECTED, DRAFTS } = TIMEOFF_STATUS;
 const { A, B } = TIMEOFF_TYPE;

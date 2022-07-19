@@ -4,13 +4,14 @@ import { Table } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { projectColor, convertMsToTime, VIEW_TYPE } from '@/utils/timeSheet';
 import AirPlanIcon from '@/assets/timeSheet/airplanIcon.svg';
-import TaskPopover from './components/TaskPopover';
-import TimeoffPopover from './components/TimeoffPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import EmptyComponent from '@/components/Empty';
+import { projectColor } from '@/constants/timeSheet';
+import { convertMsToTime } from '@/utils/timeSheet';
 import CellMenu from './components/CellMenu';
+import TaskPopover from './components/TaskPopover';
+import TimeoffPopover from './components/TimeoffPopover';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
