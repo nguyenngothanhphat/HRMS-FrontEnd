@@ -80,9 +80,8 @@ const LeaveRequestForm = (props) => {
     }
   };
 
-  const setInvalidDate = (res) => {
+  const getInvalidDate = (data) => {
     let invalidDatesTemp = [];
-    const { data = [] } = res;
     data.forEach((x) => {
       const temp = x.leaveDates.map((y) => {
         return {
@@ -92,7 +91,6 @@ const LeaveRequestForm = (props) => {
       });
       invalidDatesTemp = [...invalidDatesTemp, ...temp];
     });
-
     setInvalidDates(invalidDatesTemp);
   };
 
@@ -108,14 +106,14 @@ const LeaveRequestForm = (props) => {
         },
       }).then((res) => {
         if (res.statusCode === 200) {
-          setInvalidDate(res);
+          const { data = [] } = res;
+          getInvalidDate(data);
         }
       });
     }
     if (Object.keys(yourTimeOffTypes).length === 0 && action !== NEW_BEHALF_OF) {
       fetchTimeOffTypes();
     }
-
   }, [employeeBehalfOf]);
 
   useEffect(() => {
@@ -133,7 +131,8 @@ const LeaveRequestForm = (props) => {
         },
       }).then((res) => {
         if (res.statusCode === 200) {
-          setInvalidDate(res);
+          const { items: leaveRequests = [] } = res?.data;
+          getInvalidDate(leaveRequests);
         }
       });
     }
