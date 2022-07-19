@@ -12,7 +12,7 @@ export default {
     MAIN: '/candidate',
     BY_LINK: '/candidate-by-link',
     PORTAL: '/candidate-portal',
-    TICKET: '/candidate/ticket',
+    TICKET: '/candidate-portal/ticket',
     CHANGE_PASSWORD: '/candidate-change-password',
   },
   CONTROL_PANEL: {
@@ -28,6 +28,7 @@ export default {
   },
   FAQ: {
     MAIN: '/faq',
+    SETTINGS: '/faq/settings',
   },
   POLICIES_REGULATIONS: {
     MAIN: '/policies-regulations',
@@ -42,6 +43,7 @@ export default {
   },
   ACTIVE_USER: {
     MAIN: '/active-user',
+    ID: '/active-user/:id',
   },
   HOME: {
     MAIN: '/home',
@@ -67,7 +69,7 @@ export default {
     MAIN: '/onboarding',
     LIST: '/onboarding/list',
     VIEW_TICKET: '/onboarding/list/view',
-    NEW_JOINEES: '/onboarding/new-joinees',
+    VIEW_JOINEES: '/onboarding/new-joinees/view-detail',
     SETTINGS: '/onboarding/settings',
   },
   OFFBOARDING: {
@@ -83,10 +85,9 @@ export default {
     MAIN: '/time-off',
     OVERVIEW: '/time-off/overview',
     SETUP: '/time-off/setup',
-    PERSONAL_NEW: '/time-off/overview/personal-timeoff/new',
-    PERSONAL_EDIT: '/time-off/overview/personal-timeoff/edit',
-    PERSONAL_VIEW: '/time-off/overview/personal-timeoff/view',
-    MANAGER_VIEW: '/time-off/overview/manager-timeoff/view',
+    SETUP_TYPES_RULES: '/time-off/setup/types-rules',
+    PERSONAL: '/time-off/overview/personal-timeoff',
+    MANAGER: '/time-off/overview/manager-timeoff',
   },
   TIME_SHEET: {
     MAIN: '/time-sheet',
@@ -114,12 +115,15 @@ export default {
   },
   TICKET_MANAGEMENT: {
     MAIN: '/ticket-management',
+    VIEW_TICKET: '/ticket-management/detail',
   },
   CUSTOMER_MANAGEMENT: {
     MAIN: '/customer-management',
+    VIEW_CUSTOMER: '/customer-management/customers/customer-profile',
   },
   PROJECT_MANAGEMENT: {
     MAIN: '/project-management',
+    LIST: '/project-management/list',
   },
   RESOURCE_MANAGEMENT: {
     MAIN: '/resource-management',

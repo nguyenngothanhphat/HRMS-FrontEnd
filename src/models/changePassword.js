@@ -3,6 +3,7 @@ import { notification } from 'antd';
 import { forgotPasswordAPI, resetPasswordAPI, updatePasswordAPI } from '@/services/changePassword';
 import { setFirstChangePassword } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
+import URLS from '@/constants/url';
 
 export default {
   namespace: 'changePassword',
@@ -31,7 +32,7 @@ export default {
         notification.success({
           message,
         });
-        history.replace('/login');
+        history.replace(URLS.LOGIN.MAIN);
       } catch (errors) {
         dialog(errors);
       }

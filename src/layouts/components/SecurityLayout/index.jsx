@@ -1,8 +1,9 @@
 import React from 'react';
-import { Redirect, connect } from 'umi';
+import { connect, Redirect } from 'umi';
+import URLS from '@/constants/url';
 import { PageLoading } from '@/layouts/layout/src';
-import { getToken } from '../../../utils/token';
 import { getIsSwitchingRole } from '../../../utils/authority';
+import { getToken } from '../../../utils/token';
 
 class SecurityLayout extends React.Component {
   constructor(props) {
@@ -42,7 +43,7 @@ class SecurityLayout extends React.Component {
       return <PageLoading />;
     }
 
-    if (!isLogin && window.location.pathname !== '/login') {
+    if (!isLogin && window.location.pathname !== URLS.LOGIN.MAIN) {
       return <Redirect to="/login" />;
     }
 

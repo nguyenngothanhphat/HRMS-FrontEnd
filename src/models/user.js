@@ -15,6 +15,7 @@ import {
   setTenantId,
 } from '@/utils/authority';
 import { checkPermissions } from '@/utils/permissions';
+import URLS from '@/constants/url';
 
 const UserModel = {
   namespace: 'user',
@@ -45,7 +46,7 @@ const UserModel = {
         const { country = '' } = data?.location?.headQuarterAddress || {};
         setCountry(JSON.stringify(country));
         if (statusCode !== 200) {
-          history.push('/login');
+          history.push(URLS.LOGIN.MAIN);
           throw response;
         }
 
@@ -64,7 +65,7 @@ const UserModel = {
         const isOnlyCandidate = isCandidate && formatRole.length === 1;
 
         if (isFirstLogin && !candidateLinkMode && !isSigninGoogle && !isCandidate) {
-          history.replace('/first-change-password');
+          history.replace(URLS.PASSWORD.FIRST_CHANGE_PASSWORD);
           return 1;
         }
 

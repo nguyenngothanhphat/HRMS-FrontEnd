@@ -11,6 +11,7 @@ import {
   getCompanyTypeListInSignUp,
   sendAgainSecurityCode,
 } from '../services/user';
+import URLS from '@/constants/url';
 
 const delay = (timeout) => {
   return new Promise((resolve) => {
@@ -108,7 +109,7 @@ const signup = {
           message: 'Sign up successfully. Please check email to active your account.',
         });
         setTimeout(() => {
-          history.push('/login');
+          history.push(URLS.LOGIN.MAIN);
         }, 1000);
         // yield put({
         //   type: 'activeAdmin',

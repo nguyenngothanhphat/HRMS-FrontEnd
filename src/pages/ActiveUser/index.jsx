@@ -3,6 +3,7 @@ import { Button } from 'antd';
 import { LoadingOutlined, InfoCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { connect, history } from 'umi';
 import styles from './index.less';
+import URLS from '@/constants/url';
 
 @connect(({ loading }) => ({
   loadingActivateUser: loading.effects['signup/activeAdmin'],
@@ -69,7 +70,7 @@ class ActiveUser extends PureComponent {
               )}
               <Button
                 onClick={() => {
-                  history.push('/login');
+                  history.push(URLS.LOGIN.MAIN);
                 }}
               >
                 LOGIN
