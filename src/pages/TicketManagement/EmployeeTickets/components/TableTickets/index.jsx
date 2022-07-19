@@ -52,7 +52,7 @@ class TableTickets extends PureComponent {
       const {
         headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',
-      } = location;
+      } = location || {};
       timezoneList.push({
         locationId: _id,
         timezone:
@@ -157,16 +157,15 @@ class TableTickets extends PureComponent {
     const { locationsList = [] } = this.props;
     const result =
       locationsList.length > 0 ? locationsList.filter((val) => val._id === location)[0] : [] || [];
+    const { headQuarterAddress = {}, _id = '' } = result || {};
+
     const {
-      headQuarterAddress: {
-        addressLine1 = '',
-        addressLine2 = '',
-        state = '',
-        country = {},
-        zipCode = '',
-      } = {},
-      _id = '',
-    } = result;
+      addressLine1 = '',
+      addressLine2 = '',
+      state = '',
+      country = {},
+      zipCode = '',
+    } = headQuarterAddress || {};
 
     const { timezoneList, currentTime } = this.state;
 
