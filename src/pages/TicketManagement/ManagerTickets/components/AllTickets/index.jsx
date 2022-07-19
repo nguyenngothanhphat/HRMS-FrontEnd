@@ -18,6 +18,7 @@ const AllTicket = (props) => {
     selectedLocations = [],
     permissions = [],
     role = '',
+    filter = [],
   } = props;
 
   const [selectedFilterTab, setSelectedFilterTab] = useState('1');
@@ -60,6 +61,7 @@ const AllTicket = (props) => {
       limit: size,
       location: selectedLocations,
       country,
+      ...filter,
     };
     if (nameSearch) {
       payload = {
@@ -93,19 +95,29 @@ const AllTicket = (props) => {
     );
     const newObj = Object.fromEntries(filteredObj);
     setApplied(Object.keys(newObj).length);
-    setIsFiltering(Object.keys(newObj).length > 0);
+    setIsFiltering(true);
   };
 
   useEffect(() => {
     debouncedChangeLocation(initDataTable);
+  }, [
+    pageSelected,
+    size,
+    selectedFilterTab,
+    nameSearch,
+    JSON.stringify(selectedLocations),
+    JSON.stringify(filter),
+  ]);
+
+  useEffect(() => {
     return () => {
-      setApplied(0);
-      setIsFiltering(false);
       dispatch({
         type: 'ticketManagement/clearFilter',
       });
+      setApplied(0);
+      setIsFiltering(false);
     };
-  }, [pageSelected, size, selectedFilterTab, nameSearch, JSON.stringify(selectedLocations)]);
+  }, []);
 
   return (
     <div className={styles.containerTickets}>
@@ -117,10 +129,6 @@ const AllTicket = (props) => {
             form={form}
             setApplied={() => setApplied(0)}
             setIsFiltering={() => setIsFiltering(false)}
-            initDataTable={initDataTable}
-            selectedFilterTab={selectedFilterTab}
-            nameSearch={nameSearch}
-            selectedLocations={selectedLocations}
           />
           <SearchTable
             onChangeSearch={onChangeSearch}
@@ -153,11 +161,17 @@ export default connect(
         employee: { location: { headQuarterAddress: { country = '' } = {} } = {} } = {},
       } = {},
     },
-    ticketManagement: { selectedLocations = [], listOffAllTicket = [], totalStatus = [] } = {},
+    ticketManagement: {
+      selectedLocations = [],
+      listOffAllTicket = [],
+      totalStatus = [],
+      filter = [],
+    } = {},
   }) => ({
     listOffAllTicket,
     totalStatus,
     selectedLocations,
+    filter,
     country,
     loadingFetchTicketList: loading.effects['ticketManagement/fetchListAllTicket'],
   }),

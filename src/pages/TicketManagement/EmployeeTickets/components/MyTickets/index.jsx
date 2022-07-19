@@ -14,10 +14,14 @@ const MyTickets = (props) => {
     loading,
     loadingFilter,
     totalStatus = [],
-    countData = [],
+    totalList = [],
     permissions = [],
     selectedLocations = [],
-    employee: { _id = '', location: { headQuarterAddress: { country = '' } = {} } = {} } = {},
+    employee: {
+      _id = '',
+      departmentInfo: { _id: idDepart = '' },
+      location: { headQuarterAddress: { country = '' } = {} } = {},
+    } = {},
     dispatch,
     role = '',
   } = props;
@@ -77,6 +81,20 @@ const MyTickets = (props) => {
     });
   };
 
+  const fetchTotalList = () => {
+    const payload = {
+      employeeAssignee: _id,
+      departmentAssign: idDepart,
+      location: selectedLocations,
+      country,
+      permissions,
+    };
+    dispatch({
+      type: 'ticketManagement/fetchToTalList',
+      payload,
+    });
+  };
+
   const setSelectedTab = (id) => {
     setSelectedFilterTab(id);
   };
@@ -102,6 +120,7 @@ const MyTickets = (props) => {
 
   useEffect(() => {
     initDataTable();
+    fetchTotalList();
     return () => {
       setApplied(0);
       setIsFiltering(false);
@@ -114,7 +133,7 @@ const MyTickets = (props) => {
   return (
     <>
       <div>
-        <TicketInfo countData={countData} />
+        <TicketInfo countData={totalList} />
       </div>
       <div className={styles.containerTickets}>
         <div className={styles.tabTickets}>
@@ -158,9 +177,10 @@ export default connect(
     loading,
     user: { currentUser: { employee = {} } = {} } = {},
 
-    ticketManagement: { selectedLocations = [] } = {},
+    ticketManagement: { selectedLocations = [], totalList = [] } = {},
   }) => ({
     employee,
+    totalList,
     selectedLocations,
     loading: loading.effects['ticketManagement/fetchListAllTicket'],
     loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],

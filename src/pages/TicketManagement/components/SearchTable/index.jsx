@@ -38,7 +38,7 @@ class SearchTable extends Component {
   };
 
   render() {
-    const { onChangeSearch = () => {}, filter, isFiltering } = this.props;
+    const { onChangeSearch = () => {}, handleFilterCounts = () => {}, isFiltering } = this.props;
     const { visible } = this.state;
     return (
       <div className={styles.searchFilter}>
