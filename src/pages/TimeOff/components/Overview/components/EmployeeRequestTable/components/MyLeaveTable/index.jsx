@@ -7,7 +7,6 @@ import {
   checkNormalTypeTimeoff,
   isNewRequest,
   isUpdatedRequest,
-  checkNormalTypeTimeoff,
   roundNumber,
   TIMEOFF_DATE_FORMAT,
   TIMEOFF_STATUS,
