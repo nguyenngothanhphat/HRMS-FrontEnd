@@ -80,9 +80,8 @@ const LeaveRequestForm = (props) => {
     }
   };
 
-  const setInvalidDate = (res) => {
+  const setInvalidDate = (data) => {
     let invalidDatesTemp = [];
-    const { data = [] } = res;
     data.forEach((x) => {
       const temp = x.leaveDates.map((y) => {
         return {
@@ -92,7 +91,6 @@ const LeaveRequestForm = (props) => {
       });
       invalidDatesTemp = [...invalidDatesTemp, ...temp];
     });
-
     setInvalidDates(invalidDatesTemp);
   };
 
@@ -108,7 +106,8 @@ const LeaveRequestForm = (props) => {
         },
       }).then((res) => {
         if (res.statusCode === 200) {
-          setInvalidDate(res);
+          const { data = [] } = res;
+          setInvalidDate(data);
         }
       });
     }
@@ -133,7 +132,8 @@ const LeaveRequestForm = (props) => {
         },
       }).then((res) => {
         if (res.statusCode === 200) {
-          setInvalidDate(res);
+          const { items: leaveRequests = [] } = res?.data;
+          setInvalidDate(leaveRequests);
         }
       });
     }
