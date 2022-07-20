@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
-
-import { connect } from 'umi';
+import React, { useEffect, useState } from 'react';
 import { debounce } from 'lodash';
-
+import { connect } from 'umi';
+import FilterCount from '../../../components/FilterCount/FilterCount';
 import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
-import styles from './index.less';
-import FilterCount from '../../../components/FilterCount/FilterCount';
 import TicketInfo from '../TicketInfo';
+import styles from './index.less';
 
 const TicketQueue = (props) => {
   const {
@@ -96,7 +94,7 @@ const TicketQueue = (props) => {
     );
     const newObj = Object.fromEntries(filteredObj);
     setApplied(Object.keys(newObj).length);
-    setIsFiltering(true);
+    setIsFiltering(Object.keys(newObj).length > 0);
   };
 
   useEffect(() => {

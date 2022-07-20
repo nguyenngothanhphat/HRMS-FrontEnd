@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
 import { debounce } from 'lodash';
-import styles from './index.less';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
+import FilterCount from '../../../components/FilterCount/FilterCount';
 import SearchTable from '../../../components/SearchTable';
+import Summary from '../Summary';
 import TableTickets from '../TableTickets';
 import TicketInfo from '../TicketInfo';
-import Summary from '../Summary';
-import FilterCount from '../../../components/FilterCount/FilterCount';
+import styles from './index.less';
 
 const MyTickets = (props) => {
   const {
@@ -24,6 +24,7 @@ const MyTickets = (props) => {
     } = {},
     dispatch,
     role = '',
+    filter = [],
   } = props;
 
   const dataTableEmployee = data.filter((item) => {
@@ -68,6 +69,7 @@ const MyTickets = (props) => {
       limit: size,
       location: selectedLocations,
       country,
+      ...filter,
     };
     if (nameSearch) {
       payload = {
@@ -115,11 +117,21 @@ const MyTickets = (props) => {
     );
     const newObj = Object.fromEntries(filteredObj);
     setApplied(Object.keys(newObj).length);
-    setIsFiltering(true);
+    setIsFiltering(Object.keys(newObj).length > 0);
   };
 
   useEffect(() => {
     initDataTable();
+  }, [
+    pageSelected,
+    size,
+    selectedFilterTab,
+    nameSearch,
+    JSON.stringify(selectedLocations),
+    JSON.stringify(filter),
+  ]);
+
+  useEffect(() => {
     fetchTotalList();
     return () => {
       setApplied(0);
@@ -128,7 +140,7 @@ const MyTickets = (props) => {
         type: 'ticketManagement/clearFilter',
       });
     };
-  }, [pageSelected, size, selectedFilterTab, nameSearch, JSON.stringify(selectedLocations)]);
+  }, []);
 
   return (
     <>
@@ -144,10 +156,6 @@ const MyTickets = (props) => {
               form={form}
               setApplied={() => setApplied(0)}
               setIsFiltering={() => setIsFiltering(false)}
-              initDataTable={initDataTable}
-              selectedFilterTab={selectedFilterTab}
-              nameSearch={nameSearch}
-              selectedLocations={selectedLocations}
             />
             <SearchTable
               onChangeSearch={onChangeSearch}
@@ -166,6 +174,7 @@ const MyTickets = (props) => {
           getPageAndSize={getPageAndSize}
           role={role}
           refreshFetchData={initDataTable}
+          refreshFetchTotalList={fetchTotalList}
         />
       </div>
     </>
@@ -177,10 +186,11 @@ export default connect(
     loading,
     user: { currentUser: { employee = {} } = {} } = {},
 
-    ticketManagement: { selectedLocations = [], totalList = [] } = {},
+    ticketManagement: { selectedLocations = [], totalList = [], filter = [] } = {},
   }) => ({
     employee,
     totalList,
+    filter,
     selectedLocations,
     loading: loading.effects['ticketManagement/fetchListAllTicket'],
     loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],

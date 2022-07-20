@@ -20,7 +20,6 @@ const FilterForm = (props) => {
     visible = false,
     handleFilterCounts = () => {},
     setForm = () => {},
-    selectedFilterTab = {},
   } = props;
 
   const [form] = Form.useForm();
