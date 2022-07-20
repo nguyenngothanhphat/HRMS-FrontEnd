@@ -71,6 +71,7 @@ const LikeComment = ({
       type: 'homePage/fetchPostCommentsEffect',
       payload: {
         post: postIdProp,
+        page: 1,
         limit: loadType ? newLimit : limit,
       },
     });

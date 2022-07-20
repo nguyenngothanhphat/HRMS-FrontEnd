@@ -85,6 +85,7 @@ const CelebratingDetailModalContent = (props) => {
       type: 'homePage/fetchAnniversaryCommentsEffect',
       payload: {
         post: postIdProp,
+        page: 1,
         limit: loadType ? newLimit : limit,
       },
       varType: TAB_IDS.ANNIVERSARY,
