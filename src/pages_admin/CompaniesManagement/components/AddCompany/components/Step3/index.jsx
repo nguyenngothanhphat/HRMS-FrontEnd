@@ -74,7 +74,7 @@ class Step3 extends Component {
                           // pattern: /^(?:\d*)$/,
                           pattern:
                             // eslint-disable-next-line no-useless-escape
-                            /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?$/gm,
+                            /^(?=.{0,25}$)((?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?)$/gm,
                           message: formatMessage({ id: 'page.signUp.step3.phoneError2' }),
                         },
                       ]}
