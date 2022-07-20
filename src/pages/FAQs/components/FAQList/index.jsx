@@ -9,14 +9,13 @@ import closeViewAnswer from '@/assets/faqPage/closeViewAnswer.svg';
 import styles from './index.less';
 
 const { Panel } = Collapse;
-@connect(({ faqs: { listCategory = [], selectedCountry } = {},
+@connect(({ faqs: { listCategoryMainPage = [] } = {},
   user: {
-    currentUser: { employee: { location: { headQuarterAddress: { country: getCoutry } } } = {} } = {},
+    currentUser: { employee: { location } = {} } = {},
   },
 }) => ({
-  listCategory,
-  selectedCountry,
-  getCoutry
+  listCategoryMainPage,
+  location
 }))
 class FAQList extends PureComponent {
   constructor(props) {
@@ -29,11 +28,13 @@ class FAQList extends PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch, getCoutry = '', selectedCountry = '' } = this.props;
+    const { dispatch, location = '' } = this.props;
+    const { headQuarterAddress = {} } = location
+    const { country = '' } = headQuarterAddress
     dispatch({
-      type: 'faqs/fetchListFAQCategory',
+      type: 'faqs/fetchListFAQCategoryMainPage',
       payload: {
-        country: selectedCountry ? [selectedCountry] : [getCoutry]
+        country: [country]
       }
     });
   }
@@ -63,18 +64,18 @@ class FAQList extends PureComponent {
   };
 
   render() {
-    const { listCategory = [] } = this.props;
-    const defaultSelect = !isEmpty(listCategory) ? listCategory[0]._id : '';
+    const { listCategoryMainPage = [] } = this.props;
+    const defaultSelect = !isEmpty(listCategoryMainPage) ? listCategoryMainPage[0]._id : '';
 
     const getContent = () => {
       const { key, changeImg } = this.state;
       const expandIconPosition = 'right';
-      const getListFAQ = listCategory.filter((val) => val._id.toString() === key.toString());
+      const getListFAQ = listCategoryMainPage.filter((val) => val._id.toString() === key.toString());
       let listFAQ = [];
       let nameCategory = '';
       if (isEmpty(getListFAQ)) {
-        listFAQ = !isEmpty(listCategory) ? listCategory[0].listFAQs : [];
-        nameCategory = !isEmpty(listCategory) ? listCategory[0].category : '';
+        listFAQ = !isEmpty(listCategoryMainPage) ? listCategoryMainPage[0].listFAQs : [];
+        nameCategory = !isEmpty(listCategoryMainPage) ? listCategoryMainPage[0].category : '';
       } else {
         listFAQ = getListFAQ[0].listFAQs;
         nameCategory = getListFAQ[0].category;
@@ -134,8 +135,8 @@ class FAQList extends PureComponent {
           <Col sm={24} md={6} xl={5} className={styles.viewLeft}>
             <div className={styles.viewLeft__menu}>
               <Menu defaultSelectedKeys={defaultSelect} onClick={(e) => this.handleChange(e.key)}>
-                {!isEmpty(listCategory)
-                  ? listCategory.map((val) => {
+                {!isEmpty(listCategoryMainPage)
+                  ? listCategoryMainPage.map((val) => {
                       const { category, _id } = val;
                       return <Menu.Item key={_id}>{category}</Menu.Item>;
                     })

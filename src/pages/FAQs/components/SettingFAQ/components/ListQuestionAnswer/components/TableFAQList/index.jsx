@@ -65,6 +65,7 @@ class TableFAQList extends Component {
       size,
       getPageAndSize = () => {},
       listFAQ = [],
+      totalListFQA,
     } = this.props;
     const listQuestion = listFAQ
       ? listFAQ.map((obj) => {
@@ -131,14 +132,14 @@ class TableFAQList extends Component {
 
     const pagination = {
       position: ['bottomLeft'],
-      total: listQuestion.length,
+      total: totalListFQA,
       showTotal: (total, range) => (
         <span>
           Showing{' '}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          of {listQuestion.length}
+          of {total}
         </span>
       ),
       pageSize: size,
