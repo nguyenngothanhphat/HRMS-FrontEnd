@@ -7,6 +7,7 @@ import TableTickets from '../TableTickets';
 import TicketInfo from '../TicketInfo';
 import Summary from '../Summary';
 import FilterCount from '../../../components/FilterCount/FilterCount';
+import { cancelRequestTypes } from '@/utils/ticketManagement';
 
 const MyTickets = (props) => {
   const {
@@ -105,6 +106,10 @@ const MyTickets = (props) => {
     return () => {
       setApplied(0);
       setIsFiltering(false);
+      dispatch({
+        type: 'ticketManagement/cancelRequest',
+        payload: cancelRequestTypes.listOffAllTicket,
+      });
       dispatch({
         type: 'ticketManagement/clearFilter',
       });

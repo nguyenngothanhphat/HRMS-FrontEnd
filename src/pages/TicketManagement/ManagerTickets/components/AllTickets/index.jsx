@@ -5,6 +5,7 @@ import { debouncedChangeLocation } from '@/utils/ticketManagement';
 import FilterCount from '../../../components/FilterCount/FilterCount';
 import SearchTable from '../../../components/SearchTable';
 import Summary from '../Summary';
+import { cancelRequestTypes, debouncedChangeLocation } from '@/utils/ticketManagement';
 import TableTickets from '../TableTickets';
 import styles from './index.less';
 
@@ -101,6 +102,10 @@ const AllTicket = (props) => {
     return () => {
       setApplied(0);
       setIsFiltering(false);
+      dispatch({
+        type: 'ticketManagement/cancelRequest',
+        payload: cancelRequestTypes.listOffAllTicket,
+      });
       dispatch({
         type: 'ticketManagement/clearFilter',
       });
