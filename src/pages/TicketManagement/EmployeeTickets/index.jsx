@@ -16,7 +16,6 @@ const EmployeeTicket = (props) => {
     dispatch,
     companyLocationList = [],
     listOffAllTicket = [],
-    totalList = [],
     totalStatus = [],
     tabName = '',
     permissions = [],
@@ -138,19 +137,13 @@ const EmployeeTicket = (props) => {
           {isLocationLoaded ? (
             <>
               <TabPane tab="Ticket Queue" key="ticket-queue">
-                <TicketQueue
-                  role={role}
-                  data={listOffAllTicket}
-                  countData={totalList}
-                  permissions={permissions}
-                />
+                <TicketQueue role={role} data={listOffAllTicket} permissions={permissions} tabName={tabName} />
               </TabPane>
               <TabPane tab="My Tickets" key="my-tickets">
                 <MyTickets
                   role={role}
                   data={listOffAllTicket}
                   totalStatus={totalStatus}
-                  countData={totalList}
                   permissions={permissions}
                 />
               </TabPane>
@@ -170,7 +163,6 @@ export default connect(
   ({
     ticketManagement: {
       listOffAllTicket = [],
-      totalList = [],
       totalStatus = [],
       selectedLocations = [],
       isLocationLoaded = false,
@@ -180,7 +172,6 @@ export default connect(
   }) => ({
     employee,
     listOffAllTicket,
-    totalList,
     totalStatus,
     companyLocationList,
     selectedLocations,

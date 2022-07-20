@@ -1,7 +1,6 @@
 import { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { debouncedChangeLocation } from '@/utils/ticketManagement';
 import FilterCount from '../../../components/FilterCount/FilterCount';
 import SearchTable from '../../../components/SearchTable';
 import Summary from '../Summary';
@@ -19,6 +18,7 @@ const AllTicket = (props) => {
     selectedLocations = [],
     permissions = [],
     role = '',
+    filter = [],
   } = props;
 
   const [selectedFilterTab, setSelectedFilterTab] = useState('1');
@@ -61,6 +61,7 @@ const AllTicket = (props) => {
       limit: size,
       location: selectedLocations,
       country,
+      ...filter,
     };
     if (nameSearch) {
       payload = {
@@ -100,17 +101,29 @@ const AllTicket = (props) => {
   useEffect(() => {
     debouncedChangeLocation(initDataTable);
     return () => {
-      setApplied(0);
-      setIsFiltering(false);
       dispatch({
         type: 'ticketManagement/cancelRequest',
         payload: cancelRequestTypes.listOffAllTicket,
       });
+    };
+  }, [
+    pageSelected,
+    size,
+    selectedFilterTab,
+    nameSearch,
+    JSON.stringify(selectedLocations),
+    JSON.stringify(filter),
+  ]);
+
+  useEffect(() => {
+    return () => {
       dispatch({
         type: 'ticketManagement/clearFilter',
       });
+      setApplied(0);
+      setIsFiltering(false);
     };
-  }, [pageSelected, size, selectedFilterTab, nameSearch, JSON.stringify(selectedLocations)]);
+  }, []);
 
   return (
     <div className={styles.containerTickets}>
@@ -122,10 +135,7 @@ const AllTicket = (props) => {
             form={form}
             setApplied={() => setApplied(0)}
             setIsFiltering={() => setIsFiltering(false)}
-            initDataTable={initDataTable}
-            selectedFilterTab={selectedFilterTab}
-            nameSearch={nameSearch}
-            selectedLocations={selectedLocations}
+            setPageSelected={setPageSelected}
           />
           <SearchTable
             onChangeSearch={onChangeSearch}
@@ -159,11 +169,17 @@ export default connect(
         employee: { location: { headQuarterAddress: { country = '' } = {} } = {} } = {},
       } = {},
     },
-    ticketManagement: { selectedLocations = [], listOffAllTicket = [], totalStatus = [] } = {},
+    ticketManagement: {
+      selectedLocations = [],
+      listOffAllTicket = [],
+      totalStatus = [],
+      filter = [],
+    } = {},
   }) => ({
     listOffAllTicket,
     totalStatus,
     selectedLocations,
+    filter,
     country,
     loadingFetchTicketList: loading.effects['ticketManagement/fetchListAllTicket'],
   }),
