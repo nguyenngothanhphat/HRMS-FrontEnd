@@ -7,8 +7,12 @@ const LOCATION = {
   USA: 'USA',
 };
 
-export const debouncedChangeLocation = debounce((callback) => {
-  callback();
-}, 1000);
+const cancelRequestTypes = {
+  listOffAllTicket: 'listOffAllTicket',
+};
+
+const debouncedChangeLocation = debounce((callback) => callback(), 500);
+
+export { cancelRequestTypes, debouncedChangeLocation };
 
 export default { LOCATION };

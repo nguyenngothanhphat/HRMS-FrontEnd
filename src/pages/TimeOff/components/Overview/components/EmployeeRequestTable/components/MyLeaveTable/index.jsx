@@ -4,9 +4,9 @@ import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, Link } from 'umi';
 import {
+  checkNormalTypeTimeoff,
   isNewRequest,
   isUpdatedRequest,
-  checkNormalTypeTimeoff,
   roundNumber,
   TIMEOFF_DATE_FORMAT,
   TIMEOFF_STATUS,

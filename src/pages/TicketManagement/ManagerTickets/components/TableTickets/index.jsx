@@ -107,19 +107,7 @@ const TableTickets = (props) => {
       });
     }
   };
-  const handleDeleteOneTicket = (id) => {
-    dispatch({
-      type: 'ticketManagement/deleteTicketEffect',
-      payload: {
-        id,
-      },
-    }).then((res) => {
-      const { statusCode = '' } = res;
-      if (statusCode === 200) {
-        refreshFetchTicketList();
-      }
-    });
-  };
+
   const handleAssignTeam = (id) => {
     handleClickSelect(id);
     setModalVisible(true);
@@ -157,7 +145,6 @@ const TableTickets = (props) => {
         <DropdownSearch
           onChangeSearch={onChangeSearch}
           employeeFilterList={employeeFilterList}
-          // employeeFilterList={nameSearch ? employeeFilterList : []}
           handleSelectChange={handleSelectChange}
           loading={loadingFetchEmployee || loadingUpdate}
         />
@@ -458,23 +445,6 @@ const TableTickets = (props) => {
                 }}
                 onClick={() => handleAssignTeam(row.id)}
               />
-              {/* <Popconfirm
-                placement="bottomRight"
-                title="Are you sure to delete this?"
-                onConfirm={() => handleDeleteOneTicket(row.id)}
-                okText="Yes"
-                cancelText="No"
-              >
-                <img
-                  width={35}
-                  height={35}
-                  src={DeleteIcon}
-                  alt="delete icon"
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                />
-              </Popconfirm> */}
             </>
           );
         },

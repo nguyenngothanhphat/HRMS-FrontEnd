@@ -437,7 +437,6 @@ const homePage = {
       let response = {};
       try {
         const { post } = payload;
-
         response = yield call(getPostComments, {
           ...payload,
           company: getCurrentCompany(),

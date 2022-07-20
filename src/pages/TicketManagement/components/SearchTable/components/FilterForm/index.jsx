@@ -1,30 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { DatePicker, Form, Select, AutoComplete, Spin, Input } from 'antd';
+import { AutoComplete, DatePicker, Form, Input, Select, Spin } from 'antd';
 import { debounce } from 'lodash';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import styles from './index.less';
-import { getAuthority } from '@/utils/authority';
 
 const { Option } = Select;
 
 const FilterForm = (props) => {
   const {
     listOffAllTicket = [],
-    // locationsList = [],
     employeeAssignedList = [],
     employeeRaiseList = [],
     currentStatus = '',
-    selectedLocations = [],
-    country = '',
     loadingFetchEmployeeRaiseListEffect,
     loadingFetchEmployeeAssignedListEffect,
     dispatch,
     visible = false,
     handleFilterCounts = () => {},
     setForm = () => {},
-    selectedFilterTab = {},
   } = props;
 
   const [form] = Form.useForm();
@@ -33,8 +28,6 @@ const FilterForm = (props) => {
 
   const [nameListState, setNameListState] = useState([]);
   const [asignedListState, setAsignedListState] = useState([]);
-
-  const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
 
   function getUniqueListBy(arr, key) {
     return [...new Map(arr.map((item) => [item[key], item])).values()];
@@ -142,35 +135,12 @@ const FilterForm = (props) => {
       type: 'ticketManagement/save',
       payload: { filter: payload },
     });
-    if (permissions && permissions.length > 0) {
-      payload = {
-        ...payload,
-        permissions,
-        country,
-      };
-    }
-    dispatch({
-      type: 'ticketManagement/fetchListAllTicket',
-      payload: {
-        ...payload,
-        status: currentStatus,
-        location: selectedLocations,
-      },
-    });
-    dispatch({
-      type: 'ticketManagement/fetchToTalList',
-      payload: {
-        ...payload,
-        status: currentStatus,
-        location: selectedLocations,
-      },
-    });
   };
 
   const onFinishDebounce = debounce((values) => {
     handleFilterCounts(values);
     onFinish(values);
-  }, 1000);
+  }, 800);
 
   const onValuesChange = () => {
     const values = form.getFieldsValue();
@@ -227,8 +197,6 @@ const FilterForm = (props) => {
   const handleEmployeeSearch = (type, value) => {
     onSearchEmployeeDebounce(type, value);
   };
-
-  useEffect(() => form?.resetFields(), [selectedFilterTab]);
 
   return (
     <div>

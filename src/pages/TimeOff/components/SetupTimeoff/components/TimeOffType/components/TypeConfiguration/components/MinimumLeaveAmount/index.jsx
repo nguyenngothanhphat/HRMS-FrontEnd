@@ -13,7 +13,7 @@ const MinimumLeaveAmount = () => {
         </Col>
         <Col sm={10}>
           <Form.Item name={FORM_ITEM_NAME.MINIMUM_LEAVE_AMOUNT_VALUE}>
-            <Input defaultValue="0" suffix="days" type="number" min={0} max={100} />
+            <Input defaultValue="0" suffix="days" type="number" min={0} max={100} step="0.5" />
           </Form.Item>
         </Col>
         <Col sm={4} />
