@@ -131,10 +131,11 @@ const BackgroundRecheck = (props) => {
     setVerifyModalVisible(true);
   };
 
-  const onViewCommentClick = (typeProp, itemProp) => {
+  const onViewCommentClick = (typeProp, itemProp, indexProp) => {
     setSelectingFile({
       type: typeProp,
       item: itemProp,
+      index: indexProp,
     });
     setViewCommentModalVisible(true);
   };
