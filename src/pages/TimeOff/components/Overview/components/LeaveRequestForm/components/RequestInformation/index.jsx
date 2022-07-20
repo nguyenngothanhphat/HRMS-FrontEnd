@@ -887,7 +887,6 @@ const RequestInformation = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log(listDate);
     form.setFieldsValue({
       listDate,
     });
