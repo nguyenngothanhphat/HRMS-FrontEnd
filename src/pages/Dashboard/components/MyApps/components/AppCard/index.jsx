@@ -5,23 +5,19 @@ import { connect, history } from 'umi';
 import styles from './index.less';
 
 const AppCard = (props) => {
-  const { app: { name = '', icon = '', link = '' } = {} } = props;
-  let directlyClick = '';  
-
-  if(name === 'Timesheets') {directlyClick = '/time-sheet'}
-  if(name === 'Directory') {directlyClick = '/directory/org-chart'}
-  if(name === 'Timeoff') {directlyClick = '/time-off/overview'}
-  const onAppClick = () => {
-    history.push(directlyClick);
-  };
+  const { app: { name = '', icon = '', link = '', isHide = false } = {} } = props;
 
   return (
-    <Col span={8} className={styles.AppCard} onClick={() => onAppClick(link)}>
-      <div>
-        <img src={icon} alt="" />
-        <span>{name}</span>
-      </div>
-    </Col>
+    <>
+      {!isHide && (
+        <Col span={8} className={styles.AppCard} onClick={() => history.push(link)}>
+          <div>
+            <img src={icon} alt="" />
+            <span>{name}</span>
+          </div>
+        </Col>
+      )}
+    </>
   );
 };
 
