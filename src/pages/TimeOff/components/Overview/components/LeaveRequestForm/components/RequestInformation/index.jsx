@@ -262,7 +262,7 @@ const RequestInformation = (props) => {
       const { type = '', name = '' } = foundType;
       setSelectedType(type);
       setSelectedTypeName(name);
-      if (type === TIMEOFF_TYPE.A || type === TIMEOFF_TYPE.B) {
+      if (type === TIMEOFF_TYPE.A || type === TIMEOFF_TYPE.B || type === TIMEOFF_TYPE.D) {
         setIsNormalType(true);
       } else {
         setIsNormalType(false);
@@ -658,7 +658,11 @@ const RequestInformation = (props) => {
       }
       let isNormalTypeTemp = false;
       let listDateTemp = [];
-      if (viewingType.type === TIMEOFF_TYPE.A || viewingType.type === TIMEOFF_TYPE.B) {
+      if (
+        viewingType.type === TIMEOFF_TYPE.A ||
+        viewingType.type === TIMEOFF_TYPE.B ||
+        viewingType.type === TIMEOFF_TYPE.D
+      ) {
         isNormalTypeTemp = true;
         listDateTemp = viewingLeaveDates.map((x) => x.date);
         setIsNormalType(true);
@@ -883,6 +887,7 @@ const RequestInformation = (props) => {
   }, []);
 
   useEffect(() => {
+    console.log(listDate);
     form.setFieldsValue({
       listDate,
     });
@@ -934,6 +939,7 @@ const RequestInformation = (props) => {
 
   const renderLeaveTimeList = () => {
     if ([D].includes(selectedType)) {
+      const normalListDate = listDate.sort((a, b) => new Date(a) - new Date(b));
       return (
         <>
           <Row className={styles.eachRow}>
@@ -947,7 +953,7 @@ const RequestInformation = (props) => {
                   <Col span={TIMEOFF_COL_SPAN_1.DAY}>To</Col>
                   <Col span={TIMEOFF_COL_SPAN_1.COUNT}>No. of Days</Col>
                 </Row>
-                {(!durationFrom || !durationTo) && (
+                {!normalListDate.length && (
                   <div className={styles.content}>
                     <div className={styles.emptyContent}>
                       <span>Selected duration will show as days</span>
@@ -959,7 +965,7 @@ const RequestInformation = (props) => {
             <Col lg={6} sm={0} />
           </Row>
 
-          {durationFrom && durationTo && (
+          {normalListDate && !!normalListDate.length && (
             <Form.List name="leaveTimeLists">
               {() => (
                 <Row key={1} className={styles.eachRow}>
@@ -968,9 +974,9 @@ const RequestInformation = (props) => {
                   </Col>
                   <Col lg={12} sm={16} className={styles.leaveDaysContainer}>
                     <LeaveTimeRow2
-                      fromDate={durationFrom}
-                      toDate={durationTo}
-                      noOfDays={dateLists.length}
+                      fromDate={normalListDate[0]}
+                      toDate={normalListDate[normalListDate.length - 1]}
+                      noOfDays={normalListDate.length}
                     />
                   </Col>
                   <Col lg={6} sm={0} />
@@ -1221,7 +1227,8 @@ const RequestInformation = (props) => {
                                 dateRender={dateRender}
                                 style={{ visibility: 'hidden' }}
                                 getPopupContainer={() =>
-                                  document.getElementsByClassName('multipleDropdown')[0]}
+                                  document.getElementsByClassName('multipleDropdown')[0]
+                                }
                               />
                             );
                           }}
