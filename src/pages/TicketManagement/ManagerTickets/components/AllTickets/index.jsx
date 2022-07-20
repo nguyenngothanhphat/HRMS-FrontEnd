@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
 import { debounce } from 'lodash';
-import FilterCount from '../../../components/FilterCount/FilterCount';
-import styles from './index.less';
-import SearchTable from '../../../components/SearchTable';
-import TableTickets from '../TableTickets';
-import Summary from '../Summary';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
 import { debouncedChangeLocation } from '@/utils/ticketManagement';
+import FilterCount from '../../../components/FilterCount/FilterCount';
+import SearchTable from '../../../components/SearchTable';
+import Summary from '../Summary';
+import TableTickets from '../TableTickets';
+import styles from './index.less';
 
 const AllTicket = (props) => {
   const {
@@ -148,6 +148,7 @@ const AllTicket = (props) => {
         size={size}
         getPageAndSize={getPageAndSize}
         refreshFetchTicketList={initDataTable}
+        selectedFilterTab={selectedFilterTab}
       />
     </div>
   );

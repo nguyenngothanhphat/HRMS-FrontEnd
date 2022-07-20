@@ -1,7 +1,7 @@
 import { Button, Popover } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import DeleteIcon from '@/assets/customerManagement/delete.svg';
+import TeamIcon from '@/assets/assignTeam.svg';
 import EditIcon from '@/assets/customerManagement/edit2.svg';
 import CloseIcon from '@/assets/ticketManagement-trashIcon.svg';
 import UserProfilePopover from '@/components/UserProfilePopover';
@@ -13,6 +13,7 @@ function TicketsItem(props) {
     employeeAssignee = {},
     employeeAssignee: {
       generalInfo: { userId: userIdProps = '', legalName: legalNameProps = '' } = {},
+      _id = '',
     } = {},
     renderMenuDropdown = () => {},
     viewProfile = () => {},
@@ -21,6 +22,8 @@ function TicketsItem(props) {
     refreshFetchTicketList = () => {},
     setOldAssignName = () => {},
     selected = true,
+    setOldId = () => {},
+    setModalVisible = () => {},
   } = props;
   const [isEdit, setIsEdit] = useState(false);
 
@@ -28,6 +31,12 @@ function TicketsItem(props) {
     handleClickSelect(id);
     setIsEdit(true);
     setOldAssignName(name);
+    setOldId(_id);
+  };
+
+  const handleAssignTeam = (id) => {
+    handleClickSelect(id);
+    setModalVisible(true);
   };
 
   const handleDeleteOneTicket = (id) => {
@@ -129,9 +138,35 @@ function TicketsItem(props) {
               <img width={32} height={32} src={CloseIcon} alt="close" />
             </Button>
           ) : (
-            <Button type="link" shape="circle" onClick={() => handleDeleteOneTicket(row.id)}>
-              <img width={32} height={32} src={DeleteIcon} alt="delete" />
-            </Button>
+            <>
+              <img
+                width={32}
+                height={32}
+                src={TeamIcon}
+                alt="assign team icon"
+                style={{
+                  cursor: 'pointer',
+                }}
+                onClick={() => handleAssignTeam(row.id)}
+              />
+              {/* <Popconfirm
+                placement="bottomRight"
+                title="Are you sure to delete this?"
+                onConfirm={() => handleDeleteOneTicket(row.id)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <img
+                  width={32}
+                  height={32}
+                  src={DeleteIcon}
+                  alt="delete icon"
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                />
+              </Popconfirm> */}
+            </>
           )}
         </div>
       </div>

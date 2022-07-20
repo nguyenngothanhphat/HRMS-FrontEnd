@@ -129,8 +129,11 @@ const Policies = (props) => {
           <div className={`${listCategory.length > 0 ? styles.viewLeft__menu : ''}`}>
             <Menu selectedKeys={[activeCategoryID]} onClick={(e) => handleChange(e.key)}>
               {listCategory.map((val) => {
-                const { name, _id } = val;
+                const { name, _id, country } = val;
                 if (name !== 'Digital Signature' || viewSetting) {
+                  if (name === 'Employee Handbook') {
+                    return <Menu.Item key={_id}>{`${name} (${country[0]})`}</Menu.Item>;
+                  }
                   return <Menu.Item key={_id}>{name}</Menu.Item>;
                 }
                 return null;

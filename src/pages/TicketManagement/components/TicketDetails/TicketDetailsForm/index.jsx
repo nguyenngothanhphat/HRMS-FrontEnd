@@ -1,17 +1,18 @@
-import React, { Component } from 'react';
-import { Row, Col, Input, Upload, message, Avatar, Tooltip, Spin, Button, Timeline } from 'antd';
+import { Avatar, Button, Col, Input, message, Row, Spin, Timeline, Tooltip, Upload } from 'antd';
 import moment from 'moment';
+import React, { Component } from 'react';
 
+import { UserOutlined } from '@ant-design/icons';
 import { isEmpty } from 'lodash';
 import { connect } from 'umi';
-import { UserOutlined } from '@ant-design/icons';
 
-import AttachmentIcon from '@/assets/ticketsManagement-attach.svg';
 import AttachmenUploadtIcon from '@/assets/attach-upload.svg';
-import TrashIcon from '@/assets/ticketManagement-trashIcon.svg';
 import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';
+import TrashIcon from '@/assets/ticketManagement-trashIcon.svg';
+import AttachmentIcon from '@/assets/ticketsManagement-attach.svg';
 
+import AssignTeamModal from '../../AssignTeamModal';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -38,6 +39,7 @@ class TicketDetailsForm extends Component {
       uploadedFileList: [],
       fileNameList: [],
       arrayChats: [],
+      modalVisible: false,
     };
   }
 
@@ -47,6 +49,13 @@ class TicketDetailsForm extends Component {
       arrayChats: chats.reverse(),
     });
   }
+
+  findRole = (roles) => {
+    const manager = roles.find((item) => item === 'MANAGER');
+    const hrManager = roles.find((item) => item === 'HR-MANAGER');
+    const role = hrManager || manager || 'EMPLOYEE';
+    return role;
+  };
 
   onChange = ({ target: { value } }) => {
     this.setState({ value });
@@ -193,7 +202,9 @@ class TicketDetailsForm extends Component {
       ticketDetail = {},
       loadingUploadAttachment = false,
       loadingAddChat = false,
+      roles = [],
     } = this.props;
+    const role = this.findRole(roles);
     const { listEmployee } = this.props;
     const {
       id = '',
@@ -209,7 +220,7 @@ class TicketDetailsForm extends Component {
       employee_assignee: employeeAssignedTickets = '',
     } = ticketDetail;
 
-    const { fileNameList, value, arrayChats } = this.state;
+    const { fileNameList, value, arrayChats, modalVisible } = this.state;
 
     const getColor = () => {
       switch (priority) {
@@ -284,6 +295,14 @@ class TicketDetailsForm extends Component {
         <div className={styles.formDetails}>
           <div className={styles.formTitle}>
             <span className={styles.title}>Tickets Details</span>
+            <Button
+              className={styles.btnMoveTo}
+              type="primary"
+              shape="round"
+              onClick={() => this.setState({ modalVisible: true })}
+            >
+              Move To
+            </Button>
           </div>
           <div className={styles.formContent}>
             <div className={styles.formContent__container}>
@@ -514,6 +533,11 @@ class TicketDetailsForm extends Component {
             )}
           </>
         </div>
+        <AssignTeamModal
+          visible={modalVisible}
+          role={role}
+          onClose={() => this.setState({ modalVisible: false })}
+        />
       </div>
     );
   }

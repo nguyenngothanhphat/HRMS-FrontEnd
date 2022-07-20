@@ -4,9 +4,9 @@ import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, Link } from 'umi';
 import {
+  checkNormalTypeTimeoff,
   isNewRequest,
   isUpdatedRequest,
-  checkNormalTypeTimeoff,
   roundNumber,
   TIMEOFF_DATE_FORMAT,
   TIMEOFF_STATUS,
@@ -21,7 +21,7 @@ const { ON_HOLD } = TIMEOFF_STATUS;
 @connect(({ loading, dispatch, timeOff: { paging } }) => ({
   paging,
   dispatch,
-  loadingFetchLeaveRequests: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+  loadingFetchLeaveRequests: loading.effects['timeOff/fetchMyLeaveRequest'],
 }))
 class MyLeaveTable extends PureComponent {
   columns = [

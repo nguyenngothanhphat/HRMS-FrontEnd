@@ -45,7 +45,7 @@ const MyTeam = (props) => {
   // }, [selectedMonth]);
 
   useEffect(() => {
-    const roleEmployee = employee && employee?.title ? employee.title.roles : [];
+    // const roleEmployee = employee && employee?.title ? employee.title.roles : [];
     const employeeId = employee ? employee._id : '';
     const companyInfo = employee ? employee.company : {};
     dispatch({
@@ -55,7 +55,7 @@ const MyTeam = (props) => {
         // company: getCurrentCompany(),
         // department: [departmentName],
         // location: companyLocationList.map((l) => l._id),
-        roles: roleEmployee,
+        roles,
         employee: employeeId,
         status: ['ACTIVE'],
         company: [companyInfo],
