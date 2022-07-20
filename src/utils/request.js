@@ -50,17 +50,23 @@ const errorHandler = (error) => {
 
 const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) => {
   const { method = 'POST', data = {}, params = {} } = options;
+  const { cancel: { cancelNamespace, cancelType = '' } = {} } = data;
   const token = getToken();
+
+  const { CancelToken } = axios;
+  const source = CancelToken.source();
+
+  if (cancelNamespace)
+    getDvaApp()._store.dispatch({
+      type: `${cancelNamespace}/saveRequest`,
+      payload: { [cancelType]: source },
+    });
 
   const headers = {
     'Content-Type': 'application/json;charset=UTF-8',
     'Access-Control-Allow-Origin': '*',
     Authorization: !noAuth ? `Bearer ${token}` : '',
   };
-
-  const { CancelToken } = axios;
-  const source = CancelToken.source();
-
   const instance = axios.create({
     baseURL: proxy[apiKey],
     headers,
@@ -76,10 +82,13 @@ const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) =>
     },
   );
   try {
-    const res = await instance[method.toLowerCase()](url, data);
+    const updateData = { ...data };
+    delete updateData.cancel;
+    const res = await instance[method.toLowerCase()](url, updateData);
     return res.data;
   } catch (e) {
-    return errorHandler(e);
+    const isCancel = axios.isCancel(e);
+    return isCancel ? null : errorHandler(e);
   }
 };
 

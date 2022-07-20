@@ -11,42 +11,52 @@ import styles from './index.less';
 import HolidayModalContent from '@/pages/Dashboard/components/Calendar/components/HolidayModalContent';
 import CommonModal from '@/components/CommonModal';
 
-const links = [
-  {
-    id: 1,
-    name: 'Policies',
-    link: '/policies-regulations',
-    type: 1, // 1: redirect link, 2: open view file modal, 3: open modal
-    icon: PoliciesIcon,
-  },
-  {
-    id: 2,
-    name: 'FAQ',
-    link: '/faqpage',
-    type: 1,
-    icon: FAQIcon,
-  },
-  {
-    id: 1,
-    name: 'Holiday Calendar',
-    type: 3,
-    icon: CalendarIcon,
-  },
-  {
-    id: 1,
-    name: 'Employee Handbook',
-    link: '#',
-    type: 2,
-    icon: HandbookIcon,
-  },
-];
-
 const QuickLinks = (props) => {
   const [holidayModal, setHolidayModal] = useState(false);
   const [previewModalVisible, setPreviewModalVisible] = useState(false);
   const [previewUrl, setPreviewUrl] = useState('');
 
-  const { dispatch, holidaysListByCountry = [], currentUser: { location = {} } = {} } = props;
+  const {
+    dispatch,
+    holidaysListByCountry = [],
+    currentUser: {
+      location = {},
+      location: { headQuarterAddress: { country: { _id: countryId = '' } = {} } = {} } = {},
+    } = {},
+    listPolicy = [],
+  } = props;
+
+  const listEmployeeHandBook = listPolicy.filter((x) => x.category[0].name === 'Employee Handbook');
+
+  const links = [
+    {
+      id: 1,
+      name: 'Policies',
+      link: '/policies-regulations',
+      type: 1, // 1: redirect link, 2: open view file modal, 3: open modal
+      icon: PoliciesIcon,
+    },
+    {
+      id: 2,
+      name: 'FAQ',
+      link: '/faqpage',
+      type: 1,
+      icon: FAQIcon,
+    },
+    {
+      id: 1,
+      name: 'Holiday Calendar',
+      type: 3,
+      icon: CalendarIcon,
+    },
+    {
+      id: 1,
+      name: 'Employee Handbook',
+      link: listEmployeeHandBook[listEmployeeHandBook.length - 1]?.attachment.url,
+      type: 2,
+      icon: HandbookIcon,
+    },
+  ];
 
   useEffect(() => {
     const country = location ? location.headQuarterAddress.country._id : '';
@@ -54,6 +64,12 @@ const QuickLinks = (props) => {
       type: 'dashboard/fetchHolidaysByCountry',
       payload: {
         country,
+      },
+    });
+    dispatch({
+      type: 'homePage/fetchListPolicy',
+      payload: {
+        country: [countryId],
       },
     });
   }, []);
@@ -130,10 +146,12 @@ export default connect(
     dashboard: { holidaysListByCountry = [] } = {},
     loading,
     user: { currentUser = {} } = {},
+    homePage: { listPolicy = [] } = {},
   }) => ({
     loadingSyncGoogleCalendar: loading.effects['dashboard/syncGoogleCalendarEffect'],
     holidaysListByCountry,
     currentUser,
+    listPolicy,
     loadingHolidays: loading.effects['dashboard/fetchHolidaysByCountry'],
   }),
 )(QuickLinks);

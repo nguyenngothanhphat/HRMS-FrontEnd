@@ -1,9 +1,8 @@
 import { notification } from 'antd';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   addTicket,
-  deleteTicketAll,
   deleteOneTicket,
   addChat,
   updateTicket,
@@ -17,6 +16,7 @@ import {
   getSupportTeamList,
   getListMyTeam,
 } from '../services/ticketsManagement';
+import { cancelRequestTypes } from '@/utils/ticketManagement';
 
 const ticketManagement = {
   namespace: 'ticketManagement',
@@ -37,6 +37,9 @@ const ticketManagement = {
     isLocationLoaded: false,
     supportTeamList: [],
     employeeFilterList: [],
+    cancelRequestData: {
+      [cancelRequestTypes.listOffAllTicket]: null,
+    },
   },
   effects: {
     *addTicket({ payload }, { call }) {
@@ -123,6 +126,10 @@ const ticketManagement = {
         let tempPayload = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
+          cancel: {
+            cancelNamespace: ticketManagement.namespace,
+            cancelType: cancelRequestTypes.listOffAllTicket,
+          },
           ...payload,
         };
         if (selectedLocations && selectedLocations.length > 0) {
@@ -132,12 +139,14 @@ const ticketManagement = {
           };
         }
         response = yield call(getOffAllTicketList, tempPayload);
-        const { statusCode, data = [], total = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { listOffAllTicket: data, currentStatus: payload.status, totalStatus: total },
-        });
+        if (response) {
+          const { statusCode, data = [], total = [] } = response;
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { listOffAllTicket: data, currentStatus: payload.status, totalStatus: total },
+          });
+        }
       } catch (error) {
         dialog(error);
       }
@@ -352,6 +361,24 @@ const ticketManagement = {
           ...state.ticketDetail,
           ...action.payload,
         },
+      };
+    },
+    saveRequest(state, action) {
+      return {
+        ...state,
+        cancelRequestData: {
+          ...state.cancelRequestData,
+          ...action.payload,
+        },
+      };
+    },
+    cancelRequest(state, action) {
+      const { payload: type = '' } = action;
+      if (state.cancelRequestData[type]) {
+        state.cancelRequestData[type].cancel();
+      }
+      return {
+        ...state,
       };
     },
   },
