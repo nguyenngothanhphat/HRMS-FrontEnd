@@ -128,7 +128,10 @@ const UserComment = ({
 
   const onViewWhoLiked = (type) => {
     setIsLikeOrDislike(type);
-    setViewingPostOrCommentLiked(POST_OR_CMT.COMMENT);
+    setViewingPostOrCommentLiked({
+      id: item?._id,
+      type: POST_OR_CMT.COMMENT,
+    });
     getCommentReactionListEffect(commentId, type);
   };
 

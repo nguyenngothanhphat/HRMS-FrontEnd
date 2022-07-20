@@ -29,6 +29,7 @@ const CheckboxMenu = (props) => {
     } else {
       setCheckAll(false);
       if (selectedItems.length && selectedItems.length < options.length) setIndeterminate(true);
+      else setIndeterminate(false);
     }
   }, [selectedItems]);
 
