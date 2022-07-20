@@ -48,7 +48,10 @@ const LikeComment = ({
   const [comments, setComments] = useState([]);
   const [limit, setLimit] = useState(DEFAULT_COMMENT_LIMIT);
 
-  const [viewingPostOrCommentLiked, setViewingPostOrCommentLiked] = useState();
+  const [viewingPostOrCommentLiked, setViewingPostOrCommentLiked] = useState({
+    type: '',
+    id: '',
+  });
   const [isLikeOrDislike, setIsLikeOrDislike] = useState('');
   const [isReactPostOrCmt, setIsReactPostOrCmt] = useState('');
 
@@ -226,11 +229,17 @@ const LikeComment = ({
   const onViewWhoLiked = (type) => {
     setIsLikeOrDislike(type);
     getPostReactionListEffect(type);
-    setViewingPostOrCommentLiked(POST_OR_CMT.POST);
+    setViewingPostOrCommentLiked({
+      id: post?._id,
+      type: POST_OR_CMT.POST,
+    });
   };
 
   const onCloseLikedModal = () => {
-    setViewingPostOrCommentLiked('');
+    setViewingPostOrCommentLiked({
+      type: '',
+      id: '',
+    });
     setIsLikeOrDislike('');
     dispatch({
       type: 'homePage/save',
@@ -408,7 +417,7 @@ const LikeComment = ({
       </Collapse>
 
       <CommonModal
-        visible={viewingPostOrCommentLiked}
+        visible={viewingPostOrCommentLiked.id}
         onClose={onCloseLikedModal}
         title={isLikeOrDislike === LIKE_ACTION.LIKE ? 'Likes' : 'Dislikes'}
         content={
@@ -416,7 +425,11 @@ const LikeComment = ({
             list={reactionList.map((x) => x.employee)}
             loading={loadingFetchReactList}
             total={reactionTotal}
-            loadMore={getPostReactionListEffect}
+            loadMore={
+              viewingPostOrCommentLiked.type === POST_OR_CMT.POST
+                ? getPostReactionListEffect
+                : () => getCommentReactionListEffect(viewingPostOrCommentLiked.id)
+            }
           />
         }
         width={500}

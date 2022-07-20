@@ -51,7 +51,10 @@ const CelebratingDetailModalContent = (props) => {
   const [action, setAction] = useState(ACTION.ADD);
   const [handlingCommentId, setHandlingCommentId] = useState('');
   const [limit, setLimit] = useState(DEFAULT_COMMENT_LIMIT);
-  const [viewingPostOrCommentLiked, setViewingPostOrCommentLiked] = useState();
+  const [viewingPostOrCommentLiked, setViewingPostOrCommentLiked] = useState({
+    id: '',
+    type: '',
+  });
   const [commentValue, setCommentValue] = useState('');
   const [comments, setComments] = useState([]);
   const [isLikeOrDislike, setIsLikeOrDislike] = useState('');
@@ -145,8 +148,8 @@ const CelebratingDetailModalContent = (props) => {
 
   const onViewWhoLiked = (postId) => {
     setIsLikeOrDislike(LIKE_ACTION.LIKE);
-    getPostReactionListEffect(postId);
-    setViewingPostOrCommentLiked(POST_OR_CMT.POST);
+    getPostReactionListEffect(postId, LIKE_ACTION.LIKE);
+    setViewingPostOrCommentLiked({ id: postId, type: POST_OR_CMT.POST });
   };
 
   useEffect(() => {
@@ -185,7 +188,7 @@ const CelebratingDetailModalContent = (props) => {
   };
 
   const renderCardContent = (card = {}) => {
-    const { createdBy = {}, eventType = '', eventDate = '', joinDate = '' } = card;
+    const { createdBy = {}, eventType = '', eventDate = '' } = card;
     const employeeName = renderEmployeeName(createdBy);
 
     if (eventType === CELEBRATE_TYPE.BIRTHDAY) {
@@ -204,7 +207,9 @@ const CelebratingDetailModalContent = (props) => {
       );
     }
     if (eventType === CELEBRATE_TYPE.ANNIVERSARY) {
-      const yearCount = moment.utc().diff(moment.utc(joinDate).format('YYYY-MM-DD'), 'years', true);
+      const yearCount = moment
+        .utc()
+        .diff(moment.utc(createdBy?.joinDate).format('YYYY-MM-DD'), 'years', true);
       return (
         <span>
           Congratulations {employeeName} on completing {roundNumber(yearCount)}{' '}
@@ -269,7 +274,10 @@ const CelebratingDetailModalContent = (props) => {
   };
 
   const onCloseLikedModal = () => {
-    setViewingPostOrCommentLiked('');
+    setViewingPostOrCommentLiked({
+      id: '',
+      type: '',
+    });
     setIsLikeOrDislike('');
     dispatch({
       type: 'homePage/save',
@@ -450,15 +458,19 @@ const CelebratingDetailModalContent = (props) => {
     <div className={styles.CelebratingDetailModalContent}>
       {renderCard(item)}
       <CommonModal
-        visible={viewingPostOrCommentLiked}
+        visible={viewingPostOrCommentLiked.id}
         onClose={onCloseLikedModal}
         title={isLikeOrDislike === LIKE_ACTION.LIKE ? 'Likes' : 'Dislikes'}
         content={
           <PostLikedModalContent
             list={reactionList.map((x) => x.employee)}
             loading={loadingFetchReactList}
-            reactionList={reactionList}
             total={reactionTotal}
+            loadMore={
+              viewingPostOrCommentLiked.type === POST_OR_CMT.POST
+                ? () => getPostReactionListEffect(item?._id, isLikeOrDislike)
+                : () => getCommentReactionListEffect(viewingPostOrCommentLiked.id, isLikeOrDislike)
+            }
           />
         }
         width={500}
