@@ -9,6 +9,7 @@ import styles from './index.less';
 import FilterCount from '../../../components/FilterCount/FilterCount';
 import { getAuthority } from '@/utils/authority';
 import TicketInfo from '../TicketInfo';
+import { cancelRequestTypes } from '@/utils/ticketManagement';
 
 const TicketQueue = (props) => {
   const {
@@ -102,6 +103,12 @@ const TicketQueue = (props) => {
   useEffect(() => {
     initDataTable(nameSearch, selectedLocations);
     fetchTotalList();
+    return () => {
+      dispatch({
+        type: 'ticketManagement/cancelRequest',
+        payload: cancelRequestTypes.listOffAllTicket,
+      });
+    };
   }, [pageSelected, size, nameSearch, JSON.stringify(selectedLocations)]);
 
   return (
