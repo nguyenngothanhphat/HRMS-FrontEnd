@@ -156,6 +156,7 @@ const MyTickets = (props) => {
               form={form}
               setApplied={() => setApplied(0)}
               setIsFiltering={() => setIsFiltering(false)}
+              setPageSelected={setPageSelected}
             />
             <SearchTable
               onChangeSearch={onChangeSearch}

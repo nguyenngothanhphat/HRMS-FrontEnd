@@ -2,9 +2,9 @@ import { Avatar, Button, Col, Input, message, Row, Spin, Timeline, Tooltip, Uplo
 import moment from 'moment';
 import React, { Component } from 'react';
 
-import { UserOutlined } from '@ant-design/icons';
 import { isEmpty } from 'lodash';
 import { connect } from 'umi';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 
 import AttachmenUploadtIcon from '@/assets/attach-upload.svg';
 import ImageIcon from '@/assets/image_icon.png';
@@ -205,7 +205,6 @@ class TicketDetailsForm extends Component {
       roles = [],
     } = this.props;
     const role = this.findRole(roles);
-    const { listEmployee } = this.props;
     const {
       id = '',
       priority = '',
@@ -249,7 +248,7 @@ class TicketDetailsForm extends Component {
         }
         return (
           <Tooltip placement="top" title={legalName}>
-            <Avatar size={30} icon={<UserOutlined />} />
+            <Avatar size={30} src={DefaultAvatar} />
           </Tooltip>
         );
       });
@@ -313,7 +312,6 @@ class TicketDetailsForm extends Component {
                 <Col span={8} className={styles.formContent__title}>
                   Request Date: <span>{moment(requestDate).format('DD/MM/YYYY')}</span>
                 </Col>
-                {/** check laf nguoi assigned, raised */}
                 <Col span={8} className={styles.formContent__title}>
                   Opened by: <span>{getOpenBy()}</span>
                 </Col>
@@ -504,7 +502,7 @@ class TicketDetailsForm extends Component {
                           avatar !== '' ? (
                             <Avatar size={40} className={styles.avatar} src={avatar} />
                           ) : (
-                            <Avatar size={40} icon={<UserOutlined />} />
+                            <Avatar size={40} src={DefaultAvatar} />
                           )
                         }
                       >

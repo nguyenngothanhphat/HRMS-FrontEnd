@@ -10,6 +10,7 @@ function FilterCount(props) {
     form = '',
     setApplied = () => {},
     setIsFiltering = () => {},
+    setPageSelected = () => {},
     dispatch,
   } = props;
   const clearFilter = () => {
@@ -17,6 +18,7 @@ function FilterCount(props) {
       type: 'ticketManagement/clearFilter',
     });
     setApplied();
+    setPageSelected(1);
     setIsFiltering();
     form?.resetFields();
   };
