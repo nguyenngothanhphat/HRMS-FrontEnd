@@ -65,6 +65,7 @@ class TableFAQList extends Component {
       size,
       getPageAndSize = () => {},
       listFAQ = [],
+      totalListFAQ,
     } = this.props;
     const listQuestion = listFAQ
       ? listFAQ.map((obj) => {
@@ -75,16 +76,16 @@ class TableFAQList extends Component {
             addBy:
               obj.infoEmployee.length > 0 ? obj.infoEmployee[0].generalInfoInfo.legalName : '-',
             addOn: obj.createdAt ? moment(obj.createdAt).format('DD/MM/YYYY') : '-',
-            nameCategory: obj.category.length > 0 ? obj.category[0].category : '-',
+            categoryName: obj.category.length > 0 ? obj.category[0].category : '-',
           };
         })
       : [];
     const columns = [
       {
         title: 'Category Name',
-        dataIndex: 'nameCategory',
+        dataIndex: 'categoryName',
         sorter: {
-          compare: (a, b) => a.nameCategory.localeCompare(b.nameCategory),
+          compare: (a, b) => a.categoryName.localeCompare(b.categoryName),
         },
       },
       {
@@ -131,14 +132,14 @@ class TableFAQList extends Component {
 
     const pagination = {
       position: ['bottomLeft'],
-      total: listQuestion.length,
+      total: totalListFAQ,
       showTotal: (total, range) => (
         <span>
           Showing{' '}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          of {listQuestion.length}
+          of {total}
         </span>
       ),
       pageSize: size,

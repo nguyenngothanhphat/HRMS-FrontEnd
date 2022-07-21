@@ -80,7 +80,7 @@ class EditQuestionAnswer extends Component {
             ref={this.formRef}
             onFinish={this.handleFinish}
             initialValues={{
-              faqCategory: item ? item.nameCategory : '',
+              faqCategory: item ? item.categoryName : '',
               question: item ? item.question : '',
               answer: item ? item.answer : '',
             }}
