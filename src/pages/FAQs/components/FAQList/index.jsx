@@ -9,14 +9,15 @@ import closeViewAnswer from '@/assets/faqPage/closeViewAnswer.svg';
 import styles from './index.less';
 
 const { Panel } = Collapse;
-@connect(({ faqs: { listCategoryMainPage = [] } = {},
-  user: {
-    currentUser: { employee: { location } = {} } = {},
-  },
-}) => ({
-  listCategoryMainPage,
-  location
-}))
+@connect(
+  ({
+    faqs: { listCategoryMainPage = [] } = {},
+    user: { currentUser: { employee: { location } = {} } = {} },
+  }) => ({
+    listCategoryMainPage,
+    location,
+  }),
+)
 class FAQList extends PureComponent {
   constructor(props) {
     super(props);
@@ -29,13 +30,13 @@ class FAQList extends PureComponent {
 
   componentDidMount() {
     const { dispatch, location = {} } = this.props;
-    const { headQuarterAddress = {} } = location
-    const { country = '' } = headQuarterAddress
+    const { headQuarterAddress = {} } = location;
+    const { country = '' } = headQuarterAddress;
     dispatch({
       type: 'faqs/fetchListFAQCategoryMainPage',
       payload: {
-        country: [country]
-      }
+        country: [country],
+      },
     });
   }
 
@@ -70,7 +71,9 @@ class FAQList extends PureComponent {
     const getContent = () => {
       const { key, changeImg } = this.state;
       const expandIconPosition = 'right';
-      const getListFAQ = listCategoryMainPage.filter((val) => val._id.toString() === key.toString());
+      const getListFAQ = listCategoryMainPage.filter(
+        (val) => val._id.toString() === key.toString(),
+      );
       let listFAQ = [];
       let categoryName = '';
       if (isEmpty(getListFAQ)) {
