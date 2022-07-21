@@ -11,7 +11,7 @@ class StepsComponent extends Component {
         { key: 1, data: `Prepare the new candidate's offer letter` },
         { key: 2, data: `Send for approval` },
         { key: 3, data: `Post approval,send letter to candidate` },
-        { key: 4, data: `Post approval,send letter to candidate` },
+        { key: 4, data: `Waiting for accept/reject offer letter` },
         { key: 5, data: `Setup for the employee` },
       ],
     };

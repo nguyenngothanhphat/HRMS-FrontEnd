@@ -11,7 +11,7 @@ import styles from './index.less';
 @connect()
 class TicketInfo extends Component {
   render() {
-    const { countData = [] } = this.props;
+    const { countData = [], tabName = '' } = this.props;
     return (
       <div className={styles.TicketInfo}>
         <div className={styles.ticketInfo__cart}>
@@ -19,8 +19,8 @@ class TicketInfo extends Component {
             <img src={assignIcon} alt="assignIcon" />
           </div>
           <div className={styles.ticketInfo__name}>
-            <h1>{countData.totalAssignee}</h1>
-            <p>Assigned Tickets</p>
+            <h1>{tabName === 'ticket-queue' ? countData.totalInQueue : countData.totalAssignee}</h1>
+            <p>{tabName === 'ticket-queue' ? 'Tickets in Queue' : 'Assigned Tickets'}</p>
           </div>
         </div>
         <div className={styles.ticketInfo__cart}>
@@ -28,7 +28,7 @@ class TicketInfo extends Component {
             <img src={priorityIcon} alt="priorityIcon" />
           </div>
           <div className={styles.ticketInfo__name}>
-            <h1>{countData.totalHigh}</h1>
+            <h1>{tabName === 'ticket-queue' ? countData.totalHighInQueue : countData.totalHigh}</h1>
             <p>High Priority Tickets</p>
           </div>
         </div>

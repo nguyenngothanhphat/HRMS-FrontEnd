@@ -1,9 +1,8 @@
 import { notification } from 'antd';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   addTicket,
-  deleteTicketAll,
   deleteOneTicket,
   addChat,
   updateTicket,
@@ -132,12 +131,14 @@ const ticketManagement = {
           };
         }
         response = yield call(getOffAllTicketList, tempPayload);
-        const { statusCode, data = [], total = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { listOffAllTicket: data, currentStatus: payload.status, totalStatus: total },
-        });
+        if (response) {
+          const { statusCode, data = [], total = [] } = response;
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { listOffAllTicket: data, currentStatus: payload.status, totalStatus: total },
+          });
+        }
       } catch (error) {
         dialog(error);
       }

@@ -152,6 +152,7 @@ const LeaveHistoryAndHoliday = (props) => {
           typeName,
           status,
           subject,
+          leaveDates: listLeave,
         };
       }
       return null;
@@ -202,6 +203,7 @@ const LeaveHistoryAndHoliday = (props) => {
           typeName,
           status,
           subject,
+          leaveDates: listLeave,
         };
       }
       return null;

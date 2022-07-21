@@ -167,7 +167,7 @@ const CollapseFieldsTypeABC = (props) => {
               >
                 <div className={styles.addBtn__text}>
                   <PlusOutlined className={styles.plusIcon} />
-                  <span className={styles.title}>Add New Field</span>
+                  <span className={styles.title}>Add a new Document</span>
                 </div>
               </div>
             )}

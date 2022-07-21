@@ -1,16 +1,17 @@
-import { UserOutlined } from '@ant-design/icons';
 import { Avatar, Button, Col, Input, Row, Spin, Timeline, Tooltip, Upload } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import AttachmenUploadtIcon from '@/assets/attach-upload.svg';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
 import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';
 import TrashIcon from '@/assets/ticketManagement-trashIcon.svg';
 import AttachmentIcon from '@/assets/ticketsManagement-attach.svg';
 import { FILE_TYPE } from '@/constants/upload';
 import { beforeUpload, compressImage, identifyFile } from '@/utils/upload';
+import AssignTeamModal from '../../AssignTeamModal';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -37,6 +38,7 @@ class TicketDetailsForm extends Component {
       uploadedFileList: [],
       fileNameList: [],
       arrayChats: [],
+      modalVisible: false,
     };
   }
 
@@ -46,6 +48,13 @@ class TicketDetailsForm extends Component {
       arrayChats: chats.reverse(),
     });
   }
+
+  findRole = (roles) => {
+    const manager = roles.find((item) => item === 'MANAGER');
+    const hrManager = roles.find((item) => item === 'HR-MANAGER');
+    const role = hrManager || manager || 'EMPLOYEE';
+    return role;
+  };
 
   onChange = ({ target: { value } }) => {
     this.setState({ value });
@@ -153,8 +162,9 @@ class TicketDetailsForm extends Component {
       ticketDetail = {},
       loadingUploadAttachment = false,
       loadingAddChat = false,
+      roles = [],
     } = this.props;
-    const { listEmployee } = this.props;
+    const role = this.findRole(roles);
     const {
       id = '',
       priority = '',
@@ -169,7 +179,7 @@ class TicketDetailsForm extends Component {
       employee_assignee: employeeAssignedTickets = '',
     } = ticketDetail;
 
-    const { fileNameList, value, arrayChats } = this.state;
+    const { fileNameList, value, arrayChats, modalVisible } = this.state;
 
     const getColor = () => {
       switch (priority) {
@@ -198,7 +208,7 @@ class TicketDetailsForm extends Component {
         }
         return (
           <Tooltip placement="top" title={legalName}>
-            <Avatar size={30} icon={<UserOutlined />} />
+            <Avatar size={30} src={DefaultAvatar} />
           </Tooltip>
         );
       });
@@ -244,6 +254,14 @@ class TicketDetailsForm extends Component {
         <div className={styles.formDetails}>
           <div className={styles.formTitle}>
             <span className={styles.title}>Tickets Details</span>
+            <Button
+              className={styles.btnMoveTo}
+              type="primary"
+              shape="round"
+              onClick={() => this.setState({ modalVisible: true })}
+            >
+              Move To
+            </Button>
           </div>
           <div className={styles.formContent}>
             <div className={styles.formContent__container}>
@@ -254,7 +272,6 @@ class TicketDetailsForm extends Component {
                 <Col span={8} className={styles.formContent__title}>
                   Request Date: <span>{moment(requestDate).format('DD/MM/YYYY')}</span>
                 </Col>
-                {/** check laf nguoi assigned, raised */}
                 <Col span={8} className={styles.formContent__title}>
                   Opened by: <span>{getOpenBy()}</span>
                 </Col>
@@ -445,7 +462,7 @@ class TicketDetailsForm extends Component {
                           avatar !== '' ? (
                             <Avatar size={40} className={styles.avatar} src={avatar} />
                           ) : (
-                            <Avatar size={40} icon={<UserOutlined />} />
+                            <Avatar size={40} src={DefaultAvatar} />
                           )
                         }
                       >
@@ -474,6 +491,11 @@ class TicketDetailsForm extends Component {
             )}
           </>
         </div>
+        <AssignTeamModal
+          visible={modalVisible}
+          role={role}
+          onClose={() => this.setState({ modalVisible: false })}
+        />
       </div>
     );
   }

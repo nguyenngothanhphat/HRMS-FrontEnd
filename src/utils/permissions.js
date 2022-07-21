@@ -244,6 +244,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   ]);
   const indexHRTimeoff = isAuthorized(permissionList, ['P_TIMEOFF_T_TEAM_REQUEST_HR_VIEW']);
   const indexSettingTimeoff = isAuthorized(permissionList, ['P_TIMEOFF_T_SETTING_VIEW']);
+  const indexRequestOnBehalfOf = isAuthorized(permissionList, [
+    'P_TIMEOFF_B_CREATE_TIME_OFF_ON_BEHALF_OF_ANOTHER_USER',
+  ]);
 
   // TIMESHEET
   const indexMyTimesheet = 1; // everyone has time sheet
@@ -415,6 +418,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewManagerTimeoff: indexManagerTimeoff,
     viewHRTimeoff: indexHRTimeoff,
     viewSettingTimeoff: indexSettingTimeoff,
+    viewRequestOnBehalfOf: indexRequestOnBehalfOf,
 
     // timesheet
     viewMyTimesheet: indexMyTimesheet,

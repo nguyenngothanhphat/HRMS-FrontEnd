@@ -71,7 +71,7 @@ const File = (props) => {
   const renderComment = () => {
     return (
       <div className={styles.comments}>
-        <span onClick={() => onViewCommentClick(type, item)}>View Comments</span>
+        <span onClick={() => onViewCommentClick(type, item, blockIndex)}>View Comments</span>
       </div>
     );
   };

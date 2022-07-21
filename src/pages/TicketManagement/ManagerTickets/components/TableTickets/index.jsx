@@ -1,12 +1,14 @@
-import { DownOutlined } from '@ant-design/icons';
 import { Popover, Spin, Table } from 'antd';
 import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { memo, Suspense, useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
-import UserProfilePopover from '@/components/UserProfilePopover';
+import PersonIcon from '@/assets/assignPerson.svg';
+import TeamIcon from '@/assets/assignTeam.svg';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
+import UserProfilePopover from '@/components/UserProfilePopover';
+import AssignTeamModal from '@/pages/TicketManagement/components/AssignTeamModal';
+import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import TicketsItem from '../TicketsItem';
 import styles from './index.less';
 
@@ -29,6 +31,8 @@ const TableTickets = (props) => {
     employeeFilterList = [],
     loadingFetchEmployee = false,
     role = '',
+    selectedFilterTab = '',
+    loadingUpdate = false,
   } = props;
   const [timezoneListState, setTimezoneListState] = useState([]);
   const [ticket, setTicket] = useState({});
@@ -36,6 +40,8 @@ const TableTickets = (props) => {
   const [nameSearch, setNameSearch] = useState('');
   const [oldName, setOldName] = useState('');
   const [selected, setSelected] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [oldId, setOldId] = useState();
 
   const openViewTicket = (ticketID) => {
     let id = '';
@@ -69,13 +75,15 @@ const TableTickets = (props) => {
       department_assign: departmentAssign = '',
     } = ticket;
     setSelected(false);
-    if (value !== undefined) {
+    if (value) {
       dispatch({
         type: 'ticketManagement/updateTicket',
         payload: {
           id,
           employeeRaise,
           employeeAssignee: value,
+          action: 'ASSIGN_EMPLOYEE',
+          oldEmployeeAssignee: oldId || '',
           status: 'Assigned',
           queryType,
           subject,
@@ -98,6 +106,11 @@ const TableTickets = (props) => {
         }
       });
     }
+  };
+
+  const handleAssignTeam = (id) => {
+    handleClickSelect(id);
+    setModalVisible(true);
   };
 
   const viewProfile = (userId) => {
@@ -132,9 +145,8 @@ const TableTickets = (props) => {
         <DropdownSearch
           onChangeSearch={onChangeSearch}
           employeeFilterList={employeeFilterList}
-          // employeeFilterList={nameSearch ? employeeFilterList : []}
           handleSelectChange={handleSelectChange}
-          loading={loadingFetchEmployee}
+          loading={loadingFetchEmployee || loadingUpdate}
         />
       </Suspense>
     );
@@ -386,6 +398,7 @@ const TableTickets = (props) => {
         dataIndex: 'employeeAssignee',
         key: 'employeeAssignee',
         fixed: 'right',
+        align: 'center',
         render: (employeeAssignee, row) => {
           if (employeeAssignee) {
             return (
@@ -398,28 +411,41 @@ const TableTickets = (props) => {
                 row={row}
                 selected={selected}
                 setOldAssignName={setOldName}
+                setOldId={setOldId}
+                setModalVisible={setModalVisible}
               />
             );
           }
           return (
-            <Popover
-              trigger="click"
-              overlayClassName={styles.dropdownPopover}
-              content={renderMenuDropdown()}
-              placement="bottomRight"
-            >
-              <div
-                onClick={() => handleClickSelect(row.id)}
-                style={{
-                  width: 'fit-content',
-                  cursor: 'pointer',
-                  color: '#2c6df9',
-                }}
+            <>
+              <Popover
+                trigger="click"
+                overlayClassName={styles.dropdownPopover}
+                content={renderMenuDropdown()}
+                placement="bottomRight"
               >
-                Select User &emsp;
-                <DownOutlined />
-              </div>
-            </Popover>
+                <img
+                  width={35}
+                  height={35}
+                  src={PersonIcon}
+                  alt="assign person icon"
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handleClickSelect(row.id)}
+                />
+              </Popover>
+              <img
+                width={35}
+                height={35}
+                src={TeamIcon}
+                alt="assign team icon"
+                style={{
+                  cursor: 'pointer',
+                }}
+                onClick={() => handleAssignTeam(row.id)}
+              />
+            </>
           );
         },
         sorter: (a, b) => {
@@ -439,6 +465,11 @@ const TableTickets = (props) => {
     ];
   };
 
+  useEffect(() => {
+    setOldId();
+    setOldName('');
+    setTicket({});
+  }, [selectedFilterTab]);
   useEffect(() => {
     fetchTimezone();
   }, [JSON.stringify(companyLocationList)]);
@@ -499,6 +530,13 @@ const TableTickets = (props) => {
         pagination={pagination}
         rowKey="id"
         scroll={{ x: 1500, y: 487 }}
+      />
+      <AssignTeamModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        refreshFetchTicketList={refreshFetchTicketList}
+        ticket={ticket}
+        role={role}
       />
     </div>
   );

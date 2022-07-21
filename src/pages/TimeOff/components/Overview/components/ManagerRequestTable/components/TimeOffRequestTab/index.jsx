@@ -177,7 +177,7 @@ const TimeOffRequestTab = (props) => {
 
     let typeAPI = '';
 
-    if (category === 'MY') typeAPI = 'timeOff/fetchLeaveRequestOfEmployee';
+    if (category === 'MY') typeAPI = 'timeOff/fetchMyLeaveRequest';
     else if (category === 'ALL') typeAPI = 'timeOff/fetchAllLeaveRequests';
     else typeAPI = 'timeOff/fetchTeamLeaveRequests';
 
@@ -264,7 +264,7 @@ const TimeOffRequestTab = (props) => {
 export default connect(({ timeOff, loading, user }) => ({
   timeOff,
   user,
-  loading1: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+  loading1: loading.effects['timeOff/fetchMyLeaveRequest'],
   loading2: loading.effects['timeOff/fetchTeamLeaveRequests'],
   loading3: loading.effects['timeOff/fetchMyCompoffRequests'],
   loading4: loading.effects['timeOff/fetchTeamCompoffRequests'],

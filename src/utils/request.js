@@ -50,22 +50,18 @@ const errorHandler = (error) => {
 
 const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) => {
   const { method = 'POST', data = {}, params = {} } = options;
+  const { cancelToken = null } = data;
   const token = getToken();
-
   const headers = {
     'Content-Type': 'application/json;charset=UTF-8',
     'Access-Control-Allow-Origin': '*',
     Authorization: !noAuth ? `Bearer ${token}` : '',
   };
-
-  const { CancelToken } = axios;
-  const source = CancelToken.source();
-
   const instance = axios.create({
     baseURL: proxy[apiKey],
     headers,
     params,
-    cancelToken: source.token,
+    cancelToken,
   });
 
   instance.interceptors.response.use(
@@ -76,10 +72,13 @@ const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) =>
     },
   );
   try {
-    const res = await instance[method.toLowerCase()](url, data);
+    const updateData = { ...data };
+    delete updateData.cancelToken;
+    const res = await instance[method.toLowerCase()](url, updateData);
     return res.data;
   } catch (e) {
-    return errorHandler(e);
+    const isCancel = axios.isCancel(e);
+    return isCancel ? null : errorHandler(e);
   }
 };
 

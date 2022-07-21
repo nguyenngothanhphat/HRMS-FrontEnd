@@ -62,7 +62,7 @@ const Card = (props) => {
     return moment(date1).format('MM/DD') === moment(date2).format('MM/DD');
   };
 
-  const getPostReactionListEffect = (postId, type) => {
+  const getPostReactionListEffect = (postId, type = LIKE_ACTION.LIKE) => {
     return dispatch({
       type: 'homePage/fetchPostReactionListEffect',
       payload: {
@@ -345,7 +345,7 @@ const Card = (props) => {
             list={reactionList.map((x) => x.employee)}
             loading={loadingFetchReactList}
             total={reactionTotal}
-            loadMore={getPostReactionListEffect}
+            loadMore={() => getPostReactionListEffect(viewingItem?._id)}
           />
         }
         width={500}

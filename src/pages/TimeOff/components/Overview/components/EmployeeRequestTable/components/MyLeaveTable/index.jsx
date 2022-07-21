@@ -19,7 +19,7 @@ const { ON_HOLD } = TIMEOFF_STATUS;
 @connect(({ loading, dispatch, timeOff: { paging } }) => ({
   paging,
   dispatch,
-  loadingFetchLeaveRequests: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+  loadingFetchLeaveRequests: loading.effects['timeOff/fetchMyLeaveRequest'],
 }))
 class MyLeaveTable extends PureComponent {
   columns = [

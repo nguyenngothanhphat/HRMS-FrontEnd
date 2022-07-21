@@ -23,6 +23,7 @@ const CommonModal = ({
   hasSecondButton = false,
   onSecondButtonClick = () => {},
   maskClosable = false,
+  disabledButton = false,
 }) => {
   const renderModalHeader = () => {
     return (
@@ -66,6 +67,7 @@ const CommonModal = ({
                 </CustomSecondaryButton>
               )}
               <CustomPrimaryButton
+                disabled={disabledButton}
                 form="myForm"
                 key="submit"
                 htmlType="submit"

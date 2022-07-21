@@ -162,3 +162,10 @@ export async function getPostReactionList(params) {
     params,
   });
 }
+
+export async function getListPolicy(payload) {
+  return request('api/policiesregulationtenant/list ', {
+    method: 'POST',
+    data: payload,
+  });
+}

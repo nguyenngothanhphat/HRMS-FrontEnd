@@ -1,5 +1,6 @@
 import { Carousel, Col, Layout, Row } from 'antd';
 import React from 'react';
+import Image3 from '@/assets/login/Designer.svg';
 import InstagramIcon from '../../../assets/login/instagram.svg';
 import LinkedInIcon from '../../../assets/login/linkedin.svg';
 import LollypopLogo from '../../../assets/login/lollypop_logo.svg';
@@ -46,7 +47,7 @@ const slides = [
     title: 'Driving innovation through new-age technology',
     description:
       'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.',
-    image: Image1,
+    image: Image3,
   },
 ];
 const TerralogicCandidateLoginLayout = ({ children }) => {
@@ -104,7 +105,7 @@ const TerralogicCandidateLoginLayout = ({ children }) => {
                 <div className={styles.icons}>
                   {icons.map((x) => (
                     <div className={styles.icon}>
-                      <a href={x.link} target="_blank" rel="noreferrer">
+                      <a target="_blank" href={x.link} rel="noreferrer">
                         <img src={x.icon} alt="" />
                       </a>
                     </div>

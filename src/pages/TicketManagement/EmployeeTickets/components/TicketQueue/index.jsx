@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from 'react';
-
-import { connect } from 'umi';
+import React, { useEffect, useState } from 'react';
 import { debounce } from 'lodash';
-
+import { connect } from 'umi';
+import FilterCount from '../../../components/FilterCount/FilterCount';
 import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
-import styles from './index.less';
-import FilterCount from '../../../components/FilterCount/FilterCount';
-import { getAuthority } from '@/utils/authority';
 import TicketInfo from '../TicketInfo';
+import styles from './index.less';
 
 const TicketQueue = (props) => {
   const {
@@ -16,7 +13,7 @@ const TicketQueue = (props) => {
     data = [],
     loading,
     loadingFilter,
-    countData = [],
+    totalList = [],
     selectedLocations = [],
     employee: {
       _id = '',
@@ -24,6 +21,9 @@ const TicketQueue = (props) => {
       location: { headQuarterAddress: { country = '' } = {} } = {},
     } = {},
     role = '',
+    permissions = [],
+    tabName = '',
+    filter = '',
   } = props;
 
   const [pageSelected, setPageSelected] = useState(1);
@@ -37,19 +37,18 @@ const TicketQueue = (props) => {
     setNameSearch(value);
   }, 500);
 
-  const initDataTable = (nameSearchProps, selectedLocationsProps = []) => {
-    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
-
+  const initDataTable = () => {
     let payload = {
       status: ['New'],
       page: pageSelected,
       limit: size,
-      location: selectedLocationsProps,
+      location: selectedLocations,
+      ...filter,
     };
-    if (nameSearchProps) {
+    if (nameSearch) {
       payload = {
         ...payload,
-        search: nameSearchProps,
+        search: nameSearch,
       };
     }
     if (permissions && permissions.length > 0) {
@@ -66,7 +65,6 @@ const TicketQueue = (props) => {
   };
 
   const fetchTotalList = () => {
-    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
     const payload = {
       employeeAssignee: _id,
       departmentAssign: idDepart,
@@ -96,18 +94,29 @@ const TicketQueue = (props) => {
     );
     const newObj = Object.fromEntries(filteredObj);
     setApplied(Object.keys(newObj).length);
-    setIsFiltering(true);
+    setIsFiltering(Object.keys(newObj).length > 0);
   };
 
   useEffect(() => {
-    initDataTable(nameSearch, selectedLocations);
+    initDataTable();
+  }, [pageSelected, size, nameSearch, JSON.stringify(selectedLocations), JSON.stringify(filter)]);
+
+  useEffect(() => {
     fetchTotalList();
-  }, [pageSelected, size, nameSearch, JSON.stringify(selectedLocations)]);
+    return () => {
+      dispatch({
+        type: 'ticketManagement/clearFilter',
+      });
+
+      setApplied(0);
+      setIsFiltering(false);
+    };
+  }, []);
 
   return (
     <>
       <div>
-        <TicketInfo countData={countData} />
+        <TicketInfo tabName={tabName} countData={totalList} />
       </div>
       <div className={styles.containerTickets}>
         <div className={styles.tabTickets}>
@@ -116,6 +125,7 @@ const TicketQueue = (props) => {
             form={form}
             setApplied={() => setApplied(0)}
             setIsFiltering={() => setIsFiltering(false)}
+            setPageSelected={setPageSelected}
           />
           <SearchTable
             onChangeSearch={onChangeSearch}
@@ -142,11 +152,18 @@ const TicketQueue = (props) => {
 export default connect(
   ({
     loading,
-    ticketManagement: { listDepartment = [], selectedLocations = [] } = {},
+    ticketManagement: {
+      listDepartment = [],
+      selectedLocations = [],
+      totalList = [],
+      filter = [],
+    } = {},
     user: { currentUser: { employee = {} } = {} } = {},
   }) => ({
     listDepartment,
     employee,
+    totalList,
+    filter,
     selectedLocations,
     loading: loading.effects['ticketManagement/fetchListAllTicket'],
     loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],

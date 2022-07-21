@@ -36,6 +36,7 @@ const Documents = (props) => {
   // if reselect project status or search, clear filter form
   const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
   const [isFiltering, setIsFiltering] = useState(false);
+  const [isValidForm, setIsValidForm] = useState(true);
 
   const viewProfile = (id) => {
     const url = `/directory/employee-profile/${id}`;
@@ -220,10 +221,12 @@ const Documents = (props) => {
             visible={addDocumentModalVisible}
             onClose={() => setAddDocumentModalVisible(false)}
             refreshData={fetchDocumentList}
+            onValidForm={setIsValidForm}
           />
         }
         title="Add Document"
         loading={loadingAddDocument}
+        disabledButton={!isValidForm}
       />
       <ViewDocumentModal
         visible={viewFileModalVisible}

@@ -149,8 +149,8 @@ const History = (props) => {
       return (
         <Step
           className={`${
-            people[index + 1]?.statusHistory !==
-            (TIMEOFF_HISTORY_STATUS.WAITING && TIMEOFF_HISTORY_STATUS.WAITING_WITHDRAW)
+            people[index + 1]?.statusHistory !== TIMEOFF_HISTORY_STATUS.WAITING &&
+            people[index + 1]?.statusHistory !== TIMEOFF_HISTORY_STATUS.WAITING_WITHDRAW
               ? styles.steps__solid
               : styles.step__dashed
           } 

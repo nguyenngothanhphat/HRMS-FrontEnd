@@ -10,14 +10,15 @@ function FilterCount(props) {
     form = '',
     setApplied = () => {},
     setIsFiltering = () => {},
-    initDataTable = () => {},
-    selectedFilterTab = '',
-    nameSearch = '',
-    selectedLocations = [],
+    setPageSelected = () => {},
+    dispatch,
   } = props;
   const clearFilter = () => {
-    initDataTable(selectedFilterTab, nameSearch, selectedLocations);
+    dispatch({
+      type: 'ticketManagement/clearFilter',
+    });
     setApplied();
+    setPageSelected(1);
     setIsFiltering();
     form?.resetFields();
   };

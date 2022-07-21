@@ -10,7 +10,6 @@ const PostContent = (props) => {
 
   const renderImageLayout = (images) => {
     const number = images.length;
-    const restImages = images.slice(1, 4);
 
     switch (number) {
       case 0:
@@ -42,9 +41,9 @@ const PostContent = (props) => {
             </Col>
             <Col span={10}>
               <Row gutter={[4, 4]}>
-                {restImages.map((x, i) => {
+                {images.slice(1, images.length).map((x, i) => {
                   return (
-                    <Col span={24} key={`${i + 1}`}>
+                    <Col span={i < 3 ? 24 : 0} key={`${i + 1}`}>
                       <Image src={x} />
                     </Col>
                   );

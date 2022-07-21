@@ -10,7 +10,7 @@ import styles from './index.less';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const AddContent = (props) => {
-  const formRef = React.createRef();
+  const [form] = Form.useForm();
   const {
     dispatch,
     visible = false,
@@ -18,6 +18,7 @@ const AddContent = (props) => {
     currentUser: { employee = {} } = {} || {},
     onClose = () => {},
     refreshData = () => {},
+    onValidForm = () => {},
   } = props;
 
   const { generalInfo: { userId: employeeId = '', legalName: employeeName = '' } = {} || {} } =
@@ -38,6 +39,11 @@ const AddContent = (props) => {
       fetchDocumentTypeList();
     }
   }, [visible]);
+
+  const handleFieldsChange = () => {
+    const isValid = !form.getFieldsError().some(({ errors }) => errors.length);
+    onValidForm(isValid);
+  };
 
   const handleUpload = async (file) => {
     const getBase64 = (img, callback) => {
@@ -119,7 +125,14 @@ const AddContent = (props) => {
 
   return (
     <div className={styles.AddContent}>
-      <Form name="basic" ref={formRef} id="myForm" onFinish={handleFinish} initialValues={{}}>
+      <Form
+        name="basic"
+        form={form}
+        id="myForm"
+        onFinish={handleFinish}
+        onFieldsChange={handleFieldsChange}
+        initialValues={{}}
+      >
         <Row gutter={[24, 0]} className={styles.abovePart}>
           <Col xs={24} md={12}>
             <Form.Item
@@ -152,7 +165,10 @@ const AddContent = (props) => {
           </Col>
 
           <Col xs={24}>
-            <Form.Item name="file">
+            <Form.Item
+              name="file"
+              rules={[{ required: true, message: 'Please select document file' }]}
+            >
               <Upload.Dragger
                 multiple={false}
                 showUploadList={false}

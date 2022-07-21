@@ -318,11 +318,16 @@ const JobDetailForm = (props) => {
             allowClear
             treeIcon
             treeDefaultExpandAll
+            filterTreeNode={(input, treeNode) =>
+              treeNode.title.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
           >
             <TreeNode icon={CustomIconHeader()} title="Office Location">
-              {locationList.map((x, index) => (
-                <TreeNode icon={CustomIcon(x._id)} title={x.name} value={x._id} key={index} />
-              ))}
+              {locationList
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((x, index) => (
+                  <TreeNode icon={CustomIcon(x._id)} title={x.name} value={x._id} key={index} />
+                ))}
             </TreeNode>
             <TreeNode
               icon={CustomIconDisable()}
