@@ -10,11 +10,11 @@ import AddQuestionAnswer from './components/AddQuestionAnswer';
 import TableFAQList from './components/TableFAQList';
 import styles from './index.less';
 
-@connect(({ loading, faqs: { selectedCountry, listFAQ = [], totalListFQA = 0 } = {} }) => ({
+@connect(({ loading, faqs: { selectedCountry, listFAQ = [], totalListFAQ = 0 } = {} }) => ({
   selectedCountry,
   loadingGetList: loading.effects['faqs/fetchListFAQ'],
   listFAQ,
-  totalListFQA,
+  totalListFAQ,
 }))
 class ListQuestionAnswer extends Component {
   constructor(props) {
@@ -78,7 +78,7 @@ class ListQuestionAnswer extends Component {
   };
 
   render() {
-    const { listFAQ = [], loadingGetList = false, totalListFQA } = this.props;
+    const { listFAQ = [], loadingGetList = false, totalListFAQ } = this.props;
     const { visibleModal, size, pageSelected } = this.state;
     return (
       <div className={styles.ListQuestionAnswer}>
@@ -112,7 +112,7 @@ class ListQuestionAnswer extends Component {
           <TableFAQList
             pageSelected={pageSelected}
             size={size}
-            totalListFQA={totalListFQA}
+            totalListFAQ={totalListFAQ}
             getPageAndSize={this.getPageAndSize}
             listFAQ={listFAQ}
             loadingGetList={loadingGetList}

@@ -20,7 +20,7 @@ const faqs = {
     listFAQ: [],
     countryList: [],
     selectedCountry: '',
-    totalListFQA: 0,
+    totalListFAQ: 0,
     totalCategory: 0,
     listCategoryMainPage: [],
     totalCategoryMainPage: 0,
@@ -148,7 +148,7 @@ const faqs = {
           type: 'save',
           payload: {
             listFAQ: data,
-            totalListFQA: total || 0,
+            totalListFAQ: total || 0,
           },
         });
       } catch (error) {

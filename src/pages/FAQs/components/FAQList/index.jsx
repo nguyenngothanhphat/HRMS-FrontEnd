@@ -28,7 +28,7 @@ class FAQList extends PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch, location = '' } = this.props;
+    const { dispatch, location = {} } = this.props;
     const { headQuarterAddress = {} } = location
     const { country = '' } = headQuarterAddress
     dispatch({
@@ -72,18 +72,18 @@ class FAQList extends PureComponent {
       const expandIconPosition = 'right';
       const getListFAQ = listCategoryMainPage.filter((val) => val._id.toString() === key.toString());
       let listFAQ = [];
-      let nameCategory = '';
+      let categoryName = '';
       if (isEmpty(getListFAQ)) {
         listFAQ = !isEmpty(listCategoryMainPage) ? listCategoryMainPage[0].listFAQs : [];
-        nameCategory = !isEmpty(listCategoryMainPage) ? listCategoryMainPage[0].category : '';
+        categoryName = !isEmpty(listCategoryMainPage) ? listCategoryMainPage[0].category : '';
       } else {
         listFAQ = getListFAQ[0].listFAQs;
-        nameCategory = getListFAQ[0].category;
+        categoryName = getListFAQ[0].category;
       }
       return (
         <div className={styles.viewCenter__title}>
           <div className={styles.viewCenter__title__category}>
-            <p>{nameCategory}</p>
+            <p>{categoryName}</p>
           </div>
           <div className={styles.viewCenter__title__text}>
             {listFAQ.map((obj) => {
