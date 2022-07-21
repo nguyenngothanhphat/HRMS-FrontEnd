@@ -16,7 +16,6 @@ import {
   getSupportTeamList,
   getListMyTeam,
 } from '../services/ticketsManagement';
-import { cancelRequestTypes } from '@/utils/ticketManagement';
 
 const ticketManagement = {
   namespace: 'ticketManagement',
@@ -37,9 +36,6 @@ const ticketManagement = {
     isLocationLoaded: false,
     supportTeamList: [],
     employeeFilterList: [],
-    cancelRequestData: {
-      [cancelRequestTypes.listOffAllTicket]: null,
-    },
   },
   effects: {
     *addTicket({ payload }, { call }) {
@@ -126,10 +122,6 @@ const ticketManagement = {
         let tempPayload = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-          cancel: {
-            cancelNamespace: ticketManagement.namespace,
-            cancelType: cancelRequestTypes.listOffAllTicket,
-          },
           ...payload,
         };
         if (selectedLocations && selectedLocations.length > 0) {
@@ -361,24 +353,6 @@ const ticketManagement = {
           ...state.ticketDetail,
           ...action.payload,
         },
-      };
-    },
-    saveRequest(state, action) {
-      return {
-        ...state,
-        cancelRequestData: {
-          ...state.cancelRequestData,
-          ...action.payload,
-        },
-      };
-    },
-    cancelRequest(state, action) {
-      const { payload: type = '' } = action;
-      if (state.cancelRequestData[type]) {
-        state.cancelRequestData[type].cancel();
-      }
-      return {
-        ...state,
       };
     },
   },
