@@ -520,6 +520,7 @@ const onboarding = {
       }
     },
     *filterOnboardList({ payload = {}, currentStatus = '' }, { call, put }) {
+      let response
       try {
         const tenantId = getCurrentTenant();
         const company = getCurrentCompany();
@@ -540,7 +541,7 @@ const onboarding = {
           DOCUMENT_CHECKLIST_VERIFICATION,
         } = NEW_PROCESS_STATUS;
 
-        const response = yield call(getOnboardingList, {
+        response = yield call(getOnboardingList, {
           ...payload,
           tenantId,
           company,
@@ -685,6 +686,7 @@ const onboarding = {
       } catch (errors) {
         dialog(errors);
       }
+      return response
     },
 
     *handleExpiryTicket({ payload }, { call, put, select }) {
@@ -746,7 +748,7 @@ const onboarding = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
 
         // Refresh table tab OFFER_WITHDRAWN and current tab which has implemented action withdraw
@@ -754,13 +756,13 @@ const onboarding = {
         yield put({
           type: 'fetchOnboardList',
           payload: {
-            processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+            processStatus: [NEW_PROCESS_STATUS.OFFER_WITHDRAWN],
           },
         });
         yield put({
           type: 'fetchOnboardList',
           payload: {
-            processStatus,
+            processStatus: [processStatus],
           },
         });
       } catch (errors) {
