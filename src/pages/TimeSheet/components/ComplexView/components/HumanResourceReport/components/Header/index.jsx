@@ -11,7 +11,7 @@ import { dateFormatAPI, VIEW_TYPE } from '@/constants/timeSheet';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
 import { getCurrentCompany } from '@/utils/authority';
-import exportToCSV from '@/utils/exportAsExcel';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
@@ -79,7 +79,7 @@ const Header = (props) => {
     setEndDate(dates[1]);
   };
 
-  const processData = (array) => {
+  const processData = (array = []) => {
     return array.map((item) => {
       const {
         legalName = '',
@@ -126,7 +126,7 @@ const Header = (props) => {
   };
 
   const downloadTemplate = () => {
-    exportToCSV(processData(data), 'HumanResourceReportData.xlsx');
+    exportArrayDataToCsv('HRReportData', processData(data));
   };
 
   const handleClearFilter = () => {

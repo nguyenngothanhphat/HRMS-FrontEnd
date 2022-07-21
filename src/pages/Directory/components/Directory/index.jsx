@@ -7,13 +7,12 @@ import DirectoryTable from './components/DirectoryTable';
 import AddEmployeeModal from './components/AddEmployeeModal';
 import ImportEmployeeModal from './components/ImportEmployeeModal';
 import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
-import exportToCsv from '@/utils/exportToCsv';
+import { exportArrayDataToCsv, exportRawDataToCSV } from '@/utils/exportToCsv';
 import FilterPopover from '@/components/FilterPopover';
 import FilterButton from '@/components/FilterButton';
 // import FilterContent from '../FilterContent';
 
 import styles from './index.less';
-import { exportRawDataToCSV } from '@/utils/utils';
 
 const FilterContent = React.lazy(() => import('./components/FilterContent'));
 
@@ -245,7 +244,7 @@ const DirectoryComponent = (props) => {
     });
 
     const getListExport = getData.data || '';
-    exportRawDataToCSV(getListExport, 'listEmployee.csv');
+    exportRawDataToCSV(getListExport, 'listEmployee');
   };
 
   const openFormImportEmployees = () => {
@@ -328,7 +327,7 @@ const DirectoryComponent = (props) => {
         personalNumber: '0123456789',
       },
     ];
-    exportToCsv('Template_Import_Employees.csv', processData(exportData));
+    exportArrayDataToCsv('Template_Import_Employees', processData(exportData));
   };
 
   const rightButton = () => {

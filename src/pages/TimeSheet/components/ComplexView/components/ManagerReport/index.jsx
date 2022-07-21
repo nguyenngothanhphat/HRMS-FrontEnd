@@ -6,7 +6,7 @@ import DownloadIcon from '@/assets/timeSheet/download.svg';
 import ProjectView from './components/ProjectView';
 import TeamView from './components/TeamView';
 import styles from './index.less';
-import { exportRawDataToCSV } from '@/utils/utils';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
 
 const { TabPane } = Tabs;
 

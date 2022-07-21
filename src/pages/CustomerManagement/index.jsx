@@ -1,13 +1,12 @@
+import { DownloadOutlined } from '@ant-design/icons';
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
-import { DownloadOutlined } from '@ant-design/icons';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
 import { PageContainer } from '@/layouts/layout/src';
 import Settings from './components/Settings';
-// import exportToCSV from '@/utils/exportAsExcel';
 import TableContainer from './components/TableContainer';
 import style from './index.less';
-import { exportRawDataToCSV } from '@/utils/utils';
 
 @connect(
   ({ customerManagement: { customerListPayload = {}, customerFilterListPayload = {} } = {} }) => ({
@@ -37,7 +36,7 @@ class CustomerManagement extends PureComponent {
       },
     });
     const { data = '' } = getListExport;
-    exportRawDataToCSV(data, 'customers.csv');
+    exportRawDataToCSV(data, 'customers');
   };
 
   render() {

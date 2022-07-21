@@ -2,7 +2,7 @@ import { notification } from 'antd';
 import moment from 'moment';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { exportCSV } from '@/utils/timeOffManagement';
-import { dialog, exportRawDataToCSV } from '@/utils/utils';
+import { dialog } from '@/utils/utils';
 import {
   getListEmployees,
   getListTimeOff,
@@ -12,6 +12,7 @@ import {
   getTimeOffTypeByCountry,
   // getListTimeOffManagement,
 } from '../services/timeOffManagement';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
 
 const timeOffManagement = {
   namespace: 'timeOffManagement',

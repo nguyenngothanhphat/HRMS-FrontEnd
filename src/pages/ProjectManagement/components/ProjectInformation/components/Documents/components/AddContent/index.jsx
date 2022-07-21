@@ -1,13 +1,12 @@
 import { Col, Form, Input, Row, Select, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
 import { connect } from 'umi';
 import { beforeUpload, compressImage } from '@/utils/upload';
 import { FILE_TYPE } from '@/constants/upload';
 import UploadIcon from '@/assets/upload-icon.svg';
 import styles from './index.less';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+// pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const AddContent = (props) => {
   const [form] = Form.useForm();
@@ -26,7 +25,6 @@ const AddContent = (props) => {
 
   const [uploadedPreview, setUploadedPreview] = useState('');
   const [uploadedFile, setUploadedFile] = useState({});
-  const [numPages, setNumPages] = useState({});
 
   const fetchDocumentTypeList = () => {
     dispatch({
@@ -90,29 +88,11 @@ const AddContent = (props) => {
     });
   };
 
-  const onDocumentLoadSuccess = ({ numPages: n }) => {
-    setNumPages(n);
-  };
-
   const _renderPreview = () => {
     if (uploadedPreview.includes('application/pdf')) {
       return (
         <div className={styles.fileUploadedContainer}>
-          <Document
-            className={styles.pdfFrame}
-            file={uploadedPreview}
-            noData="Document Not Found"
-            onDocumentLoadSuccess={onDocumentLoadSuccess}
-          >
-            {Array.from(new Array(numPages), (el, index) => (
-              <Page
-                loading=""
-                className={styles.pdfPage}
-                key={`page_${index + 1}`}
-                pageNumber={index + 1}
-              />
-            ))}
-          </Document>
+          <iframe width="100%" height="500" src={uploadedPreview} title="pdf" />
         </div>
       );
     }

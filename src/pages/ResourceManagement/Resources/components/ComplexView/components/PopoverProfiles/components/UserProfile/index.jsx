@@ -39,10 +39,11 @@ const UserProfile = (props) => {
     const { generalInfo = { workEmail: '' }, managerInfo = {}, locationInfo = {} } = employee || {};
     const { headQuarterAddress = {} } = locationInfo || {};
     const { country = {}, state = '' } = headQuarterAddress || {};
+
     const getTimezone = getTimezoneViaCity(state) || '';
-    const timezone =
-      getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const timezone = getTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
     const time = getCurrentTimeOfTimezoneOption(new Date(), timezone);
+
     const items = [
       {
         label: 'Reporting Manager',

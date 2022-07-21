@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { TIMEOFF_NAME_BY_ID } from '@/constants/timeOffManagement';
-import exportToCsv from '@/utils/exportToCsv';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 
 const processCSVData = (array = []) => {
   if (array.length > 0) {
@@ -41,7 +41,10 @@ const processCSVData = (array = []) => {
 };
 
 export const exportCSV = (data) => {
-  exportToCsv(`Time-Off-Report-${moment().format('YYYY-MM-DD')}.csv`, processCSVData(data));
+  exportArrayDataToCsv(
+    `Time-Off-Report-${moment().format('YYYY-MM-DD')}.csv`,
+    processCSVData(data),
+  );
 };
 
 export default {

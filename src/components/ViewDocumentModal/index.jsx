@@ -3,25 +3,15 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { message, Modal, Spin } from 'antd';
 import axios from 'axios';
 import React, { PureComponent } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
 import ReactToPrint from 'react-to-print';
 import { connect } from 'umi';
+import { getCountryId } from '@/utils/utils';
 import PrintIcon from '@/assets/printIconTimeOff.svg';
 import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
 import CloseIcon from '@/assets/closeIconTimeOff.svg';
 import styles from './index.less';
-import { getCountryId } from '@/utils/utils';
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 class ViewDocumentModal extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      numPages: null,
-    };
-  }
-
   componentDidUpdate = (prevProps) => {
     const { dispatch, visible = false } = this.props;
     if (visible !== prevProps.visible && visible) {
@@ -71,12 +61,6 @@ class ViewDocumentModal extends PureComponent {
     }
   };
 
-  onDocumentLoadSuccess = ({ numPages }) => {
-    this.setState({
-      numPages,
-    });
-  };
-
   renderLoading = () => {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
     return (
@@ -116,28 +100,11 @@ class ViewDocumentModal extends PureComponent {
 
   _renderViewPDF = () => {
     const { url = '', fileName = 'View Document' } = this.props;
-    const { numPages } = this.state;
 
     return (
       <>
         <p className={styles.fileName}>{fileName}</p>
-        <Document
-          className={styles.pdfFrame}
-          onLoadSuccess={this.onDocumentLoadSuccess}
-          file={url}
-          loading={this.renderLoading()}
-          noData="Document Not Found"
-          ref={(el) => (this.componentRef = el)}
-        >
-          {Array.from(new Array(numPages), (el, index) => (
-            <Page
-              loading=""
-              className={styles.pdfPage}
-              key={`page_${index + 1}`}
-              pageNumber={index + 1}
-            />
-          ))}
-        </Document>
+        <iframe width="100%" height="500" src={url} title="pdf" />
       </>
     );
   };

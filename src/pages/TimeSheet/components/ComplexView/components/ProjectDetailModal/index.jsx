@@ -1,7 +1,7 @@
 import { Button, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import exportToCSV from '@/utils/exportAsExcel';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 import Information from './components/Information';
 import TaskTable from './components/TaskTable';
 import styles from './index.less';
@@ -43,7 +43,7 @@ const ProjectDetailModal = (props) => {
     );
   };
 
-  const processData = (array) => {
+  const processData = (array = []) => {
     const result = [];
     array.forEach((item) => {
       const { task = '', description = '', department = '', projectMembers = [] } = item;
@@ -67,7 +67,7 @@ const ProjectDetailModal = (props) => {
   };
 
   const downloadTemplate = () => {
-    exportToCSV(processData(data?.projectDetail), 'ProjectDetailData.xlsx');
+    exportArrayDataToCsv('ProjectDetailData', processData(data?.projectDetail || []));
   };
 
   const renderModalContent = () => {

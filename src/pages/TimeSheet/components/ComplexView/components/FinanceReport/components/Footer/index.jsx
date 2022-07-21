@@ -4,7 +4,7 @@ import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
 import { convertMsToTime } from '@/utils/timeSheet';
-import exportToCSV from '@/utils/exportAsExcel';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 import { VIEW_TYPE } from '@/constants/timeSheet';
 import DownloadIcon from '@/assets/timeSheet/solidDownload.svg';
 import styles from './index.less';
@@ -26,7 +26,7 @@ const Footer = (props) => {
     return newData;
   };
 
-  const processData = (array) => {
+  const processData = (array = []) => {
     return array.map((item) => {
       const {
         projectName = '',
@@ -58,7 +58,7 @@ const Footer = (props) => {
     });
   };
 
-  const processDataMonthly = (array) => {
+  const processDataMonthly = (array = []) => {
     return array.map((item) => {
       const { weeks = [], projectName = '' } = item;
       const week1 = weeks.find((val) => val.week === 1);
@@ -118,9 +118,9 @@ const Footer = (props) => {
   const downloadTemplate = () => {
     const result = getSelectedData();
     if (selectedView === VIEW_TYPE.W) {
-      exportToCSV(processData(result), 'FinanceReportDataWeekly.xlsx');
+      exportArrayDataToCsv('FinanceReportDataWeekly', processData(result));
     } else {
-      exportToCSV(processDataMonthly(result), 'FinanceReportDataMonthly.xlsx');
+      exportArrayDataToCsv('FinanceReportDataMonthly', processDataMonthly(result));
     }
   };
 

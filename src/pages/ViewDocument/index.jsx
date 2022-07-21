@@ -1,13 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { Document, Page, pdfjs } from 'react-pdf';
 import { connect, history } from 'umi';
 import DownloadIcon from '@/assets/download_icon.svg';
 import DownloadFile from '@/components/DownloadFile';
 import styles from './index.less';
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const identifyImageOrPdf = (fileName) => {
   const parts = fileName.split('.');
@@ -31,13 +28,6 @@ const identifyImageOrPdf = (fileName) => {
   viewDocument,
 }))
 class ViewDocument extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      numPages: null,
-    };
-  }
-
   // get document details
   fetchDocumentDetails = (id) => {
     const { dispatch } = this.props;
@@ -59,12 +49,6 @@ class ViewDocument extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'viewDocument/removeViewingDocumentDetail',
-    });
-  };
-
-  onDocumentLoadSuccess = ({ numPages }) => {
-    this.setState({
-      numPages,
     });
   };
 
@@ -90,7 +74,6 @@ class ViewDocument extends PureComponent {
   };
 
   render() {
-    const { numPages } = this.state;
     const { viewDocument: { documentDetail = {} } = {}, location = '' } = this.props;
     const { state = '' } = location;
     const { renderBackButton } = state;
@@ -120,22 +103,7 @@ class ViewDocument extends PureComponent {
                 <img alt="preview" src={url} />
               </div>
             ) : (
-              <Document
-                className={styles.pdfFrame}
-                onLoadSuccess={this.onDocumentLoadSuccess}
-                file={url}
-                loading={this.documentWarning('Loading document. Please wait...')}
-                noData={this.documentWarning('URL is not available.')}
-              >
-                {Array.from(new Array(numPages), (el, index) => (
-                  <Page
-                    loading=""
-                    className={styles.pdfPage}
-                    key={`page_${index + 1}`}
-                    pageNumber={index + 1}
-                  />
-                ))}
-              </Document>
+              <iframe width="100%" height="500" src={url} title="pdf" />
             )}
           </Col>
 

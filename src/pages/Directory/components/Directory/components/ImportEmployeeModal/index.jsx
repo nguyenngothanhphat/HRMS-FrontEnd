@@ -8,7 +8,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import ImportCSV from './components/ImportCSV';
-import exportToCsv from '@/utils/exportToCsv';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 
 import styles from './index.less';
 
@@ -91,7 +91,7 @@ class ImportEmployeeModal extends Component {
         };
       });
       const exportData = [...listEmployeesTenant.newList, ...existList];
-      exportToCsv('Result_Import_Employees.csv', this.processData(exportData));
+      exportArrayDataToCsv('Result_Import_Employees', this.processData(exportData));
     }
   }
 
@@ -170,7 +170,8 @@ class ImportEmployeeModal extends Component {
         lastName: item['Last Name'],
         middleName: item['Middle Name'],
         gender: item.Gender,
-        dateOfBirth: item['Date of Birth'] && moment(new Date(item['Date of Birth'])).format('YYYY-MM-DD'),
+        dateOfBirth:
+          item['Date of Birth'] && moment(new Date(item['Date of Birth'])).format('YYYY-MM-DD'),
         joinDate: item['Joined Date'] && moment(new Date(item['Joined Date'])).format('YYYY-MM-DD'),
         workEmail: item['Work Email'],
         location: item.Location,

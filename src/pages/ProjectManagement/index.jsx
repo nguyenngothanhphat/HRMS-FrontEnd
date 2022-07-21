@@ -6,7 +6,8 @@ import { PageContainer } from '@/layouts/layout/src';
 import Projects from './components/Projects';
 import styles from './index.less';
 import WorkInProgress from '@/components/WorkInProgress';
-import { exportRawDataToCSV, goToTop } from '@/utils/utils';
+import { goToTop } from '@/utils/utils';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
 
 const { TabPane } = Tabs;
 
@@ -42,7 +43,7 @@ const ProjectManagement = (props) => {
     if (getListDataExport.statusCode === 200) {
       data = getListDataExport.data;
     }
-    exportRawDataToCSV(data, 'projects.csv');
+    exportRawDataToCSV(data, 'projects');
   };
 
   if (!tabName) return '';

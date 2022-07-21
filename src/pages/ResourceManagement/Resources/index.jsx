@@ -3,20 +3,20 @@ import { Button, Col, Row, Tabs } from 'antd';
 import { debounce } from 'lodash';
 import React, { Component } from 'react';
 import { connect, formatMessage, history } from 'umi';
-import { getCurrentLocation } from '@/utils/authority';
-import OverView from '@/pages/ResourceManagement/components/OverView';
-import { PageContainer } from '@/layouts/layout/src';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
-import ProjectList from './components/Projects';
-import ResourceList from './components/ResourceList';
-import styles from './index.less';
+import { PageContainer } from '@/layouts/layout/src';
+import OverView from '@/pages/ResourceManagement/components/OverView';
+import { getCurrentLocation } from '@/utils/authority';
 import {
   getSelectedDivisions,
   getSelectedLocations,
   setSelectedDivisions,
   setSelectedLocations,
 } from '@/utils/resourceManagement';
-import { exportRawDataToCSV } from '@/utils/utils';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
+import ProjectList from './components/Projects';
+import ResourceList from './components/ResourceList';
+import styles from './index.less';
 
 const baseModuleUrl = '/resource-management';
 const TABS = {
@@ -139,7 +139,7 @@ class Resources extends Component {
     this.debouncedChangeDivision(selection);
   };
 
-  exportToExcel = async (type, fileName) => {
+  exportData = async (type, fileName) => {
     const { dispatch, currentUserId = '', total } = this.props;
     const getListExport = await dispatch({
       type,
@@ -154,7 +154,7 @@ class Resources extends Component {
 
   exportTag = (nameTag, exportTag) => {
     if (nameTag === TABS.PROJECTS) {
-      return this.exportToExcel('resourceManagement/exportReportProject', 'rm-projects.csv');
+      return this.exportData('resourceManagement/exportReportProject', 'rm-projects');
     }
     return (
       <div className={styles.options}>

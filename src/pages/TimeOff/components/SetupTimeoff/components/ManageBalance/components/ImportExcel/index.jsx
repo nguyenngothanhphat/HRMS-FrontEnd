@@ -1,11 +1,9 @@
-import React from 'react';
-import { Button, DatePicker, Row, Col, Upload, message } from 'antd';
+import { Button, Col, DatePicker, message, Row, Upload } from 'antd';
 import moment from 'moment';
-import Icon from '@/assets/importExcel.svg';
-
+import React from 'react';
 import { connect } from 'umi';
-// import * as XLSX from 'xlsx';
 import { getCurrentTenant } from '@/utils/authority';
+import Icon from '@/assets/importExcel.svg';
 import styles from './index.less';
 
 const { Dragger } = Upload;

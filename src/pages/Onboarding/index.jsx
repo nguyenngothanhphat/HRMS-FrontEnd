@@ -1,16 +1,16 @@
-import React, { PureComponent } from 'react';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { Tabs, Button, Row, Col } from 'antd';
+import { Button, Col, Row, Tabs } from 'antd';
+import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
-import { PageContainer } from '@/layouts/layout/src';
-import exportToCSV from '@/utils/exportAsExcel';
+import CustomBlueButton from '@/components/CustomBlueButton';
 import { NEW_PROCESS_STATUS, ONBOARDING_TABS } from '@/constants/onboarding';
+import { PageContainer } from '@/layouts/layout/src';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
+import { goToTop } from '@/utils/utils';
+import NewJoinees from './components/NewJoinees/index';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
 import styles from './index.less';
-import NewJoinees from './components/NewJoinees/index';
-import { goToTop } from '@/utils/utils';
-import CustomBlueButton from '@/components/CustomBlueButton';
 
 @connect(({ user: { permissions = [] } = {}, onboarding: { onboardingOverview = {} } = {} }) => ({
   permissions,
@@ -35,7 +35,7 @@ class Onboarding extends PureComponent {
     });
   };
 
-  checkPathLocation = () => {
+  getExportData = () => {
     const {
       onboardingOverview: {
         dataAll = [],
@@ -56,7 +56,7 @@ class Onboarding extends PureComponent {
       } = {},
     } = this.props;
 
-    let data = '';
+    let data = [];
 
     switch (currentStatus) {
       case NEW_PROCESS_STATUS.DRAFT:
@@ -107,11 +107,11 @@ class Onboarding extends PureComponent {
   };
 
   downloadTemplate = () => {
-    const data = this.checkPathLocation();
-    exportToCSV(this.processData(data), 'DataOnboarding.xlsx');
+    const data = this.getExportData();
+    exportArrayDataToCsv('OnboardingData', this.processData(data));
   };
 
-  processData = (array) => {
+  processData = (array = []) => {
     // Uppercase first letter
     let capsPopulations = [];
     capsPopulations = array.map((item) => {
@@ -122,9 +122,7 @@ class Onboarding extends PureComponent {
         generalInfo: { firstName: name },
       } = item.assigneeManager;
       return {
-        //      'Candidate Id': item.candidateId,
         Candidate: item.candidate,
-        //      'Candidate Name': item.candidateName,
         'First Name': item.firstName,
         'Middle Name': item.middleName,
         'Last Name': item.lastName,

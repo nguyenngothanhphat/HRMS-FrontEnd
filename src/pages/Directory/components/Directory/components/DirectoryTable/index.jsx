@@ -50,6 +50,7 @@ class DirectoryTable extends Component {
       timezoneList: [],
       selectColumn: false,
       currentTime: moment(),
+      hoveringLocation: '',
     };
   }
 
@@ -222,6 +223,7 @@ class DirectoryTable extends Component {
 
   generateColumns = (sortedName, keyTab) => {
     const { permissions = {} } = this.props;
+    const { hoveringLocation } = this.state;
 
     const columns = [
       {
@@ -339,10 +341,16 @@ class DirectoryTable extends Component {
         title: formatMessage({ id: 'component.directory.table.location' }),
         dataIndex: 'location',
         key: 'location',
-        render: (location) => (
+        render: (location = {}, row = {}) => (
           <Popover
-            content={() => this.locationContent(location)}
+            content={hoveringLocation === row._id ? this.locationContent(location) : null}
             title={location.name}
+            onVisibleChange={(visible) => {
+              this.setState({
+                hoveringLocation: visible ? row._id : '',
+              });
+            }}
+            visible={hoveringLocation === row._id}
             trigger="hover"
           >
             <span
