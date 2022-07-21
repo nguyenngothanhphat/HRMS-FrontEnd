@@ -6,7 +6,6 @@ import SearchTable from '../../../components/SearchTable';
 import TableTickets from '../TableTickets';
 import TicketInfo from '../TicketInfo';
 import styles from './index.less';
-// import { cancelRequestTypes } from '@/utils/ticketManagement';
 
 const TicketQueue = (props) => {
   const {
@@ -100,12 +99,6 @@ const TicketQueue = (props) => {
 
   useEffect(() => {
     initDataTable();
-    // return () => {
-    //   dispatch({
-    //     type: 'ticketManagement/cancelRequest',
-    //     payload: cancelRequestTypes.listOffAllTicket,
-    //   });
-    // };
   }, [pageSelected, size, nameSearch, JSON.stringify(selectedLocations), JSON.stringify(filter)]);
 
   useEffect(() => {

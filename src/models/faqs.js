@@ -20,6 +20,10 @@ const faqs = {
     listFAQ: [],
     countryList: [],
     selectedCountry: '',
+    totalListFAQ: 0,
+    totalCategory: 0,
+    listCategoryMainPage: [],
+    totalCategoryMainPage: 0,
   },
   effects: {
     *addFAQCategory({ payload }, { call }) {
@@ -46,12 +50,35 @@ const faqs = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode, data, total } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
           payload: {
             listCategory: data,
+            totalCategory: total,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchListFAQCategoryMainPage({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getListCategory, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data, total } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            listCategoryMainPage: data,
+            totalCategoryMainPage: total,
           },
         });
       } catch (error) {
@@ -115,12 +142,13 @@ const faqs = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode, data, total } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
           payload: {
             listFAQ: data,
+            totalListFAQ: total || 0,
           },
         });
       } catch (error) {
