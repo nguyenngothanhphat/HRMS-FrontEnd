@@ -941,11 +941,11 @@ const timeOff = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, message = '' } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
+        // notification.success({
+        //   message,
+        // });
         return statusCode;
       } catch (errors) {
         dialog(errors);
