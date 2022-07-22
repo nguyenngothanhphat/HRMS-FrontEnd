@@ -50,18 +50,8 @@ const errorHandler = (error) => {
 
 const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) => {
   const { method = 'POST', data = {}, params = {} } = options;
-  const { cancel: { cancelNamespace, cancelType = '' } = {} } = data;
+  const { cancelToken = null } = data;
   const token = getToken();
-
-  const { CancelToken } = axios;
-  const source = CancelToken.source();
-
-  if (cancelNamespace)
-    getDvaApp()._store.dispatch({
-      type: `${cancelNamespace}/saveRequest`,
-      payload: { [cancelType]: source },
-    });
-
   const headers = {
     'Content-Type': 'application/json;charset=UTF-8',
     'Access-Control-Allow-Origin': '*',
@@ -71,7 +61,7 @@ const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) =>
     baseURL: proxy[apiKey],
     headers,
     params,
-    cancelToken: source.token,
+    cancelToken,
   });
 
   instance.interceptors.response.use(
@@ -83,7 +73,7 @@ const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) =>
   );
   try {
     const updateData = { ...data };
-    delete updateData.cancel;
+    delete updateData.cancelToken;
     const res = await instance[method.toLowerCase()](url, updateData);
     return res.data;
   } catch (e) {

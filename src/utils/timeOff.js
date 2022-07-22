@@ -118,7 +118,7 @@ export const convert12To24 = (time) => {
 };
 
 export const checkNormalTypeTimeoff = (type) => {
-  return type !== TIMEOFF_TYPE.C && type !== TIMEOFF_TYPE.D;
+  return type !== TIMEOFF_TYPE.C;
 };
 
 export const WORKING_HOURS = {

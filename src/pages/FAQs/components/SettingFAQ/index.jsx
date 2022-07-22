@@ -119,6 +119,13 @@ class Settings extends PureComponent {
         selectedCountry: value,
       },
     });
+
+    dispatch({
+      type: 'faqs/fetchListFAQCategory',
+      payload: {
+        country: [value],
+      },
+    });
   };
 
   render() {

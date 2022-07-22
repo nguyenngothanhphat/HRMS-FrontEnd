@@ -25,6 +25,16 @@ const TableContainer = (props) => {
 
   const didMount = useRef(true);
 
+  useEffect(() => {
+    const from = fromDate ? moment(fromDate).format('YYYY-MM-DD') : null;
+    const to = toDate ? moment(toDate).format('YYYY-MM-DD') : null;
+    setPayload({
+      ...payload,
+      from,
+      to,
+    });
+  }, [fromDate, toDate]);
+
   const getDataTable = (values = {}) => {
     const { status = [], types = [], user = null } = values;
 

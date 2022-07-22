@@ -121,7 +121,17 @@
           }
         }
       }
-
+      .durationSelector {
+        :global {
+          .ant-select-selector {
+            height: auto !important;
+            min-height: 42px;
+            padding-top: 4px !important;
+            padding-bottom: 2px !important;
+            border-radius: 5px;
+          }
+        }
+      }
       // cc selection
       .ccSelection {
         :global {
@@ -130,6 +140,7 @@
             min-height: 42px;
             padding-top: 4px !important;
             padding-bottom: 2px !important;
+            border-radius: 5px;
           }
           .ant-select-selection-item {
             align-items: center !important;
@@ -170,11 +181,6 @@
       border-color: #2c6df9;
       outline: 0;
       box-shadow: unset !important;
-    }
-
-    .ant-select-selector {
-      min-height: 42px;
-      border-radius: 5px;
     }
 
     .ant-select-single.ant-select-show-arrow .ant-select-selection-item,

@@ -520,7 +520,7 @@ const onboarding = {
       }
     },
     *filterOnboardList({ payload = {}, currentStatus = '' }, { call, put }) {
-      let response
+      let response;
       try {
         const tenantId = getCurrentTenant();
         const company = getCurrentCompany();
@@ -686,7 +686,7 @@ const onboarding = {
       } catch (errors) {
         dialog(errors);
       }
-      return response
+      return response;
     },
 
     *handleExpiryTicket({ payload }, { call, put, select }) {
