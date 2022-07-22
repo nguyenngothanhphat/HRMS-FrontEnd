@@ -234,7 +234,7 @@ class NewCandidateForm extends PureComponent {
     }
 
     const response = await dispatch({
-      type: 'onboard/deleteTicketDraft',
+      type: 'onboarding/deleteTicketDraft',
       payload: {
         id: ticketID,
         tenantId: getCurrentTenant(),

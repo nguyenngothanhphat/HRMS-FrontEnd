@@ -86,7 +86,7 @@ const NewJoinees = (props) => {
       });
     }
     dispatch({
-      type: 'onboard/fetchEmployeeList',
+      type: 'onboarding/fetchEmployeeList',
       payload: {
         company: companyPayload,
         department: ['HR'],
@@ -94,7 +94,7 @@ const NewJoinees = (props) => {
       },
     });
     dispatch({
-      type: 'onboard/fetchHRManagerList',
+      type: 'onboarding/fetchHRManagerList',
       payload: {
         company: companyPayload,
         department: ['HR'],
@@ -106,14 +106,14 @@ const NewJoinees = (props) => {
 
   useEffect(() => {
     dispatch({
-      type: 'onboard/fetchFilterList',
+      type: 'onboarding/fetchFilterList',
       payload: {
         tenantId: getCurrentTenant(),
         id: getCurrentCompany(),
       },
     });
     dispatch({
-      type: 'onboard/fetchJobTitleList',
+      type: 'onboarding/fetchJobTitleList',
       payload: {},
     });
     fetchListEmployee();
@@ -122,7 +122,7 @@ const NewJoinees = (props) => {
   useEffect(() => {
     if (isSearch) {
       dispatch({
-        type: 'onboard/getListNewComer',
+        type: 'onboarding/getListNewComer',
         payload: {
           searchName: keySearch,
           ...removeEmptyFields(filter),
@@ -289,7 +289,7 @@ const NewJoinees = (props) => {
               return {
                 onClick: () => {
                   dispatch({
-                    type: 'onboard/saveJoiningFormalities',
+                    type: 'onboarding/saveJoiningFormalities',
                     payload: { itemNewComer: record },
                   });
                   history.push(`/onboarding/newJoinees/view-detail/${_id}`);
@@ -307,13 +307,13 @@ export default connect(
     loading,
     location: { companyLocationList = [] } = {},
     user: { currentUser = {}, companiesOfUser = [] },
-    onboard: {
+    onboarding: {
       hrList = [],
       filterList = {},
       joiningFormalities: { listNewComer = [], totalComer = 0 } = {},
     },
   }) => ({
-    loadingTable: loading.effects['onboard/getListNewComer'],
+    loadingTable: loading.effects['onboarding/getListNewComer'],
     listNewComer,
     totalComer,
     currentUser,

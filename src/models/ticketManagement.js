@@ -15,7 +15,7 @@ import {
   uploadFile,
   getSupportTeamList,
   getListMyTeam,
-} from '../services/ticketsManagement';
+} from '../services/ticketManagement';
 
 const ticketManagement = {
   namespace: 'ticketManagement',

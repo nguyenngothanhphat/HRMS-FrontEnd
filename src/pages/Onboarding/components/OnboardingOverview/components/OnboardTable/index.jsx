@@ -1,33 +1,31 @@
-import React, { Component } from 'react';
-import { Table, Empty, Dropdown, Menu, Popover } from 'antd';
-import { formatMessage, Link, connect, history } from 'umi';
+import { Dropdown, Empty, Menu, Popover, Table } from 'antd';
 import moment from 'moment';
+import React, { Component } from 'react';
+import { connect, formatMessage, history, Link } from 'umi';
+import AcceptIcon from '@/assets/Accept-icon-onboarding.svg';
+import MessageIcon from '@/assets/message.svg';
 import MenuIcon from '@/assets/projectManagement/actionIcon.svg';
 import {
   NEW_PROCESS_STATUS,
   ONBOARDING_FORM_LINK,
   ONBOARDING_FORM_STEP_LINK,
 } from '@/constants/onboarding';
-import { getAuthority, getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getAuthority, getCurrentTenant } from '@/utils/authority';
 import { getTimezoneViaCity } from '@/utils/times';
-import AcceptIcon from '@/assets/Accept-icon-onboarding.svg';
-import MessageIcon from '@/assets/message.svg';
-
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
-import { getActionText, getColumnWidth } from './utils';
-import ReassignModal from './components/ReassignModal';
-import RenewModal from './components/RenewModal';
-import PopupContentHr from './components/PopupContentHr';
-import JoiningFormalitiesModal from './components/JoiningFormalitiesModal';
-
-import styles from './index.less';
-import CandidateUserName from './components/CandidateUserName/index';
 import ConfirmModal from './components/ConfirmModal/index';
+import JoiningFormalitiesModal from './components/JoiningFormalitiesModal';
+import PopupContentHr from './components/PopupContentHr';
+import ReassignModalContent from './components/ReassignModalContent';
+import RenewModal from './components/RenewModal';
+import styles from './index.less';
+import { getActionText, getColumnWidth } from './utils';
 
-import EyeIcon from '@/assets/eyes.svg';
-import JoiningIcon from '@/assets/Vector.svg';
-import LaunchIcon from '@/assets/launchIcon.svg';
 import DeleteIcon from '@/assets/bin.svg';
+import EyeIcon from '@/assets/eyes.svg';
+import LaunchIcon from '@/assets/launchIcon.svg';
+import JoiningIcon from '@/assets/Vector.svg';
+import CommonModal from '@/components/CommonModal';
 
 const compare = (dateTimeA, dateTimeB) => {
   const momentA = moment(dateTimeA, 'DD/MM/YYYY');
@@ -238,7 +236,7 @@ class OnboardTable extends Component {
       return;
     }
     dispatch({
-      type: 'onboard/initiateBackgroundCheckEffect',
+      type: 'onboarding/initiateBackgroundCheckEffect',
       payload: {
         rookieID: id,
         tenantId: getCurrentTenant(),
@@ -707,7 +705,7 @@ class OnboardTable extends Component {
   onMaybeLater = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'onboard/save',
+      type: 'onboarding/save',
       payload: { reloadTableData: true },
     });
     this.setState({
@@ -772,7 +770,14 @@ class OnboardTable extends Component {
   };
 
   render() {
-    const { list = [], pageSelected, size, getPageAndSize, total: totalData } = this.props;
+    const {
+      list = [],
+      pageSelected,
+      size,
+      getPageAndSize,
+      total: totalData,
+      loadingReassign = false,
+    } = this.props;
 
     const {
       reassignModalVisible = false,
@@ -861,23 +866,28 @@ class OnboardTable extends Component {
             scroll={list.length > 0 ? { x: '90vw', y: 'max-content' } : {}}
           />
         </div>
-        {/* <CustomModal
-          open={openModal}
-          width={590}
-          closeModal={this.closeModal}
-          content={this.getModalContent()}
-        /> */}
-        <ReassignModal
+
+        <CommonModal
           visible={reassignModalVisible}
-          currentEmpId={currentEmpId}
-          currentEmpName={currentEmpName}
-          reassignTicketId={reassignTicketId}
-          handleReassignModal={this.handleReassignModal}
-          type={reassignType}
-          processStatus={reassignStatus}
-          page={pageSelected}
-          limit={size}
+          title="Re-assign Employee"
+          onClose={() => this.handleReassignModal(false)}
+          width={500}
+          firstText="Add"
+          loading={loadingReassign}
+          content={
+            <ReassignModalContent
+              currentEmpId={currentEmpId}
+              currentEmpName={currentEmpName}
+              reassignTicketId={reassignTicketId}
+              type={reassignType}
+              processStatus={reassignStatus}
+              page={pageSelected}
+              limit={size}
+              visible={reassignModalVisible}
+            />
+          }
         />
+
         <RenewModal
           visible={renewModalVisible}
           ticketId={selectedExpiryTicketId}
@@ -925,9 +935,10 @@ export default connect(
     newCandidateForm: { tempData: { documentChecklist = [] } = {} } = {},
   }) => ({
     isAddNewMember: newCandidateForm.isAddNewMember,
-    loading: loading.effects['onboard/fetchOnboardList'],
+    loading: loading.effects['onboarding/fetchOnboardList'],
     loading2: loading.effects['onboarding/fetchOnboardList'],
     loading3: loading.effects['onboarding/fetchOnboardListAll'],
+    loadingReassign: loading.effects['onboarding/reassignTicket'],
     currentUser,
     documentChecklist,
     companyLocationList,

@@ -76,7 +76,7 @@ const RegionsTable = (props) => {
 
   const fetchData = (p, l) => {
     dispatch({
-      type: 'onboard/getEmployeeIdFormatList',
+      type: 'onboarding/getEmployeeIdFormatList',
       payload: {
         page: p,
         limit: l,
@@ -117,7 +117,7 @@ const RegionsTable = (props) => {
     const findRecord = data.find((x) => x._id === key);
     if (findRecord) {
       const res = await dispatch({
-        type: 'onboard/updateEmployeeFormatByLocation',
+        type: 'onboarding/updateEmployeeFormatByLocation',
         payload: {
           location: {
             _id: findRecord._id,
@@ -132,7 +132,7 @@ const RegionsTable = (props) => {
         // eslint-disable-next-line no-unused-expressions
         key === location._id &&
           dispatch({
-            type: 'onboard/getEmployeeIdFormatByLocation',
+            type: 'onboarding/getEmployeeIdFormatByLocation',
             payload: {
               location: location._id,
             },
@@ -244,7 +244,7 @@ export default connect(
   ({
     loading,
     user: { currentUser: { location = '' } } = {},
-    onboard: {
+    onboarding: {
       joiningFormalities: {
         listJoiningFormalities = [],
         generatedId = '',
@@ -255,10 +255,10 @@ export default connect(
       } = {},
     },
   }) => ({
-    loadingList: loading.effects['onboard/getEmployeeIdFormatList'],
-    loadingAdd: loading.effects['onboard/addJoiningFormalities'],
-    loadingUpdate: loading.effects['onboard/updateEmployeeFormatByLocation'],
-    loadingRemove: loading.effects['onboard/removeJoiningFormalities'],
+    loadingList: loading.effects['onboarding/getEmployeeIdFormatList'],
+    loadingAdd: loading.effects['onboarding/addJoiningFormalities'],
+    loadingUpdate: loading.effects['onboarding/updateEmployeeFormatByLocation'],
+    loadingRemove: loading.effects['onboarding/removeJoiningFormalities'],
     listJoiningFormalities,
     generatedId,
     prefix,

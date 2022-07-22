@@ -9,7 +9,7 @@ const CandidateProfile = (props) => {
   const { match: { params: { userId = '' } = {} } = {}, dispatch, itemNewComer } = props;
   useEffect(() => {
     if (userId) {
-      dispatch({ type: 'onboard/getCandidateById', payload: { candidate: userId } });
+      dispatch({ type: 'onboarding/getCandidateById', payload: { candidate: userId } });
     }
   }, [userId]);
   const {
@@ -161,6 +161,6 @@ const CandidateProfile = (props) => {
     </PageContainer>
   );
 };
-export default connect(({ onboard: { joiningFormalities: { itemNewComer = {} } = {} } }) => ({
+export default connect(({ onboarding: { joiningFormalities: { itemNewComer = {} } = {} } }) => ({
   itemNewComer,
 }))(CandidateProfile);

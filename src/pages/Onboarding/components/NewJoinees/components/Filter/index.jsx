@@ -294,7 +294,7 @@ const Filter = (props) => {
 
 export default connect(
   ({
-    onboard: { hrList = [], hrManagerList = [], jobTitleList = [], filterJoining = {} } = {},
+    onboarding: { hrList = [], hrManagerList = [], jobTitleList = [], filterJoining = {} } = {},
   }) => ({
     hrList,
     hrManagerList,

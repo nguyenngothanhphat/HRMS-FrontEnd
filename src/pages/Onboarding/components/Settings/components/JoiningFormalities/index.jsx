@@ -27,7 +27,7 @@ const JoiningFormalities = (props) => {
 
   const fetchCheckListEffect = () => {
     dispatch({
-      type: 'onboard/getListJoiningFormalities',
+      type: 'onboarding/getListJoiningFormalities',
     });
   };
 
@@ -136,7 +136,7 @@ const JoiningFormalities = (props) => {
 export default connect(
   ({
     loading,
-    onboard: {
+    onboarding: {
       joiningFormalities: {
         listJoiningFormalities = [],
         generatedId = '',
@@ -145,10 +145,10 @@ export default connect(
       } = {},
     },
   }) => ({
-    loadingList: loading.effects['onboard/getListJoiningFormalities'],
-    loadingAdd: loading.effects['onboard/addJoiningFormalities'],
-    loadingUpdate: loading.effects['onboard/updateJoiningFormalities'],
-    loadingRemove: loading.effects['onboard/removeJoiningFormalities'],
+    loadingList: loading.effects['onboarding/getListJoiningFormalities'],
+    loadingAdd: loading.effects['onboarding/addJoiningFormalities'],
+    loadingUpdate: loading.effects['onboarding/updateJoiningFormalities'],
+    loadingRemove: loading.effects['onboarding/removeJoiningFormalities'],
     listJoiningFormalities,
     generatedId,
     prefix,

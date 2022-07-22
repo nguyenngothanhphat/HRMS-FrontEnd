@@ -10,9 +10,9 @@ import styles from './index.less';
     loading,
     location: { companyLocationList = [] } = {},
     user: { currentUser = {}, companiesOfUser = [] },
-    onboard: { hrList = [], filterList = {} } = {},
+    onboarding: { hrList = [], filterList = {} } = {},
   }) => ({
-    loadingHandleExpiryTicket: loading.effects['onboard/handleExpiryTicket'],
+    loadingHandleExpiryTicket: loading.effects['onboarding/handleExpiryTicket'],
     currentUser,
     companyLocationList,
     companiesOfUser,

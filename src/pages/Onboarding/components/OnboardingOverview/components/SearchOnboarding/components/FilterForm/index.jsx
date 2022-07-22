@@ -102,8 +102,23 @@ class FilterForm extends Component {
   }
 
   componentDidMount() {
-    const { callbackClose = () => {} } = this.props;
+    const { dispatch, callbackClose = () => {} } = this.props;
     callbackClose(this.clearFilter);
+
+    dispatch({
+      type: 'onboarding/fetchJobTitleList',
+      payload: {},
+    });
+
+    dispatch({
+      type: 'onboarding/fetchLocationList',
+      payload: {},
+    });
+
+    dispatch({
+      type: 'onboarding/saveSearch',
+      payload: { isFilter: true },
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -417,7 +432,7 @@ class FilterForm extends Component {
           // onFinish={this.onFinish}
           ref={this.formRef}
         >
-          <div className={styles.form__top}>
+          <div className={styles.container}>
             <div className={styles.processStatus}>
               <div className={styles.processStatus__label}>
                 <div className={styles.labelText}>By Status</div>
@@ -524,21 +539,6 @@ class FilterForm extends Component {
               </div>
             </div>
           </div>
-
-          {/* <Divider className={styles.divider} />
-          <div className={styles.footer}>
-            <Button onClick={this.clearFilter} className={styles.footer__clear}>
-              Clear
-            </Button>
-            <Button
-              onClick={this.onApply}
-              // disabled={!isFilter}
-              className={styles.footer__apply}
-              htmlType="submit"
-            >
-              Apply
-            </Button>
-          </div> */}
         </Form>
       </div>
     );

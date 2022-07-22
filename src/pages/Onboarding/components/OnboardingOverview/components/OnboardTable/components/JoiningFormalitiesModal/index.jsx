@@ -32,7 +32,7 @@ const JoiningFormalitiesModal = (props) => {
 
   useEffect(() => {
     dispatch({
-      type: 'onboard/getListJoiningFormalities',
+      type: 'onboarding/getListJoiningFormalities',
     });
     // eslint-disable-next-line no-unused-expressions
     candidateId &&
@@ -67,7 +67,7 @@ const JoiningFormalitiesModal = (props) => {
   const renderHeaderModal = (title) => <div className={styles.headerText}>{title}</div>;
   const converToEmployee = async () => {
     const response = await dispatch({
-      type: 'onboard/getEmployeeId',
+      type: 'onboarding/getEmployeeId',
       payload: {
         candidateId,
       },
@@ -234,11 +234,11 @@ const JoiningFormalitiesModal = (props) => {
 };
 
 export default connect(
-  ({ loading, onboard: { joiningFormalities: { listJoiningFormalities = [] } } = {} }) => ({
+  ({ loading, onboarding: { joiningFormalities: { listJoiningFormalities = [] } } = {} }) => ({
     listJoiningFormalities,
-    loadingGetEmployeeId: loading.effects['onboard/getEmployeeId'],
-    loadingCheckUserName: loading.effects['onboard/checkExistedUserName'],
-    loadingCreateEmployee: loading.effects['onboard/createEmployee'],
+    loadingGetEmployeeId: loading.effects['onboarding/getEmployeeId'],
+    loadingCheckUserName: loading.effects['onboarding/checkExistedUserName'],
+    loadingCreateEmployee: loading.effects['onboarding/createEmployee'],
     loadingFetchRookie: loading.effects['newCandidateForm/fetchCandidateByRookie'],
   }),
 )(JoiningFormalitiesModal);

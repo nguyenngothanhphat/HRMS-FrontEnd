@@ -55,7 +55,7 @@ class Joined extends PureComponent {
     if (prepProps.reloadTableData !== reloadTableData && reloadTableData) {
       this.fetchOnboardingJoined(nameSearch);
       dispatch({
-        type: 'onboard/save',
+        type: 'onboarding/save',
         payload: { reloadTableData: false },
       });
     }

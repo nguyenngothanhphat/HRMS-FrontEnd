@@ -55,7 +55,7 @@ class DocumentCheckList extends PureComponent {
     if (prepProps.reloadTableData !== reloadTableData && reloadTableData) {
       this.fetchOnboardingCheckList(nameSearch);
       dispatch({
-        type: 'onboard/save',
+        type: 'onboarding/save',
         payload: { reloadTableData: false },
       });
     }
