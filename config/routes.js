@@ -255,7 +255,7 @@ const routes = [
             name: 'dashboardApprovals',
             hideInMenu: true,
             component: './Dashboard/components/Approval',
-            authority: [MANAGER, HR_MANAGER],
+            authority: ['P_APPROVALS_PAGE_VIEW'],
           },
           {
             path: '/admin-app',

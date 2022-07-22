@@ -14,7 +14,6 @@ import TimeSheet from './components/TimeSheet';
 import Voting from './components/Voting';
 import Welcome from './components/Welcome';
 import ApprovalIcon from '@/assets/homePage/noteIcon.svg';
-import ROLES from '@/utils/roles';
 
 const Gallery = React.lazy(() => import('./components/Gallery'));
 const Celebrating = React.lazy(() => import('./components/Celebrating'));
@@ -22,11 +21,9 @@ const Celebrating = React.lazy(() => import('./components/Celebrating'));
 const HomePage = (props) => {
   const { dispatch } = props;
   const {
-    user: { permissions: { viewSettingHomePage = -1 } = {}, currentUser: { roles = [] } = {} } = {},
+    user: { permissions: { viewSettingHomePage = -1, viewApprovalPage = -1 } = {} } = {},
     // loadingMain = false
   } = props;
-  console.log(roles);
-  console.log(roles.includes(ROLES.MANAGER.toUpperCase()));
   useEffect(() => {
     goToTop();
     return () => {
@@ -67,7 +64,7 @@ const HomePage = (props) => {
             <Col span={24}>
               <QuickLinks />
             </Col>
-            {roles.some((x) => x.includes(ROLES.MANAGER.toUpperCase())) && (
+            {viewApprovalPage === 1 && (
               <Col span={24}>
                 <Button
                   className={styles.approval}

@@ -235,10 +235,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_ONBOARDING_T_ONBOARDING_OVERVIEW_VIEW',
     'P_ONBOARDING_ALL',
   ]);
-  const indexNewJoinees = isAuthorized(permissionList, [
-    'P_ONBOARDING_T_NEW_JOINEES_VIEW',
-  ]);
-
+  const indexNewJoinees = isAuthorized(permissionList, ['P_ONBOARDING_T_NEW_JOINEES_VIEW']);
 
   // TIME OFF
   const indexMyTimeoff = 1; // everyone has time off employee page
@@ -292,6 +289,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   // DASHBOARD
   const indexPendingApprovalDashboard = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
+  const indexViewgApprovalPage = isAuthorized(permissionList, ['P_APPROVALS_PAGE_VIEW']);
+
   const indexMyTeamDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_TEAM_VIEW']);
   const indexMyAppDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_APPS_VIEW']);
   const indexTimeSheetDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_TIMESHEET_VIEW']);
@@ -444,6 +443,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewCalendarDashboard: indexCalendarDashboard,
     viewTaskDashboard: indexTaskDashboard,
     viewMyAppDashboard: indexMyAppDashboard,
+    viewApprovalPage: indexViewgApprovalPage,
 
     // home page
     viewSettingHomePage: indexSettingHomePage,

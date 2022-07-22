@@ -16,7 +16,9 @@ import styles from './index.less';
 import ROLES from '@/utils/roles';
 
 const MyApps = (props) => {
-  const { user: { currentUser: { roles = [] } } = {} } = props;
+  const {
+    user: { permissions: { viewApprovalPage = -1 } = {} },
+  } = props;
   const [modalVisible, setModalVisible] = useState(false);
   const myApps = [
     {
@@ -38,7 +40,7 @@ const MyApps = (props) => {
       icon: ApprovalIcon,
       name: 'Approval',
       link: '/dashboard/approvals',
-      isHide: !roles.some((x) => x.includes(ROLES.MANAGER.toUpperCase())),
+      isHide: viewApprovalPage !== 1,
     },
   ];
 
