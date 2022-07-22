@@ -121,7 +121,7 @@ class FAQList extends PureComponent {
                     className={styles.viewCenter__title__text__view}
                   >
                     <Panel header={obj.question} key={obj._id}>
-                      <div>{obj.answer}</div>
+                      <div dangerouslySetInnerHTML={{ __html: obj.answer }} />
                     </Panel>
                   </Collapse>
                   <br />

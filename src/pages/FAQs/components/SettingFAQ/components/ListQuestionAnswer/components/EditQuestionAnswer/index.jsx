@@ -1,51 +1,49 @@
-import React, { Component } from 'react';
-import { Form, Input, Select, Modal, Button } from 'antd';
+import { Button, Form, Input, Modal, Select } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import EditorQuill from '@/components/EditorQuill';
 import styles from './index.less';
 
-const { Option } = Select;
-const { TextArea } = Input;
-@connect(
-  ({
-    loading,
-    faqs: { listCategory = [], selectedCountry } = {},
-    user: { currentUser: { employee: { _id: employeeId = '' } = {} } = {} },
-  }) => ({
-    loadingGetList: loading.effects['faqs/fetchListCategory'],
-    loadingUpdate: loading.effects['faqs/updateQuestion'],
-    listCategory,
-    employeeId,
-    selectedCountry
-  }),
-)
-class EditQuestionAnswer extends Component {
-  formRef = React.createRef();
+const EditQuestionAnswer = (props) => {
+  const { Option } = Select;
+  const { TextArea } = Input;
+  const [form] = Form.useForm();
+  const {
+    dispatch,
+    item: { id = '', question = '', nameCategory = '' } = {},
+    employeeId = '',
+    onClose = () => {},
+    selectedCountry = '',
+    loadingUpdate = false,
+    visible = false,
+    listCategory = [],
+  } = props;
+  const [answer, setAnswer] = useState('');
 
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+  const {
+    item: { answer: currentAnswer = '' },
+  } = props;
 
-  handleCancel = () => {
-    const { onClose = () => {} } = this.props;
+  useEffect(() => {
+    setAnswer(currentAnswer);
+  }, [currentAnswer]);
+
+  const callback = (value) => {
+    setAnswer(value);
+  };
+
+  const handleCancel = () => {
     onClose();
   };
 
-  handleFinish = ({ question = '', faqCategory = '', answer = '' }) => {
-    const {
-      dispatch,
-      item: { id = '' } = {},
-      employeeId = '',
-      onClose = () => {},
-      selectedCountry = ''
-    } = this.props;
+  const handleFinish = ({ question: quest = '', faqCategory = '' }) => {
     dispatch({
       type: 'faqs/updateQuestion',
       payload: {
         id,
         employeeId,
         category: faqCategory,
-        question,
+        question: quest,
         answer,
       },
     }).then((response) => {
@@ -62,91 +60,101 @@ class EditQuestionAnswer extends Component {
     });
   };
 
-  render() {
-    const { loadingUpdate, visible, item, listCategory = [] } = this.props;
-    const renderModalHeader = () => {
-      return (
-        <div className={styles.header}>
-          <p className={styles.header__text}>Edit Question</p>
-        </div>
-      );
-    };
-    const renderModalContent = () => {
-      return (
-        <div className={styles.content}>
-          <Form
-            name="basic"
-            id="editForm"
-            ref={this.formRef}
-            onFinish={this.handleFinish}
-            initialValues={{
-              faqCategory: item ? item.categoryName : '',
-              question: item ? item.question : '',
-              answer: item ? item.answer : '',
-            }}
-          >
-            <Form.Item
-              rules={[{ required: true, message: 'Please name Categories' }]}
-              label="FAQ Categories"
-              name="faqCategory"
-              labelCol={{ span: 24 }}
-            >
-              <Select
-                showSearch
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                {listCategory.map((val) => (
-                  <Option value={val._id}>{val.category}</Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item label="Question" name="question" labelCol={{ span: 24 }}>
-              <Input />
-            </Form.Item>
-            <Form.Item label="Answer" name="answer" labelCol={{ span: 24 }}>
-              <TextArea rows={4} />
-            </Form.Item>
-          </Form>
-        </div>
-      );
-    };
-
+  const renderModalHeader = () => {
     return (
-      <>
-        <Modal
-          className={`${styles.EditQuestionAnswer} ${styles.noPadding}`}
-          onCancel={this.handleCancel}
-          destroyOnClose
-          width={696}
-          footer={
-            <>
-              <Button className={styles.btnCancel} onClick={this.handleCancel}>
-                Cancel
-              </Button>
-              <Button
-                className={styles.btnSubmit}
-                type="primary"
-                form="editForm"
-                key="submit"
-                htmlType="submit"
-                loading={loadingUpdate}
-              >
-                Save Change
-              </Button>
-            </>
-          }
-          title={renderModalHeader()}
-          centered
-          visible={visible}
-        >
-          {renderModalContent()}
-        </Modal>
-      </>
+      <div className={styles.header}>
+        <p className={styles.header__text}>Edit Question</p>
+      </div>
     );
-  }
-}
+  };
+  const renderModalContent = () => {
+    return (
+      <div className={styles.content}>
+        <Form
+          name="basic"
+          id="editForm"
+          form={form}
+          onFinish={handleFinish}
+          initialValues={{
+            faqCategory: nameCategory,
+            question,
+            // answer: item ? item.answer : '',
+          }}
+        >
+          <Form.Item
+            rules={[{ required: true, message: 'Please name Categories' }]}
+            label="FAQ Categories"
+            name="faqCategory"
+            labelCol={{ span: 24 }}
+          >
+            <Select
+              showSearch
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {listCategory.map((val) => (
+                <Option value={val._id}>{val.category}</Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-export default EditQuestionAnswer;
+          <Form.Item label="Question" name="question" labelCol={{ span: 24 }}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="Answer" name="answer" labelCol={{ span: 24 }}>
+            {/* <TextArea rows={4} /> */}
+            <EditorQuill messages={answer} handleChangeEmail={callback} />
+          </Form.Item>
+        </Form>
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <Modal
+        className={`${styles.EditQuestionAnswer} ${styles.noPadding}`}
+        onCancel={handleCancel}
+        destroyOnClose
+        width={696}
+        footer={
+          <>
+            <Button className={styles.btnCancel} onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button
+              className={styles.btnSubmit}
+              type="primary"
+              form="editForm"
+              key="submit"
+              htmlType="submit"
+              loading={loadingUpdate}
+            >
+              Save Change
+            </Button>
+          </>
+        }
+        title={renderModalHeader()}
+        centered
+        visible={visible}
+      >
+        {renderModalContent()}
+      </Modal>
+    </>
+  );
+};
+
+export default connect(
+  ({
+    loading,
+    faqs: { listCategory = [], selectedCountry } = {},
+    user: { currentUser: { employee: { _id: employeeId = '' } = {} } = {} },
+  }) => ({
+    loadingGetList: loading.effects['faqs/fetchListCategory'],
+    loadingUpdate: loading.effects['faqs/updateQuestion'],
+    listCategory,
+    employeeId,
+    selectedCountry,
+  }),
+)(EditQuestionAnswer);

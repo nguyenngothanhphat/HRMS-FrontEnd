@@ -41,16 +41,16 @@ class TableFAQList extends Component {
   actionMenu = (record) => {
     return (
       <Menu>
-        <Menu.Item>
-          <span onClick={() => this.handleViewQuestion(record)}>View Question</span>
+        <Menu.Item onClick={() => this.handleViewQuestion(record)}>
+          <span>View Question</span>
         </Menu.Item>
         <Divider />
-        <Menu.Item>
-          <span onClick={() => this.handleUpdateQuestion(record)}>Update Question</span>
+        <Menu.Item onClick={() => this.handleUpdateQuestion(record)}>
+          <span>Update Question</span>
         </Menu.Item>
         <Divider />
-        <Menu.Item>
-          <span onClick={() => this.handleDeleteQuestion(record)}>Delete</span>
+        <Menu.Item onClick={() => this.handleDeleteQuestion(record)}>
+          <span>Delete</span>
         </Menu.Item>
       </Menu>
     );

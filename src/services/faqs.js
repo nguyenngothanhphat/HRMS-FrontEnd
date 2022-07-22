@@ -56,9 +56,9 @@ export async function deleteQuestion(payload) {
   });
 }
 
-export async function searchFAQs(payload) {
-  return request('/api/faqstenant/search-faqs', {
-    method: 'POST',
-    data: payload,
+export async function getListCreator(payload) {
+  return request('api/faqstenant/get-list-users', {
+    method: 'GET',
+    params: payload,
   });
 }

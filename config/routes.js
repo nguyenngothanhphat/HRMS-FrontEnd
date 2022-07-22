@@ -911,6 +911,12 @@ const routes = [
             component: './FAQs',
           },
           {
+            path: '/help-center',
+            name: 'Help Center',
+            hideInMenu: true,
+            component: './FAQs',
+          },
+          {
             path: '/faqpage/settings',
             name: 'settings',
             hideInMenu: true,

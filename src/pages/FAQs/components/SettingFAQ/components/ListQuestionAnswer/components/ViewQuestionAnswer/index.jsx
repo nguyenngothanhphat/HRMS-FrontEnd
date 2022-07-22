@@ -25,8 +25,12 @@ class ViewQuestionAnswer extends Component {
     const renderModalContent = () => {
       return (
         <div className={styles.content}>
-          <p>Question: {item ? item.question : ''}</p>
-          <p>Answer: {item ? item.answer : ''} </p>
+          <p>
+            <b>Question:</b> {item ? item.question : ''}
+          </p>
+          <p>
+            <b>Answer:</b> {item ? <span dangerouslySetInnerHTML={{ __html: item.answer }} /> : ''}
+          </p>
         </div>
       );
     };
@@ -43,10 +47,7 @@ class ViewQuestionAnswer extends Component {
               <Button className={styles.btnCancel} onClick={this.handleCancel}>
                 Cancel
               </Button>
-              <Button
-                className={styles.btnSubmit}
-                onClick={this.handleCancel}
-              >
+              <Button className={styles.btnSubmit} onClick={this.handleCancel}>
                 Close
               </Button>
             </>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Form, Input, Select, Modal, Button } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
+import EditorQuill from '@/components/EditorQuill';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -9,16 +10,14 @@ const { TextArea } = Input;
   ({
     loading,
     faqs: { listCategory = [], listFAQ = [], selectedCountry } = {},
-    user: {
-      currentUser: { employee: { _id: employeeId = '' } = {} } = {},
-    },
+    user: { currentUser: { employee: { _id: employeeId = '' } = {} } = {} },
   }) => ({
     loadingGetList: loading.effects['faqs/fetchListCategory'],
     loadingAddQuestion: loading.effects['faqs/addQuestion'],
     listCategory,
     employeeId,
     listFAQ,
-    selectedCountry
+    selectedCountry,
   }),
 )
 class AddQuestionAnswer extends Component {
@@ -26,16 +25,25 @@ class AddQuestionAnswer extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      answer: '',
+    };
   }
+
+  callback = (value) => {
+    this.setState({
+      answer: value,
+    });
+  };
 
   handleCancel = () => {
     const { onClose = () => {} } = this.props;
     onClose();
   };
 
-  onFinish = async ({ FaqCategory, question, answer }) => {
+  onFinish = async ({ FaqCategory, question }) => {
     const { dispatch, employeeId = '', onClose = () => {}, selectedCountry = '' } = this.props;
+    const { answer } = this.state;
     dispatch({
       type: 'faqs/addQuestion',
       payload: {
@@ -43,7 +51,7 @@ class AddQuestionAnswer extends Component {
         employeeId,
         question,
         answer,
-        country: [selectedCountry]
+        country: [selectedCountry],
       },
     }).then((response) => {
       const { statusCode } = response;
@@ -61,6 +69,7 @@ class AddQuestionAnswer extends Component {
 
   render() {
     const { visible, loadingAdd, listCategory = [], listFAQ = [] } = this.props;
+    const { answer } = this.state;
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
@@ -112,7 +121,8 @@ class AddQuestionAnswer extends Component {
               <Input />
             </Form.Item>
             <Form.Item label="Answer" name="answer" labelCol={{ span: 24 }}>
-              <TextArea rows={4} />
+              {/* <TextArea rows={4} /> */}
+              <EditorQuill messages={answer} handleChangeEmail={this.callback} />
             </Form.Item>
           </Form>
         </div>

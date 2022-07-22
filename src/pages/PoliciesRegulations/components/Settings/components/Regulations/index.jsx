@@ -1,13 +1,17 @@
-import React, { Component } from 'react';
-import { Button, Row, Col, Input } from 'antd';
+import React, { Component, Suspense } from 'react';
+import { Button, Row, Col, Input, Form, Tag, Skeleton } from 'antd';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
-import { SearchOutlined } from '@ant-design/icons';
+import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import AddIcon from '@/assets/policiesRegulations/add.svg';
 import FilterIcon from '@/assets/policiesRegulations/filter.svg';
 import styles from './index.less';
 import AddPolicyModal from './components/AddPolicyModal';
 import TablePolicy from './components/TablePolicy';
+import FilterPopover from '@/components/FilterPopover';
+import FilterContent from './components/FilterContent';
+import FilterButton from '@/components/FilterButton';
+import { getCurrentTenant } from '@/utils/authority';
 
 @connect(
   ({ policiesRegulations: { countryList = [], originData: { selectedCountry = '' } } = {} }) => ({
@@ -23,6 +27,8 @@ class Regulations extends Component {
       addPolicy: false,
       pageSelected: 1,
       size: 10,
+      form: null,
+      applied: 0,
     };
     this.refForm = React.createRef();
     this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
@@ -43,6 +49,14 @@ class Regulations extends Component {
     });
   };
 
+  componentDidUpdate = (prevProps) => {
+    const { selectedCountry = '' } = this.props;
+    if (prevProps.selectedCountry !== selectedCountry) {
+      this.refForm?.current?.resetFields();
+      this.fetchPolicyRegulationList(selectedCountry);
+    }
+  };
+
   onSearch = (e = {}) => {
     const { value = '' } = e.target;
     this.onSearchDebounce(value);
@@ -56,17 +70,30 @@ class Regulations extends Component {
   };
 
   onSearchDebounce = (value) => {
-    const { dispatch } = this.props;
+    const { dispatch, selectedCountry = '' } = this.props;
     dispatch({
       type: 'policiesRegulations/searchNamePolicy',
       payload: {
+        country: [selectedCountry],
         namePolicy: value,
       },
     });
   };
 
+  handleClearFilter = () => {
+    const { dispatch, selectedCountry = '' } = this.props;
+    const { form } = this.state;
+    dispatch({
+      type: 'policiesRegulations/fetchListPolicy',
+      payload: { country: [selectedCountry], tenantId: getCurrentTenant() },
+    });
+
+    this.setState({ applied: 0 });
+    form?.resetFields();
+  };
+
   render() {
-    const { addPolicy, pageSelected, size } = this.state;
+    const { addPolicy, pageSelected, size, applied } = this.state;
     return (
       <div className={styles.containerPolicy}>
         <div className={styles.headerPolicy}>
@@ -76,6 +103,15 @@ class Regulations extends Component {
           </div>
 
           <div className={styles.headerPolicy__btnAdd}>
+            {applied > 0 && (
+              <Tag
+                className={styles.headerPolicy__tagCountFilter}
+                closable
+                closeIcon={<CloseOutlined onClick={this.handleClearFilter} />}
+              >
+                {applied} filters applied
+              </Tag>
+            )}
             <Button
               icon={<img src={AddIcon} alt="AddIcon" />}
               onClick={() => this.setState({ addPolicy: true })}
@@ -83,15 +119,30 @@ class Regulations extends Component {
               Add Policy
             </Button>
             <div className={styles.filterButton}>
-              <img src={FilterIcon} alt="FilterIcon" />
+              <FilterPopover
+                placement="bottomRight"
+                content={
+                  <Suspense fallback={<Skeleton active />}>
+                    <FilterContent
+                      setForm={(val) => this.setState({ form: val })}
+                      setApplied={(val) => this.setState({ applied: val })}
+                    />
+                  </Suspense>
+                }
+                realTime
+              >
+                <FilterButton />
+              </FilterPopover>
             </div>
-            <div className={styles.searchInp}>
-              <Input
-                placeholder="Search by Policy name"
-                prefix={<SearchOutlined />}
-                onChange={(e) => this.onSearch(e)}
-              />
-            </div>
+            <Form ref={this.refForm}>
+              <Form.Item name="searchPolicy" className={styles.searchInp}>
+                <Input
+                  placeholder="Search by Policy name"
+                  prefix={<SearchOutlined />}
+                  onChange={(e) => this.onSearch(e)}
+                />
+              </Form.Item>
+            </Form>
           </div>
           <AddPolicyModal
             onRefresh={this.fetchPolicyRegulationList}
