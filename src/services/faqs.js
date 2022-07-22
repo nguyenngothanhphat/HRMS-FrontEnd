@@ -9,8 +9,8 @@ export async function addCategory(payload) {
 
 export async function getListCategory(payload) {
   return request('/api/faqstenant/get-list-category', {
-    method: 'POST',
-    data: payload,
+    method: 'GET',
+    params: payload,
   });
 }
 
@@ -37,8 +37,8 @@ export async function addQuestion(payload) {
 
 export async function getListFAQ(payload) {
   return request('/api/faqstenant/list', {
-    method: 'POST',
-    data: payload,
+    method: 'GET',
+    params: payload,
   });
 }
 
