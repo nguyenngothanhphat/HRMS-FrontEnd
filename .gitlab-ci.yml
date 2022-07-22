@@ -25,7 +25,7 @@ stages:          # List of stages for jobs, and their order of execution
 build-job-dev:       # This job runs in the build stage, which runs first.
   stage: build-dev
   tags:
-    - dev-master
+    - runner-1
   variables:
     GIT_CLEAN_FLAGS: none
   script:
@@ -43,8 +43,9 @@ build-job-dev:       # This job runs in the build stage, which runs first.
 build-job-staging:       # This job runs in the build stage, which runs first.
   stage: build-staging
   tags:
-    # - staging-worker
-    - master
+    - runner-1
+  variables:
+    GIT_CLEAN_FLAGS: none
   script:
     - source /etc/environment
     - npm install
@@ -59,7 +60,9 @@ build-job-staging:       # This job runs in the build stage, which runs first.
 build-job-production:       # This job runs in the build stage, which runs first.
   stage: build-production
   tags:
-    - production-runner
+    - runner-1
+  variables:
+    GIT_CLEAN_FLAGS: none
   script:
     - source /etc/environment
     - npm install
