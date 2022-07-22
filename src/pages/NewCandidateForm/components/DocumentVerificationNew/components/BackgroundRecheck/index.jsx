@@ -2,7 +2,6 @@ import { Button, Col, Row, Space } from 'antd';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import { getCurrentTenant } from '@/utils/authority';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
 import { goToTop } from '@/utils/utils';
 import { Page } from '../../../../utils';
@@ -132,10 +131,11 @@ const BackgroundRecheck = (props) => {
     setVerifyModalVisible(true);
   };
 
-  const onViewCommentClick = (typeProp, itemProp) => {
+  const onViewCommentClick = (typeProp, itemProp, indexProp) => {
     setSelectingFile({
       type: typeProp,
       item: itemProp,
+      index: indexProp,
     });
     setViewCommentModalVisible(true);
   };
@@ -309,15 +309,10 @@ const BackgroundRecheck = (props) => {
     if (selectingFile?.type !== 'E') {
       items = func(items);
     } else {
-      items = items.map((x, i) => {
-        if (i === selectingFile?.index) {
-          return {
-            ...x,
-            data: func(x.data),
-          };
-        }
-        return x;
-      });
+      items = items.map((x) => ({
+        ...x,
+        data: func(x.data),
+      }));
     }
     onSaveRedux(items, selectingFile?.type);
   };
