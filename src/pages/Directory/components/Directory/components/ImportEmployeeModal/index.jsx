@@ -170,13 +170,15 @@ class ImportEmployeeModal extends Component {
         lastName: item['Last Name'],
         middleName: item['Middle Name'],
         gender: item.Gender,
-        dateOfBirth: item['Date of Birth'] && moment(new Date(item['Date of Birth'])).format('YYYY-MM-DD'),
+        dateOfBirth:
+          item['Date of Birth'] && moment(new Date(item['Date of Birth'])).format('YYYY-MM-DD'),
         joinDate: item['Joined Date'] && moment(new Date(item['Joined Date'])).format('YYYY-MM-DD'),
         workEmail: item['Work Email'],
         location: item.Location,
         department: item.Department,
         personalEmail: item['Personal Email'],
         employeeType: item['Employment Type'],
+        empTypeOther: item['Employee Type'],
         managerWorkEmail: item['Manager Work Email'],
         title: item.Title,
         personalNumber: item['Personal Number'],
@@ -190,6 +192,7 @@ class ImportEmployeeModal extends Component {
           item.title === '' ||
           item.workEmail === '' ||
           item.employeeType === '' ||
+          item.employmentType === '' ||
           item.location === '' ||
           item.department === '',
       ) || -1;

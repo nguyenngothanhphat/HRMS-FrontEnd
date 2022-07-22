@@ -419,6 +419,19 @@ class DirectoryTable extends Component {
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
+        title: formatMessage({ id: 'component.directory.table.employeeType' }),
+        dataIndex: 'empTypeOther',
+        key: 'empTypeOther',
+        render: (empTypeOther) => <span>{empTypeOther || '-'}</span>,
+        align: 'left',
+        width: '10%',
+        sortOrder: sortedName.columnKey === 'empTypeOther' && sortedName.order,
+        sorter: (a, b) => {
+          return a.empTypeOther ? a.empTypeOther.localeCompare(`${b.empTypeOther}`) : null;
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
+      },
+      {
         title: formatMessage({ id: 'component.directory.table.employmentType' }),
         dataIndex: 'employeeType',
         key: 'employeeType',
