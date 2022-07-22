@@ -50,7 +50,7 @@ const ImageTable = (props) => {
         title: 'ID',
         dataIndex: 'postID',
         key: 'postID',
-        width: '15%',
+        width: '10%',
         render: (postID) => <span className={styles.blueText}>#{postID}</span>,
       },
       {
@@ -70,6 +70,7 @@ const ImageTable = (props) => {
         title: 'Location',
         dataIndex: 'location',
         key: 'location',
+        width: '16%',
         render: (location = []) => (
           <div style={{ lineHeight: '22px' }}>
             {location.map((x, index) => {

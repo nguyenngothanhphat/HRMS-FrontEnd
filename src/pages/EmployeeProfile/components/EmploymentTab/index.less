@@ -6,11 +6,11 @@
   border-radius: 5px;
   .footer {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    padding: 24px;
+    padding: 16px 24px;
     border-top: 1px solid #d6dce0;
-    div:first-child {
-      padding-top: 6px;
+    .step {
       color: #707177;
       font-weight: normal;
       font-size: 13px;
@@ -21,26 +21,8 @@
     }
     .buttons {
       display: flex;
-      justify-content: space-between;
-      width: 180px;
-      button:first-child {
-        color: #ffa100;
-        font-weight: 500;
-        font-size: 14px;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: normal;
-        letter-spacing: 0.13px;
-      }
-      button:last-child {
-        color: #fff;
-        font-weight: 500;
-        font-size: 14px;
-        letter-spacing: 0.13px;
-        background-color: #ffa100;
-        border: solid 1px #ffa100;
-        border-radius: 25px;
-      }
+      align-items: center;
+      justify-content: flex-end;
     }
   }
   &__title {
@@ -135,16 +117,16 @@
   text-align: center;
 }
 .btnOkModalSuccess {
+  align-items: center;
   width: 120px;
   height: 40px;
+  margin: auto;
   color: #fff;
   font-weight: 600;
   font-size: 14px;
   background-color: #ffa100;
   border: none;
   border-radius: 25px;
-  align-items: center;
-  margin: auto;
 
   &:hover {
     color: #fff;

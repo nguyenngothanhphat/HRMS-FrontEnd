@@ -1,10 +1,12 @@
-import { Button, Modal, Row, notification } from 'antd';
-import React, { useState, useEffect } from 'react';
+import { Modal, notification, Row } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { WIDGETS } from '@/constants/dashboard';
-import styles from './index.less';
-import WidgetCard from './components/WidgetCard';
 import SettingIcon from '@/assets/dashboard/setting.svg';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import { WIDGETS } from '@/constants/dashboard';
+import WidgetCard from './components/WidgetCard';
+import styles from './index.less';
 
 const ManageWidgetsModal = (props) => {
   const { currentUser: { _id: userMapId = '', firstName: userMapFirstName = '' } = {} } = props;
@@ -95,12 +97,10 @@ const ManageWidgetsModal = (props) => {
   const renderFooter = () => {
     return (
       <div className={styles.footer}>
-        <Button className={styles.btnCancel} onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="primary" onClick={onFinish} loading={loadingUpdateWidgets}>
+        <CustomSecondaryButton onClick={onCancel}>Cancel</CustomSecondaryButton>
+        <CustomPrimaryButton onClick={onFinish} loading={loadingUpdateWidgets}>
           Done
-        </Button>
+        </CustomPrimaryButton>
       </div>
     );
   };

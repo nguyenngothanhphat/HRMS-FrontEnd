@@ -201,9 +201,11 @@ export const getTimezoneViaCity = (cityProp = '') => {
 };
 
 export const getCurrentTimeOfTimezone = (currentTime, timezone) => {
+  if (!timezone) return '';
   return new Date(currentTime).toLocaleString('en-US', { timeZone: timezone });
 };
 
 export const getCurrentTimeOfTimezoneOption = (currentTime, timezone) => {
+  if (!timezone) return '';
   return new Date(currentTime).toLocaleString('en-US', { timeZone: timezone });
 };

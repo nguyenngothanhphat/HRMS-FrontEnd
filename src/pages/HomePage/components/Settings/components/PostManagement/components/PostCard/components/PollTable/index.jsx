@@ -89,7 +89,7 @@ const PollTable = (props) => {
         title: 'Location',
         dataIndex: 'location',
         key: 'location',
-        width: '10%',
+        width: '15%',
         render: (location = []) => (
           <div style={{ lineHeight: '22px' }}>
             {location.map((x, index) => {

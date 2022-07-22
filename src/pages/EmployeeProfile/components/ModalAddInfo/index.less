@@ -14,42 +14,6 @@
 
 .modalCustom {
   :global {
-    .ant-btn-primary {
-      height: 40px;
-      object-fit: contain;
-      color: @white;
-      font-weight: 500;
-      font-size: 14px;
-
-      letter-spacing: 0.13px;
-      // display: none;
-      text-shadow: none;
-      background-color: @yelow;
-      border: solid 1px @yelow;
-      border-radius: 25px;
-      box-shadow: none;
-      padding-inline: 25px;
-
-      &:hover {
-        color: @white;
-        background-color: @yelow;
-      }
-    }
-
-    .ant-btn-secondary {
-      height: 40px;
-
-      object-fit: contain;
-      color: @yelow;
-      font-weight: 500;
-      font-size: 14px;
-
-      letter-spacing: 0.13px;
-      border: solid 0;
-      border-radius: 25px;
-      padding-inline: 25px;
-    }
-
     .ant-modal-header {
       padding: 24px;
       border-top-left-radius: 8px;
@@ -57,7 +21,7 @@
     }
 
     .ant-modal-body {
-      padding: 32px;
+      padding: 24px 24px 4px;
     }
 
     .ant-modal-content {
@@ -69,7 +33,11 @@
     }
 
     .ant-modal-footer {
-      padding: 24px;
+      display: flex;
+      gap: 2px;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 16px 24px;
     }
 
     .ant-modal-close-x {
@@ -182,43 +150,6 @@
     }
   }
 
-  .btnSubmit {
-    width: fit-content;
-    color: #fff;
-    // height: 40px;
-    font-weight: 600;
-    font-size: 14px;
-    background-color: @yelow;
-    border: none;
-    border-radius: 25px;
-  }
-
-  .btnSubmit:disabled {
-    color: #fff;
-    opacity: 0.5;
-  }
-
-  .btnCancel {
-    display: inline-block;
-    margin-right: 20px;
-    color: @yelow;
-    font-weight: 500;
-    font-size: 14px;
-    border: none;
-    cursor: pointer;
-
-    &:active {
-      opacity: 0.5;
-    }
-  }
-
-  .btnLater {
-    display: inline-block;
-    color: @gray;
-    font-size: 14px;
-    border: none;
-  }
-
   .mainTop {
     display: flex;
     justify-content: center;
@@ -234,7 +165,9 @@
         .ant-steps-item-icon {
           margin: 0;
         }
-
+        .ant-steps-icon {
+          font-weight: 500;
+        }
         .ant-steps-item-title {
           padding: 0;
         }

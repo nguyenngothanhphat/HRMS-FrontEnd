@@ -13,6 +13,8 @@ import ImagesContent from './components/ImagesContent';
 import PollContent from './components/PollContent';
 import Preview from './components/Preview';
 import styles from './index.less';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 
 // A: ANNOUNCEMENT
 // B: BIRTHDAY/ANNIVERSARY
@@ -474,12 +476,11 @@ const AddPost = (props) => {
         </Form>
         <div className={styles.footer}>
           {!editing && (
-            <Button className={styles.btnReset} onClick={onReset}>
-              Reset
-            </Button>
+            <CustomSecondaryButton onClick={onReset}>
+              <span style={{ color: '#ffa100' }}>Reset</span>
+            </CustomSecondaryButton>
           )}
-          <Button
-            className={styles.btnPost}
+          <CustomPrimaryButton
             type="primary"
             form="myForm"
             key="submit"
@@ -487,7 +488,7 @@ const AddPost = (props) => {
             loading={loadingAddPost || loadingEditPost}
           >
             {editing ? 'Update' : 'Post'}
-          </Button>
+          </CustomPrimaryButton>
         </div>
       </div>
     );

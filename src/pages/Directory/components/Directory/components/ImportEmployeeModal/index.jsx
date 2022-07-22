@@ -1,15 +1,17 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable compat/compat */
-import React, { Component } from 'react';
-import { Modal, Button, Form, Select, notification } from 'antd';
-import { connect } from 'umi';
-import moment from 'moment';
+import { Form, Modal, notification, Select } from 'antd';
 import _ from 'lodash';
+import moment from 'moment';
+import React, { Component } from 'react';
+import { connect } from 'umi';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import ImportCSV from './components/ImportCSV';
-import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -287,23 +289,23 @@ class ImportEmployeeModal extends Component {
           onCancel={this.handleCancel}
           destroyOnClose
           maskClosable={false}
-          footer={[
-            <div key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
-              Cancel
-            </div>,
-            <Button
-              key="submit"
-              htmlType="submit"
-              type="primary"
-              form="addEmployeeForm"
-              disabled={employees.length === 0}
-              loading={loading}
-              className={styles.btnSubmit}
-              onClick={this.callAPIImportCSV}
-            >
-              Submit
-            </Button>,
-          ]}
+          footer={
+            <div className={styles.footer}>
+              <CustomSecondaryButton key="cancel" onClick={this.handleCancel}>
+                Cancel
+              </CustomSecondaryButton>
+              <CustomPrimaryButton
+                key="submit"
+                htmlType="submit"
+                form="addEmployeeForm"
+                disabled={employees.length === 0}
+                loading={loading}
+                onClick={this.callAPIImportCSV}
+              >
+                Submit
+              </CustomPrimaryButton>
+            </div>
+          }
         >
           {this.renderFormImport(companyProps)}
           <div className={styles.FileUploadForm}>
