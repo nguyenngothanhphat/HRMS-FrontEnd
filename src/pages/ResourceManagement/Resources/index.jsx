@@ -17,6 +17,7 @@ import {
   setSelectedLocations,
 } from '@/utils/resourceManagement';
 import { exportRawDataToCSV } from '@/utils/utils';
+import LocationDropdownSelector from '@/components/LocationDropdownSelector';
 
 const baseModuleUrl = '/resource-management';
 const TABS = {
@@ -26,7 +27,12 @@ const TABS = {
 };
 @connect(
   ({
-    resourceManagement: { resourceList = [], divisions: divisionList = [], total = 0 } = {},
+    resourceManagement: {
+      resourceList = [],
+      divisions: divisionList = [],
+      total = 0,
+      locationsOfCountries = [],
+    } = {},
     user: {
       currentUser: {
         location: { _id: locationID = '', headQuarterAddress = {} } = {},
@@ -43,6 +49,7 @@ const TABS = {
     locationID,
     companyID,
     companyLocationList,
+    locationsOfCountries,
     currentUserId,
     total,
     headQuarterAddress,
@@ -53,13 +60,13 @@ class Resources extends Component {
   debouncedChangeLocation = debounce((selection) => {
     const { dispatch } = this.props;
     this.setState({
-      selectedLocations: [...selection],
+      selectedLocations: selection,
     });
     setSelectedLocations([...selection]);
     dispatch({
       type: 'resourceManagement/save',
       payload: {
-        selectedLocations: [...selection],
+        selectedLocations: selection,
       },
     });
   }, 1000);
@@ -105,6 +112,9 @@ class Resources extends Component {
         payload: {
           name: 'Engineering',
         },
+      });
+      dispatch({
+        type: 'resourceManagement/getLocationsOfCountriesEffect',
       });
     }
 
@@ -177,35 +187,33 @@ class Resources extends Component {
   renderActionButton = (viewModeCountry, viewModeDivision) => {
     const {
       divisionList = [],
-      companyLocationList = [],
-      headQuarterAddress = {},
+      headQuarterAddress: { country: { _id: currentCountryId = '' } = {} } = {},
       divisionInfo = {},
+      locationsOfCountries = [],
     } = this.props;
     const { selectedDivisions, selectedLocations } = this.state;
     // if only one selected
-    const countryOfUser = headQuarterAddress ? headQuarterAddress.country._id : '';
     const divisionOfUser = divisionInfo ? divisionInfo.name : '';
     let locationOptions = [];
     let divisionOptions = [];
-    if (viewModeCountry) {
-      locationOptions = companyLocationList.filter((x) => {
-        const countryOfList = x.headQuarterAddress ? x.headQuarterAddress.country : '';
-        if (countryOfList._id === countryOfUser) {
+    const listLocationByPermission = viewModeCountry
+      ? locationsOfCountries.filter((x) => {
+          return x.country._id === currentCountryId;
+        })
+      : locationsOfCountries;
+
+    locationOptions = listLocationByPermission.map((x, i) => {
+      return {
+        title: x.country?.name,
+        key: i,
+        children: x.data.map((y) => {
           return {
-            _id: x._id,
-            name: x.name,
+            title: y.name,
+            key: y._id,
           };
-        }
-        return false;
-      });
-    } else {
-      locationOptions = companyLocationList.map((x) => {
-        return {
-          _id: x._id,
-          name: x.name,
-        };
-      });
-    }
+        }),
+      };
+    });
 
     if (viewModeDivision) {
       divisionOptions = divisionList.filter((x) => {
@@ -228,12 +236,10 @@ class Resources extends Component {
 
     return (
       <div className={styles.options}>
-        <CustomDropdownSelector
-          options={locationOptions}
-          onChange={this.onLocationChange}
-          disabled={locationOptions.length < 2}
-          selectedList={selectedLocations}
-          label="Location"
+        <LocationDropdownSelector
+          saveLocationToRedux={this.onLocationChange}
+          selectedLocations={selectedLocations}
+          data={locationOptions}
         />
 
         <CustomDropdownSelector

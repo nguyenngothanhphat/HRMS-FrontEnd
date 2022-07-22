@@ -127,3 +127,10 @@ export async function deleteOneTicket(payload) {
     API_KEYS.TICKET_API,
   );
 }
+
+export async function getLocationsOfCountries(params) {
+  return request('/api/locationtenant/group-country', {
+    method: 'GET',
+    params,
+  });
+}

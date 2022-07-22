@@ -5,7 +5,7 @@ import DownloadIcon from '@/assets/timeOffManagement/ic_download.svg';
 import CustomBlueButton from '@/components/CustomBlueButton';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import LocationDropdownSelector from './components/LocationDropdownSelector';
+import LocationDropdownSelector from '@/components/LocationDropdownSelector';
 import TableContainer from './components/TableContainer';
 import styles from './index.less';
 

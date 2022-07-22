@@ -15,6 +15,7 @@ import {
   uploadFile,
   getSupportTeamList,
   getListMyTeam,
+  getLocationsOfCountries,
 } from '../services/ticketsManagement';
 import { cancelRequestTypes } from '@/utils/ticketManagement';
 
@@ -40,6 +41,7 @@ const ticketManagement = {
     cancelRequestData: {
       [cancelRequestTypes.listOffAllTicket]: null,
     },
+    locationsOfCountries: [],
   },
   effects: {
     *addTicket({ payload }, { call }) {
@@ -337,6 +339,26 @@ const ticketManagement = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+    *getLocationsOfCountriesEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getLocationsOfCountries, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: { locationsOfCountries: data },
+        });
+      } catch (error) {
+        dialog(error);
       }
       return response;
     },

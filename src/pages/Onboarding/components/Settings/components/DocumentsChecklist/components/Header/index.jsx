@@ -2,53 +2,71 @@ import { Button, Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { getCurrentLocation } from '@/utils/authority';
-import CustomDropdownSelector from '@/components/CustomDropdownSelector';
+import LocationDropdownSelector from '@/components/LocationDropdownSelector';
 import styles from './index.less';
 
 const Header = (props) => {
   const {
     dispatch,
     handleUploadDocument = () => {},
-    onboardingSettings: { selectedLocations: selectedLocationsProp = [] } = {},
-    location: { companyLocationList = [] } = {},
+    onboardingSettings: {
+      selectedLocations: selectedLocationsProp = [],
+      locationsOfCountries = [],
+    } = {},
   } = props;
 
   const [selectedLocations, setSelectedLocations] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     setSelectedLocations(selectedLocationsProp);
   }, [JSON.stringify(selectedLocationsProp)]);
 
   useEffect(() => {
-    const currentLocation = getCurrentLocation();
-    if (currentLocation) {
+    dispatch({
+      type: 'onboardingSettings/getLocationsOfCountriesEffect',
+    });
+  }, []);
+
+  useEffect(() => {
+    const tempData = locationsOfCountries.map((x, i) => {
+      return {
+        title: x.country?.name,
+        key: i,
+        children: x.data.map((y) => {
+          return {
+            title: y.name,
+            key: y._id,
+          };
+        }),
+      };
+    });
+    setSelectedLocations([getCurrentLocation()]);
+    setData(tempData);
+    dispatch({
+      type: 'onboardingSettings/save',
+      payload: {
+        selectedLocations: [getCurrentLocation()],
+        isLocationLoaded: true,
+      },
+    });
+    return () => {
+      setData([]);
+      setSelectedLocations([]);
       dispatch({
         type: 'onboardingSettings/save',
-        payload: {
-          selectedLocations: [currentLocation],
-        },
+        locationsOfCountries: [],
       });
-    }
-  }, []);
+    };
+  }, [JSON.stringify(locationsOfCountries)]);
 
   const onLocationChange = (value) => {
     dispatch({
       type: 'onboardingSettings/save',
       payload: {
-        selectedLocations: [...value],
+        selectedLocations: value,
       },
     });
-    setSelectedLocations([...value]);
-  };
-
-  const renderLocationOptions = () => {
-    const locationOptions = companyLocationList.map((x) => {
-      return {
-        _id: x._id,
-        name: x.name,
-      };
-    });
-    return locationOptions;
   };
 
   return (
@@ -62,12 +80,10 @@ const Header = (props) => {
       <Col className={styles.location}>
         <Row gutter={[24, 0]}>
           <Col>
-            <CustomDropdownSelector
-              options={renderLocationOptions()}
-              onChange={onLocationChange}
-              disabled={renderLocationOptions().length < 2}
-              selectedList={selectedLocations}
-              label="Location"
+            <LocationDropdownSelector
+              saveLocationToRedux={onLocationChange}
+              selectedLocations={selectedLocations}
+              data={data}
             />
           </Col>
           <Col className={styles.rightPart}>

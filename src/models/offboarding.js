@@ -12,6 +12,7 @@ import {
   getTimeInDate,
   updateRequest,
   withdrawRequest,
+  getLocationsOfCountries,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -28,6 +29,7 @@ const offboarding = {
     employeeProjects: [],
     employeeList: [],
     hourList: [],
+    locationsOfCountries: [],
   },
   effects: {
     *fetchListEffect({ payload }, { call, put }) {
@@ -216,6 +218,26 @@ const offboarding = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+    *getLocationsOfCountriesEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getLocationsOfCountries, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: { locationsOfCountries: data },
+        });
+      } catch (error) {
+        dialog(error);
       }
       return response;
     },

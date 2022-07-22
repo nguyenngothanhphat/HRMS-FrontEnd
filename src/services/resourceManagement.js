@@ -204,3 +204,10 @@ export async function getListSkill() {
     method: 'POST',
   });
 }
+
+export async function getLocationsOfCountries(params) {
+  return request('/api/locationtenant/group-country', {
+    method: 'GET',
+    params,
+  });
+}

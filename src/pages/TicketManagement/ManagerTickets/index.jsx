@@ -1,7 +1,7 @@
 import { Skeleton, Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import CustomDropdownSelector from '@/components/CustomDropdownSelector';
+import LocationDropdownSelector from '@/components/LocationDropdownSelector';
 import WorkInProgress from '@/components/WorkInProgress';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentLocation } from '@/utils/authority';
@@ -13,31 +13,57 @@ const ManagerTicket = (props) => {
   const {
     dispatch,
     tabName = '',
-    companyLocationList = [],
     permissions = [],
     role = '',
     selectedLocations: selectedLocationsProp = [],
     isLocationLoaded = false,
+    locationsOfCountries = [],
   } = props;
 
   const [selectedLocationsState, setSelectedLocationsState] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     setSelectedLocationsState(selectedLocationsProp);
   }, [JSON.stringify(selectedLocationsProp)]);
 
   useEffect(() => {
-    const currentLocation = getCurrentLocation();
-    if (currentLocation) {
+    dispatch({
+      type: 'ticketManagement/getLocationsOfCountriesEffect',
+    });
+  }, []);
+
+  useEffect(() => {
+    const tempData = locationsOfCountries.map((x, i) => {
+      return {
+        title: x.country?.name,
+        key: i,
+        children: x.data.map((y) => {
+          return {
+            title: y.name,
+            key: y._id,
+          };
+        }),
+      };
+    });
+    setSelectedLocationsState([getCurrentLocation()]);
+    setData(tempData);
+    dispatch({
+      type: 'ticketManagement/save',
+      payload: {
+        selectedLocations: [getCurrentLocation()],
+        isLocationLoaded: true,
+      },
+    });
+    return () => {
+      setData([]);
+      setSelectedLocationsState([]);
       dispatch({
         type: 'ticketManagement/save',
-        payload: {
-          selectedLocations: [currentLocation],
-          isLocationLoaded: true,
-        },
+        locationsOfCountries: [],
       });
-    }
-  }, []);
+    };
+  }, [JSON.stringify(locationsOfCountries)]);
 
   const fetchLocationList = () => {
     dispatch({
@@ -50,27 +76,18 @@ const ManagerTicket = (props) => {
     dispatch({
       type: 'ticketManagement/save',
       payload: {
-        selectedLocations: [...selection],
+        selectedLocations: selection,
       },
     });
-    setSelectedLocationsState([...selection]);
   };
 
   const renderFilterLocation = () => {
-    const locationOptions = companyLocationList.map((x) => {
-      return {
-        _id: x._id,
-        name: x.name,
-      };
-    });
     return (
       <div className={styles.options}>
-        <CustomDropdownSelector
-          options={locationOptions}
-          onChange={onLocationChange}
-          disabled={locationOptions.length < 2}
-          label="Location"
-          selectedList={selectedLocationsState}
+        <LocationDropdownSelector
+          saveLocationToRedux={onLocationChange}
+          selectedLocations={selectedLocationsState}
+          data={data}
         />
       </div>
     );
@@ -138,6 +155,7 @@ export default connect(
       totalList = [],
       selectedLocations = [],
       isLocationLoaded = false,
+      locationsOfCountries = [],
     } = {},
   }) => ({
     listOffAllTicket,
@@ -146,6 +164,7 @@ export default connect(
     companyLocationList,
     locationId,
     selectedLocations,
+    locationsOfCountries,
     isLocationLoaded,
   }),
 )(ManagerTicket);
