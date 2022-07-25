@@ -74,8 +74,7 @@ const customerManagement = {
 
     *addNewCustomer({ payload }, { call }) {
       try {
-        const newPayload = JSON.stringify(payload);
-        const response = yield call(addCustomer, newPayload);
+        const response = yield call(addCustomer, payload);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message });
