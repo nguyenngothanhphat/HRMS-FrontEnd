@@ -5,7 +5,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import FilterPopover from '@/components/FilterPopover';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import TableCustomers from '../TableCustomers';
 import MenuFilter from './components/MenuFilter';
@@ -271,7 +271,7 @@ class TableContainer extends PureComponent {
             />
           }
         >
-          <FilterButton fontSize={14} showDot={isFiltering} />
+          <CustomOrangeButton fontSize={14} showDot={isFiltering} />
         </FilterPopover>
 
         <CustomSearchBox

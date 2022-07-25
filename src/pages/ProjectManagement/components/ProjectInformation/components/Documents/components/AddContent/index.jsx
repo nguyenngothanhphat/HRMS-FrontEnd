@@ -2,7 +2,7 @@ import { Col, Form, Input, Row, Select, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { beforeUpload, compressImage } from '@/utils/upload';
-import { FILE_TYPE } from '@/constants/upload';
+import upload, { FILE_TYPE } from '@/constants/upload';
 import UploadIcon from '@/assets/upload-icon.svg';
 import styles from './index.less';
 
@@ -92,7 +92,14 @@ const AddContent = (props) => {
     if (uploadedPreview.includes('application/pdf')) {
       return (
         <div className={styles.fileUploadedContainer}>
-          <iframe width="100%" height="500" src={uploadedPreview} title="pdf" />
+          <object data={uploadedPreview} type="application/pdf">
+            <iframe
+              width="100%"
+              height="560"
+              src={`https://docs.google.com/viewer?url=${uploadedPreview}&embedded=true`}
+              title="pdf-viewer"
+            />
+          </object>
         </div>
       );
     }

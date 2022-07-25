@@ -1,20 +1,10 @@
-import {
-  Button,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  message,
-  Row,
-  Select,
-  Spin,
-  Tag,
-  Tooltip,
-} from 'antd';
+import { Col, DatePicker, Form, Input, message, Row, Select, Spin, Tag, Tooltip } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, history } from 'umi';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import TimeOffModal from '@/components/TimeOffModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import {
@@ -1397,46 +1387,44 @@ const RequestInformation = (props) => {
           </span>
           <div className={styles.formButtons}>
             {(action === NEW_LEAVE_REQUEST || action === NEW_BEHALF_OF) && (
-              <Button
-                className={styles.cancelButton}
-                type="link"
+              <CustomSecondaryButton
+                paddingInline={0}
                 htmlType="button"
                 onClick={onCancelLeaveRequest}
               >
                 <span>Cancel</span>
-              </Button>
+              </CustomSecondaryButton>
             )}
             {action === EDIT_LEAVE_REQUEST && (
-              <Button
-                className={styles.cancelButton}
-                type="link"
-                htmlType="button"
-                onClick={onCancelEdit}
-              >
+              <CustomSecondaryButton paddingInline={0} htmlType="button" onClick={onCancelEdit}>
                 <span>Cancel</span>
-              </Button>
+              </CustomSecondaryButton>
             )}
             {(action === NEW_LEAVE_REQUEST ||
               (action === EDIT_LEAVE_REQUEST && isEditingDrafts)) && (
-              <Button
+              <CustomSecondaryButton
                 disabled={disabledBtn()}
+                paddingInline={0}
                 loading={loadingSaveDraft || loadingUpdateDraft}
-                type="link"
                 form="myForm"
-                className={styles.saveDraftButton}
                 htmlType="submit"
                 onClick={() => {
                   setButtonState(1);
                 }}
               >
-                Save to Draft
-              </Button>
+                <span
+                  style={{
+                    color: '#ffa100',
+                  }}
+                >
+                  Save to Draft
+                </span>
+              </CustomSecondaryButton>
             )}
 
-            <Button
+            <CustomPrimaryButton
               loading={loadingAddLeaveRequest || loadingUpdatingLeaveRequest}
               key="submit"
-              type="primary"
               form="myForm"
               disabled={disabledBtn()}
               htmlType="submit"
@@ -1445,7 +1433,7 @@ const RequestInformation = (props) => {
               }}
             >
               Submit
-            </Button>
+            </CustomPrimaryButton>
           </div>
         </div>
 

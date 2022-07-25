@@ -114,7 +114,9 @@ const Footer = (props) => {
           </div>
         ) : (
           <div className={styles.downloadIcon} onClick={downloadTemplate}>
-            <Button icon={<img src={DownloadIcon} alt="Icon Download" />}>Download</Button>
+            <CustomPrimaryButton icon={<img src={DownloadIcon} alt="Icon Download" />}>
+              Download
+            </CustomPrimaryButton>
           </div>
         )}
       </div>

@@ -77,14 +77,10 @@ const TeamLeaveCalendar = (props) => {
       <div>
         {list.map((member, i) => (
           <span style={{ display: 'block' }} key={`${i + 1}`}>
-            {/* {member.name} ({getDateDuration(member.duration)}) */}
             {member.employeeInfo.generalInfo.firstName} {member.employeeInfo.generalInfo.lastName}{' '}
             {member ? `(${getDateDuration(member)})` : ''}
           </span>
         ))}
-        {/* <span style={{ display: 'block' }}>
-          {list.employeeInfo.generalInfo.firstName} ({list ? list.duration.timeOfDay : ''})
-        </span> */}
       </div>
     );
   };
@@ -106,12 +102,22 @@ const TeamLeaveCalendar = (props) => {
               return (
                 <Avatar
                   size="large"
-                  src={member.employeeInfo?.generalInfo?.avatar || mockAvatar}
+                  src={
+                    <img
+                      src={member.employeeInfo?.generalInfo?.avatar || mockAvatar}
+                      alt=""
+                      onError={(e) => {
+                        e.target.src = mockAvatar;
+                      }}
+                    />
+                  }
+                  style={{
+                    backgroundColor: '#fff',
+                  }}
                   key={`${i + 1}`}
                 />
               );
             })}
-            {/* <Avatar size='large' src={find.employeeInfo.generalInfo.avatar} /> */}
           </Avatar.Group>
         </div>
       </Tooltip>

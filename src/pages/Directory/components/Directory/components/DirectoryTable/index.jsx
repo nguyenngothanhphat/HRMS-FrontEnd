@@ -3,7 +3,7 @@
 import { Avatar, Button, Popover, Tag } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, formatMessage, Link } from 'umi';
 import avtDefault from '@/assets/avtDefault.jpg';
 import CommonTable from '@/components/CommonTable';
@@ -206,16 +206,7 @@ const DirectoryTable = (props) => {
   };
 
   const getCurrentTime = () => {
-    // compare two time by hour & minute. If minute changes, get new time
-    const timeFormat = 'HH:mm';
-    const parseTime = (timeString) => moment(timeString, timeFormat);
-    const check = parseTime(moment().format(timeFormat)).isAfter(
-      parseTime(moment(currentTime).format(timeFormat)),
-    );
-
-    if (check) {
-      setCurrentTime(moment());
-    }
+    setCurrentTime(moment());
   };
 
   const locationContent = (location) => {
@@ -230,7 +221,10 @@ const DirectoryTable = (props) => {
       _id = '',
     } = location;
 
-    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    const address = [addressLine1, addressLine2, state, country.name || country || null, zipCode]
+      .filter(Boolean)
+      .join(', ');
+    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id);
 
     return (
       <div className={styles.locationContent}>
@@ -239,26 +233,16 @@ const DirectoryTable = (props) => {
         >
           Address:
         </span>
-        <span style={{ display: 'block', fontSize: '13px', marginBottom: '10px' }}>
-          {addressLine1}
-          {addressLine2 && ', '}
-          {addressLine2}
-          {state && ', '}
-          {state}
-          {country ? ', ' : ''}
-          {country?.name || country || ''}
-          {zipCode && ', '}
-          {zipCode}
-        </span>
+        <span style={{ display: 'block', fontSize: '13px', marginBottom: '10px' }}>{address}</span>
         <span
           style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
         >
           Local time{state && ` in  ${state}`}:
         </span>
         <span style={{ display: 'block', fontSize: '13px' }}>
-          {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
+          {findTimezone?.timezone && Object.keys(findTimezone).length > 0
             ? getCurrentTimeOfTimezone(currentTime, findTimezone.timezone)
-            : 'Not enough data in address'}
+            : 'Not enough data in the address'}
         </span>
       </div>
     );

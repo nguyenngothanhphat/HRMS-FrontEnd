@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'umi';
 import closeIcon from '@/assets/closeIcon.svg';
 import CustomSearchBox from '@/components/CustomSearchBox';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterPopover from '@/components/FilterPopover';
 import FilterForm from './components/FilterForm';
 import styles from './index.less';
@@ -52,7 +52,7 @@ class SearchTable extends Component {
             onVisibleChange={this.openFilter}
             realTime
           >
-            <FilterButton fontSize={14} showDot={isFiltering} />
+            <CustomOrangeButton fontSize={14} showDot={isFiltering} />
           </FilterPopover>
         </div>
         <CustomSearchBox

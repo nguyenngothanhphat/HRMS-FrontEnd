@@ -1,9 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable compat/compat */
-import React, { Component } from 'react';
+import { DatePicker, Form, Input, Modal, Select } from 'antd';
 import moment from 'moment';
+import React, { Component } from 'react';
 import { connect } from 'umi';
-import { Modal, Input, DatePicker, Form, Button, Select } from 'antd';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import styles from './index.less';
 
 @connect(
@@ -64,22 +66,25 @@ class AddHoliday extends Component {
         title="Create a new holiday"
         onCancel={this.handleCancel}
         destroyOnClose
-        footer={[
+        footer={
           <>
-            <Button key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
+            <CustomSecondaryButton
+              key="cancel"
+              className={styles.btnCancel}
+              onClick={this.handleCancel}
+            >
               Cancel
-            </Button>
-            <Button
+            </CustomSecondaryButton>
+            <CustomPrimaryButton
               key="submit"
-              type="primary"
               htmlType="submit"
               form="basic"
               className={styles.btnSubmit}
             >
               Add
-            </Button>
-          </>,
-        ]}
+            </CustomPrimaryButton>
+          </>
+        }
       >
         <div className={styles.modal__content}>
           <Form {...layout} name="basic" onFinish={this.onFinish}>

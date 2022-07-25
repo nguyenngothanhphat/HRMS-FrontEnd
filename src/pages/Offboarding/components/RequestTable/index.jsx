@@ -8,7 +8,7 @@ import DefaultAvatar from '@/assets/avtDefault.jpg';
 import MenuIcon from '@/assets/offboarding/menuIcon.png';
 import CommonTable from '@/components/CommonTable';
 import CustomSearchBox from '@/components/CustomSearchBox';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterPopover from '@/components/FilterPopover';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import {
@@ -153,7 +153,7 @@ const RequestTable = (props) => {
           realTime
           content={<FilterContent onFinish={onFilter} setFilterForm={setFilterForm} />}
         >
-          <FilterButton showDot={applied > 0} />
+          <CustomOrangeButton showDot={applied > 0} />
         </FilterPopover>
         <CustomSearchBox
           placeholder="Search for Ticket number, resignee, request ..."
@@ -285,7 +285,17 @@ const RequestTable = (props) => {
             }}
           >
             <div className={styles.user}>
-              <Avatar src={<img alt="" src={avatar || DefaultAvatar} />} />
+              <Avatar
+                src={
+                  <img
+                    alt=""
+                    src={avatar || DefaultAvatar}
+                    onError={(e) => {
+                      e.target.src = DefaultAvatar;
+                    }}
+                  />
+                }
+              />
               <span>{assigned?.manager?.generalInfoInfo?.legalName}</span>
             </div>
           </UserProfilePopover>
@@ -311,7 +321,15 @@ const RequestTable = (props) => {
           >
             <div className={styles.user}>
               <Avatar
-                src={<img alt="" src={assigned?.hr?.generalInfoInfo?.avatar || DefaultAvatar} />}
+                src={
+                  <img
+                    alt=""
+                    src={assigned?.hr?.generalInfoInfo?.avatar || DefaultAvatar}
+                    onError={(e) => {
+                      e.target.src = DefaultAvatar;
+                    }}
+                  />
+                }
               />
               <span>{assigned?.hr?.generalInfoInfo?.legalName}</span>
             </div>

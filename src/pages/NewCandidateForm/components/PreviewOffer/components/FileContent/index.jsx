@@ -6,7 +6,14 @@ const FileContent = (props) => {
 
   return (
     <div className={s.viewFile}>
-      <iframe width="100%" height="500" src={url} title="pdf" />
+      <object data={url} type="application/pdf">
+        <iframe
+          width="100%"
+          height="560"
+          src={`https://docs.google.com/viewer?url=${url}&embedded=true`}
+          title="pdf-viewer"
+        />
+      </object>
     </div>
   );
 };

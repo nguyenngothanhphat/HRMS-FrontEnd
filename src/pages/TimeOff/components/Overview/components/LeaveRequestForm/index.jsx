@@ -158,7 +158,7 @@ const LeaveRequestForm = (props) => {
       <div className={styles.leaveRequest}>
         <Affix offsetTop={42}>
           <div className={styles.titlePage}>
-            {action === NEW_LEAVE_REQUEST && (
+            {(action === NEW_LEAVE_REQUEST || action === NEW_BEHALF_OF) && (
               <>
                 <p className={styles.titlePage__text}>Apply for Timeoff</p>
               </>

@@ -7,7 +7,7 @@ import AddIcon from '@/assets/projectManagement/add.svg';
 import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
 import CommonModal from '@/components/CommonModal';
 import CustomSearchBox from '@/components/CustomSearchBox';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import AddProjectModalContent from '../AddProjectModalContent';
 import FilterPopover from '@/components/FilterPopover';
 import FilterContent from '../FilterContent';
@@ -135,7 +135,7 @@ const Header = (props) => {
           }
           realTime
         >
-          <FilterButton showDot={isFiltering} />
+          <CustomOrangeButton showDot={isFiltering} />
         </FilterPopover>
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Project ID, customer name" />
       </div>

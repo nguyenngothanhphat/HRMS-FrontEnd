@@ -5,8 +5,8 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import { DATE_FORMAT_LIST } from '@/constants/projectManagement';
-import AddButton from '../AddButton';
-import FilterButton from '@/components/FilterButton';
+import CustomAddButton from '@/components/CustomAddButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterPopover from '@/components/FilterPopover';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import CommonModal from '@/components/CommonModal';
@@ -191,10 +191,13 @@ const Documents = (props) => {
           </Tag>
         )}
         {allowModify && (
-          <AddButton text="Add new Document" onClick={() => setAddDocumentModalVisible(true)} />
+          <CustomAddButton
+            text="Add new Document"
+            onClick={() => setAddDocumentModalVisible(true)}
+          />
         )}
         <FilterPopover placement="bottomRight" content={content}>
-          <FilterButton showDot={isFiltering} />
+          <CustomOrangeButton showDot={isFiltering} />
         </FilterPopover>
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Document Type" />
       </div>

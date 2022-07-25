@@ -1,11 +1,11 @@
 import { CloseOutlined } from '@ant-design/icons';
-import { Button, Skeleton, Tag, Tooltip } from 'antd';
+import { Skeleton, Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterPopover from '@/components/FilterPopover';
 import { dateFormatAPI, VIEW_TYPE } from '@/constants/timeSheet';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
@@ -200,10 +200,10 @@ const Header = (props) => {
             {applied} filters applied
           </Tag>
         )}
-        <div className={styles.downloadIcon} onClick={downloadTemplate}>
-          <img src={DownloadIcon} alt="Icon Download" />
-          <Button>Download</Button>
-        </div>
+        <CustomOrangeButton onClick={downloadTemplate} icon={DownloadIcon}>
+          Download
+        </CustomOrangeButton>
+
         <FilterPopover
           placement="bottomRight"
           content={
@@ -213,7 +213,7 @@ const Header = (props) => {
           }
           realTime
         >
-          <FilterButton />
+          <CustomOrangeButton />
         </FilterPopover>
         <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>

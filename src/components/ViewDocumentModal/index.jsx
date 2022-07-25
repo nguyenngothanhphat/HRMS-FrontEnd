@@ -100,11 +100,17 @@ class ViewDocumentModal extends PureComponent {
 
   _renderViewPDF = () => {
     const { url = '', fileName = 'View Document' } = this.props;
-
     return (
       <>
         <p className={styles.fileName}>{fileName}</p>
-        <iframe width="100%" height="500" src={url} title="pdf" />
+        <object data={url} type="application/pdf">
+          <iframe
+            width="100%"
+            height="560"
+            src={`https://docs.google.com/viewer?url=${url}&embedded=true`}
+            title="pdf-viewer"
+          />
+        </object>
       </>
     );
   };

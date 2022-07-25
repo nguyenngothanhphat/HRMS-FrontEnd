@@ -1,11 +1,12 @@
-import { Button, Card, Tabs, Skeleton } from 'antd';
-import React, { useState, useEffect } from 'react';
+import { Card, Skeleton, Tabs } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import WhiteAddIcon from '@/assets/projectManagement/whitePlus.svg';
+import CommonModal from '@/components/CommonModal';
+import CustomAddButton from '@/components/CustomAddButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import AddContent from './components/AddContent';
 import MilestoneCard from './components/MilestoneCard';
-import CommonModal from '@/components/CommonModal';
-import AddButton from '../AddButton';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -45,14 +46,14 @@ const Planning = (props) => {
             You are first required to add the milestones, after which you can proceed to add your
             resources.
           </span>
-          <Button
+          <CustomPrimaryButton
             icon={<img src={WhiteAddIcon} alt="" />}
-            className={styles.addMilestone}
             onClick={() => setAddMilestoneModalVisible(true)}
             disabled={!allowModify}
+            height={36}
           >
             Add Milestones
-          </Button>
+          </CustomPrimaryButton>
         </div>
       </Card>
     );
@@ -60,7 +61,7 @@ const Planning = (props) => {
 
   const renderDataCard = () => {
     const operations = (
-      <AddButton text="Add Milestone" onClick={() => setAddMilestoneModalVisible(true)} />
+      <CustomAddButton text="Add Milestone" onClick={() => setAddMilestoneModalVisible(true)} />
     );
 
     return (

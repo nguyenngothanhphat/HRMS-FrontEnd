@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
 import { exportRawDataToCSV } from '@/utils/exportToCsv';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
 import FilterPopover from '../FilterPopover';
 import styles from './index.less';
@@ -135,8 +135,8 @@ const HeaderProjectRM = (props) => {
           needResetFilterForm={needResetFilterForm}
           setNeedResetFilterForm={setNeedResetFilterForm}
         >
-          {/* <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} /> */}
-          <FilterButton fontSize={14} />
+          {/* <CustomOrangeButton fontSize={14} showDot={Object.keys(filter).length > 0} /> */}
+          <CustomOrangeButton fontSize={14} />
         </FilterPopover>
         <div className={styles.searchBar}>
           <Input

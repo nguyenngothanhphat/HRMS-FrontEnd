@@ -3,7 +3,7 @@ import { Tag } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import FilterPopover from '@/components/FilterPopover';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterForm from './components/FilterForm';
 import styles from './index.less';
@@ -47,7 +47,7 @@ const SearchOnboarding = ({ onChangeSearch = () => {}, currentStatus = '' }) => 
         content={<FilterForm callback={callback} callbackClose={callbackClose} />}
         placement="bottomRight"
       >
-        <FilterButton />
+        <CustomOrangeButton />
       </FilterPopover>
 
       <CustomSearchBox

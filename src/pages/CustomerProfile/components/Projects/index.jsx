@@ -2,7 +2,7 @@ import { debounce } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import CommonTable from '@/components/CommonTable';
-import FilterButton from '../FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterPopover from '../FilterPopover';
 import SearchBar from '../SearchBar';
 import FilterContent from './components/FilterContent';
@@ -89,7 +89,7 @@ const Projects = (props) => {
         </div>
         <div className={styles.documentHeaderFunction}>
           <FilterPopover placement="bottomRight" content={<FilterContent />}>
-            <FilterButton />
+            <CustomOrangeButton />
           </FilterPopover>
           <SearchBar placeholder="Search by Project Name" onSearch={onSearch} />
         </div>

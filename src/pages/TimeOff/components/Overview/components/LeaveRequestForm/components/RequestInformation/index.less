@@ -247,43 +247,9 @@
     }
     .formButtons {
       display: flex;
+      gap: 2px;
+      align-items: center;
       justify-content: flex-end;
-      .cancelButton {
-        span {
-          color: #fd4546 !important;
-        }
-      }
-      .saveDraftButton {
-        span {
-          color: #ffa100 !important;
-        }
-      }
-      :global {
-        .ant-btn-link {
-          margin-left: -10px !important;
-          background-color: white !important;
-          span {
-            font-weight: bold !important;
-          }
-          // margin-right: 5px !important;
-        }
-        .ant-btn {
-          height: 40px;
-          margin-left: 25px;
-          // width: 108px;
-          padding: 0 30px;
-          background-color: #ffa100;
-          border: none;
-          border-radius: 30px;
-          span {
-            color: white;
-            font-weight: 700;
-          }
-          &:hover {
-            background-color: #ffa100cc; // hex with alpha 0.8
-          }
-        }
-      }
     }
   }
 }

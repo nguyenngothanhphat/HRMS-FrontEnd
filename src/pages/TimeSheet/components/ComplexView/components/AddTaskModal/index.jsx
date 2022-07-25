@@ -1,6 +1,5 @@
 import {
   Alert,
-  Button,
   Checkbox,
   Col,
   DatePicker,
@@ -16,13 +15,19 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import AddIcon from '@/assets/timeSheet/add.svg';
 import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomTimePicker from '@/components/CustomTimePicker';
-import { dateFormatAPI, hourFormat, hourFormatAPI, TIMESHEET_ADD_TASK_ALERT, TIME_DEFAULT, VIEW_TYPE } from '@/constants/timeSheet';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
-  checkHolidayInWeek,
-  holidayFormatDate
-} from '@/utils/timeSheet';
+  dateFormatAPI,
+  hourFormat,
+  hourFormatAPI,
+  TIMESHEET_ADD_TASK_ALERT,
+  TIME_DEFAULT,
+  VIEW_TYPE
+} from '@/constants/timeSheet';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -658,19 +663,15 @@ const AddTaskModal = (props) => {
         maskClosable={false}
         footer={
           <>
-            <Button className={styles.btnCancel} onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button
-              className={styles.btnSubmit}
-              type="primary"
+            <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+            <CustomPrimaryButton
               form="myForm"
               key="submit"
               htmlType="submit"
               loading={loadingAddTask}
             >
               Submit
-            </Button>
+            </CustomPrimaryButton>
           </>
         }
         title={renderModalHeader()}

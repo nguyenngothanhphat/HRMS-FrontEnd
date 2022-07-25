@@ -9,7 +9,7 @@ import ImportEmployeeModal from './components/ImportEmployeeModal';
 import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
 import { exportArrayDataToCsv, exportRawDataToCSV } from '@/utils/exportToCsv';
 import FilterPopover from '@/components/FilterPopover';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 // import FilterContent from '../FilterContent';
 
 import styles from './index.less';
@@ -349,43 +349,27 @@ const DirectoryComponent = (props) => {
           </Tag>
         )}
         {findIndexImport && (
-          <div className={styles.buttonAddImport} onClick={downloadTemplate}>
-            <img src={iconDownload} alt="Download Template" />
-            <p className={styles.buttonAddImport_text}>
-              {formatMessage({ id: 'pages_admin.employees.table.downloadTemplate' })}
-            </p>
-          </div>
+          <CustomOrangeButton onClick={downloadTemplate} icon={iconDownload}>
+            {formatMessage({ id: 'pages_admin.employees.table.downloadTemplate' })}
+          </CustomOrangeButton>
         )}
 
         {findIndexImport && (
-          <div className={styles.buttonAddImport} onClick={exportEmployees}>
-            <img src={iconDownload} alt="Download Template" />
-            <p className={styles.buttonAddImport_text}>
-              {formatMessage({ id: 'pages_admin.employees.table.exportEmployees' })}
-            </p>
-          </div>
+          <CustomOrangeButton onClick={exportEmployees} icon={iconDownload}>
+            {formatMessage({ id: 'pages_admin.employees.table.exportEmployees' })}
+          </CustomOrangeButton>
         )}
 
         {findIndexImport && (
-          <div className={styles.buttonAddImport} onClick={importEmployees}>
-            <img
-              className={styles.buttonAddImport_imgImport}
-              src="/assets/images/import.svg"
-              alt="Import Employee"
-            />
-            <p className={styles.buttonAddImport_text}>
-              {formatMessage({ id: 'pages_admin.employees.table.importEmployees' })}
-            </p>
-          </div>
+          <CustomOrangeButton onClick={importEmployees} icon="/assets/images/import.svg">
+            {formatMessage({ id: 'pages_admin.employees.table.importEmployees' })}
+          </CustomOrangeButton>
         )}
 
         {findIndexAdd && (
-          <div className={styles.buttonAddImport} onClick={addEmployee}>
-            <img src="/assets/images/addMemberIcon.svg" alt="Add Employee" />
-            <p className={styles.buttonAddImport_text}>
-              {formatMessage({ id: 'pages_admin.employees.table.addEmployee' })}
-            </p>
-          </div>
+          <CustomOrangeButton onClick={addEmployee} icon="/assets/images/addMemberIcon.svg">
+            {formatMessage({ id: 'pages_admin.employees.table.addEmployee' })}
+          </CustomOrangeButton>
         )}
 
         <FilterPopover
@@ -400,7 +384,7 @@ const DirectoryComponent = (props) => {
           closeText="Clear"
           onSecondButton={clearFilter}
         >
-          <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
+          <CustomOrangeButton fontSize={14} showDot={Object.keys(filter).length > 0} />
         </FilterPopover>
       </div>
     );

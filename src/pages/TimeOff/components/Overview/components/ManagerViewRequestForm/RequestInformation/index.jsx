@@ -20,6 +20,8 @@ import TimeOffModal from '@/components/TimeOffModal';
 import PDFIcon from '@/assets/pdf_icon.png';
 import Project from './components/Project';
 import styles from './index.less';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const { TextArea } = Input;
 const { A, B } = TIMEOFF_TYPE;
@@ -649,12 +651,15 @@ class RequestInformation extends PureComponent {
               department head.
             </span>
             <div className={styles.formButtons}>
-              <Button type="link" onClick={() => this.onRejectClicked()}>
+              <CustomSecondaryButton onClick={() => this.onRejectClicked()}>
                 Reject
-              </Button>
-              <Button loading={loadingApproveRequest} onClick={() => this.onApproveClicked(_id)}>
+              </CustomSecondaryButton>
+              <CustomPrimaryButton
+                loading={loadingApproveRequest}
+                onClick={() => this.onApproveClicked(_id)}
+              >
                 Approve
-              </Button>
+              </CustomPrimaryButton>
             </div>
           </div>
         )}
@@ -667,10 +672,10 @@ class RequestInformation extends PureComponent {
               department head.
             </span>
             <div className={styles.formButtons}>
-              <Button type="link" disabled>
+              <CustomSecondaryButton disabled>
                 {status === ACCEPTED && 'Approved'}
                 {status === REJECTED && 'Rejected'}
-              </Button>
+              </CustomSecondaryButton>
             </div>
           </div>
         )}
@@ -680,19 +685,18 @@ class RequestInformation extends PureComponent {
           <div className={styles.footer}>
             <span className={styles.note}>Withdrawing an approved request</span>
             <div className={styles.formButtons}>
-              <Button
+              <CustomSecondaryButton
                 loading={loadingRejectRequest}
-                type="link"
                 onClick={() => this.onRejectWithdrawClicked(_id)}
               >
                 Reject withdrawal
-              </Button>
-              <Button
+              </CustomSecondaryButton>
+              <CustomPrimaryButton
                 loading={loadingApproveRequest}
                 onClick={() => this.onApproveWithdrawClicked(_id)}
               >
                 Accept withdrawal
-              </Button>
+              </CustomPrimaryButton>
             </div>
           </div>
         )}
@@ -705,12 +709,13 @@ class RequestInformation extends PureComponent {
               department head.
             </span>
             <div className={styles.formButtons}>
-              <Button type="link" onClick={this.onCancel}>
-                Cancel
-              </Button>
-              <Button loading={loadingRejectRequest} onClick={() => this.onRejectSubmit(_id)}>
+              <CustomSecondaryButton onClick={this.onCancel}>Cancel</CustomSecondaryButton>
+              <CustomPrimaryButton
+                loading={loadingRejectRequest}
+                onClick={() => this.onRejectSubmit(_id)}
+              >
                 Submit
-              </Button>
+              </CustomPrimaryButton>
             </div>
           </div>
         )}

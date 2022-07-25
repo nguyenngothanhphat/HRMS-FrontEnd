@@ -212,7 +212,14 @@ class ModalUpload extends Component {
           {imageUrl ? (
             <>
               {fileType === PDF_TYPE ? (
-                <iframe width="100%" height="500" src={imageUrl} title="pdf" />
+                <object data={imageUrl} type="application/pdf">
+                  <iframe
+                    width="100%"
+                    height="560"
+                    src={`https://docs.google.com/viewer?url=${imageUrl}&embedded=true`}
+                    title="pdf-viewer"
+                  />
+                </object>
               ) : (
                 <ReactCrop
                   className={styles.viewImg__img}

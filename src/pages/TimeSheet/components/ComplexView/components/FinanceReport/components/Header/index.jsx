@@ -7,7 +7,7 @@ import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/componen
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
 import { VIEW_TYPE } from '@/constants/timeSheet';
 import styles from './index.less';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterPopover from '@/components/FilterPopover';
 import FilterContent from './components/FilterContent';
 
@@ -102,7 +102,7 @@ const Header = (props) => {
           }
           realTime
         >
-          <FilterButton />
+          <CustomOrangeButton />
         </FilterPopover>
         <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>

@@ -8,7 +8,7 @@ import approvalIcon from '@/assets/approve.svg';
 import rejectIcon from '@/assets/cancel.svg';
 import ViewIcon from '@/assets/dashboard/open.svg';
 import CustomSearchBox from '@/components/CustomSearchBox';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterPopover from '@/components/FilterPopover';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
@@ -396,7 +396,7 @@ const ApprovalPage = (props) => {
           </Tag>
         )}
         <FilterPopover placement="bottomRight" content={content}>
-          <FilterButton showDot={isFiltering} />
+          <CustomOrangeButton showDot={isFiltering} />
         </FilterPopover>
         <CustomSearchBox onSearch={onChangeKeySearch} placeholder="Search by Name" />
       </div>

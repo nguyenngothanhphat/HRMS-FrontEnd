@@ -36,7 +36,14 @@ const Form16 = ({ url }) => {
     <div className={styles.Form16}>
       <Card title="Form 16" extra={renderOption()}>
         <div className={styles.viewFile}>
-          <iframe width="100%" height="500" src={url} title="pdf" />
+          <object data={url} type="application/pdf">
+            <iframe
+              width="100%"
+              height="560"
+              src={`https://docs.google.com/viewer?url=${url}&embedded=true`}
+              title="pdf-viewer"
+            />
+          </object>
         </div>
       </Card>
       <div className={styles.btnDownLoad}>

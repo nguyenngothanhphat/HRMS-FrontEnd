@@ -1,23 +1,23 @@
-import { Card, Form, DatePicker, Popconfirm, Tag } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
+import { Card, DatePicker, Form, Popconfirm, Tag } from 'antd';
 import { debounce } from 'lodash';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
-import { CloseOutlined } from '@ant-design/icons';
-import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
-import EditIcon from '@/assets/projectManagement/edit2.svg';
-import CancelXIcon from '@/assets/projectManagement/cancelX.svg';
 import ApproveCheckIcon from '@/assets/projectManagement/approveCheck.svg';
+import CancelXIcon from '@/assets/projectManagement/cancelX.svg';
+import EditIcon from '@/assets/projectManagement/edit2.svg';
+import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
+import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
+import CommonModal from '@/components/CommonModal';
 import CommonTable from '@/components/CommonTable';
-import FilterButton from '@/components/FilterButton';
-import FilterPopover from '@/components/FilterPopover';
-import OrangeAddButton from '../../../OrangeAddButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterPopover from '@/components/FilterPopover';
+import { DATE_FORMAT_LIST } from '@/constants/projectManagement';
 import AddResourcesModal from '../AddResourcesModal';
 import FilterResourcesContent from './components/FilterResourcesContent';
-import { DATE_FORMAT_LIST } from '@/constants/projectManagement';
 import styles from './index.less';
-import CommonModal from '@/components/CommonModal';
 
 const EditableCell = ({
   editing,
@@ -403,10 +403,16 @@ const ResourcesCard = (props) => {
           </Tag>
         )}
         <FilterPopover placement="bottomRight" content={content}>
-          <FilterButton showDot={isFiltering} />
+          <CustomOrangeButton showDot={isFiltering} />
         </FilterPopover>
         {allowModify && (
-          <OrangeAddButton text="Add Resources" onClick={() => setAddResourceModalVisible(true)} />
+          <CustomOrangeButton
+            onClick={() => setAddResourceModalVisible(true)}
+            icon={OrangeAddIcon}
+            fontSize={13}
+          >
+            Add Resources
+          </CustomOrangeButton>
         )}
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Name, Resource Type" />
       </div>

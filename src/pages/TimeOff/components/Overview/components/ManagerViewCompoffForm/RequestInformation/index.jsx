@@ -1,11 +1,13 @@
-import React, { PureComponent } from 'react';
-import { Button, Row, Col, Spin, Progress, Input } from 'antd';
-import { connect, history } from 'umi';
+import { Col, Input, Progress, Row, Spin } from 'antd';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect, history } from 'umi';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import TimeOffModal from '@/components/TimeOffModal';
+import ROLES from '@/constants/roles';
 import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import styles from './index.less';
-import ROLES from '@/constants/roles';
 
 const { REGION_HEAD } = ROLES;
 const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, REJECTED } = TIMEOFF_STATUS;
@@ -377,12 +379,15 @@ class RequestInformation extends PureComponent {
                 your department head.
               </span>
               <div className={styles.formButtons}>
-                <Button type="link" onClick={() => this.onRejectClicked()}>
+                <CustomSecondaryButton onClick={() => this.onRejectClicked()}>
                   Reject
-                </Button>
-                <Button loading={loadingApproveRequest} onClick={() => this.onApproveClicked(_id)}>
+                </CustomSecondaryButton>
+                <CustomPrimaryButton
+                  loading={loadingApproveRequest}
+                  onClick={() => this.onApproveClicked(_id)}
+                >
                   Approve
-                </Button>
+                </CustomPrimaryButton>
               </div>
             </div>
           )}
@@ -398,12 +403,12 @@ class RequestInformation extends PureComponent {
                 your department head.
               </span>
               <div className={styles.formButtons}>
-                <Button type="link" disabled>
+                <CustomSecondaryButton disabled>
                   {(status === ACCEPTED ||
                     (currentUserRole !== REGION_HEAD && status === IN_PROGRESS_NEXT)) &&
                     'Approved'}
                   {status === REJECTED && 'Rejected'}
-                </Button>
+                </CustomSecondaryButton>
               </div>
             </div>
           )}
@@ -416,12 +421,13 @@ class RequestInformation extends PureComponent {
               department head.
             </span>
             <div className={styles.formButtons}>
-              <Button type="link" onClick={this.onCancel}>
-                Cancel
-              </Button>
-              <Button loading={loadingRejectRequest} onClick={() => this.onRejectSubmit(_id)}>
+              <CustomSecondaryButton onClick={this.onCancel}>Cancel</CustomSecondaryButton>
+              <CustomPrimaryButton
+                loading={loadingRejectRequest}
+                onClick={() => this.onRejectSubmit(_id)}
+              >
                 Submit
-              </Button>
+              </CustomPrimaryButton>
             </div>
           </div>
         )}

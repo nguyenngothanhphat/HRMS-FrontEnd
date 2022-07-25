@@ -1,7 +1,8 @@
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { exportArrayDataToCsv } from '@/utils/exportToCsv';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import Information from './components/Information';
 import TaskTable from './components/TaskTable';
 import styles from './index.less';
@@ -98,14 +99,9 @@ const ProjectDetailModal = (props) => {
         width={750}
         footer={
           <>
-            <Button
-              disabled={disabledBtn()}
-              className={styles.btnSubmit}
-              type="primary"
-              onClick={downloadTemplate}
-            >
+            <CustomPrimaryButton disabled={disabledBtn()} onClick={downloadTemplate}>
               Download
-            </Button>
+            </CustomPrimaryButton>
           </>
         }
         title={renderModalHeader()}

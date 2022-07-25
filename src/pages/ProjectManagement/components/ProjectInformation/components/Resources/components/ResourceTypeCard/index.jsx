@@ -1,25 +1,25 @@
-import { Card, Tag, Tooltip, Popover } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
+import { Card, Popover, Tag, Tooltip } from 'antd';
 import { debounce } from 'lodash';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import ActionIcon from '@/assets/projectManagement/actionIcon.svg';
-import ViewIcon from '@/assets/projectManagement/viewIcon.svg';
-import EditIcon from '@/assets/projectManagement/editIcon.svg';
-import DeleteIcon from '@/assets/projectManagement/deleteIcon.svg';
 import AssignIcon from '@/assets/projectManagement/assignIcon.svg';
-import OrangeAddButton from '../../../OrangeAddButton';
+import DeleteIcon from '@/assets/projectManagement/deleteIcon.svg';
+import EditIcon from '@/assets/projectManagement/editIcon.svg';
+import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
+import ViewIcon from '@/assets/projectManagement/viewIcon.svg';
 import CommonModal from '@/components/CommonModal';
 import CommonTable from '@/components/CommonTable';
-import FilterButton from '@/components/FilterButton';
-import FilterPopover from '@/components/FilterPopover';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterPopover from '@/components/FilterPopover';
 import AddResourceTypeContent from '../AddResourceTypeContent';
-import DeleteResourceTypeContent from '../DeleteResourceTypeContent';
 import AssignResourcesModal from '../AssignResourcesModal';
+import DeleteResourceTypeContent from '../DeleteResourceTypeContent';
+import ViewResourceTable from '../ViewResourceTable';
 import FilterResourceTypeContent from './components/FilterResourceTypeContent';
 import styles from './index.less';
-import ViewResourceTable from '../ViewResourceTable';
 
 const ResourceTypeCard = (props) => {
   const {
@@ -287,10 +287,12 @@ const ResourceTypeCard = (props) => {
           </Tag>
         )}
         <FilterPopover placement="bottomRight" content={content}>
-          <FilterButton showDot={isFiltering} />
+          <CustomOrangeButton showDot={isFiltering} />
         </FilterPopover>
         {allowModify && (
-          <OrangeAddButton text="Add Resource Type" onClick={handleAddResourceTypeModalVisible} />
+          <CustomOrangeButton icon={OrangeAddIcon} onClick={handleAddResourceTypeModalVisible} fontSize={13}>
+            Add Resource Type
+          </CustomOrangeButton>
         )}
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Resource Type" />
       </div>

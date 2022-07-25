@@ -1,12 +1,12 @@
-import { Button } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import { convertMsToTime } from '@/utils/timeSheet';
-import { exportArrayDataToCsv } from '@/utils/exportToCsv';
-import { VIEW_TYPE } from '@/constants/timeSheet';
 import DownloadIcon from '@/assets/timeSheet/solidDownload.svg';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import { VIEW_TYPE } from '@/constants/timeSheet';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
+import { convertMsToTime } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const Footer = (props) => {
@@ -128,9 +128,9 @@ const Footer = (props) => {
     <div className={styles.Footer}>
       <div className={styles.left}>{selectedProjects.length} Projects selected</div>
       <div className={styles.right}>
-        <Button icon={<img src={DownloadIcon} alt="" />} onClick={downloadTemplate}>
+        <CustomPrimaryButton icon={<img src={DownloadIcon} alt="" />} onClick={downloadTemplate}>
           Download
-        </Button>
+        </CustomPrimaryButton>
       </div>
     </div>
   );

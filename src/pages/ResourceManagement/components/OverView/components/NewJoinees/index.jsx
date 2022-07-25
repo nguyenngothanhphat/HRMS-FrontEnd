@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import { debounce } from 'lodash';
 import { CloseOutlined } from '@ant-design/icons';
 import CommonTable from '../CommonTable';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterPopover from '@/components/FilterPopover';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
@@ -114,7 +114,7 @@ const NewJoinees = (props) => {
               <FilterContent setApplied={setApplied} setForm={setForm} onFilter={fetchData} />
             }
           >
-            <FilterButton />
+            <CustomOrangeButton />
           </FilterPopover>
         </div>
         <CustomSearchBox placeholder="Search by Candidate ID, Name..." onSearch={onChangeSearch} />

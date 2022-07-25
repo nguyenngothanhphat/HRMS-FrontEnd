@@ -17,6 +17,7 @@ import PDFIcon from '@/assets/pdf_icon.png';
 import ArrowDownIcon from '@/assets/arrowDownCollapseIcon.svg';
 import styles from './index.less';
 import { TIMEOFF_STATUS, TIMEOFF_TYPE } from '@/constants/timeOff';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const { IN_PROGRESS, ACCEPTED, REJECTED, DRAFTS } = TIMEOFF_STATUS;
 const { A, B } = TIMEOFF_TYPE;
@@ -353,9 +354,9 @@ class RequestInformation extends PureComponent {
               department head.
             </span>
             <div className={styles.formButtons}>
-              <Button onClick={() => this.withDraw(status)}>
+              <CustomPrimaryButton onClick={() => this.withDraw(status)}>
                 {status === DRAFTS ? 'Discard' : 'Withdraw'}
-              </Button>
+              </CustomPrimaryButton>
             </div>
           </div>
         )}

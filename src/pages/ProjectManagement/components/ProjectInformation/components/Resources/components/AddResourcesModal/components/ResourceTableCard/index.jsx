@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import { CloseOutlined } from '@ant-design/icons';
 import TimeIcon from '@/assets/projectManagement/time.svg';
 import CommonTable from '@/components/CommonTable';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterPopover from '@/components/FilterPopover';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterResourcesListContent from './components/FilterResourcesListContent';
@@ -217,7 +217,7 @@ const ResourceTableCard = (props) => {
           </Tag>
         )}
         <FilterPopover placement="bottomRight" content={content}>
-          <FilterButton showDot={isFiltering} />
+          <CustomOrangeButton showDot={isFiltering} />
         </FilterPopover>
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Name" />
       </div>

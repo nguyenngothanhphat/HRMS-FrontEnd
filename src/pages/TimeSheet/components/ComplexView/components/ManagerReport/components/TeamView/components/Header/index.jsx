@@ -4,7 +4,7 @@ import moment from 'moment';
 import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterPopover from '@/components/FilterPopover';
 import { dateFormatAPI } from '@/constants/timeSheet';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
@@ -125,7 +125,7 @@ const Header = (props) => {
           }
           realTime
         >
-          <FilterButton />
+          <CustomOrangeButton />
         </FilterPopover>
         <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>

@@ -67,13 +67,21 @@
     .operationButtons {
       display: flex;
       justify-content: flex-start;
-      .proceedBtn {
-      }
+
       .cancelBtn {
+        height: 40px;
         margin-left: 20px;
+        // width: 128px;
+        padding: 0 30px;
         background-color: #ffa1001a !important;
+        border: none;
+        border-radius: 30px;
         span {
           color: #161c29 !important;
+          font-weight: 700;
+        }
+        &:hover {
+          background-color: #ffa100cc; // hex with alpha 0.8
         }
       }
     }
@@ -81,22 +89,6 @@
     :global {
       .ant-modal-body {
         border-radius: 10px;
-      }
-      .ant-btn {
-        height: 40px;
-        margin-top: 15px;
-        // width: 128px;
-        padding: 0 30px;
-        background-color: #ffa100;
-        border: none;
-        border-radius: 30px;
-        span {
-          color: white;
-          font-weight: 700;
-        }
-        &:hover {
-          background-color: #ffa100cc; // hex with alpha 0.8
-        }
       }
     }
   }

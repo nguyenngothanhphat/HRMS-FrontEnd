@@ -4,7 +4,7 @@ import React, { Suspense, useEffect } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import CustomSearchBox from '@/components/CustomSearchBox';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterPopover from '@/components/FilterPopover';
 import { removeEmptyFields } from '@/utils/utils';
 import styles from './index.less';
@@ -169,7 +169,7 @@ const TimeOffFilter = (props) => {
           }
           realTime
         >
-          <FilterButton fontSize={14} showDot={getFilterActive} />
+          <CustomOrangeButton fontSize={14} showDot={getFilterActive} />
         </FilterPopover>
 
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Employee ID, name..." />
