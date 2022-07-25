@@ -5,7 +5,7 @@ import styles from './index.less';
 
 const CustomOrangeButton = ({
   onClick = () => {},
-  fontSize = 13,
+  fontSize = 14,
   showDot = false,
   icon = '',
   children,
