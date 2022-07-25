@@ -212,3 +212,26 @@ export const singularify = (str, count) => {
   if (count > 1) return `${str}s`;
   return str;
 };
+
+export const sortAlphabet = (array, ...sortKeys) => {
+  return array.sort((a, b) => {
+    let valA = a;
+    let valB = b;
+
+    sortKeys.forEach((item) => {
+      valA = (valA[item] || valA).toString();
+      valB = (valB[item] || valB).toString();
+    });
+
+    valA = valA.toString().toLowerCase();
+    valB = valB.toString().toLowerCase();
+
+    if (valA < valB) {
+      return -1;
+    }
+    if (valA > valB) {
+      return 1;
+    }
+    return 0;
+  });
+};

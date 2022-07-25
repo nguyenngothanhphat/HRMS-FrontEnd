@@ -38,6 +38,7 @@ import {
   getMyRequest,
   resubmitMyRequest,
   getHolidaysByDate,
+  getProjectsByEmployee,
 } from '@/services/timeSheet';
 import { getCountry, getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay, pushSuccess } from '@/utils/timeSheet';
@@ -98,6 +99,7 @@ const initialState = {
   isLocationLoaded: false,
   isIncompleteTimesheet: false,
   employeeSchedule: {},
+  myProjects: [],
 };
 
 const TimeSheet = {
@@ -571,14 +573,14 @@ const TimeSheet = {
       const response = {};
       try {
         const res = yield call(getFinanceTimesheet, {}, { ...payload, tenantId });
-        const { code, data = [], pagination={} } = res;
+        const { code, data = [], pagination = {} } = res;
         if (code !== 200) throw res;
 
         yield put({
           type: 'save',
           payload: {
             financeViewList: data,
-            financeViewListTotal:pagination?.rowCount || 0,
+            financeViewListTotal: pagination?.rowCount || 0,
           },
         });
       } catch (errors) {
@@ -777,6 +779,23 @@ const TimeSheet = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchMyProjects({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getProjectsByEmployee, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data: projectsList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { myProjects: projectsList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
   reducers: {

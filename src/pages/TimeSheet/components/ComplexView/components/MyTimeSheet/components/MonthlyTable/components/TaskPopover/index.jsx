@@ -1,11 +1,9 @@
-import { Button, Col, Popover, Row } from 'antd';
+import { Col, Popover, Row } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import AddSolidIcon from '@/assets/timeSheet/addSolid.png';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 import IconHoliday from '@/assets/timeSheet/ic_holiday.svg';
-import AddTaskModal from '@/pages/TimeSheet/components/ComplexView/components/AddTaskModal';
 import {
   checkDateBetweenRange,
   convertMsToTime,
@@ -24,7 +22,6 @@ const TaskPopover = (props) => {
     placement = 'top',
   } = props;
   const [showPopover, setShowPopover] = useState(false);
-  const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
 
   const getTaskWithHolidays = () => {
     const holidaysWithoutTask = holidays.filter((holiday) => {
@@ -111,17 +108,6 @@ const TaskPopover = (props) => {
             {moment(startDate).locale('en').format('MMM DD')} -{' '}
             {moment(endDate).locale('en').format('MMM DD')}
           </span>
-          <div className={styles.addTaskBtn}>
-            <Button
-              onClick={() => {
-                setAddTaskModalVisible(true);
-                setShowPopover(false);
-              }}
-              icon={<img src={AddSolidIcon} alt="" />}
-            >
-              Add Task
-            </Button>
-          </div>
         </div>
         <div className={styles.divider} />
         {renderTaskTable()}
@@ -144,11 +130,6 @@ const TaskPopover = (props) => {
       >
         {children}
       </Popover>
-      <AddTaskModal
-        visible={addTaskModalVisible}
-        onClose={() => setAddTaskModalVisible(false)}
-        mode="multiple"
-      />
     </>
   );
 };

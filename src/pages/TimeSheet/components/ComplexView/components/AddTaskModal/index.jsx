@@ -21,6 +21,7 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
   checkHolidayInWeek,
   dateFormatAPI,
+  getAllProjectsWithoutAssigned,
   holidayFormatDate,
   hourFormat,
   hourFormatAPI,
@@ -29,8 +30,9 @@ import {
   VIEW_TYPE,
 } from '@/utils/timeSheet';
 import styles from './index.less';
+import { sortAlphabet } from '@/utils/utils';
 
-const { Option } = Select;
+const { Option, OptGroup } = Select;
 const dateFormat = 'MM/DD/YYYY';
 const countryIdUS = 'US';
 const TASKS = [];
@@ -48,6 +50,7 @@ const AddTaskModal = (props) => {
       myTimesheetByDay = [],
       myTimesheetByWeek = [],
       myTimesheetByMonth = [],
+      myProjects = [],
     } = {},
     date = '',
     taskDetail: {
@@ -83,6 +86,15 @@ const AddTaskModal = (props) => {
   const fetchProjectList = () => {
     dispatch({
       type: 'timeSheet/fetchProjectListEffect',
+    });
+  };
+
+  const fetchMyProjectList = () => {
+    dispatch({
+      type: 'timeSheet/fetchMyProjects',
+      payload: {
+        employee: employeeId,
+      },
     });
   };
 
@@ -328,6 +340,10 @@ const AddTaskModal = (props) => {
   }, [dates]);
 
   useEffect(() => {
+    fetchMyProjectList();
+  }, []);
+
+  useEffect(() => {
     if (visible) {
       if (projectList.length === 0) {
         fetchProjectList();
@@ -339,7 +355,7 @@ const AddTaskModal = (props) => {
         dates: datesTemp,
         tasks: [
           {
-            projectId: projectId || null,
+            projectId: projectId || myProjects.length === 1 ? myProjects[0].project.id : null,
             startTime: endTime
               ? moment(endTime, hourFormatAPI).format(hourFormat)
               : getDefaultValueStartTime(),
@@ -442,11 +458,30 @@ const AddTaskModal = (props) => {
                         filterOption={(input, option) =>
                           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
-                        {projectList.map((val) => (
-                          <Option key={val.id} value={val.id}>
-                            {`${val.projectName} - ${val.customerName}`}
-                          </Option>
-                        ))}
+                        <OptGroup label="My Projects">
+                          {sortAlphabet(myProjects, 'project', 'projectName').map((project) => {
+                            const {
+                              id = '',
+                              projectName = '',
+                              customerName = '',
+                            } = project.project;
+                            return (
+                              <Option key={id} value={id}>
+                                {projectName} - {customerName}
+                              </Option>
+                            );
+                          })}
+                        </OptGroup>
+                        <OptGroup label="All Projects">
+                          {sortAlphabet(
+                            getAllProjectsWithoutAssigned(projectList, myProjects),
+                            'projectName',
+                          ).map((val) => (
+                            <Option key={val.id} value={val.id}>
+                              {val.projectName} - {val.customerName}
+                            </Option>
+                          ))}
+                        </OptGroup>
                       </Select>
                     </Form.Item>
                   </Col>
