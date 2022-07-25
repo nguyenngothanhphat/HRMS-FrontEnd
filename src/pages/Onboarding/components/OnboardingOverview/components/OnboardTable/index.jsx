@@ -1,33 +1,31 @@
-import React, { Component } from 'react';
-import { Table, Empty, Dropdown, Menu, Popover } from 'antd';
-import { formatMessage, Link, connect, history } from 'umi';
+import { Dropdown, Empty, Menu, Table } from 'antd';
 import moment from 'moment';
+import React, { Component } from 'react';
+import { connect, formatMessage, history, Link } from 'umi';
+import AcceptIcon from '@/assets/Accept-icon-onboarding.svg';
+import MessageIcon from '@/assets/message.svg';
 import MenuIcon from '@/assets/projectManagement/actionIcon.svg';
+import { getAuthority, getCurrentTenant } from '@/utils/authority';
 import {
   NEW_PROCESS_STATUS,
   ONBOARDING_FORM_LINK,
   ONBOARDING_FORM_STEP_LINK,
 } from '@/utils/onboarding';
-import { getAuthority, getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { getTimezoneViaCity } from '@/utils/times';
-import AcceptIcon from '@/assets/Accept-icon-onboarding.svg';
-import MessageIcon from '@/assets/message.svg';
 
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
-import { getActionText, getColumnWidth } from './utils';
+import JoiningFormalitiesModal from './components/JoiningFormalitiesModal';
 import ReassignModal from './components/ReassignModal';
 import RenewModal from './components/RenewModal';
-import PopupContentHr from './components/PopupContentHr';
-import JoiningFormalitiesModal from './components/JoiningFormalitiesModal';
+import { getActionText, getColumnWidth } from './utils';
 
-import styles from './index.less';
-import CandidateUserName from './components/CandidateUserName/index';
 import ConfirmModal from './components/ConfirmModal/index';
+import styles from './index.less';
 
-import EyeIcon from '@/assets/eyes.svg';
-import JoiningIcon from '@/assets/Vector.svg';
-import LaunchIcon from '@/assets/launchIcon.svg';
 import DeleteIcon from '@/assets/bin.svg';
+import EyeIcon from '@/assets/eyes.svg';
+import LaunchIcon from '@/assets/launchIcon.svg';
+import JoiningIcon from '@/assets/Vector.svg';
+import UserProfilePopover from '@/components/UserProfilePopover';
 
 const compare = (dateTimeA, dateTimeB) => {
   const momentA = moment(dateTimeA, 'DD/MM/YYYY');
@@ -58,62 +56,8 @@ class OnboardTable extends Component {
       dateJoinCandidate: '',
       selectedCandidateId: '',
       selectRookieId: '',
-
-      // popup hover name
-      timezoneList: [],
-      currentTime: moment(),
     };
   }
-
-  componentDidMount() {
-    this.fetchTimezone();
-    this.setCurrentTime();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { companyLocationList = [] } = this.props;
-    if (JSON.stringify(prevProps.companyLocationList) !== JSON.stringify(companyLocationList)) {
-      this.fetchTimezone();
-    }
-  }
-
-  setCurrentTime = () => {
-    // compare two time by hour & minute. If minute changes, get new time
-    const timeFormat = 'HH:mm';
-    const { currentTime } = this.state;
-    const parseTime = (timeString) => moment(timeString, timeFormat);
-    const check = parseTime(moment().format(timeFormat)).isAfter(
-      parseTime(moment(currentTime).format(timeFormat)),
-    );
-
-    if (check) {
-      this.setState({
-        currentTime: moment(),
-      });
-    }
-  };
-
-  fetchTimezone = () => {
-    const { companyLocationList = [] } = this.props;
-    const timezoneList = [];
-    companyLocationList.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id = '',
-      } = location;
-      timezoneList.push({
-        locationId: _id,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    this.setState({
-      timezoneList,
-    });
-  };
 
   handleActionDelete = (id, processStatus) => {
     const { dispatch } = this.props;
@@ -271,6 +215,13 @@ class OnboardTable extends Component {
     return styles.yellowTag;
   };
 
+  dataHover = (data) => {
+    return {
+      ...data,
+      locationInfo: data?.location,
+    };
+  };
+
   generateColumns = (columnArr = ['id'], type = TABLE_TYPE.ALL) => {
     const {
       ID,
@@ -284,8 +235,7 @@ class OnboardTable extends Component {
       PROCESS_STATUS: PROCESS_STATUS_1,
     } = COLUMN_NAME;
 
-    const { list = [], companyLocationList = [] } = this.props;
-    const { timezoneList, currentTime } = this.state;
+    const { list = [] } = this.props;
 
     const columns = [
       {
@@ -343,25 +293,14 @@ class OnboardTable extends Component {
         dataIndex: 'assignTo',
         key: 'assignTo',
         render: (assignTo) => (
-          <Popover
-            content={
-              <PopupContentHr
-                companyLocationList={companyLocationList}
-                propsState={{ currentTime, timezoneList }}
-                dataHR={assignTo}
-              />
-            }
-            trigger="hover"
-            placement="bottomRight"
-            overlayClassName={styles.popupContentHr}
-          >
+          <UserProfilePopover data={this.dataHover(assignTo)} placement="bottomRight">
             <span
               className={styles.renderAssignee}
               onClick={() => this.viewProfile(assignTo?.generalInfo?.userId)}
             >
               {assignTo?.generalInfo?.legalName || '-'}
             </span>
-          </Popover>
+          </UserProfilePopover>
         ),
         columnName: ASSIGN_TO,
         width: getColumnWidth('assignTo', type, list.length),
@@ -372,25 +311,14 @@ class OnboardTable extends Component {
         dataIndex: 'assigneeManager',
         key: 'assigneeManager',
         render: (assigneeManager) => (
-          <Popover
-            content={
-              <PopupContentHr
-                companyLocationList={companyLocationList}
-                propsState={{ currentTime, timezoneList }}
-                dataHR={assigneeManager}
-              />
-            }
-            trigger="hover"
-            placement="bottomRight"
-            overlayClassName={styles.popupContentHr}
-          >
+          <UserProfilePopover data={this.dataHover(assigneeManager)} placement="bottomRight">
             <span
               className={styles.renderAssignee}
               onClick={() => this.viewProfile(assigneeManager?.generalInfo?.userId)}
             >
               {assigneeManager?.generalInfo?.legalName || '-'}
             </span>
-          </Popover>
+          </UserProfilePopover>
         ),
         columnName: ASSIGNEE_MANAGER,
         width: getColumnWidth('assigneeManager', type, list.length),
@@ -521,7 +449,7 @@ class OnboardTable extends Component {
       dateJoin = '',
     } = payload;
 
-    const { DRAFT, OFFER_RELEASED, OFFER_ACCEPTED, JOINED } = NEW_PROCESS_STATUS; // new status
+    const { DRAFT, OFFER_RELEASED, OFFER_ACCEPTED, JOINED, OFFER_WITHDRAWN } = NEW_PROCESS_STATUS; // new status
 
     const isRemovable = processStatusId === DRAFT;
     const isHRManager = this.checkPermission('hr-manager');
@@ -617,24 +545,27 @@ class OnboardTable extends Component {
     return (
       <Menu className={styles.menu}>
         {menuItem}
-        {isHRManager && processStatusId !== OFFER_ACCEPTED && processStatusId !== JOINED && (
-          <Menu.Item>
-            <div
-              onClick={() =>
-                this.handleReassignModal(
-                  true,
-                  currentEmpId,
-                  currentEmpName,
-                  id,
-                  processStatusId,
-                  type,
-                )}
-              className={styles.actionText}
-            >
-              Re-assign
-            </div>
-          </Menu.Item>
-        )}
+        {isHRManager &&
+          processStatusId !== OFFER_ACCEPTED &&
+          processStatusId !== JOINED &&
+          processStatusId !== OFFER_WITHDRAWN && (
+            <Menu.Item>
+              <div
+                onClick={() =>
+                  this.handleReassignModal(
+                    true,
+                    currentEmpId,
+                    currentEmpName,
+                    id,
+                    processStatusId,
+                    type,
+                  )}
+                className={styles.actionText}
+              >
+                Re-assign
+              </div>
+            </Menu.Item>
+          )}
         {isRemovable && (
           <Menu.Item disabled={!isRemovable}>
             <div
@@ -645,9 +576,9 @@ class OnboardTable extends Component {
             </div>
           </Menu.Item>
         )}
-        {!isRemovable && processStatusId !== JOINED && (
+        {!isRemovable && processStatusId !== JOINED && processStatusId !== OFFER_WITHDRAWN && (
           <Menu.Item>
-            <img className={styles.actionIcon} src={DeleteIcon} alt="deleteIcon" />
+            {/* <img className={styles.actionIcon} src={DeleteIcon} alt="deleteIcon" /> */}
             <span
               onClick={
                 !isRemovable

@@ -10,10 +10,11 @@ import AddQuestionAnswer from './components/AddQuestionAnswer';
 import TableFAQList from './components/TableFAQList';
 import styles from './index.less';
 
-@connect(({ loading, faqs: { selectedCountry, listFAQ = [] } = {} }) => ({
+@connect(({ loading, faqs: { selectedCountry, listFAQ = [], totalListFAQ = 0 } = {} }) => ({
   selectedCountry,
   loadingGetList: loading.effects['faqs/fetchListFAQ'],
   listFAQ,
+  totalListFAQ,
 }))
 class ListQuestionAnswer extends Component {
   constructor(props) {
@@ -44,20 +45,31 @@ class ListQuestionAnswer extends Component {
     }
   };
 
-  fetchData = () => {
+  fetchData = (page = 1, limit = 10) => {
     const { dispatch, selectedCountry = '' } = this.props;
+    // const { pageSelected, size } = this.state
     dispatch({
       type: 'faqs/fetchListFAQ',
       payload: {
         country: [selectedCountry],
+        page,
+        limit,
       },
     });
   };
 
+  getPageAndSize = (page, pageSize) => {
+    this.setState({
+      pageSelected: page,
+      size: pageSize,
+    })
+    this.fetchData(page, pageSize)
+  }
+
   onSearchDebounce = (value) => {
     const { dispatch, selectedCountry = '' } = this.props;
     dispatch({
-      type: 'faqs/searchFAQs',
+      type: 'faqs/fetchListFAQ',
       payload: {
         nameSearch: value,
         country: [selectedCountry],
@@ -66,8 +78,8 @@ class ListQuestionAnswer extends Component {
   };
 
   render() {
-    const { listFAQ = [], loadingGetList = false } = this.props;
-    const { visibleModal, pageSelected, size } = this.state;
+    const { listFAQ = [], loadingGetList = false, totalListFAQ } = this.props;
+    const { visibleModal, size, pageSelected } = this.state;
     return (
       <div className={styles.ListQuestionAnswer}>
         <div className={styles.headerPolicy}>
@@ -100,6 +112,7 @@ class ListQuestionAnswer extends Component {
           <TableFAQList
             pageSelected={pageSelected}
             size={size}
+            totalListFAQ={totalListFAQ}
             getPageAndSize={this.getPageAndSize}
             listFAQ={listFAQ}
             loadingGetList={loadingGetList}

@@ -100,8 +100,10 @@ class AddQuestionAnswer extends Component {
                   validator(_, value) {
                     const duplicate = listFAQ.find((val) => val.question === value);
                     if (duplicate) {
+                      // eslint-disable-next-line prefer-promise-reject-errors
                       return Promise.reject('Question name is exist ');
                     }
+                    // eslint-disable-next-line compat/compat
                     return Promise.resolve();
                   },
                 }),

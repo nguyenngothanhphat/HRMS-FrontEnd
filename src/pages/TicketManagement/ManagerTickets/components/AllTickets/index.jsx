@@ -4,9 +4,10 @@ import { connect } from 'umi';
 import FilterCount from '../../../components/FilterCount/FilterCount';
 import SearchTable from '../../../components/SearchTable';
 import Summary from '../Summary';
-import { cancelRequestTypes, debouncedChangeLocation } from '@/utils/ticketManagement';
+import { debouncedChangeLocation } from '@/utils/ticketManagement';
 import TableTickets from '../TableTickets';
 import styles from './index.less';
+import useCancelToken from '@/utils/hooks';
 
 const AllTicket = (props) => {
   const {
@@ -21,6 +22,7 @@ const AllTicket = (props) => {
     filter = [],
   } = props;
 
+  const { cancelToken, cancelRequest } = useCancelToken();
   const [selectedFilterTab, setSelectedFilterTab] = useState('1');
   const [pageSelected, setPageSelected] = useState(1);
   const [size, setSize] = useState(10);
@@ -62,6 +64,7 @@ const AllTicket = (props) => {
       location: selectedLocations,
       country,
       ...filter,
+      cancelToken: cancelToken(),
     };
     if (nameSearch) {
       payload = {
@@ -101,10 +104,7 @@ const AllTicket = (props) => {
   useEffect(() => {
     debouncedChangeLocation(initDataTable);
     return () => {
-      dispatch({
-        type: 'ticketManagement/cancelRequest',
-        payload: cancelRequestTypes.listOffAllTicket,
-      });
+      cancelRequest();
     };
   }, [
     pageSelected,
