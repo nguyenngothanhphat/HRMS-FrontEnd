@@ -55,8 +55,8 @@ const Header = (props) => {
           form={form}
           onValuesChange={onValuesChange}
           initialValues={{
-            fromDate,
-            toDate,
+            from: fromDate,
+            to: toDate,
           }}
         >
           <Row gutter={[24, 12]}>
@@ -87,7 +87,7 @@ const Header = (props) => {
               <div>
                 <Row gutter={[24, 24]}>
                   <Col xs={12}>
-                    <Form.Item name="fromDate">
+                    <Form.Item name="from">
                       <DatePicker
                         placeholder="From Date"
                         format={DATE_FORMAT}
@@ -99,7 +99,7 @@ const Header = (props) => {
                   </Col>
                   <Col xs={12}>
                     <span />
-                    <Form.Item name="toDate">
+                    <Form.Item name="to">
                       <DatePicker
                         placeholder="To Date"
                         format={DATE_FORMAT}

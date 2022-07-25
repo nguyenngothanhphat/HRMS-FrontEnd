@@ -1,24 +1,24 @@
 import { UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Menu, Spin, notification } from 'antd';
+import { Avatar, Button, Menu, notification, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { connect, useIntl, history } from 'umi';
+import { connect, history, useIntl } from 'umi';
 import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
-import avtDefault from '@/assets/avtDefault.jpg';
 import {
-  setCurrentLocation,
-  setTenantId,
-  getCurrentTenant,
   getCurrentCompany,
   getCurrentLocation,
-  // getAuthority,
-  isOwner,
-  isAdmin,
-  setCurrentCompany,
+  getCurrentTenant,
   // getIsSwitchingRole,
   getSwitchRoleAbility,
+  isAdmin,
+  // getAuthority,
+  isOwner,
+  setCurrentCompany,
+  setCurrentLocation,
+  setTenantId,
 } from '@/utils/authority';
-import HeaderDropdown from './components/HeaderDropdown';
-import styles from './index.less';
+import avtDefault from '@/assets/avtDefault.jpg';
+import styles from '../../../../index.less';
+import HeaderDropdown from '../HeaderDropdown';
 
 const AvatarDropdown = (props) => {
   const intl = useIntl();

@@ -119,10 +119,7 @@ const LeaveHistoryAndHoliday = (props) => {
         status === IN_PROGRESS ||
         status === IN_PROGRESS_NEXT
       ) {
-        const listLeave = leaveDates.sort(
-          (a, b) =>
-            moment(a.date).locale('en').format('DD') - moment(b.date).locale('en').format('DD'),
-        );
+        const listLeave = leaveDates.sort((a, b) => new Date(a.date) - new Date(b.date));
         const fromDate = from
           ? moment(from).locale('en').format(TIMEOFF_DATE_FORMAT)
           : moment(listLeave[0].date).locale('en').format(TIMEOFF_DATE_FORMAT);
@@ -179,10 +176,7 @@ const LeaveHistoryAndHoliday = (props) => {
         const fromDate = moment(from).locale('en').format(TIMEOFF_DATE_FORMAT);
         const toDate = moment(to).locale('en').format(TIMEOFF_DATE_FORMAT);
         const listLeave = leaveDates
-          .sort(
-            (a, b) =>
-              moment(a.date).locale('en').format('DD') - moment(b.date).locale('en').format('DD'),
-          )
+          .sort((a, b) => new Date(a.date) - new Date(b.date))
           .map((x) => x.date);
         if (checkNormalTypeTimeoff(type)) {
           return {

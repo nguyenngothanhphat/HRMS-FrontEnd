@@ -137,33 +137,6 @@ const NewJoinees = (props) => {
     setPage(1);
     setIsSearch(true);
   };
-  const pagination = {
-    position: ['bottomLeft'],
-    total: totalComer,
-    // eslint-disable-next-line no-nested-ternary
-    showTotal: (totalData, range) => {
-      return (
-        <span>
-          {' '}
-          {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-          <b>
-            {' '}
-            {range[0]} - {range[1]}{' '}
-          </b>{' '}
-          {formatMessage({ id: 'component.directory.pagination.of' })} {totalData}{' '}
-        </span>
-      );
-    },
-    defaultPageSize: limit,
-    showSizeChanger: true,
-    pageSizeOptions: ['10', '25', '50', '100'],
-    pageSize: limit,
-    current: page,
-    onChange: (currentPage, pageSize) => {
-      setPage(currentPage);
-      setLimit(pageSize);
-    },
-  };
 
   const columns = [
     {

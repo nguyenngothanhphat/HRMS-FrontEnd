@@ -114,11 +114,6 @@ class FilterForm extends Component {
       type: 'onboarding/fetchLocationList',
       payload: {},
     });
-
-    dispatch({
-      type: 'onboarding/saveSearch',
-      payload: { isFilter: true },
-    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -169,7 +164,7 @@ class FilterForm extends Component {
         durationFrom: '',
         durationTo: '',
       },
-      () => this.onFinish(),
+      // () => this.onFinish(),
     );
 
     this.formRef.current.resetFields();

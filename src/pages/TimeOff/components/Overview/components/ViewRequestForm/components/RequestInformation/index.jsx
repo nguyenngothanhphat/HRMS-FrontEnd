@@ -1,4 +1,4 @@
-import { Button, Col, Row, Tag } from 'antd';
+import { Button, Col, Row, Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
@@ -279,31 +279,28 @@ class RequestInformation extends PureComponent {
                     <span>{formatDurationTime}</span>
                   ) : (
                     <>
-                      {listTime.slice(0, 4).map((y, index) => (
-                        <>
-                          {y}
-                          {!(listTime.length - 1 < index) && ' | '}
-                        </>
-                      ))}
                       {listTime.length > 4 && !isShowMore ? (
-                        <span
-                          style={{ color: '#2c6df9', fontWeight: 700, cursor: 'pointer' }}
-                          onClick={() => this.setState({ isShowMore: true })}
-                        >
-                          View More
-                          <img
-                            style={{ margin: '0 3px' }}
-                            src={ArrowDownIcon}
-                            alt="arrow-down-icon"
-                          />
+                        <span>
+                          {listTime.slice(0, 4).join(' | ')}
+                          <span
+                            style={{
+                              color: '#2c6df9',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              paddingLeft: 10,
+                            }}
+                            onClick={() => this.setState({ isShowMore: true })}
+                          >
+                            View More
+                            <img
+                              style={{ margin: '0 4px' }}
+                              src={ArrowDownIcon}
+                              alt="arrow-down-icon"
+                            />
+                          </span>
                         </span>
                       ) : (
-                        listTime.slice(4, listTime.length).map((z, i) => (
-                          <>
-                            {z}
-                            {!(listTime.length - 1 < i) && ' | '}
-                          </>
-                        ))
+                        listTime.join(' | ')
                       )}
                     </>
                   )}

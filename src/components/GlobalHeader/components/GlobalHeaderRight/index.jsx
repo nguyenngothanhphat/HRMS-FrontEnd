@@ -7,12 +7,12 @@ import { CHAT_EVENT } from '@/constants/socket';
 import ActivityLogModalContent from '@/pages/Dashboard/components/ActivityLog/components/ActivityLogModalContent';
 import { isOwner } from '@/utils/authority';
 import { disconnectSocket, socket } from '@/utils/socket';
-import CommonModal from '../CommonModal';
-import AvatarDropdown from './AvatarDropdown';
+import CommonModal from '../../../CommonModal';
+import styles from '../../index.less';
+import AvatarDropdown from './components/AvatarDropdown';
 import GlobalSearchNew from './components/GlobalSearchNew/index';
+import QuestionDropdown from './components/QuestionDropdown';
 import SelectCompanyModal from './components/SelectCompanyModal';
-import styles from './index.less';
-import QuestionDropdown from './QuestionDropdown';
 
 const GlobalHeaderRight = (props) => {
   const {

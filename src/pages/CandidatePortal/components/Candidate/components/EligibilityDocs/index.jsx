@@ -23,7 +23,7 @@ import Title from './components/Title';
 import ViewCommentModalContent from './components/ViewCommentModalContent';
 import styles from './index.less';
 
-const { NOT_AVAILABLE_PENDING_HR } = DOCUMENT_TYPES;
+const { NOT_AVAILABLE_PENDING_HR, VERIFYING, VERIFIED, NOT_AVAILABLE_ACCEPTED } = DOCUMENT_TYPES;
 
 const Note = {
   title: 'Note',
@@ -90,7 +90,7 @@ const EligibilityDocs = (props) => {
       if (arr.length === 0) return true;
       return arr
         .filter((x) => (x.required || x.value) && x.status !== NOT_AVAILABLE_PENDING_HR)
-        .every((x) => x.document);
+        .every((x) => [VERIFIED, VERIFYING, NOT_AVAILABLE_ACCEPTED].includes(x.status));
     };
     // for type E
     const checkDocumentUploadedTypeE = (arr = []) => {

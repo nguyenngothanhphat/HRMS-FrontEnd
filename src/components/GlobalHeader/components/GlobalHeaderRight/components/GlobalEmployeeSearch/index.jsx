@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
 import { Modal } from 'antd';
+import React, { Component } from 'react';
 import { connect } from 'umi';
+import TableEmployees from './components/TableEmployees';
 import styles from './index.less';
-import TableEmployees from '../TableEmployees';
 
 @connect(({ user: { currentUser = {} }, loading }) => ({
   currentUser,

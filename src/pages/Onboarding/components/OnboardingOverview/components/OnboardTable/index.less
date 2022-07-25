@@ -10,15 +10,10 @@
 @red: #ff5252;
 @blue: #2c6df9;
 @white: #ffffff;
-@yelow: #ffa100;
-
-.mixin-border-bottom-row {
-  border-bottom: solid 1px @border-color;
-}
+@yellow: #ffa100;
 
 .OnboardTable {
   padding: 24px;
-  padding-bottom: 0;
   background-color: @white;
   border: solid 1px @border-color;
   border-radius: 8px;
@@ -35,10 +30,6 @@
     .ant-dropdown-menu-title-content {
       font-size: 13px !important;
     }
-  }
-
-  table {
-    // border-bottom: 1px solid @border-color;
   }
 
   .tableActions {
@@ -153,18 +144,6 @@
       }
     }
 
-    td.ant-table-cell {
-      width: 84px;
-      height: 15px;
-      color: #464646;
-      font-weight: normal;
-      font-size: 13px;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: normal;
-      letter-spacing: 0.12px;
-    }
-
     .ant-table-tbody {
       tr:last-child td {
         border-bottom: solid 1px white;
@@ -172,7 +151,7 @@
     }
 
     .ant-table-tbody > tr > td {
-      .mixin-border-bottom-row();
+      border-bottom: solid 1px @border-color;
     }
 
     th.ant-table-selection-column {
@@ -185,30 +164,6 @@
       &:after {
         border-color: @blue;
       }
-    }
-
-    .ant-checkbox-wrapper {
-      border-color: @checkbox-border;
-    }
-
-    .ant-table-selection,
-    .ant-table-selection-column {
-      height: fit-content;
-      // width: fit-content;
-    }
-
-    thead {
-      tr {
-        height: 35px;
-      }
-
-      .ant-table-selection {
-        height: 18px;
-      }
-    }
-
-    .ant-tabs-nav {
-      height: 56px;
     }
 
     .ant-dropdown-button {
@@ -229,16 +184,6 @@
       color: @blue;
       font-weight: 500;
       letter-spacing: 0.12px;
-    }
-
-    .ant-table-thead > tr > th {
-      color: @white;
-      font-weight: 500;
-      font-size: 13px;
-
-      font-style: normal;
-      line-height: 15px;
-      letter-spacing: 0.121875px;
     }
   }
 
@@ -330,16 +275,6 @@
   }
 }
 
-.popupContentHr {
-  width: fit-content;
-
-  :global {
-    .ant-popover-inner-content {
-      padding: 24px;
-    }
-  }
-}
-
 //modal
 .joiningFormalitiesModal {
   width: 600px !important;
@@ -355,14 +290,14 @@
       letter-spacing: 0.13px;
       // display: none;
       text-shadow: none;
-      background-color: @yelow;
-      border: solid 1px @yelow;
+      background-color: @yellow;
+      border: solid 1px @yellow;
       border-radius: 25px;
       box-shadow: none;
 
       &:hover {
         color: @white;
-        background-color: @yelow;
+        background-color: @yellow;
       }
     }
 
@@ -371,7 +306,7 @@
       height: 40px;
       padding-right: 41px;
       object-fit: contain;
-      color: @yelow;
+      color: @yellow;
       font-weight: 500;
       font-size: 14px;
 
@@ -553,7 +488,7 @@
     // height: 40px;
     font-weight: 600;
     font-size: 14px;
-    background-color: @yelow;
+    background-color: @yellow;
     border: none;
     border-radius: 25px;
   }
@@ -566,7 +501,7 @@
   .btnCancel {
     display: inline-block;
     margin-right: 20px;
-    color: @yelow;
+    color: @yellow;
     font-weight: 500;
     font-size: 14px;
     border: none;

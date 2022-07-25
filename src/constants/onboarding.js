@@ -3,7 +3,7 @@ export const ONBOARDING_TABS = {
   SETTINGS: 'settings',
   NEW_JOINEES: 'new-joinees',
 };
-
+export const ONBOARDING_DATE_FORMAT = 'MM/DD/YYYY';
 export const NEW_PROCESS_STATUS = {
   DRAFT: 'DRAFT',
   PROFILE_VERIFICATION: 'PROFILE_VERIFICATION',
@@ -292,3 +292,39 @@ export const MENU_DATA = [
     link: 'withdrawn-offers',
   },
 ];
+
+export const ONBOARDING_TABLE_TYPE = {
+  ALL: 'ALL',
+  DRAFT: 'DRAFT',
+  PROFILE_VERIFICATION: 'PROFILE_VERIFICATION',
+  DOCUMENT_VERIFICATION: 'DOCUMENT_VERIFICATION',
+  SALARY_NEGOTIATION: 'SALARY_NEGOTIATION',
+  AWAITING_APPROVALS: 'AWAITING_APPROVALS',
+  NEEDS_CHANGES: 'NEEDS_CHANGES',
+  OFFER_RELEASED: 'OFFER_RELEASED',
+  OFFER_ACCEPTED: 'OFFER_ACCEPTED',
+  OFFER_REJECTED: 'OFFER_REJECTED',
+  OFFER_WITHDRAWN: 'OFFER_WITHDRAWN',
+  DOCUMENT_CHECKLIST_VERIFICATION: 'DOCUMENT_CHECKLIST_VERIFICATION',
+  JOINED: 'JOINED',
+};
+
+export const ONBOARDING_COLUMN_NAME = {
+  ID: 'rookieId',
+  NAME: 'name',
+  POSITION: 'position',
+  LOCATION: 'location',
+  DATE_SENT: 'date_sent',
+  DATE_RECEIVED: 'date_received',
+  COMMENT: 'comment',
+  DATE_JOIN: 'date_join',
+  ACTION: 'action',
+  EXPIRE: 'expire',
+  DOCUMENT: 'document',
+  RESUBMIT: 'resubmit',
+  CHANGE_REQUEST: 'change_request',
+  DATE_REQUEST: 'date_request',
+  ASSIGN_TO: 'assign_to',
+  ASSIGNEE_MANAGER: 'assignee_manager',
+  PROCESS_STATUS: 'process_status',
+};

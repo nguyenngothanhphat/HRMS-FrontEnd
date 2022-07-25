@@ -40,19 +40,21 @@ class RenewModal extends PureComponent {
   onFinish = async (values) => {
     const {
       handleRenewModal = () => {},
-      ticketId = '',
       dispatch,
-      processStatus = '',
       type = '',
       page = '',
       limit = '',
+      item = {},
     } = this.props;
+
+    const { processStatus = '', ticketID = '' } = item;
+
     const { expiryDate = '' } = values;
     if (expiryDate) {
       const res = await dispatch({
         type: 'onboarding/handleExpiryTicket',
         payload: {
-          id: ticketId,
+          id: ticketID,
           tenantId: getCurrentTenant(),
           expiryDate,
           type: 1, // renew

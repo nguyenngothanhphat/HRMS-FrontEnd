@@ -10,18 +10,17 @@ const { Option } = Select;
 const ReassignModal = (props) => {
   const {
     dispatch,
-    reassignTicketId = '',
-    processStatus = '',
     type = '',
     page = '',
     limit = '',
     onClose = () => {},
     employeeList = [],
-    currentEmpId = '',
-    currentEmpName = '',
     visible = false,
     loadingFetchEmployeeList = false,
+    item = {},
   } = props;
+
+  const { ticketID = '', assignTo = {}, processStatus = '' } = item || {};
 
   const fetchListEmployee = () => {
     dispatch({
@@ -41,7 +40,7 @@ const ReassignModal = (props) => {
       const res = await dispatch({
         type: 'onboarding/reassignTicket',
         payload: {
-          id: reassignTicketId,
+          id: ticketID,
           tenantId: getCurrentTenant(),
           newAssignee: to,
           processStatus,
@@ -96,15 +95,13 @@ const ReassignModal = (props) => {
     );
   };
 
-  const hrListFormat = employeeList.filter((hr) => hr._id !== currentEmpId);
-
   return (
     <Form
       name="basic"
       id="myForm"
       onFinish={onFinish}
       initialValues={{
-        from: currentEmpName,
+        from: assignTo?.generalInfo?.legalName,
       }}
       className={styles.ReassignModal}
     >
@@ -133,9 +130,7 @@ const ReassignModal = (props) => {
           placeholder="Select an employee"
           loading={loadingFetchEmployeeList}
         >
-          {hrListFormat.map((hr) => {
-            return renderHR(hr);
-          })}
+          {employeeList?.filter((hr) => hr._id !== assignTo?._id)?.map((hr) => renderHR(hr))}
         </Select>
       </Form.Item>
     </Form>

@@ -1,7 +1,8 @@
+/* eslint-disable no-nested-ternary */
 import { Avatar, List } from 'antd';
 import React from 'react';
 import classNames from 'classnames';
-import styles from './NoticeList.less';
+import styles from './index.less';
 
 const NoticeList = ({
   data = [],
@@ -78,7 +79,7 @@ const NoticeList = ({
         ) : null}
         {showViewMore ? (
           <div
-            onClick={e => {
+            onClick={(e) => {
               if (onViewMore) {
                 onViewMore(e);
               }

@@ -1,7 +1,34 @@
-import { TABLE_TYPE } from '../utils';
+import moment from 'moment';
+import { ONBOARDING_DATE_FORMAT, ONBOARDING_TABLE_TYPE } from '@/constants/onboarding';
 
-const getActionText = (type, processStatus) => {
-  const { DRAFT, ALL } = TABLE_TYPE;
+export const compare = (dateTimeA, dateTimeB) => {
+  const momentA = moment(dateTimeA, 'DD/MM/YYYY');
+  const momentB = moment(dateTimeB, 'DD/MM/YYYY');
+  if (momentA > momentB) return 1;
+  if (momentA < momentB) return -1;
+  return 0;
+};
+
+export const formatDate = (date, format = ONBOARDING_DATE_FORMAT) => {
+  if (!date) return '';
+  return moment(date).format(format);
+};
+
+export const dateDiffInDays = (a, b) => {
+  if (!a || !b) {
+    return 10;
+  }
+  // a and b are javascript Date objects
+  const SECOND_IN_DAY = 1000 * 60 * 60 * 24;
+  const firstDate = new Date(a);
+  const secondDate = new Date(b);
+
+  const diff = parseFloat((firstDate.getDate() - secondDate.getDate()) / SECOND_IN_DAY);
+  return diff;
+};
+
+export const getActionText = (type, processStatus) => {
+  const { DRAFT, ALL } = ONBOARDING_TABLE_TYPE;
   switch (type) {
     case DRAFT:
       return 'Continue';
@@ -13,7 +40,7 @@ const getActionText = (type, processStatus) => {
   }
 };
 
-const getColumnWidth = (columnName, tableType, arrLength) => {
+export const getColumnWidth = (columnName, tableType, arrLength) => {
   const {
     ALL,
     DRAFT,
@@ -27,7 +54,7 @@ const getColumnWidth = (columnName, tableType, arrLength) => {
     OFFER_REJECTED,
     OFFER_WITHDRAWN,
     DOCUMENT_CHECKLIST_VERIFICATION,
-  } = TABLE_TYPE;
+  } = ONBOARDING_TABLE_TYPE;
   if (arrLength > 0) {
     if (
       tableType === ALL ||
@@ -115,5 +142,3 @@ const getColumnWidth = (columnName, tableType, arrLength) => {
   }
   return '';
 };
-
-export { getActionText, getColumnWidth };

@@ -1,19 +1,4 @@
 .root {
-  .titleHeader {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    .buttonToggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 70px;
-      height: 100%;
-      background-color: #161c29;
-      cursor: pointer;
-    }
-  }
-
   :global {
     .ant-affix {
       z-index: 10 !important;
@@ -122,19 +107,6 @@
     .ant-layout {
       background-color: #f6f7f9;
     }
-
-    // .ant-layout-header{
-    //   // margin-left: 70px;
-    //   z-index: 1001 !important;
-    // }
-
-    // .ant-pro-sider{
-    //   position: fixed !important;
-    // }
-
-    // .ant-layout-content{
-    //   // overflow: initial !important;
-    // }
 
     .ant-pro-global-header-layout-mix {
       background-color: #fff;
@@ -346,21 +318,6 @@
     }
   }
 
-  .footerFlex {
-    position: fixed;
-    bottom: 0;
-    z-index: 9;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-between;
-    width: 100%;
-    padding: 14px 150px;
-    color: rgba(0, 0, 0, 0.65);
-    font-size: 12px;
-    background-color: #fff;
-    box-shadow: 0 10px 30px 3px #c7bcbc;
-  }
-
   .rootLogo {
     display: flex;
     align-items: center;
@@ -371,95 +328,30 @@
       margin-left: 20px;
       color: #212020;
       font-weight: 500;
-      // padding-left: 16px;
       font-size: 18px;
       letter-spacing: 3px;
       text-transform: uppercase;
     }
 
     .logoSection {
-      // height: 76px;
       display: flex;
       width: 70px;
+      height: 100%;
       padding: 5px;
+      overflow: hidden;
       box-shadow: 1px 0px 1px rgba(0, 0, 0, 0.05);
-
-      img {
-        max-width: 100%;
-        height: auto;
+      a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+          width: 100%;
+          height: 100%;
+        }
       }
     }
   }
 }
-
-// .expandMenu{
-//   :global{
-//     .ant-pro-sider-light{
-//       width: 242px !important;
-//       min-width: 242px !important;
-//       max-width: 242px !important;
-//       box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.456);
-
-//       transition: min-width 0.3s, max-width 0.3s all ease-in-out;
-//       -moz-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
-//       -ms-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
-//       -o-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
-//       -webkit-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
-
-//       .ant-pro-sider-logo{
-//           img{
-//             margin: 0;
-//             margin-left: 30.5px;
-//             width: 19.7px;
-//             height: 18.8px;
-//           }
-//         }
-
-//         .ant-menu-vertical .ant-menu-item,
-//         .ant-menu-vertical-left .ant-menu-item,
-//         .ant-menu-vertical-right .ant-menu-item,
-//         .ant-menu-inline .ant-menu-item,
-//         .ant-menu-vertical .ant-menu-submenu-title,
-//         .ant-menu-vertical-left .ant-menu-submenu-title,
-//         .ant-menu-vertical-right .ant-menu-submenu-title,
-//         .ant-menu-inline .ant-menu-submenu-title {
-//           justify-content: start;
-//           padding-left: 24px !important;
-//         }
-//         .ant-pro-menu-item {
-//           justify-content: flex-start;
-//         }
-//         .ant-menu-item .anticon + span,
-//         .ant-menu-submenu-title .anticon + span {
-//           display: inline-block;
-//           margin-left: 10px !important;
-//           color: #fff;
-//           font-weight: 600;
-//           font-size: 13px;
-//         }
-//     }
-//   }
-// }
-
-// .collapseMenu{
-//   :global{
-
-//     .ant-pro-sider-light{
-//       transition: min-width 0.3s, max-width 0.3s all ease-in-out;
-//       -moz-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
-//       -ms-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
-//       -o-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
-//       -webkit-transition: min-width 0.3s, max-width 0.3s all ease-in-out;
-//       min-width: 70px !important;
-//       max-width: 70px !important;
-
-//     }
-
-//     // .ant-layout-header{
-//     //   margin-left: 0 !important;
-//     // }
-//   }
-// }
 
 .breadCrumbA {
   :global {
@@ -494,20 +386,6 @@
       background: none;
 
       opacity: 1;
-
-      // &::after {
-      //   position: absolute;
-      //   top: 0;
-      //   left: 0;
-      //   display: block;
-      //   width: 100%;
-      //   height: 30px;
-      //   border: 1px solid rgb(44, 109, 249);
-      //   border-radius: 0 0 20px 0;
-
-      //   transform: skewX(-32deg);
-      //   content: '';
-      // }
     }
   }
 }
@@ -516,30 +394,6 @@
   :global {
     .ant-page-header {
       display: none;
-    }
-  }
-}
-
-.rightContent {
-  .btnSwitch {
-    position: absolute;
-    right: 20px;
-    width: fit-content;
-    height: fit-content;
-    line-height: 0 !important;
-
-    :global {
-      .ant-switch {
-        margin-top: 10px;
-      }
-
-      .ant-switch-checked {
-        background-color: #568afa;
-      }
-
-      .anticon-user-switch {
-        font-size: 16px;
-      }
     }
   }
 }
