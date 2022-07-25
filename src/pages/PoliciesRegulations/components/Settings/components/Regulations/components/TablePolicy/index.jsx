@@ -127,7 +127,7 @@ class TablePolicy extends Component {
         },
         render: (attachment) => {
           const attachmentSlice = () => {
-            if (!isEmpty(attachment) && attachment.name.length > 20) {
+            if (!isEmpty(attachment) && attachment.name?.length > 20) {
               return `${attachment.name.substr(0, 8)}...${attachment.name.substr(
                 attachment.name.length - 10,
                 attachment.name.length,

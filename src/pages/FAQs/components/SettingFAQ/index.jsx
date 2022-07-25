@@ -130,6 +130,7 @@ class Settings extends PureComponent {
 
   render() {
     const { selectedCountry = '', loadingGetListCountry = false } = this.props;
+    const { pathname } = window.location;
     const getContent = () => {
       const { content } = this.state;
       if (loadingGetListCountry)
@@ -176,8 +177,14 @@ class Settings extends PureComponent {
                     defaultSelectedKeys={['category']}
                     onClick={(e) => this.handleChange(e.key)}
                   >
-                    <Menu.Item key="category">FAQ Categories</Menu.Item>
-                    <Menu.Item key="faqList">FAQ List</Menu.Item>
+                    <Menu.Item key="category">
+                      {pathname === '/faqpage/settings'
+                        ? 'FAQ Categories'
+                        : 'HRMS Help Center Categories'}
+                    </Menu.Item>
+                    <Menu.Item key="faqList">
+                      {pathname === '/faqpage/settings' ? 'FAQ List' : 'HRMS Help Center List'}
+                    </Menu.Item>
                   </Menu>
                 </div>
               </Col>

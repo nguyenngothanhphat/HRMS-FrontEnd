@@ -108,7 +108,7 @@ class QuestionDropdown extends React.Component {
         <Menu.Item key={HELP_CENTER} className={styles.menuItemLink}>
           <div className={styles.menuItemLink__withIcon}>
             <img src={HelpCenterIcon} alt="HelpCenterIcon" />
-            <span>Help Center</span>
+            <span>HRMS Help Center</span>
           </div>
         </Menu.Item>
         {/* <Menu.Divider className={styles.secondDivider} /> */}

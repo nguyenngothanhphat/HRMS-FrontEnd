@@ -912,12 +912,18 @@ const routes = [
           },
           {
             path: '/help-center',
-            name: 'Help Center',
+            name: 'HRMS Help Center',
             hideInMenu: true,
             component: './FAQs',
           },
           {
             path: '/faqpage/settings',
+            name: 'settings',
+            hideInMenu: true,
+            component: './FAQs/components/SettingFAQ',
+          },
+          {
+            path: '/help-center/settings',
             name: 'settings',
             hideInMenu: true,
             component: './FAQs/components/SettingFAQ',

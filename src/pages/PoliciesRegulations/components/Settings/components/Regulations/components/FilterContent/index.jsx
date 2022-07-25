@@ -21,8 +21,8 @@ const FilterContent = (props) => {
     setApplied,
     setForm,
   } = props;
-  const [fromDate, setFromDate] = useState(moment());
-  const [toDate, setToDate] = useState(moment());
+  const [fromDate, setFromDate] = useState();
+  const [toDate, setToDate] = useState();
 
   useEffect(() => {
     dispatch({
@@ -53,8 +53,6 @@ const FilterContent = (props) => {
             ((a[k] = v), a),
       {},
     );
-    filterTemp.fromDate = moment(filterTemp.fromDate).startOf('day');
-    filterTemp.toDate = moment(filterTemp.toDate).endOf('day');
     dispatch({
       type: 'policiesRegulations/fetchListPolicy',
       payload: { country: [selectedCountry], tenantId: getCurrentTenant(), ...filterTemp },

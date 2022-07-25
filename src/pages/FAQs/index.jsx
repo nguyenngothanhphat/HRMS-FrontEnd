@@ -40,12 +40,13 @@ class FAQs extends PureComponent {
       this.setState({ title: 'FAQs' });
     }
     if (pathname === '/help-center') {
-      this.setState({ title: 'Help Center' });
+      this.setState({ title: 'HRMS Help Center' });
     }
   }
 
   render() {
     const { permissions } = this.props;
+    const { pathname } = window.location;
     const { title } = this.state;
     const checkRoleHrAndManager = permissions.viewFAQSetting !== -1;
     return (
@@ -57,7 +58,9 @@ class FAQs extends PureComponent {
               <div className={styles.header__right}>
                 {checkRoleHrAndManager && (
                   <Button>
-                    <Link to="/faqpage/settings">
+                    <Link
+                      to={pathname === '/faqpage' ? '/faqpage/settings' : '/help-center/settings'}
+                    >
                       <span className={styles.buttonSetting__text}>Settings</span>
                     </Link>
                   </Button>
