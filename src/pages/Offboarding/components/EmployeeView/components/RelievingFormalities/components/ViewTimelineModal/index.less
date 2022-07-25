@@ -1,21 +1,21 @@
 .ViewTimelineModal {
-  // disable selection
-  -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
   -moz-user-select: none; /* Old versions of Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none;
+  // disable selection
+  -webkit-touch-callout: none; /* iOS Safari */
 
   .customHeader {
     margin-bottom: 20px;
     .monthYearControl {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       .leftPart {
-        justify-content: flex-start;
         display: flex;
+        justify-content: flex-start;
         :global {
           .ant-select {
             padding-right: 5px;
@@ -25,13 +25,13 @@
 
       .rightPart {
         span {
+          margin-left: 10px;
           font-size: 18px;
           cursor: pointer;
           &:hover {
-            color: #2c6df9;
+            color: @primary-color;
             background-color: rgb(219, 219, 219);
           }
-          margin-left: 10px;
         }
       }
     }
@@ -43,9 +43,9 @@
       border-top-left-radius: 8px;
     }
     .ant-modal-content {
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
       border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
     }
     .ant-form-item {
       margin-bottom: 12px;
@@ -55,13 +55,13 @@
     }
     .ant-modal-close-x {
       position: absolute;
-      background-color: #2c6df9;
-      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 54px;
       height: 48px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: #fff;
+      background-color: @primary-color;
       border-top-right-radius: 8px;
       border-bottom-right-radius: 8px;
       &:active {
@@ -75,29 +75,29 @@
     .title {
       padding-top: 10px;
       padding-bottom: 20px;
-      font-size: 18px;
+      color: @primary-color;
       font-weight: 700;
-      color: #2c6df9;
+      font-size: 18px;
     }
     .calendar {
       width: 100%;
     }
     .footer {
-      padding: 0 20px;
       display: flex;
-      justify-content: flex-end;
       align-items: center;
+      justify-content: flex-end;
+      padding: 0 20px;
       border-top: 1px solid rgb(219, 219, 219);
     }
 
     :global {
       .ant-btn {
+        width: 108px;
+        height: 40px;
         margin-top: 15px;
         background-color: #ffa100;
         border: none;
         border-radius: 30px;
-        height: 40px;
-        width: 108px;
         span {
           color: white;
           font-weight: 700;
@@ -113,22 +113,22 @@
     margin: 0;
   }
   .text {
+    color: #161c29;
     font-weight: normal;
     font-size: 13px;
     line-height: 20px;
-    color: #161c29;
   }
   .btnFillTimeSheet {
     width: 138px;
     height: 40px;
-    background: #ffa100;
-    border-radius: 25px;
+    margin-top: 10px;
+    color: #ffffff;
     font-weight: 500;
     font-size: 14px;
     line-height: 16px;
-    color: #ffffff;
+    background: #ffa100;
     border: none;
-    margin-top: 10px;
+    border-radius: 25px;
   }
   table > thead {
     display: none;
@@ -145,15 +145,15 @@
       box-shadow: none;
     }
     .ant-select-arrow {
+      color: #161c29;
       font-weight: 700;
       font-size: 10px;
       line-height: 19px;
-      color: #161c29;
     }
     .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+      font-size: 16px;
       border: none;
       .ant-select-arrow();
-      font-size: 16px;
     }
     .ant-picker-calendar-header {
       display: flex !important;
@@ -166,26 +166,26 @@
   }
   .iconCheck {
     color: #fff;
-    font-size: 18px;
     font-weight: 600;
+    font-size: 18px;
   }
   .date {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 
     margin-bottom: 13px;
     // color: white;
 
     span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 39px;
       height: 39px;
-      border-radius: 50%;
       font-weight: 700;
       font-size: 13px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      border-radius: 50%;
     }
   }
 
@@ -198,22 +198,22 @@
     }
   }
   .notCheck {
+    color: #039775;
     background: #ffffff;
     border: 1px solid #039775;
     cursor: pointer;
-    color: #039775;
   }
   .weekend {
     background: #f3f4f4;
   }
   .disable {
-    opacity: 0.3;
-    border: 1px solid #039775;
     box-sizing: border-box;
+    border: 1px solid #039775;
+    opacity: 0.3;
   }
   .current {
-    background: #161c29;
     color: #ffffff;
+    background: #161c29;
   }
   .normalDate {
     background: white;
@@ -221,8 +221,8 @@
     cursor: pointer;
   }
   .lastWorkDate {
-    background: #ffa100;
     color: white;
+    background: #ffa100;
     border-color: #ffa100;
   }
 }

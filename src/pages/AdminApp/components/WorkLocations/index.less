@@ -16,8 +16,8 @@
       display: flex;
       align-items: center;
       width: fit-content;
+      color: @primary-color;
       border: none;
-      color: #2c6df9;
       &__icon {
         display: flex;
         align-items: center;
@@ -129,8 +129,8 @@
 
   .actions {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     .viewBtn {
       .btnSubmit {
         width: 150px;
@@ -146,8 +146,11 @@
       }
     }
 
-    :global{
-      .ant-btn[disabled], .ant-btn[disabled]:hover, .ant-btn[disabled]:focus, .ant-btn[disabled]:active{
+    :global {
+      .ant-btn[disabled],
+      .ant-btn[disabled]:hover,
+      .ant-btn[disabled]:focus,
+      .ant-btn[disabled]:active {
         background: none;
       }
     }

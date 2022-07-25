@@ -10,7 +10,7 @@ import React from 'react';
 import { connect, Link, Redirect, useIntl } from 'umi';
 import AppFooter from '@/components/AppFooter';
 import Feedback from '@/components/Feedback';
-import RightContent from '@/components/GlobalHeader/components/GlobalHeaderRight';
+import RightContent from '@/components/GlobalHeader/components/RightContent';
 import { getCurrentCompany } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
@@ -54,9 +54,11 @@ const BasicLayout = (props) => {
     },
     route: { routes } = {},
     currentUser,
-    companies = [],
+    companies = {},
     logoCompany,
   } = props;
+
+  // const [openMenu, setOpenMenu] = useState(false);
 
   /**
    * init variables
@@ -89,6 +91,9 @@ const BasicLayout = (props) => {
     return (
       <div className={styles.rootLogo}>
         <div className={styles.logoSection}>
+          {/* <Button className={styles.logoSection__button}>
+           <img alt="icon-menu" src={iconMenu} />
+        </Button> */}
           {logoUrl || logoCompany ? (
             <Link to="/">
               <img src={logoCompany || logoUrl || logo} alt="logo" />
@@ -102,13 +107,15 @@ const BasicLayout = (props) => {
     );
   };
 
-  const rightContent = () => {
+  function rightContent() {
+    // const { pathname } = window.location;
     return (
       <div className={styles.rightContent}>
         <RightContent />
+        {/* {pathname === '/dashboard' ? null : buttonSwitch()} */}
       </div>
     );
-  };
+  }
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
@@ -188,6 +195,7 @@ const BasicLayout = (props) => {
           }}
           // footerRender={pathname === '/dashboard' ? null : buttonSwitch}
           menuDataRender={menuDataRender}
+          // eslint-disable-next-line react/jsx-no-bind
           rightContentRender={rightContent}
           collapsedButtonRender={false}
           disableMobile

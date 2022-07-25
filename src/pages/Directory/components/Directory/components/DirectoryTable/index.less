@@ -2,59 +2,16 @@
   border-bottom: solid 1px #d6dce0;
 }
 
-.selectCol {
-  :global {
-    td.ant-table-column-sort {
-      background-color: #fafafa;
-    }
-  }
-}
-
 .directoryTable {
-  padding: 24px 24px 0 24px;
+  padding: 24px;
 
   .employeeId {
     padding-left: 16px !important;
   }
 
   :global {
-    .ant-table-cell {
-      background: #fff;
-    }
-    .ant-pagination {
-      align-items: center;
-    }
-    .ant-pagination-options {
-      display: flex;
-      justify-content: flex-end;
-      margin-left: 24px !important;
-    }
-
-    .ant-select-selector {
-      height: 32px !important;
-      padding: 5px 7px !important;
-    }
-    .ant-select-selection-item,
-    .ant-select-item {
-      font-size: 13px !important;
-    }
-
     .ant-table-body {
       overflow-x: auto !important;
-    }
-
-    .ant-table-tbody > tr.ant-table-row:hover > td {
-      cursor: pointer;
-    }
-
-    .ant-table.ant-table-small:after {
-      position: absolute;
-      bottom: -1px;
-      left: -24px;
-      width: 150%;
-      height: 1px;
-      background-color: #d6dce0;
-      content: '';
     }
 
     .ant-table-body {
@@ -96,8 +53,7 @@
     }
 
     .ant-table-thead th.ant-table-column-has-sorters:hover {
-      background: #6495ff;
-      opacity: 1;
+      opacity: 0.8;
     }
 
     td.ant-table-cell.ant-table-cell-fix-left.ant-table-cell-fix-left-last {
@@ -116,24 +72,7 @@
     .ant-table-cell-scrollbar {
       box-shadow: none;
     }
-
-    .ant-btn {
-      padding: 0px;
-    }
-
-    th.ant-table-cell {
-      padding-top: 0 !important;
-      padding-bottom: 0 !important;
-    }
   }
-
-  // .col {
-  //   :global {
-  //     .ant-table-column-sorter-inner {
-  //       display: inline;
-  //     }
-  //   }
-  // }
 
   .directoryTable_fullName {
     .directoryTable_iconSort {
@@ -163,7 +102,7 @@
       margin: 0;
       padding-left: 12px;
       overflow: hidden;
-      color: #2c6df9;
+      color: @primary-color;
       font-weight: 500;
       letter-spacing: 0.12px;
       white-space: nowrap;
@@ -176,15 +115,9 @@
     }
   }
 
-  .directoryTable_deparmentText {
-    padding: 4px 8px;
-    background-color: #f6f7f9;
-    border-radius: 5px;
-  }
-
   .viewAction {
     .actionBtn {
-      color: #2c6df9;
+      color: @primary-color;
       font-size: 13px;
       background: none;
       border: none;
@@ -194,7 +127,7 @@
 
   .managerName {
     overflow: hidden;
-    color: #2c6df9;
+    color: @primary-color;
     // font-weight: 500;
     white-space: nowrap;
     text-align: left;
@@ -214,7 +147,7 @@
   }
   .title {
     &:hover {
-      color: #2c6df9;
+      color: @primary-color;
     }
   }
 }

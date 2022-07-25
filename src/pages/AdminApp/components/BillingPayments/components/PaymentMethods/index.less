@@ -1,117 +1,114 @@
 .root {
-    .container {
-        width: 100%;
-        height: fit-content;
-        background: #ffffff;
-        border-bottom: 1px solid #d6dce0;
-        box-sizing: border-box;
-        border-radius: 5px;
-        margin-top: 24px;
-        p{
-          margin: 0;    
-        }
-        &__topView{
-            padding: 24px;
-            border-bottom: 1px solid #f0f0f0;
-            .title{
-                font-weight: bold;
-                font-size: 16px;
-            }
-        }
-        &__bottomView {
-            p{
-              margin-top: 1em;
-              margin-bottom: 1em;
-            }
-            input{
-                padding: 10px;
-            }
-            .billing{
-                &__header{
-                    padding: 24px 20px;
-                    border-bottom: 1px solid #f0f0f0;
-                    &__title{
-                      font-size: 14px;
-                      font-weight: bold;
-
-                    }
-                }
-                &__body{
-                    padding: 24px;
-                    .datePicker{
-                        width: 50%;
-                    }
-                }
-            }
-            .bankAccount{
-                &__header{
-                    padding: 24px 20px;
-                    padding-top: 24px;
-                    &__title{
-                        font-size: 14px;
-                        font-weight: bold;
-                    }
-                    &__subTitle{
-                        display: inline-block;
-                        text-align: center;
-                        width: 20%;
-                        padding: 4px 8px;
-                        background: #2C6DF9;
-                        border-radius: 13px;
-                        font-size: 10px;
-                        color: #fff;
-                    }
-                }
-                &__body{
-                    padding: 24px;
-                    padding-top: 0;
-                    .column{
-                        position: relative;
-                        .action{
-                          position: absolute;
-                          top: 10px;
-                          right: 15px;
-                          cursor: pointer;
-                          color: #FFA100;
-                          font-weight: bold;
-                        }
-                        .afterAction {
-                          position: absolute;
-                          top: 10px;
-                          right: 15px;
-                          cursor: pointer;
-                          // span {
-                            .save{
-                              margin-right: 15px;
-                              color: green;
-                              font-weight: bold;
-                              cursor: pointer;
-                            }
-                            .cancel{
-                              color: red;
-                              font-weight: bold;
-                              cursor: pointer;
-                              
-                            }
-                          // }
-                        }
-                        
-                      }
-                }
-            }
-        }
+  .container {
+    box-sizing: border-box;
+    width: 100%;
+    height: fit-content;
+    margin-top: 24px;
+    background: #ffffff;
+    border-bottom: 1px solid #d6dce0;
+    border-radius: 5px;
+    p {
+      margin: 0;
     }
-    .hide{
-        visibility: hidden;
+    &__topView {
+      padding: 24px;
+      border-bottom: 1px solid #f0f0f0;
+      .title {
+        font-weight: bold;
+        font-size: 16px;
       }
-      .unhide{
-        visibility: visible;
+    }
+    &__bottomView {
+      p {
+        margin-top: 1em;
+        margin-bottom: 1em;
       }
-
-      :global{
-        .ant-input[disabled]{
-          color: #000;
-          background-color: #fff;
+      input {
+        padding: 10px;
+      }
+      .billing {
+        &__header {
+          padding: 24px 20px;
+          border-bottom: 1px solid #f0f0f0;
+          &__title {
+            font-weight: bold;
+            font-size: 14px;
+          }
+        }
+        &__body {
+          padding: 24px;
+          .datePicker {
+            width: 50%;
+          }
         }
       }
+      .bankAccount {
+        &__header {
+          padding: 24px 20px;
+          padding-top: 24px;
+          &__title {
+            font-weight: bold;
+            font-size: 14px;
+          }
+          &__subTitle {
+            display: inline-block;
+            width: 20%;
+            padding: 4px 8px;
+            color: #fff;
+            font-size: 10px;
+            text-align: center;
+            background: @primary-color;
+            border-radius: 13px;
+          }
+        }
+        &__body {
+          padding: 24px;
+          padding-top: 0;
+          .column {
+            position: relative;
+            .action {
+              position: absolute;
+              top: 10px;
+              right: 15px;
+              color: #ffa100;
+              font-weight: bold;
+              cursor: pointer;
+            }
+            .afterAction {
+              position: absolute;
+              top: 10px;
+              right: 15px;
+              cursor: pointer;
+              // span {
+              .save {
+                margin-right: 15px;
+                color: green;
+                font-weight: bold;
+                cursor: pointer;
+              }
+              .cancel {
+                color: red;
+                font-weight: bold;
+                cursor: pointer;
+              }
+              // }
+            }
+          }
+        }
+      }
+    }
+  }
+  .hide {
+    visibility: hidden;
+  }
+  .unhide {
+    visibility: visible;
+  }
+
+  :global {
+    .ant-input[disabled] {
+      color: #000;
+      background-color: #fff;
+    }
+  }
 }

@@ -10,11 +10,11 @@ import { disconnectSocket, socket } from '@/utils/socket';
 import CommonModal from '../../../CommonModal';
 import styles from '../../index.less';
 import AvatarDropdown from './components/AvatarDropdown';
-import GlobalSearchNew from './components/GlobalSearchNew/index';
+import GlobalSearchNew from './components/GlobalSearchNew';
 import QuestionDropdown from './components/QuestionDropdown';
 import SelectCompanyModal from './components/SelectCompanyModal';
 
-const GlobalHeaderRight = (props) => {
+const RightContent = (props) => {
   const {
     dispatch,
     theme,
@@ -57,8 +57,8 @@ const GlobalHeaderRight = (props) => {
 
   let className = styles.right;
 
-  if (theme === 'dark' && layout === 'top') {
-    className = `${styles.right}  ${styles.dark}`;
+  if (theme === 'dark') {
+    className = `${styles.right} ${styles.dark}`;
   }
 
   useEffect(() => {
@@ -134,4 +134,4 @@ export default connect(
     unseenTotal,
     loadingList: loading.effects['employeesManagement/fetchSearchEmployeesList'],
   }),
-)(GlobalHeaderRight);
+)(RightContent);

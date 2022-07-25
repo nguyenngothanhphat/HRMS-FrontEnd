@@ -6,16 +6,16 @@
 @checkbox-border: #707177;
 @gray: #707177;
 @red: #ff5252;
-@blue: #2c6df9;
+@blue: @primary-color;
 @cell-padding: 8px 16px;
 @rowHeight: 82px; // same with EMP_ROW_HEIGHT in @/utils/tiemSheet -> EMP_ROW_HEIGHT
 
 .ActivityList {
+  position: relative;
   width: 100%;
   min-height: 115px;
   max-height: 560px;
   overflow-y: auto;
-  position: relative;
   .alignCenter {
     display: flex;
     justify-content: center !important;
@@ -74,26 +74,26 @@
   }
 
   .holidayContainer {
+    position: static;
     display: flex;
     justify-content: center;
     background-color: #fffaf2;
-    position: static;
 
     .contentContainer {
+      position: absolute;
+      top: 50%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      position: absolute;
-      top: 50%;
       transform: translateY(-50%);
 
       p {
         margin: 0;
-        color: #FFA100;
+        margin-top: 20px;
+        color: #ffa100;
         font-weight: 500;
         font-size: 28px;
         text-align: center;
-        margin-top: 20px;
       }
     }
   }

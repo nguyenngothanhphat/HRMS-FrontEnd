@@ -1,9 +1,8 @@
 @darkColor: #161c29;
 @lightGrayColor: #707177;
 @commonPadding: 15px;
-@inlinePadding: 24px;
 @borderColor: #d6dce0;
-@blueColor: #2c6df9;
+@blueColor: @primary-color;
 @yellowColor: #ffa100;
 @lightBlueColor: #eaf0fe;
 @lightBlueColor2: #e4edff;
@@ -59,7 +58,7 @@
       }
       .nameAttach {
         padding-right: 8px;
-        color: #2c6df9;
+        color: @primary-color;
         font-weight: 500;
         font-size: 13px;
         line-height: 15px;
@@ -79,7 +78,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: @commonPadding @inlinePadding;
+      padding: @commonPadding 24px;
       border-bottom: 1px solid @borderColor;
       .titleContainer {
         display: flex;
@@ -216,7 +215,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: @commonPadding @inlinePadding;
+    padding: @commonPadding 24px;
     border-top: 1px solid @borderColor;
     form {
       display: flex;
@@ -260,7 +259,7 @@
             padding-left: 8px;
             font-size: 14px;
             a {
-              color: #2c6df9;
+              color: @primary-color;
             }
           }
         }
@@ -333,7 +332,7 @@
       outline: none !important;
     }
 
-    padding: @commonPadding @inlinePadding 0 @inlinePadding;
+    padding: @commonPadding 24px 0 24px;
     .describeText {
       display: block;
       margin-bottom: @commonPadding / 2;

@@ -1,9 +1,7 @@
 @darkColour: #161c29;
 @darkColour2: #212020;
-@blueColour: #2c6df9;
 @lightGrayColor: #d8dde9;
 @lightGrayColor2: #707177;
-@padding1: 24px;
 @padding2: 16px;
 @borderColor: #d6dce0;
 
@@ -13,7 +11,7 @@
   justify-content: space-between;
   box-sizing: border-box;
   height: 100%;
-  margin-bottom: @padding1;
+  margin-bottom: 24px;
   background: #fff;
   border: 1px solid @borderColor;
   border-radius: 8px;
@@ -21,7 +19,7 @@
   :global {
     .ant-tabs-nav {
       height: 44px;
-      padding-left: @padding1;
+      padding-left: 24px;
       .ant-tabs-tab-btn {
         font-weight: 500;
         font-size: 13px;
@@ -36,7 +34,7 @@
     .ant-tabs-content-holder {
     }
     // .ant-tabs-content-holder {
-    //   padding-inline: @padding2 @padding1;
+    //   padding-inline: @padding2 24px;
     // }
     .ant-tabs-top > .ant-tabs-nav::before,
     .ant-tabs-bottom > .ant-tabs-nav::before,
@@ -49,7 +47,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: @padding1;
+    padding: 24px;
     border-bottom: 1px solid @borderColor;
 
     cursor: move; /* fallback if grab cursor is unsupported */
@@ -67,7 +65,7 @@
       align-items: center;
       justify-content: flex-end;
       span {
-        color: @blueColour;
+        color: @primary-color;
         font-weight: 500;
         font-size: 13px;
         line-height: 19px;
@@ -142,8 +140,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: @padding2 @padding1;
-    color: @blueColour;
+    padding: @padding2 24px;
+    color: @primary-color;
     font-weight: 500;
     font-size: 16px;
     border-top: 1px solid @borderColor;

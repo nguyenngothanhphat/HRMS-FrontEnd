@@ -1,31 +1,31 @@
 .RequestInformation {
-  border: 1px solid #ebeff2;
-  border-radius: 5px;
   width: 100%;
   background-color: white;
+  border: 1px solid #ebeff2;
+  border-radius: 5px;
 
   .formTitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 16px 24px;
+    color: #161c29;
     border-bottom: 1px solid #e2e4e8;
     .title {
-      font-size: 16px;
       color: #464646;
       font-weight: 700;
+      font-size: 16px;
     }
-    color: #161c29;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     .editButton {
-      cursor: pointer;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
       .label {
         margin-left: 10px;
+        color: @primary-color;
         font-weight: 700;
         font-size: 14px;
-        color: #2c6df9;
       }
       &:hover {
         opacity: 0.8;
@@ -53,43 +53,43 @@
         border-radius: 4px;
         .normalText {
           display: block;
-          color: #707177;
-          font-size: 10px;
           margin-top: 0px;
           padding: 3px;
+          color: #707177;
+          font-size: 10px;
         }
         .link {
-          cursor: pointer;
-          font-size: 10px;
           color: #ffa100;
           font-weight: 700;
+          font-size: 10px;
           text-decoration: underline;
+          cursor: pointer;
         }
       }
       .extraTimeSpent {
-        font-size: 13px;
         color: #707177;
+        font-size: 13px;
         .header {
-          background-color: #e1e9fa;
-          border-radius: 5px;
+          margin-bottom: 5px;
+          padding: 7px 10px;
           color: #00000083;
           font-weight: 700;
-          padding: 7px 10px;
           font-size: 13px;
-          margin-bottom: 5px;
+          background-color: #e1e9fa;
+          border-radius: 5px;
         }
         .content {
           width: 100%;
           .rowContainer {
+            margin-bottom: 5px;
+            padding: 5px 10px;
             border: 1px solid #d6dce4;
             border-radius: 5px;
-            padding: 5px 10px;
-            margin-bottom: 5px;
             :global {
               .ant-col {
                 display: flex;
-                justify-content: flex-start;
                 align-items: center;
+                justify-content: flex-start;
               }
               .ant-form-item {
                 margin-bottom: 0 !important;
@@ -101,8 +101,8 @@
                 background-color: #c4c4c433;
               }
               .ant-input {
-                background-color: rgba(0, 0, 0, 0) !important;
                 min-height: 20px !important;
+                background-color: rgba(0, 0, 0, 0) !important;
               }
               .ant-input-suffix {
                 color: #707177;
@@ -122,16 +122,16 @@
     }
   }
   .footer {
-    padding: 16px 24px;
-    border-top: 1px solid #e2e4e8;
     display: flex;
     justify-content: space-between;
+    padding: 16px 24px;
+    border-top: 1px solid #e2e4e8;
     .note {
-      font-size: 12px;
-      padding-right: 100px;
       display: flex;
       align-items: center;
+      padding-right: 100px;
       color: #161c2980; // hex with alpha 0.5
+      font-size: 12px;
     }
     .formButtons {
       display: flex;
@@ -140,17 +140,17 @@
         .ant-btn-link {
           background-color: white !important;
           span {
-            font-weight: bold !important;
             color: #ffa100 !important;
+            font-weight: bold !important;
           }
         }
         .ant-btn {
+          height: 40px;
+          margin-left: 20px;
+          padding: 0 30px;
           background-color: #ffa100;
           border: none;
           border-radius: 30px;
-          height: 40px;
-          padding: 0 30px;
-          margin-left: 20px;
           span {
             color: white;
             font-weight: 700;

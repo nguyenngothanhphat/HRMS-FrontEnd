@@ -1,3 +1,5 @@
+@import '~antd/es/style/themes/default.less';
+
 .root {
   :global {
     .ant-affix {
@@ -201,7 +203,6 @@
         min-width: 242px !important;
         max-width: 242px !important;
         box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.456);
-        transition: min-width 0.3s, max-width 0.3s;
 
         .ant-pro-sider-logo {
           img {
@@ -235,21 +236,34 @@
           font-size: 13px;
         }
       }
+      .ant-menu {
+        background-color: @primary-color;
+      }
+      .ant-menu-item {
+        &:hover {
+          background-image: linear-gradient(to right, @primary-color, @primary-color-active);
+        }
+      }
+      .ant-menu-item a {
+        color: #fff;
+      }
+    }
+    .ant-layout-sider-dark {
+      .ant-pro-sider-light();
+    }
+    .ant-pro-sider.ant-menu-inline-collapsed .ant-menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .ant-pro-sider-light .ant-menu-light {
-      background-color: #2c6df9;
-    }
-    .ant-pro-sider.ant-layout-sider-light .ant-menu-item a {
-      color: #fff;
-    }
     .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
-      background-color: #2c6df9;
+      background-color: @primary-color;
     }
     .ant-menu-item-selected {
       // border-right: 3px solid #fff;
       position: relative;
-      background-image: linear-gradient(to right, #2c6df9, #144ecb);
+      background-image: linear-gradient(to right, @primary-color, @primary-color-active);
       &::after {
         position: absolute;
         top: 50%;
@@ -276,11 +290,6 @@
       background-color: rgba(0, 0, 0, 0.204);
     }
 
-    .ant-pro-sider .ant-menu-inline-collapsed .ant-menu-item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
     .ant-menu-item .anticon,
     .ant-menu-submenu-title .anticon {
       min-width: 35px;
@@ -291,11 +300,11 @@
       align-items: center;
       height: 75px;
       margin: 0 !important;
-      border-bottom: 1px solid #3158d1;
+      border-bottom: 1px solid @primary-color-active;
       &:active {
         height: 75px;
         margin: 0 !important;
-        background-color: #2c6df9;
+        background-color: @primary-color;
       }
     }
     .ant-menu-vertical .ant-menu-item::after,
@@ -308,9 +317,6 @@
 
   @media screen and (max-width: 768px) {
     :global {
-      .ant-page-header {
-        // padding: 0.5rem 2rem;
-      }
       .ant-pro-page-container-children-content {
         margin: 0;
         // padding: 0 2rem;
@@ -377,7 +383,7 @@
       height: 30px;
       padding: 8px;
 
-      color: #2c6df9;
+      color: @primary-color;
       font-weight: 500;
       font-size: 13px;
 

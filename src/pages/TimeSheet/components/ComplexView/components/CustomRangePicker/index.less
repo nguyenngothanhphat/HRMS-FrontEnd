@@ -1,6 +1,6 @@
 @borderColor: #d6dce0;
 @borderColor2: #d6dce4;
-@blueColor: #2c6df9;
+@blueColor: @primary-color;
 @commonSpace: 24px;
 .CustomRangePicker {
   display: flex;
@@ -14,7 +14,7 @@
       border: 1px solid @borderColor2;
       border-radius: 5px;
       &:hover {
-        border-color: #2c6df9;
+        border-color: @primary-color;
       }
     }
   }
@@ -41,7 +41,7 @@
     border-radius: 5px;
     cursor: pointer;
     &:hover {
-      border-color: #2c6df9;
+      border-color: @primary-color;
       opacity: 0.9;
     }
   }

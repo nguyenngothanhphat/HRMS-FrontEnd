@@ -8,7 +8,7 @@ const CommonTable = ({
   onChangePage = () => {},
   isBackendPaging = false,
   list = [],
-  columns,
+  columns = [],
   loading = false,
   page = 1,
   limit = 10,
@@ -82,7 +82,6 @@ const CommonTable = ({
           columns={columns}
           dataSource={list}
           loading={loading}
-          // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
           pagination={showPagination ? pagination : { position: ['none', 'none'] }}
           scroll={scrollable ? { x: width, y: height } : {}}
           rowKey={rowKey ? (record) => record[rowKey] : null}

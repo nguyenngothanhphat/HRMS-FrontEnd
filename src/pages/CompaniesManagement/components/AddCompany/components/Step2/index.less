@@ -1,6 +1,6 @@
 @black: #161c29;
 @gray: #707177;
-@blue: #2c6df9;
+@blue: @primary-color;
 @orange: #ffa100;
 @dark-orange: #e49000;
 @red: #e81010;
@@ -8,41 +8,41 @@
 .root {
   width: 100%;
   height: 100%;
-  color: @black;
   margin: 32px 32px 32px 0;
+  color: @black;
   &__form {
     width: 510px;
     margin-bottom: 32px;
+    padding: 32px 32px 2px 32px;
+    background-color: #ffffff;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
-    background-color: #ffffff;
-    padding: 32px 32px 2px 32px;
     &__title {
-      font-size: 16px;
+      margin-bottom: 20px;
+      color: #161c29;
       font-weight: 500;
-      font-stretch: normal;
+      font-size: 16px;
       font-style: normal;
+      font-stretch: normal;
       line-height: 1.19;
       letter-spacing: normal;
       text-align: left;
-      color: #161c29;
-      margin-bottom: 20px;
     }
     &__description {
-      font-size: 14px;
+      margin-bottom: 42px;
+      color: #707177;
       font-weight: normal;
-      font-stretch: normal;
+      font-size: 14px;
       font-style: normal;
+      font-stretch: normal;
       line-height: 1.57;
       letter-spacing: 0.17px;
       text-align: left;
-      color: #707177;
-      margin-bottom: 42px;
     }
     &__image {
-      width: 510px;
       display: flex;
       justify-content: center;
+      width: 510px;
       overflow: hidden;
       img {
         width: 100%;
@@ -50,10 +50,10 @@
     }
     :global {
       .ant-input {
-        border-radius: 4.5px;
         height: 42px;
         color: #000;
         border: solid 1px #d6dce4;
+        border-radius: 4.5px;
         &:focus {
           box-shadow: none;
         }
@@ -62,19 +62,19 @@
         margin-bottom: 30px;
       }
       .ant-form label {
+        margin-bottom: 12px;
         color: #707177;
         font-weight: 500;
         font-size: 13px;
-        margin-bottom: 12px;
       }
       .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
-        background-color: #fff;
-        border: 1px solid #d6dce4;
-        border-radius: 5px;
-        color: #000;
         width: 100%;
         height: 42px;
         padding: 5px 11px 0;
+        color: #000;
+        background-color: #fff;
+        border: 1px solid #d6dce4;
+        border-radius: 5px;
       }
       .ant-select-single:not(.ant-select-customize-input)
         .ant-select-selector
@@ -85,31 +85,31 @@
   }
 
   .btn_addLocation {
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 1.19;
     color: @blue;
     font-weight: 500;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.19;
   }
 
   .btnWrapper {
-    width: 510px;
-    margin-top: 37px;
     display: flex;
     justify-content: space-between;
+    width: 510px;
+    margin-top: 37px;
 
     button {
       width: 121px;
       height: 40px;
-      background-color: @orange;
-      border-radius: 25px;
       color: white;
       font-weight: 500;
       letter-spacing: 0.13px;
+      text-transform: capitalize;
+      background-color: @orange;
+      border: 1px solid @orange;
+      border-radius: 25px;
       outline: none;
       transition: background-color 0.2s ease-in;
-      border: 1px solid @orange;
-      text-transform: capitalize;
 
       //   &:hover {
       //     background-color: @dark-orange;
@@ -124,14 +124,14 @@
   }
 
   .btnNext {
-    font-size: 14px;
     width: 120px;
     height: 40px;
-    font-weight: 500;
-    border-radius: 30px;
     color: #fff;
+    font-weight: 500;
+    font-size: 14px;
     background-color: #ffa100;
     border: none;
+    border-radius: 30px;
     &:disabled {
       opacity: 0.5;
     }

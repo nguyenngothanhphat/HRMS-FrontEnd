@@ -2,9 +2,9 @@
 .TabFilter {
   position: relative;
   height: 464px;
-  border-left: 1px solid #d6dce0;
-  border-bottom: 1px solid #d6dce0;
   margin-right: -1px;
+  border-bottom: 1px solid #d6dce0;
+  border-left: 1px solid #d6dce0;
 
   :global {
     .ant-layout-header {
@@ -12,9 +12,9 @@
     }
 
     .ant-layout-sider {
-      background-color: #fff;
       height: 100%;
       overflow-y: auto;
+      background-color: #fff;
       &::-webkit-scrollbar {
         display: none;
       }
@@ -70,8 +70,8 @@
         position: relative;
         display: flex;
         flex-flow: row;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
         width: 46.4px;
         height: 21px;
         padding-top: 3px;
@@ -86,8 +86,8 @@
         width: 0;
         height: 0;
         border-top: 10.5px solid transparent;
-        border-bottom: 10.5px solid transparent;
         border-right: 8px solid #0d61dd;
+        border-bottom: 10.5px solid transparent;
         content: '';
       }
 
@@ -126,7 +126,7 @@
     margin-bottom: 33px;
     font-size: 14px;
     background-color: #fff;
-    border: 1px solid #2c6df9;
+    border: 1px solid @primary-color;
     border-radius: 5px;
   }
 }

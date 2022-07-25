@@ -139,6 +139,9 @@ button.ant-pagination-item-link {
 /* End Pagination */
 
 /* Table */
+.ant-table-thead > tr > th {
+  background-color: @primary-color;
+}
 .ant-table-thead > tr:first-child > th:last-child {
   border-top-right-radius: 5px !important;
   border-bottom-right-radius: 5px;
@@ -300,7 +303,7 @@ li.ant-pagination-jump-prev.ant-pagination-jump-prev-custom-icon {
 // page size changer
 .ant-pagination-options-size-changer {
   .ant-select-selection-item {
-    color: #2c6df9;
+    color: @primary-color;
     font-weight: 500;
     line-height: unset !important;
   }
@@ -312,7 +315,7 @@ li.ant-pagination-jump-prev.ant-pagination-jump-prev-custom-icon {
 // tabs indicator
 .ant-tabs-ink-bar {
   height: 3px;
-  background: #2c6df9;
+  background: @primary-color;
   border-radius: 3px 3px 0px 0px;
 }
 

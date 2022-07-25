@@ -6,7 +6,6 @@
 @checkbox-border: #707177;
 @gray: #707177;
 @red: #ff5252;
-@blue: #2c6df9;
 
 .CommonTable {
   background-color: #ffffff;
@@ -14,6 +13,13 @@
   :global {
     .ant-table-row {
       height: 55px;
+    }
+
+    .ant-table-thead th.ant-table-column-has-sorters.ant-table-cell-fix-left:hover,
+    .ant-table-thead th.ant-table-column-has-sorters.ant-table-cell-fix-right:hover,
+    .ant-table-thead th.ant-table-column-has-sorters:hover {
+      background-color: @primary-color !important;
+      opacity: 0.8;
     }
 
     .anticon-delete {
@@ -27,7 +33,7 @@
         }
       }
       svg {
-        color: @blue !important;
+        color: @primary-color !important;
         transform: initial !important;
       }
     }
@@ -42,13 +48,17 @@
       letter-spacing: 0.12px;
     }
 
+    td.ant-table-column-sort {
+      background-color: #fafafa !important;
+    }
+
     .ant-table-pagination {
       margin: 0 !important;
       padding: 24px 8px 2px 8px;
       border-top: 1px solid #e2e4e8;
     }
     .ant-table-thead > tr > th {
-      background-color: @blue;
+      background-color: @primary-color;
     }
 
     th.ant-table-selection-column {

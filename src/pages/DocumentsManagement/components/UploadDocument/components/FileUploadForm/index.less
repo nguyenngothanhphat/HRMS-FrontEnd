@@ -1,6 +1,6 @@
 .FileUploadForm {
-  background-color: white;
   height: 100%;
+  background-color: white;
   .fileUploadedContainer {
     .previewIcon {
       margin-bottom: 20px;
@@ -9,12 +9,12 @@
       // }
     }
     .fileName {
+      margin-bottom: 30px;
       font-size: 14px;
       a {
         // text-decoration: underline;
-        color: #2c6df9;
+        color: @primary-color;
       }
-      margin-bottom: 30px;
     }
   }
   .uploadIcon {
@@ -23,27 +23,27 @@
     }
   }
   .uploadText {
+    margin: 20px 0;
+    color: #464646;
     font-size: 20px;
     line-height: 1.4;
-    color: #464646;
-    margin: 20px 0;
   }
   :global {
     .ant-upload.ant-upload-drag {
-      border-radius: 8px;
-      background: #fff;
       padding: 20px;
+      background: #fff;
+      border-radius: 8px;
     }
     .ant-btn {
+      height: 35px;
+      padding: 0 35px;
       background-color: #ffa100;
       border: none;
-      padding: 0 35px;
-      height: 35px;
       border-radius: 40px;
       span {
-        font-size: 14px;
         color: white;
         font-weight: 700;
+        font-size: 14px;
       }
     }
   }

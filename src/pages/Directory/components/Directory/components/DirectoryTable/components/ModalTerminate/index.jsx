@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Modal, Input, Form, Button, DatePicker } from 'antd';
+import { Button, DatePicker, Form, Input, Modal } from 'antd';
 import moment from 'moment';
+import React from 'react';
 
 import styles from './index.less';
 
@@ -10,14 +10,13 @@ const { TextArea } = Input;
 
 const ModalTerminate = (props) => {
   const [form] = Form.useForm();
-  const [date, setDate] = useState('');
 
   const {
     visible = false,
     valueReason = '',
     // onChange = () => {},
     handleSubmit = () => {},
-    handleCandelModal = () => {},
+    handleCancelModal = () => {},
     loading,
   } = props;
 
@@ -25,16 +24,12 @@ const ModalTerminate = (props) => {
     handleSubmit(values);
   };
 
-  const changeDate = (_, dateValue) => {
-    setDate(dateValue);
-  };
-
   return (
     <Modal
       visible={visible}
       className={styles.terminateModal}
       title={false}
-      onCancel={handleCandelModal}
+      onCancel={handleCancelModal}
       destroyOnClose
       footer={false}
     >
@@ -81,7 +76,6 @@ const ModalTerminate = (props) => {
             <DatePicker
               className={styles.datePicker}
               format={dateFormat}
-              onChange={changeDate}
               disabledDate={(current) => {
                 return current && current > moment().endOf('day');
               }}
@@ -90,7 +84,7 @@ const ModalTerminate = (props) => {
           <Form.Item className={styles.flexContent}>
             <Button
               className={`${styles.btnGroup} ${styles.btnCancel}`}
-              onClick={handleCandelModal}
+              onClick={handleCancelModal}
               disabled={loading}
             >
               Cancel
