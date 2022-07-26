@@ -113,8 +113,8 @@ class ModalAddBenefit extends Component {
   };
 
   destroyOnClose = () => {
-    const { handleCandelModal = () => {} } = this.props;
-    handleCandelModal();
+    const { handleCancelModal = () => {} } = this.props;
+    handleCancelModal();
   };
 
   handlePreview = (nameFile, idFile) => {
@@ -189,7 +189,7 @@ class ModalAddBenefit extends Component {
   };
 
   onFinish = (value) => {
-    const { countryId, dispatch, handleCandelModal = () => {} } = this.props;
+    const { countryId, dispatch, handleCancelModal = () => {} } = this.props;
     const { validTill, deductionDate, uploadedFileList = [] } = this.state;
 
     const documents = uploadedFileList?.map((item) => {
@@ -217,7 +217,7 @@ class ModalAddBenefit extends Component {
         const { statusCode } = response;
         if (statusCode === 200) {
           this.setState({ uploadedFileList: [], fileNameList: [] });
-          handleCandelModal();
+          handleCancelModal();
         }
       });
     } else {

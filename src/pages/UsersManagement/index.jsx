@@ -1,54 +1,24 @@
-import React, { PureComponent } from 'react';
-import { formatMessage, connect } from 'umi';
-import { Skeleton } from 'antd';
+import { Skeleton, Tabs } from 'antd';
+import React, { useEffect } from 'react';
+import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
+import { goToTop } from '@/utils/utils';
+import DirectoryComponent from './components/Directory';
 import styles from './index.less';
-import TableContainer from './components/TableContainer';
 
-@connect(
-  ({
-    loading,
-    location: { companyLocationList = [] } = {},
-    user: {
-      companiesOfUser = [],
-      currentUser: { roles = [], signInRole = [], manageTenant = [] } = {},
-    } = {},
-  }) => ({
-    roles,
-    signInRole,
-    manageTenant,
-    companiesOfUser,
-    companyLocationList,
-    loadingFetchLocations:
-      loading.effects['location/fetchLocationsByCompany'] ||
-      loading.effects['location/fetchLocationListByParentCompany'],
-  }),
-)
-class UsersManagement extends PureComponent {
-  componentDidMount = async () => {
-    const { dispatch } = this.props;
-    const tenantId = getCurrentTenant();
-    const company = getCurrentCompany();
-    // const checkIsOwner = isOwner();
-    await dispatch({
-      type: 'usersManagement/fetchFilterList',
-      payload: {
-        id: company,
-        tenantId,
-      },
-    });
-    this.fetchData();
-  };
+const { TabPane } = Tabs;
 
-  fetchData = async () => {
-    const { dispatch } = this.props;
-    const companyId = getCurrentCompany();
-    const tenantId = getCurrentTenant();
-    const checkIsOwner = isOwner();
+const UsersManagement = (props) => {
+  const { dispatch, loadingMain = false } = props;
 
+  const companyId = getCurrentCompany();
+  const tenantId = getCurrentTenant();
+  const checkIsOwner = isOwner();
+
+  const fetchData = async () => {
     if (checkIsOwner) {
-      await dispatch({
+      dispatch({
         type: 'location/fetchLocationListByParentCompany',
         payload: {
           company: companyId,
@@ -56,7 +26,7 @@ class UsersManagement extends PureComponent {
         },
       });
     } else {
-      await dispatch({
+      dispatch({
         type: 'location/fetchLocationsByCompany',
         payload: {
           company: companyId,
@@ -70,41 +40,66 @@ class UsersManagement extends PureComponent {
     });
   };
 
-  componentWillUnmount = async () => {
-    const { dispatch } = this.props;
-    await dispatch({
-      type: 'usersManagement/save',
+  useEffect(() => {
+    dispatch({
+      type: 'usersManagement/fetchFilterList',
       payload: {
-        activeEmployeesList: [],
-        inActiveEmployeesList: [],
-        employeeDetail: [],
-        filterList: {},
+        id: companyId,
+        tenantId,
       },
     });
-  };
+    fetchData();
+    goToTop();
+    return () => {
+      dispatch({
+        type: 'usersManagement/save',
+        payload: {
+          employeeList: [],
+          employeeDetail: [],
+          filterList: {},
+        },
+      });
+    };
+  }, []);
 
-  operations = () => {
-    return <div />;
-  };
+  return (
+    <PageContainer>
+      <div className={styles.containerDirectory}>
+        <Tabs activeKey="list" destroyInactiveTabPane>
+          <TabPane tab="Users Management" key="list">
+            {loadingMain ? (
+              <div style={{ padding: 24 }}>
+                <Skeleton />
+              </div>
+            ) : (
+              <DirectoryComponent />
+            )}
+          </TabPane>
+        </Tabs>
+      </div>
+    </PageContainer>
+  );
+};
 
-  render() {
-    const { loadingFetchLocations = false, companyLocationList = [] } = this.props;
-    return (
-      <PageContainer>
-        <div className={styles.containerUsers}>
-          <div className={styles.headerText}>
-            <span>{formatMessage({ id: 'pages_admin.users.title' })}</span>
-          </div>
-          {loadingFetchLocations && companyLocationList.length === 0 ? (
-            <div style={{ padding: '24px' }}>
-              <Skeleton />
-            </div>
-          ) : (
-            <TableContainer />
-          )}
-        </div>
-      </PageContainer>
-    );
-  }
-}
-export default UsersManagement;
+export default connect(
+  ({
+    user: {
+      permissions = {},
+      companiesOfUser = [],
+      currentUser: { roles = [], signInRole = [], manageTenant = [] } = {},
+    } = {},
+    location: { companyLocationList = [] } = {},
+    loading,
+  }) => ({
+    roles,
+    signInRole,
+    companyLocationList,
+    companiesOfUser,
+    manageTenant,
+    permissions,
+    loadingMain:
+      loading.effects['location/fetchLocationsByCompany'] ||
+      loading.effects['location/fetchLocationListByParentCompany'] ||
+      loading.effects['user/fetchCompanyOfUser'],
+  }),
+)(UsersManagement);

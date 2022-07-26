@@ -41,10 +41,7 @@ const processCSVData = (array = []) => {
 };
 
 export const exportCSV = (data) => {
-  exportArrayDataToCsv(
-    `Time-Off-Report-${moment().format('YYYY-MM-DD')}.csv`,
-    processCSVData(data),
-  );
+  exportArrayDataToCsv(`Time-Off-Report-${moment().format('YYYY-MM-DD')}`, processCSVData(data));
 };
 
 export default {

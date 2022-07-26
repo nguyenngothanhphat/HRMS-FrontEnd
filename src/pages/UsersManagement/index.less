@@ -1,15 +1,47 @@
-.containerUsers {
-  .headerText {
-    display: flex;
-    align-items: center;
-    height: 60px;
-    padding: 0 20px;
-    background-color: white;
-    border-bottom: 1px solid #f0f0f0;
-    span {
-      color: @primary-color;
+.containerDirectory {
+  // min-height: 100vh;
+  background-color: #f6f7f9;
+
+  .viewActivityBox {
+    position: relative;
+    margin-right: 40px;
+  }
+
+  .viewActivityButton {
+    width: 168px;
+    height: 40px;
+    object-fit: contain;
+    color: @primary-color;
+    font-weight: 500;
+    font-size: 14px;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.13px;
+    background-color: rgba(86, 138, 250, 0.07);
+    border: none;
+    border-radius: 5px;
+  }
+
+  :global {
+    // .ant-tabs > .ant-tabs-nav,
+    // .ant-tabs > div > .ant-tabs-nav {
+    //   height: 50px;
+    // }
+    .ant-tabs-tab-btn {
+      color: #707177;
       font-weight: 500;
-      font-size: 18px;
+      opacity: 1;
     }
+    .ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar-animated,
+    .ant-tabs-bottom > .ant-tabs-nav .ant-tabs-ink-bar-animated,
+    .ant-tabs-top > div > .ant-tabs-nav .ant-tabs-ink-bar-animated,
+    .ant-tabs-bottom > div > .ant-tabs-nav .ant-tabs-ink-bar-animated {
+      height: 3px;
+    }
+    // .ant-tabs-ink-bar {
+    //   display: none;
+
+    // }
   }
 }

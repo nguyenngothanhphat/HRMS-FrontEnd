@@ -221,7 +221,7 @@ class HealthWellbeing extends Component {
           idBenefit={idBenefit}
           idCountry={idCountry}
           visible={openModal}
-          handleCandelModal={this.closeModal}
+          handleCancelModal={this.closeModal}
         />
         <ViewDocumentModal
           visible={openViewDoc}

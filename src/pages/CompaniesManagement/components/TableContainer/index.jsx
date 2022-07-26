@@ -1,9 +1,9 @@
+import { Layout, Tabs } from 'antd';
 import React, { PureComponent } from 'react';
-import { connect, formatMessage, Link, history } from 'umi';
-import { Tabs, Layout } from 'antd';
+import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import TableCompanies from '../TableCompanies';
-import TabFilter from '../TabFilter';
+// import TabFilter from '../TabFilter';
 import styles from './index.less';
 
 @connect(({ loading, companiesManagement: { companiesList = [] } }) => ({
@@ -16,7 +16,6 @@ class TableContainer extends PureComponent {
     this.state = {
       tabId: 1,
       collapsed: true,
-      changeTab: false,
     };
   }
 
@@ -51,7 +50,7 @@ class TableContainer extends PureComponent {
     history.push('/control-panel/add-company');
   };
 
-  rightButton = (collapsed) => {
+  rightButton = () => {
     return (
       <div className={styles.tabBarExtra}>
         <div onClick={this.handleRedirect}>
@@ -60,16 +59,6 @@ class TableContainer extends PureComponent {
             <p className={styles.buttonAddImport_text}>
               {formatMessage({ id: 'pages_admin.companies.table.addEmployee' })}
             </p>
-          </div>
-        </div>
-        <div className={styles.filterSider} onClick={this.handleToggle}>
-          <div
-            className={`${styles.filterButton} ${
-              collapsed ? '' : `${styles.filterBackgroundButton}`
-            }`}
-          >
-            <img src="/assets/images/iconFilter.svg" alt="filter" />
-            <p className={styles.textButtonFilter}>Filter</p>
           </div>
         </div>
       </div>
@@ -96,7 +85,7 @@ class TableContainer extends PureComponent {
     const { TabPane } = Tabs;
     const { loadingCompaniesList } = this.props;
     const companies = this.getCompanies();
-    const { collapsed, changeTab } = this.state;
+    const { collapsed } = this.state;
     return (
       <div className={styles.tableContainer}>
         <div className={styles.tableContent}>
@@ -110,13 +99,13 @@ class TableContainer extends PureComponent {
                 <Content className="site-layout-background">
                   <TableCompanies loading={loadingCompaniesList} data={companies} />
                 </Content>
-                <TabFilter
+                {/* <TabFilter
                   onToggle={this.handleToggle}
                   collapsed={collapsed}
                   FormBox={this.handleFormBox}
                   // onHandleChange={this.handleChange}
                   changeTab={changeTab}
-                />
+                /> */}
               </Layout>
             </TabPane>
           </Tabs>

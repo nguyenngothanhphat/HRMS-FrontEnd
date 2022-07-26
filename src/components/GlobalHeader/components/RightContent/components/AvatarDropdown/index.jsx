@@ -18,7 +18,7 @@ import {
 } from '@/utils/authority';
 import avtDefault from '@/assets/avtDefault.jpg';
 import styles from '../../../../index.less';
-import HeaderDropdown from '../HeaderDropdown';
+import HeaderDropdown from '../Dropdown';
 
 const AvatarDropdown = (props) => {
   const intl = useIntl();

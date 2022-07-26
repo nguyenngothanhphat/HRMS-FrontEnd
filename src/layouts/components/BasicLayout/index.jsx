@@ -96,7 +96,13 @@ const BasicLayout = (props) => {
         </Button> */}
           {logoUrl || logoCompany ? (
             <Link to="/">
-              <img src={logoCompany || logoUrl || logo} alt="logo" />
+              <img
+                src={logoCompany || logoUrl || logo}
+                alt="logo"
+                onError={(e) => {
+                  e.target.src = logo;
+                }}
+              />
             </Link>
           ) : null}
         </div>

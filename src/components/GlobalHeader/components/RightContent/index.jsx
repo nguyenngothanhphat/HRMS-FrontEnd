@@ -10,20 +10,13 @@ import { disconnectSocket, socket } from '@/utils/socket';
 import CommonModal from '../../../CommonModal';
 import styles from '../../index.less';
 import AvatarDropdown from './components/AvatarDropdown';
-import GlobalSearchNew from './components/GlobalSearchNew';
-import QuestionDropdown from './components/QuestionDropdown';
+import GlobalSearchNew from './components/GlobalSearch';
+import MenuDropdown from './components/MenuDropdown';
 import SelectCompanyModal from './components/SelectCompanyModal';
 
 const RightContent = (props) => {
-  const {
-    dispatch,
-    theme,
-    layout,
-    currentUser,
-    companiesOfUser,
-    unseenTotal,
-    activeConversationUnseen,
-  } = props;
+  const { dispatch, theme, currentUser, companiesOfUser, unseenTotal, activeConversationUnseen } =
+    props;
 
   const saveNewMessage = async (message) => {
     await dispatch({
@@ -49,17 +42,12 @@ const RightContent = (props) => {
     });
   };
 
+  const [modalVisible, setModalVisible] = useState(false);
   const [isSwitchCompanyVisible, setIsSwitchCompanyVisible] = useState(false);
   const [notification, setNotification] = useState(unseenTotal);
+
   const checkIsOwner =
     isOwner() && currentUser.signInRole.map((role) => role.toLowerCase()).includes('owner');
-  const [modalVisible, setModalVisible] = useState(false);
-
-  let className = styles.right;
-
-  if (theme === 'dark') {
-    className = `${styles.right} ${styles.dark}`;
-  }
 
   useEffect(() => {
     fetchNotificationList();
@@ -74,9 +62,9 @@ const RightContent = (props) => {
   }, [unseenTotal, activeConversationUnseen]);
 
   return (
-    <div className={className}>
+    <div className={theme === 'dark' ? `${styles.right} ${styles.dark}` : styles.right}>
       <GlobalSearchNew />
-      <QuestionDropdown />
+      <MenuDropdown />
       <Badge
         className={`${styles.action} ${styles.notify}`}
         onClick={() => setModalVisible(true)}

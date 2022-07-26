@@ -40,7 +40,13 @@ const Header = (props) => {
   };
 
   const onSaveDebounce = debounce((values) => {
-    setPayload(values);
+    const from = values.from ? moment(values.from).format('YYYY-MM-DD') : null;
+    const to = values.to ? moment(values.to).format('YYYY-MM-DD') : null;
+    setPayload({
+      ...values,
+      from,
+      to,
+    });
   }, 500);
 
   const onValuesChange = (changedValues, allValues) => {
