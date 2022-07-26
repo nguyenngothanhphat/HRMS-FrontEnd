@@ -111,14 +111,6 @@ const TimeOffManagement = (props) => {
 
   useEffect(() => {
     dispatch({
-      type: 'timeOffManagement/getListEmployeesEffect',
-      payload: {
-        company: getCurrentCompany(),
-        tenantId: getCurrentTenant(),
-        status: ['INACTIVE', 'ACTIVE'],
-      },
-    });
-    dispatch({
       type: 'timeOffManagement/getTimeOffTypeListEffect',
       payload: {
         company: getCurrentCompany(),

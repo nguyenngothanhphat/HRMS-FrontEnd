@@ -27,14 +27,16 @@ const timeOffManagement = {
   },
   effects: {
     *getListEmployeesEffect({ payload = {} }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getListEmployees, payload);
+        response = yield call(getListEmployees, payload);
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listEmployees: data } });
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *getListTimeOffEffect({ payload = {} }, { call, put }) {
