@@ -8,10 +8,14 @@ import HistoryModal from './components/History';
 import editIcon from '@/assets/resource-management-edit-history.svg';
 import historyIcon from '@/assets/resource-management-edit1.svg';
 import addAction from '@/assets/resource-action-add1.svg';
+import changeManagerIcon from '@/assets/resourceManagement/changeManagerIcon.svg';
+import currentToNewManager from '@/assets/resourceManagement/currentToNewManager.svg';
 import styles from './index.less';
 import ProjectProfile from '../ComplexView/components/PopoverProfiles/components/ProjectProfile';
 import CommentModal from './components/Comment';
 import CommentOverlay from '../ComplexView/components/Overlay';
+import ChangeManagerModal from './components/ChangeManager';
+import WarnningModal from './components/Warnning';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import EmptyComponent from '@/components/Empty';
 import UserProfilePopover from '@/components/UserProfilePopover';
@@ -44,6 +48,8 @@ class TableResources extends PureComponent {
       dataPassRow: {},
       visibleAdd: false,
       visibleHistory: false,
+      visibleManagerChange: false,
+      visibleModalWarn: false,
     };
   }
 
@@ -89,6 +95,42 @@ class TableResources extends PureComponent {
       visibleHistory: false,
     });
   };
+
+  showModalManagerChange = (row) => {
+    if (row.projects && row.projects.length > 1) {
+      this.setState({
+        visibleModalWarn: true,
+        dataPassRow: row,
+      });
+    } else {
+      this.setState({
+        visibleManagerChange: true,
+        dataPassRow: row,
+      });
+    }
+  };
+
+  handleCancelChangeManager = () => {
+    this.setState({
+      visibleManagerChange: false,
+    });
+  };
+
+  handleCancelWarnning = () => {
+    this.setState({
+      visibleModalWarn: false,
+    });
+  }
+
+  isShowModalManagerChange = (row) => {
+    this.setState({
+      visibleManagerChange: true,
+      dataPassRow: row
+    });
+    this.setState({
+      visibleModalWarn: false,
+    });
+  }
 
   setCurrentTime = () => {
     // compare two time by hour & minute. If minute changes, get new time
@@ -171,7 +213,14 @@ class TableResources extends PureComponent {
       allowModify = true,
     } = this.props;
 
-    const { visible, dataPassRow, visibleHistory, visibleAdd } = this.state;
+    const {
+      visible,
+      dataPassRow,
+      visibleHistory,
+      visibleAdd,
+      visibleManagerChange,
+      visibleModalWarn,
+    } = this.state;
 
     const pagination = {
       position: ['bottomLeft'],
@@ -338,6 +387,34 @@ class TableResources extends PureComponent {
           //   return localCompare(a.designation, b.designation);
           // },
           // sortDirections: ['ascend', 'descend'],
+        },
+        {
+          title: 'Current Manager',
+          dataIndex: 'managerName',
+          key: 'managerName',
+          render: (value, row, index) => {
+            const managerChanged = row.managerChanged
+              ? row.managerChanged?.managerInfo?.generalInfo.legalName
+              : '';
+            const dateEffective =
+              row.managerChanged && row.managerChanged.effectiveDate
+                ? moment(row.managerChanged.effectiveDate).locale('en').format('Do MMMM YYYY')
+                : '';
+            const children = (
+              <span className={styles.basicCellField}>
+                {value}
+                {row.managerChanged ? (
+                  <p>
+                    <img src={currentToNewManager} alt="" />{' '}
+                    <a href="#" className={styles.currentToNewManager}>
+                      {managerChanged} <p>{dateEffective}</p>
+                    </a>
+                  </p>
+                ) : null}
+              </span>
+            );
+            return getRowSpan(children, row, index);
+          },
         },
         {
           title: 'Experience (in yrs)',
@@ -614,6 +691,13 @@ class TableResources extends PureComponent {
                   )}
 
                   <img
+                    src={changeManagerIcon}
+                    alt="changemangerIcon"
+                    onClick={() => this.showModalManagerChange(row)}
+                    className={styles.buttonAdd}
+                  />
+
+                  <img
                     src={historyIcon}
                     alt="historyIcon"
                     onClick={() => this.showModalHistory(row)}
@@ -663,6 +747,21 @@ class TableResources extends PureComponent {
           visible={visibleHistory}
           dataPassRow={dataPassRow}
           onClose={() => this.handleCancelHistory(false)}
+          mode="multiple"
+        />
+        <ChangeManagerModal
+          visible={visibleManagerChange}
+          refreshData={refreshData}
+          dataPassRow={dataPassRow}
+          onClose={() => this.handleCancelChangeManager(false)}
+          mode="multiple"
+        />
+        <WarnningModal
+          visible={visibleModalWarn}
+          refreshData={refreshData}
+          dataPassRow={dataPassRow}
+          onClose={() => this.handleCancelWarnning(false)}
+          onClick={() => this.isShowModalManagerChange(dataPassRow)}
           mode="multiple"
         />
       </div>

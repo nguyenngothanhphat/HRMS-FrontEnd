@@ -34,10 +34,10 @@ export const checkUtilization = (projects) => {
 export function formatData(rawData) {
   const dataList = [];
   rawData.forEach((obj) => {
-    const { titleInfo, generalInfo, projects } = obj;
+    const { titleInfo, generalInfo, projects, managerInfo, changeManagerInfo } = obj;
     const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
     const employeeName = `${generalInfo.legalName} ${userName ? `(${userName})` : ''}`;
-    
+    const managerName = managerInfo.generalInfo ? managerInfo.generalInfo.legalName : ''
     const projectList = projects.filter(item => {
       const revisedEndDate = item?.revisedEndDate
       const endDate = item?.endDate
@@ -64,6 +64,8 @@ export function formatData(rawData) {
       endDate: projectList,
       revisedEndDate: projectList,
       resourceId: 0,
+      managerName,
+      managerChanged: changeManagerInfo,
     };
     dataList.push(newObj);
   });
