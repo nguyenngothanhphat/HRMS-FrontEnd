@@ -1,7 +1,6 @@
 import { Button, Form, Input, Modal, Select } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { connect } from 'umi';
-import EditorQuill from '@/components/EditorQuill';
 import styles from './index.less';
 
 const EditQuestionAnswer = (props) => {
@@ -10,7 +9,7 @@ const EditQuestionAnswer = (props) => {
   const [form] = Form.useForm();
   const {
     dispatch,
-    item: { id = '', question = '', nameCategory = '' } = {},
+    item: { id = '', question = '', nameCategory = '', answer = '' } = {},
     employeeId = '',
     onClose = () => {},
     selectedCountry = '',
@@ -18,25 +17,12 @@ const EditQuestionAnswer = (props) => {
     visible = false,
     listCategory = [],
   } = props;
-  const [answer, setAnswer] = useState('');
-
-  const {
-    item: { answer: currentAnswer = '' },
-  } = props;
-
-  useEffect(() => {
-    setAnswer(currentAnswer);
-  }, [currentAnswer]);
-
-  const callback = (value) => {
-    setAnswer(value);
-  };
 
   const handleCancel = () => {
     onClose();
   };
 
-  const handleFinish = ({ question: quest = '', faqCategory = '' }) => {
+  const handleFinish = ({ question: quest = '', faqCategory = '', answer: newAnswer = '' }) => {
     dispatch({
       type: 'faqs/updateQuestion',
       payload: {
@@ -44,7 +30,7 @@ const EditQuestionAnswer = (props) => {
         employeeId,
         category: faqCategory,
         question: quest,
-        answer,
+        answer: newAnswer,
       },
     }).then((response) => {
       const { statusCode } = response;
@@ -78,7 +64,7 @@ const EditQuestionAnswer = (props) => {
           initialValues={{
             faqCategory: nameCategory,
             question,
-            // answer: item ? item.answer : '',
+            answer,
           }}
         >
           <Form.Item
@@ -103,8 +89,7 @@ const EditQuestionAnswer = (props) => {
             <Input />
           </Form.Item>
           <Form.Item label="Answer" name="answer" labelCol={{ span: 24 }}>
-            {/* <TextArea rows={4} /> */}
-            <EditorQuill messages={answer} handleChangeEmail={callback} />
+            <TextArea rows={4} />
           </Form.Item>
         </Form>
       </div>

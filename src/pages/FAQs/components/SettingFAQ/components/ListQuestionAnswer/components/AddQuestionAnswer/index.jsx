@@ -1,8 +1,7 @@
+import { Button, Form, Input, Modal, Select } from 'antd';
 import React, { Component } from 'react';
-import { Form, Input, Select, Modal, Button } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
-import EditorQuill from '@/components/EditorQuill';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -25,25 +24,16 @@ class AddQuestionAnswer extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      answer: '',
-    };
+    this.state = {};
   }
-
-  callback = (value) => {
-    this.setState({
-      answer: value,
-    });
-  };
 
   handleCancel = () => {
     const { onClose = () => {} } = this.props;
     onClose();
   };
 
-  onFinish = async ({ FaqCategory, question }) => {
+  onFinish = async ({ FaqCategory = '', question = '', answer = '' }) => {
     const { dispatch, employeeId = '', onClose = () => {}, selectedCountry = '' } = this.props;
-    const { answer } = this.state;
     dispatch({
       type: 'faqs/addQuestion',
       payload: {
@@ -69,7 +59,6 @@ class AddQuestionAnswer extends Component {
 
   render() {
     const { visible, loadingAdd, listCategory = [], listFAQ = [] } = this.props;
-    const { answer } = this.state;
     const renderModalHeader = () => {
       return (
         <div className={styles.header}>
@@ -121,8 +110,7 @@ class AddQuestionAnswer extends Component {
               <Input />
             </Form.Item>
             <Form.Item label="Answer" name="answer" labelCol={{ span: 24 }}>
-              {/* <TextArea rows={4} /> */}
-              <EditorQuill messages={answer} handleChangeEmail={this.callback} />
+              <TextArea rows={4} />
             </Form.Item>
           </Form>
         </div>

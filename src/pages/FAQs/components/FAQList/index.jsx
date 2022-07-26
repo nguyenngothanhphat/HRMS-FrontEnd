@@ -3,10 +3,12 @@ import { Row, Col, Menu, Collapse } from 'antd';
 // import { SettingOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
+import Parser from 'html-react-parser';
 import ContactPage from '../ContactPage';
 import viewQuestionContent from '@/assets/faqPage/viewQuestionContent.svg';
 import closeViewAnswer from '@/assets/faqPage/closeViewAnswer.svg';
 import styles from './index.less';
+import { hashtagify, urlify } from '@/utils/homePage';
 
 const { Panel } = Collapse;
 @connect(
@@ -74,6 +76,10 @@ class FAQList extends PureComponent {
       const getListFAQ = listCategoryMainPage.filter(
         (val) => val._id.toString() === key.toString(),
       );
+      const renderContent = (text) => {
+        const temp = urlify(text);
+        return hashtagify(temp);
+      };
       let listFAQ = [];
       let categoryName = '';
       if (isEmpty(getListFAQ)) {
@@ -121,7 +127,7 @@ class FAQList extends PureComponent {
                     className={styles.viewCenter__title__text__view}
                   >
                     <Panel header={obj.question} key={obj._id}>
-                      <div dangerouslySetInnerHTML={{ __html: obj.answer }} />
+                      {obj.answer ? Parser(renderContent(obj.answer)) : ''}
                     </Panel>
                   </Collapse>
                   <br />

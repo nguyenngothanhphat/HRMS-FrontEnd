@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Modal } from 'antd';
+import Parser from 'html-react-parser';
 import styles from './index.less';
+import { hashtagify, urlify } from '@/utils/homePage';
 
 class ViewQuestionAnswer extends Component {
   constructor(props) {
@@ -22,6 +24,10 @@ class ViewQuestionAnswer extends Component {
         </div>
       );
     };
+    const renderContent = (text) => {
+      const temp = urlify(text);
+      return hashtagify(temp);
+    };
     const renderModalContent = () => {
       return (
         <div className={styles.content}>
@@ -29,7 +35,7 @@ class ViewQuestionAnswer extends Component {
             <b>Question:</b> {item ? item.question : ''}
           </p>
           <p>
-            <b>Answer:</b> {item ? <span dangerouslySetInnerHTML={{ __html: item.answer }} /> : ''}
+            <b>Answer:</b> {item.answer ? Parser(renderContent(item.answer)) : ''}
           </p>
         </div>
       );
