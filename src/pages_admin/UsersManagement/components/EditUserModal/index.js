@@ -157,7 +157,6 @@ class EditUserModal extends PureComponent {
         tenantId: tenant,
       },
     });
-  
     dispatch({
       type: 'usersManagement/updateEmployee',
       payload: {

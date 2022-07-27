@@ -157,7 +157,7 @@ class TableContainer extends PureComponent {
       state = [],
       roles = [],
       page,
-      // limit,
+      limit,
     } = params;
 
     let locationPayload = [];
@@ -249,12 +249,20 @@ class TableContainer extends PureComponent {
       await dispatch({
         type: 'usersManagement/fetchEmployeesList',
         payload: { ...payload, status: ['ACTIVE'] },
+        params: {
+          page,
+          limit,
+        },
       });
     }
     if (tabId === 2) {
       await dispatch({
         type: 'usersManagement/fetchEmployeesList',
         payload: { ...payload, status: ['INACTIVE'] },
+        params: {
+          page,
+          limit,
+        },
       });
     }
   };
@@ -364,12 +372,20 @@ class TableContainer extends PureComponent {
       await dispatch({
         type: 'usersManagement/fetchEmployeesList',
         payload: { ...payload, status: ['ACTIVE'] },
+        params: {
+          page,
+          limit,
+        },
       });
     }
     if (tabId === 2) {
       await dispatch({
         type: 'usersManagement/fetchEmployeesList',
         payload: { ...payload, status: ['INACTIVE'] },
+        params: {
+          page,
+          limit,
+        },
       });
     }
   };

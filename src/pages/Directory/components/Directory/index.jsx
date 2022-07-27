@@ -6,7 +6,12 @@ import iconDownload from '@/assets/download-icon-yellow.svg';
 import DirectoryTable from './components/DirectoryTable';
 import AddEmployeeModal from './components/AddEmployeeModal';
 import ImportEmployeeModal from './components/ImportEmployeeModal';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import {
+  getCurrentCompany,
+  getCurrentLocation,
+  getCurrentTenant,
+  isOwner,
+} from '@/utils/authority';
 import exportToCsv from '@/utils/exportToCsv';
 import FilterPopover from '@/components/FilterPopover';
 import FilterButton from '@/components/FilterButton';
@@ -116,10 +121,12 @@ const DirectoryComponent = (props) => {
 
   const renderData = (params = {}) => {
     const { active, myTeam, inActive } = tabList;
-
+    const currentCompany = getCurrentCompany();
+    const currentLocation = getCurrentLocation();
     const {
       // country = [], state = [],
       page = 1,
+      company = [],
     } = params;
 
     // if there are location & company, call API
@@ -127,12 +134,25 @@ const DirectoryComponent = (props) => {
       companiesOfUser.length > 0 && companyLocationList.length > 0 && listCountry.length > 0;
 
     if (checkCallAPI) {
+      // MULTI COMPANY & LOCATION PAYLOAD
+      let companyPayload = [];
+      const companyList = companiesOfUser.filter(
+        (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
+      );
+      const isOwnerCheck = isOwner();
+      // OWNER
+      if (!currentLocation && isOwnerCheck) {
+        if (company.length !== 0) {
+          companyPayload = companyList.filter((lo) => company.includes(lo?._id));
+        } else {
+          companyPayload = [...companyList];
+        }
+      } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
       const payload = {
         ...params,
-        company: getCurrentCompany(),
+        company: isOwnerCheck ? getCurrentCompany() : companyPayload,
         tenantId: getCurrentTenant(),
       };
-
       setPageSelected(page || 1);
 
       // permissions to view tab
@@ -144,6 +164,7 @@ const DirectoryComponent = (props) => {
         dispatch({
           type: 'employee/fetchListEmployeeActive',
           payload,
+          params,
         });
       }
 
@@ -164,6 +185,7 @@ const DirectoryComponent = (props) => {
         dispatch({
           type: 'employee/fetchListEmployeeInActive',
           payload,
+          params,
         });
       }
     }
