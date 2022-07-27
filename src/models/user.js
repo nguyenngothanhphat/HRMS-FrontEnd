@@ -12,10 +12,9 @@ import {
   setFirstChangePassword,
   setIsFirstLogin,
   setIsSwitchingRole,
-  setTenantId,
+  setTenantId
 } from '@/utils/authority';
 import { checkPermissions } from '@/utils/permissions';
-import URLS from '@/constants/url';
 
 const UserModel = {
   namespace: 'user',
@@ -46,7 +45,7 @@ const UserModel = {
         const { country = '' } = data?.location?.headQuarterAddress || {};
         setCountry(JSON.stringify(country));
         if (statusCode !== 200) {
-          history.push(URLS.LOGIN.MAIN);
+          history.push('/login');
           throw response;
         }
 
@@ -65,7 +64,7 @@ const UserModel = {
         const isOnlyCandidate = isCandidate && formatRole.length === 1;
 
         if (isFirstLogin && !candidateLinkMode && !isSigninGoogle && !isCandidate) {
-          history.replace(URLS.PASSWORD.FIRST_CHANGE_PASSWORD);
+          history.replace('/first-change-password');
           return 1;
         }
 

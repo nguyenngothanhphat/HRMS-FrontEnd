@@ -11,7 +11,6 @@ import {
 } from '@/utils/authority';
 import { setToken } from '@/utils/token';
 import { dialog } from '@/utils/utils';
-import URLS from '@/constants/url';
 
 const Model = {
   namespace: 'login',
@@ -50,7 +49,7 @@ const Model = {
         const isOnlyCandidate = isCandidate && formatRole.length === 1;
 
         if (isFirstLogin && !isOnlyCandidate) {
-          history.replace(URLS.PASSWORD.FIRST_CHANGE_PASSWORD);
+          history.replace('/first-change-password');
         }
 
         if (isOnlyCandidate) {
@@ -79,14 +78,14 @@ const Model = {
 
           // redirect
           if (isAdminOrOwner || isCandidate) {
-            history.replace(URLS.CONTROL_PANEL.MAIN);
+            history.replace('/control-panel');
           } else if (listCompany.length === 1) {
             const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
             setTenantId(tenantId);
             setCurrentCompany(selectedCompany);
             history.push('/');
           } else {
-            history.replace(URLS.CONTROL_PANEL.MAIN);
+            history.replace('/control-panel');
           }
         }
       } catch (errors) {
@@ -124,7 +123,7 @@ const Model = {
           permissions: {},
         },
       });
-      history.replace(URLS.LOGIN.MAIN);
+      history.replace('/login');
     },
     *logoutCandidate(_, { put }) {
       setToken('');
@@ -142,7 +141,7 @@ const Model = {
           permissions: {},
         },
       });
-      history.replace(URLS.CANDIDATE.MAIN);
+      history.replace('/candidate');
     },
     *loginGoogle({ payload }, { call, put }) {
       try {
@@ -166,7 +165,7 @@ const Model = {
         setIsSigninGoogle(isLoginGoogle);
 
         if (isFirstLogin && !isLoginGoogle) {
-          history.replace(URLS.PASSWORD.FIRST_CHANGE_PASSWORD);
+          history.replace('/first-change-password');
           return {};
         }
 
@@ -180,14 +179,14 @@ const Model = {
 
         // redirect
         if (isAdminOrOwner) {
-          history.replace(URLS.CONTROL_PANEL.MAIN);
+          history.replace('/control-panel');
         } else if (listCompany.length === 1) {
           const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
           setTenantId(tenantId);
           setCurrentCompany(selectedCompany);
           history.push('/');
         } else {
-          history.replace(URLS.CONTROL_PANEL.MAIN);
+          history.replace('/control-panel');
         }
       } catch (errors) {
         dialog(errors);

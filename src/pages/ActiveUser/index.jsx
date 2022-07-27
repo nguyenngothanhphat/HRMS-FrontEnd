@@ -1,9 +1,8 @@
-import React, { PureComponent } from 'react';
+import { CheckCircleOutlined, InfoCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
-import { LoadingOutlined, InfoCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
 import styles from './index.less';
-import URLS from '@/constants/url';
 
 @connect(({ loading }) => ({
   loadingActivateUser: loading.effects['signup/activeAdmin'],
@@ -70,7 +69,7 @@ class ActiveUser extends PureComponent {
               )}
               <Button
                 onClick={() => {
-                  history.push(URLS.LOGIN.MAIN);
+                  history.push('/login');
                 }}
               >
                 LOGIN

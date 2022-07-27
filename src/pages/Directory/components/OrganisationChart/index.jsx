@@ -32,6 +32,15 @@ const OrganisationChart = (props) => {
     setSelectedId(_id);
   }, [_id]);
 
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: 'employee/save',
+        payload: { dataOrgChart: {} },
+      });
+    };
+  }, []);
+
   const onClose = () => {
     setChartDetails({});
   };

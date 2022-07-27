@@ -3,6 +3,7 @@ import { Col, Image, Row } from 'antd';
 import Parser from 'html-react-parser';
 import React from 'react';
 import { getUrlFromString, hashtagify, urlify } from '@/utils/homePage';
+import PreviewImage from '@/assets/homePage/previewImage.png';
 import styles from './index.less';
 
 const PostContent = (props) => {
@@ -18,7 +19,12 @@ const PostContent = (props) => {
         return (
           <Row gutter={[4, 4]}>
             <Col span={24}>
-              <Image src={images[0]} />
+              <Image
+                src={images[0]}
+                onError={(e) => {
+                  e.target.src = PreviewImage;
+                }}
+              />
             </Col>
           </Row>
         );
@@ -26,10 +32,20 @@ const PostContent = (props) => {
         return (
           <Row gutter={[4, 4]}>
             <Col span={12}>
-              <Image src={images[0]} />
+              <Image
+                src={images[0]}
+                onError={(e) => {
+                  e.target.src = PreviewImage;
+                }}
+              />
             </Col>
             <Col span={12}>
-              <Image src={images[1]} />
+              <Image
+                src={images[1]}
+                onError={(e) => {
+                  e.target.src = PreviewImage;
+                }}
+              />
             </Col>
           </Row>
         );
@@ -37,14 +53,24 @@ const PostContent = (props) => {
         return (
           <Row gutter={[4, 4]}>
             <Col span={14}>
-              <Image src={images[0]} />
+              <Image
+                src={images[0]}
+                onError={(e) => {
+                  e.target.src = PreviewImage;
+                }}
+              />
             </Col>
             <Col span={10}>
               <Row gutter={[4, 4]}>
                 {images.slice(1, images.length).map((x, i) => {
                   return (
                     <Col span={i < 3 ? 24 : 0} key={`${i + 1}`}>
-                      <Image src={x} />
+                      <Image
+                        src={x}
+                        onError={(e) => {
+                          e.target.src = PreviewImage;
+                        }}
+                      />
                     </Col>
                   );
                 })}

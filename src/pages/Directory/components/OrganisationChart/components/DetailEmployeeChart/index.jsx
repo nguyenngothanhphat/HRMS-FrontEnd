@@ -192,7 +192,7 @@ const DetailEmployeeChart = (props) => {
         />
       </div>
       {checkObj && (
-        <Spin spinning={loadingFetchOrgChart}>
+        <Spin spinning={loadingFetchOrgChart} indicator={null}>
           <div className={styles.popupContainer}>
             {renderHeader()}
             <div className={styles.divider} />
