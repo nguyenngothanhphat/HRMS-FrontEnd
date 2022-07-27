@@ -4,7 +4,7 @@ import style from './index.less';
 
 class DocumentFilter extends PureComponent {
   render() {
-    const { onFilter, documentType, companiesOfUser } = this.props;
+    const { onFilter, documentType, uploadByList = [] } = this.props;
     return (
       <div className={style.docFilter}>
         <Form layout="vertical" name="filter" onFinish={(values) => onFilter(values)}>
@@ -21,7 +21,7 @@ class DocumentFilter extends PureComponent {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="By Company" name="byCompany">
+          <Form.Item label="By uploaded by" name="byUpload">
             <Select
               mode="multiple"
               allowClear
@@ -29,8 +29,8 @@ class DocumentFilter extends PureComponent {
               placeholder="Please select"
               onChange={this.handleChange}
             >
-              {companiesOfUser.map((item) => {
-                return <Select.Option key={item._id}>{item.name}</Select.Option>;
+              {uploadByList.map((item) => {
+                return <Select.Option key={item}>{item}</Select.Option>;
               })}
             </Select>
           </Form.Item>
