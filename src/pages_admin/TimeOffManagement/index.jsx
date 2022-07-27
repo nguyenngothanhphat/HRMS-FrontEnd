@@ -79,14 +79,20 @@ const TimeOffManagement = (props) => {
   const onExport = () => {
     dispatch({
       type: 'timeOffManagement/exportCSVEffect',
-      payload,
+      payload: {
+        ...payload,
+        types: (payload.types || []).reduce((a, b) => [...a, ...b], []),
+      },
     });
   };
 
   const onGetMissingLeaveDates = () => {
     dispatch({
       type: 'timeOffManagement/getMissingLeaveDatesEffect',
-      payload,
+      payload: {
+        ...payload,
+        types: (payload.types || []).reduce((a, b) => [...a, ...b], []),
+      },
     });
   };
 
