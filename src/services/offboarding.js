@@ -69,3 +69,11 @@ export async function getEmployeeList(payload) {
     data: payload,
   });
 }
+
+// terminate
+export async function terminateReason(payload) {
+  return request('/api/employeetenant/terminate-admin', {
+    method: 'POST',
+    data: payload,
+  });
+}

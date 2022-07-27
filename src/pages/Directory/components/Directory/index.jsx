@@ -6,7 +6,7 @@ import iconDownload from '@/assets/download-icon-yellow.svg';
 import DirectoryTable from './components/DirectoryTable';
 import AddEmployeeModal from './components/AddEmployeeModal';
 import ImportEmployeeModal from './components/ImportEmployeeModal';
-import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import exportToCsv from '@/utils/exportToCsv';
 import FilterPopover from '@/components/FilterPopover';
 import FilterButton from '@/components/FilterButton';
@@ -117,12 +117,8 @@ const DirectoryComponent = (props) => {
   const renderData = (params = {}) => {
     const { active, myTeam, inActive } = tabList;
 
-    const currentLocation = getCurrentLocation();
-    const currentCompany = getCurrentCompany();
-
     const {
       // country = [], state = [],
-      company = [],
       page = 1,
     } = params;
 
@@ -131,25 +127,10 @@ const DirectoryComponent = (props) => {
       companiesOfUser.length > 0 && companyLocationList.length > 0 && listCountry.length > 0;
 
     if (checkCallAPI) {
-      // MULTI COMPANY & LOCATION PAYLOAD
-      let companyPayload = [];
-      const companyList = companiesOfUser.filter(
-        (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
-      );
-      const isOwnerCheck = isOwner();
-
-      // OWNER
-      if (!currentLocation && isOwnerCheck) {
-        if (company.length !== 0) {
-          companyPayload = companyList.filter((lo) => company.includes(lo?._id));
-        } else {
-          companyPayload = [...companyList];
-        }
-      } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
-
       const payload = {
         ...params,
-        company: companyPayload,
+        company: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
       };
 
       setPageSelected(page || 1);
