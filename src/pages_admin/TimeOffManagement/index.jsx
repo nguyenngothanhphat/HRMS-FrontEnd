@@ -1,6 +1,7 @@
 import { Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import DownloadIcon from '@/assets/timeOffManagement/ic_download.svg';
 import CustomBlueButton from '@/components/CustomBlueButton';
 import { PageContainer } from '@/layouts/layout/src';
@@ -27,6 +28,8 @@ const TimeOffManagement = (props) => {
 
   const [selectedLocations, setSelectedLocation] = useState([]);
   const [payload, setPayload] = useState({});
+  const [fromDate, setFromDate] = useState(moment().startOf('month'));
+  const [toDate, setToDate] = useState(moment().endOf('month'));
   const [data, setData] = useState([]);
 
   const saveLocationToRedux = (arr) => {
@@ -76,17 +79,28 @@ const TimeOffManagement = (props) => {
     fetchTimeoffType();
   }, [JSON.stringify(selectedLocations)]);
 
+  const getFullPayload = () => {
+    const from = fromDate ? moment(fromDate).format('YYYY-MM-DD') : null;
+    const to = toDate ? moment(toDate).format('YYYY-MM-DD') : null;
+    return {
+      ...payload,
+      from,
+      to,
+      types: (payload.types || []).reduce((a, b) => [...a, ...b], []),
+    };
+  };
+
   const onExport = () => {
     dispatch({
       type: 'timeOffManagement/exportCSVEffect',
-      payload,
+      payload: getFullPayload(),
     });
   };
 
   const onGetMissingLeaveDates = () => {
     dispatch({
       type: 'timeOffManagement/getMissingLeaveDatesEffect',
-      payload,
+      payload: getFullPayload(),
     });
   };
 
@@ -188,7 +202,14 @@ const TimeOffManagement = (props) => {
       <PageContainer>
         <Tabs activeKey="overview" tabBarExtraContent={renderFilterBar()} destroyInactiveTabPane>
           <TabPane tab="Timeoff Management" key="overview">
-            <TableContainer payload={payload} setPayload={setPayload} />
+            <TableContainer
+              payload={payload}
+              setPayload={setPayload}
+              fromDate={fromDate}
+              setFromDate={setFromDate}
+              toDate={toDate}
+              setToDate={setToDate}
+            />
           </TabPane>
         </Tabs>
       </PageContainer>

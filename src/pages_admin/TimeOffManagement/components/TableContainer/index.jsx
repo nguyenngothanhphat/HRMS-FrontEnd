@@ -16,10 +16,12 @@ const TableContainer = (props) => {
     payload = {},
     setPayload = () => {},
     loadingFetchLocation = false,
+    fromDate = '',
+    toDate = '',
+    setFromDate = () => {},
+    setToDate = () => {},
   } = props;
 
-  const [fromDate, setFromDate] = useState(moment().startOf('month'));
-  const [toDate, setToDate] = useState(moment().endOf('month'));
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
