@@ -28,7 +28,7 @@ const BarGraph = (props) => {
               <span className={styles.label}>{reply.text}</span>
               <span className={styles.percent}>
                 {reply.percent}%{' '}
-                <Tooltip title={`${reply.count} of Employees whose votes have been recorded.`}>
+                <Tooltip title={`${reply.count} employees voted for this option`}>
                   <img src={WarningIcon} alt="icon" />
                 </Tooltip>
               </span>
