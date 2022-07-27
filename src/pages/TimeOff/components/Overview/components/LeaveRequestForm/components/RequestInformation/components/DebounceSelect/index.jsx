@@ -1,12 +1,19 @@
 import { Empty, Select, Spin } from 'antd';
-import { debounce } from 'lodash';
-import React, { useMemo, useRef, useState } from 'react';
+import { debounce, isEmpty } from 'lodash';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import styles from './index.less';
 
-const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
+const DebounceSelect = ({ fetchOptions, defaultLis, debounceTimeout = 800, ...props }) => {
   const [fetching, setFetching] = useState(false);
   const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    if (!isEmpty(defaultLis)) {
+      setOptions(defaultLis);
+    }
+  }, [defaultLis]);
+
   const fetchRef = useRef(0);
   const debounceFetcher = useMemo(() => {
     const loadOptions = (value) => {

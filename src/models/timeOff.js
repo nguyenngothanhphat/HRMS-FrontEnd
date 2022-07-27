@@ -12,6 +12,7 @@ import {
   getCompoffRequestById,
   getTimeOffTypes,
   getEmailsListByCompany,
+  getEmailsListWhenEdit,
   getProjectsListByEmployee,
   getLeaveRequestById,
   getLeaveRequestOfEmployee,
@@ -85,6 +86,7 @@ const timeOff = {
     timeOffTypesByCountry: [],
     employeeInfo: {},
     emailsList: [],
+    emailsListEdit: [],
     projectsList: [],
     viewingLeaveRequest: {},
     viewingCompoffRequest: {},
@@ -654,6 +656,25 @@ const timeOff = {
         yield put({
           type: 'save',
           payload: { emailsList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchEmailsListWhenEdit({ payload: { company = [] } = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getEmailsListWhenEdit, {
+          company,
+          tenantId: getCurrentTenant(),
+        });
+        // console.log('email res', response);
+        const { statusCode, data: emailsListEdit = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { emailsListEdit },
         });
       } catch (errors) {
         dialog(errors);

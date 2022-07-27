@@ -34,7 +34,7 @@ import {
   TIMEOFF_WORK_DAYS,
   WORKING_HOURS,
 } from '@/utils/timeOff';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import TimeOffModal from '@/components/TimeOffModal';
 import AddAttachments from './components/AddAttachments';
@@ -74,6 +74,7 @@ const RequestInformation = (props) => {
       } = {},
       employeeSchedule: { startWorkDay = {}, endWorkDay = {}, workDay = [] } = {},
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
+      emailsListEdit = [],
     } = {},
     user: { currentUser: { location = {}, employee = {} } = {} } = {},
     loadingAddLeaveRequest = false,
@@ -847,18 +848,14 @@ const RequestInformation = (props) => {
   }, [selectedTypeName, durationFrom]);
 
   useEffect(() => {
-    let emailList = [];
     if (action === EDIT_LEAVE_REQUEST) {
       dispatch({
-        type: 'timeOff/fetchEmailsListByCompany',
-        payload: {},
-      }).then((res) => {
-        if (res.statusCode === 200) {
-          emailList = res.data;
-        }
+        type: 'timeOff/fetchEmailsListWhenEdit',
+        payload: {
+          company: [getCurrentCompany()],
+        },
       });
     }
-    return emailList;
   }, []);
 
   const generateSecondNotice = () => {
@@ -1394,6 +1391,7 @@ const RequestInformation = (props) => {
                     allowClear
                     mode="multiple"
                     disabled={!selectedTypeName}
+                    defaultList={emailsListEdit}
                   />
                 </Form.Item>,
               )}
