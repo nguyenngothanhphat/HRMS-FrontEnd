@@ -202,7 +202,7 @@ const TimeOffRequestTab = (props) => {
   };
 
   useEffect(() => {
-    if (timeOffTypes.length > 0 || (currentPayloadTypes.length > 0 && isEmpty(filter))) {
+    if (timeOffTypes.length > 0 || search || (currentPayloadTypes.length > 0 && isEmpty(filter))) {
       fetchData();
     }
   }, [selectedTabNumber, page, limit, JSON.stringify(filter), JSON.stringify(currentPayloadTypes)]);
