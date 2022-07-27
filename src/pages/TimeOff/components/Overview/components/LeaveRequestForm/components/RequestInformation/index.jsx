@@ -733,6 +733,7 @@ const RequestInformation = (props) => {
         personCC: viewingCC,
         leaveTimeLists,
       });
+      console.log('🚀 ~ viewingCC', viewingCC);
 
       if (BY_HOUR) {
         generateHours(leaveTimeLists);
@@ -844,6 +845,21 @@ const RequestInformation = (props) => {
       }, 1000);
     }
   }, [selectedTypeName, durationFrom]);
+
+  useEffect(() => {
+    let emailList = [];
+    if (action === EDIT_LEAVE_REQUEST) {
+      dispatch({
+        type: 'timeOff/fetchEmailsListByCompany',
+        payload: {},
+      }).then((res) => {
+        if (res.statusCode === 200) {
+          emailList = res.data;
+        }
+      });
+    }
+    return emailList;
+  }, []);
 
   const generateSecondNotice = () => {
     switch (selectedType) {
