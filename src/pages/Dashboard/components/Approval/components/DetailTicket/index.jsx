@@ -1,15 +1,15 @@
+/* eslint-disable react/no-unescaped-entities */
 import { DownOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Col, Divider, Input, Modal, Popover, Row } from 'antd';
+import { Button, Col, Divider, Input, Modal, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import ModalImage from '@/assets/projectManagement/modalImage1.png';
 import CommonModal from '@/components/CommonModal';
-import { getCurrentCompany } from '@/utils/authority';
 import { TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
-import { getTimezoneViaCity } from '@/utils/times';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { dateFormatAPI } from '@/constants/timeSheet';
-import PopoverInfo from '../PopoverInfo';
+import { getCurrentCompany } from '@/utils/authority';
 import WeeklyTable from './components/WeeklyTable';
 import styles from './index.less';
 
@@ -40,7 +40,6 @@ const DetailTicket = (props) => {
         department: { name: departmentNameTimeSheet = '' } = {},
         manager: { legalName: legalNameManagerTimeSheet = '' } = {},
       } = {} || {},
-      employee = {},
       status = '',
       createdAt = '',
       fromDate = '',
@@ -54,7 +53,6 @@ const DetailTicket = (props) => {
     dispatch,
     loadingApprovel,
     loadingReject,
-    companyLocationList,
     myTimesheetByWeek = [],
     timeoffList = [],
     // location: { state: { currentDateProp: currentDateProps = '' } = {} } = {},
@@ -62,8 +60,6 @@ const DetailTicket = (props) => {
   const [showDetail, setShowDetail] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [comment, setComment] = useState('');
-  const [timezoneList, settimezoneList] = useState([]);
-  const [currentTime, setcurrentTime] = useState(moment());
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
   // const [selectedDate, setSelectedDate] = useState(moment());
   // const [selectedView, setSelectedView] = useState(VIEW_TYPE.W);
@@ -174,24 +170,6 @@ const DetailTicket = (props) => {
   const viewDetail = () => {
     setShowDetail(!showDetail);
   };
-  const fetchTimezone = () => {
-    const timeZoneList = [];
-    companyLocationList.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id: idLocation = '',
-      } = location;
-      timeZoneList.push({
-        locationId: idLocation,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    settimezoneList(timeZoneList);
-  };
 
   const renderUITimeOff = () => {
     return (
@@ -201,19 +179,7 @@ const DetailTicket = (props) => {
             Requester's Name:
           </Col>
           <Col span={16} className={styles.containEmployee}>
-            <Popover
-              content={
-                <PopoverInfo
-                  companyLocationList={companyLocationList}
-                  propsState={{ currentTime, timezoneList }}
-                  data={employee}
-                />
-              }
-              placement="bottomRight"
-              trigger="hover"
-            >
-              {nameInfo} ({userId})
-            </Popover>
+            {nameInfo} ({userId})
           </Col>
         </Row>
         <Row className={styles.ticketTimeoffInfo__row}>
@@ -237,7 +203,7 @@ const DetailTicket = (props) => {
             Request Date:
           </Col>
           <Col span={16} className={styles.contain}>
-            {moment(createdAt).locale('en').format('DD/MM/YYYY')}
+            {moment(createdAt).locale('en').format(DATE_FORMAT_MDY)}
           </Col>
         </Row>
         <Row className={styles.ticketTimeoffInfo__row}>
@@ -297,10 +263,6 @@ const DetailTicket = (props) => {
       </>
     );
   };
-
-  useEffect(() => {
-    fetchTimezone();
-  }, [companyLocationList]);
 
   return (
     <Modal

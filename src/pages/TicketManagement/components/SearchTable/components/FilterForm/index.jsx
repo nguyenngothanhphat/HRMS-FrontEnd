@@ -3,6 +3,7 @@ import { debounce } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import styles from './index.less';
 
@@ -123,8 +124,8 @@ const FilterForm = (props) => {
     );
     let payload = filterTemp;
     if (newValues.fromDate && newValues.toDate) {
-      const _fromDate = moment(newValues.fromDate).format('YYYY-MM-DD');
-      const _toDate = moment(newValues.toDate).format('YYYY-MM-DD');
+      const _fromDate = moment(newValues.fromDate).format(DATE_FORMAT_YMD);
+      const _toDate = moment(newValues.toDate).format(DATE_FORMAT_YMD);
       payload = {
         ...filterTemp,
         fromDate: _fromDate,

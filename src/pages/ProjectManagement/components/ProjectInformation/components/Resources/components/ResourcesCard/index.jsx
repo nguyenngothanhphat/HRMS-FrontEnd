@@ -14,7 +14,7 @@ import CommonTable from '@/components/CommonTable';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterPopover from '@/components/FilterPopover';
-import { DATE_FORMAT_LIST } from '@/constants/projectManagement';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import AddResourcesModal from '../AddResourcesModal';
 import FilterResourcesContent from './components/FilterResourcesContent';
 import styles from './index.less';
@@ -45,7 +45,7 @@ const EditableCell = ({
             },
           ]}
         >
-          <DatePicker format={DATE_FORMAT_LIST} />
+          <DatePicker format={DATE_FORMAT_MDY} />
         </Form.Item>
       ) : (
         children
@@ -93,9 +93,9 @@ const ResourcesCard = (props) => {
         type: 'projectDetails/updateResourceOfProjectEffect',
         payload: {
           id: findRecord.resourceId,
-          startDate: record.startDate ? moment(record.startDate).format('YYYY-MM-DD') : null,
+          startDate: record.startDate ? moment(record.startDate).format(DATE_FORMAT_YMD) : null,
           revisedEndDate: record.revisedEndDate
-            ? moment(record.revisedEndDate).format('YYYY-MM-DD')
+            ? moment(record.revisedEndDate).format(DATE_FORMAT_YMD)
             : null,
         },
       });
@@ -241,8 +241,8 @@ const ResourcesCard = (props) => {
   const renderTimeTitle = (title) => {
     return (
       <span className={styles.timeTitle}>
-        <span>{title}</span>
-        <span className={styles.smallText}>(mm/dd/yyyy)</span>
+        <span>{title}</span>{' '}
+        <span className={styles.smallText}>({DATE_FORMAT_MDY.toLowerCase()})</span>
       </span>
     );
   };
@@ -293,7 +293,7 @@ const ResourcesCard = (props) => {
         editable: true,
         render: (startDate) => {
           return (
-            <span>{startDate ? moment(startDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
+            <span>{startDate ? moment(startDate).locale('en').format(DATE_FORMAT_MDY) : '-'}</span>
           );
         },
       },
@@ -304,7 +304,7 @@ const ResourcesCard = (props) => {
         align: 'center',
         render: (endDate) => {
           return (
-            <span>{endDate ? moment(endDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
+            <span>{endDate ? moment(endDate).locale('en').format(DATE_FORMAT_MDY) : '-'}</span>
           );
         },
       },
@@ -317,7 +317,7 @@ const ResourcesCard = (props) => {
         render: (revisedEndDate) => {
           return (
             <span>
-              {revisedEndDate ? moment(revisedEndDate).locale('en').format(DATE_FORMAT_LIST) : '-'}
+              {revisedEndDate ? moment(revisedEndDate).locale('en').format(DATE_FORMAT_MDY) : '-'}
             </span>
           );
         },

@@ -1,9 +1,13 @@
-import { Button, Col, Input, Row } from 'antd';
+import { Col, Input, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
-import { checkNormalTypeTimeoff, getHours } from '@/utils/timeOff';
+import PDFIcon from '@/assets/pdf_icon.png';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import TimeOffModal from '@/components/TimeOffModal';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import {
   MAX_NO_OF_DAYS_TO_SHOW,
   TIMEOFF_12H_FORMAT,
@@ -16,12 +20,9 @@ import {
   TIMEOFF_STATUS,
   TIMEOFF_TYPE,
 } from '@/constants/timeOff';
-import TimeOffModal from '@/components/TimeOffModal';
-import PDFIcon from '@/assets/pdf_icon.png';
+import { checkNormalTypeTimeoff, getHours } from '@/utils/timeOff';
 import Project from './components/Project';
 import styles from './index.less';
-import CustomSecondaryButton from '@/components/CustomSecondaryButton';
-import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const { TextArea } = Input;
 const { A, B } = TIMEOFF_TYPE;
@@ -253,7 +254,7 @@ class RequestInformation extends PureComponent {
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate, type);
-    const listTime = leaveDates.map((x) => moment(x.date).format('MM/DD/YYYY'));
+    const listTime = leaveDates.map((x) => moment(x.date).format(DATE_FORMAT_MDY));
     const showAllDateList = duration <= MAX_NO_OF_DAYS_TO_SHOW;
 
     const BY_HOUR =

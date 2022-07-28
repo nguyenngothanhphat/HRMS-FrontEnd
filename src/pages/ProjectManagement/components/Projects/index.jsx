@@ -2,15 +2,15 @@ import { Button } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { DATE_FORMAT_LIST } from '@/constants/projectManagement';
-import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
-import EditIcon from '@/assets/projectManagement/edit2.svg';
 import DeleteIcon from '@/assets/projectManagement/delete.svg';
-import CommonTable from '@/components/CommonTable';
-import Header from './components/Header';
+import EditIcon from '@/assets/projectManagement/edit2.svg';
+import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
 import CommonModal from '@/components/CommonModal';
-import EditProjectStatusModalContent from '../EditProjectStatusModalContent';
+import CommonTable from '@/components/CommonTable';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import DeleteProjectModalContent from '../DeleteProjectModalContent';
+import EditProjectStatusModalContent from '../EditProjectStatusModalContent';
+import Header from './components/Header';
 import styles from './index.less';
 
 const Projects = (props) => {
@@ -91,7 +91,7 @@ const Projects = (props) => {
     return (
       <span className={styles.timeTitle}>
         <span>{title}</span>
-        <span className={styles.smallText}>(mm/dd/yyyy)</span>
+        <span className={styles.smallText}>({DATE_FORMAT_MDY.toLowerCase()})</span>
       </span>
     );
   };
@@ -153,7 +153,7 @@ const Projects = (props) => {
         align: 'center',
         render: (startDate = '') => {
           return (
-            <span>{startDate ? moment(startDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
+            <span>{startDate ? moment(startDate).locale('en').format(DATE_FORMAT_MDY) : '-'}</span>
           );
         },
       },
@@ -166,7 +166,7 @@ const Projects = (props) => {
           const { tentativeEndDate = '', newEndDate = '' } = row;
           const endDate = newEndDate || tentativeEndDate;
           return (
-            <span>{endDate ? moment(endDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
+            <span>{endDate ? moment(endDate).locale('en').format(DATE_FORMAT_MDY) : '-'}</span>
           );
         },
       },

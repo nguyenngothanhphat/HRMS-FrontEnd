@@ -81,7 +81,7 @@ export const defaultRenderCollapsedButton = (collapsed?: boolean) =>
 const SiderMenu: React.FC<SiderMenuProps> = (props) => {
   const {
     collapsed,
-    fixSiderbar,
+    fixSidebar,
     menuFooterRender,
     onCollapse,
     theme,
@@ -102,7 +102,7 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
   const baseClassName = `${prefixCls}-sider`;
   const { flatMenuKeys } = MenuCounter.useContainer();
   const siderClassName = classNames(`${baseClassName}`, {
-    [`${baseClassName}-fixed`]: fixSiderbar,
+    [`${baseClassName}-fixed`]: fixSidebar,
     [`${baseClassName}-layout-${layout}`]: layout && !isMobile,
     [`${baseClassName}-light`]: theme === 'light',
   });
@@ -125,7 +125,7 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
   return (
     <Affix offsetTop={0} className="viewAffixSider">
       <div>
-        {fixSiderbar && (
+        {fixSidebar && (
           <div
             style={{
               width: collapsed ? 80 : siderWidth,

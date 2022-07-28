@@ -120,7 +120,7 @@ const employee = {
         return 0;
       }
     },
-    *fetchListEmployeeActive({ payload = {}, params }, { call, put }) {
+    *fetchListEmployeeActive({ payload = {}, params = {} }, { call, put }) {
       try {
         const currentPayload = {
           ...payload,
@@ -144,7 +144,7 @@ const employee = {
         return 0;
       }
     },
-    *fetchListEmployeeInActive({ payload = {}, params }, { call, put }) {
+    *fetchListEmployeeInActive({ payload = {}, params = {} }, { call, put }) {
       try {
         const currentPayload = {
           ...payload,

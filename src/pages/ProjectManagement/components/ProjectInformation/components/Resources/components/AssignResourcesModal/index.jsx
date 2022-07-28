@@ -5,6 +5,7 @@ import { connect } from 'umi';
 import BackIcon from '@/assets/projectManagement/back.svg';
 import ModalImage from '@/assets/projectManagement/modalImage1.png';
 import CommonModal from '@/components/CommonModal';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import ResourceTableCard from './components/ResourceTableCard';
 import ReviewResourceTable from './components/ReviewResourceTable';
@@ -89,8 +90,8 @@ const AssignResourcesModal = (props) => {
         project: projectNumberId,
         status: billingStatus,
         // utilization: '',
-        startDate: startDate ? moment(startDate).format('YYYY-MM-DD') : '',
-        endDate: endDate ? moment(endDate).format('YYYY-MM-DD') : '',
+        startDate: startDate ? moment(startDate).format(DATE_FORMAT_YMD) : '',
+        endDate: endDate ? moment(endDate).format(DATE_FORMAT_YMD) : '',
         employee: x._id,
       };
     });
@@ -149,7 +150,7 @@ const AssignResourcesModal = (props) => {
                 <div className={styles.item}>
                   <span className={styles.label}>Start Date:</span>
                   <span className={styles.value}>
-                    {startDate ? moment(startDate).locale('en').format('MM/DD/YYYY') : ''}
+                    {startDate ? moment(startDate).locale('en').format(DATE_FORMAT_MDY) : ''}
                   </span>
                 </div>
               </Col>
@@ -157,7 +158,7 @@ const AssignResourcesModal = (props) => {
                 <div className={styles.item}>
                   <span className={styles.label}>End Date:</span>
                   <span className={styles.value}>
-                    {endDate ? moment(endDate).locale('en').format('MM/DD/YYYY') : ''}
+                    {endDate ? moment(endDate).locale('en').format(DATE_FORMAT_MDY) : ''}
                   </span>
                 </div>
               </Col>

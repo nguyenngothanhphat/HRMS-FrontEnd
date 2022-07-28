@@ -7,6 +7,7 @@ import CloseX from '@/assets/dashboard/closeX.svg';
 import GoogleMeet from '@/assets/dashboard/googleMeet.svg';
 import MockAvatar from '@/assets/dashboard/mockAvatar.jpg';
 import { CALENDAR_COLORS, DEFAULT_MARGIN_CALENDAR, EMP_ROW_HEIGHT } from '@/constants/dashboard';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const timeFormat = 'HH:mm a';
@@ -238,8 +239,8 @@ const MeetingTag = (props) => {
 
   // RENDER UI
   const renderTag = (event) => {
-    const localDate = moment(selectedDate).format('MM/DD/YYYY');
-    const googleDate = moment(event.start.dateTime).format('MM/DD/YYYY');
+    const localDate = moment(selectedDate).format(DATE_FORMAT_MDY);
+    const googleDate = moment(event.start.dateTime).format(DATE_FORMAT_MDY);
 
     if (localDate !== googleDate) return '';
     return (

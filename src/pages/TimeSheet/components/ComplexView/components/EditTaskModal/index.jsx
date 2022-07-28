@@ -5,12 +5,12 @@ import { connect } from 'umi';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomTimePicker from '@/components/CustomTimePicker';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/constants/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
-const dateFormat = 'MM/DD/YYYY';
 const countryIdUS = 'US';
 
 const TASKS = [];
@@ -181,7 +181,7 @@ const EditTaskModal = (props) => {
                 fieldKey="date"
                 labelCol={{ span: 24 }}
               >
-                <DatePicker format={dateFormat} />
+                <DatePicker format={DATE_FORMAT_MDY} />
               </Form.Item>
             </Col>
             <Col xs={24} md={12} />

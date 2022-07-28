@@ -1,8 +1,9 @@
 import moment from 'moment';
 import React from 'react';
 import { Link } from 'umi';
-import { TIMEOFF_NAME_BY_ID } from '@/constants/timeOffManagement';
 import CommonTable from '@/components/CommonTable';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { TIMEOFF_NAME_BY_ID } from '@/constants/timeOffManagement';
 import styles from './index.less';
 
 const TableTimeOff = ({
@@ -17,8 +18,8 @@ const TableTimeOff = ({
   const renderTimeTitle = (title) => {
     return (
       <span className={styles.timeTitle}>
-        <span>{title}</span>
-        <span className={styles.smallText}>(mm/dd/yyyy)</span>
+        <span>{title}</span>{' '}
+        <span className={styles.smallText}>({DATE_FORMAT_MDY.toLowerCase()})</span>
       </span>
     );
   };
@@ -81,7 +82,9 @@ const TableTimeOff = ({
       dataIndex: 'employee',
       render: (employee = {}) => {
         return (
-          <span>{employee?.joinDate ? moment(employee?.joinDate).format('MM/DD/YYYY') : ''}</span>
+          <span>
+            {employee?.joinDate ? moment(employee?.joinDate).format(DATE_FORMAT_MDY) : ''}
+          </span>
         );
       },
     },
@@ -90,7 +93,7 @@ const TableTimeOff = ({
       align: 'left',
       dataIndex: 'fromDate',
       render: (fromDate) => {
-        return <span>{fromDate ? moment(fromDate).format('MM/DD/YYYY') : ''}</span>;
+        return <span>{fromDate ? moment(fromDate).format(DATE_FORMAT_MDY) : ''}</span>;
       },
     },
     {
@@ -98,7 +101,7 @@ const TableTimeOff = ({
       align: 'left',
       dataIndex: 'toDate',
       render: (toDate) => {
-        return <span>{toDate ? moment(toDate).format('MM/DD/YYYY') : ''}</span>;
+        return <span>{toDate ? moment(toDate).format(DATE_FORMAT_MDY) : ''}</span>;
       },
     },
     {

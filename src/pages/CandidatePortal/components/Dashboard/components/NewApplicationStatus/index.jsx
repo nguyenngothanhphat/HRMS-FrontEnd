@@ -1,11 +1,12 @@
-import React, { PureComponent } from 'react';
-import { Row, Col, message } from 'antd';
-import moment from 'moment';
+import { Col, message, Row } from 'antd';
 import axios from 'axios';
+import moment from 'moment';
+import React, { PureComponent } from 'react';
 import ViewIcon from '@/assets/candidatePortal/viewIcon.svg';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import styles from './index.less';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
 
 class ApplicationStatus extends PureComponent {
   constructor(props) {
@@ -111,7 +112,7 @@ class ApplicationStatus extends PureComponent {
       },
       {
         name: 'Joining Date',
-        value: dateOfJoining ? moment(dateOfJoining).format('MM/DD/YYYY') : '-',
+        value: dateOfJoining ? moment(dateOfJoining).format(DATE_FORMAT_MDY) : '-',
       },
       {
         name: 'Candidate ID',

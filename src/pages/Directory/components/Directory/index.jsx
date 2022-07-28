@@ -1,15 +1,20 @@
-import { Layout, Skeleton, Tabs, Tag } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import React, { useEffect, useState, Suspense } from 'react';
+import { Layout, Skeleton, Tabs, Tag } from 'antd';
+import React, { Suspense, useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
 import iconDownload from '@/assets/download-icon-yellow.svg';
-import DirectoryTable from './components/DirectoryTable';
-import AddEmployeeModal from './components/AddEmployeeModal';
-import ImportEmployeeModal from './components/ImportEmployeeModal';
-import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
-import { exportArrayDataToCsv, exportRawDataToCSV } from '@/utils/exportToCsv';
-import FilterPopover from '@/components/FilterPopover';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
+import FilterPopover from '@/components/FilterPopover';
+import {
+  getCurrentCompany,
+  getCurrentLocation,
+  getCurrentTenant,
+  isOwner,
+} from '@/utils/authority';
+import { exportArrayDataToCsv, exportRawDataToCSV } from '@/utils/exportToCsv';
+import AddEmployeeModal from './components/AddEmployeeModal';
+import DirectoryTable from './components/DirectoryTable';
+import ImportEmployeeModal from './components/ImportEmployeeModal';
 // import FilterContent from '../FilterContent';
 
 import styles from './index.less';
@@ -115,14 +120,12 @@ const DirectoryComponent = (props) => {
 
   const renderData = (params = {}) => {
     const { active, myTeam, inActive } = tabList;
-
-    const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
-
+    const currentLocation = getCurrentLocation();
     const {
       // country = [], state = [],
-      company = [],
       page = 1,
+      company = [],
     } = params;
 
     // if there are location & company, call API
@@ -136,7 +139,6 @@ const DirectoryComponent = (props) => {
         (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
       );
       const isOwnerCheck = isOwner();
-
       // OWNER
       if (!currentLocation && isOwnerCheck) {
         if (company.length !== 0) {
@@ -145,12 +147,11 @@ const DirectoryComponent = (props) => {
           companyPayload = [...companyList];
         }
       } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
-
       const payload = {
         ...params,
-        company: companyPayload,
+        company: isOwnerCheck ? getCurrentCompany() : companyPayload,
+        tenantId: getCurrentTenant(),
       };
-
       setPageSelected(page || 1);
 
       // permissions to view tab
@@ -190,6 +191,7 @@ const DirectoryComponent = (props) => {
         dispatch({
           type: 'employee/fetchListEmployeeInActive',
           payload,
+          params,
         });
       }
     }
@@ -291,7 +293,8 @@ const DirectoryComponent = (props) => {
         'Joined Date': item.joinDate,
         Location: item.location,
         Department: item.department,
-        'Employment Type': item.employeeType,
+        'Employee Type': item.employeeType,
+        'Employment Type': item.employmentType,
         Title: item.title,
         'Work Email': item.workEmail,
         'Personal Email': item.personalEmail,
@@ -327,7 +330,8 @@ const DirectoryComponent = (props) => {
         joinDate: '11/30/2020',
         location: 'Vietnam',
         department: 'Engineering',
-        employeeType: 'Full Time',
+        employeeType: 'Regular',
+        employmentType: 'Full Time',
         title: 'Junior Frontend',
         workEmail: 'template@mailinator.com',
         personalEmail: 'template@mailinator.com',

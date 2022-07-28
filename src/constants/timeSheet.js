@@ -1,3 +1,5 @@
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from './dateFormat';
+
 export const TAB_NAME = {
   MY: 'my',
   REPORTS: 'reports',
@@ -48,7 +50,7 @@ export const employeeColor = [
 ];
 
 export const rangePickerFormat = 'ddd, MMM D, YYYY';
-export const commonDateFormat = 'MM/DD/YYYY';
+export const commonDateFormat = DATE_FORMAT_MDY;
 export const dateFormat = 'ddd, MMM Do'; // show in first column
 export const dateFormatImport = 'DD-MM-YYYY'; // show in first column
 
@@ -56,7 +58,7 @@ export const hourFormat = 'h:mm a';
 export const minuteStep = 30; // in time picker, only allows minute 0 and 30
 
 // for API
-export const dateFormatAPI = 'YYYY-MM-DD';
+export const dateFormatAPI = DATE_FORMAT_YMD;
 export const hourFormatAPI = 'HH:mm';
 
 // MT - MY TIMESHEET SIMPLE VIEW

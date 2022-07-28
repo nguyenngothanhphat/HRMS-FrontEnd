@@ -14,4 +14,6 @@ export const getLinkedInUrl = (text) => {
   return null;
 };
 
-export const test = '';
+export const getEmployeeUrl = (userId) => {
+  return `/directory/employee-profile/${userId}`;
+};

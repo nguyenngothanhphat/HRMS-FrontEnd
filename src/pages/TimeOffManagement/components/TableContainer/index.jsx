@@ -4,6 +4,7 @@ import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import OptionsHeader from './components/Header';
 import TableTimeOff from './components/TableTimeOff';
 import styles from './index.less';
@@ -26,10 +27,10 @@ const TableContainer = (props) => {
   const didMount = useRef(true);
 
   const getDataTable = (values = {}) => {
-    const { status = [], types = [], user = null } = values;
+    const { status = [], types = [], employee = null } = values;
 
-    const from = fromDate ? moment(fromDate).format('YYYY-MM-DD') : null;
-    const to = toDate ? moment(toDate).format('YYYY-MM-DD') : null;
+    const from = fromDate ? moment(fromDate).format(DATE_FORMAT_YMD) : null;
+    const to = toDate ? moment(toDate).format(DATE_FORMAT_YMD) : null;
 
     dispatch({
       type: 'timeOffManagement/getListTimeOffEffect',
@@ -38,7 +39,7 @@ const TableContainer = (props) => {
         tenantId: getCurrentTenant(),
         selectedLocations,
         status,
-        employee: user,
+        employee,
         from,
         to,
         page,

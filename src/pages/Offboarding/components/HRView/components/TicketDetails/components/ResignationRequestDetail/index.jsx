@@ -1,6 +1,7 @@
 import { Card, DatePicker } from 'antd';
 import moment from 'moment';
 import React from 'react';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const ResignationRequestDetail = (props) => {
@@ -13,7 +14,7 @@ const ResignationRequestDetail = (props) => {
         <div className={styles.dateOfRequest}>
           <span className={styles.title}>Date of Request</span>
           <span className={styles.content}>
-            {createdAt && moment(createdAt).format('MM/DD/YYYY')}
+            {createdAt && moment(createdAt).format(DATE_FORMAT_MDY)}
           </span>
         </div>
 
@@ -27,7 +28,7 @@ const ResignationRequestDetail = (props) => {
           <div className={styles.datePicker}>
             <DatePicker
               value={LWD ? moment(LWD) : null}
-              format="MM/DD/YYYY"
+              format={DATE_FORMAT_MDY}
               disabled
               placeholder="Tentative LWD"
             />

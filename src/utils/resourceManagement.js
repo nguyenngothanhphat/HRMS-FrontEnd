@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { AVAILABLE_STATUS } from '@/constants/resourceManagement';
 
 const handleLongText = (text, length) => {
@@ -14,7 +15,7 @@ const handleLongText = (text, length) => {
 };
 
 export const projectDateFormat = (date) => {
-  if (date) return moment(date).locale('en').format('MM/DD/YYYY');
+  if (date) return moment(date).locale('en').format(DATE_FORMAT_MDY);
   return '-';
 };
 

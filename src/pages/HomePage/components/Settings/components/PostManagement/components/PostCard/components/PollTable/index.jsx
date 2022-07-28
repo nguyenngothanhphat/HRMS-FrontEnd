@@ -1,16 +1,17 @@
 import { Popconfirm } from 'antd';
 import Parser from 'html-react-parser';
 import moment from 'moment';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import CommonModal from '@/components/CommonModal';
+import ChartIcon from '@/assets/homePage/chartIcon.svg';
 import EditIcon from '@/assets/homePage/editIcon.svg';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
-import ChartIcon from '@/assets/homePage/chartIcon.svg';
+import CommonModal from '@/components/CommonModal';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { goToTop } from '@/utils/utils';
 import CommonTable from '../CommonTable';
 import ChartPreviewModalContent from './components/ChartPreviewModalContent';
 import styles from './index.less';
-import { goToTop } from '@/utils/utils';
 
 const PollTable = (props) => {
   const {
@@ -110,7 +111,7 @@ const PollTable = (props) => {
         render: (pollDetail = {}) => {
           return (
             <span>
-              {pollDetail.startDate ? moment(pollDetail.startDate).format('MM/DD/YYYY') : ''}
+              {pollDetail.startDate ? moment(pollDetail.startDate).format(DATE_FORMAT_MDY) : ''}
             </span>
           );
         },
@@ -121,7 +122,9 @@ const PollTable = (props) => {
         key: 'endDate',
         render: (pollDetail = {}) => {
           return (
-            <span>{pollDetail.endDate ? moment(pollDetail.endDate).format('MM/DD/YYYY') : ''}</span>
+            <span>
+              {pollDetail.endDate ? moment(pollDetail.endDate).format(DATE_FORMAT_MDY) : ''}
+            </span>
           );
         },
       },
@@ -136,7 +139,7 @@ const PollTable = (props) => {
         dataIndex: 'createdAt',
         key: 'createdAt',
         render: (createdAt = {}) => {
-          return <span>{createdAt ? moment(createdAt).format('MM/DD/YYYY') : ''}</span>;
+          return <span>{createdAt ? moment(createdAt).format(DATE_FORMAT_MDY) : ''}</span>;
         },
       },
       {

@@ -8,7 +8,7 @@ import {
   Modal,
   notification,
   Row,
-  Select
+  Select,
 } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -18,20 +18,20 @@ import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomTimePicker from '@/components/CustomTimePicker';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import {
   dateFormatAPI,
   hourFormat,
   hourFormatAPI,
   TIMESHEET_ADD_TASK_ALERT,
   TIME_DEFAULT,
-  VIEW_TYPE
+  VIEW_TYPE,
 } from '@/constants/timeSheet';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const { Option } = Select;
-const dateFormat = 'MM/DD/YYYY';
 const countryIdUS = 'US';
 const TASKS = [];
 const { RangePicker } = DatePicker;
@@ -379,7 +379,9 @@ const AddTaskModal = (props) => {
       if (dates) {
         if (dates.length < 2) {
           check = false;
-        } else if (moment(dates[0]).format(dateFormat) !== moment(dates[1]).format(dateFormat)) {
+        } else if (
+          moment(dates[0]).format(DATE_FORMAT_MDY) !== moment(dates[1]).format(DATE_FORMAT_MDY)
+        ) {
           check = false;
         }
       }
@@ -614,7 +616,7 @@ const AddTaskModal = (props) => {
                 labelCol={{ span: 24 }}
               >
                 <RangePicker
-                  format={dateFormat}
+                  format={DATE_FORMAT_MDY}
                   ranges={{
                     Today: [moment(), moment()],
                     'This Week': [moment().startOf('week'), moment().endOf('week')],

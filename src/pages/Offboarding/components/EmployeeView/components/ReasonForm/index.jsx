@@ -6,11 +6,12 @@ import { connect, history } from 'umi';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import NotificationModal from '@/components/NotificationModal';
-import { PageContainer } from '@/layouts/layout/src';
 import { DATE_FORMAT, OFFBOARDING } from '@/constants/offboarding';
+import { PageContainer } from '@/layouts/layout/src';
 import { goToTop } from '@/utils/utils';
 import Notes from '../Notes';
 import styles from './index.less';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 
 const { TextArea } = Input;
 const { TabPane } = Tabs;
@@ -29,7 +30,7 @@ const ReasonForm = (props) => {
   const [value, setValue] = useState('');
 
   const onFinish = ({ reason = '', LWD = '' }) => {
-    const formatLWD = LWD.format('MM/DD/YYYY') || '';
+    const formatLWD = LWD.format(DATE_FORMAT_MDY) || '';
     const payload = {
       reason,
       LWD: formatLWD,

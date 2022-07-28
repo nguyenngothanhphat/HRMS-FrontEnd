@@ -5,6 +5,7 @@ import { connect, history } from 'umi';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import TimeOffModal from '@/components/TimeOffModal';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import ROLES from '@/constants/roles';
 import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import styles from './index.less';
@@ -60,10 +61,10 @@ class RequestInformation extends PureComponent {
 
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment.utc(fromDate).locale('en').format('MM/DD/YYYY')} - ${moment
+      leaveTimes = `${moment.utc(fromDate).locale('en').format(DATE_FORMAT_MDY)} - ${moment
         .utc(toDate)
         .locale('en')
-        .format('MM/DD/YYYY')}`;
+        .format(DATE_FORMAT_MDY)}`;
     }
     return leaveTimes;
   };
@@ -297,7 +298,7 @@ class RequestInformation extends PureComponent {
                               className={styles.rowContainer}
                             >
                               <Col span={7}>
-                                {moment.utc(date).locale('en').format('MM/DD/YYYY')}
+                                {moment.utc(date).locale('en').format(DATE_FORMAT_MDY)}
                               </Col>
                               <Col span={7}>{moment.utc(date).locale('en').format('dddd')}</Col>
                               <Col span={7}>

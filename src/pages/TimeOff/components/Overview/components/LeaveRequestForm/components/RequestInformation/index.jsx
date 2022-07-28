@@ -7,6 +7,7 @@ import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import TimeOffModal from '@/components/TimeOffModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import {
   MAX_NO_OF_DAYS_TO_SHOW,
   TIMEOFF_12H_FORMAT,
@@ -296,7 +297,7 @@ const RequestInformation = (props) => {
 
       result = (!isNormalType ? continuousDateList : choosableDateList).map((value, index) => {
         return {
-          date: moment(value).format('YYYY-MM-DD'),
+          date: moment(value).format(DATE_FORMAT_YMD),
           timeOfDay: HOUR,
           startTime: getTime(showAllDateList ? leaveTimeLists[index].startTime : startTimeDefault),
           endTime: getTime(showAllDateList ? leaveTimeLists[index].endTime : endTimeDefault),
@@ -308,14 +309,14 @@ const RequestInformation = (props) => {
         // type C,D
         result = continuousDateList.map((value) => {
           return {
-            date: moment(value).format('YYYY-MM-DD'),
+            date: moment(value).format(DATE_FORMAT_YMD),
             timeOfDay: WHOLE_DAY,
           };
         });
       } else {
         result = (!isNormalType ? continuousDateList : choosableDateList).map((value, index) => {
           return {
-            date: moment(value).format('YYYY-MM-DD'),
+            date: moment(value).format(DATE_FORMAT_YMD),
             timeOfDay: leaveTimeLists[index].period,
           };
         });
@@ -350,7 +351,7 @@ const RequestInformation = (props) => {
             subject,
             listDate: choosableDateList,
             leaveDates: leaveDatesPayload,
-            onDate: moment().format('YYYY-MM-DD'),
+            onDate: moment().format(DATE_FORMAT_YMD),
             description,
             cc: personCC.map((item) => item?.value[0]) || [],
             tenantId: getCurrentTenant(),
@@ -364,10 +365,10 @@ const RequestInformation = (props) => {
             type: timeOffType,
             status: IN_PROGRESS,
             subject,
-            fromDate: moment(durationFrom).format('YYYY-MM-DD'),
-            toDate: moment(durationTo).format('YYYY-MM-DD'),
+            fromDate: moment(durationFrom).format(DATE_FORMAT_YMD),
+            toDate: moment(durationTo).format(DATE_FORMAT_YMD),
             leaveDates: leaveDatesPayload,
-            onDate: moment().format('YYYY-MM-DD'),
+            onDate: moment().format(DATE_FORMAT_YMD),
             description,
             cc: personCC.map((item) => item?.value[0]) || [],
             tenantId: getCurrentTenant(),
@@ -428,7 +429,7 @@ const RequestInformation = (props) => {
             subject,
             listDate: choosableDateList,
             leaveDates: leaveDatesPayload,
-            onDate: moment().format('YYYY-MM-DD'),
+            onDate: moment().format(DATE_FORMAT_YMD),
             description,
             cc: personCC.map((item) => item?.value[0]) || [],
             tenantId: getCurrentTenant(),
@@ -440,10 +441,10 @@ const RequestInformation = (props) => {
             type: timeOffType,
             status: IN_PROGRESS,
             subject,
-            fromDate: moment(durationFrom).format('YYYY-MM-DD'),
-            toDate: moment(durationTo).format('YYYY-MM-DD'),
+            fromDate: moment(durationFrom).format(DATE_FORMAT_YMD),
+            toDate: moment(durationTo).format(DATE_FORMAT_YMD),
             leaveDates: leaveDatesPayload,
-            onDate: moment().format('YYYY-MM-DD'),
+            onDate: moment().format(DATE_FORMAT_YMD),
             description,
             cc: personCC.map((item) => item?.value[0]) || [],
             tenantId: getCurrentTenant(),
@@ -600,7 +601,7 @@ const RequestInformation = (props) => {
       !workingDays.includes(moment(current).day()) ||
       !checkIfWholeDayAvailable(current) ||
       !checkIfHalfDayAvailable(current) ||
-      value?.listDate?.find((x) => x === moment(current).format('YYYY-MM-DD'))
+      value?.listDate?.find((x) => x === moment(current).format(DATE_FORMAT_YMD))
     );
   };
 

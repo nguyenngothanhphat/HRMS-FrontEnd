@@ -2,9 +2,10 @@ import { Col, DatePicker, Form, Row, Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { getEmployeeName } from '@/utils/offboarding';
-import { DATE_FORMAT } from '@/constants/offboarding';
 import CustomEmployeeTag from '@/components/CustomEmployeeTag';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
+import { DATE_FORMAT } from '@/constants/offboarding';
+import { getEmployeeName } from '@/utils/offboarding';
 import styles from './index.less';
 
 const SetMeetingModalContent = ({
@@ -21,8 +22,8 @@ const SetMeetingModalContent = ({
   const { hourList = [] } = offboarding;
 
   const disabledDate = (current) => {
-    const customDate = moment().format('YYYY-MM-DD');
-    return current && current < moment(customDate, 'YYYY-MM-DD');
+    const customDate = moment().format(DATE_FORMAT_YMD);
+    return current && current < moment(customDate, DATE_FORMAT_YMD);
   };
 
   const disablePastHour = (obj) => {
@@ -39,7 +40,7 @@ const SetMeetingModalContent = ({
     dispatch({
       type: 'offboarding/getTimeInDateEffect',
       payload: {
-        date: moment(date).format('YYYY-MM-DD'),
+        date: moment(date).format(DATE_FORMAT_YMD),
       },
     });
   };

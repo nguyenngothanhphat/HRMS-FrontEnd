@@ -1,10 +1,11 @@
 import { notification } from 'antd';
 import moment from 'moment';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import { commonDateFormat } from '@/constants/timeSheet';
 
 // functions
 export const addTimeForDate = (date, time) => {
-  const dateToString = moment(date).format('MM/DD/YYYY').toString();
+  const dateToString = moment(date).format(DATE_FORMAT_MDY).toString();
   const timeToString = moment(time).format('h:mm a').toString();
   return moment(`${dateToString} ${timeToString}`, 'MM/DD/YYYY h:mm a');
 };
@@ -37,13 +38,13 @@ export const parseTimeAPI = (time = '') => {
 };
 
 export const isTheSameDay = (date1, date2) => {
-  return moment(date1).format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
+  return moment(date1).format(DATE_FORMAT_MDY) === moment(date2).format(DATE_FORMAT_MDY);
 };
 
 export const generateAllWeeks = (fromDate, toDate) => {
   const weeks = [];
   let fd = new Date(fromDate);
-  const weekNo = moment(fromDate, 'YYYY-MM-DD').week();
+  const weekNo = moment(fromDate, DATE_FORMAT_YMD).week();
   const td = new Date(toDate);
   let previousWeek;
   while (fd.getTime() < td.getTime()) {
@@ -61,8 +62,8 @@ export const generateAllWeeks = (fromDate, toDate) => {
       weeks.push({
         week: previousWeek,
         compare: weekNumber,
-        startDate: moment(startWeek).format('YYYY-MM-DD'),
-        endDate: moment(endWeek).format('YYYY-MM-DD'),
+        startDate: moment(startWeek).format(DATE_FORMAT_YMD),
+        endDate: moment(endWeek).format(DATE_FORMAT_YMD),
       });
     }
   }

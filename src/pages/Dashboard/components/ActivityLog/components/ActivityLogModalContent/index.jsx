@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import { connect } from 'umi';
 import EmptyComponent from '@/components/Empty';
@@ -12,11 +13,9 @@ const ActivityLogModalContent = (props) => {
       case '1':
         return <CommonTab isInModal type={tabKey} data={data} />;
       case '2':
-        return <CommonTab isInModal type={tabKey} data={data} />;
+        return <CommonTab isInModal type={tabKey} data={data} {...props} />;
       case '3':
         return <CommonTab isInModal type={tabKey} data={data} />;
-      case '4':
-        return <CommonTab isInModal type={tabKey} data={data} {...props} />;
       default:
         return '';
     }

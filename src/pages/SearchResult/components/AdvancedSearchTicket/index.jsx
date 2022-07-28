@@ -1,7 +1,10 @@
+import { DatePicker, Form, Input, Select } from 'antd';
 import React from 'react';
-import { Input, Form, Button, Select, DatePicker } from 'antd';
 import { connect, history } from 'umi';
-import { LIST_TYPE_TICKET, LIST_STATUS_TICKET } from '@/constants/globalSearch';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { LIST_STATUS_TICKET, LIST_TYPE_TICKET } from '@/constants/globalSearch';
 import styles from '../../index.less';
 
 const AdvancedSearchTicket = (props) => {
@@ -19,7 +22,7 @@ const AdvancedSearchTicket = (props) => {
     });
     history.push('/search-result/tickets');
   };
-  const dateFormat = 'DD/MM/YYYY';
+
   return (
     <Form
       form={form}
@@ -28,7 +31,7 @@ const AdvancedSearchTicket = (props) => {
       onFinish={onFinish}
       initialValues={ticketAdvance}
     >
-      <div className={styles.resultContent}>
+      <div className={styles.ResultContent}>
         <div className={styles.headerFilter}>
           <div className={styles.headerFilter__title}>Tickets</div>
           <div className={styles.headerFilter__description}>
@@ -76,23 +79,14 @@ const AdvancedSearchTicket = (props) => {
               <Input placeholder="Enter created by" />
             </Form.Item>
             <Form.Item name="createdOn" label="Created On">
-              <DatePicker placeholder="Enter created On" format={dateFormat} />
+              <DatePicker placeholder="Enter created On" format={DATE_FORMAT_MDY} />
             </Form.Item>
           </div>
         </div>
       </div>
       <div className={styles.filterFooter}>
-        <Button
-          type="link"
-          htmlType="button"
-          className={styles.btnReset}
-          onClick={() => form.resetFields()}
-        >
-          Reset
-        </Button>
-        <Button type="primary" htmlType="submit" className={styles.btnSubmit}>
-          Search
-        </Button>
+        <CustomSecondaryButton onClick={() => form.resetFields()}>Reset</CustomSecondaryButton>
+        <CustomPrimaryButton htmlType="submit">Search</CustomPrimaryButton>
       </div>
     </Form>
   );

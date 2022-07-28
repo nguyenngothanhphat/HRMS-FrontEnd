@@ -4,6 +4,7 @@ import { DatePicker, Form, Input, Modal, Select } from 'antd';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { connect } from 'umi';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import styles from './index.less';
@@ -36,7 +37,7 @@ class AddHoliday extends Component {
     const { addHoliday = () => {} } = this.props;
     const { date, name } = value;
     const datetime = new Date(date).toISOString();
-    const newDateTime = moment(datetime).format('YYYY-MM-DD');
+    const newDateTime = moment(datetime).format(DATE_FORMAT_YMD);
     const typeHoliday = [];
     typeHoliday.push(value.type);
     const payload = {

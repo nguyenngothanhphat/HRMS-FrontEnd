@@ -3,7 +3,7 @@ const proSettings = {
   layout: 'side',
   contentWidth: 'Fluid',
   fixedHeader: false,
-  fixSiderbar: true,
+  fixSidebar: true,
   colorWeak: false,
   navTheme: 'light',
   menu: {

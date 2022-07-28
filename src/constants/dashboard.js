@@ -4,6 +4,7 @@ import previewMyapps from '@/assets/dashboard/previewMyapps.svg';
 import previewTeam from '@/assets/dashboard/previewTeam.svg';
 import previewTask from '@/assets/dashboard/previewTask.svg';
 import previewTimesheet from '@/assets/dashboard/previewTimesheet.svg';
+import { DATE_FORMAT_MDY } from './dateFormat';
 
 const WIDGET_IDS = {
   CALENDAR: 'CALENDAR',
@@ -80,7 +81,7 @@ const SUPPORT_TEAM = [
 ];
 
 const PRIORITY = ['Low', 'Normal', 'High', 'Urgent'];
-const TIMESHEET_DATE_FORMAT = 'MM/DD/YYYY';
+const TIMESHEET_DATE_FORMAT = DATE_FORMAT_MDY;
 
 const EMP_ROW_HEIGHT = 72;
 const DEFAULT_MARGIN_CALENDAR = 8;

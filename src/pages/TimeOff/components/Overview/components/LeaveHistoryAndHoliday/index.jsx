@@ -4,12 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import { TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/constants/timeOff';
 import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
-import {
-  checkNormalTypeTimeoff,
-  isFutureDay
-} from '@/utils/timeOff';
+import { checkNormalTypeTimeoff, isFutureDay } from '@/utils/timeOff';
 import HolidayCalendar from './components/HolidayCalendar';
 import HolidayList from './components/HolidayList';
 import LeaveHistoryCalendar from './components/LeaveHistoryCalendar';
@@ -209,7 +207,7 @@ const LeaveHistoryAndHoliday = (props) => {
 
   useEffect(() => {
     const arr1 = formatHolidayLists(
-      holidaysListByLocation.filter((x) => isFutureDay(moment(x.date?.iso, 'YYYY-MM-DD'))),
+      holidaysListByLocation.filter((x) => isFutureDay(moment(x.date?.iso, DATE_FORMAT_YMD))),
     );
     const arr2 = formatHolidayLists(holidaysListByLocation);
 

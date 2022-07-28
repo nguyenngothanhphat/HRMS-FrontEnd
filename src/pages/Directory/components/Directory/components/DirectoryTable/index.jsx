@@ -6,11 +6,12 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage, Link } from 'umi';
 import avtDefault from '@/assets/avtDefault.jpg';
+import CommonModal from '@/components/CommonModal';
 import CommonTable from '@/components/CommonTable';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import { isOwner } from '@/utils/authority';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
-import ModalTerminate from './components/ModalTerminate';
+import TerminateModalContent from '../TerminateModalContent';
 import styles from './index.less';
 
 const departmentTag = [
@@ -41,7 +42,6 @@ const DirectoryTable = (props) => {
     companyLocationList = [],
     permissions = {},
     profileOwner = false,
-    approvalflow = [],
     dispatch,
     refreshData = () => {},
     totalActiveEmployee,
@@ -49,9 +49,8 @@ const DirectoryTable = (props) => {
     tabName = '',
   } = props;
 
-  const [openModal, setOpenModal] = useState(false);
+  const [terminalModalVisible, setTerminalModalVisible] = useState(false);
   const [rowData, setRowData] = useState({});
-  const [valueReason, setValueReason] = useState('');
   const [timezoneList, setTimezoneList] = useState([]);
   const [currentTime, setCurrentTime] = useState(moment());
   const [hoveringLocation, setHoveringLocation] = useState('');
@@ -126,75 +125,34 @@ const DirectoryTable = (props) => {
   const handleClick = (e, item = {}) => {
     e.stopPropagation();
     setRowData(item);
-    setOpenModal(true);
+    setTerminalModalVisible(true);
   };
 
-  const handleCancelModal = () => {
-    setOpenModal(false);
-  };
-
-  const getPayload = (id, reasonForLeaving, lastWorkingDate) => {
-    let approvalFlowID = '';
-    approvalflow.forEach((item) => {
-      approvalFlowID = item._id;
-    });
-
-    const payload = {
-      action: 'submit',
-      employee: id,
-      reasonForLeaving,
-      approvalFlow: approvalFlowID,
-      lastWorkingDate,
-    };
-
-    return payload;
-  };
-
-  const handleSubmit = (values) => {
-    const { _id = '' } = rowData;
-    const { reason, lastWorkingDate } = values;
-
-    const payload = getPayload(_id, reason, lastWorkingDate);
-
-    dispatch({
-      type: 'offboarding/terminateReason',
-      payload,
-    }).then((res) => {
-      if (res.statusCode === 200) {
-        refreshData();
-        setOpenModal(false);
-      }
-    });
+  const onTerminateModalClose = () => {
+    setTerminalModalVisible(false);
+    refreshData();
   };
 
   const dataHover = (manager = {}) => {
     const {
-      generalInfo: {
-        legalName = '',
-        avatar: avatar1 = '',
-        userId = '',
-        workEmail = '',
-        workNumber = '',
-        skills = [],
-      } = {},
-      generalInfo = {},
-      department = {},
-      location: locationInfo = {},
-      managerInfo = {},
-      title = {},
-    } = manager;
+      generalInfo = {} || {},
+      department = {} || {},
+      location: locationInfo = {} || {},
+      managerInfo = {} || {},
+      title = {} || {},
+    } = manager || {};
     return {
-      legalName,
-      userId,
+      legalName: generalInfo?.legalName,
+      userId: generalInfo?.legalNauserIdme,
       department,
-      workEmail,
-      workNumber,
+      workEmail: generalInfo?.workEmail,
+      workNumber: generalInfo?.workNumber,
       locationInfo,
       generalInfo,
       managerInfo,
       title,
-      avatar1,
-      skills,
+      avatar1: generalInfo?.avatar,
+      skills: generalInfo?.skills,
     };
   };
 
@@ -248,10 +206,6 @@ const DirectoryTable = (props) => {
     );
   };
 
-  const onChangeReason = ({ target: { value } }) => {
-    setValueReason(value);
-  };
-
   const generateColumns = () => {
     const columns = [
       {
@@ -290,8 +244,8 @@ const DirectoryTable = (props) => {
         align: 'left',
         // sortOrder: sortedName.columnKey === 'userName' && sortedName.order,
         sorter: (a, b) => {
-          return a.generalInfo && a.generalInfo?.userId
-            ? a.generalInfo?.userId.localeCompare(`${b.generalInfo?.userId}`)
+          return a?.generalInfo && a?.generalInfo?.userId
+            ? a?.generalInfo?.userId.localeCompare(`${b?.generalInfo?.userId}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -301,13 +255,13 @@ const DirectoryTable = (props) => {
         dataIndex: 'generalInfo',
         key: 'employeeId',
         className: `${styles.employeeId} `,
-        render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
+        render: (generalInfo = {}) => <span>{generalInfo ? generalInfo?.employeeId : ''}</span>,
         width: '10%',
         align: 'left',
         // sortOrder: sortedName.columnKey === 'employeeId' && sortedName.order,
         sorter: (a, b) => {
-          return a.generalInfo && a.generalInfo?.employeeId
-            ? a.generalInfo?.employeeId.localeCompare(`${b.generalInfo?.employeeId}`)
+          return a?.generalInfo && a?.generalInfo?.employeeId
+            ? a?.generalInfo?.employeeId.localeCompare(`${b?.generalInfo?.employeeId}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -323,8 +277,8 @@ const DirectoryTable = (props) => {
         align: 'left',
         // sortOrder: sortedName.columnKey === 'workNumber' && sortedName.order,
         sorter: (a, b) => {
-          return a.generalInfo && a.generalInfo?.workNumber
-            ? a.generalInfo?.workNumber.localeCompare(`${b.generalInfo?.workNumber}`)
+          return a?.generalInfo && a?.generalInfo?.workNumber
+            ? a?.generalInfo?.workNumber.localeCompare(`${b?.generalInfo?.workNumber}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -338,8 +292,8 @@ const DirectoryTable = (props) => {
         align: 'left',
         // sortOrder: sortedName.columnKey === 'workEmail' && sortedName.order,
         sorter: (a, b) => {
-          return a.generalInfo && a.generalInfo?.workEmail
-            ? a.generalInfo?.workEmail.localeCompare(`${b.generalInfo?.workEmail}`)
+          return a?.generalInfo && a?.generalInfo?.workEmail
+            ? a?.generalInfo?.workEmail.localeCompare(`${b?.generalInfo?.workEmail}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -368,7 +322,7 @@ const DirectoryTable = (props) => {
         render: (location = {}, row = {}) => (
           <Popover
             content={hoveringLocation === row._id ? locationContent(location) : null}
-            title={location.name}
+            title={location?.name}
             onVisibleChange={(visible) => {
               setHoveringLocation(visible ? row._id : null);
             }}
@@ -398,12 +352,12 @@ const DirectoryTable = (props) => {
         title: formatMessage({ id: 'component.directory.table.reportingManager' }),
         dataIndex: 'manager',
         key: 'manager',
-        render: (manager) => (
+        render: (manager = {}) => (
           <UserProfilePopover data={dataHover(manager)}>
             <Link
               className={styles.managerName}
               to={() =>
-                handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)}
+                handleProfileEmployee(manager?._id, manager?.tenant, manager?.generalInfo?.userId)}
             >
               {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
             </Link>
@@ -413,8 +367,10 @@ const DirectoryTable = (props) => {
         width: '14%',
         // sortOrder: sortedName.columnKey === 'manager' && sortedName.order,
         sorter: (a, b) => {
-          return a.manager.generalInfo && a.manager.generalInfo?.legalName
-            ? a.manager.generalInfo?.legalName.localeCompare(`${b.manager.generalInfo?.legalName}`)
+          return a?.manager?.generalInfo && a?.manager?.generalInfo?.legalName
+            ? a?.manager?.generalInfo?.legalName.localeCompare(
+                `${b?.manager?.generalInfo?.legalName}`,
+              )
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -423,15 +379,17 @@ const DirectoryTable = (props) => {
         title: formatMessage({ id: 'component.directory.table.department' }),
         dataIndex: 'department',
         key: 'department',
-        render: (department) => {
-          const tag = departmentTag.find((d) => d.name === department.name) || { color: '#108ee9' };
+        render: (department = {}) => {
+          const tag = departmentTag?.find((d) => d?.name === department?.name) || {
+            color: '#108ee9',
+          };
           return (
             <Tag
               className={styles.department}
-              onClick={() => onFilter(department.name, 'department')}
+              onClick={() => onFilter(department?.name, 'department')}
               color={tag.color}
             >
-              {department.name}
+              {department?.name}
             </Tag>
           );
         },
@@ -442,6 +400,19 @@ const DirectoryTable = (props) => {
           return a.department && a.department?.name
             ? a.department?.name.localeCompare(`${b.department?.name}`)
             : null;
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
+      },
+      {
+        title: formatMessage({ id: 'component.directory.table.employeeType' }),
+        dataIndex: 'empTypeOther',
+        key: 'empTypeOther',
+        render: (empTypeOther) => <span>{empTypeOther || '-'}</span>,
+        align: 'left',
+        width: '10%',
+        // sortOrder: sortedName.columnKey === 'empTypeOther' && sortedName.order,
+        sorter: (a, b) => {
+          return a.empTypeOther ? a.empTypeOther.localeCompare(`${b.empTypeOther}`) : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
@@ -524,13 +495,20 @@ const DirectoryTable = (props) => {
           height={500}
         />
       </div>
-      <ModalTerminate
+
+      <CommonModal
+        visible={terminalModalVisible}
+        content={
+          <TerminateModalContent
+            visible={terminalModalVisible}
+            onClose={onTerminateModalClose}
+            employee={rowData?._id}
+          />
+        }
+        onClose={onTerminateModalClose}
+        title="Terminate employee"
         loading={loadingTerminateReason}
-        visible={openModal}
-        handleSubmit={handleSubmit}
-        handleCancelModal={handleCancelModal}
-        valueReason={valueReason}
-        onChange={onChangeReason}
+        width={550}
       />
     </>
   );

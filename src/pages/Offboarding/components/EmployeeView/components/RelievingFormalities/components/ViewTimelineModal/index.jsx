@@ -1,8 +1,9 @@
-import React, { PureComponent } from 'react';
-import { Calendar, Select, Modal, Button, Tooltip } from 'antd';
-import { CheckOutlined, CaretRightOutlined, CaretLeftOutlined } from '@ant-design/icons';
+import { CaretLeftOutlined, CaretRightOutlined, CheckOutlined } from '@ant-design/icons';
+import { Button, Calendar, Modal, Select, Tooltip } from 'antd';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import styles from './index.less';
 
 moment.locale('en');
@@ -62,7 +63,7 @@ class ViewTimelineModal extends PureComponent {
     const isWeekend =
       moment(value).locale('en').format('ddd') === 'Sat' ||
       moment(value).locale('en').format('ddd') === 'Sun';
-    const isCurrent = moment().format('DD/MM/YYYY') === moment(value).format('DD/MM/YYYY');
+    const isCurrent = moment().format(DATE_FORMAT_MDY) === moment(value).format(DATE_FORMAT_MDY);
 
     if (isWeekend) {
       return 'weekend';
@@ -103,7 +104,7 @@ class ViewTimelineModal extends PureComponent {
     const dates = [];
 
     while (now.isBefore(end) || now.isSame(end)) {
-      dates.push(now.format('DD/MM/YYYY'));
+      dates.push(now.format(DATE_FORMAT_MDY));
       now.add(1, 'days');
     }
     return dates;
@@ -112,10 +113,10 @@ class ViewTimelineModal extends PureComponent {
   handleCheckTimeSheet = (value, date) => {
     const { lastWorkingDate = '', requestDate = '' } = this.props;
 
-    const beginDate = moment(requestDate).format('YYYY-MM-DD');
-    const lastDate = moment(lastWorkingDate).format('YYYY-MM-DD');
-    const currentDate = moment().format('YYYY-MM-DD');
-    const key = moment(value).format('YYYY-MM-DD');
+    const beginDate = moment(requestDate).format(DATE_FORMAT_YMD);
+    const lastDate = moment(lastWorkingDate).format(DATE_FORMAT_YMD);
+    const currentDate = moment().format(DATE_FORMAT_YMD);
+    const key = moment(value).format(DATE_FORMAT_YMD);
 
     let normalDate = '';
     let workedDate = '';

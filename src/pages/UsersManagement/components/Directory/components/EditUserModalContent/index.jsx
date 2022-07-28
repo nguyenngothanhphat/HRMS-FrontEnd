@@ -2,10 +2,10 @@ import { DatePicker, Form, Input, notification, Select, Skeleton } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const { Option } = Select;
-const dateFormat = 'MM/DD/YYYY';
 
 const EditUserModalContent = (props) => {
   const [form] = Form.useForm();
@@ -121,15 +121,19 @@ const EditUserModalContent = (props) => {
       },
     });
 
+    const payloadUpdateEmployee = {
+      id: _id,
+      location: locationId,
+      company: companyId,
+      status: values.status,
+      tenantId: tenant,
+    };
+    if (values.status === 'INACTIVE') {
+      delete payloadUpdateEmployee.status;
+    }
     dispatch({
       type: 'usersManagement/updateEmployee',
-      payload: {
-        id: _id,
-        location: locationId,
-        company: companyId,
-        status: values.status,
-        tenantId: tenant,
-      },
+      payload: payloadUpdateEmployee,
     }).then((statusCode) => {
       if (statusCode === 200) {
         notification.success({
@@ -140,7 +144,7 @@ const EditUserModalContent = (props) => {
         }
         if (values.status === 'INACTIVE') {
           onClose(false);
-          setOpenTerminateModal(true);
+          setOpenTerminateModal(_id);
         }
       }
     });
@@ -164,7 +168,7 @@ const EditUserModalContent = (props) => {
               <Input disabled />
             </Form.Item>
             <Form.Item label="Created Date" labelAlign="left" name="joinDate">
-              <DatePicker disabled format={dateFormat} />
+              <DatePicker disabled format={DATE_FORMAT_MDY} />
             </Form.Item>
             <Form.Item
               label="Email"

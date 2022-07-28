@@ -9,6 +9,7 @@ import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';
 import TrashIcon from '@/assets/ticketManagement-trashIcon.svg';
 import AttachmentIcon from '@/assets/ticketsManagement-attach.svg';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { FILE_TYPE } from '@/constants/upload';
 import { beforeUpload, compressImage, identifyFile } from '@/utils/upload';
 import AssignTeamModal from '../../AssignTeamModal';
@@ -270,7 +271,7 @@ class TicketDetailsForm extends Component {
                   Ticket ID: <span className={styles.formContent__title__color}>{id}</span>
                 </Col>
                 <Col span={8} className={styles.formContent__title}>
-                  Request Date: <span>{moment(requestDate).format('DD/MM/YYYY')}</span>
+                  Request Date: <span>{moment(requestDate).format(DATE_FORMAT_MDY)}</span>
                 </Col>
                 <Col span={8} className={styles.formContent__title}>
                   Opened by: <span>{getOpenBy()}</span>

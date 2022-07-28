@@ -12,8 +12,9 @@ import { isOwner } from '@/utils/authority';
 import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import EditUserModalContent from '../EditUserModalContent';
 import ResetPasswordModal from '../ResetPasswordModal';
-import TerminateModal from '../TerminateModal';
+import TerminateModalContent from '../TerminateModalContent';
 import styles from './index.less';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 
 const roleTags = [
   { name: 'REGION-HEAD', color: 'magenta' },
@@ -46,10 +47,12 @@ const DirectoryTable = (props) => {
     keyTab = '',
     refreshData = () => {},
     loadingEdit = false,
+    loadingTerminate = false,
   } = props;
 
   const [modalVisibleType, setModalVisibleType] = useState('');
   const [handlingUser, setHandlingUser] = useState();
+  const [terminatingEmployeeId, setTerminatingEmployeeId] = useState('');
 
   const handleProfileEmployee = (userId) => {
     const pathname = isOwner()
@@ -149,7 +152,7 @@ const DirectoryTable = (props) => {
         dataIndex: 'joinDate',
         align: 'left',
         render: (joinDate) =>
-          joinDate ? <span>{moment(joinDate).locale('en').format('MM/DD/YYYY')}</span> : '',
+          joinDate ? <span>{moment(joinDate).locale('en').format(DATE_FORMAT_MDY)}</span> : '',
         sortDirections: ['ascend', 'descend', 'ascend'],
         sorter: {
           compare: (a, b) => new Date(a.joinDate) - new Date(b.joinDate),
@@ -218,7 +221,7 @@ const DirectoryTable = (props) => {
         dataIndex: 'leftDate',
         align: 'left',
         render: (leftDate) =>
-          leftDate ? <span>{moment(leftDate).locale('en').format('MM/DD/YYYY')}</span> : '-',
+          leftDate ? <span>{moment(leftDate).locale('en').format(DATE_FORMAT_MDY)}</span> : '-',
       },
       {
         title: 'Reason for Termination',
@@ -303,6 +306,13 @@ const DirectoryTable = (props) => {
     }
   };
 
+  const onCloseTerminateModal = () => {
+    setModalVisibleType('');
+    setTerminatingEmployeeId('');
+    clearSelectedUserState();
+    refreshData();
+  };
+
   return (
     <>
       <div className={styles.directoryTable}>
@@ -331,8 +341,11 @@ const DirectoryTable = (props) => {
             onClose={onCloseEditModal}
             keyTab={keyTab}
             visible={modalVisibleType === ACTION.EDIT}
-            setOpenTerminateModal={() => {
-              setModalVisibleType(ACTION.TERMINATE);
+            setOpenTerminateModal={(_id) => {
+              setTerminatingEmployeeId(_id);
+              if (keyTab.toLowerCase() === 'active') {
+                setModalVisibleType(ACTION.TERMINATE);
+              }
             }}
           />
         }
@@ -342,13 +355,19 @@ const DirectoryTable = (props) => {
         width={550}
       />
 
-      <TerminateModal
+      <CommonModal
         visible={modalVisibleType === ACTION.TERMINATE}
-        handleCancelModal={() => {
-          setModalVisibleType('');
-          clearSelectedUserState();
-          refreshData();
-        }}
+        content={
+          <TerminateModalContent
+            visible={modalVisibleType === ACTION.TERMINATE}
+            onClose={onCloseTerminateModal}
+            employee={terminatingEmployeeId}
+          />
+        }
+        onClose={onCloseTerminateModal}
+        title="Terminate employee"
+        loading={loadingTerminate}
+        width={550}
       />
 
       <ConfirmRemoveModal
@@ -383,11 +402,11 @@ export default connect(
     user: { permissions = {} },
     location: { companyLocationList = [] },
   }) => ({
-    loadingTerminateReason: loading.effects['offboarding/terminateReason'],
     loadingEdit:
       loading.effects['usersManagement/updateEmployee'] ||
       loading.effects['usersManagement/updateGeneralInfo'] ||
       loading.effects['usersManagement/updateRolesByEmployee'],
+    loadingTerminate: loading.effects['offboarding/terminateReason'],
     approvalflow,
     permissions,
     companyLocationList,

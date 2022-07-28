@@ -1,9 +1,10 @@
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+// eslint-disable-next-line no-unused-vars
 import { Popover, Input, Button, Table, Row, Col, message } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
-import { debounce } from 'lodash';
+import { debounce, uniq } from 'lodash';
 import DocumentFilter from './components/DocumentFilter';
 import styles from './index.less';
 import cancelIcon from '../../../../assets/cancelIcon.svg';
@@ -47,6 +48,7 @@ class Documents extends PureComponent {
       fileName: '',
       link: '',
       viewDocumentModal: false,
+      // eslint-disable-next-line react/no-unused-state
       file: null,
     };
     this.delaySearch = debounce((value) => {
@@ -55,6 +57,10 @@ class Documents extends PureComponent {
   }
 
   componentDidMount() {
+    this.fetchData()
+  }
+
+  fetchData = () => {
     const { dispatch, reId } = this.props;
 
     dispatch({
@@ -121,6 +127,7 @@ class Documents extends PureComponent {
     const formData = new FormData();
     formData.append('uri', file);
     this.setState({
+      // eslint-disable-next-line react/no-unused-state
       file,
     });
 
@@ -161,6 +168,7 @@ class Documents extends PureComponent {
     this.setState({
       isUnhide: !isUnhide,
     });
+    this.fetchData()
   };
 
   showModal = () => {
@@ -178,14 +186,14 @@ class Documents extends PureComponent {
   };
 
   onFilter = (values) => {
-    const { byType, fromDate, toDate, byCompany } = values;
+    const { byType, fromDate, toDate, byUpload } = values;
     const { dispatch, info: { customerId = '' } = {} } = this.props;
     dispatch({
       type: 'customerProfile/filterDoc',
       payload: {
         customerId,
         type: parseInt(byType, 10) || '',
-        uploadedBy: byCompany || '',
+        uploadedBy: byUpload || '',
         fromDate: fromDate || '',
         toDate: toDate || '',
       },
@@ -256,7 +264,7 @@ class Documents extends PureComponent {
   handleSearch = (value) => {
     const { dispatch, reId } = this.props;
     dispatch({
-      type: 'customerProfile/searchDocuments',
+      type: 'customerProfile/fetchDocuments',
       payload: {
         id: reId,
         searchKey: value,
@@ -355,18 +363,26 @@ class Documents extends PureComponent {
     const {
       documents,
       documentType,
-      companiesOfUser,
+      // companiesOfUser,
       loadingDocument = false,
       loadingFilterDocument = false,
       loadingSearchDocument = false,
       permissions = {},
     } = this.props;
 
+    const uploadByList =
+      documents && documents.length > 0
+        ? documents.map((d) => {
+            return d.ownerName;
+          })
+        : [];
+    const uniqUploadByList = uniq(uploadByList)
     const filter = (
       <>
         <DocumentFilter
           onFilter={this.onFilter}
-          companiesOfUser={companiesOfUser}
+          // companiesOfUser={companiesOfUser}
+          uploadByList={uniqUploadByList}
           documentType={documentType}
         />
         <div className={styles.btnForm}>

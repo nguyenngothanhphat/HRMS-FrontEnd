@@ -1,12 +1,13 @@
-import { Button, Form, Input, Spin, Popover } from 'antd';
+import { Button, Form, Input, Popover, Spin } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import SeenIcon from '@/assets/candidatePortal/seen.svg';
 import UnseenIcon from '@/assets/candidatePortal/unseen.svg';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { CHAT_EVENT } from '@/constants/socket';
 import { socket } from '@/utils/socket';
 import styles from './index.less';
-import { CHAT_EVENT } from '@/constants/socket';
 
 @connect(
   ({
@@ -112,8 +113,8 @@ class ActiveChat extends PureComponent {
 
   getTime = (dateTime) => {
     const compare = (dateTimeA, dateTimeB) => {
-      const momentA = moment(dateTimeA).format('DD/MM/YYYY');
-      const momentB = moment(dateTimeB).format('DD/MM/YYYY');
+      const momentA = moment(dateTimeA).format(DATE_FORMAT_MDY);
+      const momentB = moment(dateTimeB).format(DATE_FORMAT_MDY);
       if (momentA === momentB) return 1;
       return 0;
     };

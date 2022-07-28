@@ -1,10 +1,9 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-undef */
-import React, { useEffect, useState } from 'react';
-import { parse } from 'querystring';
-import pathRegexp from 'path-to-regexp';
 import { List, notification } from 'antd';
-import moment from 'moment';
+import pathRegexp from 'path-to-regexp';
+import { parse } from 'querystring';
+import React from 'react';
 import { formatMessage } from 'umi';
 import { getCompanyOfUser, getCurrentCompany } from './authority';
 
@@ -123,32 +122,6 @@ export const formatAdditionalQuestion = (questionArr) => {
     // return null;
   });
   return finalArr;
-};
-
-const formatHour = {
-  '8:00(am) - 9:00(am)': 900,
-  '9:00(am) - 10:00(am)': 1000,
-  '10:00(am) - 11:00(am)': 1100,
-  '11:00(am) - 12:00(am)': 1200,
-  '1:00(pm) - 2:00(pm)': 1400,
-  '2:00(pm) - 3:00(pm)': 1500,
-  '3:00(pm) - 4:00(pm)': 1600,
-  '4:00(pm) - 5:00(pm)': 1700,
-};
-
-export const checkTime = (date, time) => {
-  const now = `${moment().format('YYYY-MM-DD')}T00:00:00.000Z`;
-  const formatNow = moment(now);
-  const dateTime = moment(date);
-  const hourNow = moment().format('Hmm');
-  const timeMeeting = formatHour[time];
-  let check = false;
-  if (date !== now && formatNow > dateTime) {
-    check = true;
-  } else if (date === now) {
-    check = parseInt(hourNow, 10) > timeMeeting;
-  }
-  return check;
 };
 
 export const goToTop = () => {

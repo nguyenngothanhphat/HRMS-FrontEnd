@@ -3,9 +3,10 @@ import { debounce } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
+import { TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
 import SearchIcon from '@/assets/directory/search.svg';
 import styles from './index.less';
-import { TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
 
 const FilterContent = (props) => {
   const [form] = Form.useForm();
@@ -81,10 +82,10 @@ const FilterContent = (props) => {
     );
 
     if (filterTemp.fromDate) {
-      filterTemp.fromDate = moment(filterTemp.fromDate).format('YYYY-MM-DD');
+      filterTemp.fromDate = moment(filterTemp.fromDate).format(DATE_FORMAT_YMD);
     }
     if (filterTemp.toDate) {
-      filterTemp.toDate = moment(filterTemp.toDate).format('YYYY-MM-DD');
+      filterTemp.toDate = moment(filterTemp.toDate).format(DATE_FORMAT_YMD);
     }
     if (filterTemp.employeeCode) {
       filterTemp.employeeCode = [filterTemp.employeeCode];

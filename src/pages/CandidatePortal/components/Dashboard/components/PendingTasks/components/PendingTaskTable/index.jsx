@@ -2,6 +2,7 @@ import { Col, Row } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { Link } from 'umi';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { CANDIDATE_TASK_STATUS } from '@/constants/candidatePortal';
 import styles from './index.less';
 
@@ -18,7 +19,7 @@ class PendingTaskTable extends PureComponent {
             )}
           </Col>
           <Col span={8}>
-            <span>{item.dueDate ? moment(item.dueDate).format('MM/DD/YYYY') : '-'}</span>
+            <span>{item.dueDate ? moment(item.dueDate).format(DATE_FORMAT_MDY) : '-'}</span>
           </Col>
         </Row>
         {index + 1 <= listLength && <div className={styles.divider} />}

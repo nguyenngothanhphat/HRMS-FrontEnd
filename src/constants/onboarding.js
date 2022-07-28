@@ -1,9 +1,11 @@
+import { DATE_FORMAT_MDY } from './dateFormat';
+
 export const ONBOARDING_TABS = {
   OVERVIEW: 'list',
   SETTINGS: 'settings',
   NEW_JOINEES: 'new-joinees',
 };
-export const ONBOARDING_DATE_FORMAT = 'MM/DD/YYYY';
+export const ONBOARDING_DATE_FORMAT = DATE_FORMAT_MDY;
 export const NEW_PROCESS_STATUS = {
   DRAFT: 'DRAFT',
   PROFILE_VERIFICATION: 'PROFILE_VERIFICATION',

@@ -309,15 +309,10 @@ const BackgroundRecheck = (props) => {
     if (selectingFile?.type !== 'E') {
       items = func(items);
     } else {
-      items = items.map((x, i) => {
-        if (i === selectingFile?.index) {
-          return {
-            ...x,
-            data: func(x.data),
-          };
-        }
-        return x;
-      });
+      items = items.map((x) => ({
+        ...x,
+        data: func(x.data),
+      }));
     }
     onSaveRedux(items, selectingFile?.type);
   };

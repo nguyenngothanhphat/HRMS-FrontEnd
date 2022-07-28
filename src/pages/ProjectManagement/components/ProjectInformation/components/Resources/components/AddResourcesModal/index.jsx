@@ -5,6 +5,7 @@ import { connect } from 'umi';
 import BackIcon from '@/assets/projectManagement/back.svg';
 import ModalImage from '@/assets/projectManagement/modalImage1.png';
 import CommonModal from '@/components/CommonModal';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import ResourceTableCard from './components/ResourceTableCard';
 import ReviewResourceTable from './components/ReviewResourceTable';
@@ -78,8 +79,8 @@ const AddResourcesModal = (props) => {
         project: projectNumberId,
         // status: 'Billable',
         // utilization: '',
-        startDate: startDate ? moment(startDate).format('YYYY-MM-DD') : '',
-        endDate: endDate ? moment(endDate).format('YYYY-MM-DD') : '',
+        startDate: startDate ? moment(startDate).format(DATE_FORMAT_YMD) : '',
+        endDate: endDate ? moment(endDate).format(DATE_FORMAT_YMD) : '',
         employee: x._id,
       };
     });
@@ -117,11 +118,11 @@ const AddResourcesModal = (props) => {
       },
       {
         label: 'Start Date',
-        value: startDate ? moment(startDate).locale('en').format('MM/DD/YYYY') : '',
+        value: startDate ? moment(startDate).locale('en').format(DATE_FORMAT_MDY) : '',
       },
       {
         label: 'End Date',
-        value: endDate ? moment(endDate).locale('en').format('MM/DD/YYYY') : '',
+        value: endDate ? moment(endDate).locale('en').format(DATE_FORMAT_MDY) : '',
       },
     ];
     return (

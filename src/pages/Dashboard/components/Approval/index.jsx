@@ -1,5 +1,6 @@
 import { Tabs } from 'antd';
 import React from 'react';
+import CustomBlueButton from '@/components/CustomBlueButton';
 import { PageContainer } from '@/layouts/layout/src';
 import ApprovalPage from './components/ApprovalPage';
 import styles from './index.less';
@@ -17,7 +18,7 @@ const Approval = () => {
               className={styles.viewActivityLog}
               // onClick={this.viewActivityLog}
             >
-              <span className={styles.title}>View Activity logs (15)</span>
+              <CustomBlueButton>View activity logs</CustomBlueButton>
             </div>
           }
         >

@@ -3,6 +3,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { MT_MAIN_COL_SPAN, MT_SECONDARY_COL_SPAN } from '@/constants/timeSheet';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import ActivityList from './components/ActivityList';
 import styles from './index.less';
 
@@ -22,7 +23,7 @@ const TimelineTable = (props) => {
     const dates = [];
 
     while (now.isSameOrBefore(endDate1)) {
-      dates.push(now.format('MM/DD/YYYY'));
+      dates.push(now.format(DATE_FORMAT_MDY));
       now.add(1, 'days');
     }
     return dates;
@@ -33,7 +34,7 @@ const TimelineTable = (props) => {
     const dataTemp = data.map((item) => {
       return {
         ...item,
-        date: moment(item.date).format('MM/DD/YYYY'),
+        date: moment(item.date).format(DATE_FORMAT_MDY),
       };
     });
 

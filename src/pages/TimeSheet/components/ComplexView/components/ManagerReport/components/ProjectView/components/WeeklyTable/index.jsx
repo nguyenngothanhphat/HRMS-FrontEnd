@@ -8,6 +8,7 @@ import IconWarning from '@/assets/timeSheet/ic_warning.svg';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import EmptyComponent from '@/components/Empty';
 import UserProfilePopover from '@/components/UserProfilePopover';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import { dateFormatAPI, projectColor } from '@/constants/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import {
@@ -34,7 +35,7 @@ const WeeklyTable = (props) => {
     const dates = [];
 
     while (now.isSameOrBefore(endDate1)) {
-      dates.push(now.format('MM/DD/YYYY'));
+      dates.push(now.format(DATE_FORMAT_MDY));
       now.add(1, 'days');
     }
     return dates;
@@ -42,7 +43,10 @@ const WeeklyTable = (props) => {
 
   // check if the same date
   const isTheSameDay = (date1, date2) => {
-    return moment(date1, 'YYYY-MM-DD').format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
+    return (
+      moment(date1, DATE_FORMAT_YMD).format(DATE_FORMAT_MDY) ===
+      moment(date2).format(DATE_FORMAT_MDY)
+    );
   };
 
   const getColorByIndex = (index) => {
@@ -86,13 +90,13 @@ const WeeklyTable = (props) => {
     const holidayName = getHolidayNameByDate(date, holidays);
     return (
       <div className={styles.timeStamp} style={{ backgroundColor: isHoliday ? '#FFFAF2' : 'FFF' }}>
-        <div className={styles.left}>{moment(date, 'MM/DD/YYYY').locale('en').format('DD')}</div>
+        <div className={styles.left}>{moment(date, DATE_FORMAT_MDY).locale('en').format('DD')}</div>
         <div className={styles.right}>
           <span className={styles.date}>
-            {moment(date, 'MM/DD/YYYY').locale('en').format('dddd')}
+            {moment(date, DATE_FORMAT_MDY).locale('en').format('dddd')}
           </span>
           <span className={styles.month}>
-            {moment(date, 'MM/DD/YYYY').locale('en').format('MMMM')}
+            {moment(date, DATE_FORMAT_MDY).locale('en').format('MMMM')}
           </span>
         </div>
         {isHoliday ? (

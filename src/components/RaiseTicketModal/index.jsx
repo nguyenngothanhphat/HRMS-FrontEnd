@@ -16,19 +16,19 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import BlueAddIcon from '@/assets/dashboard/blueAdd.svg';
+import HelpIcon from '@/assets/dashboard/help.svg';
 import { PRIORITY } from '@/constants/dashboard';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import {
   getAuthority,
   getCurrentCompany,
   getCurrentLocation,
   getCurrentTenant,
 } from '@/utils/authority';
-import HelpIcon from '@/assets/dashboard/help.svg';
-import BlueAddIcon from '@/assets/dashboard/blueAdd.svg';
 import styles from './index.less';
 
 const { Option } = Select;
-const dateFormat = 'MM/DD/YYYY';
 
 const RaiseTicketModal = (props) => {
   const [form] = Form.useForm();
@@ -254,7 +254,7 @@ const RaiseTicketModal = (props) => {
             </Col>
             <Col xs={24} md={12}>
               <Form.Item label="Request Date" name="requestDate" labelCol={{ span: 24 }}>
-                <DatePicker disabled format={dateFormat} />
+                <DatePicker disabled format={DATE_FORMAT_MDY} />
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>

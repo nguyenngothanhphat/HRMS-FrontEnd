@@ -1,14 +1,12 @@
 /* eslint-disable react/jsx-curly-newline */
-import React, { useEffect, useState } from 'react';
-import { Table, Popover } from 'antd';
-import { formatMessage, connect, history, Link } from 'umi';
+import { Card } from 'antd';
 import { isEmpty } from 'lodash';
-import moment from 'moment';
-import { isOwner } from '@/utils/authority';
-import filterIcon from '@/assets/offboarding-filter.svg';
-import { getTimezoneViaCity } from '@/utils/times';
-import PopoverInfo from '@/pages/Directory/components/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
+import React, { useEffect } from 'react';
+import { connect, history, Link } from 'umi';
+import CommonTable from '@/components/CommonTable';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import { LIST_STATUS_TICKET } from '@/constants/globalSearch';
+import { isOwner } from '@/utils/authority';
 import styles from '../../index.less';
 
 const TicketResult = React.memo((props) => {
@@ -20,39 +18,10 @@ const TicketResult = React.memo((props) => {
     ticketAdvance,
     isSearchAdvance,
     ticketList,
-    totalTickets,
     loadTableData2,
-    companyLocationList,
     tabName,
     employee: currentUser,
   } = props;
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [timezoneList, setTimezoneList] = useState([]);
-  const [currentTime] = useState(moment());
-
-  const fetchTimezone = () => {
-    const timezoneListTemp = [];
-    companyLocationList.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id = '',
-      } = location;
-      timezoneListTemp.push({
-        locationId: _id,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    setTimezoneList(timezoneListTemp);
-  };
-
-  useEffect(() => {
-    fetchTimezone();
-  }, []);
 
   useEffect(() => {
     if (isSearch && tabName === 'tickets') {
@@ -171,26 +140,14 @@ const TicketResult = React.memo((props) => {
             employeeType,
           };
           return (
-            <Popover
-              content={
-                <PopoverInfo
-                  companyLocationList={companyLocationList}
-                  propsState={{ currentTime, timezoneList }}
-                  data={manager}
-                />
+            <Link
+              className={styles.managerName}
+              to={() =>
+                handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
               }
-              placement="bottomRight"
-              trigger="hover"
             >
-              <Link
-                className={styles.managerName}
-                to={() =>
-                  handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
-                }
-              >
-                {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
-              </Link>
-            </Popover>
+              {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
+            </Link>
           );
         }
         return '-';
@@ -204,43 +161,25 @@ const TicketResult = React.memo((props) => {
     },
   ];
 
-  const pagination = {
-    position: ['bottomLeft'],
-    total: totalTickets,
-    showTotal: (total, range) => (
-      <span>
-        {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-        <b>
-          {range[0]} - {range[1]}
-        </b>{' '}
-        {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-      </span>
-    ),
-    defaultPageSize: 10,
-    showSizeChanger: true,
-    pageSizeOptions: ['10', '25', '50', '100'],
-    pageSize: limit,
-    current: page,
-    onChange: (nextPage, pageSize) => {
-      setPage(nextPage);
-      setLimit(pageSize);
-    },
-  };
-  return (
-    <div className={styles.resultContent}>
-      <div className={styles.filter}>
-        <img src={filterIcon} alt="filter icon" onClick={clickFilter} />
+  const renderOption = () => {
+    return (
+      <div className={styles.options}>
+        <CustomOrangeButton onClick={clickFilter}>Filter</CustomOrangeButton>
       </div>
-      <div className={styles.result}>
-        <Table
+    );
+  };
+
+  return (
+    <Card className={styles.ResultContent} extra={renderOption()}>
+      <div className={styles.tableContainer}>
+        <CommonTable
           columns={columns}
-          dataSource={ticketList}
-          size="middle"
-          pagination={pagination}
+          list={ticketList}
           loading={loadTableData || loadTableData2}
+          scrollable
         />
       </div>
-    </div>
+    </Card>
   );
 });
 export default connect(

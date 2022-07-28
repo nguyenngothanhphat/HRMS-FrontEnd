@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { TIMEOFF_NAME_BY_ID } from '@/constants/timeOffManagement';
 import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 
@@ -14,8 +15,8 @@ const processCSVData = (array = []) => {
         'First Name': item.employee?.generalInfoInfo?.firstName || '-',
         'Middle Name': item.employee?.generalInfoInfo?.middleName || '-',
         'Last Name': item.employee?.generalInfoInfo?.lastName || '-',
-        'From Date': item.fromDate ? moment(item.fromDate).format('MM/DD/YYYY') : '-',
-        'To Date': item.toDate ? moment(item.toDate).format('MM/DD/YYYY') : '-',
+        'From Date': item.fromDate ? moment(item.fromDate).format(DATE_FORMAT_MDY) : '-',
+        'To Date': item.toDate ? moment(item.toDate).format(DATE_FORMAT_MDY) : '-',
         'Count/Q.ty': item.duration || '-',
         'Leave Type': item.type?.name || '-',
         Subject: item.subject || '-',

@@ -3,8 +3,11 @@ import { debounce } from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import { DATE_FORMAT, TIMEOFF_NAME_BY_ID } from '@/constants/timeOffManagement';
+import { TIMEOFF_NAME_BY_ID } from '@/constants/timeOffManagement';
 // import DownloadIcon from '@/assets/timeOffManagement/ic_download.svg';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import DebounceSelect from '../DebounceSelect';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -13,22 +16,18 @@ const Header = (props) => {
   const [form] = Form.useForm();
 
   const {
-    timeOffManagement: {
-      typeList = [],
-      // listTimeOff = [],
-      listEmployees = [],
-    } = {},
+    dispatch,
+    timeOffManagement: { typeList = [] } = {},
     setPayload = () => {},
     disabled = false,
     toDate = '',
     fromDate = '',
     setFromDate = () => {},
     setToDate = () => {},
-    // onExport = () => {},
-    loadingEmployeeList = false,
-    // loadingExport = false,
     loadingFetchTimeoffTypes = false,
   } = props;
+
+  const [selectedUser, setSelectedUser] = React.useState();
 
   // DISABLE DATE OF DATE PICKER
   const disabledFromDate = (current) => {
@@ -40,17 +39,44 @@ const Header = (props) => {
   };
 
   const onSaveDebounce = debounce((values) => {
-    const from = values.from ? moment(values.from).format('YYYY-MM-DD') : null;
-    const to = values.to ? moment(values.to).format('YYYY-MM-DD') : null;
+    const from = values.from ? moment(values.from).format(DATE_FORMAT_YMD) : null;
+    const to = values.to ? moment(values.to).format(DATE_FORMAT_YMD) : null;
     setPayload({
       ...values,
       from,
       to,
     });
-  }, 500);
+  }, 1000);
 
   const onValuesChange = (changedValues, allValues) => {
-    onSaveDebounce(allValues);
+    const from = allValues.from ? moment(allValues.from).format(DATE_FORMAT_YMD) : null;
+    const to = allValues.to ? moment(allValues.to).format(DATE_FORMAT_YMD) : null;
+    onSaveDebounce({ ...allValues, from, to });
+  };
+
+  const onEmployeeSearch = (value) => {
+    if (!value) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+
+    return dispatch({
+      type: 'timeOffManagement/getListEmployeesEffect',
+      payload: {
+        name: value,
+        company: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
+        status: ['INACTIVE', 'ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfo?.legalName,
+        value: user._id,
+        employeeId: user?.employeeId,
+      }));
+    });
   };
 
   return (
@@ -68,24 +94,17 @@ const Header = (props) => {
           <Row gutter={[24, 12]}>
             <Col span={6}>
               <span className={styles.itemLabel}>User ID - Name</span>
-              <Form.Item name="user">
-                <Select
-                  allowClear
+              <Form.Item name="employee">
+                <DebounceSelect
                   placeholder="Select an user"
-                  filterOption={(input, option) =>
-                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  fetchOptions={onEmployeeSearch}
                   showSearch
-                  disabled={disabled || loadingEmployeeList}
-                  loading={loadingEmployeeList}
-                >
-                  {listEmployees.map((item = {}) => {
-                    return (
-                      <Option key={item._id} value={item._id}>
-                        {`${item?.generalInfo?.employeeId} - ${item?.generalInfo?.legalName}`}
-                      </Option>
-                    );
-                  })}
-                </Select>
+                  value={selectedUser}
+                  disabled={disabled}
+                  onChange={(value) => {
+                    setSelectedUser(value);
+                  }}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -96,7 +115,7 @@ const Header = (props) => {
                     <Form.Item name="from">
                       <DatePicker
                         placeholder="From Date"
-                        format={DATE_FORMAT}
+                        format={DATE_FORMAT_MDY}
                         disabledDate={disabledFromDate}
                         disabled={disabled}
                         onChange={(val) => setFromDate(val)}
@@ -108,7 +127,7 @@ const Header = (props) => {
                     <Form.Item name="to">
                       <DatePicker
                         placeholder="To Date"
-                        format={DATE_FORMAT}
+                        format={DATE_FORMAT_MDY}
                         disabledDate={disabledToDate}
                         disabled={disabled}
                         onChange={(val) => setToDate(val)}
@@ -146,27 +165,6 @@ const Header = (props) => {
                 </Row>
               </div>
             </Col>
-            {/* <Col xs={{ span: 6, order: 4 }} xl={{ span: 4, order: 4 }} justify="end">
-              <span className={styles.itemLabel} />
-              <div className={styles.buttons}>
-                <Row gutter={[24, 24]}>
-                  <Col xs={24}>
-                    <span />
-                    <Form.Item>
-                      <Button
-                        className={styles.downloadCSVBtn}
-                        disabled={disabled || listTimeOff.length === 0}
-                        onClick={onExport}
-                        loading={loadingExport}
-                        icon={<img src={DownloadIcon} alt="" />}
-                      >
-                        Download
-                      </Button>
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </div>
-            </Col> */}
           </Row>
           <Row
             gutter={[24, 24]}

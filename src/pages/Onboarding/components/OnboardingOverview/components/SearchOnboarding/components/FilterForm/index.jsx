@@ -1,14 +1,15 @@
 /* eslint-disable react/jsx-curly-newline */
-import React, { Component } from 'react';
-import { Button, Checkbox, DatePicker, Divider, Form, Select, Tag } from 'antd';
-import moment from 'moment';
-import { connect } from 'umi';
+import { Checkbox, DatePicker, Form, Select, Tag } from 'antd';
 import { isEmpty, values } from 'lodash';
+import moment from 'moment';
+import React, { Component } from 'react';
+import { connect } from 'umi';
 
-import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
-import CloseTagIcon from '@/assets/closeTagIcon.svg';
 import CalendarIcon from '@/assets/calendar_icon.svg';
+import CloseTagIcon from '@/assets/closeTagIcon.svg';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -278,8 +279,8 @@ class FilterForm extends Component {
     }
 
     if (payload.fromDate && payload.toDate) {
-      const _fromDate = moment(payload.fromDate).format('YYYY-MM-DD');
-      const _toDate = moment(payload.toDate).format('YYYY-MM-DD');
+      const _fromDate = moment(payload.fromDate).format(DATE_FORMAT_YMD);
+      const _toDate = moment(payload.toDate).format(DATE_FORMAT_YMD);
       payload = {
         ...payload,
         fromDate: _fromDate,

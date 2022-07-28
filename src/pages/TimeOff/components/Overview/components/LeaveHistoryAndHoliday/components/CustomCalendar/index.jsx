@@ -1,3 +1,7 @@
+import NextIcon from '@/assets/timeOff/next.svg';
+import PrevIcon from '@/assets/timeOff/previous.svg';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import { Calendar, ConfigProvider, Tooltip } from 'antd';
 import enGB from 'antd/lib/locale-provider/en_GB';
 import moment from 'moment';
@@ -5,9 +9,6 @@ import 'moment/locale/en-gb';
 import React from 'react';
 import { connect } from 'umi';
 import TypeColorTag from '../TypeColorTag';
-import NextIcon from '@/assets/timeOff/next.svg';
-import PrevIcon from '@/assets/timeOff/previous.svg';
-import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import styles from './index.less';
 
 const { IN_PROGRESS, ACCEPTED, REJECTED } = TIMEOFF_STATUS;
@@ -19,8 +20,11 @@ const CustomCalendar = (props) => {
   // FUNCTION
   const checkIfSameDay = (a, b, c = []) => {
     return (
-      moment(a).format('MM/DD/YYYY') === moment(b).format('MM/DD/YYYY') ||
-      c.some((d) => moment(d, 'YYYY-MM-DD').format('MM/DD/YYYY') === moment(b).format('MM/DD/YYYY'))
+      moment(a).format(DATE_FORMAT_MDY) === moment(b).format(DATE_FORMAT_MDY) ||
+      c.some(
+        (d) =>
+          moment(d, DATE_FORMAT_YMD).format(DATE_FORMAT_MDY) === moment(b).format(DATE_FORMAT_MDY),
+      )
     );
   };
   const checkCurrentDay = (val) => {

@@ -1,15 +1,16 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Popconfirm, Image } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { connect, Link } from 'umi';
-import moment from 'moment';
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { MenuOutlined } from '@ant-design/icons';
-import CommonTable from '../CommonTable';
-import styles from './index.less';
+import { Image, Popconfirm } from 'antd';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
+import { connect, Link } from 'umi';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import EditIcon from '@/assets/homePage/editIcon.svg';
 import AddButton from '../AddButton';
+import CommonTable from '../CommonTable';
+import styles from './index.less';
 
 const DragHandle = SortableHandle(() => <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />);
 const SortableItem = SortableElement((props) => <tr {...props} />);
@@ -104,7 +105,7 @@ const BannerTable = (props) => {
         dataIndex: 'createdAt',
         key: 'createdAt',
         render: (createdAt) => {
-          return <span>{createdAt ? moment(createdAt).format('MM/DD/YYYY') : ''}</span>;
+          return <span>{createdAt ? moment(createdAt).format(DATE_FORMAT_MDY) : ''}</span>;
         },
       },
       {

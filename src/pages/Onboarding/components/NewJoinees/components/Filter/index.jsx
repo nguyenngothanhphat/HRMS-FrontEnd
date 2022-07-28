@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Button, Checkbox, DatePicker, Divider, Form, Select, Tag, InputNumber } from 'antd';
-import moment from 'moment';
-import { connect } from 'umi';
+import { Button, Checkbox, DatePicker, Divider, Form, InputNumber, Select, Tag } from 'antd';
 import { isEmpty } from 'lodash';
+import moment from 'moment';
+import React, { useState } from 'react';
+import { connect } from 'umi';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import styles from './index.less';
@@ -121,8 +122,8 @@ const Filter = (props) => {
     const { fromDate, toDate, fromYearOfExp, toYearOfExp, hrEmployee, hiringManager, title } =
       value;
     const payload = {
-      fromDate: fromDate && moment(fromDate).format('YYYY-MM-DD'),
-      toDate: toDate && moment(toDate).format('YYYY-MM-DD'),
+      fromDate: fromDate && moment(fromDate).format(DATE_FORMAT_YMD),
+      toDate: toDate && moment(toDate).format(DATE_FORMAT_YMD),
       fromYearOfExp,
       toYearOfExp,
       hrEmployee,

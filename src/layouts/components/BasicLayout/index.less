@@ -98,7 +98,7 @@
     .ant-pro-menu-item {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
     }
     .ant-layout.ant-layout-has-sider > .ant-layout,
     .ant-layout.ant-layout-has-sider > .ant-layout-content {
@@ -164,15 +164,34 @@
       display: none;
     }
 
+    .ant-menu-inline-collapsed-tooltip {
+      display: none;
+    }
+    // hover side menu will fade out the background color
+    .ant-layout-has-sider {
+      transform: 0.3s;
+      &:has(.ant-pro-sider-light:hover) {
+        .ant-pro-basicLayout-content {
+          transform: 0.3s;
+          opacity: 0.6;
+        }
+      }
+    }
+
     .ant-pro-sider-light {
       width: 70px !important;
       min-width: 70px !important;
       max-width: 70px !important;
+      box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.123);
+
       transition: min-width 0.3s, max-width 0.3s;
       .ant-menu-item .anticon + span,
       .ant-menu-submenu-title .anticon + span {
         display: none;
-        opacity: 0.5;
+        width: 0;
+        margin-left: 0;
+        opacity: 0;
+        transition: 0.3s;
       }
       .ant-menu-vertical .ant-menu-item,
       .ant-menu-vertical-left .ant-menu-item,
@@ -184,8 +203,9 @@
       .ant-menu-inline .ant-menu-submenu-title {
         display: flex;
         align-items: center;
-        justify-content: center;
-        padding: 0 !important;
+        justify-content: flex-start;
+        padding-left: 24px;
+        text-overflow: none !important;
       }
 
       .ant-pro-sider-logo {
@@ -197,7 +217,7 @@
       }
 
       &:hover {
-        z-index: 1000;
+        z-index: 1000 !important;
         width: 242px !important;
         min-width: 242px !important;
         max-width: 242px !important;
@@ -221,7 +241,7 @@
         .ant-menu-vertical-right .ant-menu-submenu-title,
         .ant-menu-inline .ant-menu-submenu-title {
           justify-content: start;
-          padding-left: 24px !important;
+          // padding-left: 24px !important;
         }
         .ant-pro-menu-item {
           justify-content: flex-start;
@@ -229,10 +249,12 @@
         .ant-menu-item .anticon + span,
         .ant-menu-submenu-title .anticon + span {
           display: inline-block;
+          width: fit-content !important;
           margin-left: 10px !important;
-          color: #fff;
-          font-weight: 600;
+          color: rgba(255, 255, 255, 0.801);
+          font-weight: 500;
           font-size: 13px;
+          opacity: 1 !important;
         }
       }
       .ant-menu {
@@ -241,6 +263,10 @@
       .ant-menu-item {
         &:hover {
           background-image: linear-gradient(to right, @primary-color, @primary-color-active);
+        }
+        &:active,
+        &:focus {
+          background: #000;
         }
       }
       .ant-menu-item a {
@@ -253,7 +279,8 @@
     .ant-pro-sider.ant-menu-inline-collapsed .ant-menu-item {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
+      padding-left: 24px;
     }
 
     .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
@@ -297,11 +324,10 @@
     .ant-menu-item-only-child {
       display: flex;
       align-items: center;
-      height: 75px;
+      height: 70px;
       margin: 0 !important;
       border-bottom: 1px solid @primary-color-active;
       &:active {
-        height: 75px;
         margin: 0 !important;
         background-color: @primary-color;
       }

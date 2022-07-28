@@ -2,9 +2,10 @@ import { Form, Space, Table, Tabs } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import editIcon from '@/assets/onboarding/editIcon.svg';
-import deleteIcon from '@/assets/onboarding/delete.svg';
 import plusIcon from '@/assets/add-adminstrator.svg';
+import deleteIcon from '@/assets/onboarding/delete.svg';
+import editIcon from '@/assets/onboarding/editIcon.svg';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import EmployeeId from './components/EmployeeId';
 import ModalAdd from './components/ModalAdd/index';
 import ModalDelete from './components/ModalDelete/index';
@@ -69,7 +70,7 @@ const JoiningFormalities = (props) => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 150,
-      render: (createdAt) => moment(createdAt).format('MM/DD/YYYY'),
+      render: (createdAt) => moment(createdAt).format(DATE_FORMAT_MDY),
     },
     {
       title: 'Created By',

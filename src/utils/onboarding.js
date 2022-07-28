@@ -1,9 +1,10 @@
 import moment from 'moment';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { ONBOARDING_DATE_FORMAT, ONBOARDING_TABLE_TYPE } from '@/constants/onboarding';
 
 export const compare = (dateTimeA, dateTimeB) => {
-  const momentA = moment(dateTimeA, 'DD/MM/YYYY');
-  const momentB = moment(dateTimeB, 'DD/MM/YYYY');
+  const momentA = moment(dateTimeA, DATE_FORMAT_MDY);
+  const momentB = moment(dateTimeB, DATE_FORMAT_MDY);
   if (momentA > momentB) return 1;
   if (momentA < momentB) return -1;
   return 0;

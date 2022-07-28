@@ -37,7 +37,6 @@ const DirectoryComponent = (props) => {
   const [applied, setApplied] = useState(0);
   const [pageSelected, setPageSelected] = useState(1);
   const [size, setSize] = useState(10);
-  const [isFiltering, setIsFiltering] = useState(false);
 
   // FUNCTIONALITY
   const clearFilter = () => {
@@ -71,10 +70,8 @@ const DirectoryComponent = (props) => {
     setSize(sizeProp);
   };
 
-  const renderData = (payload = {}) => {
+  const renderData = () => {
     const { active, inActive } = tabList;
-
-    const { page = 1 } = payload;
 
     // if there are location & company, call API
     const checkCallAPI =
@@ -82,21 +79,18 @@ const DirectoryComponent = (props) => {
 
     if (checkCallAPI) {
       // MULTI COMPANY & LOCATION PAYLOAD
-
-      setPageSelected(page || 1);
-
       if (tabId === active) {
         dispatch({
           type: 'usersManagement/fetchEmployeesList',
           payload: {
-            ...payload,
+            ...filter,
             status: ['ACTIVE'],
             company: getCurrentCompany(),
             tenantId: getCurrentTenant(),
           },
           params: {
-            page: payload.page,
-            limit: payload.limit,
+            page: pageSelected,
+            limit: size,
           },
         });
       }
@@ -105,14 +99,14 @@ const DirectoryComponent = (props) => {
         dispatch({
           type: 'usersManagement/fetchEmployeesList',
           payload: {
-            ...payload,
+            ...filter,
             status: ['INACTIVE'],
             company: getCurrentCompany(),
             tenantId: getCurrentTenant(),
           },
           params: {
-            page: payload.page,
-            limit: payload.limit,
+            page: pageSelected,
+            limit: size,
           },
         });
       }
@@ -120,32 +114,12 @@ const DirectoryComponent = (props) => {
   };
 
   const refreshData = () => {
-    setIsFiltering(true);
-    setPageSelected(1);
-    renderData({
-      ...filter,
-      page: 1,
-      limit: size,
-    });
-    setTimeout(() => {
-      setIsFiltering(false);
-    }, 50);
+    renderData();
   };
 
   useEffect(() => {
     refreshData();
-  }, [JSON.stringify(filter), JSON.stringify(listCountry), size, tabId]);
-
-  // pageSelected change => only call API when not using filter (isFiltering = false)
-  useEffect(() => {
-    if (!isFiltering) {
-      renderData({
-        ...filter,
-        page: pageSelected,
-        limit: size,
-      });
-    }
-  }, [pageSelected]);
+  }, [JSON.stringify(filter), JSON.stringify(listCountry), pageSelected, size, tabId]);
 
   const handleClickTabPane = async (tabIdProp) => {
     setTabId(tabIdProp);

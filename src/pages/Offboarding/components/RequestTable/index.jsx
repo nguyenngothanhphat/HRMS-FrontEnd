@@ -7,10 +7,11 @@ import { connect, Link } from 'umi';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import MenuIcon from '@/assets/offboarding/menuIcon.png';
 import CommonTable from '@/components/CommonTable';
-import CustomSearchBox from '@/components/CustomSearchBox';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
+import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterPopover from '@/components/FilterPopover';
 import UserProfilePopover from '@/components/UserProfilePopover';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import {
   DATE_FORMAT,
   OFFBOARDING,
@@ -58,10 +59,10 @@ const RequestTable = (props) => {
     if (!isEmpty(filterValues)) {
       const { fromDate = '', toDate = '' } = filterValues;
       if (fromDate) {
-        payload.fromDate = moment(fromDate).format('YYYY-MM-DD');
+        payload.fromDate = moment(fromDate).format(DATE_FORMAT_YMD);
       }
       if (toDate) {
-        payload.toDate = moment(toDate).format('YYYY-MM-DD');
+        payload.toDate = moment(toDate).format(DATE_FORMAT_YMD);
       }
     }
     dispatch({
@@ -232,7 +233,7 @@ const RequestTable = (props) => {
       ellipsis: true,
       dataIndex: 'createdAt',
       render: (createdAt = '') => {
-        return <span>{createdAt ? moment(createdAt).format('MM/DD/YYYY') : ''}</span>;
+        return <span>{createdAt ? moment(createdAt).format(DATE_FORMAT_MDY) : ''}</span>;
       },
     },
     {

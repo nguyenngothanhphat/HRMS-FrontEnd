@@ -5,6 +5,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { TIMEOFF_STATUS } from '@/constants/timeOff';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import PDFIcon from '@/assets/pdf_icon.png';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import MessageBox from '../MessageBox';
@@ -210,7 +211,7 @@ const TicketDetailModal = (props) => {
       },
       {
         name: 'Request Date',
-        value: moment(requestDate || onDate || createdAt).format('DD/MM/YYYY'),
+        value: moment(requestDate || onDate || createdAt).format(DATE_FORMAT_MDY),
         span: 12,
       },
       {
@@ -230,7 +231,7 @@ const TicketDetailModal = (props) => {
       },
       {
         name: 'Duration',
-        value: `${moment(fromDate).format('DD/MM/YYYY')} - ${moment(toDate).format('DD/MM/YYYY')}`,
+        value: `${moment(fromDate).format(DATE_FORMAT_MDY)} - ${moment(toDate).format(DATE_FORMAT_MDY)}`,
         span: 12,
         disabled: queryType.length > 0,
       },

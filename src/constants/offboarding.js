@@ -1,3 +1,5 @@
+import { DATE_FORMAT_MDY } from './dateFormat';
+
 export const OFFBOARDING = {
   STEP: {
     INIT_REQUEST: 'INIT_REQUEST',
@@ -78,4 +80,4 @@ export const OFFBOARDING_MANAGER_TABS = [
   },
 ];
 
-export const DATE_FORMAT = 'MM/DD/YYYY';
+export const DATE_FORMAT = DATE_FORMAT_MDY;

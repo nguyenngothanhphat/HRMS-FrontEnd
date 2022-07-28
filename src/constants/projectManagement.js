@@ -1,3 +1,5 @@
+import { DATE_FORMAT_MDY } from './dateFormat';
+
 const PM_STATUS = {
   ENGAGING: 'Engaging',
   ACTIVE: 'Active',
@@ -8,7 +10,7 @@ const PM_STATUS = {
 // export const TAGS_DEFAULT = ['Design', 'Development', 'Frontend', 'Backend', 'DevOps', 'Security', 'Infrastructure', 'ReactJS', 'NodeJS']
 // export const DOCUMENT_TYPES = ['NDA', 'MSA', 'SOW', 'PO', 'OTHER']
 // export const PROJECT_TYPES = ['T&M', 'Fixed Bid', 'Retainer', 'Staff Augmentation', 'JV', 'Internal']
-const DATE_FORMAT_LIST = 'MM/DD/YYYY';
+const DATE_FORMAT_LIST = DATE_FORMAT_MDY;
 const DATE_FORMAT_2 = 'Do MMMM YYYY';
 
 export { PM_STATUS, DATE_FORMAT_LIST, DATE_FORMAT_2 };

@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import { Table, Modal } from 'antd';
+import { Modal, Table } from 'antd';
 import moment from 'moment';
+import React, { Component } from 'react';
 import { connect } from 'umi';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 @connect(({ resourceManagement: { resourceList } }) => ({ resourceList }))
@@ -67,7 +68,7 @@ class HistoryActionBTN extends Component {
         title: (
           <div>
             <div>Start Date</div>
-            <div className={styles.date}>(mm/dd/yyyy)</div>
+            <div className={styles.date}>({DATE_FORMAT_MDY.toLowerCase()})</div>
           </div>
         ),
         dataIndex: 'startDate',
@@ -78,7 +79,7 @@ class HistoryActionBTN extends Component {
         title: (
           <div>
             <div>End Date</div>
-            <div className={styles.date}>(mm/dd/yyyy)</div>
+            <div className={styles.date}>({DATE_FORMAT_MDY.toLowerCase()})</div>
           </div>
         ),
         dataIndex: 'endDate',

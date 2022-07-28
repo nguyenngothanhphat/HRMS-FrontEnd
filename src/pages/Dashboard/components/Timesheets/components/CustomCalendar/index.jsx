@@ -2,20 +2,12 @@ import { Calendar, Tooltip } from 'antd';
 import moment from 'moment';
 import React from 'react';
 import { connect, history } from 'umi';
-import PlusIcon from '@/assets/dashboard/timesheetPlus.svg';
 import DoneIcon from '@/assets/dashboard/timesheetCheck.svg';
+import PlusIcon from '@/assets/dashboard/timesheetPlus.svg';
+import { TIMESHEET_DATE_FORMAT } from '@/constants/dashboard';
 import { dateFormatAPI } from '@/constants/timeSheet';
 import styles from './index.less';
-import { TIMESHEET_DATE_FORMAT } from '@/constants/dashboard';
 
-// const dateFormat = 'MM/DD/YYYY';
-
-// const mockHoliday = [
-//   {
-//     date: moment('10/07/2021', dateFormat),
-//     name: 'Ganesh Chaturthi',
-//   },
-// ];
 const CustomCalendar = (props) => {
   const { selectedMonth: selectedMonthProp = '', myTimesheet = [] } = props;
 

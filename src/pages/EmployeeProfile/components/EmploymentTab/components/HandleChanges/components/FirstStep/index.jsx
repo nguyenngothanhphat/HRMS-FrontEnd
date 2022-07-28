@@ -3,6 +3,7 @@ import { DatePicker, Radio } from 'antd';
 import moment from 'moment';
 import React from 'react';
 import { MAKE_CHANGE_TYPE } from '@/constants/employeeProfile';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './styles.less';
 
 const { ALREADY_CHANGE, SCHEDULE_CHANGE } = MAKE_CHANGE_TYPE;
@@ -29,7 +30,7 @@ export default function FirstStep(props) {
                 border: '1px solid #d6dce4',
                 color: '#000',
               }}
-              format="MM/DD/YYYY"
+              format={DATE_FORMAT_MDY}
             />
           ) : null}
         </div>
@@ -55,7 +56,7 @@ export default function FirstStep(props) {
                 border: '1px solid #d6dce4',
                 color: '#000',
               }}
-              format="MM/DD/YYYY"
+              format={DATE_FORMAT_MDY}
             />
           ) : null}
         </div>

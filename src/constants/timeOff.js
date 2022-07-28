@@ -1,3 +1,5 @@
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from './dateFormat';
+
 export const TIMEOFF_STATUS = {
   IN_PROGRESS: 'IN-PROGRESS',
   IN_PROGRESS_NEXT: 'IN-PROGRESS-NEXT',
@@ -79,8 +81,8 @@ export const TIMEOFF_COLOR = {
   Holiday: '#6a0dad',
 };
 
-export const TIMEOFF_DATE_FORMAT = 'MM/DD/YYYY';
-export const TIMEOFF_DATE_FORMAT_API = 'YYYY-MM-DD';
+export const TIMEOFF_DATE_FORMAT = DATE_FORMAT_MDY;
+export const TIMEOFF_DATE_FORMAT_API = DATE_FORMAT_YMD;
 
 export const TIMEOFF_COL_SPAN_1 = {
   DATE: 7,
