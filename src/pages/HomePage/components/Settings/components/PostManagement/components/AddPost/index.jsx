@@ -53,6 +53,7 @@ const AddPost = (props) => {
   const {
     dispatch,
     currentUser: { employee = {}, location: { _id: locationId = '' } = {} } = {},
+    companiesOfUser = [],
     loadingAddPost = false,
     loadingEditPost = false,
     companyLocationList = [],
@@ -95,7 +96,7 @@ const AddPost = (props) => {
   useEffect(() => {
     if (editing) {
       let tempFormValues = {};
-      const { attachments = [], location: locationProps = [] } = record;
+      const { attachments = [], location: locationProps = [], postAsCompany = false } = record;
       const fileListTemp = () => {
         return attachments.map((x, i) => {
           return {
@@ -116,6 +117,7 @@ const AddPost = (props) => {
             postType: TAB_IDS.ANNOUNCEMENTS,
             descriptionA: record.description,
             uploadFilesA: { fileList: [...fileListTemp()] },
+            postAsCompany,
           };
           break;
         }
@@ -261,6 +263,7 @@ const AddPost = (props) => {
           description: values.descriptionA,
           createdBy: employee?._id,
           location: values.location,
+          postAsCompany: values.postAsCompany,
         };
         break;
       }
@@ -336,6 +339,7 @@ const AddPost = (props) => {
           postType: TAB_IDS.ANNOUNCEMENTS,
           description: values.descriptionA,
           location: values.location,
+          postAsCompany: values.postAsCompany,
         };
         break;
       }
@@ -402,7 +406,13 @@ const AddPost = (props) => {
   const renderTypeContent = () => {
     switch (mode) {
       case TAB_IDS.ANNOUNCEMENTS:
-        return <AnnouncementContent defaultFileList={fileList} />;
+        return (
+          <AnnouncementContent
+            defaultFileList={fileList}
+            company={companiesOfUser[0]}
+            employee={employee}
+          />
+        );
       case TAB_IDS.ANNIVERSARY:
         return <BirthdayContent defaultFileList={fileList} />;
       case TAB_IDS.IMAGES:
@@ -429,6 +439,8 @@ const AddPost = (props) => {
             postType: mode,
             responsesP: [{}, {}, {}],
             location,
+            createBy: employee?.generalInfo?.legalName,
+            postAsCompany: false,
           }}
           onFinish={editing ? onEdit : onPost}
         >
@@ -507,7 +519,13 @@ const AddPost = (props) => {
     return (
       <div className={styles.previewContainer}>
         <p className={styles.title}>Preview post</p>
-        <Preview mode={mode} editing={editing} formValues={formValues} owner={owner} />
+        <Preview
+          mode={mode}
+          editing={editing}
+          formValues={formValues}
+          owner={owner}
+          company={companiesOfUser[0]}
+        />
       </div>
     );
   };
@@ -536,11 +554,12 @@ const AddPost = (props) => {
 
 export default connect(
   ({
-    user: { currentUser = {}, permissions = {} } = {},
+    user: { currentUser = {}, permissions = {}, companiesOfUser = [] } = {},
     loading,
     location: { companyLocationList = [] } = {},
   }) => ({
     currentUser,
+    companiesOfUser,
     permissions,
     companyLocationList,
     loadingAddPost:
