@@ -130,11 +130,6 @@ class EditUserModal extends PureComponent {
       roles = [],
       status = '',
     } = values;
-    if (status) {
-      this.setState({
-        statusUser: status,
-      });
-    }
     // Updating details in the admin portal should update the associated fields also
     // The above 3 points should work for both the active users and inactive users portal
     dispatch({
@@ -174,11 +169,6 @@ class EditUserModal extends PureComponent {
         closeEditModal(true);
       }
     });
-
-    if (status === 'INACTIVE') {
-      closeEditModal(true);
-      this.setState({ openModal: true, userProfile: values });
-    }
   };
 
   // onFinishFailed = (errorInfo) => {};
@@ -194,6 +184,13 @@ class EditUserModal extends PureComponent {
         <p className={styles.header__text}>{titleModal}</p>
       </div>
     );
+  };
+
+  handleChangeStatus = (value) => {
+    const { closeEditModal = () => {} } = this.props;
+    const userProfile = this.formRef.current.getFieldsValue();
+    closeEditModal(true);
+    this.setState({ openModal: true, statusUser: value, userProfile });
   };
 
   render() {
@@ -396,7 +393,7 @@ class EditUserModal extends PureComponent {
                   name="status"
                   rules={[{ required: false, message: 'Please input!' }]}
                 >
-                  <Select>
+                  <Select onChange={this.handleChangeStatus}>
                     <Option value="ACTIVE">Active</Option>
                     <Option value="INACTIVE">Inactive</Option>
                   </Select>
@@ -406,11 +403,9 @@ class EditUserModal extends PureComponent {
           )}
         </Modal>
         <TerminateModal
-          // loading={loadingTerminateReason}
           visible={openModal && statusUser === 'INACTIVE' && tabId === 1}
           handleSubmit={this.handleSubmit}
           handleCandelModal={this.handleCandelModal}
-          // valueReason={valueReason}
           userProfile={userProfile}
           employeeDetail={employeeDetail}
           onChange={this.onChangeReason}
