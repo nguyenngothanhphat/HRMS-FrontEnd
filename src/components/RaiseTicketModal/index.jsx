@@ -222,7 +222,7 @@ const RaiseTicketModal = (props) => {
           form={form}
           name="basic"
           ref={formRef}
-          id="myForm"
+          id="raiseTicketForm"
           onFinish={handleFinish}
           initialValues={{
             status: 'New',
@@ -441,7 +441,7 @@ const RaiseTicketModal = (props) => {
             <Button
               className={styles.btnSubmit}
               type="primary"
-              form="myForm"
+              form="raiseTicketForm"
               key="submit"
               htmlType="submit"
               disabled={

@@ -1,8 +1,3 @@
-@commonPadding: 24px;
-@blueColor: @primary-color;
-@lightBlueColor: #e4edff;
-@borderColor: #d6dce0;
-
 .TicketManagement {
   overflow: hidden;
   background: #ffffff;
@@ -10,17 +5,17 @@
   border-radius: 8px;
   :global {
     .ant-table-content {
-      padding: @commonPadding @commonPadding 0;
+      padding: @padding-lg @padding-lg 0;
     }
     .ant-pagination {
-      margin: @commonPadding !important;
+      margin: @padding-lg !important;
     }
   }
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px @commonPadding;
+    padding: 16px @padding-lg;
     border-bottom: 1px solid #e2e4e8;
 
     .title {
@@ -35,20 +30,6 @@
       :global {
         .ant-btn {
           height: 40px;
-          object-fit: contain;
-          color: @blueColor;
-          font-weight: 500;
-          font-size: 14px;
-          text-shadow: none;
-          background: @lightBlueColor;
-          border: none;
-          border-radius: 5px;
-          outline: none;
-          box-shadow: none;
-          padding-inline: 25px;
-          &:hover {
-            opacity: 0.9;
-          }
         }
         .ant-select-selector {
           border: 1px solid #d6dce0;

@@ -4,9 +4,10 @@ import { connect } from 'umi';
 import DeleteIcon from '@/assets/adminSetting/del.svg';
 import DownArrowIcon from '@/assets/adminSetting/downArrow.png';
 import EditIcon from '@/assets/adminSetting/edit.svg';
-import CommonTable from '../CommonTable';
+import CommonTable from '@/components/CommonTable';
 import EditModal from './components/EditModal';
 import styles from './index.less';
+import CustomBlueButton from '@/components/CustomBlueButton';
 
 const { Option } = Select;
 
@@ -195,7 +196,7 @@ const TicketManagement = (props) => {
         <span className={styles.title}>Ticket Management</span>
         <div className={styles.options}>
           {renderCountrySelectBox()}
-          <Button onClick={() => handleIsModalVisible(true)}>Add New</Button>
+          <CustomBlueButton onClick={() => handleIsModalVisible(true)}>Add New</CustomBlueButton>
         </div>
       </div>
     );

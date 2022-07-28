@@ -35,10 +35,10 @@ const usersManagement = {
     total: 0,
   },
   effects: {
-    *fetchEmployeesList({ payload = {} }, { call, put }) {
+    *fetchEmployeesList({ payload = {}, params }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getEmployeesList, payload);
+        response = yield call(getEmployeesList, payload, params);
         const { statusCode, data: employeeList = [] } = response;
         if (statusCode !== 200) throw response;
 

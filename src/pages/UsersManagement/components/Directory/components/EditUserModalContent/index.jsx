@@ -5,12 +5,7 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
-const dateFormat = 'MM.DD.YY';
-
-const layout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
-};
+const dateFormat = 'MM/DD/YYYY';
 
 const EditUserModalContent = (props) => {
   const [form] = Form.useForm();
@@ -18,7 +13,7 @@ const EditUserModalContent = (props) => {
   const {
     roleList: roleListProp = [],
     // location = [],
-    filterList: { listCompany: company = [] } = {},
+    // filterList: { listCompany: company = [] } = {},
     visible = false,
     dispatch,
     onClose = () => {},
@@ -40,6 +35,7 @@ const EditUserModalContent = (props) => {
       lastName = '',
       middleName = '',
       legalName = '',
+      userId = '',
     } = {},
     employeeId = '',
     status = '',
@@ -85,6 +81,7 @@ const EditUserModalContent = (props) => {
       employeeId,
       joinDate: moment(joinDate),
       workEmail,
+      userId,
       legalName,
       firstName,
       lastName,
@@ -114,6 +111,7 @@ const EditUserModalContent = (props) => {
       type: 'usersManagement/updateGeneralInfo',
       payload: {
         id: generalInfoId,
+        userId: values.userId,
         legalName: values.legalName,
         workEmail: values.workEmail,
         firstName: values.firstName,
@@ -155,8 +153,8 @@ const EditUserModalContent = (props) => {
       ) : (
         <>
           <Form
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            {...layout}
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
             name="basic"
             form={form}
             id="myForm"
@@ -187,10 +185,23 @@ const EditUserModalContent = (props) => {
               <Input />
             </Form.Item>
             <Form.Item
+              label="User ID"
+              labelAlign="left"
+              name="userId"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input the work email!',
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
               label="Legal Name"
               labelAlign="left"
               name="legalName"
-              rules={[{ required: false, message: 'Please input the legal name!' }]}
+              rules={[{ required: true, message: 'Please input the legal name!' }]}
             >
               <Input />
             </Form.Item>
@@ -198,7 +209,7 @@ const EditUserModalContent = (props) => {
               label="First Name"
               labelAlign="left"
               name="firstName"
-              rules={[{ required: false, message: 'Please input the first name!' }]}
+              rules={[{ required: true, message: 'Please input the first name!' }]}
             >
               <Input />
             </Form.Item>
@@ -214,7 +225,7 @@ const EditUserModalContent = (props) => {
               label="Last Name"
               labelAlign="left"
               name="lastName"
-              rules={[{ required: false, message: 'Please input the last name!' }]}
+              rules={[{ required: true, message: 'Please input the last name!' }]}
             >
               <Input />
             </Form.Item>
@@ -234,7 +245,7 @@ const EditUserModalContent = (props) => {
                 })}
               </Select>
             </Form.Item>
-            <Form.Item
+            {/* <Form.Item
               label="Company"
               labelAlign="left"
               name="companyName"
@@ -256,12 +267,12 @@ const EditUserModalContent = (props) => {
                   );
                 })}
               </Select>
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item
               label="Location"
               labelAlign="left"
               name="locationName"
-              rules={[{ required: false, message: 'Please select location!' }]}
+              rules={[{ required: true, message: 'Please select location!' }]}
             >
               <Select
                 onChange={(key) => {
@@ -286,7 +297,7 @@ const EditUserModalContent = (props) => {
               label="Status"
               labelAlign="left"
               name="status"
-              rules={[{ required: false, message: 'Please input!' }]}
+              rules={[{ required: true, message: 'Please input!' }]}
             >
               <Select>
                 <Option value="ACTIVE">Active</Option>

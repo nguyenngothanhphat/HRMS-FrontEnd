@@ -1,72 +1,81 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, notification, Popconfirm } from 'antd';
-import React, { PureComponent } from 'react';
-import { connect } from 'umi';
+import { notification, Popconfirm } from 'antd';
 import { debounce } from 'lodash';
-import EditIcon from '@/assets/adminSetting/edit.svg';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
 import DeleteIcon from '@/assets/adminSetting/del.svg';
-import CommonTable from '../CommonTable';
-import EditModal from './components/EditModal';
+import EditIcon from '@/assets/adminSetting/edit.svg';
+import CommonModal from '@/components/CommonModal';
+import CommonTable from '@/components/CommonTable';
+import CustomBlueButton from '@/components/CustomBlueButton';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import EditModalContent from './components/EditModalContent';
 import styles from './index.less';
 
-@connect(
-  ({
-    loading,
-    adminSetting: { tempData: { listDepartments = [], totalDepartmentList = 0 } = {} } = {},
-  }) => ({
-    listDepartments,
-    totalDepartmentList,
-    loadingFetchDepartmentList: loading.effects['adminSetting/fetchDepartmentList'],
-  }),
-)
-class Department extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      modalVisible: false,
-      selectedDepartmentID: '',
-      searchValue: '',
-      limit: 10,
-      page: 1,
-    };
-    this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
-  }
+const Department = (props) => {
+  const {
+    dispatch,
+    listDepartments = [],
+    loadingFetchDepartmentList = false,
+    totalDepartmentList = 0,
+    loadingAddDepartment = false,
+    loadingUpdateDepartment = false,
+  } = props;
 
-  fetchDepartmentList = (name = '') => {
-    const { dispatch } = this.props;
-    const { limit, page } = this.state;
+  const [visible, setVisible] = useState(false);
+  const [selectedDepartmentID, setSelectedDepartmentID] = useState('');
+  const [searchValue, setSearchValue] = useState('');
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(1);
+
+  const fetchDepartmentList = () => {
     dispatch({
       type: 'adminSetting/fetchDepartmentList',
       payload: {
-        name,
+        name: searchValue,
         limit,
         page,
       },
     });
   };
 
-  componentDidMount = () => {
-    this.fetchDepartmentList();
+  useEffect(() => {
+    fetchDepartmentList();
+  }, [page, limit, searchValue]);
+
+  const onChangePage = (p, l) => {
+    setPage(p);
+    setLimit(l);
   };
 
-  componentDidUpdate = (prevProps, prevState) => {
-    const { page, size } = this.state;
-    if (prevState.page !== page || prevState.size !== size) {
-      this.fetchDepartmentList();
+  const onEditDepartment = (row) => {
+    setVisible(true);
+    setSelectedDepartmentID(row._id);
+  };
+
+  const onRemoveDepartment = async (row) => {
+    let hasChildDept = false;
+    listDepartments.forEach((item) => {
+      if (item?.departmentParentName === row.name) {
+        hasChildDept = true;
+      }
+    });
+
+    if (hasChildDept) {
+      notification.error('This department cannot be deleted');
+    } else {
+      const res = await dispatch({
+        type: 'adminSetting/removeDepartment',
+        payload: {
+          id: row._id,
+        },
+      });
+      if (res.statusCode === 200) {
+        fetchDepartmentList();
+      }
     }
   };
 
-  onChangePage = (page, limit) => {
-    this.setState({ page, limit });
-  };
-
-  handleModalVisible = (value) => {
-    this.setState({
-      modalVisible: value,
-    });
-  };
-
-  generateColumns = () => {
+  const generateColumns = () => {
     const columns = [
       {
         title: 'Department ID',
@@ -131,12 +140,12 @@ class Department extends PureComponent {
               {disabled ? (
                 <img style={{ opacity: 0.5, cursor: 'not-allowed' }} src={DeleteIcon} alt="" />
               ) : (
-                <Popconfirm title="Sure to remove?" onConfirm={() => this.onRemoveDepartment(row)}>
+                <Popconfirm title="Sure to remove?" onConfirm={() => onRemoveDepartment(row)}>
                   <img src={DeleteIcon} alt="" />
                 </Popconfirm>
               )}
 
-              <img src={EditIcon} onClick={() => this.onEditDepartment(row)} alt="" />
+              <img src={EditIcon} onClick={() => onEditDepartment(row)} alt="" />
             </div>
           );
         },
@@ -146,119 +155,78 @@ class Department extends PureComponent {
     return columns;
   };
 
-  onEditDepartment = (row) => {
-    this.setState({
-      modalVisible: true,
-      selectedDepartmentID: row._id,
-    });
+  const onSearchDebounce = debounce((value) => {
+    setSearchValue(value);
+  }, 1000);
+
+  const onSearch = (e = {}) => {
+    setPage(1);
+    const { value = '' } = e.target;
+    onSearchDebounce(value);
   };
 
-  onRemoveDepartment = async (row) => {
-    const { dispatch } = this.props;
-    const { listDepartments = [] } = this.props;
-
-    let hasChildDept = false;
-    listDepartments.forEach((item) => {
-      if (item?.departmentParentName === row.name) {
-        hasChildDept = true;
-      }
-    });
-
-    if (hasChildDept) {
-      notification.error('This department cannot be deleted');
-    } else {
-      const res = await dispatch({
-        type: 'adminSetting/removeDepartment',
-        payload: {
-          id: row._id,
-        },
-      });
-      if (res.statusCode === 200) {
-        const { searchValue } = this.state;
-        this.fetchDepartmentList(searchValue);
-      }
-    }
-  };
-
-  renderHeader = () => {
+  const renderHeader = () => {
     return (
       <div className={styles.header}>
-        <div className={styles.searchBox}>
-          <Input
-            className={styles.searchInput}
-            placeholder="Search Department"
-            prefix={this.searchPrefix()}
-            onChange={this.onSearch}
-          />
-        </div>
-        <Button onClick={() => this.handleModalVisible(true)}>Add Department</Button>
+        <CustomSearchBox onSearch={onSearch} placeholder="Search Department" />
+        <CustomBlueButton onClick={() => setVisible(true)}>Add Department</CustomBlueButton>
       </div>
     );
   };
 
-  onSearch = (e = {}) => {
-    const { value = '' } = e.target;
-    this.onSearchDebounce(value);
-  };
-
-  onSearchDebounce = (value) => {
-    this.fetchDepartmentList(value);
-    this.setState({
-      searchValue: value,
+  const onCloseModal = () => {
+    setVisible(false);
+    setSelectedDepartmentID('');
+    dispatch({
+      type: 'adminSetting/save',
+      payload: {
+        viewingDepartment: {},
+      },
     });
   };
 
-  // search box
-  searchPrefix = () => {
-    return (
-      <SearchOutlined
-        style={{
-          fontSize: 16,
-          color: 'black',
-          marginRight: '10px',
-        }}
+  return (
+    <div className={styles.Department}>
+      {renderHeader()}
+      <CommonTable
+        columns={generateColumns()}
+        list={listDepartments}
+        loading={loadingFetchDepartmentList}
+        total={totalDepartmentList}
+        isBackendPaging
+        page={page}
+        size={limit}
+        onChangePage={onChangePage}
       />
-    );
-  };
-
-  render() {
-    const { modalVisible, selectedDepartmentID, page, size } = this.state;
-    const {
-      listDepartments = [],
-      loadingFetchDepartmentList = false,
-      totalDepartmentList = 0,
-    } = this.props;
-    return (
-      <div
-        className={styles.Department}
-        style={listDepartments.length === 0 ? {} : { paddingBottom: '0' }}
-      >
-        {this.renderHeader()}
-        <CommonTable
-          columns={this.generateColumns()}
-          list={listDepartments}
-          loading={loadingFetchDepartmentList}
-          total={totalDepartmentList}
-          isBackendPaging
-          page={page}
-          size={size}
-          onChangePage={this.onChangePage}
-        />
-        <EditModal
-          visible={modalVisible}
-          onClose={() => {
-            this.handleModalVisible(false);
-            this.setState({
-              selectedDepartmentID: '',
-            });
-          }}
-          onRefresh={this.fetchDepartmentList}
-          selectedDepartmentID={selectedDepartmentID}
-          action={selectedDepartmentID ? 'edit' : 'add'}
-          listDepartments={listDepartments}
-        />
-      </div>
-    );
-  }
-}
-export default Department;
+      <CommonModal
+        visible={visible}
+        title={`${selectedDepartmentID ? 'Edit' : 'Add New'} Department`}
+        onClose={onCloseModal}
+        width={550}
+        loading={loadingAddDepartment || loadingUpdateDepartment}
+        content={
+          <EditModalContent
+            visible={visible}
+            onClose={onCloseModal}
+            onRefresh={fetchDepartmentList}
+            selectedDepartmentID={selectedDepartmentID}
+            action={selectedDepartmentID ? 'edit' : 'add'}
+            listDepartments={listDepartments}
+          />
+        }
+      />
+    </div>
+  );
+};
+export default connect(
+  ({
+    loading,
+    adminSetting: { tempData: { listDepartments = [], totalDepartmentList = 0 } = {} } = {},
+  }) => ({
+    listDepartments,
+    totalDepartmentList,
+    loadingFetchDepartmentList: loading.effects['adminSetting/fetchDepartmentList'],
+    loadingAddDepartment: loading.effects['adminSetting/addDepartment'],
+    loadingUpdateDepartment: loading.effects['adminSetting/updateDepartment'],
+  }),
+)(Department);

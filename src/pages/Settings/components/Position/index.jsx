@@ -1,59 +1,65 @@
-import { Button, Input, Popconfirm, Skeleton } from 'antd';
-import React, { PureComponent } from 'react';
-import { connect } from 'umi';
-import { SearchOutlined } from '@ant-design/icons';
+import { Popconfirm } from 'antd';
 import { debounce } from 'lodash';
-import CommonTable from '../CommonTable';
-import EditIcon from '@/assets/adminSetting/edit.svg';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
 import DeleteIcon from '@/assets/adminSetting/del.svg';
+import EditIcon from '@/assets/adminSetting/edit.svg';
+import CommonModal from '@/components/CommonModal';
+import CommonTable from '@/components/CommonTable';
+import CustomBlueButton from '@/components/CustomBlueButton';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import EditModalContent from './components/EditModalContent';
 import styles from './index.less';
-import EditModal from './components/EditModal';
 
-@connect(
-  ({ loading, adminSetting: { tempData: { listTitles = [], totalTitle = 0 } = {} } = {} }) => ({
-    listTitles,
-    totalTitle,
-    loadingFetchPositionList: loading.effects['adminSetting/fetchListTitle'],
-  }),
-)
-class Position extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      modalVisible: false,
-      selectedPositionID: '',
-      page: 1,
-      limit: 10,
-      searchValue: '',
-    };
-    this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
-  }
+const Position = (props) => {
+  const {
+    dispatch,
+    listTitles = [],
+    loadingFetchPositionList = false,
+    totalTitle = 0,
+    loadingAddPosition = false,
+    loadingUpdatePosition = false,
+  } = props;
 
-  componentDidMount = () => {
-    this.fetchPositionList();
-  };
+  const [visible, setVisible] = useState(false);
+  const [selectedPositionID, setSelectedPositionID] = useState('');
+  const [searchValue, setSearchValue] = useState('');
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(1);
 
-  componentDidUpdate(prevProps, prevState) {
-    const { page, limit, searchValue } = this.state;
-    if (page !== prevState.page || limit !== prevState.limit) this.fetchPositionList(searchValue);
-  }
-
-  fetchPositionList = (name = '') => {
-    const { dispatch } = this.props;
-    const { page, limit } = this.state;
+  const fetchPositionList = () => {
     dispatch({
       type: 'adminSetting/fetchListTitle',
-      payload: { name, page, limit },
+      payload: { name: searchValue, page, limit },
     });
   };
 
-  handleModalVisible = (value) => {
-    this.setState({
-      modalVisible: value,
-    });
+  useEffect(() => {
+    fetchPositionList();
+  }, [page, limit, searchValue]);
+
+  const onChangePage = (p, l) => {
+    setPage(p);
+    setLimit(l);
   };
 
-  generateColumns = () => {
+  const onEditPosition = (row) => {
+    setVisible(true);
+    setSelectedPositionID(row._id);
+  };
+
+  const onRemovePosition = async (row) => {
+    const res = await dispatch({
+      type: 'adminSetting/removePosition',
+      payload: {
+        id: row._id,
+      },
+    });
+    if (res.statusCode === 200) {
+      fetchPositionList();
+    }
+  };
+  const generateColumns = () => {
     const columns = [
       {
         title: 'Position Name',
@@ -68,7 +74,7 @@ class Position extends PureComponent {
         title: 'Department Name',
         dataIndex: 'department',
         key: 'department',
-        render: (_, record) => record.department?.name || '',
+        render: (department = {}) => department?.name || '',
         width: '20%',
       },
       {
@@ -92,7 +98,7 @@ class Position extends PureComponent {
         key: 'gradeObj',
         width: '15%',
         render: (gradeObj = {}) => {
-          return <span>{gradeObj.name || ''}</span>;
+          return <span>{gradeObj?.name || ''}</span>;
         },
       },
       {
@@ -110,10 +116,10 @@ class Position extends PureComponent {
         render: (_, row) => {
           return (
             <div className={styles.actions}>
-              <Popconfirm title="Sure to remove?" onConfirm={() => this.onRemovePosition(row)}>
+              <Popconfirm title="Sure to remove?" onConfirm={() => onRemovePosition(row)}>
                 <img src={DeleteIcon} alt="" />
               </Popconfirm>
-              <img src={EditIcon} onClick={() => this.onEditPosition(row)} alt="" />
+              <img src={EditIcon} onClick={() => onEditPosition(row)} alt="" />
             </div>
           );
         },
@@ -123,108 +129,74 @@ class Position extends PureComponent {
     return columns;
   };
 
-  onEditPosition = (row) => {
-    this.setState({
-      modalVisible: true,
-      selectedPositionID: row._id,
-    });
+  const onSearchDebounce = debounce((value) => {
+    setSearchValue(value);
+  }, 1000);
+
+  const onSearch = (e = {}) => {
+    setPage(1);
+    const { value = '' } = e.target;
+    onSearchDebounce(value);
   };
 
-  onRemovePosition = async (row) => {
-    const { dispatch } = this.props;
-    const res = await dispatch({
-      type: 'adminSetting/removePosition',
-      payload: {
-        id: row._id,
-      },
-    });
-    if (res.statusCode === 200) {
-      const { searchValue } = this.state;
-      this.fetchPositionList(searchValue);
-    }
-  };
-
-  renderHeader = () => {
+  const renderHeader = () => {
     return (
       <div className={styles.header}>
-        <div className={styles.searchBox}>
-          <Input
-            className={styles.searchInput}
-            placeholder="Search Position"
-            prefix={this.searchPrefix()}
-            onChange={this.onSearch}
-          />
-        </div>
-        <Button onClick={() => this.handleModalVisible(true)}>Add Position</Button>
+        <CustomSearchBox onSearch={onSearch} placeholder="Search Position" />
+        <CustomBlueButton onClick={() => setVisible(true)}>Add Position</CustomBlueButton>
       </div>
     );
   };
 
-  onSearch = (e = {}) => {
-    const { value = '' } = e.target;
-    this.onSearchDebounce(value);
-  };
-
-  onSearchDebounce = (value) => {
-    this.fetchPositionList(value);
-    this.setState({
-      searchValue: value,
+  const onCloseModal = () => {
+    setVisible(false);
+    setSelectedPositionID('');
+    dispatch({
+      type: 'adminSetting/save',
+      payload: {
+        viewingPosition: {},
+      },
     });
   };
 
-  // search box
-  searchPrefix = () => {
-    return (
-      <SearchOutlined
-        style={{
-          fontSize: 16,
-          color: 'black',
-          marginRight: '10px',
-        }}
+  return (
+    <div className={styles.Position}>
+      {renderHeader()}
+      <CommonTable
+        columns={generateColumns()}
+        list={listTitles}
+        isBackendPaging
+        page={page}
+        limit={limit}
+        total={totalTitle}
+        onChangePage={onChangePage}
+        loading={loadingFetchPositionList}
       />
-    );
-  };
-
-  onChangePage = (page, limit) => {
-    this.setState({
-      page,
-      limit,
-    });
-  };
-
-  render() {
-    const { modalVisible, selectedPositionID, limit, page, searchValue } = this.state;
-    const { listTitles = [], loadingFetchPositionList = false, totalTitle = 0 } = this.props;
-    return (
-      <div
-        className={styles.Position}
-        style={listTitles.length === 0 ? {} : { paddingBottom: '0' }}
-      >
-        {this.renderHeader()}
-        <CommonTable
-          columns={this.generateColumns()}
-          list={listTitles}
-          isBackendPaging
-          page={page}
-          limit={limit}
-          total={totalTitle}
-          onChangePage={this.onChangePage}
-          loading={loadingFetchPositionList}
-        />
-        <EditModal
-          visible={modalVisible}
-          onClose={() => {
-            this.handleModalVisible(false);
-            this.setState({
-              selectedPositionID: '',
-            });
-          }}
-          onRefresh={() => this.fetchPositionList(searchValue)}
-          selectedPositionID={selectedPositionID}
-          action={selectedPositionID ? 'edit' : 'add'}
-        />
-      </div>
-    );
-  }
-}
-export default Position;
+      <CommonModal
+        visible={visible}
+        title={`${selectedPositionID ? 'Edit' : 'Add New'} Position`}
+        onClose={onCloseModal}
+        width={550}
+        loading={loadingAddPosition || loadingUpdatePosition}
+        content={
+          <EditModalContent
+            visible={visible}
+            onClose={onCloseModal}
+            onRefresh={fetchPositionList}
+            selectedPositionID={selectedPositionID}
+            action={selectedPositionID ? 'edit' : 'add'}
+          />
+        }
+      />
+    </div>
+  );
+};
+export default connect(
+  ({ loading, adminSetting: { tempData: { listTitles = [], totalTitle = 0 } = {} } = {} }) => ({
+    listTitles,
+    totalTitle,
+    loadingFetchPositionList: loading.effects['adminSetting/fetchListTitle'],
+    loadingAddPosition: loading.effects['adminSetting/addPosition'],
+    loadingUpdatePosition: loading.effects['adminSetting/updatePosition'],
+  }),
+)(Position);

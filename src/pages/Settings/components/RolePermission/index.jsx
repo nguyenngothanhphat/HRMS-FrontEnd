@@ -1,57 +1,78 @@
-import { Button, Popconfirm } from 'antd';
-import React, { PureComponent } from 'react';
+import { Popconfirm } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import EditIcon from '@/assets/adminSetting/edit.svg';
 import DeleteIcon from '@/assets/adminSetting/del.svg';
-import CommonTable from '../CommonTable';
-import EditModal from './components/EditModal';
+import EditIcon from '@/assets/adminSetting/edit.svg';
+import CommonModal from '@/components/CommonModal';
+import CommonTable from '@/components/CommonTable';
+import CustomBlueButton from '@/components/CustomBlueButton';
+import EditModalContent from './components/EditModalContent';
 import styles from './index.less';
 
-@connect(
-  ({ loading, adminSetting: { permissionList = [], tempData: { listRoles = [] } = {} } = {} }) => ({
-    permissionList,
-    listRoles,
-    loadingFetchRoleList: loading.effects['adminSetting/fetchRoleList'],
-  }),
-)
-class RolePermission extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      modalVisible: false,
-      selectedRoleID: '',
-    };
-  }
+const RolePermission = (props) => {
+  const {
+    dispatch,
+    listRoles = [],
+    permissionList = [],
+    loadingFetchRoleList = false,
+    loadingAddRole = false,
+    loadingUpdateRole = false,
+  } = props;
 
-  fetchRoleList = () => {
-    const { dispatch } = this.props;
+  const [visible, setVisible] = useState(false);
+  const [selectedRoleID, setSelectedRoleID] = useState('');
+
+  const fetchRoleList = () => {
     dispatch({
       type: 'adminSetting/fetchRoleList',
     });
   };
 
-  fetchPermissionList = () => {
-    const { dispatch } = this.props;
+  const fetchPermissionList = () => {
     dispatch({
       type: 'adminSetting/fetchPermissionList',
-      // payload: {
-      //   type: 'ADMIN',
-      // },
     });
   };
 
-  componentDidMount = () => {
-    this.fetchRoleList();
-    this.fetchPermissionList();
-  };
+  useEffect(() => {
+    fetchRoleList();
+    fetchPermissionList();
+  }, []);
 
-  handleModalVisible = (value) => {
-    this.setState({
-      modalVisible: value,
+  const getPermissionName = (arr = []) => {
+    let res = arr.map((item) => {
+      return item.module || '';
     });
+    res = res.filter((val) => val);
+    return [...new Set(res)];
   };
 
-  generateColumns = () => {
+  const renderHeader = () => {
+    return (
+      <div className={styles.header}>
+        <CustomBlueButton onClick={() => setVisible(true)}>Add Roles & Permission</CustomBlueButton>
+      </div>
+    );
+  };
+
+  const onEditRole = (row) => {
+    setVisible(true);
+    setSelectedRoleID(row._id);
+  };
+
+  const onRemoveRole = async (row) => {
+    const res = await dispatch({
+      type: 'adminSetting/removeRole',
+      payload: {
+        _id: row._id,
+      },
+    });
+    if (res.statusCode === 200) {
+      fetchRoleList();
+    }
+  };
+
+  const generateColumns = () => {
     const columns = [
       {
         title: 'Role ID',
@@ -74,7 +95,7 @@ class RolePermission extends PureComponent {
         key: 'permissions',
         width: '30%',
         render: (permissions = []) => {
-          const permissionName = this.getPermissionName(permissions);
+          const permissionName = getPermissionName(permissions);
           return (
             <div>
               {permissionName.map((name) => (
@@ -92,11 +113,11 @@ class RolePermission extends PureComponent {
         render: (_, row) => {
           return (
             <div className={styles.actions}>
-              <Popconfirm title="Sure to remove?" onConfirm={() => this.onRemoveRole(row)}>
+              <Popconfirm title="Sure to remove?" onConfirm={() => onRemoveRole(row)}>
                 <img src={DeleteIcon} alt="" />
               </Popconfirm>
 
-              <img src={EditIcon} onClick={() => this.onEditRole(row)} alt="" />
+              <img src={EditIcon} onClick={() => onEditRole(row)} alt="" />
             </div>
           );
         },
@@ -106,71 +127,47 @@ class RolePermission extends PureComponent {
     return columns;
   };
 
-  onEditRole = (row) => {
-    this.setState({
-      modalVisible: true,
-      selectedRoleID: row._id,
-    });
-  };
-
-  onRemoveRole = async (row) => {
-    const { dispatch } = this.props;
-    const res = await dispatch({
-      type: 'adminSetting/removeRole',
+  const onCloseModal = () => {
+    setVisible(false);
+    setSelectedRoleID('');
+    dispatch({
+      type: 'adminSetting/save',
       payload: {
-        _id: row._id,
+        viewingRole: {},
       },
     });
-    if (res.statusCode === 200) {
-      this.fetchRoleList();
-    }
   };
 
-  getPermissionName = (permissionList = []) => {
-    let res = permissionList.map((item) => {
-      return item.module || '';
-    });
-    res = res.filter((val) => val);
-    return [...new Set(res)];
-  };
-
-  renderHeader = () => {
-    return (
-      <div className={styles.header}>
-        <Button onClick={() => this.handleModalVisible(true)}>Add Roles & Permission</Button>
-      </div>
-    );
-  };
-
-  render() {
-    const { modalVisible, selectedRoleID } = this.state;
-    const { listRoles = [], permissionList = [], loadingFetchRoleList = false } = this.props;
-    return (
-      <div
-        className={styles.RolePermission}
-        style={listRoles.length === 0 ? {} : { paddingBottom: '0' }}
-      >
-        {this.renderHeader()}
-        <CommonTable
-          loading={loadingFetchRoleList}
-          columns={this.generateColumns()}
-          list={listRoles}
-        />
-        <EditModal
-          visible={modalVisible}
-          onClose={() => {
-            this.handleModalVisible(false);
-            this.setState({
-              selectedRoleID: '',
-            });
-          }}
-          permissionList={permissionList}
-          onRefresh={this.fetchRoleList}
-          selectedRoleID={selectedRoleID}
-          action={selectedRoleID ? 'edit' : 'add'}
-        />
-      </div>
-    );
-  }
-}
-export default RolePermission;
+  return (
+    <div className={styles.RolePermission}>
+      {renderHeader()}
+      <CommonTable loading={loadingFetchRoleList} columns={generateColumns()} list={listRoles} />
+      <CommonModal
+        visible={visible}
+        title={`${selectedRoleID ? 'Edit' : 'Add New'} Role & Permissions`}
+        onClose={onCloseModal}
+        width={550}
+        loading={loadingAddRole || loadingUpdateRole}
+        content={
+          <EditModalContent
+            visible={visible}
+            onClose={onCloseModal}
+            permissionList={permissionList}
+            onRefresh={fetchRoleList}
+            selectedRoleID={selectedRoleID}
+            action={selectedRoleID ? 'edit' : 'add'}
+          />
+        }
+      />
+    </div>
+  );
+};
+export default connect(
+  ({ loading, adminSetting: { permissionList = [], tempData: { listRoles = [] } = {} } = {} }) => ({
+    permissionList,
+    listRoles,
+    loadingFetchRoleList: loading.effects['adminSetting/fetchRoleList'],
+    loadingAddRole: loading.effects['adminSetting/addRole'],
+    loadingUpdateRole: loading.effects['adminSetting/updateRole'],
+  }),
+)(RolePermission);

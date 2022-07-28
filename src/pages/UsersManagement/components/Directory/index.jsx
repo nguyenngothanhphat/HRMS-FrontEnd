@@ -71,10 +71,10 @@ const DirectoryComponent = (props) => {
     setSize(sizeProp);
   };
 
-  const renderData = (params = {}) => {
+  const renderData = (payload = {}) => {
     const { active, inActive } = tabList;
 
-    const { page = 1 } = params;
+    const { page = 1 } = payload;
 
     // if there are location & company, call API
     const checkCallAPI =
@@ -89,10 +89,14 @@ const DirectoryComponent = (props) => {
         dispatch({
           type: 'usersManagement/fetchEmployeesList',
           payload: {
-            ...params,
+            ...payload,
             status: ['ACTIVE'],
             company: getCurrentCompany(),
             tenantId: getCurrentTenant(),
+          },
+          params: {
+            page: payload.page,
+            limit: payload.limit,
           },
         });
       }
@@ -101,10 +105,14 @@ const DirectoryComponent = (props) => {
         dispatch({
           type: 'usersManagement/fetchEmployeesList',
           payload: {
-            ...params,
+            ...payload,
             status: ['INACTIVE'],
             company: getCurrentCompany(),
             tenantId: getCurrentTenant(),
+          },
+          params: {
+            page: payload.page,
+            limit: payload.limit,
           },
         });
       }

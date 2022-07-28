@@ -1,44 +1,54 @@
-import { Button, Popconfirm } from 'antd';
-import React, { PureComponent } from 'react';
+import { Popconfirm } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { SearchOutlined } from '@ant-design/icons';
-import CommonTable from '../CommonTable';
-import EditIcon from '@/assets/adminSetting/edit.svg';
 import DeleteIcon from '@/assets/adminSetting/del.svg';
+import EditIcon from '@/assets/adminSetting/edit.svg';
+import CommonModal from '@/components/CommonModal';
+import CommonTable from '@/components/CommonTable';
+import CustomBlueButton from '@/components/CustomBlueButton';
+import EditModalContent from './components/EditModalContent';
 import styles from './index.less';
-import EditModal from './components/EditModal';
 
-@connect(({ loading, adminSetting: { tempData: { listGrades = [] } = {} } = {} }) => ({
-  listGrades,
-  loadingfetchGradeList: loading.effects['adminSetting/fetchGradeList'],
-}))
-class Grade extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      modalVisible: false,
-      selectedGradeID: '',
-    };
-  }
+const Grade = (props) => {
+  const {
+    dispatch,
+    listGrades = [],
+    loadingFetchGradeList = false,
+    loadingAddGrade = false,
+    loadingUpdateGrade = false,
+  } = props;
 
-  fetchGradeList = () => {
-    const { dispatch } = this.props;
+  const [visible, setVisible] = useState(false);
+  const [selectedGradeID, setSelectedGradeID] = useState('');
+
+  const fetchGradeList = () => {
     dispatch({
       type: 'adminSetting/fetchGradeList',
     });
   };
 
-  componentDidMount = () => {
-    this.fetchGradeList();
+  useEffect(() => {
+    fetchGradeList();
+  }, []);
+
+  const onEditGrade = (row) => {
+    setVisible(true);
+    setSelectedGradeID(row._id);
   };
 
-  handleModalVisible = (value) => {
-    this.setState({
-      modalVisible: value,
+  const onRemoveGrade = async (row) => {
+    const res = await dispatch({
+      type: 'adminSetting/removeGrade',
+      payload: {
+        id: row._id,
+      },
     });
+    if (res.statusCode === 200) {
+      fetchGradeList();
+    }
   };
 
-  generateColumns = () => {
+  const generateColumns = () => {
     const columns = [
       {
         title: 'Name',
@@ -57,10 +67,10 @@ class Grade extends PureComponent {
         render: (_, row) => {
           return (
             <div className={styles.actions}>
-              <Popconfirm title="Sure to remove?" onConfirm={() => this.onRemoveGrade(row)}>
+              <Popconfirm title="Sure to remove?" onConfirm={() => onRemoveGrade(row)}>
                 <img src={DeleteIcon} alt="" />
               </Popconfirm>
-              <img src={EditIcon} onClick={() => this.onEditGrade(row)} alt="" />
+              <img src={EditIcon} onClick={() => onEditGrade(row)} alt="" />
             </div>
           );
         },
@@ -70,79 +80,54 @@ class Grade extends PureComponent {
     return columns;
   };
 
-  onEditGrade = (row) => {
-    this.setState({
-      modalVisible: true,
-      selectedGradeID: row._id,
-    });
-  };
-
-  onRemoveGrade = async (row) => {
-    const { dispatch } = this.props;
-    const res = await dispatch({
-      type: 'adminSetting/removeGrade',
+  const onCloseModal = () => {
+    setVisible(false);
+    setSelectedGradeID('');
+    dispatch({
+      type: 'adminSetting/save',
       payload: {
-        id: row._id,
+        viewingGrade: {},
       },
     });
-    if (res.statusCode === 200) {
-      this.fetchGradeList();
-    }
   };
 
-  renderHeader = () => {
+  const renderHeader = () => {
     return (
       <div className={styles.header}>
-        {/* <div className={styles.searchBox}>
-          <Input
-            className={styles.searchInput}
-            placeholder="Search messages..."
-            prefix={this.searchPrefix()}
+        <CustomBlueButton onClick={() => setVisible(true)}>Add Grade</CustomBlueButton>
+      </div>
+    );
+  };
+
+  return (
+    <div className={styles.Grade}>
+      {renderHeader()}
+      <CommonTable loading={loadingFetchGradeList} columns={generateColumns()} list={listGrades} />
+
+      <CommonModal
+        visible={visible}
+        title={`${selectedGradeID ? 'Edit' : 'Add New'} Grade`}
+        onClose={onCloseModal}
+        width={550}
+        loading={loadingAddGrade || loadingUpdateGrade}
+        content={
+          <EditModalContent
+            visible={visible}
+            onClose={onCloseModal}
+            onRefresh={fetchGradeList}
+            action={selectedGradeID ? 'edit' : 'add'}
+            selectedGradeID={selectedGradeID}
           />
-        </div> */}
-        <Button onClick={() => this.handleModalVisible(true)}>Add Grade</Button>
-      </div>
-    );
-  };
-
-  // search box
-  searchPrefix = () => {
-    return (
-      <SearchOutlined
-        style={{
-          fontSize: 16,
-          color: 'black',
-          marginRight: '10px',
-        }}
+        }
       />
-    );
-  };
-
-  render() {
-    const { modalVisible, selectedGradeID } = this.state;
-    const { listGrades = [], loadingfetchGradeList = false } = this.props;
-    return (
-      <div className={styles.Grade} style={listGrades.length === 0 ? {} : { paddingBottom: '0' }}>
-        {this.renderHeader()}
-        <CommonTable
-          loading={loadingfetchGradeList}
-          columns={this.generateColumns()}
-          list={listGrades}
-        />
-        <EditModal
-          visible={modalVisible}
-          onClose={() => {
-            this.handleModalVisible(false);
-            this.setState({
-              selectedGradeID: '',
-            });
-          }}
-          onRefresh={this.fetchGradeList}
-          action={selectedGradeID ? 'edit' : 'add'}
-          selectedGradeID={selectedGradeID}
-        />
-      </div>
-    );
-  }
-}
-export default Grade;
+    </div>
+  );
+};
+export default connect(
+  ({ loading, adminSetting: { tempData: { listGrades = [] } = {} } = {} }) => ({
+    listGrades,
+    loadingFetchGradeList: loading.effects['adminSetting/fetchGradeList'],
+    loadingAddGrade: loading.effects['adminSetting/addGrade'],
+    loadingUpdateGrade: loading.effects['adminSetting/updateGrade'],
+  }),
+)(Grade);

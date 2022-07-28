@@ -162,6 +162,10 @@ const DirectoryComponent = (props) => {
         dispatch({
           type: 'employee/fetchListEmployeeActive',
           payload,
+          params: {
+            page: payload.page,
+            limit: payload.limit,
+          },
         });
       }
 
@@ -175,6 +179,10 @@ const DirectoryComponent = (props) => {
             // department: [departmentName],
             roles: currentUser?.roles || [],
             employee,
+            params: {
+              page: payload.page,
+              limit: payload.limit,
+            },
           },
         });
       }

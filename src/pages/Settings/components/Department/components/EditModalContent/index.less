@@ -1,4 +1,5 @@
-.EditModal {
+.EditModalContent {
+  padding: @padding-lg;
   :global {
     .ant-form-item-explain {
       div {
@@ -31,7 +32,6 @@
       font-size: 13px;
     }
     .ant-btn-primary {
-      width: 94px;
       height: 40px;
       object-fit: contain;
       color: #ffffff;
@@ -45,13 +45,13 @@
       border: solid 1px #ffa100;
       border-radius: 25px;
       box-shadow: none;
+      padding-inline: 25px;
       &:hover {
         color: #ffffff;
         background-color: #ffa100;
       }
     }
     .ant-btn-secondary {
-      width: 94px;
       height: 40px;
       padding-right: 41px;
       object-fit: contain;
@@ -63,6 +63,7 @@
       border: solid 0;
       border-radius: 25px;
       box-shadow: none;
+      padding-inline: 25px;
     }
     .ant-modal-header {
       padding: 24px;
@@ -92,6 +93,38 @@
       border-bottom-right-radius: 8px;
       &:active {
         opacity: 0.5;
+      }
+    }
+
+    // check box
+    .ant-checkbox-wrapper {
+      color: #707177;
+      font-size: 13px;
+    }
+    .ant-checkbox-indeterminate .ant-checkbox-inner::after {
+      display: none;
+    }
+    .ant-checkbox-checked {
+      &:hover {
+        border-radius: 4px;
+      }
+      .ant-checkbox-inner {
+        background: #f6f7f9;
+        border-radius: 4px;
+        &:hover {
+          border-radius: 4px;
+        }
+        &:after {
+          border: 2px solid @primary-color;
+          border-top: 0;
+          border-left: 0;
+        }
+      }
+    }
+    .ant-checkbox {
+      .ant-checkbox-inner {
+        background: #f6f7f9;
+        border-radius: 4px;
       }
     }
   }
