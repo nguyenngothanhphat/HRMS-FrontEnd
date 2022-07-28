@@ -191,32 +191,24 @@ class DirectoryTable extends Component {
 
   dataHover = (manager = {}) => {
     const {
-      generalInfo: {
-        legalName = '',
-        avatar: avatar1 = '',
-        userId = '',
-        workEmail = '',
-        workNumber = '',
-        skills = [],
-      } = {},
-      generalInfo = {},
-      department = {},
-      location: locationInfo = {},
-      managerInfo = {},
-      title = {},
-    } = manager;
+      generalInfo = {} || {},
+      department = {} || {},
+      location: locationInfo = {} || {},
+      managerInfo = {} || {},
+      title = {} || {},
+    } = manager || {};
     return {
-      legalName,
-      userId,
+      legalName: generalInfo?.legalName,
+      userId: generalInfo?.legalNauserIdme,
       department,
-      workEmail,
-      workNumber,
+      workEmail: generalInfo?.workEmail,
+      workNumber: generalInfo?.workNumber,
       locationInfo,
       generalInfo,
       managerInfo,
       title,
-      avatar1,
-      skills,
+      avatar1: generalInfo?.avatar,
+      skills: generalInfo?.skills,
     };
   };
 
@@ -236,9 +228,9 @@ class DirectoryTable extends Component {
         render: (employeePack) => (employeePack ? this.renderUser(employeePack) : ''),
         align: 'left',
         sorter: (a, b) => {
-          return a.employeePack.generalInfo && a.employeePack.generalInfo?.legalName
-            ? a.employeePack.generalInfo?.legalName.localeCompare(
-                `${b.employeePack.generalInfo?.legalName}`,
+          return a.employeePack?.generalInfo && a.employeePack.generalInfo?.legalName
+            ? a.employeePack?.generalInfo?.legalName.localeCompare(
+                `${b.employeePack?.generalInfo?.legalName}`,
               )
             : null;
         },
@@ -253,7 +245,7 @@ class DirectoryTable extends Component {
         title: formatMessage({ id: 'component.directory.table.userID' }),
         dataIndex: 'generalInfo',
         key: 'userName',
-        render: (generalInfo) => (
+        render: (generalInfo = {}) => (
           <span style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}>
             {generalInfo?.userId}
           </span>
@@ -262,8 +254,8 @@ class DirectoryTable extends Component {
         align: 'left',
         sortOrder: sortedName.columnKey === 'userName' && sortedName.order,
         sorter: (a, b) => {
-          return a.generalInfo && a.generalInfo?.userId
-            ? a.generalInfo?.userId.localeCompare(`${b.generalInfo?.userId}`)
+          return a?.generalInfo && a?.generalInfo?.userId
+            ? a?.generalInfo?.userId.localeCompare(`${b?.generalInfo?.userId}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -273,13 +265,13 @@ class DirectoryTable extends Component {
         dataIndex: 'generalInfo',
         key: 'employeeId',
         className: `${styles.employeeId} `,
-        render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
+        render: (generalInfo = {}) => <span>{generalInfo ? generalInfo?.employeeId : ''}</span>,
         width: '10%',
         align: 'left',
         sortOrder: sortedName.columnKey === 'employeeId' && sortedName.order,
         sorter: (a, b) => {
-          return a.generalInfo && a.generalInfo?.employeeId
-            ? a.generalInfo?.employeeId.localeCompare(`${b.generalInfo?.employeeId}`)
+          return a?.generalInfo && a?.generalInfo?.employeeId
+            ? a?.generalInfo?.employeeId.localeCompare(`${b?.generalInfo?.employeeId}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -297,8 +289,8 @@ class DirectoryTable extends Component {
         align: 'left',
         sortOrder: sortedName.columnKey === 'workNumber' && sortedName.order,
         sorter: (a, b) => {
-          return a.generalInfo && a.generalInfo?.workNumber
-            ? a.generalInfo?.workNumber.localeCompare(`${b.generalInfo?.workNumber}`)
+          return a?.generalInfo && a?.generalInfo?.workNumber
+            ? a?.generalInfo?.workNumber.localeCompare(`${b?.generalInfo?.workNumber}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -307,13 +299,13 @@ class DirectoryTable extends Component {
         title: formatMessage({ id: 'component.directory.table.email' }),
         dataIndex: 'generalInfo',
         key: 'workEmail',
-        render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
+        render: (generalInfo = {}) => <span>{generalInfo?.workEmail}</span>,
         width: '16%',
         align: 'left',
         sortOrder: sortedName.columnKey === 'workEmail' && sortedName.order,
         sorter: (a, b) => {
-          return a.generalInfo && a.generalInfo?.workEmail
-            ? a.generalInfo?.workEmail.localeCompare(`${b.generalInfo?.workEmail}`)
+          return a?.generalInfo && a?.generalInfo?.workEmail
+            ? a?.generalInfo?.workEmail.localeCompare(`${b?.generalInfo?.workEmail}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -339,10 +331,10 @@ class DirectoryTable extends Component {
         title: formatMessage({ id: 'component.directory.table.location' }),
         dataIndex: 'location',
         key: 'location',
-        render: (location) => (
+        render: (location = {}) => (
           <Popover
             content={() => this.locationContent(location)}
-            title={location.name}
+            title={location?.name}
             trigger="hover"
           >
             <span
@@ -368,12 +360,16 @@ class DirectoryTable extends Component {
         title: formatMessage({ id: 'component.directory.table.reportingManager' }),
         dataIndex: 'manager',
         key: 'manager',
-        render: (manager) => (
+        render: (manager = {}) => (
           <UserProfilePopover data={this.dataHover(manager)}>
             <Link
               className={styles.managerName}
               to={() =>
-                this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)}
+                this.handleProfileEmployee(
+                  manager?._id,
+                  manager?.tenant,
+                  manager?.generalInfo?.userId,
+                )}
             >
               {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
             </Link>
@@ -383,8 +379,10 @@ class DirectoryTable extends Component {
         width: '14%',
         sortOrder: sortedName.columnKey === 'manager' && sortedName.order,
         sorter: (a, b) => {
-          return a.manager.generalInfo && a.manager.generalInfo?.legalName
-            ? a.manager.generalInfo?.legalName.localeCompare(`${b.manager.generalInfo?.legalName}`)
+          return a?.manager?.generalInfo && a?.manager?.generalInfo?.legalName
+            ? a?.manager?.generalInfo?.legalName.localeCompare(
+                `${b?.manager?.generalInfo?.legalName}`,
+              )
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -393,15 +391,17 @@ class DirectoryTable extends Component {
         title: formatMessage({ id: 'component.directory.table.department' }),
         dataIndex: 'department',
         key: 'department',
-        render: (department) => {
-          const tag = departmentTag.find((d) => d.name === department.name) || { color: '#108ee9' };
+        render: (department = {}) => {
+          const tag = departmentTag?.find((d) => d?.name === department?.name) || {
+            color: '#108ee9',
+          };
           return (
             <Tag
               className={styles.department}
-              onClick={() => this.onFilter(department.name, 'department')}
+              onClick={() => this.onFilter(department?.name, 'department')}
               color={tag.color}
             >
-              {department.name}
+              {department?.name}
             </Tag>
           );
           //   <span className={styles.directoryTable_deparmentText}>
@@ -511,18 +511,15 @@ class DirectoryTable extends Component {
     }
   };
 
-  locationContent = (location) => {
+  locationContent = (location = {}) => {
+    const { headQuarterAddress = {} || {}, _id = '' } = location || {};
     const {
-      headQuarterAddress: {
-        addressLine1 = '',
-        addressLine2 = '',
-        state = '',
-        country = {},
-        zipCode = '',
-      } = {},
-      _id = '',
-    } = location;
-
+      addressLine1 = '',
+      addressLine2 = '',
+      state = '',
+      country = {},
+      zipCode = '',
+    } = headQuarterAddress || {};
     const { timezoneList, currentTime } = this.state;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
 
@@ -564,7 +561,7 @@ class DirectoryTable extends Component {
         ...item,
         employeePack: {
           _id: item._id,
-          generalInfo: item.generalInfo,
+          generalInfo: item?.generalInfo,
           tenant: item.tenant,
         },
         managerPack: {
