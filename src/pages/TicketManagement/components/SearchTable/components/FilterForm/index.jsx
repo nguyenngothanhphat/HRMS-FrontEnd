@@ -14,12 +14,15 @@ const FilterForm = (props) => {
     employeeAssignedList = [],
     employeeRaiseList = [],
     currentStatus = '',
-    loadingFetchEmployeeRaiseListEffect,
-    loadingFetchEmployeeAssignedListEffect,
+    loadingFetchEmployeeRaiseListEffect = false,
+    loadingFetchEmployeeAssignedListEffect = false,
     dispatch,
     visible = false,
     handleFilterCounts = () => {},
     setForm = () => {},
+    country = '',
+    supportTeamList = [],
+    permissions = {},
   } = props;
 
   const [form] = Form.useForm();
@@ -40,6 +43,10 @@ const FilterForm = (props) => {
   useEffect(() => {
     setNameListState([]);
     setAsignedListState([]);
+    dispatch({
+      type: 'ticketManagement/fetchSupportTeamList',
+      payload: { country, permissions },
+    });
   }, [visible]);
 
   useEffect(() => {
@@ -219,6 +226,27 @@ const FilterForm = (props) => {
                 <Input placeholder="Search by Name" allowClear />
               </AutoComplete>
             </Form.Item>
+            {permissions.viewTicketByAdmin === 1 && (
+              <Form.Item key="name" label="BY TEAM" name="supportTeam">
+                <Select
+                  allowClear
+                  showSearch
+                  mode="multiple"
+                  placeholder="Search by Team Name"
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  showArrow
+                >
+                  {supportTeamList.map((option) => {
+                    return (
+                      <Option key={option._id} value={option.name}>
+                        {option.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            )}
             <Form.Item key="queryType" label="BY REQUEST TYPE" name="queryType">
               <Select
                 allowClear
@@ -322,6 +350,7 @@ export default connect(
       employeeAssignedList = [],
       employeeRaiseList = [],
       selectedLocations = [],
+      supportTeamList = [],
     } = {},
     user: {
       permissions = {},
@@ -335,6 +364,7 @@ export default connect(
     currentStatus,
     listOffAllTicket,
     locationsList,
+    supportTeamList,
     employeeRaiseList,
     employeeAssignedList,
     selectedLocations,

@@ -796,6 +796,7 @@ const routes = [
             icon: '/assets/images/menuIcons/ticketManagement.svg',
             component: './TicketManagement',
             authority: [
+              'M_ADMIN_VIEW_TICKETS',
               'P_TICKET_MANAGEMENT_VIEW',
               'P_TICKET_MANAGEMENT_T_HR_TICKETS_VIEW',
               'P_TICKET_MANAGEMENT_T_IT_TICKETS_VIEW',
@@ -806,6 +807,7 @@ const routes = [
             path: '/ticket-management/:tabName',
             component: './TicketManagement',
             authority: [
+              'M_ADMIN_VIEW_TICKETS',
               'P_TICKET_MANAGEMENT_VIEW',
               'P_TICKET_MANAGEMENT_T_HR_TICKETS_VIEW',
               'P_TICKET_MANAGEMENT_T_IT_TICKETS_VIEW',

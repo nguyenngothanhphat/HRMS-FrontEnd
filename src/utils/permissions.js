@@ -352,6 +352,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_TICKET_MANAGEMENT_T_OPERATIONS_TICKETS_VIEW',
   ]);
 
+  const indexAdminViewTickets = isAuthorized(permissionList, ['M_ADMIN_VIEW_TICKETS']);
+
   // POLICY & REGULATION
   const indexViewAllCountryPolicyAndRegulation = isAuthorized(permissionList, [
     'P_POLICIESREGULATIONS_VIEW_ALL',
@@ -471,6 +473,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewTicketHR: indexTicketManagementHRTicketsTab,
     viewTicketIT: indexTicketManagementITTicketsTab,
     viewTicketOperations: indexTicketManagementOperationsTicketsTab,
+    viewTicketByAdmin: indexAdminViewTickets,
 
     // policy and regulation
     viewSettingPolicy: indexSettingViewPolicy,

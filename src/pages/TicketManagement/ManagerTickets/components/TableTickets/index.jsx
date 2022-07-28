@@ -33,6 +33,7 @@ const TableTickets = (props) => {
     role = '',
     selectedFilterTab = '',
     loadingUpdate = false,
+    permissions = {},
   } = props;
   const [timezoneListState, setTimezoneListState] = useState([]);
   const [ticket, setTicket] = useState({});
@@ -62,7 +63,7 @@ const TableTickets = (props) => {
     setTicket(result);
   };
 
-  const handleSelectChange = (value, newName) => {
+  const handleSelectChange = (value, supportTeam) => {
     const {
       id = '',
       employee_raise: employeeRaise = '',
@@ -94,7 +95,7 @@ const TableTickets = (props) => {
           departmentAssign,
           employee: employeeId,
           oldName,
-          newName,
+          supportTeam,
           role,
         },
       }).then((res) => {
@@ -269,7 +270,7 @@ const TableTickets = (props) => {
         title: 'Ticket ID',
         dataIndex: 'id',
         key: 'id',
-        width: '8%',
+        width: '7%',
         render: (id) => {
           return (
             <span className={styles.ticketID} onClick={() => openViewTicket(id)}>
@@ -283,6 +284,24 @@ const TableTickets = (props) => {
         },
         sortDirections: ['ascend', 'descend'],
       },
+      ...(permissions.viewTicketByAdmin === 1
+        ? [
+            {
+              title: 'Support Team',
+              dataIndex: 'support_team',
+              key: 'support_team',
+              width: '10%',
+              render: (name) => {
+                return name;
+              },
+              fixed: 'left',
+              sorter: (a, b) => {
+                return a.id && a.id - b.id;
+              },
+              sortDirections: ['ascend', 'descend'],
+            },
+          ]
+        : []),
       {
         title: 'Request Type',
         dataIndex: 'query_type',
@@ -546,13 +565,14 @@ export default connect(
   ({
     loading,
     ticketManagement: { listEmployee = [], locationsList = [], employeeFilterList = [] } = {},
-    user: { currentUser: { employee = {} } = {} } = {},
+    user: { currentUser: { employee = {} } = {}, permissions = {} } = {},
     location: { companyLocationList = [] },
   }) => ({
     listEmployee,
     locationsList,
     employeeFilterList,
     employee,
+    permissions,
     companyLocationList,
     loadingUpdate: loading.effects['ticketManagement/updateTicket'],
     loadingFetchEmployee: loading.effects['ticketManagement/searchEmployee'],
