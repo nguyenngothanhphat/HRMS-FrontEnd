@@ -380,6 +380,7 @@ const Summary = (props) => {
             title="Reason for Editing the End Date"
             content={
               <EditEndDateContent
+                startDate={startDate}
                 initialValue={originEndDate}
                 newValues={newEndDate}
                 onClose={() => setEditEndDateModalVisible(false)}
