@@ -8,6 +8,7 @@ import styles from './index.less';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import History from '../../../History';
+import TimeOffHistory from '../../../TimeOffHistory';
 
 @connect(({ timeOff, loading }) => ({
   timeOff,
@@ -99,6 +100,7 @@ class ManagerViewRequestForm extends PureComponent {
                     <RightContent data={viewingLeaveRequest} status={status} />
                   </>
                 )}
+                <TimeOffHistory />
               </Col>
             </Row>
           </Spin>
