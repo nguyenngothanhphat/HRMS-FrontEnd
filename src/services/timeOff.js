@@ -153,13 +153,6 @@ export async function getEmailsListByCompany(params) {
   });
 }
 
-export async function getEmailsListWhenEdit(payload) {
-  return request('/api/employeetenant/admin-list', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 // export async function getProjectsListByEmployee(payload) {
 //   return request('/api/projecttenant/get-by-employee', {
 //     method: 'POST',
