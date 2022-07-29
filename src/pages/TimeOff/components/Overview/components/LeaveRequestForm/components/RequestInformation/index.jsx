@@ -34,13 +34,14 @@ import {
   TIMEOFF_WORK_DAYS,
   WORKING_HOURS,
 } from '@/utils/timeOff';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentTenant } from '@/utils/authority';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import TimeOffModal from '@/components/TimeOffModal';
 import AddAttachments from './components/AddAttachments';
 import DebounceSelect from './components/DebounceSelect';
 import LeaveTimeRow from './components/LeaveTimeRow';
 import LeaveTimeRow2 from './components/LeaveTimeRow2';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -74,7 +75,7 @@ const RequestInformation = (props) => {
       } = {},
       employeeSchedule: { startWorkDay = {}, endWorkDay = {}, workDay = [] } = {},
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
-      emailsListEdit = [],
+      emailsList = [],
     } = {},
     user: { currentUser: { location = {}, employee = {} } = {} } = {},
     loadingAddLeaveRequest = false,
@@ -442,7 +443,10 @@ const RequestInformation = (props) => {
             leaveDates: leaveDatesPayload,
             onDate: moment().format('YYYY-MM-DD'),
             description,
-            cc: personCC.map((item) => item?.value[0]) || [],
+            cc:
+              action === EDIT_LEAVE_REQUEST
+                ? personCC
+                : personCC.map((item) => item?.value[0]) || [],
             tenantId: getCurrentTenant(),
             company: employee.company,
             attachments,
@@ -457,7 +461,7 @@ const RequestInformation = (props) => {
             leaveDates: leaveDatesPayload,
             onDate: moment().format('YYYY-MM-DD'),
             description,
-            cc: personCC.map((item) => item?.value[0]) || [],
+            cc: EDIT_LEAVE_REQUEST ? personCC : personCC.map((item) => item?.value[0]) || [],
             tenantId: getCurrentTenant(),
             company: employee.company,
             attachments,
@@ -734,7 +738,6 @@ const RequestInformation = (props) => {
         personCC: viewingCC,
         leaveTimeLists,
       });
-      console.log('🚀 ~ viewingCC', viewingCC);
 
       if (BY_HOUR) {
         generateHours(leaveTimeLists);
@@ -850,9 +853,9 @@ const RequestInformation = (props) => {
   useEffect(() => {
     if (action === EDIT_LEAVE_REQUEST) {
       dispatch({
-        type: 'timeOff/fetchEmailsListWhenEdit',
+        type: 'timeOff/fetchEmailsListByCompany',
         payload: {
-          company: [getCurrentCompany()],
+          search: '',
         },
       });
     }
@@ -1170,6 +1173,7 @@ const RequestInformation = (props) => {
                     fetchOptions={fetchEmailsListByCompany}
                     showSearch
                     allowClear
+                    name="employeeBehalf"
                   />
                 </Form.Item>
               </Col>
@@ -1384,15 +1388,60 @@ const RequestInformation = (props) => {
                     },
                   ]}
                 >
-                  <DebounceSelect
-                    placeholder="Search a person you want to loop"
-                    fetchOptions={fetchEmailsListByCompany}
-                    showSearch
-                    allowClear
-                    mode="multiple"
-                    disabled={!selectedTypeName}
-                    defaultList={emailsListEdit}
-                  />
+                  {action === EDIT_LEAVE_REQUEST ? (
+                    <Select
+                      mode="multiple"
+                      allowClear
+                      placeholder="Search a person you want to loop"
+                      disabled={!selectedTypeName}
+                      filterOption={(input, option) => {
+                        return (
+                          option.children[1].props.children
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                    >
+                      {emailsList.map((value) => {
+                        const { _id = '', generalInfoInfo: { workEmail = '', avatar = '' } = {} } =
+                          value;
+
+                        return (
+                          <Option key={_id} value={_id}>
+                            <div style={{ display: 'inline', marginRight: '10px' }}>
+                              <img
+                                style={{
+                                  borderRadius: '50%',
+                                  width: '30px',
+                                  height: '30px',
+                                }}
+                                src={avatar}
+                                alt="user"
+                                onError={(e) => {
+                                  e.target.src = DefaultAvatar;
+                                }}
+                              />
+                            </div>
+                            <span
+                              style={{ fontSize: '13px', color: '#161C29' }}
+                              className={styles.ccEmail}
+                            >
+                              {workEmail}
+                            </span>
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  ) : (
+                    <DebounceSelect
+                      placeholder="Search a person you want to loop"
+                      fetchOptions={fetchEmailsListByCompany}
+                      showSearch
+                      allowClear
+                      mode="multiple"
+                      disabled={!selectedTypeName}
+                    />
+                  )}
                 </Form.Item>,
               )}
             </Col>
