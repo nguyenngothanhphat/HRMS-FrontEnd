@@ -38,6 +38,7 @@ export function formatData(rawData) {
     const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
     const employeeName = `${generalInfo.legalName} ${userName ? `(${userName})` : ''}`;
     const managerName = managerInfo.generalInfo ? managerInfo.generalInfo.legalName : ''
+    const managerId = managerInfo ? managerInfo._id : null
     const projectList = projects.filter(item => {
       const revisedEndDate = item?.revisedEndDate
       const endDate = item?.endDate
@@ -65,6 +66,7 @@ export function formatData(rawData) {
       revisedEndDate: projectList,
       resourceId: 0,
       managerName,
+      managerId,
       managerChanged: changeManagerInfo,
     };
     dataList.push(newObj);

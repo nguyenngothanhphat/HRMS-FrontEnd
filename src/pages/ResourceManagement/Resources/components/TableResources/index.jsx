@@ -403,7 +403,7 @@ class TableResources extends PureComponent {
             const children = (
               <span className={styles.basicCellField}>
                 {value}
-                {row.managerChanged ? (
+                {row.managerChanged && managerChanged !== value ? (
                   <p>
                     <img src={currentToNewManager} alt="" />{' '}
                     <a href="#" className={styles.currentToNewManager}>

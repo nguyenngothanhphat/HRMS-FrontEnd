@@ -427,6 +427,7 @@ const resourceManagement = {
         response = yield call(updateManagerResource, {
           ...payload,
           tenantId: getCurrentTenant(),
+          company: [getCurrentCompany()],
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;

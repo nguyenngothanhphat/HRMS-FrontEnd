@@ -66,7 +66,7 @@ class ChangeManagerModal extends Component {
     onClose()
   };
 
-  modalContent = (employeeList = []) => {
+  modalContent = (employeeList = [], dataPassRow = {}) => {
     return (
       <Form
         layout="vertical"
@@ -78,7 +78,19 @@ class ChangeManagerModal extends Component {
         <Form.Item
           label="Manager"
           name="manager"
-          rules={[{ required: true, message: 'Please select the manager!' }]}
+          rules={[
+            { required: true, message: 'Please select the manager!' },
+            () => ({
+              validator(_, value) {
+                if (String(dataPassRow.managerId) === String(value)) {
+                  // eslint-disable-next-line prefer-promise-reject-errors
+                  return Promise.reject('Manager duplicate with current manager!');
+                }
+                // eslint-disable-next-line compat/compat
+                return Promise.resolve();
+              },
+            }),
+        ]}
         >
           <Select
             placeholder="Select the new manager"
@@ -112,7 +124,7 @@ class ChangeManagerModal extends Component {
   };
 
   render() {
-    const { onClose = () => {}, visible, employeeList } = this.props;
+    const { onClose = () => {}, visible, employeeList, dataPassRow } = this.props;
     return (
       <div className={styles.Add}>
         <CommonModal
@@ -124,7 +136,7 @@ class ChangeManagerModal extends Component {
           cancelText="Skip"
           onClose={onClose}
           width={440}
-          content={this.modalContent(employeeList)}
+          content={this.modalContent(employeeList, dataPassRow)}
           firstText="Update"
         />
       </div>
