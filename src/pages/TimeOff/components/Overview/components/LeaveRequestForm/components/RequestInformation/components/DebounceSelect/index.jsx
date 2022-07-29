@@ -7,6 +7,7 @@ import styles from './index.less';
 const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
   const [fetching, setFetching] = useState(false);
   const [options, setOptions] = useState([]);
+
   const fetchRef = useRef(0);
   const debounceFetcher = useMemo(() => {
     const loadOptions = (value) => {
