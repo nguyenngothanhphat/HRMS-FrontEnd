@@ -3,6 +3,7 @@ import { Button, Col, Row, Tabs } from 'antd';
 import { debounce } from 'lodash';
 import React, { Component } from 'react';
 import { connect, formatMessage, history } from 'umi';
+import moment from 'moment';
 import { getCurrentLocation } from '@/utils/authority';
 import OverView from '@/pages/ResourceManagement/components/OverView';
 import { PageContainer } from '@/layouts/layout/src';

@@ -9,6 +9,7 @@ import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import styles from './index.less';
 import CommonModal from '@/components/CommonModal';
+import { checkUtilizationPercent } from '@/utils/resourceManagement';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -30,7 +31,7 @@ class AddActionBTN extends Component {
     this.state = {
       visibleModalSuccess: false,
       projectId: '',
-      projectAssignedId: ''
+      projectAssignedId: '',
     };
   }
 
@@ -101,7 +102,7 @@ class AddActionBTN extends Component {
       if (response.statusCode === 200) {
         this.setState({
           visibleModalSuccess: true,
-          projectAssignedId: projectList.find(item => item.id === project).projectId
+          projectAssignedId: projectList.find((item) => item.id === project).projectId,
         });
         onClose();
       }
@@ -112,11 +113,11 @@ class AddActionBTN extends Component {
   modalContent = () => {
     const { dataPassRow = {}, projectList = [], resourceList = [], statusList = [] } = this.props;
     const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
+    console.log('🚀 ~ getUtilizationOfEmp', getUtilizationOfEmp);
+
     const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
-    const sumUtilization = listProjectsOfEmp.reduce(
-      (prevValue, currentValue) => prevValue + currentValue.utilization,
-      0,
-    );
+    const sumUtilization = checkUtilizationPercent(listProjectsOfEmp);
+
     const { projectId } = this.state;
     // const projectFist = projectList.length > 0 ? projectList[0] : {};
     // const statusBill = statusList.length > 0 ? statusList[0] : 'Billable';
@@ -187,7 +188,7 @@ class AddActionBTN extends Component {
                           `Your cannot enter a value that is more than ${maxEnterUtilization}!`,
                         );
                       }
-                      if (value < 0) {
+                      if (value < 1) {
                         return Promise.reject(`Your cannot enter a value that is less than 0!`);
                       }
                       return Promise.resolve();
@@ -292,7 +293,7 @@ class AddActionBTN extends Component {
   };
 
   render() {
-    const { onClose = () => {}, visible } = this.props;
+    const { onClose = () => {}, visible, loading = false } = this.props;
 
     const { visibleModalSuccess } = this.state;
     // const projectFist = projectList.length > 0 ? projectList[0] : {};
@@ -308,6 +309,7 @@ class AddActionBTN extends Component {
           width={600}
           content={this.modalContent()}
           firstText="Assign to project"
+          disabledButton={loading}
         />
 
         <Modal

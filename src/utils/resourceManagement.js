@@ -31,21 +31,29 @@ export const checkUtilization = (projects) => {
   return true;
 };
 
+export const checkUtilizationPercent = (projects) => {
+  let sum = 0;
+  projects.forEach((project) => {
+    sum += project?.utilization || 0;
+  });
+  return sum;
+};
+
 export function formatData(rawData) {
   const dataList = [];
   rawData.forEach((obj) => {
     const { titleInfo, generalInfo, projects } = obj;
     const userName = generalInfo.workEmail.substring(0, generalInfo.workEmail.indexOf('@'));
     const employeeName = `${generalInfo.legalName} ${userName ? `(${userName})` : ''}`;
-    
-    const projectList = projects.filter(item => {
-      const revisedEndDate = item?.revisedEndDate
-      const endDate = item?.endDate
-      if(revisedEndDate){
-        if(moment(revisedEndDate).isAfter(moment())) return item
-      } else if(moment(endDate).isAfter(moment())) return item
-      return null
-    })
+
+    const projectList = projects.filter((item) => {
+      const revisedEndDate = item?.revisedEndDate;
+      const endDate = item?.endDate;
+      if (revisedEndDate) {
+        if (moment(revisedEndDate).isAfter(moment())) return item;
+      } else if (moment(endDate).isAfter(moment())) return item;
+      return null;
+    });
 
     const newObj = {
       avatar: generalInfo.avatar,
@@ -104,17 +112,17 @@ export function handlingResourceAvailableStatus(data) {
 }
 
 export const setSelectedLocations = (data) => {
-  localStorage.setItem('resourceSelectedLocations',JSON.stringify(data))
-}
+  localStorage.setItem('resourceSelectedLocations', JSON.stringify(data));
+};
 
 export const getSelectedLocations = () => {
-  return JSON.parse(localStorage.getItem('resourceSelectedLocations'))
-}
+  return JSON.parse(localStorage.getItem('resourceSelectedLocations'));
+};
 
 export const setSelectedDivisions = (data) => {
-  localStorage.setItem('resourceSelectedDivision',JSON.stringify(data))
-}
+  localStorage.setItem('resourceSelectedDivision', JSON.stringify(data));
+};
 
 export const getSelectedDivisions = () => {
-  return JSON.parse(localStorage.getItem('resourceSelectedDivision'))
-}
+  return JSON.parse(localStorage.getItem('resourceSelectedDivision'));
+};

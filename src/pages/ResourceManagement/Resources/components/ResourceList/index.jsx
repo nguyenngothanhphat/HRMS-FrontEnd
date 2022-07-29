@@ -2,6 +2,7 @@ import { CloseOutlined, DownloadOutlined } from '@ant-design/icons';
 import { Button, Col, Row, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
+import moment from 'moment';
 import { formatData } from '@/utils/resourceManagement';
 import SearchTable from '../SearchTable';
 import TableResources from '../TableResources';
@@ -161,7 +162,8 @@ const ResourceList = (props) => {
   };
 
   const exportToExcel = async () => {
-    const fileName = 'resource.csv';
+    const date = moment().locale('en').format('MM-DD-YYYY');
+    const fileName = `resource - ${date}.csv`;
     const getListExport = await dispatch({
       type: 'resourceManagement/exportResourceManagement',
       payload: {
