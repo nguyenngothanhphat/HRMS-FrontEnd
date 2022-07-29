@@ -236,13 +236,13 @@ const AddResourcesModal = (props) => {
               {step === 2 && (
                 <>
                   <span>
-                    <p className={styles.warnningAddResource}>
-                      <img src={WarningAddResource} alt="warnning add resource" />
-                      <span className={styles.descTextWarnning}>
+                    <div className={styles.warnningAddResource}>
+                      <p className={styles.warnningImage}><img src={WarningAddResource} alt="warnning add resource" /></p>
+                      <p className={styles.descTextWarnning}>
                         If a change of manager is needed - you need to assign via the Resource
                         Management page
-                      </span>
-                    </p>
+                      </p>
+                    </div>
                   </span>
                 </>
               )}
