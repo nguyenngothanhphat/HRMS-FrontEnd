@@ -29,6 +29,11 @@ export const POST_OR_CMT = {
   COMMENT: 'COMMENT',
 };
 
+export const POST_TYPE = {
+  SOCIAL: 'EMPLOYEE',
+  COMPANY: 'ANNOUNCEMENTS',
+};
+
 export const urlify = (text) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   return text.replace(urlRegex, (url) => {

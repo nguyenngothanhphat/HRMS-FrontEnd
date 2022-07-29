@@ -4,21 +4,73 @@
 
 .Announcements {
   overflow: hidden;
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+  }
+
   .title {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid #d8d8d8;
+    border-radius: 8px;
+  }
+  .text {
+    margin-bottom: 0;
     color: @black;
     font-weight: 600;
     font-size: 16px;
-
     font-style: normal;
     line-height: 30px;
   }
+  .button {
+    padding: 5px 10px;
+    border: 1px solid #d0d5dd;
+    border-radius: 50px;
+    :global {
+      .ant-btn {
+        border: none;
+      }
+    }
+  }
+
+  .active {
+    color: #fff;
+    background: @blue;
+    border-radius: 50px;
+  }
+
+  .sharePost {
+    padding: 20px 16px;
+    &__content {
+      display: flex;
+      padding: 10px 0 10px 14px;
+      background: #f2f4f7;
+      border-radius: 5px;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+  }
+
   .card {
     overflow: hidden;
     background: #ffffff;
     border: 1px solid #d8d8d8;
     border-radius: 8px;
     // box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.1);
+    .cardTitle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .menuIcon {
+      cursor: pointer;
+      padding-block: 10px;
+    }
   }
+
   .loadMore {
     display: flex;
     align-items: center;
@@ -54,4 +106,8 @@
       width: 100%;
     }
   }
+}
+
+.actionIcon {
+  margin-right: 7px;
 }
