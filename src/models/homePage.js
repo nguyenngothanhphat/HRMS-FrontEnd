@@ -5,6 +5,7 @@ import {
   // setting page
   addPost,
   addQuickLink,
+  flagPost,
   deletePost,
   deleteQuickLink,
   editComment,
@@ -182,7 +183,22 @@ const homePage = {
       }
       return response;
     },
-
+    *flagPostEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(flagPost, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
     *updateBannerPositionEffect({ payload }, { call }) {
       let response = {};
       try {

@@ -42,6 +42,13 @@ export async function getTotalPostsOfType(payload) {
   });
 }
 
+export async function flagPost(params) {
+  return request('/api/posttenant/flag', {
+    method: 'GET',
+    params,
+  });
+}
+
 export async function votePoll(payload) {
   return request('/api/polltenant/vote', {
     method: 'POST',

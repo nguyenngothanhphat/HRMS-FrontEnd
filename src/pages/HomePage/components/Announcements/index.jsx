@@ -54,6 +54,27 @@ const Announcements = (props) => {
     });
   };
 
+  const flagPost = (postId = '') => {
+    return dispatch({
+      type: 'homePage/flagPostEffect',
+      payload: {
+        post: postId,
+        postType: POST_TYPE.SOCIAL,
+      },
+    });
+  };
+
+  const hiddenPost = (postId = '') => {
+    return dispatch({
+      type: 'homePage/updatePostEffect',
+      payload: {
+        id: postId,
+        postType: POST_TYPE.SOCIAL,
+        status: 'HIDDEN',
+      },
+    });
+  };
+
   const onClickShowMore = () => {
     if (isSocial) {
       setLimitSocial(limitSocial + 5);
@@ -99,8 +120,7 @@ const Announcements = (props) => {
 
   const actionMenu = (data) => {
     let menu = '';
-    console.log(employeeId);
-    if (!data) {
+    if (data?.createdBy?._id === employeeId) {
       menu = (
         <Menu>
           <Menu.Item onClick={() => setIsVisible(true)}>
@@ -116,18 +136,18 @@ const Announcements = (props) => {
     } else if (viewSettingHomePage === 1) {
       menu = (
         <Menu>
-          <Menu.Item>
+          <Menu.Item onClick={() => hiddenPost(data?._id)}>
             <img className={styles.actionIcon} src={HideIcon} alt="hideIcon" />
             <span>Hide this post</span>
           </Menu.Item>
         </Menu>
       );
-    } else {
+    } else if (!data?.flag?.includes(employeeId)) {
       menu = (
         <Menu>
-          <Menu.Item>
+          <Menu.Item onClick={() => flagPost(data?._id)}>
             <img className={styles.actionIcon} src={FlagIcon} alt="flagIcon" />
-            <span>Flag as inapproriate</span>
+            <span>Flag as inappropriate</span>
           </Menu.Item>
         </Menu>
       );
