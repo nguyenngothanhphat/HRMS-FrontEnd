@@ -18,6 +18,7 @@ import FlagIcon from '@/assets/homePage/flagIcon.svg';
 import HideIcon from '@/assets/homePage/hideIcon.svg';
 import DeleteIcon from '@/assets/relievingDel.svg';
 import UpdateIcon from '@/assets/editMailExit.svg';
+import ErrorFile from '@/assets/adminSetting/errorFile.svg';
 import styles from './index.less';
 
 const Announcements = (props) => {
@@ -37,6 +38,8 @@ const Announcements = (props) => {
   const [limitSocial, setLimitSocial] = useState(5);
   const [isSocial, setIsSocial] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+  const [record, setRecord] = useState(null);
   const [form, setForm] = useState(null);
 
   const fetchData = (postType, limit = 5, location = '') => {
@@ -136,7 +139,12 @@ const Announcements = (props) => {
     } else if (viewSettingHomePage === 1) {
       menu = (
         <Menu>
-          <Menu.Item onClick={() => hiddenPost(data?._id)}>
+          <Menu.Item
+            onClick={() => {
+              setRecord(data);
+              setIsHidden(true);
+            }}
+          >
             <img className={styles.actionIcon} src={HideIcon} alt="hideIcon" />
             <span>Hide this post</span>
           </Menu.Item>
@@ -203,27 +211,27 @@ const Announcements = (props) => {
     return <Spin spinning={loadingFetchAnnouncementList}>{children}</Spin>;
   };
 
-  const renderCompanyUI = () => {
-    if (!loadingFetchAnnouncementList && announcements.length === 0) {
-      return (
-        <div className={styles.card}>
-          <EmptyComponent description="No Announcements" />
-        </div>
-      );
-    }
-    return <>{announcements.length > 0 ? spinWrap(renderData()) : skeletonWrap(renderData())}</>;
-  };
+  // const renderCompanyUI = () => {
+  //   if (!loadingFetchAnnouncementList && announcements.length === 0) {
+  //     return (
+  //       <div className={styles.card}>
+  //         <EmptyComponent description="No Announcements" />
+  //       </div>
+  //     );
+  //   }
+  //   return <>{announcements.length > 0 ? spinWrap(renderData()) : skeletonWrap(renderData())}</>;
+  // };
 
-  const renderSocialUI = () => {
-    if (!loadingFetchAnnouncementList && announcements.length === 0) {
-      return (
-        <div className={styles.card}>
-          <EmptyComponent description="No Announcements" />
-        </div>
-      );
-    }
-    return <>{announcements.length > 0 ? spinWrap(renderData()) : skeletonWrap(renderData())}</>;
-  };
+  // const renderSocialUI = () => {
+  //   if (!loadingFetchAnnouncementList && announcements.length === 0) {
+  //     return (
+  //       <div className={styles.card}>
+  //         <EmptyComponent description="No Announcements" />
+  //       </div>
+  //     );
+  //   }
+  //   return <>{announcements.length > 0 ? spinWrap(renderData()) : skeletonWrap(renderData())}</>;
+  // };
 
   const handleCompanyClick = () => {
     setIsSocial(false);
@@ -241,17 +249,31 @@ const Announcements = (props) => {
       <div className={styles.title}>
         <div className={styles.head}>
           <p className={styles.text}>Announcements</p>
-          <div className={styles.button}>
+          <div style={{ position: 'relative' }} className={styles.button}>
             <Button
-              className={!isSocial ? styles.active : ''}
-              style={{ display: 'inline-block', marginRight: 5 }}
+              className={!isSocial ? styles.buttonTabs : ''}
+              disabled={!isSocial}
               onClick={handleCompanyClick}
             >
               {getCompanyName()}
             </Button>
-            <Button className={isSocial ? styles.active : ''} onClick={handleSocialClick}>
+            <Button
+              style={{
+                marginLeft: 5,
+              }}
+              className={isSocial ? styles.buttonTabs : ''}
+              onClick={handleSocialClick}
+              disabled={isSocial}
+            >
               Social
             </Button>
+            <div
+              className={
+                !isSocial
+                  ? `${styles.active} ${styles.active2}`
+                  : `${styles.active} ${styles.active1}`
+              }
+            ></div>
           </div>
         </div>
         {isSocial && (
@@ -263,7 +285,14 @@ const Announcements = (props) => {
           </div>
         )}
       </div>
-      {isSocial ? renderSocialUI() : renderCompanyUI()}
+      {/* {isSocial ? renderSocialUI() : renderCompanyUI()} */}
+      {!loadingFetchAnnouncementList && announcements.length === 0 ? (
+        <div className={styles.card}>
+          <EmptyComponent description="No Announcements" />
+        </div>
+      ) : (
+        <>{announcements.length > 0 ? spinWrap(renderData()) : skeletonWrap(renderData())}</>
+      )}
       <CommonModal
         visible={isVisible}
         title="New Post"
@@ -281,6 +310,20 @@ const Announcements = (props) => {
         hasCancelButton={false}
         hasSecondButton
         onSecondButtonClick={() => form.resetFields()}
+      />
+      <CommonModal
+        visible={isHidden}
+        onClose={() => setIsHidden(false)}
+        content={
+          <div className={styles.hidenModalContent}>
+            <img src={ErrorFile} alt="errorFile" />
+            <p>Are you sure you want to delete for this post.</p>
+          </div>
+        }
+        hasHeader={false}
+        firstText="Yes"
+        onFinish={() => flagPost(record.postId)}
+        width={400}
       />
     </div>
   );

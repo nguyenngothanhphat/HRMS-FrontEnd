@@ -29,17 +29,43 @@
     padding: 5px 10px;
     border: 1px solid #d0d5dd;
     border-radius: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 200px;
     :global {
       .ant-btn {
         border: none;
+        display: block;
+        width: 100%;
+        text-align: center;
+        background: transparent;
+        z-index: 1;
+        padding: 4px 0;
       }
     }
   }
 
   .active {
-    color: #fff;
     background: @blue;
     border-radius: 50px;
+    position: absolute;
+    width: 88px;
+    top: 2px;
+    height: 90%;
+    transition: all 0.3s;
+  }
+
+  .active1 {
+    transform: translateX(95px);
+  }
+
+  .active2 {
+    transform: translateX(0px);
+  }
+
+  .buttonTabs {
+    color:#fff;
   }
 
   .sharePost {
@@ -101,13 +127,31 @@
       }
     }
   }
+
+
   :global {
     .lazyload-wrapper {
       width: 100%;
+    }
+    .ant-btn[disabled] {
+      &:hover {
+        color: #fff;
+        background: none;
+      }
     }
   }
 }
 
 .actionIcon {
   margin-right: 7px;
+}
+
+.hidenModalContent {
+  padding: 20px 60px ;
+  text-align: center;
+  p {
+    font-weight: 500;
+    font-size: 18px;
+    margin-top: 5px;
+  }
 }
