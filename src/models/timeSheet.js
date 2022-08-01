@@ -66,6 +66,7 @@ const initialState = {
   myTimesheetByMonth: [],
   timeoffList: [],
   detailTimesheet: [],
+  currentTask: {},
   // store payload for refreshing
   viewingPayload: {},
   // for importing
@@ -251,6 +252,12 @@ const TimeSheet = {
           pushError(errors);
           return [];
         }
+        yield put({
+          type: 'savePayload',
+          payload: {
+            currentTask: payload,
+          },
+        });
         notification.success({ message: msg });
         if (date) {
           // for refresh immediately - no need to call API to refresh list
@@ -277,12 +284,20 @@ const TimeSheet = {
         response = yield call(addActivity, { ...payload, tenantId });
         const { code, data = {}, errors = [] } = response;
         const { errorList = [] } = data;
+        const { data: currentTaskData } = payload;
         adding();
         if (code !== 200) {
           pushError(errors);
           return [];
         }
         pushSuccess(errorList, 'added', 'Create timesheet successfully');
+
+        yield put({
+          type: 'savePayload',
+          payload: {
+            currentTask: currentTaskData && currentTaskData[0],
+          },
+        });
         if (date) {
           // for refresh immediately - no need to call API to refresh list
           yield put({
@@ -301,7 +316,7 @@ const TimeSheet = {
     },
 
     // add
-    *addMultipleActivityEffect({ payload }, { call }) {
+    *addMultipleActivityEffect({ payload }, { call, put }) {
       let response = {};
       try {
         const params = {
@@ -313,10 +328,17 @@ const TimeSheet = {
         response = yield call(addMultipleActivity, payload.data, params);
         const { code, data = {}, errors = [] } = response;
         const { errorList = [] } = data;
+        const { data: currentTaskData } = payload;
         if (code !== 200) {
           pushError(errors);
           return [];
         }
+        yield put({
+          type: 'savePayload',
+          payload: {
+            currentTask: currentTaskData.length && currentTaskData[0],
+          },
+        });
         pushSuccess(errorList, 'added', 'Create timesheet successfully');
       } catch (errors) {
         dialog(errors);
@@ -571,14 +593,14 @@ const TimeSheet = {
       const response = {};
       try {
         const res = yield call(getFinanceTimesheet, {}, { ...payload, tenantId });
-        const { code, data = [], pagination={} } = res;
+        const { code, data = [], pagination = {} } = res;
         if (code !== 200) throw res;
 
         yield put({
           type: 'save',
           payload: {
             financeViewList: data,
-            financeViewListTotal:pagination?.rowCount || 0,
+            financeViewListTotal: pagination?.rowCount || 0,
           },
         });
       } catch (errors) {

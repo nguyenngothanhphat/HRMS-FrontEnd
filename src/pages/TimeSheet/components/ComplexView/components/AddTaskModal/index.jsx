@@ -117,7 +117,7 @@ const AddTaskModal = (props) => {
   };
 
   const formatEndTimeShow = (timeFormat) => {
-    return moment(timeFormat, hourFormat).add(30, 'minutes').format(hourFormat);
+    return moment(timeFormat, hourFormat).add(60, 'minutes').format(hourFormat);
   };
 
   const getLastEndTimeElement = (lastEle) => {
@@ -344,7 +344,7 @@ const AddTaskModal = (props) => {
               ? moment(endTime, hourFormatAPI).format(hourFormat)
               : getDefaultValueStartTime(),
             endTime: endTime
-              ? moment(endTime, hourFormatAPI).add(30, 'minutes').format(hourFormat)
+              ? moment(endTime, hourFormatAPI).add(60, 'minutes').format(hourFormat)
               : formatEndTimeShow(getDefaultValueStartTime()),
             clientLocation,
             breakTime,
