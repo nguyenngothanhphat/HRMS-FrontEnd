@@ -37,7 +37,7 @@ const AnnouncementContent = (props) => {
 
       <Form.Item label="Post As" name="postAsCompany">
         <Select>
-          <Select.Option value={false}>Selft</Select.Option>
+          <Select.Option value={false}>Self</Select.Option>
           <Select.Option value>{companyName}</Select.Option>
         </Select>
       </Form.Item>

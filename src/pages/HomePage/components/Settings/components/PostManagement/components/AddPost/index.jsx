@@ -12,6 +12,7 @@ import ImagesContent from './components/ImagesContent';
 import PollContent from './components/PollContent';
 import Preview from './components/Preview';
 import styles from './index.less';
+import { getCurrentCompanyObj } from '@/utils/utils';
 
 // A: ANNOUNCEMENT
 // B: BIRTHDAY/ANNIVERSARY
@@ -53,7 +54,6 @@ const AddPost = (props) => {
   const {
     dispatch,
     currentUser: { employee = {}, location: { _id: locationId = '' } = {} } = {},
-    companiesOfUser = [],
     loadingAddPost = false,
     loadingEditPost = false,
     companyLocationList = [],
@@ -409,7 +409,7 @@ const AddPost = (props) => {
         return (
           <AnnouncementContent
             defaultFileList={fileList}
-            company={companiesOfUser[0]}
+            company={getCurrentCompanyObj()}
             employee={employee}
           />
         );
@@ -524,7 +524,7 @@ const AddPost = (props) => {
           editing={editing}
           formValues={formValues}
           owner={owner}
-          company={companiesOfUser[0]}
+          company={getCurrentCompanyObj()}
         />
       </div>
     );
@@ -554,12 +554,11 @@ const AddPost = (props) => {
 
 export default connect(
   ({
-    user: { currentUser = {}, permissions = {}, companiesOfUser = [] } = {},
+    user: { currentUser = {}, permissions = {} } = {},
     loading,
     location: { companyLocationList = [] } = {},
   }) => ({
     currentUser,
-    companiesOfUser,
     permissions,
     companyLocationList,
     loadingAddPost:

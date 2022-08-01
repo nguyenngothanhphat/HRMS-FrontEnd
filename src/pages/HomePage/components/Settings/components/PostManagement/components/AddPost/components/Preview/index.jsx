@@ -144,11 +144,7 @@ const Preview = (props) => {
       case TAB_IDS.ANNOUNCEMENTS:
         return (
           <>
-            <EmployeeTag
-              company={company}
-              employee={post.employee}
-              postAsCompany={postAsCompany}
-            />
+            <EmployeeTag company={company} employee={post.employee} postAsCompany={postAsCompany} />
             <PostContent post={post} />
           </>
         );
