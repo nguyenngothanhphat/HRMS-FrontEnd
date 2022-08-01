@@ -1,6 +1,6 @@
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined, CloseOutlined } from '@ant-design/icons';
 // eslint-disable-next-line no-unused-vars
-import { Popover, Input, Button, Table, Row, Col, message } from 'antd';
+import { Popover, Input, Button, Table, Row, Col, message, Tag } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
@@ -8,11 +8,13 @@ import { debounce, uniq } from 'lodash';
 import DocumentFilter from './components/DocumentFilter';
 import styles from './index.less';
 import cancelIcon from '../../../../assets/cancelIcon.svg';
-import { FilterIcon } from './components/FilterIcon';
+// import { FilterIcon } from './components/FilterIcon';
 import eye from '../../../../assets/eyes.svg';
 import bin from '../../../../assets/bin.svg';
 import ModalAddDoc from './components/ModalAddDoc';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
+import FilterButton from '@/components/FilterButton';
+import FilterPopover from '@/components/FilterPopover';
 
 @connect(
   ({
@@ -50,6 +52,9 @@ class Documents extends PureComponent {
       viewDocumentModal: false,
       // eslint-disable-next-line react/no-unused-state
       file: null,
+      isFiltering: false,
+      applied: 0,
+      clearForm: false,
     };
     this.delaySearch = debounce((value) => {
       this.handleSearch(value);
@@ -168,7 +173,6 @@ class Documents extends PureComponent {
     this.setState({
       isUnhide: !isUnhide,
     });
-    this.fetchData()
   };
 
   showModal = () => {
@@ -194,11 +198,41 @@ class Documents extends PureComponent {
         customerId,
         type: parseInt(byType, 10) || '',
         uploadedBy: byUpload || '',
-        fromDate: fromDate || '',
-        toDate: toDate || '',
+        fromDate: fromDate ? moment(fromDate).format('YYYY-MM-DD') : '',
+        toDate: toDate ? moment(toDate).format('YYYY-MM-DD') : '',
       },
     });
   };
+
+  handleFilterCounts = (values) => {
+    const filteredObj = Object.entries(values).filter(
+      ([, value]) => (value !== undefined && value?.length > 0) || value?.isValid,
+    );
+    const newObj = Object.fromEntries(filteredObj);
+    this.setState({
+      applied: Object.keys(newObj).length
+    })
+    this.setState({
+      isFiltering: Object.keys(newObj).length > 0
+    })
+  };
+
+  closeFilterApplied = () => {
+    this.setState({ applied: 0 });
+    this.setState({
+      isFiltering: false
+    })
+    this.setState({
+      clearForm: true
+    })
+    this.fetchData()
+  }
+
+  needResetFilterForm = () => {
+    this.setState({
+      clearForm: false
+    })
+  }
 
   onAddDoc = (values) => {
     const { documentType, documentName, comments } = values;
@@ -358,12 +392,21 @@ class Documents extends PureComponent {
   };
 
   render() {
-    const { viewDocumentModal, visible, isUnhide, uploadedAttachments, link, fileName } =
-      this.state;
+    const {
+      viewDocumentModal,
+      visible,
+      isUnhide,
+      uploadedAttachments,
+      link,
+      fileName,
+      isFiltering,
+      applied,
+      clearForm,
+    } = this.state;
+
     const {
       documents,
       documentType,
-      // companiesOfUser,
       loadingDocument = false,
       loadingFilterDocument = false,
       loadingSearchDocument = false,
@@ -381,24 +424,14 @@ class Documents extends PureComponent {
       <>
         <DocumentFilter
           onFilter={this.onFilter}
-          // companiesOfUser={companiesOfUser}
           uploadByList={uniqUploadByList}
           documentType={documentType}
+          handleFilterCounts={this.handleFilterCounts}
+          clearForm={clearForm}
+          needResetFilterForm={this.needResetFilterForm}
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...this.props}
         />
-        <div className={styles.btnForm}>
-          <Button className={styles.btnClose} onClick={this.closeFilter}>
-            Close
-          </Button>
-          <Button
-            className={styles.btnApply}
-            form="filter"
-            htmlType="submit"
-            key="submit"
-            // onClick={this.onFilter}
-          >
-            Apply
-          </Button>
-        </div>
       </>
     );
 
@@ -419,6 +452,16 @@ class Documents extends PureComponent {
                 Add Document
               </div>
             )}
+            {applied > 0 ? (
+              <Tag
+                className={styles.tagCountFilterDocument}
+                closable
+                onClose={this.closeFilterApplied}
+                closeIcon={<CloseOutlined />}
+              >
+                {applied} filters applied
+              </Tag>
+            ) : null}
 
             <ModalAddDoc
               visible={visible}
@@ -435,7 +478,7 @@ class Documents extends PureComponent {
             />
             {/* Filter */}
             <div className={styles.filterPopover}>
-              <Popover
+              <FilterPopover
                 placement="bottomLeft"
                 content={filter}
                 title={() => (
@@ -455,11 +498,12 @@ class Documents extends PureComponent {
                 onVisibleChange={this.closeFilter}
                 overlayClassName={styles.FilterPopover}
               >
-                <div className={styles.filterButton} style={{ cursor: 'pointer' }}>
+                {/* <div className={styles.filterButton} style={{ cursor: 'pointer' }}>
                   <FilterIcon />
                   <span className={styles.textButtonFilter}>Filter</span>
-                </div>
-              </Popover>
+                </div> */}
+                <FilterButton fontSize={14} showDot={isFiltering} />
+              </FilterPopover>
             </div>
             {/* Search */}
             <div className={styles.searchInp}>

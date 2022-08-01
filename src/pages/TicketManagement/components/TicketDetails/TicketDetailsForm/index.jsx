@@ -21,12 +21,13 @@ const { Dragger } = Upload;
   ({
     loading,
     ticketManagement: { listEmployee = [], ticketDetail = {} } = {},
-    user: { currentUser: { employee = {}, roles = [] } = {} } = {},
+    user: { currentUser: { employee = {}, roles = [] } = {}, permissions } = {},
   }) => ({
     employee,
     roles,
     listEmployee,
     ticketDetail,
+    permissions,
     loadingUploadAttachment: loading.effects['ticketManagement/uploadFileAttachments'],
     loadingAddChat: loading.effects['ticketManagement/addChat'],
   }),
@@ -203,6 +204,7 @@ class TicketDetailsForm extends Component {
       loadingUploadAttachment = false,
       loadingAddChat = false,
       roles = [],
+      permissions: { viewTicketByAdmin },
     } = this.props;
     const role = this.findRole(roles);
     const {
@@ -218,7 +220,8 @@ class TicketDetailsForm extends Component {
       ccList = [],
       employee_assignee: employeeAssignedTickets = '',
     } = ticketDetail;
-
+    const checkRole = ['MANAGER', 'HR-MANAGER'].includes(role);
+    const checkPermission = viewTicketByAdmin === 1;
     const { fileNameList, value, arrayChats, modalVisible } = this.state;
 
     const getColor = () => {
@@ -294,14 +297,16 @@ class TicketDetailsForm extends Component {
         <div className={styles.formDetails}>
           <div className={styles.formTitle}>
             <span className={styles.title}>Tickets Details</span>
-            <Button
-              className={styles.btnMoveTo}
-              type="primary"
-              shape="round"
-              onClick={() => this.setState({ modalVisible: true })}
-            >
-              Move To
-            </Button>
+            {(checkRole || checkPermission) && (
+              <Button
+                className={styles.btnMoveTo}
+                type="primary"
+                shape="round"
+                onClick={() => this.setState({ modalVisible: true })}
+              >
+                Move To
+              </Button>
+            )}
           </div>
           <div className={styles.formContent}>
             <div className={styles.formContent__container}>

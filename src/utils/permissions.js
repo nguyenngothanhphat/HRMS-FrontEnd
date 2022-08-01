@@ -29,15 +29,6 @@ const isAuthorized = (permissionList, arrTextToCheck) => {
   return response;
 };
 
-const isRole = (permissionList, arrTextToCheck) => {
-  let response = -1;
-  arrTextToCheck.forEach((text) => {
-    const check = permissionList.includes(text.toLowerCase());
-    if (check) response = 1;
-  });
-  return response;
-};
-
 export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   if (isOwner) {
     return {
@@ -292,6 +283,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   // DASHBOARD
   const indexPendingApprovalDashboard = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
+  const indexViewApprovalPage = isAuthorized(permissionList, ['P_APPROVALS_PAGE_VIEW']);
+
   const indexMyTeamDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_TEAM_VIEW']);
   const indexMyAppDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_APPS_VIEW']);
   const indexTimeSheetDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_TIMESHEET_VIEW']);
@@ -354,6 +347,13 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   const indexAdminViewTickets = isAuthorized(permissionList, ['M_ADMIN_VIEW_TICKETS']);
 
+  const indexTicketManagementAssignTicket = isAuthorized(permissionList, [
+    'P_TICKET_MANAGEMENT_ASSIGN_TICKET',
+  ]);
+
+  const indexTicketManagementAppendTicket = isAuthorized(permissionList, [
+    'P_TICKET_MANAGEMENT_APPEND_TICKET',
+  ]);
   // POLICY & REGULATION
   const indexViewAllCountryPolicyAndRegulation = isAuthorized(permissionList, [
     'P_POLICIESREGULATIONS_VIEW_ALL',
@@ -447,6 +447,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewCalendarDashboard: indexCalendarDashboard,
     viewTaskDashboard: indexTaskDashboard,
     viewMyAppDashboard: indexMyAppDashboard,
+    viewApprovalPage: indexViewApprovalPage,
 
     // home page
     viewSettingHomePage: indexSettingHomePage,
@@ -474,6 +475,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewTicketIT: indexTicketManagementITTicketsTab,
     viewTicketOperations: indexTicketManagementOperationsTicketsTab,
     viewTicketByAdmin: indexAdminViewTickets,
+    assignTicket: indexTicketManagementAssignTicket,
+    appendTicket: indexTicketManagementAppendTicket,
 
     // policy and regulation
     viewSettingPolicy: indexSettingViewPolicy,

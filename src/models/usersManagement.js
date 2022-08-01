@@ -37,9 +37,9 @@ const usersManagement = {
     totalInactiveEmploiyee: '',
   },
   effects: {
-    *fetchEmployeesList({ payload = {} }, { call, put }) {
+    *fetchEmployeesList({ payload = {}, params = {} }, { call, put }) {
       try {
-        const response = yield call(getEmployeesList, payload);
+        const response = yield call(getEmployeesList, payload, params);
         const { statusCode, data: listEmployee = [] } = response;
         if (statusCode !== 200) throw response;
 
