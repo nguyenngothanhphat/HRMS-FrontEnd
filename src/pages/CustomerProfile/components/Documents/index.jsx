@@ -509,7 +509,7 @@ class Documents extends PureComponent {
             <div className={styles.searchInp}>
               <Input
                 onChange={(e) => this.delaySearch(e.target.value)}
-                placeholder="Search by name, type and upload by"
+                placeholder="Search by Document Type"
                 prefix={<SearchOutlined />}
               />
             </div>
