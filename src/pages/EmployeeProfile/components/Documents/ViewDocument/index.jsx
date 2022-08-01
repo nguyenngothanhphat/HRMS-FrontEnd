@@ -334,7 +334,7 @@ class ViewDocument extends PureComponent {
             )}
 
             {identifyImageOrPdf(url) !== 0 && !loadingFileDetail && (
-              <object data={url} type="application/pdf">
+              <object width="100%" height="560" data={url} type="application/pdf">
                 <iframe
                   width="100%"
                   height="560"

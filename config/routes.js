@@ -808,27 +808,22 @@ const routes = [
           // customer-management
           {
             path: '/customer-management',
+            redirect: '/customer-management/list',
             name: 'customer-management',
             icon: '/assets/images/menuIcons/customer.svg',
-            // hideInMenu: true,
-            component: './CustomerManagement',
-            authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
           },
           {
             path: '/customer-management/:tabName',
-            hideInMenu: true,
             component: './CustomerManagement',
             authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
           },
           {
-            path: '/customer-management/customers/customer-profile/:reId',
-            hideInMenu: true,
-            name: 'view-customer',
-            component: './CustomerProfile',
-            authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
+            path: '/customer-management/list/customer-profile/:reId',
+            redirect: '/customer-management/list/customer-profile/:reId/contact-info',
           },
           {
-            path: '/customer-management/customers/customer-profile/:reId/:tabName',
+            path: '/customer-management/list/customer-profile/:reId/:tabName',
+            name: 'view-customer',
             hideInMenu: true,
             component: './CustomerProfile',
             authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
@@ -841,6 +836,7 @@ const routes = [
             icon: '/assets/images/menuIcons/project.svg',
             component: './ProjectManagement',
             authority: ['P_PROJECT_MANAGEMENT_VIEW', 'M_PROJECT_MANAGEMENT_VIEW', OWNER],
+            redirect: '/project-management/list',
           },
           {
             path: '/project-management/:tabName',

@@ -1,9 +1,10 @@
 import { Col, Form, Input, Row, Select, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { beforeUpload, compressImage } from '@/utils/upload';
-import upload, { FILE_TYPE } from '@/constants/upload';
 import UploadIcon from '@/assets/upload-icon.svg';
+import CustomBlueButton from '@/components/CustomBlueButton';
+import { FILE_TYPE } from '@/constants/upload';
+import { beforeUpload, compressImage } from '@/utils/upload';
 import styles from './index.less';
 
 // pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -92,10 +93,21 @@ const AddContent = (props) => {
     if (uploadedPreview.includes('application/pdf')) {
       return (
         <div className={styles.fileUploadedContainer}>
-          <object data={uploadedPreview} type="application/pdf">
+          <div style={{ display: 'flex', justifyContent: 'flex-end', paddingBottom: 16 }}>
+            <CustomBlueButton
+              onClick={(e) => {
+                e.stopPropagation();
+                setUploadedFile({});
+                setUploadedPreview('');
+              }}
+            >
+              Remove
+            </CustomBlueButton>
+          </div>
+          <object width="100%" height="400" data={uploadedPreview} type="application/pdf">
             <iframe
               width="100%"
-              height="560"
+              height="100%"
               src={`https://docs.google.com/viewer?url=${uploadedPreview}&embedded=true`}
               title="pdf-viewer"
             />

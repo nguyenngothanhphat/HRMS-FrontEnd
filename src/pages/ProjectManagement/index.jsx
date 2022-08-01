@@ -26,9 +26,6 @@ const ProjectManagement = (props) => {
   const viewProjectSettingPermission = permissions.viewProjectSettingTab !== -1;
 
   useEffect(() => {
-    if (!tabName) {
-      history.replace(`/project-management/list`);
-    }
     goToTop();
   }, []);
 

@@ -3,7 +3,11 @@ import WorkInProgress from '@/components/WorkInProgress';
 
 class Settings extends PureComponent {
   render() {
-    return <WorkInProgress />;
+    return (
+      <div style={{ padding: 24 }}>
+        <WorkInProgress />
+      </div>
+    );
   }
 }
 

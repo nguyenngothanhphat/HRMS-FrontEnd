@@ -191,10 +191,9 @@ const Documents = (props) => {
           </Tag>
         )}
         {allowModify && (
-          <CustomAddButton
-            text="Add new Document"
-            onClick={() => setAddDocumentModalVisible(true)}
-          />
+          <CustomAddButton onClick={() => setAddDocumentModalVisible(true)}>
+            Add new Document
+          </CustomAddButton>
         )}
         <FilterPopover placement="bottomRight" content={content}>
           <CustomOrangeButton showDot={isFiltering} />

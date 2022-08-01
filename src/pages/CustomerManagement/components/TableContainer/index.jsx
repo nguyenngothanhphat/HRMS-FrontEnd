@@ -1,166 +1,102 @@
-import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { Layout, Select, Tabs, Tag } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
+import { Form, Layout, Select, Tabs, Tag } from 'antd';
 import { debounce } from 'lodash';
-import React, { PureComponent } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
-import FilterPopover from '@/components/FilterPopover';
+import CommonModal from '@/components/CommonModal';
+import CustomAddButton from '@/components/CustomAddButton';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterPopover from '@/components/FilterPopover';
+import { getCurrentTenant } from '@/utils/authority';
 import TableCustomers from '../TableCustomers';
-import MenuFilter from './components/MenuFilter';
-import ModalAdd from './components/ModalAdd';
+import ModalAdd from './components/AddModalContent';
+import FilterContent from './components/FilterContent';
 import styles from './index.less';
 
-@connect(
-  ({
-    loading,
-    user: { companiesOfUser = [], currentUser: { employee: { _id = '' } = {} } = {} } = {},
-    customerManagement: { listCustomer = [], companyList = [], filter = {} } = {},
-  }) => ({
-    listCustomer,
-    companyList,
-    companiesOfUser,
-    filter,
-    _id,
-    loadingCustomer: loading.effects['customerManagement/fetchCustomerList'],
-    loadingFilter: loading.effects['customerManagement/filterListCustomer'],
-  }),
-)
-class TableContainer extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      visible: false,
-      isShown: false,
-      applied: 0,
-      arr: [],
-      form: null,
-      isFiltering: false,
-    };
-    this.refForm = React.createRef();
-    this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
-  }
+const { Content } = Layout;
+const { TabPane } = Tabs;
 
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'customerManagement/fetchCustomerList',
-    });
+const TableContainer = (props) => {
+  const [form] = Form.useForm();
+
+  const {
+    dispatch,
+    listCustomer,
+    loadingCustomer,
+    companyList = [],
+    loadingFilter = false,
+    loadingAdd = false,
+  } = props;
+  const [isShown, setIsShown] = useState(false);
+  const [applied, setApplied] = useState(0);
+  const [arr, setArr] = useState([]);
+  const [isFiltering, setIsFiltering] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const [filter, setFilter] = useState({});
+
+  useEffect(() => {
     dispatch({
       type: 'customerManagement/fetchCompanyList',
     });
-  }
 
-  componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'customerManagement/save',
-      payload: {
-        filter: {},
-      },
-    });
-  }
+    return () => {
+      dispatch({
+        type: 'customerManagement/save',
+        payload: {
+          filter: {},
+        },
+      });
+    };
+  }, []);
 
-  // submit filter
-  onFilter = async (values) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'customerManagement/filterListCustomer',
-      payload: {
-        ...values,
-      },
-    });
-    this.handleFilterCount(values);
-    dispatch({
-      type: 'customerManagement/save',
-      payload: { filter: values },
-    });
-  };
-
-  // close popover
-  handleClose = () => {
-    const { visible } = this.state;
-    this.setState({
-      visible: !visible,
-    });
-  };
-
-  // show popover
-  handleVisible = () => {
-    const { visible } = this.state;
-    this.setState({
-      visible: !visible,
-    });
-  };
-
-  // show modal
-  showModal = () => {
-    const { isShown } = this.state;
-    this.setState({
-      isShown: !isShown,
-    });
-  };
-
-  // cancel and reset fill in modal
-  onCloseModal = () => {
-    const { isShown } = this.state;
-    this.setState({
-      isShown: !isShown,
-    });
-  };
-
-  clearFilter = () => {
-    const { dispatch } = this.props;
-    const { form } = this.state;
-    dispatch({
-      type: 'customerManagement/fetchCustomerList',
-    });
-    this.setState({
-      applied: 0,
-      arr: [],
-      isFiltering: false,
-    });
-    form.resetFields();
-  };
-
-  handleFilterCount = (values) => {
-    const { arr } = this.state;
+  const handleFilterCount = (values) => {
     const newObj = Object.assign(arr, values);
     const filteredObj = Object.entries(newObj).filter(
       ([, value]) => value !== undefined && value?.length > 0,
     );
-    this.setState({
-      applied: Object.keys(filteredObj).length,
-      isFiltering: true,
-    });
+    setApplied(Object.keys(filteredObj).length);
+    setIsFiltering(Object.keys(filteredObj).length > 0);
   };
 
-  setForm = (form) => {
-    this.setState({
-      form,
-    });
-  };
-
-  onSearch = (value) => {
-    // const { value = '' } = e.target;
-    // this.handleFilterCount(value);
-    this.onSearchDebounce(value);
-  };
-
-  onSearchDebounce = (value) => {
-    const { dispatch } = this.props;
+  useEffect(() => {
     dispatch({
       type: 'customerManagement/fetchCustomerList',
       payload: {
-        searchKey: value,
+        searchKey: searchValue,
       },
     });
+  }, [searchValue]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'customerManagement/filterListCustomer',
+      payload: {
+        ...filter,
+      },
+    });
+    handleFilterCount(filter);
+  }, [JSON.stringify(filter)]);
+
+  // submit filter
+  const onFilter = async (values) => {
+    setFilter(values);
+  };
+
+  // cancel and reset fill in modal
+  const onCloseModal = () => {
+    setIsShown(false);
+  };
+
+  const clearFilter = () => {
+    setApplied(0);
+    setArr([]);
+    setIsFiltering(false);
+    form.resetFields();
   };
 
   // add new Customer
-  handleAddNew = (values, countryName) => {
-    const { dispatch } = this.props;
+  const handleAddNew = (values, countryName) => {
     const {
       customerID,
       status,
@@ -204,118 +140,115 @@ class TableContainer extends PureComponent {
       dispatch({
         type: 'customerManagement/fetchCustomerList',
       });
-      const { isShown } = this.state;
-      this.setState({
-        isShown: !isShown,
-      });
+      setIsShown(false);
     });
   };
 
-  addZeroToNumber = (number) => {
+  const addZeroToNumber = (number) => {
     if (number < 10 && number >= 0) return `0${number}`.slice(-2);
     return number;
   };
 
-  showDot = (obj) => {
-    return !Object.values(obj).every((o) => {
-      if (Array.isArray(o)) {
-        return o.length === 0;
-      }
-      if (!o) return true;
-      return false;
-    });
+  const tabs = [{ id: 1, name: `Customers (${addZeroToNumber(listCustomer.length)})` }];
+  const listStatus = [
+    <Select.Option key="Engaging">Engaging</Select.Option>,
+    <Select.Option key="Active">Active</Select.Option>,
+    <Select.Option key="Inactive">Inactive</Select.Option>,
+  ];
+
+  const onSearchDebounce = debounce((value) => {
+    setSearchValue(value);
+  }, 1000);
+
+  const onSearch = (e) => {
+    const { value = '' } = e.target;
+    onSearchDebounce(value);
   };
 
-  render() {
-    const { Content } = Layout;
-
-    const { TabPane } = Tabs;
-    const { listCustomer, loadingCustomer, companyList = [], loadingFilter = false } = this.props;
-    const { isShown, applied, isFiltering } = this.state;
-
-    const tabs = [{ id: 1, name: `Customers (${this.addZeroToNumber(listCustomer.length)})` }];
-    const listStatus = [
-      <Select.Option key="Engaging">Engaging</Select.Option>,
-      <Select.Option key="Active">Active</Select.Option>,
-      <Select.Option key="Inactive">Inactive</Select.Option>,
-    ];
-
-    const menu = (
-      <div className={styles.tabExtraContent}>
-        {applied > 0 && (
-          <Tag
-            className={styles.tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined />}
-            onClose={() => {
-              this.clearFilter();
-            }}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
-        <div className={styles.buttonAddImport} onClick={this.showModal}>
-          <PlusOutlined />
-          Add new customer
-        </div>
-        <FilterPopover
-          realTime
-          placement="bottomRight"
-          content={
-            <MenuFilter
-              onSubmit={this.onFilter}
-              listStatus={listStatus}
-              companyList={companyList}
-              onSearch={this.onSearch}
-              setForm={this.setForm}
-            />
-          }
+  const menu = (
+    <div className={styles.tabExtraContent}>
+      {applied > 0 && (
+        <Tag
+          className={styles.tagCountFilter}
+          closable
+          closeIcon={<CloseOutlined />}
+          onClose={() => {
+            clearFilter();
+          }}
         >
-          <CustomOrangeButton fontSize={14} showDot={isFiltering} />
-        </FilterPopover>
+          {applied} filters applied
+        </Tag>
+      )}
 
-        <CustomSearchBox
-          onSearch={(e) => this.onSearchDebounce(e.target.value)}
-          placeholder="Search by Company Name, ID, Account Owner"
-        />
-      </div>
-    );
+      <CustomAddButton onClick={() => setIsShown(true)}>Add new customer</CustomAddButton>
+      <FilterPopover
+        realTime
+        placement="bottomRight"
+        content={
+          <FilterContent onSubmit={onFilter} listStatus={listStatus} companyList={companyList} />
+        }
+      >
+        <CustomOrangeButton fontSize={14} showDot={isFiltering} />
+      </FilterPopover>
 
-    return (
-      <div className={styles.tableContainer}>
-        <div className={styles.tableContent}>
-          <Tabs
-            defaultActiveKey="1"
-            className={styles.tabComponent}
-            onTabClick={this.handleClickTabPane}
-            tabBarExtraContent={menu}
-          >
-            {tabs.map((tab) => (
-              <TabPane tab={tab.name} key={tab.id}>
-                <Layout className={styles.managementLayout}>
-                  <Content className="site-layout-background">
-                    <TableCustomers
-                      listCustomer={listCustomer}
-                      loadingCustomer={loadingCustomer}
-                      loadingFilter={loadingFilter}
-                    />
-                  </Content>
+      <CustomSearchBox
+        onSearch={onSearch}
+        placeholder="Search by Company Name, ID, Account Owner"
+      />
+    </div>
+  );
 
-                  <ModalAdd
+  return (
+    <div className={styles.tableContainer}>
+      <div className={styles.tableContent}>
+        <Tabs defaultActiveKey="1" className={styles.tabComponent} tabBarExtraContent={menu}>
+          {tabs.map((tab) => (
+            <TabPane tab={tab.name} key={tab.id}>
+              <Layout className={styles.managementLayout}>
+                <Content className="site-layout-background">
+                  <TableCustomers
                     listCustomer={listCustomer}
-                    isShown={isShown}
-                    listStatus={listStatus}
-                    handleAddNew={this.handleAddNew}
-                    onCloseModal={this.onCloseModal}
+                    loadingCustomer={loadingCustomer}
+                    loadingFilter={loadingFilter}
                   />
-                </Layout>
-              </TabPane>
-            ))}
-          </Tabs>
-        </div>
+                </Content>
+                <CommonModal
+                  visible={isShown}
+                  title="Add new customer"
+                  onClose={onCloseModal}
+                  loading={loadingAdd}
+                  content={
+                    <ModalAdd
+                      listCustomer={listCustomer}
+                      isShown={isShown}
+                      listStatus={listStatus}
+                      handleAddNew={handleAddNew}
+                      onCloseModal={onCloseModal}
+                    />
+                  }
+                />
+              </Layout>
+            </TabPane>
+          ))}
+        </Tabs>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-export default TableContainer;
+export default connect(
+  ({
+    loading,
+    user: { companiesOfUser = [], currentUser: { employee: { _id = '' } = {} } = {} } = {},
+    customerManagement: { listCustomer = [], companyList = [], filter = {} } = {},
+  }) => ({
+    listCustomer,
+    companyList,
+    companiesOfUser,
+    filter,
+    _id,
+    loadingCustomer: loading.effects['customerManagement/fetchCustomerList'],
+    loadingFilter: loading.effects['customerManagement/filterListCustomer'],
+    loadingAdd: loading.effects['customerManagement/addNewCustomer'],
+  }),
+)(TableContainer);

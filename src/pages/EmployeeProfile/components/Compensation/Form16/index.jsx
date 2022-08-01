@@ -36,7 +36,7 @@ const Form16 = ({ url }) => {
     <div className={styles.Form16}>
       <Card title="Form 16" extra={renderOption()}>
         <div className={styles.viewFile}>
-          <object data={url} type="application/pdf">
+          <object width="100%" height="560" data={url} type="application/pdf">
             <iframe
               width="100%"
               height="560"

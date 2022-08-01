@@ -1,196 +1,181 @@
-import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import styles from '../../index.less';
+import { Col, Row } from 'antd';
+import React from 'react';
+import CustomEditButton from '@/components/CustomEditButton';
+import styles from './index.less';
 
-class DivisionItem extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      visible: false,
-    };
-  }
+const DivisionItem = (props) => {
+  const { item } = props;
 
-  showMoreLess = () => {
-    const { visible } = this.state;
-    this.setState({
-      visible: !visible,
-    });
+  const [visible, setVisible] = React.useState(false);
+
+  const showMoreLess = () => {
+    setVisible(!visible);
   };
 
-  render() {
-    const { visible } = this.state;
-    const { item } = this.props;
-    const {
-      divisionId = '',
-      divisionName = '',
-      primaryPOCName = '',
-      primaryPOCNumber = '',
-      primaryPOCEmail = '',
-      primaryPOCDesignation = '',
-      secondaryPOCName = '',
-      secondaryPOCNumber = '',
-      secondaryPOCEmail = '',
-      secondaryPOCDesignation = '',
-      addressLine1 = '',
-      addressLine2 = '',
-      city = '',
-      state = '',
-      country = '',
-      postalCode = '',
-    } = item;
+  const {
+    divisionId = '',
+    divisionName = '',
+    primaryPOCName = '',
+    primaryPOCNumber = '',
+    primaryPOCEmail = '',
+    primaryPOCDesignation = '',
+    secondaryPOCName = '',
+    secondaryPOCNumber = '',
+    secondaryPOCEmail = '',
+    secondaryPOCDesignation = '',
+    addressLine1 = '',
+    addressLine2 = '',
+    city = '',
+    state = '',
+    country = '',
+    postalCode = '',
+  } = item;
+
+  const items = [
+    {
+      name: 'Division ID',
+      value: divisionId,
+      default: true,
+    },
+    {
+      name: 'Division Name',
+      value: divisionName,
+      default: true,
+    },
+    {
+      name: 'Primary POC Name',
+      value: primaryPOCName,
+      primary: true,
+    },
+    {
+      name: 'Primary POC Ph No.',
+      value: primaryPOCNumber,
+      primary: true,
+    },
+    {
+      name: 'Primary POC Email ID',
+      value: primaryPOCEmail,
+      primary: true,
+    },
+    {
+      name: 'Primary POC Designation',
+      value: primaryPOCDesignation,
+      primary: true,
+    },
+    {
+      name: 'Secondary POC Name',
+      value: secondaryPOCName,
+      secondary: true,
+    },
+    {
+      name: 'Secondary POC Ph No.',
+      value: secondaryPOCNumber,
+      secondary: true,
+    },
+    {
+      name: 'Secondary POC Email ID',
+      value: secondaryPOCEmail,
+      secondary: true,
+    },
+    {
+      name: 'Secondary POC Designation',
+      value: secondaryPOCDesignation,
+      secondary: true,
+    },
+    {
+      name: 'Address Line 1',
+      value: addressLine1,
+      expandable: true,
+    },
+    {
+      name: 'Address Line 2',
+      value: addressLine2,
+      expandable: true,
+    },
+    {
+      name: 'City',
+      value: city,
+      expandable: true,
+    },
+    {
+      name: 'State',
+      value: state,
+      expandable: true,
+    },
+    {
+      name: 'Country',
+      value: country,
+      expandable: true,
+    },
+    {
+      name: 'Zip/Postal Code',
+      value: postalCode,
+      expandable: true,
+    },
+  ];
+
+  const renderCols = (x) => {
     return (
-      <div>
-        <Row className={styles.divisionSecondary}>
-          <Col span={12}>
-            <p className={styles.label}>Division ID:</p>
-          </Col>
-          <Col span={12}>
-            <p className={styles.value}>{divisionId}</p>
-          </Col>
-
-          <Col span={12}>
-            <p className={styles.label}>Division Name:</p>
-          </Col>
-          <Col span={12}>
-            <p className={styles.value}>{divisionName}</p>
-          </Col>
-        </Row>
-        <Row className={styles.divisionPrimary}>
-          <Col span={12}>
-            <p className={styles.label}>Primary POC Name:</p>
-          </Col>
-          <Col span={12}>
-            <p className={styles.value}>{primaryPOCName}</p>
-          </Col>
-
-          <Col span={12}>
-            <p className={styles.label}>Primary POC Ph No.</p>
-          </Col>
-          <Col span={12}>
-            <p className={styles.value}>{primaryPOCNumber}</p>
-          </Col>
-
-          <Col span={12}>
-            <p className={styles.label}>Primary POC Email ID:</p>
-          </Col>
-          <Col span={12}>
-            <p className={styles.value}>{primaryPOCEmail}</p>
-          </Col>
-
-          <Col span={12} style={{ marginBottom: '0' }}>
-            <p className={styles.label} style={{ marginBottom: '0' }}>
-              Primary POC Designation:
-            </p>
-          </Col>
-          <Col span={12} style={{ marginBottom: '0' }}>
-            <p className={styles.value} style={{ marginBottom: '0' }}>
-              {primaryPOCDesignation}
-            </p>
-          </Col>
-        </Row>
-
-        <Row className={styles.divisionPrimary}>
-          <Col span={12}>
-            <p className={styles.label}>Secondary POC Name:</p>
-          </Col>
-          <Col span={12}>
-            <p className={styles.value}>{secondaryPOCName}</p>
-          </Col>
-
-          <Col span={12}>
-            <p className={styles.label}>Secondary POC Ph No.</p>
-          </Col>
-          <Col span={12}>
-            <p className={styles.value}>{secondaryPOCNumber}</p>
-          </Col>
-
-          <Col span={12}>
-            <p className={styles.label}>Secondary POC Email ID:</p>
-          </Col>
-          <Col span={12}>
-            <p className={styles.value}>{secondaryPOCEmail}</p>
-          </Col>
-
-          <Col span={12} style={{ marginBottom: '0' }}>
-            <p className={styles.label} style={{ marginBottom: '0' }}>
-              Secondary POC Designation:
-            </p>
-          </Col>
-          <Col span={12} style={{ marginBottom: '0' }}>
-            <p className={styles.value} style={{ marginBottom: '0' }}>
-              {secondaryPOCDesignation}
-            </p>
-          </Col>
-        </Row>
-
-        <div
-          className={styles.divisionSecondary}
-          style={visible ? { display: 'block' } : { display: 'none' }}
-        >
-          <Row>
-            <Col span={12}>
-              <p className={styles.label}>Address Line 1</p>
-            </Col>
-            <Col span={12} style={{ margin: '0' }}>
-              <p className={styles.value}>{addressLine1}</p>
-            </Col>
-            <Col span={12}>
-              <p className={styles.label}>Address Line 2</p>
-            </Col>
-            <Col span={12}>
-              <p className={styles.value}>{addressLine2}</p>
-            </Col>
-
-            <Col span={12}>
-              <p className={styles.label}>City</p>
-            </Col>
-            <Col span={12}>
-              <p className={styles.value}>{city}</p>
-            </Col>
-
-            <Col span={12}>
-              <p className={styles.label}>State</p>
-            </Col>
-            <Col span={12}>
-              <p className={styles.value}>{state}</p>
-            </Col>
-
-            <Col span={12}>
-              <p className={styles.label}>Country</p>
-            </Col>
-            <Col span={12}>
-              <p className={styles.value}>{country}</p>
-            </Col>
-
-            <Col span={12}>
-              <p className={styles.label}>Zip/Postal Code</p>
-            </Col>
-            <Col span={12}>
-              <p className={styles.value}>{postalCode}</p>
-            </Col>
-          </Row>
-        </div>
-        <div style={{ padding: '32px' }}>
-          {!visible ? (
-            <p
-              style={{ color: '#2C6DF9', fontWeight: '700', cursor: 'pointer' }}
-              onClick={this.showMoreLess}
-            >
-              <PlusOutlined /> View More
-            </p>
-          ) : (
-            <p
-              style={{ color: '#2C6DF9', fontWeight: '700', cursor: 'pointer' }}
-              onClick={this.showMoreLess}
-            >
-              <MinusOutlined /> View less
-            </p>
-          )}
-        </div>
-      </div>
+      <>
+        <Col span={8}>
+          <span className={styles.label}>{x.name}</span>
+        </Col>
+        <Col span={16}>
+          <span className={styles.value}>{x.value}</span>
+        </Col>
+      </>
     );
-  }
-}
+  };
+  return (
+    <div className={styles.DivisionItem}>
+      <Row gutter={[24, 16]}>
+        {items
+          .filter((x) => x.default)
+          .map((x) => {
+            return renderCols(x);
+          })}
+      </Row>
+
+      <div className={styles.hasBackground}>
+        <Row gutter={[24, 16]}>
+          {items
+            .filter((x) => x.primary)
+            .map((x) => {
+              return renderCols(x);
+            })}
+        </Row>
+      </div>
+      <div className={styles.hasBackground}>
+        <Row gutter={[24, 16]}>
+          {items
+            .filter((x) => x.secondary)
+            .map((x) => {
+              return renderCols(x);
+            })}
+        </Row>
+      </div>
+
+      {visible && (
+        <Row gutter={[24, 16]}>
+          {items
+            .filter((x) => x.expandable)
+            .map((x) => {
+              return renderCols(x);
+            })}
+        </Row>
+      )}
+
+      <div style={{ marginInline: -12, marginTop: 12 }}>
+        <CustomEditButton
+          icon={visible ? <MinusOutlined /> : <PlusOutlined />}
+          onClick={showMoreLess}
+        >
+          {visible ? 'View Less' : 'View More'}
+        </CustomEditButton>
+      </div>
+    </div>
+  );
+};
 
 export default DivisionItem;

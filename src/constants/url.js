@@ -119,7 +119,7 @@ export default {
   },
   CUSTOMER_MANAGEMENT: {
     MAIN: '/customer-management',
-    VIEW_CUSTOMER: '/customer-management/customers/customer-profile',
+    VIEW_CUSTOMER: '/customer-management/list/customer-profile',
   },
   PROJECT_MANAGEMENT: {
     MAIN: '/project-management',

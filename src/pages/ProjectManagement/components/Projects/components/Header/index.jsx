@@ -12,6 +12,7 @@ import AddProjectModalContent from '../AddProjectModalContent';
 import FilterPopover from '@/components/FilterPopover';
 import FilterContent from '../FilterContent';
 import styles from './index.less';
+import CustomAddButton from '@/components/CustomAddButton';
 
 const { Option } = Select;
 
@@ -112,12 +113,9 @@ const Header = (props) => {
           </Tag>
         )}
         {addProjectPermission && (
-          <Button
-            onClick={() => setAddProjectModalVisible(true)}
-            icon={<img src={AddIcon} alt="" />}
-          >
+          <CustomAddButton onClick={() => setAddProjectModalVisible(true)}>
             Add new Project
-          </Button>
+          </CustomAddButton>
         )}
 
         <FilterPopover

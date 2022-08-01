@@ -53,7 +53,7 @@ class TableProject extends Component {
   };
 
   viewCustomer = (customerId) => {
-    return `/customer-management/customers/customer-profile/${customerId}`;
+    return `/customer-management/list/customer-profile/${customerId}`;
   };
 
   viewProject = (projectId) => {

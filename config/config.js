@@ -47,4 +47,5 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
+  fastRefresh: {},
 });

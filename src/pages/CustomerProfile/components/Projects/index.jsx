@@ -3,10 +3,10 @@ import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import CommonTable from '@/components/CommonTable';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
-import FilterPopover from '../FilterPopover';
-import SearchBar from '../SearchBar';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterPopover from '@/components/FilterPopover';
 
 const Projects = (props) => {
   const {
@@ -91,7 +91,7 @@ const Projects = (props) => {
           <FilterPopover placement="bottomRight" content={<FilterContent />}>
             <CustomOrangeButton />
           </FilterPopover>
-          <SearchBar placeholder="Search by Project Name" onSearch={onSearch} />
+          <CustomSearchBox placeholder="Search by Project Name" onSearch={onSearch} />
         </div>
       </div>
       <div className={styles.documentBody}>

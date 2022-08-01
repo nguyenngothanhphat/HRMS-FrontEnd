@@ -81,7 +81,7 @@ const PopupCustomer = (props) => {
         <div
           className={styles.popupActions__link}
           onClick={
-            () => history.push(`/customer-management/customers/customer-profile/${customerId}`)
+            () => history.push(`/customer-management/list/customer-profile/${customerId}`)
             // eslint-disable-next-line react/jsx-curly-newline
           }
         >

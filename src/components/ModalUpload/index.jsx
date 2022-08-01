@@ -212,7 +212,7 @@ class ModalUpload extends Component {
           {imageUrl ? (
             <>
               {fileType === PDF_TYPE ? (
-                <object data={imageUrl} type="application/pdf">
+                <object width="100%" height="560" data={imageUrl} type="application/pdf">
                   <iframe
                     width="100%"
                     height="560"

@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Popover, Avatar } from 'antd';
-import { formatMessage, history, connect } from 'umi';
+import { Avatar, Popover } from 'antd';
+import React, { useState } from 'react';
+import { connect, formatMessage, history, Link } from 'umi';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
-import UserProfilePopover from '../UserProfilePopover';
-import DeleteCustomerModalContent from './components/DeleteCustomerModalContent';
 import DeleteIcon from '@/assets/customerManagement/delete.svg';
-import styles from './index.less';
 import CommonModal from '@/components/CommonModal';
+import CommonTable from '@/components/CommonTable';
+import UserProfilePopover from '@/components/UserProfilePopover';
+import { getEmployeeUrl } from '@/utils/directory';
+import DeleteCustomerModalContent from './components/DeleteCustomerModalContent';
+import styles from './index.less';
 
 const TableCustomers = (props) => {
   const {
-    data,
     listCustomer = [],
     loadingCustomer = false,
     loadingFilter = false,
@@ -21,21 +22,16 @@ const TableCustomers = (props) => {
 
   const viewDeleteCustomer = permissions.deleteCustomerManagement !== -1;
 
-  const [pageSelected, setPageSelected] = useState(1);
   const [selectedCustomer, setSelectedCustomer] = useState([]);
   const [isDeleteCustomer, setIsDeleteCustomer] = useState(false);
-  const [pageSize, setPageSize] = useState(10);
-  const setFirstPage = () => {
-    setPageSelected(1);
+
+  const getCustomerUrl = (account) => {
+    return `/customer-management/list/customer-profile/${account}`;
   };
 
-  const handleProfile = (account) => {
-    history.push(`/customer-management/customers/customer-profile/${account}`);
-  };
-
-  const handleViewProject = (record) => {
+  const getCustomerProjectUrl = (record) => {
     const { customerId = '' } = record;
-    history.push(`/customer-management/customers/customer-profile/${customerId}/projects`);
+    return `/customer-management/list/customer-profile/${customerId}/projects`;
   };
 
   const renderCustomerId = (customerId, record) => {
@@ -44,7 +40,13 @@ const TableCustomers = (props) => {
     const popupImg = () => {
       return (
         <div className={styles.popupImg}>
-          <img src={avatar || DefaultAvatar} alt="avatar" />
+          <img
+            src={avatar || DefaultAvatar}
+            alt="avatar"
+            onError={(e) => {
+              e.target.src = DefaultAvatar;
+            }}
+          />
         </div>
       );
     };
@@ -55,7 +57,15 @@ const TableCustomers = (props) => {
           <Avatar
             size="medium"
             style={{ marginRight: '10px' }}
-            src={avatar || DefaultAvatar}
+            src={
+              <img
+                src={avatar || DefaultAvatar}
+                alt=""
+                onError={(e) => {
+                  e.target.src = DefaultAvatar;
+                }}
+              />
+            }
             alt="avatar"
           />
         </Popover>
@@ -69,77 +79,77 @@ const TableCustomers = (props) => {
       {
         title: formatMessage({ id: 'page.customermanagement.customerID' }),
         dataIndex: 'customerId',
-        align: 'center',
+        align: 'left',
         fixed: 'left',
-        width: '15%',
+        // width: '10%',
         render: (customerId, record) => {
           return (
-            <div
-              style={{ fontWeight: '700', color: '#2C6DF9' }}
-              onClick={() => handleProfile(customerId)}
-            >
+            <Link style={{ fontWeight: '700', color: '#2C6DF9' }} to={getCustomerUrl(customerId)}>
               {renderCustomerId(customerId, record)}
-            </div>
+            </Link>
           );
         },
       },
       {
         title: formatMessage({ id: 'page.customermanagement.companyName' }),
         dataIndex: 'legalName',
-        align: 'center',
-        width: '10%',
+        align: 'left',
+        // width: '10%',
         render: (legalName) => <span className={styles.blueText}>{legalName}</span>,
       },
       {
         title: formatMessage({ id: 'page.customermanagement.openLeads' }),
         dataIndex: 'openLeads',
-        width: '10%',
+        // width: '10%',
         align: 'center',
         render: (openLeads) => <span className={styles.blueText}>{openLeads}</span>,
       },
       {
         title: formatMessage({ id: 'page.customermanagement.pendingTickets' }),
         dataIndex: 'pendingTickets',
-        width: '10%',
+        // width: '10%',
         align: 'center',
         render: (pendingTickets) => <span className={styles.blueText}>{pendingTickets}</span>,
       },
       {
         title: formatMessage({ id: 'page.customermanagement.pendingTasks' }),
         dataIndex: 'pendingTasks',
-        width: '10%',
+        // width: '10%',
         align: 'center',
         render: (pendingTasks) => <span className={styles.blueText}>{pendingTasks}</span>,
       },
       {
         title: formatMessage({ id: 'page.customermanagement.activeProjects' }),
         dataIndex: 'activeProject',
-        width: '10%',
+        // width: '10%',
         align: 'center',
         render: (activeProject, record) => (
-          <span className={styles.blueText} onClick={() => handleViewProject(record)}>
+          <Link className={styles.blueText} to={getCustomerProjectUrl(record)}>
             {activeProject}
-          </span>
+          </Link>
         ),
       },
       {
         title: formatMessage({ id: 'page.customermanagement.status' }),
         dataIndex: 'status',
-        align: 'center',
-        width: '10%',
+        align: 'left',
+        // width: '10%',
       },
       {
         title: formatMessage({ id: 'page.customermanagement.accountOwner' }),
         dataIndex: 'accountOwner',
-        align: 'center',
+        align: 'left',
         key: 'legalName',
-        width: '10%',
+        // width: '10%',
         render: (accountOwner = {}) => {
           return (
             <UserProfilePopover data={accountOwner || {}} placement="leftTop">
-              <span className={styles.blueText}>
-                {accountOwner?.generalInfo?.legalName ? accountOwner?.generalInfo?.legalName : ''}
-              </span>
+              <Link
+                to={getEmployeeUrl(accountOwner?.generalInfo?.userId)}
+                className={styles.blueText}
+              >
+                {accountOwner?.generalInfo?.legalName || ''}
+              </Link>
             </UserProfilePopover>
           );
         },
@@ -149,20 +159,18 @@ const TableCustomers = (props) => {
         key: 'action',
         dataIndex: 'action',
         align: 'center',
-        width: '5%',
+        // width: '5%',
         render: (a, record) => {
           return (
             <div className={styles.btnAction}>
-              <Button
-                type="link"
-                shape="circle"
+              <img
+                src={DeleteIcon}
+                alt="delete"
                 onClick={() => {
                   setSelectedCustomer(record);
                   setIsDeleteCustomer(true);
                 }}
-              >
-                <img src={DeleteIcon} alt="delete" />
-              </Button>
+              />
             </div>
           );
         },
@@ -178,11 +186,6 @@ const TableCustomers = (props) => {
     }));
   };
 
-  const onChangePagination = (pageNumber, pageSizeProp) => {
-    setPageSelected(pageNumber);
-    setPageSize(pageSizeProp);
-  };
-
   // refresh list without losing filter, search
   const onRefresh = () => {
     dispatch({
@@ -190,46 +193,13 @@ const TableCustomers = (props) => {
     });
   };
 
-  const scroll = {
-    x: 'max-content',
-    y: 'max-content',
-  };
-
-  const pagination = {
-    position: ['bottomLeft'],
-    total: listCustomer.length,
-    showTotal: (total, range) => (
-      <span>
-        {' '}
-        {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-        <b>
-          {range[0]} - {range[1]}
-        </b>{' '}
-        {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-      </span>
-    ),
-    defaultPageSize: pageSize,
-    showSizeChanger: true,
-    pageSizeOptions: ['10', '25', '50', '100'],
-    pageSize,
-    current: pageSelected,
-    onChange: onChangePagination,
-  };
-
-  useEffect(() => {
-    setFirstPage();
-  }, [data]);
-
   return (
     <div className={styles.tableCustomers}>
-      <Table
-        size="middle"
+      <CommonTable
         loading={loadingCustomer || loadingFilter}
-        pagination={pagination}
         columns={generateColumns()}
-        dataSource={listCustomer}
-        scroll={scroll}
-        rowKey={(record) => record._id}
+        list={listCustomer}
+        rowKey="_id"
       />
       <CommonModal
         visible={isDeleteCustomer}

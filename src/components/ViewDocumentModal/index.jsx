@@ -5,10 +5,12 @@ import axios from 'axios';
 import React, { PureComponent } from 'react';
 import ReactToPrint from 'react-to-print';
 import { connect } from 'umi';
-import { getCountryId } from '@/utils/utils';
-import PrintIcon from '@/assets/printIconTimeOff.svg';
-import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
 import CloseIcon from '@/assets/closeIconTimeOff.svg';
+import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
+import PrintIcon from '@/assets/printIconTimeOff.svg';
+import { FILE_TYPE } from '@/constants/upload';
+import { identifyFile } from '@/utils/upload';
+import { getCountryId } from '@/utils/utils';
 import styles from './index.less';
 
 class ViewDocumentModal extends PureComponent {
@@ -21,7 +23,7 @@ class ViewDocumentModal extends PureComponent {
     }
   };
 
-  onDownload = (url) => {
+  onDownload = (url = '') => {
     const fileName = url.split('/').pop();
     message.loading('Downloading file. Please wait...');
     axios({
@@ -42,23 +44,6 @@ class ViewDocumentModal extends PureComponent {
   onPrint = (url) => {
     // event.preventDefault();
     window.open(url, 'PRINT');
-  };
-
-  identifyImageOrPdf = (fileName) => {
-    const parts = fileName.split('.');
-    const ext = parts[parts.length - 1];
-    switch (ext.toLowerCase()) {
-      case 'jpg':
-      case 'jpeg':
-      case 'gif':
-      case 'bmp':
-      case 'png':
-        return 0;
-      case 'pdf':
-        return 1;
-      default:
-        return 0;
-    }
   };
 
   renderLoading = () => {
@@ -103,7 +88,7 @@ class ViewDocumentModal extends PureComponent {
     return (
       <>
         <p className={styles.fileName}>{fileName}</p>
-        <object data={url} type="application/pdf">
+        <object width="100%" height="100%" data={url} type="application/pdf">
           <iframe
             width="100%"
             height="560"
@@ -153,14 +138,14 @@ class ViewDocumentModal extends PureComponent {
   render() {
     const { visible, onClose = () => {}, url = '', disableDownload = false } = this.props;
 
-    const viewType = this.identifyImageOrPdf(url); // 0: images, 1: pdf
+    const viewType = identifyFile(url); // 0: images, 1: pdf
 
     return (
       <Modal
         className={styles.ViewDocumentModal}
         destroyOnClose
         // eslint-disable-next-line no-nested-ternary
-        width={viewType === 0 ? 500 : 900}
+        width={viewType === FILE_TYPE.IMAGE ? 500 : 900}
         visible={visible}
         footer={null}
         onCancel={() => onClose(false)}
@@ -173,10 +158,10 @@ class ViewDocumentModal extends PureComponent {
           onContextMenu={disableDownload ? (e) => e.preventDefault() : null}
         >
           <div className={viewType === 0 ? styles.contentViewImage : styles.contentViewPDF}>
-            {viewType === 0 && this._renderViewImage()}
-            {viewType === 1 && this._renderViewPDF()}
+            {viewType === FILE_TYPE.IMAGE && this._renderViewImage()}
+            {viewType === FILE_TYPE.PDF && this._renderViewPDF()}
           </div>
-          {viewType === 1 && this._renderStickyFooter()}
+          {this._renderStickyFooter()}
         </div>
       </Modal>
     );

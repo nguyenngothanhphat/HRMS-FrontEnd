@@ -1,21 +1,19 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { Input, Popover, Table } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { connect, formatMessage, history } from 'umi';
-import { removeEmptyFields } from '@/utils/utils';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
-import filterIcon from '@/assets/offboarding-filter.svg';
-import closeIcon from '@/assets/closeIcon.svg';
-import Filter from './components/Filter';
-import styles from './index.less';
+import { connect, history } from 'umi';
 import CommonTable from '@/components/CommonTable';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterPopover from '@/components/FilterPopover';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
+import { removeEmptyFields } from '@/utils/utils';
+import FilterContent from './components/FilterContent';
+import styles from './index.less';
 
 const NewJoinees = (props) => {
   const {
     loadingTable,
     listNewComer,
-    totalComer,
     dispatch,
     companyLocationList,
     companiesOfUser,
@@ -25,9 +23,6 @@ const NewJoinees = (props) => {
   const { listCountry = [] } = filterList;
 
   const [keySearch, setKeySearch] = useState('');
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [visiblePopover, setVisiblePopover] = useState(false);
   const [filter, setFilter] = useState({
     fromDate: '',
     toDate: '',
@@ -134,7 +129,6 @@ const NewJoinees = (props) => {
 
   const onChangeKeySearch = (e) => {
     setKeySearch(e.target.value);
-    setPage(1);
     setIsSearch(true);
   };
 
@@ -206,23 +200,7 @@ const NewJoinees = (props) => {
     },
   ];
 
-  const renderTitle = () => {
-    return (
-      <div className={styles.title}>
-        <div className={styles.title__text}>Filter</div>
-        <img
-          alt="close"
-          src={closeIcon}
-          onClick={() => {
-            setVisiblePopover(false);
-          }}
-        />
-      </div>
-    );
-  };
-
   const onApply = (res) => {
-    setVisiblePopover(!visiblePopover);
     setFilter(res);
     setIsSearch(true);
   };
@@ -231,26 +209,10 @@ const NewJoinees = (props) => {
     <div className={styles.approvalPage}>
       <div className={styles.approvalPage__table}>
         <div className={styles.searchFilter}>
-          <Popover
-            content={<Filter onApply={onApply} />}
-            title={renderTitle}
-            trigger="click"
-            placement="bottomRight"
-            visible={visiblePopover}
-            onVisibleChange={() => setVisiblePopover(!visiblePopover)}
-            overlayClassName={styles.filterPopover}
-          >
-            <img src={filterIcon} alt="" className={styles.searchFilter__icon} />
-          </Popover>
-          <Input
-            size="large"
-            placeholder="Search by Name"
-            onChange={onChangeKeySearch}
-            prefix={<SearchOutlined />}
-            value={keySearch}
-            // onPressEnter={(e) => console.log('e', e.target.value)}
-            className={styles.searchFilter__input}
-          />
+          <FilterPopover content={<FilterContent onApply={onApply} />} placement="bottomRight">
+            <CustomOrangeButton>Filter</CustomOrangeButton>
+          </FilterPopover>
+          <CustomSearchBox onChange={onChangeKeySearch} placeholder="Search by Name" />
         </div>
         <div className={styles.table}>
           <CommonTable

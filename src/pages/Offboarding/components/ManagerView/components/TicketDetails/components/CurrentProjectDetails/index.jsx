@@ -41,7 +41,7 @@ const CurrentProjectDetails = ({
       dataIndex: 'project',
       key: 'customerName',
       render: (project = {}) => (
-        <Link to={`/customer-management/customers/customer-profile/${project.customerId}`}>
+        <Link to={`/customer-management/list/customer-profile/${project.customerId}`}>
           {project?.customerName}
         </Link>
       ),

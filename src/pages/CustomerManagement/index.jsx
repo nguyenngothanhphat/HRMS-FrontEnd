@@ -1,12 +1,13 @@
-import { DownloadOutlined } from '@ant-design/icons';
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
-import { exportRawDataToCSV } from '@/utils/exportToCsv';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import { PageContainer } from '@/layouts/layout/src';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
 import Settings from './components/Settings';
 import TableContainer from './components/TableContainer';
-import style from './index.less';
+import DownloadIcon from '@/assets/timeSheet/download.svg';
+import styles from './index.less';
 
 @connect(
   ({ customerManagement: { customerListPayload = {}, customerFilterListPayload = {} } = {} }) => ({
@@ -15,16 +16,6 @@ import style from './index.less';
   }),
 )
 class CustomerManagement extends PureComponent {
-  componentDidMount() {
-    const {
-      match: { params: { tabName = '' } = {} },
-      // dispatch,
-    } = this.props;
-    if (!tabName) {
-      history.replace('/customer-management/customers');
-    }
-  }
-
   exportCustomers = async () => {
     const { dispatch, customerListPayload = {}, customerFilterListPayload = {} } = this.props;
 
@@ -50,33 +41,21 @@ class CustomerManagement extends PureComponent {
     if (!tabName) return '';
     return (
       <PageContainer>
-        <div className={style.CustomerManagement}>
+        <div className={styles.CustomerManagement}>
           <Tabs
-            activeKey={tabName || 'customers'}
+            activeKey={tabName || 'list'}
             onChange={(key) => {
               history.push(`/customer-management/${key}`);
             }}
             tabBarExtraContent={
-              <>
-                <p
-                  style={{
-                    marginBottom: '0',
-                    marginRight: '32px',
-                    color: '#ffa100',
-                    fontWeight: '700',
-                    cursor: 'pointer',
-                  }}
-                  onClick={this.exportCustomers}
-                >
-                  <DownloadOutlined /> Export
-                </p>
-              </>
+              <div className={styles.options}>
+                <CustomOrangeButton onClick={this.exportCustomers} icon={DownloadIcon}>
+                  Export
+                </CustomOrangeButton>
+              </div>
             }
           >
-            <TabPane
-              tab={formatMessage({ id: 'page.customermanagement.customerTab' })}
-              key="customers"
-            >
+            <TabPane tab={formatMessage({ id: 'page.customermanagement.customerTab' })} key="list">
               <TableContainer />
             </TabPane>
             <TabPane

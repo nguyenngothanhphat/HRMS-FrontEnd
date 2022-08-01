@@ -61,7 +61,9 @@ const Planning = (props) => {
 
   const renderDataCard = () => {
     const operations = (
-      <CustomAddButton text="Add Milestone" onClick={() => setAddMilestoneModalVisible(true)} />
+      <CustomAddButton onClick={() => setAddMilestoneModalVisible(true)}>
+        Add Milestone
+      </CustomAddButton>
     );
 
     return (

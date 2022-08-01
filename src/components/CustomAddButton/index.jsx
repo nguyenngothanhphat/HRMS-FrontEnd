@@ -4,7 +4,7 @@ import AddIcon from '@/assets/projectManagement/add.svg';
 import styles from './index.less';
 
 const CustomAddButton = (props) => {
-  const { text = 'Add', onClick = () => {}, icon = '' } = props;
+  const { children = 'Add', onClick = () => {}, icon = '' } = props;
 
   return (
     <Button
@@ -12,7 +12,7 @@ const CustomAddButton = (props) => {
       icon={<img src={icon || AddIcon} alt="" />}
       className={styles.CustomAddButton}
     >
-      {text}
+      {children}
     </Button>
   );
 };

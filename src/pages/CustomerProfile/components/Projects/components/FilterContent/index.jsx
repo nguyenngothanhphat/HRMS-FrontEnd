@@ -37,7 +37,7 @@ const FilterContent = (props) => {
     });
   };
 
-  const onFinish = (values) => {
+  const onValuesChange = (values) => {
     const newValues = { ...values };
 
     // remove empty fields
@@ -60,7 +60,12 @@ const FilterContent = (props) => {
   }, []);
 
   return (
-    <Form layout="vertical" name="filter" onFinish={onFinish} className={styles.FilterContent}>
+    <Form
+      layout="vertical"
+      name="filter"
+      onValuesChange={onValuesChange}
+      className={styles.FilterContent}
+    >
       <Form.Item label="By PROJECT NAME" name="projectName">
         <Select
           allowClear
