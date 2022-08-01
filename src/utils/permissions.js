@@ -292,6 +292,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   // DASHBOARD
   const indexPendingApprovalDashboard = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
+  const indexViewApprovalPage = isAuthorized(permissionList, ['P_APPROVALS_PAGE_VIEW']);
+
   const indexMyTeamDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_TEAM_VIEW']);
   const indexMyAppDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_APPS_VIEW']);
   const indexTimeSheetDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_TIMESHEET_VIEW']);
@@ -445,6 +447,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewCalendarDashboard: indexCalendarDashboard,
     viewTaskDashboard: indexTaskDashboard,
     viewMyAppDashboard: indexMyAppDashboard,
+    viewApprovalPage: indexViewApprovalPage,
 
     // home page
     viewSettingHomePage: indexSettingHomePage,
