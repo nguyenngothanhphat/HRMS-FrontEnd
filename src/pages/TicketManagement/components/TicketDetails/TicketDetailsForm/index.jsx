@@ -1,9 +1,9 @@
-import { Avatar, Button, Col, Input, Row, Spin, Timeline, Tooltip, Upload } from 'antd';
+import { Avatar, Button, Card, Col, Input, Row, Spin, Tag, Timeline, Tooltip, Upload } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import React, { Component } from 'react';
-import { connect } from 'umi';
-import AttachmenUploadtIcon from '@/assets/attach-upload.svg';
+import React, { Component, useEffect } from 'react';
+import { connect, Link } from 'umi';
+import AttachmenUploadIcon from '@/assets/attach-upload.svg';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';
@@ -14,66 +14,65 @@ import { FILE_TYPE } from '@/constants/upload';
 import { beforeUpload, compressImage, identifyFile } from '@/utils/upload';
 import AssignTeamModal from '../../AssignTeamModal';
 import styles from './index.less';
+import { PRIORITY_COLOR } from '@/constants/ticketManagement';
+import { getEmployeeUrl } from '@/utils/directory';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomBlueButton from '@/components/CustomBlueButton';
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
-@connect(
-  ({
-    loading,
-    ticketManagement: { listEmployee = [], ticketDetail = {} } = {},
-    user: { currentUser: { employee = {}, roles = [] } = {} } = {},
-  }) => ({
-    employee,
-    roles,
-    listEmployee,
-    ticketDetail,
-    loadingUploadAttachment: loading.effects['ticketManagement/uploadFileAttachments'],
-    loadingAddChat: loading.effects['ticketManagement/addChat'],
-  }),
-)
-class TicketDetailsForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: '',
-      uploadedFileList: [],
-      fileNameList: [],
-      arrayChats: [],
-      modalVisible: false,
-    };
-  }
 
-  componentDidMount() {
-    const { ticketDetail: { chats = [] } = {} } = this.props;
-    this.setState({
-      arrayChats: chats.reverse(),
-    });
-  }
+const TicketDetailsForm = (props) => {
+  const {
+    ticketDetail = {},
+    loadingUploadAttachment = false,
+    loadingAddChat = false,
+    roles = [],
+  } = props;
 
-  findRole = (roles) => {
+  const {
+    id = '',
+    priority = '',
+    description = '',
+    subject = '',
+    created_at: requestDate = '',
+    query_type: queryType = '',
+    attachments = [],
+    chats = [],
+    employeeRaise = [],
+    ccList = [],
+    employee_assignee: employeeAssignedTickets = '',
+  } = ticketDetail;
+
+  const [value, setValue] = React.useState('');
+  const [uploadedFileList, setUploadedFileList] = React.useState([]);
+  const [fileNameList, setFileNameList] = React.useState([]);
+  const [arrayChats, setArrayChats] = React.useState([]);
+  const [modalVisible, setModalVisible] = React.useState(false);
+
+  useEffect(() => {
+    setArrayChats(chats.reverse());
+  }, [chats]);
+
+  const findRole = () => {
     const manager = roles.find((item) => item === 'MANAGER');
     const hrManager = roles.find((item) => item === 'HR-MANAGER');
     const role = hrManager || manager || 'EMPLOYEE';
     return role;
   };
 
-  onChange = ({ target: { value } }) => {
-    this.setState({ value });
+  const onChange = (e) => {
+    setValue(e.target.value);
   };
 
-  handlePreview = (nameFile, idFile) => {
-    const { fileNameList } = this.state;
+  const handlePreview = (nameFile, idFile) => {
     const arrFileName = [...fileNameList];
     arrFileName.push({ nameFile, idFile });
-
-    this.setState({
-      fileNameList: arrFileName,
-    });
+    setFileNameList(arrFileName);
   };
 
-  handleUpload = async (file) => {
-    const { dispatch } = this.props;
-    const { uploadedFileList } = this.state;
+  const handleUpload = async (file) => {
+    const { dispatch } = props;
     const arrFile = [...uploadedFileList];
     const compressedFile = await compressImage(file);
     const formData = new FormData();
@@ -86,32 +85,28 @@ class TicketDetailsForm extends Component {
       const { data = [] } = resp;
       const fileUploaded = data.length > 0 ? data[0] : {};
       arrFile.push(fileUploaded);
-      const { name = '', id } = fileUploaded;
-
-      this.setState({ uploadedFileList: arrFile });
-      this.handlePreview(name, id);
+      const { name = '', id: idTemp } = fileUploaded;
+      setUploadedFileList(arrFile);
+      handlePreview(name, idTemp);
     });
   };
 
-  handleRemove = (idFile) => {
-    const { uploadedFileList = [], fileNameList = [] } = this.state;
+  const handleRemove = (idFile) => {
     const filterUploadedFile = uploadedFileList.filter((item) => item.id !== idFile);
     const filterFileName = fileNameList.filter((item) => item.idFile !== idFile);
-
-    this.setState({ uploadedFileList: filterUploadedFile, fileNameList: filterFileName });
+    setUploadedFileList(filterUploadedFile);
+    setFileNameList(filterFileName);
   };
 
-  handleSubmit = () => {
-    const { dispatch, ticketDetail: { id: idTicket = '' } = {}, employee } = this.props;
+  const handleSubmit = () => {
+    const { dispatch, ticketDetail: { id: idTicket = '' } = {}, employee } = props;
     const { _id = '' } = employee;
-    const { value, uploadedFileList } = this.state;
-    const requestDate = moment();
+    const createdAt = moment();
     const documents = uploadedFileList?.map((item) => {
-      const { id = '', url = '', name = '' } = item;
       return {
-        attachment: id,
-        attachmentName: name,
-        attachmentUrl: url,
+        attachment: item.id,
+        attachmentName: item.name,
+        attachmentUrl: item.url,
       };
     });
 
@@ -123,7 +118,7 @@ class TicketDetailsForm extends Component {
             employee: _id,
             message: value,
             attachments: documents,
-            createdAt: requestDate,
+            createdAt,
           },
         };
 
@@ -133,7 +128,9 @@ class TicketDetailsForm extends Component {
         }).then((response) => {
           const { statusCode } = response;
           if (statusCode === 200) {
-            this.setState({ uploadedFileList: [], fileNameList: [], value: '' });
+            setUploadedFileList([]);
+            setValue('');
+            setFileNameList([]);
           }
         });
       } else {
@@ -151,231 +148,176 @@ class TicketDetailsForm extends Component {
         }).then((response) => {
           const { statusCode } = response;
           if (statusCode === 200) {
-            this.setState({ value: '' });
+            setValue('');
           }
         });
       }
     }
   };
 
-  render() {
-    const {
-      ticketDetail = {},
-      loadingUploadAttachment = false,
-      loadingAddChat = false,
-      roles = [],
-    } = this.props;
-    const role = this.findRole(roles);
-    const {
-      id = '',
-      priority = '',
-      description = '',
-      subject = '',
-      created_at: requestDate = '',
-      query_type: queryType = '',
-      attachments = [],
-      chats = [],
-      employeeRaise = [],
-      ccList = [],
-      employee_assignee: employeeAssignedTickets = '',
-    } = ticketDetail;
+  const role = findRole(roles);
 
-    const { fileNameList, value, arrayChats, modalVisible } = this.state;
-
-    const getColor = () => {
-      switch (priority) {
-        case 'High':
-          return '#ffb6b6';
-        case 'Normal':
-          return '#eefffb';
-        case 'Low':
-          return '#ffe9c5';
-        case 'Urgent':
-          return '#FF8484';
-        default:
-          return '#ffffff';
-      }
-    };
-
-    const avatarTicket = () => {
-      return ccList.map((val) => {
-        const { generalInfo: { avatar = '', legalName = '' } = {} } = val;
-        if (avatar !== '') {
-          return (
-            <Tooltip placement="top" title={legalName}>
-              <Avatar src={avatar} />
-            </Tooltip>
-          );
-        }
+  const avatarTicket = () => {
+    return ccList.map((val) => {
+      const { generalInfo: { avatar = '', legalName = '' } = {} } = val;
+      if (avatar !== '') {
         return (
           <Tooltip placement="top" title={legalName}>
-            <Avatar size={30} src={DefaultAvatar} />
+            <Avatar src={avatar} />
           </Tooltip>
         );
+      }
+      return (
+        <Tooltip placement="top" title={legalName}>
+          <Avatar size={30} src={DefaultAvatar} />
+        </Tooltip>
+      );
+    });
+  };
+
+  const getOpenBy = () => {
+    if ((employeeRaise || []).length > 0) {
+      return (
+        <Link to={getEmployeeUrl(employeeRaise[0]?.generalInfo?.userId)}>
+          {employeeRaise[0].generalInfo.legalName}
+        </Link>
+      );
+    }
+    return '';
+  };
+
+  const getAttachmentChat = (val) => {
+    if (!isEmpty(val)) {
+      return val.map((e) => {
+        const attachmentSlice = () => {
+          if (e.attachmentName.length > 35) {
+            return `${e.attachmentName.substr(0, 8)}...${e.attachmentName.substr(
+              e.attachmentName.length - 6,
+              e.attachmentName.length,
+            )}`;
+          }
+          return e.attachmentName;
+        };
+        return (
+          <div className={styles.attachments__file}>
+            <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
+            <a href={e.attachmentUrl} target="_blank" rel="noreferrer">
+              {attachmentSlice()}
+            </a>
+          </div>
+        );
       });
-    };
+    }
+    return '';
+  };
 
-    const getOpenBy = () => {
-      if (employeeRaise) {
-        if (employeeRaise.length > 0) {
-          const { generalInfo: { legalName = '' } = {} } = employeeRaise[0];
-          return legalName;
+  return (
+    <div className={styles.TicketDetails}>
+      <Card
+        title="Ticket Details"
+        extra={
+          <CustomBlueButton onClick={() => setModalVisible(true)} disabled={loadingAddChat}>
+            Move To
+          </CustomBlueButton>
         }
-      }
-      return '';
-    };
+      >
+        <div className={styles.formContent}>
+          <Row gutter={[24, 16]} className={styles.information}>
+            <Col span={8} className={styles.formContent__title}>
+              Ticket ID: <span className={styles.formContent__title__color}>{id}</span>
+            </Col>
+            <Col span={8} className={styles.formContent__title}>
+              Request Date: <span>{moment(requestDate).format(DATE_FORMAT_MDY)}</span>
+            </Col>
+            <Col span={8} className={styles.formContent__title}>
+              Opened by: <span>{getOpenBy()}</span>
+            </Col>
 
-    const getAttachmentChat = (val) => {
-      if (!isEmpty(val)) {
-        return val.map((e) => {
-          const attachmentSlice = () => {
-            if (e.attachmentName.length > 35) {
-              return `${e.attachmentName.substr(0, 8)}...${e.attachmentName.substr(
-                e.attachmentName.length - 6,
-                e.attachmentName.length,
-              )}`;
-            }
-            return e.attachmentName;
-          };
-          return (
-            <div className={styles.attachments__file}>
-              <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
-              <a href={e.attachmentUrl} target="_blank" rel="noreferrer">
-                {attachmentSlice()}
-              </a>
-            </div>
-          );
-        });
-      }
-      return '';
-    };
+            <Col span={8} className={styles.formContent__title}>
+              Query Type: <span>{queryType}</span>
+            </Col>
+            <Col span={8} className={styles.formContent__priority}>
+              Priority:
+              <Tag color={PRIORITY_COLOR[priority]}>{priority}</Tag>
+            </Col>
+            <Col span={8} className={styles.formContent__title}>
+              Subject: <span>{subject}</span>
+            </Col>
 
-    return (
-      <div className={styles.TicketDetails}>
-        <div className={styles.formDetails}>
-          <div className={styles.formTitle}>
-            <span className={styles.title}>Tickets Details</span>
-            <Button
-              className={styles.btnMoveTo}
-              type="primary"
-              shape="round"
-              onClick={() => this.setState({ modalVisible: true })}
-            >
-              Move To
-            </Button>
-          </div>
-          <div className={styles.formContent}>
-            <div className={styles.formContent__container}>
-              <Row>
-                <Col span={8} className={styles.formContent__title}>
-                  Ticket ID: <span className={styles.formContent__title__color}>{id}</span>
-                </Col>
-                <Col span={8} className={styles.formContent__title}>
-                  Request Date: <span>{moment(requestDate).format(DATE_FORMAT_MDY)}</span>
-                </Col>
-                <Col span={8} className={styles.formContent__title}>
-                  Opened by: <span>{getOpenBy()}</span>
-                </Col>
-              </Row>
-              <Row>
-                <Col span={8} className={styles.formContent__title}>
-                  Query Type: <span>{queryType}</span>
-                </Col>
-                <Col span={8} className={styles.formContent__priority}>
-                  Priority:
-                  <span className={styles.priority} style={{ background: getColor() }}>
-                    {priority}
-                  </span>
-                </Col>
-                <Col span={8} className={styles.formContent__title}>
-                  Subject: <span>{subject}</span>
-                </Col>
-              </Row>
-              <Row>
-                <Col span={8} className={styles.formContent__titleQC}>
-                  CC:
-                  <span>
-                    {!isEmpty(ccList) ? (
-                      <Avatar.Group
-                        maxCount={2}
-                        maxStyle={{
-                          color: '#f56a00',
-                          backgroundColor: '#fde3cf',
-                        }}
-                      >
-                        {avatarTicket()}
-                      </Avatar.Group>
-                    ) : (
-                      ''
-                    )}
-                  </span>
-                </Col>
+            <Col span={8} className={styles.formContent__titleQC}>
+              CC:
+              <span>
+                {!isEmpty(ccList) ? (
+                  <Avatar.Group
+                    maxCount={2}
+                    maxStyle={{
+                      color: '#f56a00',
+                      backgroundColor: '#fde3cf',
+                    }}
+                  >
+                    {avatarTicket()}
+                  </Avatar.Group>
+                ) : (
+                  ''
+                )}
+              </span>
+            </Col>
 
-                <Col span={16} className={styles.formContent__attachments}>
-                  Attachments:
-                  <div className={styles.attachments}>
-                    {!isEmpty(attachments) ? (
-                      attachments.map((val) => {
-                        const attachmentSlice = () => {
-                          if (val.attachmentName) {
-                            if (val.attachmentName.length > 35) {
-                              return `${val.attachmentName.substr(
-                                0,
-                                8,
-                              )}...${val.attachmentName.substr(
-                                val.attachmentName.length - 6,
-                                val.attachmentName.length,
-                              )}`;
-                            }
-                            return val.attachmentName;
-                          }
-                          return '';
-                        };
+            <Col span={16} className={styles.formContent__attachments}>
+              Attachments:
+              <div className={styles.attachments}>
+                {!isEmpty(attachments) ? (
+                  attachments.map((val) => {
+                    const attachmentSlice = () => {
+                      if (val.attachmentName) {
+                        if (val.attachmentName.length > 35) {
+                          return `${val.attachmentName.substr(0, 8)}...${val.attachmentName.substr(
+                            val.attachmentName.length - 6,
+                            val.attachmentName.length,
+                          )}`;
+                        }
+                        return val.attachmentName;
+                      }
+                      return '';
+                    };
 
-                        return (
-                          <div className={styles.attachments__file}>
-                            <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
-                              {attachmentSlice()}
-                            </a>
-                            <img
-                              className={styles.attachments__file__img}
-                              src={PDFIcon}
-                              alt="pdf"
-                            />
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <span style={{ paddingLeft: '8px' }}> _ </span>
-                    )}
-                  </div>
-                </Col>
-              </Row>
-              <Row>
-                <Col span={24} className={styles.formContent__title}>
-                  Description:
-                </Col>
-              </Row>
-              <Row>
-                <Col span={16}>{description}</Col>
-              </Row>
-            </div>
-          </div>
+                    return (
+                      <div className={styles.attachments__file}>
+                        <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
+                          {attachmentSlice()}
+                        </a>
+                        <img className={styles.attachments__file__img} src={PDFIcon} alt="pdf" />
+                      </div>
+                    );
+                  })
+                ) : (
+                  <span style={{ paddingLeft: '8px' }}> _ </span>
+                )}
+              </div>
+            </Col>
+
+            <Col span={24} className={styles.formContent__title}>
+              Description:
+            </Col>
+
+            <Col span={16}>{description}</Col>
+          </Row>
+
           <div className={styles.note}>
             <div className={styles.note__title}>Notes</div>
             <div className={styles.note__textareaContent}>
               <TextArea
                 value={value}
-                onChange={this.onChange}
+                onChange={onChange}
                 placeholder="Type your message here..."
-                autoSize={{ minRows: 6, maxRows: 8 }}
+                autoSize={{ minRows: 3, maxRows: 6 }}
                 className={styles.note__textarea}
               />
               <Col xs={24} className={styles.btnAttach}>
                 <Dragger
                   beforeUpload={(file) => beforeUpload(file, [FILE_TYPE.IMAGE, FILE_TYPE.PDF], 2)}
                   showUploadList={false}
-                  action={(file) => this.handleUpload(file)}
+                  action={(file) => handleUpload(file)}
                   multiple
                 >
                   {isEmpty(fileNameList) ? (
@@ -402,7 +344,7 @@ class TicketDetailsForm extends Component {
                       <div className={styles.fileUploadedContainer__listFiles__files}>
                         <div className={styles.previewIcon}>
                           {identifyFile(item.nameFile) === FILE_TYPE.PDF ? (
-                            <img src={AttachmenUploadtIcon} alt="pdf" />
+                            <img src={AttachmenUploadIcon} alt="pdf" />
                           ) : (
                             <img src={ImageIcon} alt="img" />
                           )}
@@ -420,7 +362,7 @@ class TicketDetailsForm extends Component {
                       </div>
                       <Tooltip title="Remove">
                         <img
-                          onClick={() => this.handleRemove(item.idFile)}
+                          onClick={() => handleRemove(item.idFile)}
                           className={styles.trashIcon}
                           src={TrashIcon}
                           alt="remove"
@@ -432,73 +374,91 @@ class TicketDetailsForm extends Component {
               </Col>
             </div>
           </div>
-          <div
-            className={`${
-              !isEmpty(chats) ? styles.container__btnSend : styles.container__margin__btnSend
-            }`}
-          >
-            <Button
-              htmlType="submit"
-              loading={loadingAddChat}
-              className={`${value === '' ? styles.btnSend__disable : styles.btnSend}`}
-              onClick={this.handleSubmit}
-              disabled={loadingAddChat}
-            >
-              Send
-            </Button>
-          </div>
-          <div className={styles.timeline}>
-            <Row>
-              <Col span={24}>
-                <Timeline mode="alternate">
-                  {arrayChats.map((item) => {
-                    const {
-                      employee: { generalInfo: { avatar = '' } = {}, id: employeeChatID = '' } = {},
-                    } = item;
+          <div className={styles.tree}>
+            <div className={styles.btnSend}>
+              <CustomPrimaryButton
+                htmlType="submit"
+                loading={loadingAddChat}
+                onClick={handleSubmit}
+                backgroundColor="#2c6df9"
+                disabled={loadingAddChat}
+              >
+                Send
+              </CustomPrimaryButton>
+            </div>
+            <div className={styles.timeline}>
+              <Row>
+                <Col span={24}>
+                  <Timeline mode="alternate">
+                    {arrayChats.map((item) => {
+                      const {
+                        employee: {
+                          generalInfo: { avatar = '' } = {},
+                          id: employeeChatID = '',
+                        } = {},
+                      } = item;
 
-                    return (
-                      <Timeline.Item
-                        position={employeeChatID === employeeAssignedTickets ? 'right' : 'left'}
-                        dot={
-                          avatar !== '' ? (
-                            <Avatar size={40} className={styles.avatar} src={avatar} />
-                          ) : (
-                            <Avatar size={40} src={DefaultAvatar} />
-                          )
-                        }
-                      >
-                        <div className={styles.titleChat}>{item.title}</div>
-                        <div className={styles.chatMessage}>{item.message}</div>
-                        <>
-                          {item.attachments ? <div>{getAttachmentChat(item.attachments)}</div> : ''}
-                        </>
-                        <div className={styles.timeChat}>
-                          {moment(item.createdAt).format('DD-MM-YYYY, hh:mm a')}
-                        </div>
-                      </Timeline.Item>
-                    );
-                  })}
-                </Timeline>
-              </Col>
-            </Row>
+                      return (
+                        <Timeline.Item
+                          position={employeeChatID === employeeAssignedTickets ? 'right' : 'left'}
+                          dot={
+                            <Avatar
+                              size={40}
+                              className={styles.avatar}
+                              src={
+                                <img
+                                  src={avatar || DefaultAvatar}
+                                  alt=""
+                                  onError={(e) => {
+                                    e.target.src = DefaultAvatar;
+                                  }}
+                                />
+                              }
+                            />
+                          }
+                        >
+                          {item.title && <div className={styles.titleChat}>{item.title}</div>}
+                          <div className={styles.chatMessage}>{item.message}</div>
+                          <>
+                            {item.attachments ? (
+                              <div>{getAttachmentChat(item.attachments)}</div>
+                            ) : (
+                              ''
+                            )}
+                          </>
+                          <div className={styles.timeChat}>
+                            {moment(item.createdAt).format('DD-MM-YYYY, hh:mm a')}
+                          </div>
+                        </Timeline.Item>
+                      );
+                    })}
+                  </Timeline>
+                </Col>
+              </Row>
+            </div>
+            <div className={styles.btnStart}>
+              {!isEmpty(chats) && (
+                <CustomPrimaryButton backgroundColor="#707177">Start</CustomPrimaryButton>
+              )}
+            </div>
           </div>
-          <>
-            {!isEmpty(chats) ? (
-              <div className={styles.container__btnStart}>
-                <div className={styles.btnStart}>Start</div>
-              </div>
-            ) : (
-              ''
-            )}
-          </>
         </div>
-        <AssignTeamModal
-          visible={modalVisible}
-          role={role}
-          onClose={() => this.setState({ modalVisible: false })}
-        />
-      </div>
-    );
-  }
-}
-export default TicketDetailsForm;
+      </Card>
+      <AssignTeamModal visible={modalVisible} role={role} onClose={() => setModalVisible(false)} />
+    </div>
+  );
+};
+export default connect(
+  ({
+    loading,
+    ticketManagement: { listEmployee = [], ticketDetail = {} } = {},
+    user: { currentUser: { employee = {}, roles = [] } = {} } = {},
+  }) => ({
+    employee,
+    roles,
+    listEmployee,
+    ticketDetail,
+    loadingUploadAttachment: loading.effects['ticketManagement/uploadFileAttachments'],
+    loadingAddChat: loading.effects['ticketManagement/addChat'],
+  }),
+)(TicketDetailsForm);

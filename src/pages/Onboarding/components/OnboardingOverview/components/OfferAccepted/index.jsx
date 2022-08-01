@@ -7,7 +7,7 @@ import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import OfferAcceptedTab from './components/OfferAcceptedTab';
 
 import styles from '../index.less';
-import SearchOnboarding from '../SearchOnboarding';
+import SearchFilterBar from '../SearchFilterBar';
 
 const { TabPane } = Tabs;
 
@@ -102,7 +102,7 @@ class OfferAccepted extends PureComponent {
           <Tabs
             defaultActiveKey={tabId}
             onChange={this.onChangeTab}
-            tabBarExtraContent={<SearchOnboarding onChangeSearch={this.onChangeSearch} />}
+            tabBarExtraContent={<SearchFilterBar onChangeSearch={this.onChangeSearch} />}
           >
             <TabPane key="1">
               <OfferAcceptedTab

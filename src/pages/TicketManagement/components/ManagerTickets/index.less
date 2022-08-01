@@ -1,0 +1,22 @@
+@import '~antd/es/style/themes/default.less';
+@grayColor: #707177;
+@greenColor: #00c598;
+
+.TicketManagement {
+  :global {
+    .ant-pro-basicLayout-content {
+      padding: 0 !important;
+    }
+    .ant-tabs-content-holder {
+      padding: @padding-lg;
+    }
+  }
+  .options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: flex-end;
+    padding-inline: @padding-lg;
+  }
+}
