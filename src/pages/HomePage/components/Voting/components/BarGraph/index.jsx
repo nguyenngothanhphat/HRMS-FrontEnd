@@ -1,7 +1,8 @@
-import { Col, Row } from 'antd';
+import { Col, Row, Tooltip } from 'antd';
 import React from 'react';
 import styles from './index.less';
-import GrayDot from '@/assets/homePage/grayDot.svg';
+import WarningIcon from '@/assets/warnIcon.svg';
+import ChartIcon from '@/assets/homePage/chart.svg';
 
 const BarGraph = (props) => {
   const {
@@ -25,7 +26,13 @@ const BarGraph = (props) => {
               className={`${styles.reply} ${votedOption === reply.id ? styles.votedOption : ''}`}
             >
               <span className={styles.label}>{reply.text}</span>
-              <span className={styles.percent}>{reply.percent}%</span>
+              <span className={styles.percent}>
+                {reply.percent}%{' '}
+                <Tooltip title={`${reply.count} employees voted for this option`}>
+                  <img src={WarningIcon} alt="icon" />
+                </Tooltip>
+              </span>
+
               <div
                 className={styles.percentBackground}
                 style={{
@@ -38,13 +45,18 @@ const BarGraph = (props) => {
         ))}
       </Row>
       <div className={styles.votingInformation}>
-        <span className={styles.number}>{countVotes()} votes</span>
+        <span className={styles.number}>
+          <Tooltip title="Number of Employees whose votes have been recorded.">
+            <img src={ChartIcon} alt="icon" />
+          </Tooltip>
+          {countVotes()} votes
+        </span>
 
         {timeLeft && (
-          <>
-            <img src={GrayDot} alt="" />
-            <span className={styles.dueTime}>{timeLeft}</span>
-          </>
+          <span>
+            <span className={styles.dueTime}>Poll Ends on</span>
+            <span className={styles.number}>{timeLeft}</span>
+          </span>
         )}
       </div>
     </div>

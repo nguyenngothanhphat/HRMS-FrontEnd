@@ -21,11 +21,11 @@ import { getActionText, getColumnWidth } from './utils';
 import ConfirmModal from './components/ConfirmModal/index';
 import styles from './index.less';
 
-import DeleteIcon from '@/assets/bin.svg';
 import EyeIcon from '@/assets/eyes.svg';
 import LaunchIcon from '@/assets/launchIcon.svg';
 import JoiningIcon from '@/assets/Vector.svg';
 import UserProfilePopover from '@/components/UserProfilePopover';
+import WithdrawOfferModal from '@/pages/NewCandidateForm/components/PreviewOffer/components/WithdrawOfferModal';
 
 const compare = (dateTimeA, dateTimeB) => {
   const momentA = moment(dateTimeA, 'DD/MM/YYYY');
@@ -76,16 +76,33 @@ class OnboardTable extends Component {
     });
   };
 
-  handleActionWithDraw = (candidate, processStatus) => {
-    const { dispatch } = this.props;
-
-    dispatch({
+  handleWithdrawOffer = async (reason) => {
+    const { dispatch, type } = this.props;
+    const { candidateSelected, processStatus } = this.state;
+    const { ALL } = NEW_PROCESS_STATUS;
+    const res = await dispatch({
       type: 'onboarding/withdrawTicket',
       payload: {
-        candidate,
+        candidate: candidateSelected,
+        reasonForWithdraw: reason,
       },
       processStatus,
     });
+    if (res.statusCode === 200) {
+      this.setState({ withdrawOfferModalVisible: false });
+      if (type === ALL)
+        dispatch({
+          type: 'onboarding/fetchOnboardListAll',
+          payload: {
+            tenantId: getCurrentTenant(),
+            processStatus: '',
+          },
+        });
+    }
+  };
+
+  handleActionWithDraw = (candidate, processStatus) => {
+    this.setState({ withdrawOfferModalVisible: true, candidateSelected: candidate, processStatus });
   };
 
   renderCandidateId = (candidateId = '', row) => {
@@ -760,8 +777,9 @@ class OnboardTable extends Component {
       loading3,
       loadingFetch,
       loadingSearch,
+      loadingWithdrawOffer = false,
     } = this.props;
-    const { openModalName, currentEmpName } = this.state;
+    const { openModalName, currentEmpName, withdrawOfferModalVisible } = this.state;
 
     return (
       <>
@@ -791,12 +809,6 @@ class OnboardTable extends Component {
             scroll={list.length > 0 ? { x: '90vw', y: 'max-content' } : {}}
           />
         </div>
-        {/* <CustomModal
-          open={openModal}
-          width={590}
-          closeModal={this.closeModal}
-          content={this.getModalContent()}
-        /> */}
         <ReassignModal
           visible={reassignModalVisible}
           currentEmpId={currentEmpId}
@@ -827,24 +839,26 @@ class OnboardTable extends Component {
           }}
           onClose={this.cancelJoiningFormalities}
         />
-        {/* <CandidateUserName
-          visible={openModalName === 'username'}
-          onCancel={this.cancelCandidateUserName}
-          onOk={this.onSubmitUserName}
-          candidateId={selectedCandidateId}
-        /> */}
         <ConfirmModal
           visible={openModalName === 'detail'}
           onCancel={this.cancelCandidateUserName}
           onOk={this.onMaybeLater}
           onClose={this.cancelJoiningFormalities}
         />
+        {withdrawOfferModalVisible && (
+          <WithdrawOfferModal
+            title="Offer Withdraw"
+            visible={withdrawOfferModalVisible}
+            onClose={() => this.setState({ withdrawOfferModalVisible: false })}
+            loading={loadingWithdrawOffer}
+            onFinish={this.handleWithdrawOffer}
+          />
+        )}
       </>
     );
   }
 }
 
-// export default OnboardTable;
 export default connect(
   ({
     newCandidateForm,
@@ -858,6 +872,7 @@ export default connect(
     loading: loading.effects['onboard/fetchOnboardList'],
     loading2: loading.effects['onboarding/fetchOnboardList'],
     loading3: loading.effects['onboarding/fetchOnboardListAll'],
+    loadingWithdrawOffer: loading.effects['onboarding/withdrawTicket'],
     currentUser,
     documentChecklist,
     companyLocationList,

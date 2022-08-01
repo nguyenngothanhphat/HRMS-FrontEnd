@@ -6,6 +6,8 @@ import { connect } from 'umi';
 import { dateFormat, TIMEOFF_NAME_BY_ID } from '@/utils/timeOffManagement';
 // import DownloadIcon from '@/assets/timeOffManagement/ic_download.svg';
 import styles from './index.less';
+import DebounceSelect from '../DebounceSelect';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 const { Option } = Select;
 
@@ -13,22 +15,18 @@ const Header = (props) => {
   const [form] = Form.useForm();
 
   const {
-    timeOffManagement: {
-      typeList = [],
-      // listTimeOff = [],
-      listEmployees = [],
-    } = {},
+    dispatch,
+    timeOffManagement: { typeList = [] } = {},
     setPayload = () => {},
     disabled = false,
     toDate = '',
     fromDate = '',
     setFromDate = () => {},
     setToDate = () => {},
-    // onExport = () => {},
-    loadingEmployeeList = false,
-    // loadingExport = false,
     loadingFetchTimeoffTypes = false,
   } = props;
+
+  const [selectedUser, setSelectedUser] = React.useState();
 
   // DISABLE DATE OF DATE PICKER
   const disabledFromDate = (current) => {
@@ -41,10 +39,37 @@ const Header = (props) => {
 
   const onSaveDebounce = debounce((values) => {
     setPayload(values);
-  }, 500);
+  }, 1000);
 
   const onValuesChange = (changedValues, allValues) => {
-    onSaveDebounce(allValues);
+    const from = allValues.from ? moment(allValues.from).format('YYYY-MM-DD') : null;
+    const to = allValues.to ? moment(allValues.to).format('YYYY-MM-DD') : null;
+    onSaveDebounce({ ...allValues, from, to });
+  };
+
+  const onEmployeeSearch = (value) => {
+    if (!value) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+
+    return dispatch({
+      type: 'timeOffManagement/getListEmployeesEffect',
+      payload: {
+        name: value,
+        company: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
+        status: ['INACTIVE', 'ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfo?.legalName,
+        value: user._id,
+        employeeId: user?.employeeId,
+      }));
+    });
   };
 
   return (
@@ -62,24 +87,17 @@ const Header = (props) => {
           <Row gutter={[24, 12]}>
             <Col span={6}>
               <span className={styles.itemLabel}>User ID - Name</span>
-              <Form.Item name="user">
-                <Select
-                  allowClear
+              <Form.Item name="employee">
+                <DebounceSelect
                   placeholder="Select an user"
-                  filterOption={(input, option) =>
-                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  fetchOptions={onEmployeeSearch}
                   showSearch
-                  disabled={disabled || loadingEmployeeList}
-                  loading={loadingEmployeeList}
-                >
-                  {listEmployees.map((item = {}) => {
-                    return (
-                      <Option key={item._id} value={item._id}>
-                        {`${item?.generalInfo?.employeeId} - ${item?.generalInfo?.legalName}`}
-                      </Option>
-                    );
-                  })}
-                </Select>
+                  value={selectedUser}
+                  disabled={disabled}
+                  onChange={(value) => {
+                    setSelectedUser(value);
+                  }}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -140,27 +158,6 @@ const Header = (props) => {
                 </Row>
               </div>
             </Col>
-            {/* <Col xs={{ span: 6, order: 4 }} xl={{ span: 4, order: 4 }} justify="end">
-              <span className={styles.itemLabel} />
-              <div className={styles.buttons}>
-                <Row gutter={[24, 24]}>
-                  <Col xs={24}>
-                    <span />
-                    <Form.Item>
-                      <Button
-                        className={styles.downloadCSVBtn}
-                        disabled={disabled || listTimeOff.length === 0}
-                        onClick={onExport}
-                        loading={loadingExport}
-                        icon={<img src={DownloadIcon} alt="" />}
-                      >
-                        Download
-                      </Button>
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </div>
-            </Col> */}
           </Row>
           <Row
             gutter={[24, 24]}

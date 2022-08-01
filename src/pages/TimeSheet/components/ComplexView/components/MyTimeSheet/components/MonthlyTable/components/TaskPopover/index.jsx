@@ -1,7 +1,8 @@
-import { Col, Popover, Row } from 'antd';
+import { Button, Col, Popover, Row } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
+import AddSolidIcon from '@/assets/timeSheet/addSolid.png';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 import IconHoliday from '@/assets/timeSheet/ic_holiday.svg';
 import {
@@ -20,8 +21,14 @@ const TaskPopover = (props) => {
     startDate = '',
     endDate = '',
     placement = 'top',
+    onAddTaskModal = () => {},
   } = props;
   const [showPopover, setShowPopover] = useState(false);
+
+  const handleAddTask = () => {
+    setShowPopover(false);
+    onAddTaskModal();
+  };
 
   const getTaskWithHolidays = () => {
     const holidaysWithoutTask = holidays.filter((holiday) => {
@@ -55,11 +62,11 @@ const TaskPopover = (props) => {
             </Row>
           )}
           {getTaskWithHolidays().map((task) => {
-            const { date = '', dailyTotalTime = 0 } = task;
+            const { date = '', projectDailyTime = 0 } = task;
             const momentDate = moment(date).locale('en');
             const holidayName = getHolidayNameByDate(date, holidays);
 
-            if (!dailyTotalTime && holidayName.trim() === '') return null;
+            if (!projectDailyTime && holidayName.trim() === '') return null;
             return (
               <Row key={date} className={styles.eachRow} justify="space-between" align="middle">
                 <Col span={18} className={styles.dateName}>
@@ -72,18 +79,18 @@ const TaskPopover = (props) => {
                     <span className={styles.name}>{moment(momentDate).format('dddd')}</span>
                     <span className={styles.timeBlock}>
                       <span className={styles.date}>{moment(momentDate).format('MMM DD')}</span>{' '}
-                      {dailyTotalTime ? (
+                      {projectDailyTime ? (
                         <>
                           <img className={styles.calendarIcon} src={CalendarIcon} alt="" />
                           <span className={styles.time}>
-                            {convertMsToTime(dailyTotalTime || 0)}
+                            {convertMsToTime(projectDailyTime || 0)}
                           </span>
                         </>
                       ) : null}
                     </span>
                   </div>
                 </Col>
-                {holidayName.trim() !== '' && !dailyTotalTime ? (
+                {holidayName.trim() !== '' && !projectDailyTime ? (
                   <Col span={6} className={styles.right}>
                     <div className={styles.holidayContainer}>
                       <img src={IconHoliday} alt="" width={32} height={32} />
@@ -108,6 +115,11 @@ const TaskPopover = (props) => {
             {moment(startDate).locale('en').format('MMM DD')} -{' '}
             {moment(endDate).locale('en').format('MMM DD')}
           </span>
+          <div className={styles.addTaskBtn}>
+            <Button onClick={handleAddTask} icon={<img src={AddSolidIcon} alt="" />}>
+              Add Task
+            </Button>
+          </div>
         </div>
         <div className={styles.divider} />
         {renderTaskTable()}

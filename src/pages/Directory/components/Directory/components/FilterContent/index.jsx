@@ -31,6 +31,7 @@ const FilterContent = (props) => {
         title = [],
         reportingManager = '',
         employeeType = [],
+        empTypeOther = [],
         skill = [],
         fromExp,
         toExp,
@@ -86,6 +87,7 @@ const FilterContent = (props) => {
       countries,
       reportingManager,
       employeeType,
+      empTypeOther,
       skill,
       fromExp,
       toExp,
@@ -406,6 +408,27 @@ const FilterContent = (props) => {
                   </Select.Option>
                 );
               })}
+            </Select>
+          </Form.Item>
+          <Form.Item label="By employee type" name="empTypeOther">
+            <Select
+              allowClear
+              showSearch
+              mode="multiple"
+              style={{ width: '100%' }}
+              placeholder="Search by Employee Type"
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              showArrow
+            >
+              {['Regular', 'Contingent Worker'].map((x, index) => {
+                return (
+                  <Select.Option key={`${index + 1}`} value={x}>
+                    {x}
+                  </Select.Option>
+                );
+              })}
+              ]
             </Select>
           </Form.Item>
 

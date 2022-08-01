@@ -248,6 +248,7 @@ const customerProfile = {
         response = yield call(getDocument, {
           tenantId: getCurrentTenant(),
           customerId: payload.id,
+          searchKey: payload.searchKey || null,
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;

@@ -105,12 +105,13 @@ class ImportEmployeeModal extends Component {
         'Last Name': item.lastName,
         'Middle Name': item.middleName,
         Gender: item.gender,
-        'Date of Birth': item.dateOfBirth,
-        'Joined Date': item.joinDate,
+        'Date of Birth': moment(item?.dateOfBirth).locale('en').format('MM-DD-YYYY'),
+        'Joined Date': moment(item?.joinDate).locale('en').format('MM-DD-YYYY'),
         Location: item.location,
         Department: item.department,
         'Work Email': item.workEmail,
         'Employment Type': item.employeeType,
+        'Employee Type': item.empTypeOther,
         'Personal Email': item.personalEmail,
         'Manager Work Email': item.managerWorkEmail,
         Title: item.title,
@@ -170,13 +171,15 @@ class ImportEmployeeModal extends Component {
         lastName: item['Last Name'],
         middleName: item['Middle Name'],
         gender: item.Gender,
-        dateOfBirth: item['Date of Birth'] && moment(new Date(item['Date of Birth'])).format('YYYY-MM-DD'),
+        dateOfBirth:
+          item['Date of Birth'] && moment(new Date(item['Date of Birth'])).format('YYYY-MM-DD'),
         joinDate: item['Joined Date'] && moment(new Date(item['Joined Date'])).format('YYYY-MM-DD'),
         workEmail: item['Work Email'],
         location: item.Location,
         department: item.Department,
         personalEmail: item['Personal Email'],
         employeeType: item['Employment Type'],
+        empTypeOther: item['Employee Type'],
         managerWorkEmail: item['Manager Work Email'],
         title: item.Title,
         personalNumber: item['Personal Number'],
@@ -190,6 +193,7 @@ class ImportEmployeeModal extends Component {
           item.title === '' ||
           item.workEmail === '' ||
           item.employeeType === '' ||
+          item.employmentType === '' ||
           item.location === '' ||
           item.department === '',
       ) || -1;

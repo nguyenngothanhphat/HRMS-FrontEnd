@@ -28,10 +28,11 @@ export async function DepartmentFilter(payload) {
   });
 }
 
-export async function getListEmployee(payload) {
+export async function getListEmployee(payload, params) {
   return request('/api/employeetenant/list', {
     method: 'POST',
     data: payload,
+    params,
   });
 }
 

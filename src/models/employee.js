@@ -120,13 +120,13 @@ const employee = {
         return 0;
       }
     },
-    *fetchListEmployeeActive({ payload = {} }, { call, put }) {
+    *fetchListEmployeeActive({ payload = {}, params = {} }, { call, put }) {
       try {
         const currentPayload = {
           ...payload,
           status: ['ACTIVE'],
         };
-        const response = yield call(getListEmployee, currentPayload);
+        const response = yield call(getListEmployee, currentPayload, params);
         const { statusCode, data: listEmployeeActive = [] } = response;
         if (statusCode !== 200) throw response;
 
@@ -144,13 +144,13 @@ const employee = {
         return 0;
       }
     },
-    *fetchListEmployeeInActive({ payload = {} }, { call, put }) {
+    *fetchListEmployeeInActive({ payload = {}, params = {} }, { call, put }) {
       try {
         const currentPayload = {
           ...payload,
           status: ['INACTIVE'],
         };
-        const response = yield call(getListEmployee, currentPayload);
+        const response = yield call(getListEmployee, currentPayload, params);
         const { statusCode, data: listEmployeeInActive = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({

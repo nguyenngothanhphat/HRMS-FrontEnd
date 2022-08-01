@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const PM_STATUS = {
   ENGAGING: 'Engaging',
   ACTIVE: 'Active',
@@ -12,3 +14,7 @@ const DATE_FORMAT_LIST = 'MM/DD/YYYY';
 const DATE_FORMAT_2 = 'Do MMMM YYYY';
 
 export { PM_STATUS, DATE_FORMAT_LIST, DATE_FORMAT_2 };
+
+export const disabledEndDate = (currentDate, startDate) => {
+  return currentDate && currentDate < moment(startDate).add(1, 'days');
+};

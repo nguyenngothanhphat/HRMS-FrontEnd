@@ -54,6 +54,15 @@ const MyTimeSheet = (props) => {
     });
   };
 
+  const fetchMyProjectList = () => {
+    dispatch({
+      type: 'timeSheet/fetchMyProjects',
+      payload: {
+        employee: employeeId,
+      },
+    });
+  };
+
   // USE EFFECT AREA
   useLayoutEffect(() => {
     if (selectedDate && selectedView === VIEW_TYPE.D) {
@@ -100,6 +109,10 @@ const MyTimeSheet = (props) => {
     const weeks = generateAllWeeks(startDateMonth, endDateMonth);
     setWeeksOfMonth(weeks);
   }, [startDateMonth]);
+
+  useEffect(() => {
+    fetchMyProjectList();
+  }, []);
 
   // RENDER UI
   const viewChangeComponent = () => (

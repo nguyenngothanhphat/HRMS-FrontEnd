@@ -1,6 +1,7 @@
 import { Col, DatePicker, Form, Input, Row } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
+import { disabledEndDate } from '@/utils/projectManagement';
 import CustomTag from '../../../CustomTag';
 import styles from './index.less';
 
@@ -15,6 +16,7 @@ const AddContent = (props) => {
     employee: { generalInfo: { legalName: ownerName = '' } = {} } = {} || {},
   } = props;
   const { projectId = '', projectName = '', engagementType = '', tags = [] } = projectDetail;
+  const [startDate, setStartDate] = useState('');
 
   const getColor = (index) => {
     return colors[index % colors.length];
@@ -84,7 +86,7 @@ const AddContent = (props) => {
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: 'Required field!' }]}
             >
-              <DatePicker />
+              <DatePicker onChange={(val) => setStartDate(val)} />
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
@@ -94,7 +96,7 @@ const AddContent = (props) => {
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: 'Required field!' }]}
             >
-              <DatePicker />
+              <DatePicker disabledDate={(currentDate) => disabledEndDate(currentDate, startDate)} />
             </Form.Item>
           </Col>
 

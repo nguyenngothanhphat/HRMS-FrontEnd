@@ -33,6 +33,7 @@ const TableTickets = (props) => {
     role = '',
     selectedFilterTab = '',
     loadingUpdate = false,
+    permissions: { assignTicket, appendTicket },
   } = props;
   const [timezoneListState, setTimezoneListState] = useState([]);
   const [ticket, setTicket] = useState({});
@@ -42,6 +43,9 @@ const TableTickets = (props) => {
   const [selected, setSelected] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [oldId, setOldId] = useState();
+
+  const isAssignTicket = assignTicket === 1;
+  const isAppendTicket = appendTicket === 1;
 
   const openViewTicket = (ticketID) => {
     let id = '';
@@ -392,76 +396,83 @@ const TableTickets = (props) => {
         },
         sortDirections: ['ascend', 'descend'],
       },
-
-      {
-        title: 'Assigned To',
-        dataIndex: 'employeeAssignee',
-        key: 'employeeAssignee',
-        fixed: 'right',
-        align: 'center',
-        render: (employeeAssignee, row) => {
-          if (employeeAssignee) {
-            return (
-              <TicketsItem
-                employeeAssignee={employeeAssignee}
-                renderMenuDropdown={renderMenuDropdown}
-                viewProfile={viewProfile}
-                handleClickSelect={handleClickSelect}
-                refreshFetchTicketList={refreshFetchTicketList}
-                row={row}
-                selected={selected}
-                setOldAssignName={setOldName}
-                setOldId={setOldId}
-                setModalVisible={setModalVisible}
-              />
-            );
-          }
-          return (
-            <>
-              <Popover
-                trigger="click"
-                overlayClassName={styles.dropdownPopover}
-                content={renderMenuDropdown()}
-                placement="bottomRight"
-              >
-                <img
-                  width={35}
-                  height={35}
-                  src={PersonIcon}
-                  alt="assign person icon"
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => handleClickSelect(row.id)}
-                />
-              </Popover>
-              <img
-                width={35}
-                height={35}
-                src={TeamIcon}
-                alt="assign team icon"
-                style={{
-                  cursor: 'pointer',
-                }}
-                onClick={() => handleAssignTeam(row.id)}
-              />
-            </>
-          );
-        },
-        sorter: (a, b) => {
-          if (
-            a.employeeAssignee?.generalInfo?.legalName &&
-            b.employeeAssignee?.generalInfo?.legalName
-          )
-            return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
-              ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
-                  `${b.employeeAssignee.generalInfo?.legalName}`,
+      ...(isAssignTicket || isAppendTicket
+        ? [
+            {
+              title: 'Assigned To',
+              dataIndex: 'employeeAssignee',
+              key: 'employeeAssignee',
+              fixed: 'right',
+              align: 'center',
+              render: (employeeAssignee, row) => {
+                if (employeeAssignee) {
+                  return (
+                    <TicketsItem
+                      employeeAssignee={employeeAssignee}
+                      renderMenuDropdown={renderMenuDropdown}
+                      viewProfile={viewProfile}
+                      handleClickSelect={handleClickSelect}
+                      refreshFetchTicketList={refreshFetchTicketList}
+                      row={row}
+                      selected={selected}
+                      setOldAssignName={setOldName}
+                      setOldId={setOldId}
+                      setModalVisible={setModalVisible}
+                    />
+                  );
+                }
+                return (
+                  <>
+                    {isAssignTicket && (
+                      <Popover
+                        trigger="click"
+                        overlayClassName={styles.dropdownPopover}
+                        content={renderMenuDropdown()}
+                        placement="bottomRight"
+                      >
+                        <img
+                          width={35}
+                          height={35}
+                          src={PersonIcon}
+                          alt="assign person icon"
+                          style={{
+                            cursor: 'pointer',
+                          }}
+                          onClick={() => handleClickSelect(row.id)}
+                        />
+                      </Popover>
+                    )}
+                    {isAppendTicket && (
+                      <img
+                        width={35}
+                        height={35}
+                        src={TeamIcon}
+                        alt="assign team icon"
+                        style={{
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => handleAssignTeam(row.id)}
+                      />
+                    )}
+                  </>
+                );
+              },
+              sorter: (a, b) => {
+                if (
+                  a.employeeAssignee?.generalInfo?.legalName &&
+                  b.employeeAssignee?.generalInfo?.legalName
                 )
-              : null;
-          return null;
-        },
-        sortDirections: ['ascend', 'descend'],
-      },
+                  return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
+                    ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
+                        `${b.employeeAssignee.generalInfo?.legalName}`,
+                      )
+                    : null;
+                return null;
+              },
+              sortDirections: ['ascend', 'descend'],
+            },
+          ]
+        : []),
     ];
   };
 
@@ -546,7 +557,7 @@ export default connect(
   ({
     loading,
     ticketManagement: { listEmployee = [], locationsList = [], employeeFilterList = [] } = {},
-    user: { currentUser: { employee = {} } = {} } = {},
+    user: { currentUser: { employee = {} } = {}, permissions = {} } = {},
     location: { companyLocationList = [] },
   }) => ({
     listEmployee,
@@ -554,6 +565,7 @@ export default connect(
     employeeFilterList,
     employee,
     companyLocationList,
+    permissions,
     loadingUpdate: loading.effects['ticketManagement/updateTicket'],
     loadingFetchEmployee: loading.effects['ticketManagement/searchEmployee'],
   }),

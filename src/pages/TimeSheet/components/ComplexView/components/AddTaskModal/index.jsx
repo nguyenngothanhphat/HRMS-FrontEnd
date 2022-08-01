@@ -89,15 +89,6 @@ const AddTaskModal = (props) => {
     });
   };
 
-  const fetchMyProjectList = () => {
-    dispatch({
-      type: 'timeSheet/fetchMyProjects',
-      payload: {
-        employee: employeeId,
-      },
-    });
-  };
-
   const fetchHolidaysByDate = async (startDate, endDate) => {
     const holidaysResponse = await dispatch({
       type: 'timeSheet/fetchHolidaysByDate',
@@ -340,16 +331,13 @@ const AddTaskModal = (props) => {
   }, [dates]);
 
   useEffect(() => {
-    fetchMyProjectList();
-  }, []);
-
-  useEffect(() => {
     if (visible) {
       if (projectList.length === 0) {
         fetchProjectList();
       }
+      const datesTemp = (moment(forDate).isValid() && [moment(forDate), moment(forDate)]) ||
+        (moment(date).isValid() && [moment(date), moment(date)]) || ['', ''];
 
-      const datesTemp = forDate ? [moment(forDate), moment(forDate)] : [moment(date), moment(date)];
       setDates(datesTemp);
       form.setFieldsValue({
         dates: datesTemp,
