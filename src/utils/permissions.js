@@ -29,15 +29,6 @@ const isAuthorized = (permissionList, arrTextToCheck) => {
   return response;
 };
 
-const isRole = (permissionList, arrTextToCheck) => {
-  let response = -1;
-  arrTextToCheck.forEach((text) => {
-    const check = permissionList.includes(text.toLowerCase());
-    if (check) response = 1;
-  });
-  return response;
-};
-
 export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   if (isOwner) {
     return {
@@ -354,6 +345,13 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_TICKET_MANAGEMENT_T_OPERATIONS_TICKETS_VIEW',
   ]);
 
+  const indexTicketManagementAssignTicket = isAuthorized(permissionList, [
+    'P_TICKET_MANAGEMENT_ASSIGN_TICKET',
+  ]);
+
+  const indexTicketManagementAppendTicket = isAuthorized(permissionList, [
+    'P_TICKET_MANAGEMENT_APPEND_TICKET',
+  ]);
   // POLICY & REGULATION
   const indexViewAllCountryPolicyAndRegulation = isAuthorized(permissionList, [
     'P_POLICIESREGULATIONS_VIEW_ALL',
@@ -474,6 +472,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewTicketHR: indexTicketManagementHRTicketsTab,
     viewTicketIT: indexTicketManagementITTicketsTab,
     viewTicketOperations: indexTicketManagementOperationsTicketsTab,
+    assignTicket: indexTicketManagementAssignTicket,
+    appendTicket: indexTicketManagementAppendTicket,
 
     // policy and regulation
     viewSettingPolicy: indexSettingViewPolicy,
