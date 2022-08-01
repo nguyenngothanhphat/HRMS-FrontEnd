@@ -1,10 +1,11 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable compat/compat */
 /* eslint-disable prefer-promise-reject-errors */
-import React, { Component } from 'react';
-import { Row, Col, Button, Modal, Form, Input, Select, DatePicker, notification } from 'antd';
+import { Button, Col, DatePicker, Form, Input, Modal, notification, Row, Select } from 'antd';
 import moment from 'moment';
+import React, { Component } from 'react';
 import { connect } from 'umi';
+import { disabledEndDate } from '@/utils/resourceManagement';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import styles from './index.less';
 
@@ -24,7 +25,9 @@ const { Option } = Select;
 class Edit extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      startDateState: '',
+    };
   }
 
   parseDate = (date, formatDate) => {
@@ -93,7 +96,7 @@ class Edit extends Component {
       0,
     );
     const maxEnterUtilization = 100 - sumUtilization + dataPassRow.utilization;
-
+    const { startDateState = '' } = this.state;
     return (
       <div className={styles.EditActionBTN}>
         <Modal
@@ -168,7 +171,7 @@ class Edit extends Component {
                             `Your cannot enter a value that is more than ${maxEnterUtilization}!`,
                           );
                         }
-                        if (value < 1) {
+                        if (value < 0) {
                           return Promise.reject(`Your cannot enter a value that is less than 0!`);
                         }
                         return Promise.resolve();
@@ -187,6 +190,7 @@ class Edit extends Component {
                   rules={[{ required: true, message: 'Start date value could not be empty!' }]}
                 >
                   <DatePicker
+                    onChange={(val) => this.setState({ startDateState: val })}
                     placeholder="Start Date"
                     format="MM/DD/YYYY"
                     suffixIcon={<img src={datePickerIcon} alt="" />}
@@ -198,6 +202,8 @@ class Edit extends Component {
                   rules={[{ required: true, message: 'End date value could not be empty!' }]}
                 >
                   <DatePicker
+                    disabledDate={(current) =>
+                      disabledEndDate(current, !startDateState ? startDate : startDateState)}
                     placeholder="Enter End Date"
                     format="MM/DD/YYYY"
                     suffixIcon={<img src={datePickerIcon} alt="" />}
@@ -205,6 +211,8 @@ class Edit extends Component {
                 </Form.Item>
                 <Form.Item label="Revised End Date" name="revisedEndDate">
                   <DatePicker
+                    disabledDate={(current) =>
+                      disabledEndDate(current, !startDateState ? startDate : startDateState)}
                     placeholder="Enter Date"
                     format="MM/DD/YYYY"
                     suffixIcon={<img src={datePickerIcon} alt="" />}

@@ -1,15 +1,15 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable prefer-promise-reject-errors */
-import React, { Component } from 'react';
-import { Row, Col, Button, Modal, Form, Input, Select, DatePicker, Card, notification } from 'antd';
+import { Button, Card, Col, DatePicker, Form, Input, Modal, notification, Row, Select } from 'antd';
 import moment from 'moment';
+import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
-import styles from './index.less';
 import CommonModal from '@/components/CommonModal';
-import { checkUtilizationPercent } from '@/utils/resourceManagement';
+import { checkUtilizationPercent, disabledEndDate } from '@/utils/resourceManagement';
+import styles from './index.less';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -32,6 +32,7 @@ class AddActionBTN extends Component {
       visibleModalSuccess: false,
       projectId: '',
       projectAssignedId: '',
+      startDate: '',
     };
   }
 
@@ -112,8 +113,8 @@ class AddActionBTN extends Component {
 
   modalContent = () => {
     const { dataPassRow = {}, projectList = [], resourceList = [], statusList = [] } = this.props;
+    const { startDate } = this.state;
     const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
-    console.log('🚀 ~ getUtilizationOfEmp', getUtilizationOfEmp);
 
     const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
     const sumUtilization = checkUtilizationPercent(listProjectsOfEmp);
@@ -208,6 +209,7 @@ class AddActionBTN extends Component {
               rules={[{ required: true, message: 'Start date value could not be empty!' }]}
             >
               <DatePicker
+                onChange={(val) => this.setState({ startDate: val })}
                 placeholder="Enter Start Date"
                 suffixIcon={<img src={datePickerIcon} alt="" />}
               />
@@ -218,12 +220,14 @@ class AddActionBTN extends Component {
               rules={[{ required: true, message: 'End date value could not be empty!' }]}
             >
               <DatePicker
+                disabledDate={(current) => disabledEndDate(current, startDate)}
                 placeholder="Enter End Date"
                 suffixIcon={<img src={datePickerIcon} alt="" />}
               />
             </Form.Item>
             <Form.Item label="Revised End Date" name="revisedEndDate">
               <DatePicker
+                disabledDate={(current) => disabledEndDate(current, startDate)}
                 placeholder="Enter Date"
                 suffixIcon={<img src={datePickerIcon} alt="" />}
               />
