@@ -229,6 +229,20 @@ const routes = [
             name: 'home',
             icon: '/assets/images/menuIcons/home.svg',
             component: './HomePage',
+            authority: [
+              HR_MANAGER,
+              HR,
+              EMPLOYEE,
+              REGION_HEAD,
+              CEO,
+              MANAGER,
+              ADMIN,
+              DEPARTMENT_HEAD,
+              PROJECT_MANAGER,
+              PEOPLE_MANAGER,
+              FINANCE,
+              CANDIDATE,
+            ],
           },
           {
             path: '/home/settings',
@@ -540,7 +554,7 @@ const routes = [
             authority: [
               'P_TIMEOFF_T_TEAM_REQUEST_HR_VIEW',
               'P_TIMEOFF_T_TEAM_REQUEST_MANAGER_VIEW',
-              OWNER
+              OWNER,
             ],
           },
 
@@ -703,14 +717,14 @@ const routes = [
             name: 'reviewResignationTicket',
             component: './OffBoarding/components/ManagerView/components/TicketDetails',
             hideInMenu: true,
-            authority: ['P_OFFBOARDING_VIEW','M_OFFBOARDING_VIEW'],
+            authority: ['P_OFFBOARDING_VIEW', 'M_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/list/hr-review/:id',
             name: 'reviewResignationTicket',
             component: './OffBoarding/components/HRView/components/TicketDetails',
             hideInMenu: true,
-            authority: ['P_OFFBOARDING_VIEW','M_OFFBOARDING_VIEW'],
+            authority: ['P_OFFBOARDING_VIEW', 'M_OFFBOARDING_VIEW'],
           },
           // {
           //   path: '/offboarding/my-request/:id',
@@ -755,24 +769,21 @@ const routes = [
             path: '/offboarding/settings/:type/form-detail/:id/view',
             name: 'offboarding.setting.form.viewForm',
             hideInMenu: true,
-            component:
-              './OffBoarding/components/Settings/components/Forms/components/ViewForm',
+            component: './OffBoarding/components/Settings/components/Forms/components/ViewForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/settings/:type/form-detail/add',
             name: 'offboarding.setting.form.addForm',
             hideInMenu: true,
-            component:
-              './OffBoarding/components/Settings/components/Forms/components/HandleForm',
+            component: './OffBoarding/components/Settings/components/Forms/components/HandleForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/settings/:type/form-detail/:id/edit',
             name: 'offboarding.setting.form.editForm',
             hideInMenu: true,
-            component:
-              './OffBoarding/components/Settings/components/Forms/components/HandleForm',
+            component: './OffBoarding/components/Settings/components/Forms/components/HandleForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
