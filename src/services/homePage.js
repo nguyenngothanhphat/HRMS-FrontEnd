@@ -176,3 +176,10 @@ export async function getListPolicy(payload) {
     data: payload,
   });
 }
+
+export async function getListEmployeeCreated(params) {
+  return request('/api/posttenant/list-employees', {
+    method: 'GET',
+    params,
+  });
+}

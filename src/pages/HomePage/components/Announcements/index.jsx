@@ -1,28 +1,30 @@
-import { Button, Col, Dropdown, Menu, Row, Skeleton, Spin } from 'antd';
+import { Button, Col, Menu, Row, Skeleton, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
-import LazyLoad from 'react-lazyload';
 import { connect } from 'umi';
+import ErrorFile from '@/assets/adminSetting/errorFile.svg';
 import EditIcon from '@/assets/edit-customField.svg';
+import UpdateIcon from '@/assets/editMailExit.svg';
 import ShowMoreIcon from '@/assets/homePage/downArrow.svg';
-import MenuIcon from '@/assets/offboarding/menuIcon.png';
-import CommonModal from '@/components/CommonModal';
-import EmptyComponent from '@/components/Empty';
-import { getCurrentLocation } from '@/utils/authority';
-import { POST_TYPE } from '@/utils/homePage';
-import { getCompanyName } from '@/utils/utils';
-import AddPostContent from './components/AddPostContent';
-import EmployeeTag from './components/EmployeeTag';
-import LikeComment from './components/LikeComment';
-import PostContent from './components/PostContent';
 import FlagIcon from '@/assets/homePage/flagIcon.svg';
 import HideIcon from '@/assets/homePage/hideIcon.svg';
 import DeleteIcon from '@/assets/relievingDel.svg';
-import UpdateIcon from '@/assets/editMailExit.svg';
-import ErrorFile from '@/assets/adminSetting/errorFile.svg';
+import CommonModal from '@/components/CommonModal';
+import EmptyComponent from '@/components/Empty';
+import { getCurrentLocation } from '@/utils/authority';
+import { POST_TYPE, STATUS_POST } from '@/utils/homePage';
+import { getCompanyName } from '@/utils/utils';
+import AddPostContent from './components/AddPostContent';
+import AnnouncementsCard from './components/AnnouncementsCard';
 import styles from './index.less';
 
 const Announcements = (props) => {
-  const { dispatch, loadingFetchAnnouncementList = false } = props;
+  const {
+    dispatch,
+    loadingFetchAnnouncementList = false,
+    loadingAddPost = false,
+    loadingEditPost = false,
+    loadingUploadFile = false,
+  } = props;
 
   // redux
   const {
@@ -38,11 +40,12 @@ const Announcements = (props) => {
   const [limitSocial, setLimitSocial] = useState(5);
   const [isSocial, setIsSocial] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [record, setRecord] = useState(null);
   const [form, setForm] = useState(null);
 
-  const fetchData = (postType, limit = 5, location = '') => {
+  const fetchData = (postType, limit = 5, location = '', status = '') => {
     const payload = {
       postType,
       page: 1,
@@ -50,6 +53,9 @@ const Announcements = (props) => {
     };
     if (location) {
       payload.location = location ? [location] : [];
+    }
+    if (status) {
+      payload.status = STATUS_POST.ACTIVE;
     }
     return dispatch({
       type: 'homePage/fetchAnnouncementsEffect',
@@ -64,6 +70,11 @@ const Announcements = (props) => {
         post: postId,
         postType: POST_TYPE.SOCIAL,
       },
+    }).then((res) => {
+      const { statusCode } = res;
+      if (statusCode === 200) {
+        fetchData(POST_TYPE.SOCIAL, limitSocial, '', STATUS_POST.ACTIVE);
+      }
     });
   };
 
@@ -73,8 +84,28 @@ const Announcements = (props) => {
       payload: {
         id: postId,
         postType: POST_TYPE.SOCIAL,
-        status: 'HIDDEN',
+        status: STATUS_POST.HIDDEN,
       },
+    }).then((res) => {
+      const { statusCode } = res;
+      if (statusCode === 200) {
+        fetchData(POST_TYPE.SOCIAL, limitSocial, '', STATUS_POST.ACTIVE);
+      }
+    });
+  };
+
+  const deletePost = (postId) => {
+    return dispatch({
+      type: 'homePage/deletePostEffect',
+      payload: {
+        postId,
+      },
+    }).then((res) => {
+      const { statusCode } = res;
+      if (statusCode === 200) {
+        setIsDelete(false);
+        fetchData(POST_TYPE.SOCIAL, limitSocial, '', STATUS_POST.ACTIVE);
+      }
     });
   };
 
@@ -88,7 +119,7 @@ const Announcements = (props) => {
 
   useEffect(() => {
     if (isSocial) {
-      fetchData(POST_TYPE.SOCIAL, limitSocial);
+      fetchData(POST_TYPE.SOCIAL, limitSocial, '', STATUS_POST.ACTIVE);
     }
   }, [limitSocial]);
 
@@ -126,11 +157,22 @@ const Announcements = (props) => {
     if (data?.createdBy?._id === employeeId) {
       menu = (
         <Menu>
-          <Menu.Item onClick={() => setIsVisible(true)}>
+          <Menu.Item
+            onClick={() => {
+              setIsVisible(true);
+              setIsEdit(true);
+              setRecord(data);
+            }}
+          >
             <img className={styles.actionIcon} src={UpdateIcon} alt="updateIcon" />
             <span>Edit your post</span>
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item
+            onClick={() => {
+              setIsDelete(true);
+              setRecord(data);
+            }}
+          >
             <img className={styles.actionIcon} src={DeleteIcon} alt="deleteIcon" />
             <span>Delete your post</span>
           </Menu.Item>
@@ -141,8 +183,7 @@ const Announcements = (props) => {
         <Menu>
           <Menu.Item
             onClick={() => {
-              setRecord(data);
-              setIsHidden(true);
+              hiddenPost(data._id);
             }}
           >
             <img className={styles.actionIcon} src={HideIcon} alt="hideIcon" />
@@ -168,31 +209,13 @@ const Announcements = (props) => {
     return (
       <Row gutter={[24, 24]} style={{ minHeight: 300 }}>
         {announcements.map((x) => (
-          <LazyLoad key={x._id} height={200} offset={[-100, 0]}>
-            <Col span={24}>
-              <div className={styles.card}>
-                <div className={styles.cardTitle}>
-                  <EmployeeTag employee={x.createdBy} createDate={x.createdAt} />
-                  {isSocial && (
-                    <Dropdown
-                      className={styles.menuIcon}
-                      overlay={actionMenu(x)}
-                      placement="bottomRight"
-                      trigger="click"
-                    >
-                      <img style={{ padding: 24 }} src={MenuIcon} alt="menu-icon" />
-                    </Dropdown>
-                  )}
-                </div>
-                <PostContent post={x} />
-                <LikeComment
-                  post={x}
-                  activePostID={activePostID}
-                  setActivePostID={setActivePostID}
-                />
-              </div>
-            </Col>
-          </LazyLoad>
+          <AnnouncementsCard
+            item={x}
+            isSocial={isSocial}
+            actionMenu={actionMenu}
+            activePostID={activePostID}
+            setActivePostID={setActivePostID}
+          />
         ))}
         {renderShowMoreBtn()}
       </Row>
@@ -211,28 +234,6 @@ const Announcements = (props) => {
     return <Spin spinning={loadingFetchAnnouncementList}>{children}</Spin>;
   };
 
-  // const renderCompanyUI = () => {
-  //   if (!loadingFetchAnnouncementList && announcements.length === 0) {
-  //     return (
-  //       <div className={styles.card}>
-  //         <EmptyComponent description="No Announcements" />
-  //       </div>
-  //     );
-  //   }
-  //   return <>{announcements.length > 0 ? spinWrap(renderData()) : skeletonWrap(renderData())}</>;
-  // };
-
-  // const renderSocialUI = () => {
-  //   if (!loadingFetchAnnouncementList && announcements.length === 0) {
-  //     return (
-  //       <div className={styles.card}>
-  //         <EmptyComponent description="No Announcements" />
-  //       </div>
-  //     );
-  //   }
-  //   return <>{announcements.length > 0 ? spinWrap(renderData()) : skeletonWrap(renderData())}</>;
-  // };
-
   const handleCompanyClick = () => {
     setIsSocial(false);
     fetchData(POST_TYPE.COMPANY, limitCompany, getCurrentLocation());
@@ -240,7 +241,7 @@ const Announcements = (props) => {
 
   const handleSocialClick = () => {
     setIsSocial(true);
-    fetchData(POST_TYPE.SOCIAL, limitSocial);
+    fetchData(POST_TYPE.SOCIAL, limitSocial, '', STATUS_POST.ACTIVE);
   };
 
   // RENDER UI
@@ -273,12 +274,17 @@ const Announcements = (props) => {
                   ? `${styles.active} ${styles.active2}`
                   : `${styles.active} ${styles.active1}`
               }
-            ></div>
+            />
           </div>
         </div>
         {isSocial && (
           <div className={styles.sharePost}>
-            <p className={styles.sharePost__content} onClick={() => setIsVisible(true)}>
+            <p
+              className={styles.sharePost__content}
+              onClick={() => {
+                setIsVisible(true);
+              }}
+            >
               <img src={EditIcon} alt="editIcon" style={{ paddingRight: 10 }} />
               <span> Hi {name}, let share something today!</span>
             </p>
@@ -295,25 +301,31 @@ const Announcements = (props) => {
       )}
       <CommonModal
         visible={isVisible}
-        title="New Post"
-        onClose={() => setIsVisible(false)}
+        title={isEdit ? 'Edit Post' : 'New Post'}
+        onClose={() => {
+          setIsVisible(false);
+          setIsEdit(false);
+        }}
         content={
           <AddPostContent
             setForm={setForm}
             fetchData={fetchData}
             limit={limitSocial}
             setIsVisible={setIsVisible}
+            isEdit={isEdit}
+            record={record}
           />
         }
         secondText="Reset"
-        firstText="Post"
+        firstText={isEdit ? 'Update' : 'Post'}
         hasCancelButton={false}
         hasSecondButton
+        disabledButton={(isEdit ? loadingEditPost : loadingAddPost) || loadingUploadFile}
         onSecondButtonClick={() => form.resetFields()}
       />
       <CommonModal
-        visible={isHidden}
-        onClose={() => setIsHidden(false)}
+        visible={isDelete}
+        onClose={() => setIsDelete(false)}
         content={
           <div className={styles.hidenModalContent}>
             <img src={ErrorFile} alt="errorFile" />
@@ -322,7 +334,7 @@ const Announcements = (props) => {
         }
         hasHeader={false}
         firstText="Yes"
-        onFinish={() => flagPost(record.postId)}
+        onFinish={() => deletePost(record?._id)}
         width={400}
       />
     </div>
@@ -333,4 +345,7 @@ export default connect(({ homePage, loading, user }) => ({
   homePage,
   user,
   loadingFetchAnnouncementList: loading.effects['homePage/fetchAnnouncementsEffect'],
+  loadingAddPost: loading.effects['homePage/addPostEffect'],
+  loadingEditPost: loading.effects['homePage/updatePostEffect'],
+  loadingUploadFile: loading.effects['upload/uploadFile'],
 }))(Announcements);

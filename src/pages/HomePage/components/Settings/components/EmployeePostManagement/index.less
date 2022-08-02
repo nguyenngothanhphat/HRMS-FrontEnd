@@ -1,24 +1,38 @@
 @padding-lg: 24px;
+@primaryColor: #2c6df9;
 
 .PostCard {
-    box-sizing: border-box;
-    overflow: hidden;
-    background: #ffffff;
-    border: 1px solid #d6dce0;
-    border-radius: 8px;
-    .title {
-        border-bottom: 1px solid #d6dce0;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  border-radius: 8px;
+  .blueText {
+    color: @primaryColor;
+    cursor: pointer;
+  }
+  .title {
+    border-bottom: 1px solid #d6dce0;
+  }
+  .filter {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 57px;
+    padding-right: @padding-lg;
+    padding-left: @padding-lg;
+    .tagCountFilter {
+      padding: 5px;
+      border-radius: 15px;
     }
-    .filter {
-        padding-right: @padding-lg;
-        padding-left: @padding-lg;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        height: 57px;
-    }
+  }
 
-    .table {
-        padding: @padding-lg;
+  .table {
+    padding: @padding-lg;
+  }
+  .actions {
+    img {
+      cursor: pointer;
     }
+  }
 }

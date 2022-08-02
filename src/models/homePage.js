@@ -29,6 +29,7 @@ import {
   upsertCelebrationConversation,
   votePoll,
   getListPolicy,
+  getListEmployeeCreated,
 } from '../services/homePage';
 import { getCurrentCompany, getCurrentTenant } from '../utils/authority';
 import { TAB_IDS } from '@/utils/homePage';
@@ -61,7 +62,7 @@ const defaultState = {
   totalPostsOfType: [],
   selectedPollOption: {},
   announcementTotal: 0,
-
+  listEmployeeName: [],
   // social activities
   postComments: [],
   reactionList: [],
@@ -746,6 +747,25 @@ const homePage = {
           type: 'save',
           payload: {
             listPolicy: data,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchListEmployeeCreated(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getListEmployeeCreated, {
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            listEmployeeName: data,
           },
         });
       } catch (error) {

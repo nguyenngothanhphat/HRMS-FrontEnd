@@ -1,10 +1,10 @@
 import { Form, Input, message, Upload } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import AttachmentIcon from '@/assets/attachment.svg';
 import UploadFileURLIcon from '@/assets/homePage/uploadURLIcon.svg';
 import styles from './index.less';
-import { POST_TYPE } from '@/utils/homePage';
+import { POST_TYPE, STATUS_POST } from '@/utils/homePage';
 
 const { Dragger } = Upload;
 
@@ -16,12 +16,45 @@ const AddPostContent = (props) => {
     fetchData = () => {},
     setIsVisible = () => {},
     limit = 5,
+    record = {},
+    isEdit = false,
   } = props;
   const [form] = Form.useForm();
+
+  const [fileList, setFileList] = useState([]);
+  const [isURL, setIsURL] = useState(false);
+  const [isUpload, setIsUpload] = useState(false);
 
   useEffect(() => {
     setForm(form);
   }, []);
+
+  useEffect(() => {
+    if (isEdit) {
+      const { description = '', attachments = [] } = record;
+      const fileListTemp = () => {
+        return attachments.map((x, i) => {
+          return {
+            ...x,
+            uid: i,
+            name: x.name,
+            status: 'done',
+            url: x.url,
+            thumbUrl: x.url,
+            id: x._id,
+          };
+        });
+      };
+      form.setFieldsValue({
+        description,
+        uploadFiles: { fileList: [...fileListTemp()] },
+      });
+      setFileList([...fileListTemp()]);
+    }
+    return () => {
+      form.resetFields();
+    };
+  }, [isEdit]);
 
   const onUploadFiles = async (files) => {
     if (Array.isArray(files)) {
@@ -55,21 +88,38 @@ const AddPostContent = (props) => {
   };
 
   const onAddNew = async (values) => {
-    let payload = {};
-    const attachment = await onUploadFiles(values.uploadFiles);
-    payload = {
-      attachment,
-      postType: 'EMPLOYEE',
-      description: values.description,
-      createdBy: employee?._id,
-    };
-    // onBack();
+    const attachments = await onUploadFiles(values.uploadFiles);
     dispatch({
       type: 'homePage/addPostEffect',
-      payload,
+      payload: {
+        attachments,
+        postType: POST_TYPE.SOCIAL,
+        description: values.description,
+        createdBy: employee?._id,
+      },
     }).then((x) => {
-      if (x.statusCode === 200) setIsVisible(false);
-      fetchData(POST_TYPE.SOCIAL, limit);
+      if (x.statusCode === 200) {
+        setIsVisible(false);
+        fetchData(POST_TYPE.SOCIAL, limit, '', STATUS_POST.ACTIVE);
+      }
+    });
+  };
+
+  const onEditPost = async (values) => {
+    const attachments = await onUploadFiles(values.uploadFiles);
+    dispatch({
+      type: 'homePage/updatePostEffect',
+      payload: {
+        id: record?._id,
+        attachments,
+        postType: POST_TYPE.SOCIAL,
+        description: values.description,
+      },
+    }).then((x) => {
+      if (x.statusCode === 200) {
+        setIsVisible(false);
+        fetchData(POST_TYPE.SOCIAL, limit, '', STATUS_POST.ACTIVE);
+      }
     });
   };
 
@@ -96,9 +146,42 @@ const AddPostContent = (props) => {
     return (checkType && isLt3M) || Upload.LIST_IGNORE;
   };
 
+  const onValuesChange = (changedValues, allValues) => {
+    if (allValues.urlFile) {
+      setIsURL(true);
+    } else {
+      setIsURL(false);
+    }
+
+    if (allValues.uploadFiles?.fileList?.length) {
+      setIsUpload(true);
+    } else {
+      setIsUpload(false);
+    }
+
+    const tempAllValues = { ...allValues };
+    const commonFunc = (name) => {
+      let { fileList: fileListTemp = [] } = tempAllValues[name] || {};
+      fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
+      setFileList([...fileListTemp]);
+      if (tempAllValues[name]) {
+        tempAllValues[name].fileList = fileListTemp;
+      }
+      return tempAllValues;
+    };
+    return commonFunc('uploadFiles');
+  };
+
   return (
     <div className={styles.AnnouncementContent}>
-      <Form layout="vertical" form={form} id="myForm" className={styles.form} onFinish={onAddNew}>
+      <Form
+        layout="vertical"
+        form={form}
+        id="myForm"
+        className={styles.form}
+        onValuesChange={onValuesChange}
+        onFinish={isEdit ? onEditPost : onAddNew}
+      >
         <Form.Item
           label="Description"
           name="description"
@@ -128,8 +211,10 @@ const AddPostContent = (props) => {
           <Dragger
             listType="picture"
             className={styles.fileUploadForm}
-            multiple
+            fileList={[...fileList]}
             beforeUpload={beforeUpload}
+            multiple
+            disabled={isURL}
           >
             <div className={styles.drapperBlock}>
               <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" />
@@ -147,6 +232,7 @@ const AddPostContent = (props) => {
             placeholder="Type your media link here"
             allowClear
             prefix={<img src={UploadFileURLIcon} alt="upload-url-icon" />}
+            disabled={isUpload}
           />
         </Form.Item>
       </Form>
@@ -154,4 +240,6 @@ const AddPostContent = (props) => {
   );
 };
 
-export default connect(({ user: { currentUser = {} } = {} }) => ({ currentUser }))(AddPostContent);
+export default connect(({ user: { currentUser = {} } = {} }) => ({
+  currentUser,
+}))(AddPostContent);

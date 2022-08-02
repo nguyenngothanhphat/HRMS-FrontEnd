@@ -1,30 +1,88 @@
-import CommonTable from '@/components/CommonTable';
-import { POST_TYPE } from '@/utils/homePage';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
+import { connect, Link } from 'umi';
+import Parser from 'html-react-parser';
+import { Image, Popconfirm, Tag } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
+import CommonTable from '@/components/CommonTable';
+import { POST_TYPE, STATUS_POST } from '@/utils/homePage';
 import FilterButton from '@/components/FilterButton';
 import FilterPopover from '@/components/FilterPopover';
+import HideIcon from '@/assets/homePage/hideIconWhite.svg';
+import RemoveIcon from '@/assets/homePage/removeIcon.svg';
+import FilterForm from './components/FilterForm';
+import CommonModal from '@/components/CommonModal';
+import AnnouncementsCard from '@/pages/HomePage/components/Announcements/components/AnnouncementsCard';
 import styles from './index.less';
 
 function EmployeePostManagement(props) {
-  const { dispatch } = props;
+  const {
+    dispatch,
+    announcements = [],
+    loadingFetchAnnouncementList = false,
+    announcementTotal = 0,
+  } = props;
 
   const [visible, setVisible] = useState(false);
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(1);
+  const [viewDetailModal, setViewDetailModal] = useState(false);
+  const [detailPost, setDetailPost] = useState({});
+  const [activePostID, setActivePostID] = useState('');
+  const [applied, setApplied] = useState(0);
+  const [form, setForm] = useState(null);
 
-  const fetchData = (limit = 10, page = 1) => {
+  const fetchData = (filter) => {
     dispatch({
       type: 'homePage/fetchAnnouncementsEffect',
       payload: {
         postType: POST_TYPE.SOCIAL,
         limit,
         page,
+        ...filter,
       },
     });
   };
 
+  const onChangePage = (pageSeleted, size) => {
+    setPage(pageSeleted);
+    setLimit(size || limit);
+  };
+
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [limit, page]);
+
+  const onHidePost = (record) => {
+    dispatch({
+      type: 'homePage/updatePostEffect',
+      payload: {
+        postType: POST_TYPE.SOCIAL,
+        status: STATUS_POST.HIDDEN,
+        id: record?._id,
+      },
+    }).then((res) => {
+      const { statusCode } = res;
+      if (statusCode === 200) fetchData();
+    });
+  };
+
+  const onDeleteAttachment = (record) => {
+    dispatch({
+      type: 'homePage/deletePostEffect',
+      payload: {
+        postType: POST_TYPE.SOCIAL,
+        id: record?._id,
+      },
+    }).then((res) => {
+      const { statusCode } = res;
+      if (statusCode === 200) fetchData();
+    });
+  };
+
+  const viewDetailPost = (row) => {
+    setViewDetailModal(true);
+    setDetailPost(row);
+  };
 
   const generateColumns = () => {
     const columns = [
@@ -33,7 +91,11 @@ function EmployeePostManagement(props) {
         dataIndex: 'postID',
         key: 'postID',
         width: '10%',
-        render: (linkId) => <span className={styles.blueText}>#{linkId}</span>,
+        render: (postId, row) => (
+          <span className={styles.blueText} onClick={() => viewDetailPost(row)}>
+            #{postId}
+          </span>
+        ),
       },
       {
         title: 'Description',
@@ -46,45 +108,38 @@ function EmployeePostManagement(props) {
       },
       {
         title: 'Media',
-        dataIndex: 'media',
-        key: 'media',
+        dataIndex: 'attachments',
+        key: 'attachments',
         width: '10%',
-        render: (locations) => (
-          <div style={{ lineHeight: '22px' }}>
-            {locations.map((x, index) => {
-              return (
-                <span key={x._id}>
-                  {x.name}
-                  {index + 1 < locations.length ? ', ' : ''}
-                </span>
-              );
-            })}
-          </div>
-        ),
+        render: (attachments = []) => {
+          return attachments.map((x) => (
+            <Image.PreviewGroup>
+              <Image width={32} height={32} src={x.url} />
+            </Image.PreviewGroup>
+          ));
+        },
       },
       {
         title: 'Created By',
         dataIndex: 'createdBy',
         key: 'createdBy',
         width: '15%',
-        render: (attachments = []) => {
-          return attachments.map((x) => <div>{x.name}</div>);
+        render: (createdBy = {}) => {
+          const { generalInfoInfo: { legalName = '', userId = '' } = {} } = createdBy;
+          return (
+            <Link style={{ fontWeight: 500 }} to={`/directory/employee-profile/${userId}`}>
+              <span>{legalName}</span>
+            </Link>
+          );
         },
       },
       {
         title: 'Created On',
-        dataIndex: 'createdOn',
-        key: 'createdOn',
+        dataIndex: 'updatedAt',
+        key: 'updatedAt',
         width: '15%',
-        render: (employees = {}) => {
-          return employees.map((employee) => (
-            <Link
-              style={{ fontWeight: 500 }}
-              to={`/directory/employee-profile/${employee?.userId}`}
-            >
-              {employee?.legalName || ''}
-            </Link>
-          ));
+        render: (updatedAt = '') => {
+          return <span>{updatedAt ? updatedAt?.substring(0, 10) : ''}</span>;
         },
       },
       {
@@ -93,8 +148,8 @@ function EmployeePostManagement(props) {
         key: 'flag',
         width: '5%',
         align: 'center',
-        render: (createdAt = {}) => {
-          return <span>{createdAt ? moment(createdAt).format('MM-DD-YYYY') : ''}</span>;
+        render: (flag = []) => {
+          return <span>{flag?.length}</span>;
         },
       },
       {
@@ -102,8 +157,8 @@ function EmployeePostManagement(props) {
         dataIndex: 'status',
         key: 'status',
         width: '10%',
-        render: (createdAt = {}) => {
-          return <span>{createdAt ? moment(createdAt).format('MM-DD-YYYY') : ''}</span>;
+        render: (status = '') => {
+          return <span>{status}</span>;
         },
       },
       {
@@ -115,13 +170,13 @@ function EmployeePostManagement(props) {
         render: (_, record) => {
           return (
             <div className={styles.actions}>
-              <img src={EditIcon} alt="" onClick={() => onEditQuickLink(record)} />
+              <img src={HideIcon} alt="hideIcon" onClick={() => onHidePost(record)} />
               <Popconfirm
                 placement="left"
                 title="Are you sure?"
                 onConfirm={() => onDeleteAttachment(record)}
               >
-                <img src={RemoveIcon} alt="" />
+                <img src={RemoveIcon} alt="deleteIcon" />
               </Popconfirm>
             </div>
           );
@@ -131,13 +186,27 @@ function EmployeePostManagement(props) {
     return columns;
   };
 
+  const handleClearFilter = () => {
+    fetchData();
+    form?.resetFields();
+    setApplied(0);
+  };
+
   return (
     <div className={styles.PostCard}>
       <div className={styles.title}>
         <div className={styles.filter}>
+          {applied > 0 && (
+            <Tag
+              className={styles.tagCountFilter}
+              closable
+              closeIcon={<CloseOutlined onClick={handleClearFilter} />}
+            >
+              {applied} filters applied
+            </Tag>
+          )}
           <FilterPopover
-            // content={<FilterForm visible={visible} {...this.props} />}
-            // title={this.renderTitle()}
+            content={<FilterForm setForm={setForm} setApplied={setApplied} fetchData={fetchData} />}
             trigger="click"
             placement="bottomRight"
             visible={visible}
@@ -148,10 +217,38 @@ function EmployeePostManagement(props) {
         </div>
       </div>
       <div className={styles.table}>
-        <CommonTable columns={generateColumns()} />
+        <CommonTable
+          columns={generateColumns()}
+          list={announcements}
+          loading={loadingFetchAnnouncementList}
+          onChangePage={onChangePage}
+          limit={limit}
+          page={page}
+          isBackendPaging
+          total={announcementTotal}
+        />
       </div>
+      <CommonModal
+        visible={viewDetailModal}
+        onClose={() => setViewDetailModal(false)}
+        content={
+          <AnnouncementsCard
+            item={detailPost}
+            activePostID={activePostID}
+            setActivePostID={setActivePostID}
+            isView
+          />
+        }
+        hasHeader={false}
+        hasFooter={false}
+        width={600}
+      />
     </div>
   );
 }
 
-export default connect(({}) => ({}))(EmployeePostManagement);
+export default connect(({ homePage: { announcements = [], announcementTotal } = {}, loading }) => ({
+  announcements,
+  announcementTotal,
+  loadingFetchAnnouncementList: loading.effects['homePage/fetchAnnouncementsEffect'],
+}))(EmployeePostManagement);

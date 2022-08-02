@@ -30,8 +30,13 @@ export const POST_OR_CMT = {
 };
 
 export const POST_TYPE = {
-  SOCIAL: 'EMPLOYEE',
+  SOCIAL: 'SOCIAL',
   COMPANY: 'ANNOUNCEMENTS',
+};
+
+export const STATUS_POST = {
+  ACTIVE: 'ACTIVE',
+  HIDDEN: 'HIDDEN',
 };
 
 export const urlify = (text) => {
