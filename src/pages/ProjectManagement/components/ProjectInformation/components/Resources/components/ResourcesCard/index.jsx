@@ -1,5 +1,4 @@
-import { CloseOutlined } from '@ant-design/icons';
-import { Card, DatePicker, Form, Popconfirm, Tag } from 'antd';
+import { Card, DatePicker, Form, Popconfirm } from 'antd';
 import { debounce } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -13,6 +12,7 @@ import CommonModal from '@/components/CommonModal';
 import CommonTable from '@/components/CommonTable';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
 import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import AddResourcesModal from '../AddResourcesModal';
@@ -57,14 +57,12 @@ const EditableCell = ({
 const ResourcesCard = (props) => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [searchValue, setSearchValue] = useState('');
   const [addResourceModalVisible, setAddResourceModalVisible] = useState('');
   const [removeResourceModalVisible, setRemoveResourceModalVisible] = useState('');
   const [removingPackage, setRemovingPackage] = useState('');
-  const [applied, setApplied] = useState(0);
+  const [filter, setFilter] = useState({});
+  const [searchValue, setSearchValue] = useState('');
   // if reselect project status or search, clear filter form
-  const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
-  const [isFiltering, setIsFiltering] = useState(false);
 
   const {
     dispatch,
@@ -167,26 +165,23 @@ const ResourcesCard = (props) => {
   };
 
   // functions
-  const fetchResourceOfProject = (name, p, l) => {
+  const fetchResourceOfProject = () => {
     dispatch({
       type: 'projectDetails/fetchResourceOfProjectEffect',
       payload: {
         projects: [id],
-        ...name,
-        page: p,
-        limit: l,
+        ...filter,
+        name: searchValue,
+        page,
+        limit,
         adminMode: true,
       },
     });
   };
 
   useEffect(() => {
-    fetchResourceOfProject({ name: searchValue }, page, limit);
-  }, [page, limit]);
-
-  // useEffect(() => {
-  //   fetchResourceOfProject();
-  // }, []);
+    fetchResourceOfProject();
+  }, [page, limit, searchValue, JSON.stringify(filter)]);
 
   const onChangePage = (p, l) => {
     setPage(p);
@@ -194,7 +189,6 @@ const ResourcesCard = (props) => {
   };
 
   const onSearchDebounce = debounce((value) => {
-    fetchResourceOfProject({ name: value });
     setSearchValue(value);
   }, 1000);
 
@@ -203,20 +197,8 @@ const ResourcesCard = (props) => {
     onSearchDebounce(value);
   };
 
-  const onFilter = (filterPayload) => {
-    fetchResourceOfProject({ name: searchValue, ...filterPayload }, page, limit);
-    if (Object.keys(filterPayload).length > 0) {
-      setIsFiltering(true);
-      setApplied(Object.keys(filterPayload).length);
-    } else {
-      setIsFiltering(false);
-      setApplied(0);
-    }
-  };
-
-  const clearFilter = () => {
-    onFilter({});
-    setNeedResetFilterForm(true);
+  const onFilter = (values) => {
+    setFilter(values);
   };
 
   const removeResourceOfProject = async (key) => {
@@ -379,31 +361,19 @@ const ResourcesCard = (props) => {
   });
 
   const renderOption = () => {
-    const content = (
-      <FilterResourcesContent
-        onFilter={onFilter}
-        needResetFilterForm={needResetFilterForm}
-        setNeedResetFilterForm={setNeedResetFilterForm}
-        setIsFiltering={setIsFiltering}
-        setApplied={setApplied}
-      />
-    );
+    const applied = Object.values(filter).filter((v) => v).length;
+
+    const content = <FilterResourcesContent onFilter={onFilter} filter={filter} />;
     return (
       <div className={styles.options}>
-        {applied > 0 && (
-          <Tag
-            className={styles.tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined />}
-            onClose={() => {
-              clearFilter();
-            }}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
+        <FilterCountTag
+          count={applied}
+          onClearFilter={() => {
+            onFilter({});
+          }}
+        />
         <FilterPopover placement="bottomRight" content={content}>
-          <CustomOrangeButton showDot={isFiltering} />
+          <CustomOrangeButton showDot={applied > 0} />
         </FilterPopover>
         {allowModify && (
           <CustomOrangeButton

@@ -1,6 +1,6 @@
 import { Button, Col, Modal, Row } from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import BackIcon from '@/assets/projectManagement/back.svg';
 import ModalImage from '@/assets/projectManagement/modalImage1.png';
@@ -50,6 +50,11 @@ const AssignResourcesModal = (props) => {
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [step, setStep] = useState(1);
   const [selectedResources, setSelectedResources] = useState([]);
+
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [searchValue, setSearchValue] = useState('');
+  const [filter, setFilter] = useState({});
   const adminMode = permissions.viewResourceAdminMode !== -1;
   const countryMode = permissions.viewResourceCountryMode !== -1;
 
@@ -64,14 +69,14 @@ const AssignResourcesModal = (props) => {
     setSelectedResources(result);
   };
 
-  const fetchResourceList = (name = '', page = 1, limit = 5, filter) => {
+  const fetchResourceList = () => {
     dispatch({
       type: 'projectDetails/fetchResourceListEffect',
       payload: {
         notInProject: projectNumberId,
         page,
         limit,
-        name,
+        name: searchValue,
         // department: [department],
         title: [titleId],
         ...filter,
@@ -81,6 +86,12 @@ const AssignResourcesModal = (props) => {
       },
     });
   };
+
+  useEffect(() => {
+    if (visible) {
+      fetchResourceList();
+    }
+  }, [visible, searchValue, limit, page, JSON.stringify(filter)]);
 
   const assignResources = () => {
     const payload = selectedResources.map((x) => {
@@ -183,6 +194,13 @@ const AssignResourcesModal = (props) => {
             setSelectedResources={setSelectedResources}
             resourceTypeName={resourceTypeName}
             noOfResources={noOfResources}
+            setSearchValue={setSearchValue}
+            filter={filter}
+            setFilter={setFilter}
+            page={page}
+            limit={limit}
+            setPage={setPage}
+            setLimit={setLimit}
           />
         </Row>
       </div>

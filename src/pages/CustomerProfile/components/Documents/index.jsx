@@ -1,4 +1,3 @@
-import { PlusOutlined } from '@ant-design/icons';
 // eslint-disable-next-line no-unused-vars
 import { Popconfirm } from 'antd';
 import { debounce, uniq } from 'lodash';
@@ -9,11 +8,13 @@ import DeleteIcon from '@/assets/customerManagement/recycleBin.svg';
 import ViewIcon from '@/assets/customerManagement/view.svg';
 import CommonModal from '@/components/CommonModal';
 import CommonTable from '@/components/CommonTable';
+import CustomAddButton from '@/components/CustomAddButton';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import AddContent from './components/AddContent';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
@@ -33,11 +34,12 @@ const Documents = (props) => {
   const viewAddCustomerDocument = permissions.viewAddCustomerDocument !== -1;
   const managerCustomerDocument = permissions.managerCustomerDocument !== -1;
 
-  const [searchValue, setSearchValue] = useState('');
   const [visible, setVisible] = useState(false);
   const [viewDocumentModalVisible, setViewDocumentModalVisible] = useState(false);
   const [isValidForm, setIsValidForm] = useState(false);
   const [url, setUrl] = useState('');
+  const [filter, setFilter] = useState({});
+  const [searchValue, setSearchValue] = useState('');
 
   const fetchData = () => {
     dispatch({
@@ -45,6 +47,20 @@ const Documents = (props) => {
       payload: {
         id: reId,
         searchKey: searchValue,
+      },
+    });
+  };
+
+  const filterData = () => {
+    const { byType, fromDate, toDate, byUpload } = filter;
+    dispatch({
+      type: 'customerProfile/filterDoc',
+      payload: {
+        customerId,
+        type: parseInt(byType, 10) || '',
+        uploadedBy: byUpload || '',
+        fromDate: fromDate ? moment(fromDate).format(DATE_FORMAT_YMD) : '',
+        toDate: toDate ? moment(toDate).format(DATE_FORMAT_YMD) : '',
       },
     });
   };
@@ -63,6 +79,10 @@ const Documents = (props) => {
     fetchData();
   }, [searchValue]);
 
+  useEffect(() => {
+    filterData();
+  }, [JSON.stringify(filter)]);
+
   const showModal = () => {
     setVisible(true);
   };
@@ -72,17 +92,7 @@ const Documents = (props) => {
   };
 
   const onFilter = (values) => {
-    const { byType, fromDate, toDate, byUpload } = values;
-    dispatch({
-      type: 'customerProfile/filterDoc',
-      payload: {
-        customerId,
-        type: parseInt(byType, 10) || '',
-        uploadedBy: byUpload || '',
-        fromDate: fromDate ? moment(fromDate).format('YYYY-MM-DD') : '',
-        toDate: toDate ? moment(toDate).format('YYYY-MM-DD') : '',
-      },
-    });
+    setFilter(values);
   };
 
   const removeDoc = (idProp) => {
@@ -183,6 +193,7 @@ const Documents = (props) => {
     onSearchDebounce(value);
   };
 
+  const applied = Object.values(filter).filter((v) => v).length;
   return (
     <div className={styles.Documents}>
       <div className={styles.documentHeader}>
@@ -190,12 +201,16 @@ const Documents = (props) => {
           <span>Documents</span>
         </div>
         <div className={styles.documentHeaderFunction}>
+          <FilterCountTag
+            count={applied}
+            onClearFilter={() => {
+              onFilter({});
+            }}
+          />
+
           {/* Add doc */}
           {managerCustomerDocument && (
-            <div className={styles.buttonAddImport} onClick={showModal}>
-              <PlusOutlined />
-              Add Document
-            </div>
+            <CustomAddButton onClick={showModal}>Add Document</CustomAddButton>
           )}
 
           <CommonModal
@@ -222,10 +237,11 @@ const Documents = (props) => {
                   documentType={documentType}
                   onFilter={onFilter}
                   uploadByList={uniqUploadByList}
+                  filter={filter}
                 />
               }
             >
-              <CustomOrangeButton>Filter</CustomOrangeButton>
+              <CustomOrangeButton showDot={applied > 0}>Filter</CustomOrangeButton>
             </FilterPopover>
           </div>
 

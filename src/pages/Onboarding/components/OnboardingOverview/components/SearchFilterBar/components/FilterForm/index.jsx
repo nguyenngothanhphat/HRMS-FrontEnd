@@ -1,14 +1,13 @@
 /* eslint-disable react/jsx-curly-newline */
 import { Col, DatePicker, Form, Row, Select } from 'antd';
-import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 
-import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -66,10 +65,14 @@ const arrStatus = [
 const FilterForm = (props) => {
   const [form] = Form.useForm();
 
-  const { dispatch } = props;
-  const { currentStatus = '', filter = {}, setFilter = () => {} } = props;
-  const { jobTitleList = [], locationList = [] } = props;
-  const [isFiltering, setIsFiltering] = React.useState(false);
+  const {
+    dispatch,
+    currentStatus = '',
+    filter = {},
+    onFilter = () => {},
+    jobTitleList = [],
+    locationList = [],
+  } = props;
 
   useEffect(() => {
     dispatch({
@@ -84,46 +87,16 @@ const FilterForm = (props) => {
   }, []);
 
   const onFinishDebounce = debounce((values) => {
-    setFilter(values);
+    onFilter(values);
   }, 700);
 
-  const onValuesChange = () => {
-    setIsFiltering(true);
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
 
-  const onFinish = (values) => {
-    let payload = { ...values };
-    if (values.processStatus === undefined && currentStatus !== 'ALL') {
-      payload = {
-        ...payload,
-        processStatus: [currentStatus],
-      };
-    }
-
-    if (payload.fromDate && payload.toDate) {
-      const _fromDate = moment(payload.fromDate).format(DATE_FORMAT_YMD);
-      const _toDate = moment(payload.toDate).format(DATE_FORMAT_YMD);
-      payload = {
-        ...payload,
-        fromDate: _fromDate,
-        toDate: _toDate,
-      };
-    }
-    dispatch({
-      type: 'onboarding/filterOnboardList',
-      payload,
-      currentStatus,
-    });
-  };
-
+  // clear values
   useEffect(() => {
-    if (isFiltering) {
-      onFinish(filter);
-    }
-    // clear filter
-    if (Object.keys(filter).length === 0) {
+    if (isEmpty(filter)) {
       form.resetFields();
     }
   }, [JSON.stringify(filter)]);
@@ -145,14 +118,7 @@ const FilterForm = (props) => {
 
   return (
     <div className={styles.FilterForm}>
-      <Form
-        layout="vertical"
-        name="filter"
-        onValuesChange={(value) => {
-          onValuesChange(value);
-        }}
-        form={form}
-      >
+      <Form layout="vertical" name="filter" onValuesChange={onValuesChange} form={form}>
         <Form.Item label="By status" name="processStatus">
           <Select
             showArrow

@@ -1,6 +1,6 @@
 import { Form, Select, Row, Col, DatePicker } from 'antd';
 import React, { useEffect } from 'react';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -9,10 +9,7 @@ const FilterContent = (props) => {
   const {
     projectDetails: { documentTypeList = [], employeeList = [] } = {},
     onFilter = () => {},
-    needResetFilterForm = false,
-    setNeedResetFilterForm = () => {},
-    setIsFiltering = () => {},
-    setApplied = () => {},
+    filter = {},
     loadingFetchEmployeeList = false,
   } = props;
 
@@ -37,20 +34,16 @@ const FilterContent = (props) => {
     onFinish(values);
   }, 700);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
 
   // clear values
   useEffect(() => {
-    if (needResetFilterForm) {
+    if (isEmpty(filter)) {
       form.resetFields();
-      setNeedResetFilterForm(false);
-      setIsFiltering(false);
-      setApplied(0);
     }
-  }, [needResetFilterForm]);
+  }, [JSON.stringify(filter)]);
 
   return (
     <Form

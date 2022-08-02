@@ -20,17 +20,18 @@ const Resources = (props) => {
     loadingFetch = false,
   } = props;
   const [addResourceTypeModalVisible, setAddResourceTypeModalVisible] = useState(false);
-  const [unfilter, setUnfilter] = useState(true);
+  const [filter, setFilter] = useState({});
+  const [searchValue, setSearchValue] = useState('');
 
   // permissions
   const { allowModify = false } = props;
 
-  const fetchResourceTypeList = (searchKey, filter) => {
+  const fetchResourceTypeList = () => {
     dispatch({
       type: 'projectDetails/fetchResourceTypeListEffect',
       payload: {
         projectId,
-        searchKey,
+        searchKey: searchValue,
         ...filter,
       },
     });
@@ -38,7 +39,7 @@ const Resources = (props) => {
 
   useEffect(() => {
     fetchResourceTypeList();
-  }, []);
+  }, [searchValue, JSON.stringify(filter)]);
 
   // render ui
   const renderEmptyCard = () => {
@@ -76,7 +77,10 @@ const Resources = (props) => {
               data={resourceTypeList}
               refreshResourceType={fetchResourceTypeList}
               allowModify={allowModify}
-              setUnfilter={(value) => setUnfilter(value)}
+              setFilter={setFilter}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+              filter={filter}
             />
           </TabPane>
           <TabPane tab="Resources" key="2">
@@ -87,7 +91,10 @@ const Resources = (props) => {
     );
   };
 
-  if (loadingFetch && resourceTypeList.length === 0 && unfilter) {
+  const applied = Object.values(filter).filter((v) => v).length;
+  const isAllEmpty = applied === 0 && !searchValue && resourceTypeList.length === 0;
+
+  if (loadingFetch && isAllEmpty) {
     return (
       <div className={styles.Resources}>
         <Skeleton active />
@@ -96,7 +103,7 @@ const Resources = (props) => {
   }
   return (
     <div className={styles.Resources}>
-      {resourceTypeList.length === 0 && unfilter ? renderEmptyCard() : renderDataCard()}
+      {isAllEmpty ? renderEmptyCard() : renderDataCard()}
       <CommonModal
         visible={addResourceTypeModalVisible}
         onClose={() => setAddResourceTypeModalVisible(false)}

@@ -1,5 +1,4 @@
-import { CloseOutlined } from '@ant-design/icons';
-import { Button, Card, Tag } from 'antd';
+import { Button, Card } from 'antd';
 import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -10,6 +9,7 @@ import ViewIcon from '@/assets/dashboard/open.svg';
 import CommonTable from '@/components/CommonTable';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import { TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
@@ -34,28 +34,25 @@ const ApprovalPage = (props) => {
   } = props;
   const [openModal, setOpenModal] = useState(false);
   const [ticket, setTicket] = useState({});
-  const [keySearch, setKeySearch] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const [listData, setListData] = useState([]);
-  const [applied, setApplied] = useState(0);
-  const [isFiltering, setIsFiltering] = useState(false);
   const [commentModalVisible, setCommentModalVisible] = useState(false);
   const [recordDetail, setRecordDetail] = useState({});
   const [viewedDetail, setViewedDetail] = useState(false);
-  const [form, setForm] = useState(null);
+  const [filter, setFilter] = useState({});
 
-  const fetchListTicket = (searchKey = '', filterPayload = {}) => {
+  const fetchListTicket = () => {
     dispatch({
       type: 'dashboard/fetchAllListTicket',
       payload: {
         employeeId: idEmployee,
-        search: searchKey,
-        ...filterPayload,
+        search: searchValue,
+        ...filter,
       },
     });
   };
 
   useEffect(() => {
-    fetchListTicket(keySearch);
     const tenantId = getCurrentTenant();
     const company = getCurrentCompany();
     dispatch({
@@ -65,14 +62,21 @@ const ApprovalPage = (props) => {
         tenantId,
       },
     });
-  }, [keySearch]);
+  }, []);
+
   useEffect(() => {
-    if (isLoadData) fetchListTicket();
+    fetchListTicket();
+  }, [searchValue, JSON.stringify(filter)]);
+
+  useEffect(() => {
+    if (isLoadData) {
+      fetchListTicket();
+    }
   }, [isLoadData]);
 
   useEffect(() => {
     setListData(allTicket);
-  }, [keySearch, allTicket]);
+  }, [searchValue, allTicket]);
 
   const viewDetail = (record) => {
     setOpenModal(true);
@@ -151,7 +155,7 @@ const ApprovalPage = (props) => {
   };
 
   const onSearchDebounce = debounce((value) => {
-    setKeySearch(value);
+    setSearchValue(value);
   }, 1000);
 
   const onChangeKeySearch = (e) => {
@@ -297,50 +301,25 @@ const ApprovalPage = (props) => {
     },
   ];
 
-  const onFilter = (filterPayload) => {
-    if (Object.keys(filterPayload).length > 0) {
-      setIsFiltering(true);
-      setApplied(Object.keys(filterPayload).length);
-    } else {
-      setIsFiltering(false);
-      setApplied(0);
-      fetchListTicket();
-    }
-  };
-
-  const clearFilter = () => {
-    onFilter({});
-    form?.resetFields();
+  const onFilter = (values) => {
+    setFilter(values);
   };
 
   const renderOption = () => {
+    const applied = Object.values(filter).filter((v) => v).length;
     const content = (
-      <FilterContent
-        onFilter={onFilter}
-        setForm={setForm}
-        // needResetFilterForm={needResetFilterForm}
-        // setNeedResetFilterForm={setNeedResetFilterForm}
-        setApplied={setApplied}
-        setIsFiltering={setIsFiltering}
-        fetchListTicket={fetchListTicket}
-      />
+      <FilterContent onFilter={onFilter} filter={filter} fetchListTicket={fetchListTicket} />
     );
     return (
       <div className={styles.searchFilter}>
-        {applied > 0 && (
-          <Tag
-            className={styles.tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined />}
-            onClose={() => {
-              clearFilter();
-            }}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
+        <FilterCountTag
+          count={applied}
+          onClearFilter={() => {
+            onFilter({});
+          }}
+        />
         <FilterPopover placement="bottomRight" content={content}>
-          <CustomOrangeButton showDot={isFiltering} />
+          <CustomOrangeButton showDot={applied > 0} />
         </FilterPopover>
         <CustomSearchBox onSearch={onChangeKeySearch} placeholder="Search by Name" />
       </div>

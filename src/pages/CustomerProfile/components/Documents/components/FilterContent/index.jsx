@@ -1,5 +1,5 @@
 import { Col, DatePicker, Form, Row, Select } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import style from './index.less';
@@ -10,8 +10,7 @@ const FilterContent = (props) => {
     handleFilterCounts = () => {},
     documentType,
     uploadByList = [],
-    clearForm = false,
-    needResetFilterForm = () => {},
+    filter = {},
   } = props;
 
   const [form] = Form.useForm();
@@ -26,14 +25,13 @@ const FilterContent = (props) => {
   };
 
   useEffect(() => {
-    if (clearForm) {
+    if (isEmpty(filter)) {
       form.resetFields();
-      needResetFilterForm();
     }
-  }, [clearForm]);
+  }, [JSON.stringify(filter)]);
 
   return (
-    <div className={style.docFilter}>
+    <div className={style.FilterContent}>
       <Form layout="vertical" name="filter" form={form} onValuesChange={onValuesChange}>
         <Form.Item label="By Type" name="byType">
           <Select

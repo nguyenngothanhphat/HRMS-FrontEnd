@@ -15,6 +15,7 @@ import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
+import FilterCountTag from '@/components/FilterCountTag';
 
 const Header = (props) => {
   const {
@@ -36,8 +37,8 @@ const Header = (props) => {
         location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
       } = {},
     } = {},
+    timeSheet: { filterHrView = {} },
   } = props;
-  const [applied, setApplied] = useState(0);
   const [holidays, setHolidays] = useState([]);
   const [form, setForm] = useState(null);
 
@@ -133,7 +134,6 @@ const Header = (props) => {
     dispatch({
       type: 'timeSheet/clearFilter',
     });
-    setApplied(0);
     form?.resetFields();
   };
 
@@ -155,6 +155,7 @@ const Header = (props) => {
   }, [startDate, endDate]);
 
   const isHoliday = checkHolidayInWeek(startDate, endDate, holidays);
+  const applied = Object.values(filterHrView).filter((v) => v).length;
 
   // MAIN AREA
   return (
@@ -191,15 +192,7 @@ const Header = (props) => {
       <div className={styles.Header__middle}>{viewChangeComponent()}</div>
 
       <div className={styles.Header__right}>
-        {applied > 0 && (
-          <Tag
-            className={styles.Header__tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined onClick={handleClearFilter} />}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
+        <FilterCountTag count={applied} onClearFilter={handleClearFilter} />
         <CustomOrangeButton onClick={downloadTemplate} icon={DownloadIcon}>
           Download
         </CustomOrangeButton>
@@ -208,12 +201,12 @@ const Header = (props) => {
           placement="bottomRight"
           content={
             <Suspense fallback={<Skeleton active />}>
-              <FilterContent setForm={setForm} setApplied={setApplied} />
+              <FilterContent setForm={setForm} />
             </Suspense>
           }
           realTime
         >
-          <CustomOrangeButton />
+          <CustomOrangeButton showDot={applied > 0} />
         </FilterPopover>
         <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>

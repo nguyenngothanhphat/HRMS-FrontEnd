@@ -1,29 +1,32 @@
-import React, { useEffect } from 'react';
 import { Form, Select, Tooltip } from 'antd';
-import { debounce } from 'lodash';
-import style from './index.less';
+import { debounce, isEmpty } from 'lodash';
+import React, { useEffect } from 'react';
 import HelpIcon from '@/assets/projectManagement/help.svg';
+import style from './index.less';
 
 const FilterContent = (props) => {
   const [form] = Form.useForm();
 
-  const { listStatus = [], companyList = [], onSubmit = () => {}, setForm = () => {} } = props;
+  const { filter = {}, listStatus = [], companyList = [], onSubmit = () => {} } = props;
   const yesNo = [
     <Select.Option key="yes">Yes</Select.Option>,
     <Select.Option key="no">No</Select.Option>,
   ];
+
   const onFinishDebounce = debounce((values) => {
     onSubmit(values);
   }, 700);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
 
+  // clear values
   useEffect(() => {
-    setForm(form);
-  }, []);
+    if (isEmpty(filter)) {
+      form.resetFields();
+    }
+  }, [JSON.stringify(filter)]);
 
   return (
     <div className={style.FilterContent}>

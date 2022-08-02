@@ -1,11 +1,12 @@
-import { Form, Select, Row, Col, DatePicker } from 'antd';
+import { Col, DatePicker, Form, Row, Select } from 'antd';
+import { isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
 const FilterContent = (props) => {
+  const [form] = Form.useForm();
   const {
-    dispatch,
     customerProfile: {
       projectTypeList = [],
       projectStatusList = [],
@@ -13,32 +14,12 @@ const FilterContent = (props) => {
       employeeList = [],
       projectNameList = [],
     } = {},
+    filter = {},
     onFilter = () => {},
   } = props;
 
-  const fetchDocumentTypeList = () => {
-    dispatch({
-      type: 'customerProfile/fetchCustomerListEffect',
-    });
-    dispatch({
-      type: 'customerProfile/fetchProjectNameListEffect',
-    });
-    dispatch({
-      type: 'customerProfile/fetchProjectTypeListEffect',
-    });
-    dispatch({
-      type: 'customerProfile/fetchProjectStatusListEffect',
-    });
-    dispatch({
-      type: 'customerProfile/fetchDivisionListEffect',
-    });
-    dispatch({
-      type: 'customerProfile/fetchEmployeeListEffect',
-    });
-  };
-
-  const onValuesChange = (values) => {
-    const newValues = { ...values };
+  const onValuesChange = (changedValues, allValues) => {
+    const newValues = { ...allValues };
 
     // remove empty fields
     // eslint-disable-next-line no-return-assign
@@ -51,13 +32,14 @@ const FilterContent = (props) => {
             ((a[k] = v), a),
       {},
     );
-
     onFilter(result);
   };
 
   useEffect(() => {
-    fetchDocumentTypeList();
-  }, []);
+    if (isEmpty(filter)) {
+      form.resetFields();
+    }
+  }, [JSON.stringify(filter)]);
 
   return (
     <Form
@@ -65,6 +47,7 @@ const FilterContent = (props) => {
       name="filter"
       onValuesChange={onValuesChange}
       className={styles.FilterContent}
+      form={form}
     >
       <Form.Item label="By PROJECT NAME" name="projectName">
         <Select

@@ -1,18 +1,18 @@
-import { Col, DatePicker, Form, Row, Select, Skeleton, Space, Tag } from 'antd';
+import { Col, DatePicker, Form, Row, Select, Skeleton, Space } from 'antd';
 import { debounce } from 'lodash';
+import moment from 'moment';
 import React, { Suspense, useEffect } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
-import CustomSearchBox from '@/components/CustomSearchBox';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { splitArrayItem } from '@/utils/utils';
 import styles from './index.less';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 const TimeOffFilter = (props) => {
   const [form] = Form.useForm();
-
   const {
     dispatch,
     filter: { search, type = [], fromDate, toDate },
@@ -82,8 +82,6 @@ const TimeOffFilter = (props) => {
     return count;
   };
 
-  const getFilterActive = type.length > 0 || fromDate || toDate;
-
   const onClearFilter = () => {
     saveCurrentTypeTab(currentLeaveTypeTab);
     // dispatch action
@@ -91,6 +89,7 @@ const TimeOffFilter = (props) => {
       type: 'timeOff/save',
       payload: { filter: {} },
     });
+    form.resetFields();
   };
 
   useEffect(() => {
@@ -156,9 +155,7 @@ const TimeOffFilter = (props) => {
 
   return (
     <Space direction="horizontal" className={styles.TimeOffFilter}>
-      <Tag className={styles.appliedTag} closable onClose={onClearFilter} visible={getFilterActive}>
-        {countFilter()} filters applied
-      </Tag>
+      <FilterCountTag count={countFilter()} onClearFilter={onClearFilter} />
 
       <div className={styles.rightContentHeader}>
         <FilterPopover
@@ -170,7 +167,7 @@ const TimeOffFilter = (props) => {
           }
           realTime
         >
-          <CustomOrangeButton fontSize={14} showDot={getFilterActive} />
+          <CustomOrangeButton fontSize={14} showDot={applied > 0} />
         </FilterPopover>
 
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Employee ID, name..." />

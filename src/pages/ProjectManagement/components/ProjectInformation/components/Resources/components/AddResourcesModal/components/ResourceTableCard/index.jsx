@@ -1,40 +1,31 @@
-import { Card, Col, Row, Tag } from 'antd';
+import { Card, Col, Row } from 'antd';
 import { debounce } from 'lodash';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { connect } from 'umi';
-import { CloseOutlined } from '@ant-design/icons';
 import TimeIcon from '@/assets/projectManagement/time.svg';
 import CommonTable from '@/components/CommonTable';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
-import FilterPopover from '@/components/FilterPopover';
 import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
+import FilterPopover from '@/components/FilterPopover';
 import FilterResourcesListContent from './components/FilterResourcesListContent';
 import styles from './index.less';
 
 const ResourceTableCard = (props) => {
   const {
     data = [],
-    fetchData = () => {},
     loading = false,
     total = 0,
     selectedResources = [],
     setSelectedResources = () => {},
+    setSearchValue = () => {},
+    filter = {},
+    setFilter = () => {},
+    setPage = () => {},
+    setLimit = () => {},
+    page = 1,
+    limit = 5,
   } = props;
-
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
-  const [searchValue, setSearchValue] = useState('');
-  const [applied, setApplied] = useState(0);
-  // if reselect project status or search, clear filter form
-  const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
-  const [isFiltering, setIsFiltering] = useState(false);
-  const [filter, setFilter] = useState({});
-
-  useEffect(
-    () =>
-      filter ? fetchData(searchValue, page, limit, filter) : fetchData(searchValue, page, limit),
-    [page, limit],
-  );
 
   const onChangePage = (p, l) => {
     setPage(p);
@@ -43,11 +34,6 @@ const ResourceTableCard = (props) => {
 
   const onSearchDebounce = debounce((value) => {
     setSearchValue(value);
-    if (filter) {
-      fetchData(value, page, limit, filter);
-    } else {
-      fetchData(value, page, limit);
-    }
   }, 1000);
 
   const onSearch = (e = {}) => {
@@ -60,22 +46,8 @@ const ResourceTableCard = (props) => {
     setSelectedResources(result);
   };
 
-  const onFilter = (filterPayload) => {
-    fetchData(searchValue, page, limit, filterPayload);
-    if (Object.keys(filterPayload).length > 0) {
-      setIsFiltering(true);
-      setFilter(filterPayload);
-      setApplied(Object.keys(filterPayload).length);
-    } else {
-      setIsFiltering(false);
-      setFilter(null);
-      setApplied(0);
-    }
-  };
-
-  const clearFilter = () => {
-    onFilter({});
-    setNeedResetFilterForm(true);
+  const onFilter = (values) => {
+    setFilter(values);
   };
 
   const generateColumns = () => {
@@ -193,31 +165,18 @@ const ResourceTableCard = (props) => {
   };
 
   const renderOption = () => {
-    const content = (
-      <FilterResourcesListContent
-        onFilter={onFilter}
-        needResetFilterForm={needResetFilterForm}
-        setNeedResetFilterForm={setNeedResetFilterForm}
-        setIsFiltering={setIsFiltering}
-        setApplied={setApplied}
-      />
-    );
+    const applied = Object.values(filter).filter((v) => v).length;
+    const content = <FilterResourcesListContent onFilter={onFilter} filter={filter} />;
     return (
       <div className={styles.options}>
-        {applied > 0 && (
-          <Tag
-            className={styles.tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined />}
-            onClose={() => {
-              clearFilter();
-            }}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
+        <FilterCountTag
+          count={applied}
+          onClearFilter={() => {
+            onFilter({});
+          }}
+        />
         <FilterPopover placement="bottomRight" content={content}>
-          <CustomOrangeButton showDot={isFiltering} />
+          <CustomOrangeButton showDot={applied > 0} />
         </FilterPopover>
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Name" />
       </div>

@@ -1,48 +1,66 @@
-import { CloseOutlined } from '@ant-design/icons';
-import { Tag } from 'antd';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import FilterPopover from '@/components/FilterPopover';
-import CustomSearchBox from '@/components/CustomSearchBox';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
+import FilterPopover from '@/components/FilterPopover';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import FilterForm from './components/FilterForm';
 import styles from './index.less';
 
-const SearchFilterBar = ({ onChangeSearch = () => {}, currentStatus = '' }) => {
-  const [applied, setApplied] = useState(0);
+const SearchFilterBar = ({ dispatch, onChangeSearch = () => {}, currentStatus = '' }) => {
   const [filter, setFilter] = useState({});
 
-  const onClose = () => {
-    setApplied(0);
-    setFilter({});
+  const filterData = () => {
+    let payload = { ...filter };
+    if (filter.processStatus === undefined && currentStatus !== 'ALL') {
+      payload = {
+        ...payload,
+        processStatus: [currentStatus],
+      };
+    }
+
+    if (payload.fromDate && payload.toDate) {
+      const _fromDate = moment(payload.fromDate).format(DATE_FORMAT_YMD);
+      const _toDate = moment(payload.toDate).format(DATE_FORMAT_YMD);
+      payload = {
+        ...payload,
+        fromDate: _fromDate,
+        toDate: _toDate,
+      };
+    }
+    dispatch({
+      type: 'onboarding/filterOnboardList',
+      payload,
+      currentStatus,
+    });
+  };
+
+  const onFilter = (values = {}) => {
+    setFilter(values);
   };
 
   useEffect(() => {
-    const filteredObj = Object.entries(filter).filter(
-      ([, value]) => (value !== undefined && value?.length > 0) || value?.isValid,
-    );
-    const newObj = Object.fromEntries(filteredObj);
-    setApplied(Object.keys(newObj).length);
+    filterData();
   }, [JSON.stringify(filter)]);
+
+  const applied = Object.values(filter).filter((v) => v).length;
 
   return (
     <div className={styles.SearchFilterBar}>
-      {((applied > 0 && currentStatus === 'ALL') || applied > 1) && (
-        <Tag
-          className={styles.tagCountFilter}
-          closable
-          onClose={onClose}
-          closeIcon={<CloseOutlined />}
-        >
-          {currentStatus === 'ALL' ? applied : applied - 1} filters applied
-        </Tag>
-      )}
+      <FilterCountTag
+        count={applied}
+        onClearFilter={() => {
+          setFilter({});
+        }}
+      />
 
       <FilterPopover
-        content={<FilterForm setFilter={setFilter} filter={filter} />}
+        content={<FilterForm onFilter={onFilter} filter={filter} />}
         placement="bottomRight"
       >
-        <CustomOrangeButton />
+        <CustomOrangeButton showDot={applied > 0} />
       </FilterPopover>
 
       <CustomSearchBox

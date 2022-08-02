@@ -1,5 +1,4 @@
-import { CloseOutlined } from '@ant-design/icons';
-import { Avatar, Popover, Tabs, Tag } from 'antd';
+import { Avatar, Popover, Tabs } from 'antd';
 import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -9,6 +8,7 @@ import MenuIcon from '@/assets/offboarding/menuIcon.png';
 import CommonTable from '@/components/CommonTable';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
@@ -42,7 +42,6 @@ const RequestTable = (props) => {
   const [showDropdownId, setShowDropdownId] = useState(null);
   const [searchText, setSearchText] = useState('');
   const [filterValues, setFilterValues] = useState({});
-  const [filterForm, setFilterForm] = useState({});
 
   const fetchData = () => {
     const payload = {
@@ -136,23 +135,17 @@ const RequestTable = (props) => {
 
     return (
       <div className={styles.filterPane}>
-        {applied > 0 && (
-          <Tag
-            className={styles.tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined />}
-            onClose={() => {
-              setFilterValues({});
-              filterForm.resetFields();
-            }}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
+        <FilterCountTag
+          count={applied}
+          onClearFilter={() => {
+            onFilter({});
+          }}
+        />
+
         <FilterPopover
           placement="bottomLeft"
           realTime
-          content={<FilterContent onFinish={onFilter} setFilterForm={setFilterForm} />}
+          content={<FilterContent onFinish={onFilter} filter={filterValues} />}
         >
           <CustomOrangeButton showDot={applied > 0} />
         </FilterPopover>

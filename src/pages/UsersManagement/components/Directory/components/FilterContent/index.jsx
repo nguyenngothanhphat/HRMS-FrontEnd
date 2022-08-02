@@ -1,5 +1,5 @@
 import { Form, Input, Select } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -15,7 +15,6 @@ const FilterContent = (props) => {
       roleList = [],
     } = {},
     companyLocationList = [],
-    handleFilterCounts = () => {},
   } = props;
 
   const [countryListState, setCountryListState] = useState([]);
@@ -39,6 +38,10 @@ const FilterContent = (props) => {
   }, [JSON.stringify(listCountry)]);
 
   useEffect(() => {
+    if (isEmpty(filter)) {
+      form.resetFields();
+    }
+
     // this is needed for directly filtering when clicking on title or department on the table
     form.setFieldsValue({
       ...filter,
@@ -82,13 +85,11 @@ const FilterContent = (props) => {
   };
 
   const onFinishDebounce = debounce((values) => {
-    handleFilterCounts(values);
     onFinish(values);
   }, 700);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
 
   return (

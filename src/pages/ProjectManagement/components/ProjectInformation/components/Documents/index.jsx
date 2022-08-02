@@ -1,5 +1,4 @@
-import { CloseOutlined } from '@ant-design/icons';
-import { Card, Tag } from 'antd';
+import { Card } from 'antd';
 import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -11,6 +10,7 @@ import CommonTable from '@/components/CommonTable';
 import CustomAddButton from '@/components/CustomAddButton';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { DATE_FORMAT_LIST } from '@/constants/projectManagement';
@@ -34,27 +34,25 @@ const Documents = (props) => {
   // permissions
   const { allowModify = false } = props;
 
-  const [applied, setApplied] = useState(0);
   const [addDocumentModalVisible, setAddDocumentModalVisible] = useState(false);
   const [viewFileModalVisible, setViewFileModalVisible] = useState(false);
   const [fileUrl, setFileUrl] = useState('');
-  // if reselect project status or search, clear filter form
-  const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
-  const [isFiltering, setIsFiltering] = useState(false);
   const [isValidForm, setIsValidForm] = useState(true);
+  const [filter, setFilter] = useState({});
+  const [searchValue, setSearchValue] = useState('');
 
   const viewProfile = (id) => {
     const url = `/directory/employee-profile/${id}`;
     window.open(url, '_blank');
   };
 
-  const fetchDocumentList = (searchKey, filterPayload) => {
+  const fetchDocumentList = () => {
     dispatch({
       type: 'projectDetails/fetchDocumentListEffect',
       payload: {
         projectId,
-        searchKey,
-        ...filterPayload,
+        searchKey: searchValue,
+        ...filter,
       },
     });
   };
@@ -74,11 +72,10 @@ const Documents = (props) => {
 
   useEffect(() => {
     fetchDocumentList();
-  }, []);
+  }, [searchValue, JSON.stringify(filter)]);
 
   const onSearchDebounce = debounce((value) => {
-    fetchDocumentList(value);
-    setNeedResetFilterForm(true);
+    setSearchValue(value);
   }, 1000);
 
   const onSearch = (e = {}) => {
@@ -86,20 +83,8 @@ const Documents = (props) => {
     onSearchDebounce(value);
   };
 
-  const onFilter = (filterPayload) => {
-    fetchDocumentList('', filterPayload);
-    if (Object.keys(filterPayload).length > 0) {
-      setIsFiltering(true);
-      setApplied(Object.keys(filterPayload).length);
-    } else {
-      setIsFiltering(false);
-      setApplied(0);
-    }
-  };
-
-  const clearFilter = () => {
-    onFilter({});
-    setNeedResetFilterForm(true);
+  const onFilter = (values) => {
+    setFilter(values);
   };
 
   const generateColumns = () => {
@@ -185,36 +170,24 @@ const Documents = (props) => {
   };
 
   const renderOption = () => {
-    const content = (
-      <FilterContent
-        onFilter={onFilter}
-        needResetFilterForm={needResetFilterForm}
-        setNeedResetFilterForm={setNeedResetFilterForm}
-        setIsFiltering={setIsFiltering}
-        setApplied={setApplied}
-      />
-    );
+    const applied = Object.values(filter).filter((v) => v).length;
+    const content = <FilterContent onFilter={onFilter} filter={filter} />;
+
     return (
       <div className={styles.options}>
-        {applied > 0 && (
-          <Tag
-            className={styles.tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined />}
-            onClose={() => {
-              clearFilter();
-            }}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
+        <FilterCountTag
+          count={applied}
+          onClearFilter={() => {
+            onFilter({});
+          }}
+        />
         {allowModify && (
           <CustomAddButton onClick={() => setAddDocumentModalVisible(true)}>
             Add new Document
           </CustomAddButton>
         )}
         <FilterPopover placement="bottomRight" content={content}>
-          <CustomOrangeButton showDot={isFiltering} onClick={fetchFilterData} />
+          <CustomOrangeButton onClick={fetchFilterData} showDot={applied > 0} />
         </FilterPopover>
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Document Type" />
       </div>

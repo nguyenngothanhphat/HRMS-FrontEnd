@@ -1,25 +1,27 @@
 import { Col, DatePicker, Form, Row } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import { DATE_FORMAT } from '@/constants/offboarding';
 import styles from './index.less';
 
-const FilterContent = ({ onFinish = () => {}, setFilterForm = () => {} }) => {
+const FilterContent = ({ onFinish = () => {}, filter = {} }) => {
   const [form] = Form.useForm();
 
   const onFinishDebounce = debounce((values) => {
     onFinish(values);
   }, 700);
 
-  useEffect(() => {
-    setFilterForm(form);
-  }, []);
-
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
+
+  // clear values
+  useEffect(() => {
+    if (isEmpty(filter)) {
+      form.resetFields();
+    }
+  }, [JSON.stringify(filter)]);
 
   return (
     <Form

@@ -1,13 +1,13 @@
-import { CloseOutlined } from '@ant-design/icons';
-import { Layout, Skeleton, Tabs, Tag } from 'antd';
+import { Layout, Skeleton, Tabs } from 'antd';
 import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import FilterPopover from '@/components/FilterPopover';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
+import FilterPopover from '@/components/FilterPopover';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import DirectoryTable from './components/DirectoryTable';
 // import FilterContent from '../FilterContent';
 
+import FilterCountTag from '@/components/FilterCountTag';
 import styles from './index.less';
 
 const FilterContent = React.lazy(() => import('./components/FilterContent'));
@@ -34,7 +34,6 @@ const DirectoryComponent = (props) => {
   });
 
   const [tabId, setTabId] = useState('active');
-  const [applied, setApplied] = useState(0);
   const [pageSelected, setPageSelected] = useState(1);
   const [size, setSize] = useState(10);
 
@@ -43,7 +42,6 @@ const DirectoryComponent = (props) => {
     dispatch({
       type: 'usersManagement/clearFilter',
     });
-    setApplied(0);
   };
 
   // USE EFFECT
@@ -129,35 +127,17 @@ const DirectoryComponent = (props) => {
     clearFilter();
   }, [tabId]);
 
-  const handleFilterCounts = (values) => {
-    const filteredObj = Object.entries(values).filter(
-      ([, value]) => (value !== undefined && value?.length > 0) || typeof value === 'number',
-    );
-    const newObj = Object.fromEntries(filteredObj);
-    setApplied(Object.keys(newObj).length);
-  };
-
   const rightButton = () => {
+    const applied = Object.values(filter).filter((v) => v).length;
     return (
       <div className={styles.tabBarExtra}>
-        {applied > 0 && (
-          <Tag
-            className={styles.tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined />}
-            onClose={() => {
-              clearFilter();
-            }}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
+        <FilterCountTag count={applied} onClearFilter={clearFilter} />
 
         <FilterPopover
           placement="bottomRight"
           content={
             <Suspense fallback={<Skeleton active />}>
-              <FilterContent activeTab={tabId} handleFilterCounts={handleFilterCounts} />
+              <FilterContent activeTab={tabId} />
             </Suspense>
           }
           realTime
@@ -165,7 +145,7 @@ const DirectoryComponent = (props) => {
           closeText="Clear"
           onSecondButton={clearFilter}
         >
-          <CustomOrangeButton fontSize={14} showDot={Object.keys(filter).length > 0} />
+          <CustomOrangeButton fontSize={14} showDot={applied > 0} />
         </FilterPopover>
       </div>
     );

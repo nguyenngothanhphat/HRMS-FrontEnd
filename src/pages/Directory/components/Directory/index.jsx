@@ -18,6 +18,7 @@ import ImportEmployeeModal from './components/ImportEmployeeModal';
 // import FilterContent from '../FilterContent';
 
 import styles from './index.less';
+import FilterCountTag from '@/components/FilterCountTag';
 
 const FilterContent = React.lazy(() => import('./components/FilterContent'));
 
@@ -55,7 +56,6 @@ const DirectoryComponent = (props) => {
     inActive: 'inActive',
   });
   const [tabId, setTabId] = useState('active');
-  const [applied, setApplied] = useState(0);
   const [pageSelected, setPageSelected] = useState(1);
   const [size, setSize] = useState(10);
   const [visible, setVisible] = useState(false);
@@ -85,7 +85,6 @@ const DirectoryComponent = (props) => {
     dispatch({
       type: 'employee/clearFilter',
     });
-    setApplied(0);
   };
 
   // USE EFFECT
@@ -271,13 +270,6 @@ const DirectoryComponent = (props) => {
   const addEmployee = () => {
     openFormAddEmployee();
   };
-  const handleFilterCounts = (values) => {
-    const filteredObj = Object.entries(values).filter(
-      ([, value]) => (value !== undefined && value?.length > 0) || typeof value === 'number',
-    );
-    const newObj = Object.fromEntries(filteredObj);
-    setApplied(Object.keys(newObj).length);
-  };
 
   const processData = (array) => {
     // Uppercase first letter
@@ -345,21 +337,17 @@ const DirectoryComponent = (props) => {
   const rightButton = () => {
     const findIndexImport = permissions.importEmployees !== -1;
     const findIndexAdd = permissions.addEmployee !== -1;
+    const applied = Object.values(filter).filter((v) => v).length;
 
     return (
       <div className={styles.tabBarExtra}>
-        {applied > 0 && (
-          <Tag
-            className={styles.tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined />}
-            onClose={() => {
-              clearFilter();
-            }}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
+        <FilterCountTag
+          count={applied}
+          onClearFilter={() => {
+            clearFilter();
+          }}
+        />
+
         {findIndexImport && (
           <CustomOrangeButton onClick={downloadTemplate} icon={iconDownload}>
             {formatMessage({ id: 'pages_admin.employees.table.downloadTemplate' })}
@@ -388,7 +376,7 @@ const DirectoryComponent = (props) => {
           placement="bottomRight"
           content={
             <Suspense fallback={<Skeleton active />}>
-              <FilterContent activeTab={tabId} handleFilterCounts={handleFilterCounts} />
+              <FilterContent activeTab={tabId} filter={filter} />
             </Suspense>
           }
           realTime
@@ -396,7 +384,7 @@ const DirectoryComponent = (props) => {
           closeText="Clear"
           onSecondButton={clearFilter}
         >
-          <CustomOrangeButton fontSize={14} showDot={Object.keys(filter).length > 0} />
+          <CustomOrangeButton fontSize={14} showDot={applied > 0} />
         </FilterPopover>
       </div>
     );

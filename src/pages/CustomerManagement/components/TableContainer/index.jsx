@@ -1,5 +1,4 @@
-import { CloseOutlined } from '@ant-design/icons';
-import { Form, Layout, Select, Tabs, Tag } from 'antd';
+import { Layout, Select, Tabs } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -7,6 +6,7 @@ import CommonModal from '@/components/CommonModal';
 import CustomAddButton from '@/components/CustomAddButton';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
 import { getCurrentTenant } from '@/utils/authority';
 import TableCustomers from '../TableCustomers';
@@ -18,8 +18,6 @@ const { Content } = Layout;
 const { TabPane } = Tabs;
 
 const TableContainer = (props) => {
-  const [form] = Form.useForm();
-
   const {
     dispatch,
     listCustomer,
@@ -29,9 +27,6 @@ const TableContainer = (props) => {
     loadingAdd = false,
   } = props;
   const [isShown, setIsShown] = useState(false);
-  const [applied, setApplied] = useState(0);
-  const [arr, setArr] = useState([]);
-  const [isFiltering, setIsFiltering] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState({});
 
@@ -50,15 +45,6 @@ const TableContainer = (props) => {
     };
   }, []);
 
-  const handleFilterCount = (values) => {
-    const newObj = Object.assign(arr, values);
-    const filteredObj = Object.entries(newObj).filter(
-      ([, value]) => value !== undefined && value?.length > 0,
-    );
-    setApplied(Object.keys(filteredObj).length);
-    setIsFiltering(Object.keys(filteredObj).length > 0);
-  };
-
   useEffect(() => {
     dispatch({
       type: 'customerManagement/fetchCustomerList',
@@ -75,7 +61,6 @@ const TableContainer = (props) => {
         ...filter,
       },
     });
-    handleFilterCount(filter);
   }, [JSON.stringify(filter)]);
 
   // submit filter
@@ -86,13 +71,6 @@ const TableContainer = (props) => {
   // cancel and reset fill in modal
   const onCloseModal = () => {
     setIsShown(false);
-  };
-
-  const clearFilter = () => {
-    setApplied(0);
-    setArr([]);
-    setIsFiltering(false);
-    form.resetFields();
   };
 
   // add new Customer
@@ -165,30 +143,30 @@ const TableContainer = (props) => {
     onSearchDebounce(value);
   };
 
+  const applied = Object.values(filter).filter((v) => v).length;
   const menu = (
     <div className={styles.tabExtraContent}>
-      {applied > 0 && (
-        <Tag
-          className={styles.tagCountFilter}
-          closable
-          closeIcon={<CloseOutlined />}
-          onClose={() => {
-            clearFilter();
-          }}
-        >
-          {applied} filters applied
-        </Tag>
-      )}
+      <FilterCountTag
+        count={applied}
+        onClearFilter={() => {
+          onFilter({});
+        }}
+      />
 
       <CustomAddButton onClick={() => setIsShown(true)}>Add new customer</CustomAddButton>
       <FilterPopover
         realTime
         placement="bottomRight"
         content={
-          <FilterContent onSubmit={onFilter} listStatus={listStatus} companyList={companyList} />
+          <FilterContent
+            onSubmit={onFilter}
+            listStatus={listStatus}
+            companyList={companyList}
+            filter={filter}
+          />
         }
       >
-        <CustomOrangeButton fontSize={14} showDot={isFiltering} />
+        <CustomOrangeButton fontSize={14} showDot={applied > 0} />
       </FilterPopover>
 
       <CustomSearchBox

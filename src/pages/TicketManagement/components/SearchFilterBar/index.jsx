@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
-import FilterCount from '../FilterCount';
 import FilterForm from './components/FilterForm';
 import styles from './index.less';
 
@@ -13,35 +13,33 @@ const SearchFilterBar = (props) => {
     dispatch,
     onChangeSearch = () => {},
     ticketManagement: { filter = {} },
-    setPageSelected = () => {},
   } = props;
 
   const [filterVisible, setFilterVisible] = useState(false);
-  const [filterForm, setFilterForm] = useState();
+
+  const onClearFilter = () => {
+    dispatch({
+      type: 'ticketManagement/clearFilter',
+    });
+  };
 
   useEffect(() => {
     return () => {
-      dispatch({
-        type: 'ticketManagement/clearFilter',
-      });
+      onClearFilter();
     };
   }, []);
 
-  const isFiltering = Object.keys(filter).length > 0;
+  const applied = Object.keys(filter).length;
   return (
     <div className={styles.SearchFilterBar}>
-      <FilterCount
-        form={filterForm}
-        applied={Object.keys(filter).length}
-        setPageSelected={setPageSelected}
-      />
+      <FilterCountTag count={applied} onClearFilter={onClearFilter} />
       <FilterPopover
-        content={<FilterForm visible={filterVisible} setFilterForm={setFilterForm} {...props} />}
+        content={<FilterForm visible={filterVisible} {...props} />}
         placement="bottomRight"
         visible={filterVisible}
         onVisibleChange={() => setFilterVisible(!filterVisible)}
       >
-        <CustomOrangeButton fontSize={14} showDot={isFiltering} />
+        <CustomOrangeButton fontSize={14} showDot={applied > 0} />
       </FilterPopover>
 
       <CustomSearchBox

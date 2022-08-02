@@ -1,5 +1,5 @@
 import { AutoComplete, Col, DatePicker, Form, Input, Row, Select, Spin } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -20,9 +20,7 @@ const FilterContent = (props) => {
     } = {},
     loadingFetchEmployeeIDList = false,
     loadingFetchEmployeeNameList = false,
-    // handleFilterCounts = () => {},
-    setForm = () => {},
-    fetchListTicket = () => {},
+    filter = {},
   } = props;
 
   const dateFormat = 'MMM DD, YYYY';
@@ -35,7 +33,6 @@ const FilterContent = (props) => {
   });
 
   useEffect(() => {
-    setForm(form);
     return () => {
       dispatch({
         type: 'employee/clearFilter',
@@ -95,18 +92,22 @@ const FilterContent = (props) => {
     }
 
     onFilter(filterTemp);
-    fetchListTicket('', filterTemp);
   };
 
   const onFinishDebounce = debounce((values) => {
-    // handleFilterCounts(values);
     onFinish(values);
   }, 700);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
+
+  // clear values
+  useEffect(() => {
+    if (isEmpty(filter)) {
+      form.resetFields();
+    }
+  }, [JSON.stringify(filter)]);
 
   const onSearchEmployeeDebounce = debounce((type, value) => {
     let typeTemp = '';

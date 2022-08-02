@@ -136,7 +136,7 @@ const HeaderProjectRM = (props) => {
           setNeedResetFilterForm={setNeedResetFilterForm}
         >
           {/* <CustomOrangeButton fontSize={14} showDot={Object.keys(filter).length > 0} /> */}
-          <CustomOrangeButton fontSize={14} />
+          <CustomOrangeButton fontSize={14} showDot={applied > 0} />
         </FilterPopover>
         <div className={styles.searchBar}>
           <Input

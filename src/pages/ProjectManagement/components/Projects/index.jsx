@@ -30,22 +30,20 @@ const Projects = (props) => {
   const [selectedProject, setSelectedProject] = useState('');
   const [size, setSize] = useState(10);
   const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState({});
+  const [searchValue, setSearchValue] = useState('');
 
-  const fetchProjectList = async (payload) => {
-    let tempPayload = { ...payload, limit: size, page };
+  const fetchProjectList = async () => {
+    let tempPayload = { ...filter, searchKey: searchValue, limit: size, page };
     if (projectStatus !== 'All') {
       tempPayload = {
-        ...payload,
+        ...tempPayload,
         projectStatus: [projectStatus],
       };
     }
     dispatch({
       type: 'projectManagement/fetchProjectListEffect',
       payload: tempPayload,
-    });
-    dispatch({
-      type: 'projectManagement/save',
-      payload: { filter: tempPayload },
     });
     dispatch({
       type: 'projectManagement/fetchStatusSummaryEffect',
@@ -72,7 +70,7 @@ const Projects = (props) => {
 
   useEffect(() => {
     fetchProjectList();
-  }, [projectStatus, size, page]);
+  }, [projectStatus, size, page, JSON.stringify(filter), searchValue]);
 
   useEffect(() => {
     dispatch({
@@ -265,6 +263,10 @@ const Projects = (props) => {
           setProjectStatus={setProjectStatus}
           fetchProjectList={fetchProjectList}
           statusSummary={statusSummary}
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          filter={filter}
+          setFilter={setFilter}
         />
       </div>
       <div className={styles.tableContainer}>

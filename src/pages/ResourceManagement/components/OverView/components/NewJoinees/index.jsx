@@ -115,7 +115,7 @@ const NewJoinees = (props) => {
               <FilterContent setApplied={setApplied} setForm={setForm} onFilter={fetchData} />
             }
           >
-            <CustomOrangeButton />
+            <CustomOrangeButton showDot={applied > 0} />
           </FilterPopover>
         </div>
         <CustomSearchBox placeholder="Search by Candidate ID, Name..." onSearch={onChangeSearch} />

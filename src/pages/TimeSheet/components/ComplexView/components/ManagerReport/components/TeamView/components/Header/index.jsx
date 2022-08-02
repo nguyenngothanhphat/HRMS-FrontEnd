@@ -1,10 +1,10 @@
-import { CloseOutlined } from '@ant-design/icons';
-import { Skeleton, Tag, Tooltip } from 'antd';
+import { Skeleton, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
 import { dateFormatAPI } from '@/constants/timeSheet';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
@@ -23,11 +23,10 @@ const Header = (props) => {
     setEndDate = () => {},
     onChangeSearch = () => {},
     activeView = '',
+    timeSheet: { filterManagerReport = {} } = {},
   } = props;
 
-  const [applied, setApplied] = useState(0);
   const [holidays, setHolidays] = useState([]);
-  const [form, setForm] = useState(null);
 
   const isHoliday = checkHolidayInWeek(startDate, endDate, holidays);
 
@@ -55,8 +54,6 @@ const Header = (props) => {
     dispatch({
       type: 'timeSheet/clearFilter',
     });
-    setApplied(0);
-    form?.resetFields();
   };
 
   const fetchHolidaysByDate = async () => {
@@ -74,6 +71,8 @@ const Header = (props) => {
   useEffect(() => {
     if (startDate && endDate) fetchHolidaysByDate();
   }, [startDate, endDate]);
+
+  const applied = Object.values(filterManagerReport).filter((v) => v).length;
 
   // MAIN AREA
   return (
@@ -107,25 +106,17 @@ const Header = (props) => {
         )}
       </div>
       <div className={styles.Header__right}>
-        {applied > 0 && (
-          <Tag
-            className={styles.Header__tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined onClick={handleClearFilter} />}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
+        <FilterCountTag count={applied} onClearFilter={handleClearFilter} />
         <FilterPopover
           placement="bottomRight"
           content={
             <Suspense fallback={<Skeleton active />}>
-              <FilterContent setApplied={setApplied} setForm={setForm} />
+              <FilterContent />
             </Suspense>
           }
           realTime
         >
-          <CustomOrangeButton />
+          <CustomOrangeButton showDot={applied > 0} />
         </FilterPopover>
         <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>
@@ -133,4 +124,4 @@ const Header = (props) => {
   );
 };
 
-export default connect(() => ({}))(Header);
+export default connect(({ timeSheet }) => ({ timeSheet }))(Header);

@@ -1,5 +1,5 @@
 import { AutoComplete, Col, DatePicker, Form, Input, Row, Select, Spin } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -11,18 +11,21 @@ const { Option } = Select;
 
 const FilterForm = (props) => {
   const {
-    listOffAllTicket = [],
-    employeeAssignedList = [],
-    employeeRaiseList = [],
-    currentStatus = '',
     loadingFetchEmployeeRaiseListEffect = false,
     loadingFetchEmployeeAssignedListEffect = false,
     dispatch,
     visible = false,
     setFilterForm = () => {},
     country = '',
-    supportTeamList = [],
     permissions = {},
+    ticketManagement: {
+      currentStatus = [],
+      listOffAllTicket = [],
+      employeeAssignedList = [],
+      employeeRaiseList = [],
+      supportTeamList = [],
+      filter = {},
+    } = {},
   } = props;
 
   const [form] = Form.useForm();
@@ -147,10 +150,16 @@ const FilterForm = (props) => {
     onFinish(values);
   }, 800);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
+
+  // clear values
+  useEffect(() => {
+    if (isEmpty(filter)) {
+      form.resetFields();
+    }
+  }, [JSON.stringify(filter)]);
 
   const onSearchEmployeeDebounce = debounce((type, value) => {
     let typeTemp = '';
@@ -352,15 +361,7 @@ const FilterForm = (props) => {
 export default connect(
   ({
     loading,
-    ticketManagement: {
-      locationsList = [],
-      currentStatus = [],
-      listOffAllTicket = [],
-      employeeAssignedList = [],
-      employeeRaiseList = [],
-      selectedLocations = [],
-      supportTeamList = [],
-    } = {},
+    ticketManagement,
     user: {
       permissions = {},
       currentUser: {
@@ -370,13 +371,7 @@ export default connect(
   }) => ({
     permissions,
     country,
-    currentStatus,
-    listOffAllTicket,
-    locationsList,
-    supportTeamList,
-    employeeRaiseList,
-    employeeAssignedList,
-    selectedLocations,
+    ticketManagement,
     loadingFetchListAllTicket: loading.effects['ticketManagement/fetchListAllTicket'],
     loadingFetchEmployeeRaiseListEffect:
       loading.effects['ticketManagement/fetchEmployeeRaiseListEffect'],
