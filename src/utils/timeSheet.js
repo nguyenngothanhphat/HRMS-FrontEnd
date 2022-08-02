@@ -50,6 +50,10 @@ export const employeeColor = [
   '#BE5F59',
 ];
 
+export const hourList = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+];
+
 // functions
 export const addTimeForDate = (date, time) => {
   const dateToString = moment(date).format('MM/DD/YYYY').toString();

@@ -151,6 +151,9 @@ export const checkTime = (date, time) => {
   return check;
 };
 
+export const diffTime = (start, end, type) =>
+  moment(start, 'HH:mm').diff(moment(end, 'HH:mm'), type);
+  
 export const goToTop = () => {
   window.scrollTo({
     top: 0,

@@ -10,10 +10,24 @@
   border-left: 6px solid #04aa6d !important;
   border-radius: 6px;
   margin-inline: 16px;
-
+  cursor: pointer;
+  &:active {
+    cursor: move;
+  }
   .container {
     padding-inline: 16px;
     padding-block: 12px;
+  }
+  .rowResize {
+    position: absolute;
+    background: transparent;
+    height: 8px;
+    width: 100%;
+    bottom: -5px;
+    z-index: 1;
+    &:hover {
+      cursor: row-resize;
+    }
   }
   &:hover {
     border: 1px solid #04aa6d57 !important;
