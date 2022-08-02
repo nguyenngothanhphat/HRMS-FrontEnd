@@ -252,20 +252,14 @@ export const isFutureDay = (date) => {
   return moment(date).isAfter(moment());
 };
 
-export const getShortType = (tab) => {
-  switch (tab) {
-    case '1':
-      return 'A';
-    case '2':
-      return 'C';
-    case '3':
-      return 'B';
-    case '4':
-      return 'D';
-    default:
-      return '';
-  }
+export const tabType = {
+  1: 'A',
+  2: 'C',
+  3: 'B',
+  4: 'D',
 };
+
+export const getShortType = (tab = '') => tabType[tab] || '';
 
 export const TIMEOFF_NEW_REQUEST_DAYS = 4;
 
@@ -281,3 +275,6 @@ export const isNewRequest = (status, onDate) => {
 export const isUpdatedRequest = (status, updated = false) => {
   return status === TIMEOFF_STATUS.IN_PROGRESS && updated;
 };
+
+export const getTypeListByTab = (typeList = [], tab = '') =>
+  typeList.filter((x) => x.type === tabType[tab]);

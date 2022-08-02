@@ -1,10 +1,10 @@
 import { Spin, Tabs } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { addZeroToNumber } from '@/utils/utils';
-import { TIMEOFF_TYPE } from '@/utils/timeOff';
+import { addZeroToNumber, splitArrayItem } from '@/utils/utils';
 import RequestScopeTabs from './components/RequestScopeTabs';
 import styles from './index.less';
+import { getTypeListByTab } from '@/utils/timeOff';
 
 const { TabPane } = Tabs;
 
@@ -15,7 +15,6 @@ const ManagerRequestTable = (props) => {
       currentLeaveTypeTab = '',
       currentScopeTab = '',
       yourTimeOffTypes = {},
-      yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
       totalByType = {
         A: 0,
         B: 0,
@@ -24,36 +23,18 @@ const ManagerRequestTable = (props) => {
       },
     } = {},
     loadingTimeOffType = false,
-    // eligibleForCompOff = false,
+    typeList = [],
   } = props;
 
   const saveCurrentTypeTab = (type = '') => {
-    let arr = [];
-
-    switch (type) {
-      case '1':
-        arr = commonLeaves.filter((x) => x.type === TIMEOFF_TYPE.A);
-        break;
-      case '2':
-        arr = specialLeaves.filter((x) => x.type === TIMEOFF_TYPE.C);
-        break;
-      case '3':
-        arr = commonLeaves.filter((x) => x.type === TIMEOFF_TYPE.B);
-        break;
-      case '4':
-        arr = specialLeaves.filter((x) => x.type === TIMEOFF_TYPE.D);
-        break;
-      default:
-        arr = [];
-        break;
-    }
-    arr = arr.map((item) => item._id);
+    const listType = getTypeListByTab(typeList, type);
+    const listIdType = splitArrayItem(listType.map((item) => item.ids));
     dispatch({
       type: 'timeOff/save',
       payload: {
         currentLeaveTypeTab: String(type),
         currentFilterTab: '1',
-        currentPayloadTypes: arr,
+        currentPayloadTypes: listIdType,
       },
     });
     dispatch({
@@ -141,8 +122,9 @@ const ManagerRequestTable = (props) => {
   );
 };
 
-export default connect(({ timeOff, user, loading }) => ({
+export default connect(({ timeOff, user, loading, timeOffManagement: { typeList = [] } }) => ({
   timeOff,
   user,
+  typeList,
   loadingTimeOffType: loading.effects['timeOff/fetchTimeOffTypeByEmployeeEffect'],
 }))(ManagerRequestTable);

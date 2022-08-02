@@ -215,3 +215,5 @@ export const singularify = (str, count) => {
   if (count > 1) return `${str}s`;
   return str;
 };
+
+export const splitArrayItem = (arr = []) => (arr.length ? arr.toString().split(',') : []);
