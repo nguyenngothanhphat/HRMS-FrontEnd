@@ -166,12 +166,7 @@ class Edit extends Component {
                         if (value && isNaN(value)) {
                           return Promise.reject(`Value enter has to be a number!`);
                         }
-                        if (value > maxEnterUtilization) {
-                          return Promise.reject(
-                            `Your cannot enter a value that is more than ${maxEnterUtilization}!`,
-                          );
-                        }
-                        if (value < 0) {
+                        if (value < 1) {
                           return Promise.reject(`Your cannot enter a value that is less than 0!`);
                         }
                         return Promise.resolve();
