@@ -153,9 +153,11 @@ const TimeOffFilter = (props) => {
     );
   };
 
+  const applied = countFilter();
+
   return (
     <Space direction="horizontal" className={styles.TimeOffFilter}>
-      <FilterCountTag count={countFilter()} onClearFilter={onClearFilter} />
+      <FilterCountTag count={applied} onClearFilter={onClearFilter} />
 
       <div className={styles.rightContentHeader}>
         <FilterPopover
