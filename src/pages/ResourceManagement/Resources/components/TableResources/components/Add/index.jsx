@@ -8,7 +8,7 @@ import { connect, history } from 'umi';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import CommonModal from '@/components/CommonModal';
-import { checkUtilizationPercent, disabledEndDate } from '@/utils/resourceManagement';
+import { disabledEndDate } from '@/utils/resourceManagement';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -112,17 +112,18 @@ class AddActionBTN extends Component {
   };
 
   modalContent = () => {
-    const { dataPassRow = {}, projectList = [], resourceList = [], statusList = [] } = this.props;
+    const { projectList = [], statusList = [] } = this.props;
+    // const { dataPassRow = {}, projectList = [], resourceList = [], statusList = [] } = this.props;
     const { startDate } = this.state;
-    const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
+    // const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
 
-    const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
-    const sumUtilization = checkUtilizationPercent(listProjectsOfEmp);
+    // const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
+    // const sumUtilization = checkUtilizationPercent(listProjectsOfEmp);
 
     const { projectId } = this.state;
     // const projectFist = projectList.length > 0 ? projectList[0] : {};
     // const statusBill = statusList.length > 0 ? statusList[0] : 'Billable';
-    const maxEnterUtilization = 100 - sumUtilization;
+    // const maxEnterUtilization = 100 - sumUtilization;
     const projectId1 = projectId !== -1 ? projectId : 0;
 
     const projectDetail = projectList.find((obj) => obj.id === projectId1) || {};
@@ -183,11 +184,6 @@ class AddActionBTN extends Component {
                     validator(_, value) {
                       if (value && isNaN(value)) {
                         return Promise.reject(`Value enter has to be a number!`);
-                      }
-                      if (value > maxEnterUtilization) {
-                        return Promise.reject(
-                          `Your cannot enter a value that is more than ${maxEnterUtilization}!`,
-                        );
                       }
                       if (value < 1) {
                         return Promise.reject(`Your cannot enter a value that is less than 0!`);

@@ -599,7 +599,7 @@ class TableResources extends PureComponent {
           // dataIndex: 'subject',
           key: 'action',
           render: (value, row, index) => {
-            const checkAction = checkUtilization(row?.projects);
+            // const checkAction = checkUtilization(row?.projects);
             const action = (
               <div className={styles.actionParent}>
                 <div className={styles.buttonGroup}>
@@ -607,8 +607,9 @@ class TableResources extends PureComponent {
                     <img
                       src={addAction}
                       alt="attachIcon"
-                      onClick={() => checkAction && this.showModalAdd(row)}
-                      style={{ cursor: checkAction ? 'pointer' : 'not-allowed' }}
+                      onClick={() => this.showModalAdd(row)}
+                      // style={{ cursor: checkAction ? 'pointer' : 'not-allowed' }}
+                      style={{ cursor: 'pointer' }}
                       className={styles.buttonAdd}
                     />
                   )}
