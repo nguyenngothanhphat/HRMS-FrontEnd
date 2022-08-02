@@ -7,23 +7,14 @@ import styles from './index.less';
 const FilterContent = (props) => {
   const [form] = Form.useForm();
   const {
-    dispatch,
     projectDetails: { documentTypeList = [], employeeList = [] } = {},
     onFilter = () => {},
     needResetFilterForm = false,
     setNeedResetFilterForm = () => {},
     setIsFiltering = () => {},
-    setApplied = () => {}
+    setApplied = () => {},
+    loadingFetchEmployeeList = false,
   } = props;
-
-  const fetchDocumentTypeList = () => {
-    dispatch({
-      type: 'projectDetails/fetchDocumentTypeListEffect',
-    });
-    dispatch({
-      type: 'projectDetails/fetchEmployeeListEffect',
-    });
-  };
 
   const onFinish = (values) => {
     const newValues = { ...values };
@@ -51,11 +42,7 @@ const FilterContent = (props) => {
     onFinishDebounce(values);
   };
 
-  useEffect(() => {
-    fetchDocumentTypeList();
-  }, []);
-
-   // clear values
+  // clear values
   useEffect(() => {
     if (needResetFilterForm) {
       form.resetFields();
@@ -66,7 +53,13 @@ const FilterContent = (props) => {
   }, [needResetFilterForm]);
 
   return (
-    <Form form={form} layout="vertical" name="filter" onValuesChange={onValuesChange} className={styles.FilterContent}>
+    <Form
+      form={form}
+      layout="vertical"
+      name="filter"
+      onValuesChange={onValuesChange}
+      className={styles.FilterContent}
+    >
       <Form.Item label="By document type" name="type">
         <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
           {documentTypeList.map((item) => {
@@ -80,10 +73,17 @@ const FilterContent = (props) => {
       </Form.Item>
 
       <Form.Item label="By employee" name="uploadedBy">
-        <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
+        <Select
+          allowClear
+          mode="multiple"
+          style={{ width: '100%' }}
+          placeholder="Please select"
+          loading={loadingFetchEmployeeList}
+          disabled={loadingFetchEmployeeList}
+        >
           {employeeList.map((item) => {
             return (
-              <Select.Option value={item._id} key={item}>
+              <Select.Option value={item?.generalInfo?.userId} key={item._id}>
                 {item.generalInfo?.legalName}
               </Select.Option>
             );
@@ -112,7 +112,10 @@ const FilterContent = (props) => {
   );
 };
 
-export default connect(({ projectDetails, user: { currentUser: { employee = {} } = {} } }) => ({
-  employee,
-  projectDetails,
-}))(FilterContent);
+export default connect(
+  ({ projectDetails, loading, user: { currentUser: { employee = {} } = {} } }) => ({
+    employee,
+    projectDetails,
+    loadingFetchEmployeeList: loading.effects['projectDetails/fetchEmployeeListEffect'],
+  }),
+)(FilterContent);

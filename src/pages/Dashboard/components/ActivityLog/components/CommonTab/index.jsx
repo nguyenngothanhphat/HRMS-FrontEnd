@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { Row, Spin } from 'antd';
 import React from 'react';
 import { connect } from 'umi';

@@ -142,7 +142,7 @@ const TicketDetailModal = (props) => {
               };
 
               return (
-                <div className={styles.attachments__file} key={`${i+1}`}>
+                <div className={styles.attachments__file} key={`${i + 1}`}>
                   <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
                     {attachmentSlice()}
                   </a>
@@ -154,7 +154,7 @@ const TicketDetailModal = (props) => {
       </span>
     );
   };
-  const renderIcon = (url, statuss) => {
+  const renderIcon = (url, statusTemp) => {
     return (
       <div className={styles.avatar}>
         <img
@@ -164,7 +164,7 @@ const TicketDetailModal = (props) => {
           src={url || DefaultAvatar}
           alt="avatar"
         />
-        {statuss === REJECTED && <CloseCircleTwoTone twoToneColor="#fd4546" />}
+        {statusTemp === REJECTED && <CloseCircleTwoTone twoToneColor="#fd4546" />}
       </div>
     );
   };
@@ -215,7 +215,7 @@ const TicketDetailModal = (props) => {
         span: 12,
       },
       {
-        name: queryType.length > 0 ? 'Query Type' : 'Timeoff Type',
+        name: queryType && queryType.length > 0 ? 'Query Type' : 'Timeoff Type',
         value: queryType || typeName,
         span: 12,
       },
@@ -231,9 +231,11 @@ const TicketDetailModal = (props) => {
       },
       {
         name: 'Duration',
-        value: `${moment(fromDate).format(DATE_FORMAT_MDY)} - ${moment(toDate).format(DATE_FORMAT_MDY)}`,
+        value: `${moment(fromDate).format(DATE_FORMAT_MDY)} - ${moment(toDate).format(
+          DATE_FORMAT_MDY,
+        )}`,
         span: 12,
-        disabled: queryType.length > 0,
+        disabled: queryType && queryType.length > 0,
       },
       {
         name: 'Subject',
@@ -279,7 +281,7 @@ const TicketDetailModal = (props) => {
             </Row>
           </div>
           <div className={styles.belowPart}>
-            {queryType.length > 0 ? (
+            {queryType && queryType.length > 0 ? (
               <>
                 <div className={styles.status}>
                   <span>Status:</span>
@@ -336,7 +338,7 @@ const TicketDetailModal = (props) => {
             )}
           </div>
         </div>
-        {queryType.length > 0 && <MessageBox chats={chats} item={item} />}
+        {queryType && queryType.length > 0 && <MessageBox chats={chats} item={item} />}
       </div>
     );
   };

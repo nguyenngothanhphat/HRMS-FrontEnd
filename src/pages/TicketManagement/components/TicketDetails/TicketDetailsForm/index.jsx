@@ -1,7 +1,7 @@
-import { Avatar, Button, Card, Col, Input, Row, Spin, Tag, Timeline, Tooltip, Upload } from 'antd';
+import { Avatar, Card, Col, Input, Row, Spin, Tag, Timeline, Tooltip, Upload } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import React, { Component, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect, Link } from 'umi';
 import AttachmenUploadIcon from '@/assets/attach-upload.svg';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
@@ -9,15 +9,15 @@ import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';
 import TrashIcon from '@/assets/ticketManagement-trashIcon.svg';
 import AttachmentIcon from '@/assets/ticketsManagement-attach.svg';
+import CustomBlueButton from '@/components/CustomBlueButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { PRIORITY_COLOR } from '@/constants/ticketManagement';
 import { FILE_TYPE } from '@/constants/upload';
+import { getEmployeeUrl } from '@/utils/directory';
 import { beforeUpload, compressImage, identifyFile } from '@/utils/upload';
 import AssignTeamModal from '../../AssignTeamModal';
 import styles from './index.less';
-import { PRIORITY_COLOR } from '@/constants/ticketManagement';
-import { getEmployeeUrl } from '@/utils/directory';
-import CustomPrimaryButton from '@/components/CustomPrimaryButton';
-import CustomBlueButton from '@/components/CustomBlueButton';
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
@@ -28,6 +28,7 @@ const TicketDetailsForm = (props) => {
     loadingUploadAttachment = false,
     loadingAddChat = false,
     roles = [],
+    permissions = {},
   } = props;
 
   const {
@@ -156,6 +157,8 @@ const TicketDetailsForm = (props) => {
   };
 
   const role = findRole(roles);
+  const checkRole = ['MANAGER', 'HR-MANAGER'].includes(role);
+  const checkPermission = permissions.viewTicketByAdmin === 1;
 
   const avatarTicket = () => {
     return ccList.map((val) => {
@@ -169,7 +172,7 @@ const TicketDetailsForm = (props) => {
       }
       return (
         <Tooltip placement="top" title={legalName}>
-          <Avatar size={30} src={DefaultAvatar} />
+          <Avatar src={avatar} />
         </Tooltip>
       );
     });
@@ -216,9 +219,13 @@ const TicketDetailsForm = (props) => {
       <Card
         title="Ticket Details"
         extra={
-          <CustomBlueButton onClick={() => setModalVisible(true)} disabled={loadingAddChat}>
-            Move To
-          </CustomBlueButton>
+          <>
+            {(checkRole || checkPermission) && (
+              <CustomBlueButton onClick={() => setModalVisible(true)} disabled={loadingAddChat}>
+                Move To
+              </CustomBlueButton>
+            )}
+          </>
         }
       >
         <div className={styles.formContent}>
@@ -452,12 +459,13 @@ export default connect(
   ({
     loading,
     ticketManagement: { listEmployee = [], ticketDetail = {} } = {},
-    user: { currentUser: { employee = {}, roles = [] } = {} } = {},
+    user: { permissions = {}, currentUser: { employee = {}, roles = [] } = {} } = {},
   }) => ({
     employee,
     roles,
     listEmployee,
     ticketDetail,
+    permissions,
     loadingUploadAttachment: loading.effects['ticketManagement/uploadFileAttachments'],
     loadingAddChat: loading.effects['ticketManagement/addChat'],
   }),

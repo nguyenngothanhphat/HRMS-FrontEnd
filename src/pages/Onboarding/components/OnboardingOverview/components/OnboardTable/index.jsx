@@ -28,6 +28,7 @@ import JoiningFormalitiesModal from './components/JoiningFormalitiesModal';
 import ReassignModalContent from './components/ReassignModalContent';
 import RenewModal from './components/RenewModal';
 import styles from './index.less';
+import WithdrawOfferModal from '@/pages/NewCandidateForm/components/PreviewOffer/components/WithdrawOfferModal';
 
 const OnboardTable = (props) => {
   const {
@@ -43,6 +44,7 @@ const OnboardTable = (props) => {
     loadingAll = false,
     loadingFetch = false,
     loadingSearch = false,
+    loadingWithdrawOffer = false,
     documentChecklist,
     activeConversationUnseen,
     currentUser: { employee: { _id: empId = '' } = {} } = {},
@@ -74,14 +76,32 @@ const OnboardTable = (props) => {
     });
   };
 
-  const handleActionWithDraw = (candidate, processStatus) => {
-    dispatch({
+  const handleWithdrawOffer = async (reason) => {
+    const { ALL } = NEW_PROCESS_STATUS;
+    const res = await dispatch({
       type: 'onboarding/withdrawTicket',
       payload: {
-        candidate,
+        candidate: handlingRecord?._id,
+        reasonForWithdraw: reason,
       },
-      processStatus,
+      processStatus: handlingRecord?.processStatus,
     });
+    if (res.statusCode === 200) {
+      setOpenModalName('');
+      if (type === ALL)
+        dispatch({
+          type: 'onboarding/fetchOnboardListAll',
+          payload: {
+            tenantId: getCurrentTenant(),
+            processStatus: '',
+          },
+        });
+    }
+  };
+
+  const handleActionWithDraw = (row) => {
+    setHandlingRecord(row);
+    setOpenModalName('withdraw');
   };
 
   const renderCandidateId = (candidateId = '', row) => {
@@ -420,7 +440,7 @@ const OnboardTable = (props) => {
         {!isRemovable && processStatus !== JOINED && processStatus !== OFFER_WITHDRAWN && (
           <Menu.Item>
             <span
-              onClick={!isRemovable ? () => handleActionWithDraw(_id, processStatus) : () => {}}
+              onClick={!isRemovable ? () => handleActionWithDraw(row) : () => {}}
               className={styles.actionText}
             >
               Withdraw
@@ -660,11 +680,19 @@ const OnboardTable = (props) => {
         onOk={onMaybeLater}
         onClose={cancelJoiningFormalities}
       />
+      {openModalName === 'withdraw' && (
+        <WithdrawOfferModal
+          title="Offer Withdraw"
+          visible={openModalName === 'withdraw'}
+          onClose={() => setOpenModalName('')}
+          loading={loadingWithdrawOffer}
+          onFinish={handleWithdrawOffer}
+        />
+      )}
     </>
   );
 };
 
-// export default OnboardTable;
 export default connect(
   ({
     newCandidateForm,
@@ -678,6 +706,7 @@ export default connect(
     loading: loading.effects['onboarding/fetchOnboardList'],
     loadingAll: loading.effects['onboarding/fetchOnboardListAll'],
     loadingReassign: loading.effects['onboarding/reassignTicket'],
+    loadingWithdrawOffer: loading.effects['onboarding/withdrawTicket'],
     currentUser,
     documentChecklist,
     companyLocationList,

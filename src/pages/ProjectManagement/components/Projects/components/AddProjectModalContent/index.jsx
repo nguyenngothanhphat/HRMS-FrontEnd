@@ -7,6 +7,7 @@ import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import HelpIcon from '@/assets/projectManagement/help.svg';
 import CalendarIcon from '@/assets/projectManagement/calendar.svg';
 import styles from './index.less';
+import { disabledEndDate } from '@/utils/projectManagement';
 
 const dateFormat = 'MM-DD-YYYY';
 const { Option } = Select;
@@ -15,7 +16,7 @@ const AddProjectModal = (props) => {
   const [form] = Form.useForm();
   const { visible = false, onClose = () => {}, dispatch } = props;
   const [customerId, setCustomerId] = useState('');
-
+  const [startDate, setStartDate] = useState('');
   // redux
   const {
     projectManagement: {
@@ -300,6 +301,7 @@ const AddProjectModal = (props) => {
               labelCol={{ span: 24 }}
             >
               <DatePicker
+                onChange={(val) => setStartDate(val)}
                 format={dateFormat}
                 placeholder="Select Start Date"
                 suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
@@ -315,6 +317,7 @@ const AddProjectModal = (props) => {
               labelCol={{ span: 24 }}
             >
               <DatePicker
+                disabledDate={(currentDate) => disabledEndDate(currentDate, startDate)}
                 format={dateFormat}
                 placeholder="Select Tentative End Date"
                 suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}

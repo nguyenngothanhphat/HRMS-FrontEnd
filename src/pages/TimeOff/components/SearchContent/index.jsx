@@ -6,25 +6,23 @@ import moment from 'moment';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterPopover from '@/components/FilterPopover';
-import { removeEmptyFields } from '@/utils/utils';
+import { splitArrayItem } from '@/utils/utils';
 import styles from './index.less';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 const TimeOffFilter = (props) => {
   const [form] = Form.useForm();
 
   const {
     dispatch,
-    yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
     filter: { search, type = [], fromDate, toDate },
     filter = {},
     saveCurrentTypeTab = () => {},
     currentLeaveTypeTab = '',
     shortType = '',
+    typeList: typeListData = [],
   } = props;
-
-  const typeList = [...commonLeaves, ...specialLeaves].filter((x) =>
-    shortType ? x.type === shortType : true,
-  );
+  const typeList = [...typeListData].filter((x) => (shortType ? x.type === shortType : true));
 
   const onSearchDebounce = debounce((value) => {
     dispatch({
@@ -56,12 +54,12 @@ const TimeOffFilter = (props) => {
   };
 
   const onFinish = (values) => {
-    const filterTemp = removeEmptyFields(values);
-
-    // dispatch action
+    const { type: typeData = [] } = values;
+    const listIdType = splitArrayItem(typeList.map((item) => item.ids));
+    const newType = typeData.length ? splitArrayItem([...typeData]) : listIdType;
     dispatch({
       type: 'timeOff/save',
-      payload: { filter: { ...search, ...filterTemp } },
+      payload: { filter: { ...search, type: newType } },
     });
   };
 
@@ -72,10 +70,6 @@ const TimeOffFilter = (props) => {
   const onValuesChange = (changedValues, allValues) => {
     onFinishDebounce(allValues);
   };
-
-  useEffect(() => {
-    form.setFieldsValue({ type, fromDate, toDate });
-  }, [filter]);
 
   const countFilter = () => {
     let count = 0;
@@ -99,16 +93,24 @@ const TimeOffFilter = (props) => {
     });
   };
 
+  useEffect(() => {
+    dispatch({
+      type: 'timeOffManagement/getTimeOffTypeListEffect',
+      payload: {
+        company: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
+      },
+    });
+  }, []);
+
   const FilterContent = () => {
     return (
       <Form
         layout="vertical"
         name="filter"
         form={form}
-        initialValues={{ type, fromDate, toDate }}
         onValuesChange={onValuesChange}
         className={styles.FilterContent}
-        onFinish={() => {}}
       >
         <Form.Item label="BY TIMEOFF TYPES" name="type">
           <Select
@@ -117,15 +119,14 @@ const TimeOffFilter = (props) => {
             mode="multiple"
             style={{ width: '100%' }}
             placeholder="Search by Timeoff Types"
-            filterOption={
-              (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              // eslint-disable-next-line react/jsx-curly-newline
-            }
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             showArrow
           >
             {typeList.map((x) => {
+              const id = x.ids.join(',');
               return (
-                <Select.Option value={x._id} key={x._id}>
+                <Select.Option value={id} key={id}>
                   {x.name}
                 </Select.Option>
               );
@@ -180,10 +181,12 @@ const TimeOffFilter = (props) => {
 export default connect(
   ({
     dispatch,
+    timeOffManagement: { typeList = [] },
     timeOff: { yourTimeOffTypes = {}, filter = {}, currentScopeTab, currentLeaveTypeTab },
   }) => ({
     dispatch,
     yourTimeOffTypes,
+    typeList,
     filter,
     currentScopeTab,
     currentLeaveTypeTab,

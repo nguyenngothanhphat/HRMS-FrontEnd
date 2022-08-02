@@ -1,13 +1,6 @@
 import { notification } from 'antd';
-import _ from 'lodash';
-import moment from 'moment';
 import { history } from 'umi';
-import {
-  MENU_DATA,
-  NEW_PROCESS_STATUS,
-  NEW_PROCESS_STATUS_TABLE_NAME,
-  PROCESS_STATUS,
-} from '@/constants/onboarding';
+import { MENU_DATA, NEW_PROCESS_STATUS, PROCESS_STATUS } from '@/constants/onboarding';
 import {
   addJoiningFormalities,
   checkExistingUserName,
@@ -311,6 +304,7 @@ const onboarding = {
       }
     },
     *filterOnboardList({ payload = {}, currentStatus = '' }, { call, put }) {
+      let response = {};
       try {
         const tenantId = getCurrentTenant();
         const company = getCurrentCompany();
@@ -331,7 +325,7 @@ const onboarding = {
           DOCUMENT_CHECKLIST_VERIFICATION,
         } = NEW_PROCESS_STATUS;
 
-        const response = yield call(getOnboardingList, {
+        response = yield call(getOnboardingList, {
           ...payload,
           tenantId,
           company,
@@ -531,8 +525,8 @@ const onboarding = {
           newAssignee = '',
           processStatus = '',
           isAll = false,
-          // page = '',
-          // limit = '',
+          page = '',
+          limit = '',
         } = payload;
 
         const req = {
@@ -560,8 +554,8 @@ const onboarding = {
             payload: {
               tenantId,
               processStatus: '',
-              // page,
-              // limit,
+              page,
+              limit,
             },
           });
         }
@@ -633,18 +627,16 @@ const onboarding = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
 
-        // Refresh table tab OFFER_WITHDRAWN and current tab which has implemented action withdraw
-
         yield put({
           type: 'fetchOnboardList',
           payload: {
-            processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+            processStatus: [NEW_PROCESS_STATUS.OFFER_WITHDRAWN],
           },
         });
         yield put({
           type: 'fetchOnboardList',
           payload: {
-            processStatus,
+            processStatus: [processStatus],
           },
         });
       } catch (errors) {
@@ -1110,149 +1102,6 @@ const onboarding = {
         onboardingOverview: {
           ...state.onboardingOverview,
           dataAll: action.payload,
-        },
-      };
-    },
-
-    updateMenuQuantity(state, action) {
-      const { listMenu } = state.menu.onboardingOverviewTab;
-      const { totalNumber } = action.payload;
-      const newTotalNumber = {
-        drafts: 0,
-        provisionalOffers: 0,
-        backgroundChecks: 0,
-        awaitingApprovals: 0,
-        finalOffers: 0,
-        discardedOffers: 0,
-      };
-
-      totalNumber.forEach((status) => {
-        const { _id = '', count = 0 } = status;
-        switch (_id) {
-          case 'DRAFT':
-            newTotalNumber.drafts += count;
-            break;
-          case 'FINAL-OFFER-DRAFT':
-            newTotalNumber.drafts += count;
-            break;
-
-          case 'SENT-PROVISIONAL-OFFER':
-            newTotalNumber.provisionalOffers += count;
-            break;
-          case 'ACCEPT-PROVISIONAL-OFFER':
-            newTotalNumber.provisionalOffers += count;
-            break;
-          case 'RENEGOTIATE-PROVISONAL-OFFER':
-            newTotalNumber.provisionalOffers += count;
-            break;
-
-          case 'PENDING-BACKGROUND-CHECK':
-            newTotalNumber.backgroundChecks += count;
-            break;
-          case 'ELIGIBLE-CANDIDATE':
-            newTotalNumber.backgroundChecks += count;
-            break;
-          case 'INELIGIBLE-CANDIDATE':
-            newTotalNumber.backgroundChecks += count;
-            break;
-
-          case 'PENDING-APPROVAL-FINAL-OFFER':
-            newTotalNumber.awaitingApprovals += count;
-            break;
-          case 'APPROVED-FINAL-OFFER':
-            newTotalNumber.awaitingApprovals += count;
-            break;
-
-          case 'SENT-FINAL-OFFER':
-            newTotalNumber.finalOffers += count;
-            break;
-          case 'ACCEPT-FINAL-OFFER':
-            newTotalNumber.finalOffers += count;
-            break;
-          case 'RENEGOTIATE-FINAL-OFFERS':
-            newTotalNumber.finalOffers += count;
-            break;
-
-          case 'DISCARDED-PROVISONAL-OFFER':
-            newTotalNumber.discardedOffers += count;
-            break;
-          case 'FINAL-OFFERS':
-            newTotalNumber.discardedOffers += count;
-            break;
-          case 'REJECT-FINAL-OFFER-HR':
-            newTotalNumber.discardedOffers += count;
-            break;
-          case 'REJECT-FINAL-OFFER-CANDIDATE':
-            newTotalNumber.discardedOffers += count;
-            break;
-          default:
-            break;
-        }
-      });
-
-      const newListMenu = listMenu.map((item) => {
-        const { key = '' } = item;
-        let newItem = item;
-        let newQuantity = item.quantity;
-        let dataLength = 0;
-        if (key === 'all') {
-          dataLength =
-            newTotalNumber.drafts +
-            newTotalNumber.provisionalOffers +
-            newTotalNumber.backgroundChecks +
-            newTotalNumber.awaitingApprovals +
-            newTotalNumber.finalOffers +
-            newTotalNumber.discardedOffers;
-        }
-        if (key === 'drafts') {
-          dataLength = newTotalNumber.drafts;
-          // state.onboardingOverview.drafts.provisionalOfferDrafts.length +
-          // state.onboardingOverview.drafts.finalOfferDrafts.length;
-        }
-        if (key === 'provisionalOffers') {
-          dataLength = newTotalNumber.provisionalOffers;
-          // state.onboardingOverview.provisionalOffers.sentProvisionalOffers.length +
-          // state.onboardingOverview.provisionalOffers.acceptedProvisionalOffers.length +
-          // state.onboardingOverview.provisionalOffers.renegotiateProvisionalOffers.length;
-        }
-        if (key === 'backgroundChecks') {
-          dataLength = newTotalNumber.backgroundChecks;
-          // state.onboardingOverview.backgroundCheck.pending.length +
-          // state.onboardingOverview.backgroundCheck.eligibleCandidates.length +
-          // state.onboardingOverview.backgroundCheck.ineligibleCandidates.length;
-        }
-        if (key === 'awaitingApprovals') {
-          dataLength = newTotalNumber.awaitingApprovals;
-
-          // state.onboardingOverview.awaitingApprovals.sentForApprovals.length +
-          // state.onboardingOverview.awaitingApprovals.approvedOffers.length;
-        }
-        if (key === 'finalOffers') {
-          dataLength = newTotalNumber.finalOffers;
-
-          // state.onboardingOverview.finalOffers.acceptedFinalOffers.length +
-          // state.onboardingOverview.finalOffers.sentFinalOffers.length +
-          // state.onboardingOverview.finalOffers.renegotiateFinalOffers.length;
-        }
-        if (key === 'discardedOffers') {
-          dataLength = newTotalNumber.discardedOffers;
-
-          // state.onboardingOverview.discardedOffers.provisionalOffers.length +
-          // state.onboardingOverview.discardedOffers.finalOffers.length;
-        }
-        newQuantity = dataLength;
-        newItem = { ...newItem, quantity: newQuantity };
-        return newItem;
-      });
-
-      return {
-        ...state,
-        menu: {
-          ...state.menu,
-          onboardingOverviewTab: {
-            // phaseList: newPhaseList,
-            listMenu: newListMenu,
-          },
         },
       };
     },

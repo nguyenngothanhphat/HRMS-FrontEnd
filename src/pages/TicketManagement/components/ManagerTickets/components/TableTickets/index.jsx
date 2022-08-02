@@ -38,6 +38,7 @@ const TableTickets = (props) => {
     role = '',
     selectedFilterTab = '',
     loadingUpdate = false,
+    permissions: { assignTicket, appendTicket, viewTicketByAdmin },
   } = props;
   const [timezoneListState, setTimezoneListState] = useState([]);
   const [ticket, setTicket] = useState({});
@@ -47,6 +48,10 @@ const TableTickets = (props) => {
   const [selected, setSelected] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [oldId, setOldId] = useState();
+
+  const isAssignTicket = assignTicket === 1;
+  const isAppendTicket = appendTicket === 1;
+  const isViewTicketByAdmin = viewTicketByAdmin === 1;
 
   const openViewTicket = (ticketID) => {
     let id = '';
@@ -67,7 +72,7 @@ const TableTickets = (props) => {
     setTicket(result);
   };
 
-  const handleSelectChange = (value, newName) => {
+  const handleSelectChange = (value, supportTeam) => {
     const {
       id = '',
       employee_raise: employeeRaise = '',
@@ -99,7 +104,7 @@ const TableTickets = (props) => {
           departmentAssign,
           employee: employeeId,
           oldName,
-          newName,
+          supportTeam,
           role,
         },
       }).then((res) => {
@@ -254,7 +259,7 @@ const TableTickets = (props) => {
         title: 'Ticket ID',
         dataIndex: 'id',
         key: 'id',
-        width: '8%',
+        width: '7%',
         render: (id) => {
           return (
             <span className={styles.ticketID} onClick={() => openViewTicket(id)}>
@@ -268,6 +273,24 @@ const TableTickets = (props) => {
         },
         sortDirections: ['ascend', 'descend'],
       },
+      ...(isViewTicketByAdmin
+        ? [
+            {
+              title: 'Support Team',
+              dataIndex: 'support_team',
+              key: 'support_team',
+              width: '10%',
+              render: (name) => {
+                return name;
+              },
+              fixed: 'left',
+              sorter: (a, b) => {
+                return a.id && a.id - b.id;
+              },
+              sortDirections: ['ascend', 'descend'],
+            },
+          ]
+        : []),
       {
         title: 'Request Type',
         dataIndex: 'query_type',
@@ -379,62 +402,82 @@ const TableTickets = (props) => {
         },
         sortDirections: ['ascend', 'descend'],
       },
-
-      {
-        title: 'Assigned To',
-        dataIndex: 'employeeAssignee',
-        key: 'employeeAssignee',
-        fixed: 'right',
-        align: 'center',
-        render: (employeeAssignee, row) => {
-          if (employeeAssignee) {
-            return (
-              <TicketItem
-                employeeAssignee={employeeAssignee}
-                renderMenuDropdown={renderMenuDropdown}
-                handleClickSelect={handleClickSelect}
-                refreshFetchTicketList={refreshFetchTicketList}
-                row={row}
-                selected={selected}
-                setOldAssignName={setOldName}
-                setOldId={setOldId}
-                setModalVisible={setModalVisible}
-              />
-            );
-          }
-          return (
-            <>
-              <Popover
-                trigger="click"
-                overlayClassName={styles.dropdownPopover}
-                content={renderMenuDropdown()}
-                placement="bottomRight"
-              >
-                <img
-                  width={32}
-                  height={32}
-                  src={PersonIcon}
-                  alt="assign person icon"
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => handleClickSelect(row.id)}
-                />
-              </Popover>
-              <img
-                width={32}
-                height={32}
-                src={TeamIcon}
-                alt="assign team icon"
-                style={{
-                  cursor: 'pointer',
-                }}
-                onClick={() => handleAssignTeam(row.id)}
-              />
-            </>
-          );
-        },
-      },
+      ...(isAssignTicket || isAppendTicket || isViewTicketByAdmin
+        ? [
+            {
+              title: 'Assigned To',
+              dataIndex: 'employeeAssignee',
+              key: 'employeeAssignee',
+              fixed: 'right',
+              align: 'center',
+              render: (employeeAssignee, row) => {
+                if (employeeAssignee) {
+                  return (
+                    <TicketItem
+                      employeeAssignee={employeeAssignee}
+                      renderMenuDropdown={renderMenuDropdown}
+                      handleClickSelect={handleClickSelect}
+                      refreshFetchTicketList={refreshFetchTicketList}
+                      row={row}
+                      selected={selected}
+                      setOldAssignName={setOldName}
+                      setOldId={setOldId}
+                      setModalVisible={setModalVisible}
+                    />
+                  );
+                }
+                return (
+                  <>
+                    {(isAssignTicket || isViewTicketByAdmin) && (
+                      <Popover
+                        trigger="click"
+                        overlayClassName={styles.dropdownPopover}
+                        content={renderMenuDropdown()}
+                        placement="bottomRight"
+                      >
+                        <img
+                          width={32}
+                          height={32}
+                          src={PersonIcon}
+                          alt="assign person icon"
+                          style={{
+                            cursor: 'pointer',
+                          }}
+                          onClick={() => handleClickSelect(row.id)}
+                        />
+                      </Popover>
+                    )}
+                    {(isAppendTicket || isViewTicketByAdmin) && (
+                      <img
+                        width={32}
+                        height={32}
+                        src={TeamIcon}
+                        alt="assign team icon"
+                        style={{
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => handleAssignTeam(row.id)}
+                      />
+                    )}
+                  </>
+                );
+              },
+              sorter: (a, b) => {
+                if (
+                  a.employeeAssignee?.generalInfo?.legalName &&
+                  b.employeeAssignee?.generalInfo?.legalName
+                )
+                  return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
+                    ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
+                        `${b.employeeAssignee.generalInfo?.legalName}`,
+                      )
+                    : null;
+                return null;
+              },
+              sortDirections: ['ascend', 'descend'],
+            },
+          ]
+        : []),
     ];
   };
 
@@ -499,13 +542,14 @@ export default connect(
   ({
     loading,
     ticketManagement: { listEmployee = [], locationsList = [], employeeFilterList = [] } = {},
-    user: { currentUser: { employee = {} } = {} } = {},
+    user: { currentUser: { employee = {} } = {}, permissions = {} } = {},
     location: { companyLocationList = [] },
   }) => ({
     listEmployee,
     locationsList,
     employeeFilterList,
     employee,
+    permissions,
     companyLocationList,
     loadingUpdate: loading.effects['ticketManagement/updateTicket'],
     loadingFetchEmployee: loading.effects['ticketManagement/searchEmployee'],

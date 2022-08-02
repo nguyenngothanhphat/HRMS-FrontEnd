@@ -27,8 +27,10 @@ const Preview = (props) => {
       responsesP = [],
       startDateP = '',
       endDateP = '',
+      postAsCompany = false,
     },
     owner = {},
+    company = {},
   } = props;
 
   const [announcementContent, setAnnouncementContent] = useState({
@@ -142,7 +144,7 @@ const Preview = (props) => {
       case TAB_IDS.ANNOUNCEMENTS:
         return (
           <>
-            <EmployeeTag employee={post.employee} />
+            <EmployeeTag company={company} employee={post.employee} postAsCompany={postAsCompany} />
             <PostContent post={post} />
           </>
         );

@@ -246,7 +246,7 @@ const routes = [
             name: 'dashboard-approvals',
             hideInMenu: true,
             component: './Dashboard/components/Approval',
-            authority: ['P_DASHBOARD_W_DASHBOARD_VIEW'],
+            authority: ['P_APPROVALS_PAGE_VIEW'],
           },
           {
             path: '/admin-app',
@@ -531,7 +531,7 @@ const routes = [
             authority: [
               'P_TIMEOFF_T_TEAM_REQUEST_HR_VIEW',
               'P_TIMEOFF_T_TEAM_REQUEST_MANAGER_VIEW',
-              OWNER
+              OWNER,
             ],
           },
 
@@ -694,14 +694,14 @@ const routes = [
             name: 'review-resignation-ticket',
             component: './Offboarding/components/ManagerView/components/TicketDetails',
             hideInMenu: true,
-            authority: ['P_OFFBOARDING_VIEW','M_OFFBOARDING_VIEW'],
+            authority: ['P_OFFBOARDING_VIEW', 'M_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/list/hr-review/:id',
             name: 'review-resignation-ticket',
             component: './Offboarding/components/HRView/components/TicketDetails',
             hideInMenu: true,
-            authority: ['P_OFFBOARDING_VIEW','M_OFFBOARDING_VIEW'],
+            authority: ['P_OFFBOARDING_VIEW', 'M_OFFBOARDING_VIEW'],
           },
           // {
           //   path: '/offboarding/my-request/:id',
@@ -787,6 +787,7 @@ const routes = [
             icon: '/assets/images/menuIcons/ticketManagement.svg',
             component: './TicketManagement',
             authority: [
+              'M_ADMIN_VIEW_TICKETS',
               'P_TICKET_MANAGEMENT_VIEW',
               'P_TICKET_MANAGEMENT_T_HR_TICKETS_VIEW',
               'P_TICKET_MANAGEMENT_T_IT_TICKETS_VIEW',
@@ -797,6 +798,7 @@ const routes = [
             path: '/ticket-management/:tabName',
             component: './TicketManagement',
             authority: [
+              'M_ADMIN_VIEW_TICKETS',
               'P_TICKET_MANAGEMENT_VIEW',
               'P_TICKET_MANAGEMENT_T_HR_TICKETS_VIEW',
               'P_TICKET_MANAGEMENT_T_IT_TICKETS_VIEW',

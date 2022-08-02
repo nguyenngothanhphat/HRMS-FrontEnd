@@ -1,11 +1,10 @@
 import { Col, Row, Skeleton } from 'antd';
 import React, { Suspense, useEffect } from 'react';
 import { connect, history } from 'umi';
-import SettingIcon from '@/assets/dashboard/setting.svg';
-import styles from './index.less';
-
 import { goToTop } from '@/utils/utils';
+import SettingIcon from '@/assets/dashboard/setting.svg';
 import Announcements from './components/Announcements';
+import Approvals from './components/Approvals';
 import Carousel from './components/Carousel';
 import MyInformation from './components/MyInformation';
 import QuickLinks from './components/QuickLinks';
@@ -13,6 +12,7 @@ import TimeOff from './components/TimeOff';
 import TimeSheet from './components/TimeSheet';
 import Voting from './components/Voting';
 import Welcome from './components/Welcome';
+import styles from './index.less';
 
 const Gallery = React.lazy(() => import('./components/Gallery'));
 const Celebrating = React.lazy(() => import('./components/Celebrating'));
@@ -20,10 +20,9 @@ const Celebrating = React.lazy(() => import('./components/Celebrating'));
 const HomePage = (props) => {
   const { dispatch } = props;
   const {
-    user: { permissions: { viewSettingHomePage = -1 } = {} } = {},
+    user: { permissions: { viewSettingHomePage = -1, viewApprovalPage = -1 } = {} } = {},
     // loadingMain = false
   } = props;
-
   useEffect(() => {
     goToTop();
     return () => {
@@ -64,6 +63,11 @@ const HomePage = (props) => {
             <Col span={24}>
               <QuickLinks />
             </Col>
+            {viewApprovalPage === 1 && (
+              <Col span={24}>
+                <Approvals />
+              </Col>
+            )}
           </Row>
         </Col>
         <Col xs={24} md={14} lg={17}>

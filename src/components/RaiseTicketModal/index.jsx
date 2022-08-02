@@ -189,6 +189,12 @@ const RaiseTicketModal = (props) => {
       };
     });
 
+    const supportTeam = supportTeamList.find((val) => val._id === value.supportTeam).name;
+    let queryType;
+    supportTeamList.find((val) => {
+      return (queryType = val.queryType.find((y) => y._id === value.queryType));
+    });
+
     dispatch({
       type: 'ticketManagement/addTicket',
       payload: {
@@ -203,6 +209,8 @@ const RaiseTicketModal = (props) => {
         attachments: documents,
         departmentAssign: value.supportTeam,
         location: getCurrentLocation(),
+        supportTeam,
+        queryType: queryType.name,
       },
     }).then((response) => {
       const { statusCode } = response;

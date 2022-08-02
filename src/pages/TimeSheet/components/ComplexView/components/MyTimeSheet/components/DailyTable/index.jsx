@@ -23,12 +23,12 @@ const DailyTable = (props) => {
     loadingFetchMyTimesheetByType = false,
     data: dataProp = [],
     loadingFetchEmployeeSchedule = false,
+    loadingUpdateTask = false,
     employeeSchedule = {},
   } = props;
 
   const { startWorkDay: { start: companyStartTime = '' } = {} } = employeeSchedule;
 
-  const [hourList, setHourList] = useState([]);
   const [formattedData, setFormattedData] = useState({});
   const [startWorkingHour, setStartWorkingHour] = useState(null);
   const [endWorkingHour, setEndWorkingHour] = useState(null);
@@ -69,14 +69,6 @@ const DailyTable = (props) => {
   };
 
   // USE EFFECT AREA
-  useEffect(() => {
-    const hourListTemp = [];
-    for (let i = startWorkingHour; i <= endWorkingHour; i += 1) {
-      hourListTemp.push(i);
-    }
-    setHourList(hourListTemp);
-  }, [startWorkingHour]);
-
   useEffect(() => {
     refreshData();
   }, [JSON.stringify(dataProp), selectedDate]);
@@ -129,7 +121,6 @@ const DailyTable = (props) => {
     return (
       <ActivityList
         data={formattedData}
-        hourList={hourList}
         startWorkingHour={startWorkingHour}
         endWorkingHour={endWorkingHour}
       />
@@ -140,7 +131,11 @@ const DailyTable = (props) => {
   return (
     <div className={styles.DailyTable}>
       <div className={styles.tableContainer}>
-        <Spin spinning={loadingFetchMyTimesheetByType || loadingFetchEmployeeSchedule}>
+        <Spin
+          spinning={
+            loadingFetchMyTimesheetByType || loadingFetchEmployeeSchedule || loadingUpdateTask
+          }
+        >
           {_renderTableHeader()}
           {_renderTableContent()}
         </Spin>
@@ -155,5 +150,6 @@ export default connect(
     employeeSchedule,
     loadingFetchMyTimesheetByType: loading.effects['timeSheet/fetchMyTimesheetByTypeEffect'],
     loadingFetchEmployeeSchedule: loading.effects['timeSheet/getEmployeeScheduleByLocation'],
+    loadingUpdateTask: loading.effects['timeSheet/updateActivityEffect'],
   }),
 )(DailyTable);

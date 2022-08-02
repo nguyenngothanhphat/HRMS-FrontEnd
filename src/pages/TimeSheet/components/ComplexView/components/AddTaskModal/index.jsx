@@ -59,6 +59,7 @@ const AddTaskModal = (props) => {
       forDate = '',
     } = {},
     loadingTime = false,
+    onValuesChangeProp = () => {},
   } = props;
 
   const {
@@ -117,7 +118,7 @@ const AddTaskModal = (props) => {
   };
 
   const formatEndTimeShow = (timeFormat) => {
-    return moment(timeFormat, hourFormat).add(30, 'minutes').format(hourFormat);
+    return moment(timeFormat, hourFormat).add(60, 'minutes').format(hourFormat);
   };
 
   const getLastEndTimeElement = (lastEle) => {
@@ -188,17 +189,19 @@ const AddTaskModal = (props) => {
   const onStartTimeChange = (index) => {
     const { tasks = [] } = form.getFieldsValue();
 
-    form.setFieldsValue({
-      tasks: tasks.map((x, i) => {
-        if (i === index) {
-          return {
-            ...x,
-            endTime: moment(x.startTime, hourFormat).add(30, 'minutes').format(hourFormat),
-          };
-        }
-        return x;
-      }),
+    const updateTasks = tasks.map((x, i) => {
+      if (i === index) {
+        return {
+          ...x,
+          endTime: moment(x.startTime, hourFormat).add(60, 'minutes').format(hourFormat),
+        };
+      }
+      return x;
     });
+    form.setFieldsValue({
+      tasks: updateTasks,
+    });
+    onValuesChangeProp(updateTasks.length && updateTasks[0]);
   };
 
   const onValuesChange = (changedValues, allValues) => {
@@ -209,6 +212,7 @@ const AddTaskModal = (props) => {
       return temp;
     });
     setDisabledHourBefore(disabledHourBeforeTemp);
+    onValuesChangeProp(tasks.length && tasks[0]);
   };
 
   const disabledDate = (current) => {
@@ -344,7 +348,7 @@ const AddTaskModal = (props) => {
               ? moment(endTime, hourFormatAPI).format(hourFormat)
               : getDefaultValueStartTime(),
             endTime: endTime
-              ? moment(endTime, hourFormatAPI).add(30, 'minutes').format(hourFormat)
+              ? moment(endTime, hourFormatAPI).add(60, 'minutes').format(hourFormat)
               : formatEndTimeShow(getDefaultValueStartTime()),
             clientLocation,
             breakTime,

@@ -3,9 +3,12 @@ import { debounce } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { beforeUpload, compressImage } from '@/utils/upload';
-import { FILE_TYPE } from '@/constants/upload';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import { TAB_IDS } from '@/constants/homePage';
+import { FILE_TYPE } from '@/constants/upload';
+import { beforeUpload, compressImage } from '@/utils/upload';
+import { getCurrentCompanyObj } from '@/utils/utils';
 import AnnouncementContent from './components/AnnouncementContent';
 import BannerContent from './components/BannerContent';
 import BirthdayContent from './components/BirthdayContent';
@@ -13,8 +16,6 @@ import ImagesContent from './components/ImagesContent';
 import PollContent from './components/PollContent';
 import Preview from './components/Preview';
 import styles from './index.less';
-import CustomPrimaryButton from '@/components/CustomPrimaryButton';
-import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 
 // A: ANNOUNCEMENT
 // B: BIRTHDAY/ANNIVERSARY
@@ -98,7 +99,7 @@ const AddPost = (props) => {
   useEffect(() => {
     if (editing) {
       let tempFormValues = {};
-      const { attachments = [], location: locationProps = [] } = record;
+      const { attachments = [], location: locationProps = [], postAsCompany = false } = record;
       const fileListTemp = () => {
         return attachments.map((x, i) => {
           return {
@@ -119,6 +120,7 @@ const AddPost = (props) => {
             postType: TAB_IDS.ANNOUNCEMENTS,
             descriptionA: record.description,
             uploadFilesA: { fileList: [...fileListTemp()] },
+            postAsCompany,
           };
           break;
         }
@@ -265,6 +267,7 @@ const AddPost = (props) => {
           description: values.descriptionA,
           createdBy: employee?._id,
           location: values.location,
+          postAsCompany: values.postAsCompany,
         };
         break;
       }
@@ -340,6 +343,7 @@ const AddPost = (props) => {
           postType: TAB_IDS.ANNOUNCEMENTS,
           description: values.descriptionA,
           location: values.location,
+          postAsCompany: values.postAsCompany,
         };
         break;
       }
@@ -406,7 +410,13 @@ const AddPost = (props) => {
   const renderTypeContent = () => {
     switch (mode) {
       case TAB_IDS.ANNOUNCEMENTS:
-        return <AnnouncementContent defaultFileList={fileList} />;
+        return (
+          <AnnouncementContent
+            defaultFileList={fileList}
+            company={getCurrentCompanyObj()}
+            employee={employee}
+          />
+        );
       case TAB_IDS.ANNIVERSARY:
         return <BirthdayContent defaultFileList={fileList} />;
       case TAB_IDS.IMAGES:
@@ -433,6 +443,8 @@ const AddPost = (props) => {
             postType: mode,
             responsesP: [{}, {}, {}],
             location,
+            createBy: employee?.generalInfo?.legalName,
+            postAsCompany: false,
           }}
           onFinish={editing ? onEdit : onPost}
         >
@@ -510,7 +522,13 @@ const AddPost = (props) => {
     return (
       <div className={styles.previewContainer}>
         <p className={styles.title}>Preview post</p>
-        <Preview mode={mode} editing={editing} formValues={formValues} owner={owner} />
+        <Preview
+          mode={mode}
+          editing={editing}
+          formValues={formValues}
+          owner={owner}
+          company={getCurrentCompanyObj()}
+        />
       </div>
     );
   };

@@ -63,7 +63,12 @@ const Announcements = (props) => {
           <LazyLoad key={x._id} height={200} offset={[-100, 0]}>
             <Col span={24}>
               <div className={styles.card}>
-                <EmployeeTag employee={x.createdBy} createDate={x.createdAt} />
+                <EmployeeTag
+                  employee={x.createdBy}
+                  createDate={x.createdAt}
+                  postAsCompany={x.postAsCompany}
+                  company={x.company}
+                />
                 <PostContent post={x} />
                 <LikeComment
                   post={x}

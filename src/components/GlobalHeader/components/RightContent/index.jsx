@@ -95,7 +95,7 @@ const RightContent = (props) => {
         hasFooter={false}
         content={
           <ActivityLogModalContent
-            tabKey="2"
+            tabKey="4"
             data={activeConversationUnseen}
             setModalVisible={() => setModalVisible(false)}
           />

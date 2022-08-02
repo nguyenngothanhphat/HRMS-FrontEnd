@@ -1,27 +1,32 @@
-import { Card, Tag } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import { debounce } from 'lodash';
-import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
+import { Card, Tag } from 'antd';
+import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
-import { DATE_FORMAT_LIST } from '@/constants/projectManagement';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
+import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
+import ViewIcon from '@/assets/projectManagement/view.svg';
+import CommonModal from '@/components/CommonModal';
+import CommonTable from '@/components/CommonTable';
 import CustomAddButton from '@/components/CustomAddButton';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
-import FilterPopover from '@/components/FilterPopover';
 import CustomSearchBox from '@/components/CustomSearchBox';
-import CommonModal from '@/components/CommonModal';
+import FilterPopover from '@/components/FilterPopover';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
+import { DATE_FORMAT_LIST } from '@/constants/projectManagement';
 import AddContent from './components/AddContent';
 import FilterContent from './components/FilterContent';
-import CommonTable from '@/components/CommonTable';
-import ViewIcon from '@/assets/projectManagement/view.svg';
-import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
 import styles from './index.less';
 
 const Documents = (props) => {
   const {
     dispatch,
-    projectDetails: { projectId = '', documentList = [] } = {},
+    projectDetails: {
+      projectId = '',
+      documentList = [],
+      documentTypeList = [],
+      employeeList = [],
+    } = {},
     loadingAddDocument = false,
     loadingFetchDocument = false,
   } = props;
@@ -166,6 +171,19 @@ const Documents = (props) => {
     return columns;
   };
 
+  const fetchFilterData = () => {
+    if (isEmpty(documentTypeList)) {
+      dispatch({
+        type: 'projectDetails/fetchDocumentTypeListEffect',
+      });
+    }
+    if (isEmpty(employeeList)) {
+      dispatch({
+        type: 'projectDetails/fetchEmployeeListEffect',
+      });
+    }
+  };
+
   const renderOption = () => {
     const content = (
       <FilterContent
@@ -196,7 +214,7 @@ const Documents = (props) => {
           </CustomAddButton>
         )}
         <FilterPopover placement="bottomRight" content={content}>
-          <CustomOrangeButton showDot={isFiltering} />
+          <CustomOrangeButton showDot={isFiltering} onClick={fetchFilterData} />
         </FilterPopover>
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Document Type" />
       </div>

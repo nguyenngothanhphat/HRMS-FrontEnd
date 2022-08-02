@@ -128,10 +128,10 @@ class TablePolicy extends Component {
         },
         render: (attachment) => {
           const attachmentSlice = () => {
-            if (!isEmpty(attachment) && attachment.name.length > 20) {
-              return `${attachment.name.substr(0, 8)}...${attachment.name.substr(
-                attachment.name.length - 10,
-                attachment.name.length,
+            if (!isEmpty(attachment) && attachment?.name?.length > 20) {
+              return `${attachment?.name.substr(0, 8)}...${attachment?.name.substr(
+                attachment?.name.length - 10,
+                attachment?.name.length,
               )}`;
             }
             return attachment?.name;
@@ -139,7 +139,9 @@ class TablePolicy extends Component {
           return (
             <div className={styles.policy}>
               <img src={PdfIcon} alt="PdfIcon" />
-              <span style={{ color: '#2c6df9' }}> {attachmentSlice()}</span>
+              <span style={{ color: '#2c6df9' }}>
+                {!isEmpty(attachment) ? attachmentSlice() : ''}
+              </span>
             </div>
           );
         },

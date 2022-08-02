@@ -122,7 +122,7 @@ const PendingApprovalTag = (props) => {
                 <span>
                   {typeTicket === TYPE_TICKET_APPROVAL.LEAVE_REQUEST
                     ? `${legalName}(${userId})`
-                    : `${nameTimeSheet}(${userTimeSheet})`}
+                    : `${nameTimeSheet} (${userTimeSheet})`}
                 </span>{' '}
                 has been received.
               </div>

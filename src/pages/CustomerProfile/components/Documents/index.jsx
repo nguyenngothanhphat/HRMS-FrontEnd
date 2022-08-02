@@ -79,8 +79,8 @@ const Documents = (props) => {
         customerId,
         type: parseInt(byType, 10) || '',
         uploadedBy: byUpload || '',
-        fromDate: fromDate || '',
-        toDate: toDate || '',
+        fromDate: fromDate ? moment(fromDate).format('YYYY-MM-DD') : '',
+        toDate: toDate ? moment(toDate).format('YYYY-MM-DD') : '',
       },
     });
   };
@@ -229,7 +229,7 @@ const Documents = (props) => {
             </FilterPopover>
           </div>
 
-          <CustomSearchBox onSearch={onSearch} placeholder="Search by Document Type" />
+          <CustomSearchBox onSearch={onSearch} placeholder="Search by name, type and upload by" />
         </div>
       </div>
       <div className={styles.documentBody}>

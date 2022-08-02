@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { connect } from 'umi';
 import BackIcon from '@/assets/projectManagement/back.svg';
 import ModalImage from '@/assets/projectManagement/modalImage1.png';
+import WarningAddResource from '@/assets/resourceManagement/WarningAddResource.svg';
 import CommonModal from '@/components/CommonModal';
 import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -231,6 +232,19 @@ const AddResourcesModal = (props) => {
                 <>
                   <span className={styles.descText}>Need more resources? </span>
                   <span className={styles.raiseRequest}>Raise Request</span>
+                </>
+              )}
+              {step === 2 && (
+                <>
+                  <span>
+                    <div className={styles.warnningAddResource}>
+                      <p className={styles.warnningImage}><img src={WarningAddResource} alt="warnning add resource" /></p>
+                      <p className={styles.descTextWarnning}>
+                        If a change of manager is needed - you need to assign via the Resource
+                        Management page
+                      </p>
+                    </div>
+                  </span>
                 </>
               )}
             </div>

@@ -1,4 +1,4 @@
-import { Form, Input, Upload } from 'antd';
+import { Form, Input, Select, Upload } from 'antd';
 import React from 'react';
 import AttachmentIcon from '@/assets/attachment.svg';
 import styles from './index.less';
@@ -6,7 +6,7 @@ import styles from './index.less';
 const { Dragger } = Upload;
 
 const AnnouncementContent = (props) => {
-  const { defaultFileList = [] } = props;
+  const { defaultFileList = [], company: { name: companyName = '' } = {} } = props;
 
   return (
     <div className={styles.AnnouncementContent}>
@@ -35,6 +35,13 @@ const AnnouncementContent = (props) => {
         />
       </Form.Item>
 
+      <Form.Item label="Post As" name="postAsCompany">
+        <Select>
+          <Select.Option value={false}>Self</Select.Option>
+          <Select.Option value>{companyName}</Select.Option>
+        </Select>
+      </Form.Item>
+
       <Form.Item label="Media file" name="uploadFilesA">
         <Dragger
           listType="picture"
@@ -51,6 +58,10 @@ const AnnouncementContent = (props) => {
             </p>
           </div>
         </Dragger>
+      </Form.Item>
+
+      <Form.Item label="Create by" name="createBy">
+        <Input disabled />
       </Form.Item>
     </div>
   );

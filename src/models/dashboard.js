@@ -27,6 +27,7 @@ import {
   getHolidaysByCountry,
   getMyTeamLeaveRequestList,
   getTimeOffTypeByCountry,
+  getMyTickets,
 } from '../services/dashboard';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 
@@ -567,6 +568,19 @@ const dashboard = {
         dialog(error);
       }
       return response;
+    },
+    *fetchMyTicketList({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getMyTickets, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listMyTicket: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
   reducers: {

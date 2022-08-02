@@ -222,3 +222,15 @@ export async function getTimeOffTypeByCountry(payload) {
     data: payload,
   });
 }
+
+export async function getMyTickets(payload) {
+  return request(
+    '/api-ticket/tickettenant/list-my-ticket',
+    {
+      method: 'GET',
+      params: payload,
+    },
+    false,
+    API_KEYS.TICKET_API,
+  );
+}

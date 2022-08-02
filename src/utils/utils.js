@@ -124,6 +124,9 @@ export const formatAdditionalQuestion = (questionArr) => {
   return finalArr;
 };
 
+export const diffTime = (start, end, type) =>
+  moment(start, 'HH:mm').diff(moment(end, 'HH:mm'), type);
+
 export const goToTop = () => {
   window.scrollTo({
     top: 0,
@@ -175,3 +178,5 @@ export const singularify = (str, count) => {
   if (count > 1) return `${str}s`;
   return str;
 };
+
+export const splitArrayItem = (arr = []) => (arr.length ? arr.toString().split(',') : []);

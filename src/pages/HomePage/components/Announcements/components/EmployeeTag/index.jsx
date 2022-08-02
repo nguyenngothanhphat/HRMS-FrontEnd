@@ -12,6 +12,8 @@ const EmployeeTag = (props) => {
       titleInfo = {} || {},
     } = {} || {},
     createDate,
+    postAsCompany = false,
+    company: { name: companyName = '', logoUrl = '' } = {},
   } = props;
 
   const onViewProfileClick = () => {
@@ -32,7 +34,7 @@ const EmployeeTag = (props) => {
       <div className={styles.container}>
         <div className={styles.avatar}>
           <img
-            src={avatar || DefaultAvatar}
+            src={postAsCompany ? logoUrl : avatar || DefaultAvatar}
             alt=""
             onError={(e) => {
               e.target.src = DefaultAvatar;
@@ -40,8 +42,8 @@ const EmployeeTag = (props) => {
           />
         </div>
         <div className={styles.information}>
-          <span className={styles.name}>{legalName}</span>
-          <span className={styles.title}>{titleInfo?.name}</span>
+          <span className={styles.name}>{postAsCompany ? companyName : legalName}</span>
+          <span className={styles.title}>{postAsCompany ? '' : titleInfo?.name}</span>
           <Timestamp />
         </div>
       </div>
