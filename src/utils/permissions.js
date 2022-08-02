@@ -345,6 +345,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_TICKET_MANAGEMENT_T_OPERATIONS_TICKETS_VIEW',
   ]);
 
+  const indexAdminViewTickets = isAuthorized(permissionList, ['M_ADMIN_VIEW_TICKETS']);
+
   const indexTicketManagementAssignTicket = isAuthorized(permissionList, [
     'P_TICKET_MANAGEMENT_ASSIGN_TICKET',
   ]);
@@ -472,6 +474,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewTicketHR: indexTicketManagementHRTicketsTab,
     viewTicketIT: indexTicketManagementITTicketsTab,
     viewTicketOperations: indexTicketManagementOperationsTicketsTab,
+    viewTicketByAdmin: indexAdminViewTickets,
     assignTicket: indexTicketManagementAssignTicket,
     appendTicket: indexTicketManagementAppendTicket,
 
