@@ -19,10 +19,7 @@ const QuickLinks = (props) => {
   const {
     dispatch,
     holidaysListByCountry = [],
-    currentUser: {
-      location = {},
-      location: { headQuarterAddress: { country: { _id: countryId = '' } = {} } = {} } = {},
-    } = {},
+    currentUser: { location = {} } = {},
     listPolicy = [],
   } = props;
 
@@ -69,7 +66,7 @@ const QuickLinks = (props) => {
     dispatch({
       type: 'homePage/fetchListPolicy',
       payload: {
-        country: [countryId],
+        country: [country],
       },
     });
   }, []);

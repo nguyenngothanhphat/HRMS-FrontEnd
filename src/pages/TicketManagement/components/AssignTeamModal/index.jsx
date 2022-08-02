@@ -84,7 +84,7 @@ const AssignTeamModal = (props) => {
         oldEmployeeAssignee: oldId || '',
         status: 'New',
         queryTypeId,
-        newTeam,
+        supportTeam: newTeam,
         oldTeam,
         queryType,
         subject,

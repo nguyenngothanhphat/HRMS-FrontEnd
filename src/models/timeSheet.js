@@ -67,6 +67,7 @@ const initialState = {
   myTimesheetByMonth: [],
   timeoffList: [],
   detailTimesheet: [],
+  currentTask: {},
   // store payload for refreshing
   viewingPayload: {},
   // for importing
@@ -248,11 +249,20 @@ const TimeSheet = {
         };
         response = yield call(updateActivity, { ...payload, tenantId }, params);
         updating();
-        const { code, msg = '', data = {}, errors = [] } = response;
+        const { code, msg = '', data = [], errors = [] } = response;
         if (code !== 200) {
-          pushError(errors);
+          const errorMessage = `${errors.length && errors[0]?.msg} ${
+            data.length && data[0]?.taskName
+          }`;
+          pushError([{ msg: errorMessage }]);
           return [];
         }
+        yield put({
+          type: 'savePayload',
+          payload: {
+            currentTask: payload,
+          },
+        });
         notification.success({ message: msg });
         if (date) {
           // for refresh immediately - no need to call API to refresh list
@@ -279,12 +289,20 @@ const TimeSheet = {
         response = yield call(addActivity, { ...payload, tenantId });
         const { code, data = {}, errors = [] } = response;
         const { errorList = [] } = data;
+        const { data: currentTaskData } = payload;
         adding();
         if (code !== 200) {
           pushError(errors);
           return [];
         }
         pushSuccess(errorList, 'added', 'Create timesheet successfully');
+
+        yield put({
+          type: 'savePayload',
+          payload: {
+            currentTask: currentTaskData && currentTaskData[0],
+          },
+        });
         if (date) {
           // for refresh immediately - no need to call API to refresh list
           yield put({
@@ -303,7 +321,7 @@ const TimeSheet = {
     },
 
     // add
-    *addMultipleActivityEffect({ payload }, { call }) {
+    *addMultipleActivityEffect({ payload }, { call, put }) {
       let response = {};
       try {
         const params = {
@@ -315,10 +333,17 @@ const TimeSheet = {
         response = yield call(addMultipleActivity, payload.data, params);
         const { code, data = {}, errors = [] } = response;
         const { errorList = [] } = data;
+        const { data: currentTaskData } = payload;
         if (code !== 200) {
           pushError(errors);
           return [];
         }
+        yield put({
+          type: 'savePayload',
+          payload: {
+            currentTask: currentTaskData.length && currentTaskData[0],
+          },
+        });
         pushSuccess(errorList, 'added', 'Create timesheet successfully');
       } catch (errors) {
         dialog(errors);

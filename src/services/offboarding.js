@@ -76,3 +76,10 @@ export async function getLocationsOfCountries(params) {
     params,
   });
 }
+
+export async function terminateReason(payload) {
+  return request('/api/employeetenant/terminate-admin', {
+    method: 'POST',
+    data: payload,
+  });
+}

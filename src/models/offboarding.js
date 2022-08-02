@@ -13,6 +13,8 @@ import {
   updateRequest,
   withdrawRequest,
   getLocationsOfCountries,
+  // terminate
+  terminateReason,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -236,6 +238,26 @@ const offboarding = {
           type: 'save',
           payload: { locationsOfCountries: data },
         });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *terminateReason({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(terminateReason, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message, data } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+
+        yield put({ type: 'save', payload: { terminateData: data } });
       } catch (error) {
         dialog(error);
       }

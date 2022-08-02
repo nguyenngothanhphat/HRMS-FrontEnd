@@ -25,6 +25,7 @@ import {
   exportResource,
   getListSkill,
   getLocationsOfCountries,
+  updateManagerResource,
 } from '@/services/resourceManagement';
 
 import {
@@ -443,6 +444,24 @@ const resourceManagement = {
             locationsOfCountries: data,
             selectedLocations: getSelectedLocations() || [getCurrentLocation()],
           },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *updateManagerResource({ payload }, { call }) {
+      let response = '';
+      try {
+        response = yield call(updateManagerResource, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: [getCurrentCompany()],
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: response.message,
         });
       } catch (error) {
         dialog(error);

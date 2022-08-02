@@ -211,3 +211,15 @@ export async function getLocationsOfCountries(params) {
     params,
   });
 }
+
+export async function updateManagerResource(payload) {
+  return request(
+    '/api-project/resourcetenant/update-manager',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}

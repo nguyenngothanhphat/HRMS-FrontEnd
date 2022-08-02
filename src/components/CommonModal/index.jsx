@@ -8,6 +8,8 @@ import styles from './index.less';
 const CommonModal = ({
   visible = false,
   title = 'Modal',
+  secondTitle = '',
+  cancelButtonType = 1,
   onClose = () => {},
   firstText = 'Submit',
   secondText = 'Button',
@@ -23,11 +25,15 @@ const CommonModal = ({
   hasSecondButton = false,
   onSecondButtonClick = () => {},
   maskClosable = false,
+  disabledButton = false,
 }) => {
   const renderModalHeader = () => {
     return (
-      <div className={styles.header}>
-        <p className={styles.header__text}>{title}</p>
+      <div className={secondTitle ? styles.headerSecond : styles.header}>
+        <p className={styles.header__text}>
+          <span className={styles.text1}>{title}</span>
+          {secondTitle && <span className={styles.text2}>{secondTitle}</span>}
+        </p>
       </div>
     );
   };
@@ -58,7 +64,9 @@ const CommonModal = ({
           hasFooter ? (
             <div className={styles.footer}>
               {hasCancelButton && (
-                <CustomSecondaryButton onClick={handleCancel}>{cancelText}</CustomSecondaryButton>
+                <CustomSecondaryButton type={cancelButtonType} onClick={handleCancel}>
+                  {cancelText}
+                </CustomSecondaryButton>
               )}
               {hasSecondButton && (
                 <CustomSecondaryButton onClick={onSecondButtonClick}>
@@ -66,6 +74,7 @@ const CommonModal = ({
                 </CustomSecondaryButton>
               )}
               <CustomPrimaryButton
+                disabled={disabledButton}
                 form="myForm"
                 key="submit"
                 htmlType="submit"

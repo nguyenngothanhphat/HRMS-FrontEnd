@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
 import { debounce } from 'lodash';
-import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import TableUsers from '../TableUsers';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
@@ -147,39 +147,18 @@ class TableContainer extends PureComponent {
   getPageChange = async (params, tabId) => {
     const currentLocation = getCurrentLocation();
     const { size } = this.state;
-    const currentCompany = getCurrentCompany();
     // console.log(pageSelected, size);
     const { dispatch } = this.props;
-    const {
-      companiesOfUser = [],
-      filterList: { listCountry = [] } = {},
-      companyLocationList = [],
-    } = this.props;
+    const { filterList: { listCountry = [] } = {}, companyLocationList = [] } = this.props;
     const {
       name = '',
       department = [],
       country = [],
       state = [],
-      company = [],
       roles = [],
       page,
-      // limit,
+      limit,
     } = params;
-
-    // MULTI COMPANY & LOCATION PAYLOAD
-    let companyPayload = [];
-    const companyList = companiesOfUser.filter(
-      (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
-    );
-    const isOwnerCheck = isOwner();
-    // OWNER
-    if (!currentLocation && isOwnerCheck) {
-      if (company.length !== 0) {
-        companyPayload = companyList.filter((lo) => company.includes(lo?._id));
-      } else {
-        companyPayload = [...companyList];
-      }
-    } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
 
     let locationPayload = [];
 
@@ -256,7 +235,8 @@ class TableContainer extends PureComponent {
     }
 
     const payload = {
-      company: companyPayload,
+      company: getCurrentCompany(),
+      tenantId: getCurrentTenant(),
       name,
       department,
       roles,
@@ -269,50 +249,37 @@ class TableContainer extends PureComponent {
       await dispatch({
         type: 'usersManagement/fetchEmployeesList',
         payload: { ...payload, status: ['ACTIVE'] },
+        params: {
+          page,
+          limit,
+        },
       });
     }
     if (tabId === 2) {
       await dispatch({
         type: 'usersManagement/fetchEmployeesList',
         payload: { ...payload, status: ['INACTIVE'] },
+        params: {
+          page,
+          limit,
+        },
       });
     }
   };
 
   getTableData = async (params, tabId) => {
     const currentLocation = getCurrentLocation();
-    const currentCompany = getCurrentCompany();
     const { dispatch } = this.props;
-    const {
-      companiesOfUser = [],
-      filterList: { listCountry = [] } = {},
-      companyLocationList = [],
-    } = this.props;
+    const { filterList: { listCountry = [] } = {}, companyLocationList = [] } = this.props;
     const {
       name = '',
       department = [],
       country = [],
       state = [],
-      company = [],
       roles = [],
       page,
       limit,
     } = params;
-
-    // MULTI COMPANY & LOCATION PAYLOAD
-    let companyPayload = [];
-    const companyList = companiesOfUser.filter(
-      (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
-    );
-    const isOwnerCheck = isOwner();
-    // OWNER
-    if (!currentLocation && isOwnerCheck) {
-      if (company.length !== 0) {
-        companyPayload = companyList.filter((lo) => company.includes(lo?._id));
-      } else {
-        companyPayload = [...companyList];
-      }
-    } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
 
     let locationPayload = [];
 
@@ -389,7 +356,8 @@ class TableContainer extends PureComponent {
     }
 
     const payload = {
-      company: companyPayload,
+      company: getCurrentCompany(),
+      tenantId: getCurrentTenant(),
       name,
       department,
       roles,
@@ -404,12 +372,20 @@ class TableContainer extends PureComponent {
       await dispatch({
         type: 'usersManagement/fetchEmployeesList',
         payload: { ...payload, status: ['ACTIVE'] },
+        params: {
+          page,
+          limit,
+        },
       });
     }
     if (tabId === 2) {
       await dispatch({
         type: 'usersManagement/fetchEmployeesList',
         payload: { ...payload, status: ['INACTIVE'] },
+        params: {
+          page,
+          limit,
+        },
       });
     }
   };
