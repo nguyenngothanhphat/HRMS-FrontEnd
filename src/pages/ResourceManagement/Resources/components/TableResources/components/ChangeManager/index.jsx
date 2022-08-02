@@ -113,10 +113,10 @@ class ChangeManagerModal extends Component {
           <DatePicker
             placeholder="Select the effective day"
             suffixIcon={<img src={datePickerIcon} alt="" />}
-            disabledDate={(current) => {
-              const customDate = moment().format('YYYY-MM-DD');
-              return current && current < moment(customDate, 'YYYY-MM-DD');
-            }}
+            // disabledDate={(current) => {
+            //   const customDate = moment().format('YYYY-MM-DD');
+            //   return current && current < moment(customDate, 'YYYY-MM-DD');
+            // }}
           />
         </Form.Item>
       </Form>
