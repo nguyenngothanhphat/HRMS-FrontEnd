@@ -1,6 +1,5 @@
 import { Result } from 'antd';
-import React, { useEffect } from 'react';
-import { history } from 'umi';
+import React from 'react';
 import check from './CheckPermissions';
 
 const Authorized = (props) => {
@@ -17,13 +16,6 @@ const Authorized = (props) => {
   } = props;
   const childrenRender = typeof children === 'undefined' ? null : children;
   const dom = check(authority, childrenRender, noMatch);
-  const signInRole = localStorage.getItem('antd-pro-authority');
-  const params = window.location.pathname;
-  useEffect(() => {
-    if (signInRole?.includes('owner') && params === '/home') {
-      history.push('/admin-app');
-    }
-  }, [JSON.stringify(signInRole)]);
   return <>{dom}</>;
 };
 

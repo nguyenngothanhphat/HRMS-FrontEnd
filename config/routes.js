@@ -16,15 +16,9 @@ const {
 } = ROLES;
 
 const routes = [
-  // {
-  //   path: '/',
-  //   redirect: '/dashboard',
-  //   authority: [OWNER],
-  // },
   {
     path: '/',
     redirect: '/home',
-    // authority: [EMPLOYEE],
   },
   {
     path: '/signin-google',
@@ -229,7 +223,7 @@ const routes = [
             name: 'home',
             icon: '/assets/images/menuIcons/home.svg',
             component: './HomePage',
-            authority: ['P_HOMEPAGE_VIEW'],
+            authority: [EMPLOYEE],
           },
           {
             path: '/home/settings',
