@@ -24,6 +24,7 @@ import {
   getNewJoineesList,
   exportResource,
   getListSkill,
+  updateManagerResource,
 } from '@/services/resourceManagement';
 
 import { getSelectedDivisions, getSelectedLocations, handlingResourceAvailableStatus } from '@/utils/resourceManagement';
@@ -419,6 +420,24 @@ const resourceManagement = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *updateManagerResource({ payload }, { call }) {
+      let response = '';
+      try {
+        response = yield call(updateManagerResource, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: [getCurrentCompany()],
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: response.message,
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
   reducers: {
