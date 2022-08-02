@@ -26,7 +26,7 @@ const TableContainer = (props) => {
   const didMount = useRef(true);
 
   const getDataTable = (values = {}) => {
-    const { status = [], types = [], user = null } = values;
+    const { status = [], types = [], employee = null } = values;
 
     const from = fromDate ? moment(fromDate).format('YYYY-MM-DD') : null;
     const to = toDate ? moment(toDate).format('YYYY-MM-DD') : null;
@@ -38,7 +38,7 @@ const TableContainer = (props) => {
         tenantId: getCurrentTenant(),
         selectedLocations,
         status,
-        employee: user,
+        employee,
         from,
         to,
         page,

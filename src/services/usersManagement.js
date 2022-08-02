@@ -1,10 +1,11 @@
 import request from '@/utils/request';
 
-export async function getEmployeesList(payload) {
+export async function getEmployeesList(payload, params) {
   // return request('/api/employeetenant/admin-list', {
   return request('/api/employeetenant/list', {
     method: 'POST',
     data: payload,
+    params,
   });
 }
 

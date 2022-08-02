@@ -4,6 +4,7 @@ import React from 'react';
 import { connect } from 'umi';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 import styles from './index.less';
+import { disabledEndDate } from '@/utils/projectManagement';
 
 const EditEndDateContent = (props) => {
   const {
@@ -14,6 +15,7 @@ const EditEndDateContent = (props) => {
     addProjectHistory = () => {},
     fetchProjectHistory = () => {},
     projectId = '',
+    startDate = '',
     employee: { _id: employeeId = '' } = {},
   } = props;
 
@@ -66,6 +68,7 @@ const EditEndDateContent = (props) => {
               rules={[{ required: true, message: 'Required field!' }]}
             >
               <DatePicker
+                disabledDate={(currentDate) => disabledEndDate(currentDate, startDate)}
                 placeholder="Enter End Date"
                 suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
               />

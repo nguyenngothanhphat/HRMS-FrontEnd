@@ -62,15 +62,15 @@ class TableUsers extends PureComponent {
         render: (generalInfo) =>
           generalInfo ? (
             <span className={styles.fullname}>
-              {generalInfo.legalName
-                ? `${generalInfo.legalName}`
-                : `${generalInfo.firstName} ${generalInfo.midleName} ${generalInfo.lastName}`}
+              {generalInfo?.legalName
+                ? `${generalInfo?.legalName}`
+                : `${generalInfo?.firstName} ${generalInfo?.midleName} ${generalInfo?.lastName}`}
             </span>
           ) : (
             ''
           ),
         sorter: {
-          compare: (a, b) => a.generalInfo.firstName.localeCompare(b.generalInfo.firstName),
+          compare: (a, b) => a?.generalInfo?.firstName.localeCompare(b?.generalInfo?.firstName),
         },
       },
       {
@@ -78,7 +78,7 @@ class TableUsers extends PureComponent {
         dataIndex: 'generalInfo',
         align: 'left',
         className: `${styles.employeeId}`,
-        render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
+        render: (generalInfo) => <span>{generalInfo ? generalInfo?.employeeId : ''}</span>,
         sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
         //   compare: (a, b) =>
@@ -102,7 +102,7 @@ class TableUsers extends PureComponent {
         dataIndex: 'generalInfo',
         align: 'left',
         width: '18%',
-        render: (generalInfo) => <span>{generalInfo ? generalInfo.workEmail : ''}</span>,
+        render: (generalInfo) => <span>{generalInfo ? generalInfo?.workEmail : ''}</span>,
         // sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
         // compare: (a, b) => a.workEmail && b.workEmail && a.workEmail.localeCompare(b.workEmail),

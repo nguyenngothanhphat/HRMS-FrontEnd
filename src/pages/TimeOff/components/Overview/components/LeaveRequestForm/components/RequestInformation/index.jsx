@@ -11,13 +11,10 @@ import {
   Tag,
   Tooltip,
 } from 'antd';
-import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { connect, history } from 'umi';
 import { isEmpty } from 'lodash';
-import TimeOffModal from '@/components/TimeOffModal';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
-import { getCurrentTenant } from '@/utils/authority';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { connect, history } from 'umi';
 import {
   convert24To12,
   getHours,
@@ -27,6 +24,7 @@ import {
   TIMEOFF_COL_SPAN_1,
   TIMEOFF_COL_SPAN_2,
   TIMEOFF_DATE_FORMAT,
+  TIMEOFF_DATE_FORMAT_API,
   TIMEOFF_INPUT_TYPE,
   TIMEOFF_INPUT_TYPE_BY_LOCATION,
   TIMEOFF_LINK_ACTION,
@@ -36,11 +34,15 @@ import {
   TIMEOFF_WORK_DAYS,
   WORKING_HOURS,
 } from '@/utils/timeOff';
+import { getCurrentTenant } from '@/utils/authority';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
+import TimeOffModal from '@/components/TimeOffModal';
 import AddAttachments from './components/AddAttachments';
+import DebounceSelect from './components/DebounceSelect';
 import LeaveTimeRow from './components/LeaveTimeRow';
 import LeaveTimeRow2 from './components/LeaveTimeRow2';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 import styles from './index.less';
-import DebounceSelect from './components/DebounceSelect';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -73,6 +75,7 @@ const RequestInformation = (props) => {
       } = {},
       employeeSchedule: { startWorkDay = {}, endWorkDay = {}, workDay = [] } = {},
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
+      emailsList = [],
     } = {},
     user: { currentUser: { location = {}, employee = {} } = {} } = {},
     loadingAddLeaveRequest = false,
@@ -83,6 +86,11 @@ const RequestInformation = (props) => {
   } = props;
 
   const [form] = Form.useForm();
+
+  // leave type
+  const [continuousDateList, setContinuousDateList] = useState([]);
+  const [choosableDateList, setChoosableDateList] = useState([]);
+
   const [selectedTypeName, setSelectedTypeName] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [showSuccessModalVisible, setShowSuccessModalVisible] = useState(false);
@@ -94,13 +102,11 @@ const RequestInformation = (props) => {
   const [viewDocumentModal, setViewDocumentModal] = useState(false);
   const [currentAllowanceState, setCurrentAllowanceState] = useState(0);
   const [invalidDates, setInvalidDates] = useState([]);
-  const [dateLists, setDateLists] = useState([]);
-  const [isModified, setIsModified] = useState(false); // when start editing a request, if there are any changes, isModified = true
   const [workingDays, setWorkingDays] = useState([]);
   const [isNormalType, setIsNormalType] = useState(false);
-  const [listDate, setListDate] = useState([]);
   const [locationEmployeeBehalfOf, setLocationEmployeeBehalfOf] = useState('');
   const [visible, setVisible] = useState(false);
+  const didMount = useRef(false);
 
   const currentLocationID =
     action === NEW_LEAVE_REQUEST
@@ -110,8 +116,11 @@ const RequestInformation = (props) => {
   const BY_HOUR = TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.HOUR;
   const BY_WHOLE_DAY =
     TIMEOFF_INPUT_TYPE_BY_LOCATION[currentLocationID] === TIMEOFF_INPUT_TYPE.WHOLE_DAY;
+
   // DYNAMIC ROW OF DATE LISTS
-  const showAllDateList = dateLists.length < MAX_NO_OF_DAYS_TO_SHOW || listDate.length > 0;
+  const showAllDateList =
+    continuousDateList.length < MAX_NO_OF_DAYS_TO_SHOW || choosableDateList.length > 0;
+
   // functions
   const getTableTabIndexOfSubmittedType = (selectedTypeTemp, selectedTypeNameTemp) => {
     switch (selectedTypeNameTemp) {
@@ -223,7 +232,7 @@ const RequestInformation = (props) => {
   };
 
   // GET LIST OF DAYS FROM DAY A TO DAY B
-  const getDateLists = (startDate, endDate) => {
+  const getContinuousDateLists = (startDate, endDate) => {
     let dates = [];
     const endDateTemp = moment(endDate).clone();
 
@@ -262,7 +271,7 @@ const RequestInformation = (props) => {
       const { type = '', name = '' } = foundType;
       setSelectedType(type);
       setSelectedTypeName(name);
-      if (type === TIMEOFF_TYPE.A || type === TIMEOFF_TYPE.B) {
+      if (type === TIMEOFF_TYPE.A || type === TIMEOFF_TYPE.B || type === TIMEOFF_TYPE.D) {
         setIsNormalType(true);
       } else {
         setIsNormalType(false);
@@ -298,7 +307,7 @@ const RequestInformation = (props) => {
         endTimeDefault = endWorkDay?.end || WORKING_HOURS.END;
       }
 
-      result = (!isNormalType ? dateLists : listDate).map((value, index) => {
+      result = (!isNormalType ? continuousDateList : choosableDateList).map((value, index) => {
         return {
           date: moment(value).format('YYYY-MM-DD'),
           timeOfDay: HOUR,
@@ -310,14 +319,14 @@ const RequestInformation = (props) => {
     } else {
       if (leaveTimeLists.length === 0) {
         // type C,D
-        result = dateLists.map((value) => {
+        result = continuousDateList.map((value) => {
           return {
             date: moment(value).format('YYYY-MM-DD'),
             timeOfDay: WHOLE_DAY,
           };
         });
       } else {
-        result = (!isNormalType ? dateLists : listDate).map((value, index) => {
+        result = (!isNormalType ? continuousDateList : choosableDateList).map((value, index) => {
           return {
             date: moment(value).format('YYYY-MM-DD'),
             timeOfDay: leaveTimeLists[index].period,
@@ -343,7 +352,7 @@ const RequestInformation = (props) => {
         attachments = [],
       } = values;
 
-      if (timeOffType && ((durationFrom && durationTo) || listDate.length)) {
+      if (timeOffType && ((durationFrom && durationTo) || choosableDateList.length)) {
         const leaveDatesPayload = generateLeaveDates(leaveTimeLists);
 
         let data = {};
@@ -352,7 +361,7 @@ const RequestInformation = (props) => {
             type: timeOffType,
             status: IN_PROGRESS,
             subject,
-            listDate,
+            listDate: choosableDateList,
             leaveDates: leaveDatesPayload,
             onDate: moment().format('YYYY-MM-DD'),
             description,
@@ -430,11 +439,14 @@ const RequestInformation = (props) => {
             type: timeOffType,
             status: IN_PROGRESS,
             subject,
-            listDate,
+            listDate: choosableDateList,
             leaveDates: leaveDatesPayload,
             onDate: moment().format('YYYY-MM-DD'),
             description,
-            cc: personCC.map((item) => item?.value[0]) || [],
+            cc:
+              action === EDIT_LEAVE_REQUEST
+                ? personCC
+                : personCC.map((item) => item?.value[0]) || [],
             tenantId: getCurrentTenant(),
             company: employee.company,
             attachments,
@@ -449,7 +461,7 @@ const RequestInformation = (props) => {
             leaveDates: leaveDatesPayload,
             onDate: moment().format('YYYY-MM-DD'),
             description,
-            cc: personCC.map((item) => item?.value[0]) || [],
+            cc: EDIT_LEAVE_REQUEST ? personCC : personCC.map((item) => item?.value[0]) || [],
             tenantId: getCurrentTenant(),
             company: employee.company,
             attachments,
@@ -499,10 +511,12 @@ const RequestInformation = (props) => {
   };
 
   const handleChange = (value) => {
-    if (!listDate.includes(moment(value).format(TIMEOFF_DATE_FORMAT))) {
-      setListDate([...listDate, moment(value).format(TIMEOFF_DATE_FORMAT)]);
+    if (!choosableDateList.includes(moment(value).format(TIMEOFF_DATE_FORMAT))) {
+      setChoosableDateList([...choosableDateList, moment(value).format(TIMEOFF_DATE_FORMAT)]);
     } else {
-      setListDate(listDate.filter((x) => x !== moment(value).format(TIMEOFF_DATE_FORMAT)));
+      setChoosableDateList(
+        choosableDateList.filter((x) => x !== moment(value).format(TIMEOFF_DATE_FORMAT)),
+      );
     }
   };
 
@@ -657,12 +671,18 @@ const RequestInformation = (props) => {
         setIsEditingDrafts(true);
       }
       let isNormalTypeTemp = false;
-      let listDateTemp = [];
-      if (viewingType.type === TIMEOFF_TYPE.A || viewingType.type === TIMEOFF_TYPE.B) {
+      let choosableDateListTemp = [];
+      if (
+        viewingType.type === TIMEOFF_TYPE.A ||
+        viewingType.type === TIMEOFF_TYPE.B ||
+        viewingType.type === TIMEOFF_TYPE.D
+      ) {
         isNormalTypeTemp = true;
-        listDateTemp = viewingLeaveDates.map((x) => x.date);
+        choosableDateListTemp = viewingLeaveDates.map((x) =>
+          moment(x.date, TIMEOFF_DATE_FORMAT_API).format(TIMEOFF_DATE_FORMAT),
+        );
         setIsNormalType(true);
-        setListDate(listDateTemp);
+        setChoosableDateList(choosableDateListTemp);
       }
 
       setDurationFrom(viewingFromDate ? moment(viewingFromDate) : null);
@@ -671,12 +691,16 @@ const RequestInformation = (props) => {
       setSelectedType(viewingType.type);
 
       // generate date lists and leave time
-      const dateListsObj = getDateLists(viewingFromDate, viewingToDate, viewingType?.type);
-      const dateListsTemp = dateListsObj.dates;
-      setDateLists(dateListsTemp);
+      const continuousDateListObj = getContinuousDateLists(
+        viewingFromDate,
+        viewingToDate,
+        viewingType?.type,
+      );
+      const continuousDateListTemp = continuousDateListObj.dates;
+      setContinuousDateList(continuousDateListTemp);
       const resultDates = [];
       let check = false;
-      (!isNormalTypeTemp ? dateListsTemp : listDateTemp).forEach((val1) => {
+      (!isNormalTypeTemp ? continuousDateListTemp : choosableDateListTemp).forEach((val1) => {
         check = false;
         viewingLeaveDates.forEach((val2) => {
           const { date = '' } = val2;
@@ -709,7 +733,7 @@ const RequestInformation = (props) => {
         subject: viewingSubject,
         durationFrom: viewingFromDate ? moment(viewingFromDate) : null,
         durationTo: viewingToDate ? moment(viewingToDate) : null,
-        listDate: listDateTemp,
+        listDate: choosableDateListTemp,
         description: viewingDescription,
         personCC: viewingCC,
         leaveTimeLists,
@@ -734,9 +758,8 @@ const RequestInformation = (props) => {
   };
 
   // auto generate hours when select start time & end time for US
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    const { leaveTimeLists = [], employeeBehalf = {} } = values;
+  const onValuesChange = (changedValues, allValues) => {
+    const { leaveTimeLists = [], employeeBehalf = {} } = allValues;
     if (action === NEW_BEHALF_OF && !isEmpty(employeeBehalf)) {
       dispatch({
         type: 'timeOff/save',
@@ -746,9 +769,7 @@ const RequestInformation = (props) => {
       });
       setLocationEmployeeBehalfOf(employeeBehalf?.value[1] || '');
     }
-
     generateHours(leaveTimeLists);
-    setIsModified(true);
   };
 
   // USE EFFECT
@@ -778,9 +799,10 @@ const RequestInformation = (props) => {
   }, [JSON.stringify(invalidDatesProps)]);
 
   useEffect(() => {
-    // only generate leave time lists when modified. If editing a ticket, no need to generate
-    if ((dateLists.length || listDate.length) > 0 && isModified) {
-      const initialValuesForLeaveTimesList = (isNormalType ? listDate : dateLists).map((x) => {
+    if (didMount.current && (!isEmpty(continuousDateList) || !isEmpty(choosableDateList))) {
+      const initialValuesForLeaveTimesList = (
+        isNormalType ? choosableDateList : continuousDateList
+      ).map((x) => {
         // for non US user
         if (!BY_HOUR) {
           if (findInvalidHalfOfDay(x).includes(MORNING)) {
@@ -800,14 +822,44 @@ const RequestInformation = (props) => {
         leaveTimeLists: initialValuesForLeaveTimesList,
       });
     }
-  }, [selectedTypeName, durationFrom, JSON.stringify(dateLists), JSON.stringify(listDate)]);
+  }, [
+    selectedTypeName,
+    durationFrom,
+    JSON.stringify(continuousDateList),
+    JSON.stringify(choosableDateList),
+  ]);
 
   useEffect(() => {
     if (viewingId) {
       fetchData();
     }
-    // fetchEmailsListByCompany();
   }, [viewingId, JSON.stringify(workingDays)]);
+
+  useEffect(() => {
+    if (action !== EDIT_LEAVE_REQUEST) {
+      didMount.current = true;
+    }
+    if (
+      selectedTypeName &&
+      durationFrom &&
+      (!isEmpty(choosableDateList) || !isEmpty(continuousDateList))
+    ) {
+      setTimeout(() => {
+        didMount.current = true;
+      }, 1000);
+    }
+  }, [selectedTypeName, durationFrom]);
+
+  useEffect(() => {
+    if (action === EDIT_LEAVE_REQUEST) {
+      dispatch({
+        type: 'timeOff/fetchEmailsListByCompany',
+        payload: {
+          search: '',
+        },
+      });
+    }
+  }, []);
 
   const generateSecondNotice = () => {
     switch (selectedType) {
@@ -821,8 +873,8 @@ const RequestInformation = (props) => {
         return '';
       }
       case D: {
-        if (dateLists.length > 0) {
-          return `${selectedTypeName} applied for: ${dateLists.length} days`;
+        if (choosableDateList.length > 0) {
+          return `${selectedTypeName} applied for: ${choosableDateList.length} days`;
         }
         return ``;
       }
@@ -839,14 +891,14 @@ const RequestInformation = (props) => {
 
   useEffect(() => {
     if (selectedType && durationTo) {
-      const dateListsObj = getDateLists(durationFrom, durationTo, selectedType);
-      setDateLists(dateListsObj.dates);
+      const dateListsObj = getContinuousDateLists(durationFrom, durationTo, selectedType);
+      setContinuousDateList(dateListsObj.dates);
     }
   }, [durationFrom, durationTo, currentAllowanceState]);
 
   const renderTag = ({ value, onClose }) => {
     const handleClose = () => {
-      setListDate(listDate.filter((x) => x !== value));
+      setChoosableDateList(choosableDateList.filter((x) => x !== value));
       onClose();
     };
     return (
@@ -860,7 +912,7 @@ const RequestInformation = (props) => {
     // generate second notice
     const secondNoticeTemp = generateSecondNotice();
     setSecondNotice(secondNoticeTemp);
-  }, [selectedTypeName, currentAllowanceState, JSON.stringify(dateLists)]);
+  }, [selectedTypeName, currentAllowanceState, JSON.stringify(continuousDateList)]);
 
   useEffect(() => {
     dispatch({
@@ -884,9 +936,9 @@ const RequestInformation = (props) => {
 
   useEffect(() => {
     form.setFieldsValue({
-      listDate,
+      listDate: choosableDateList,
     });
-  }, [JSON.stringify(listDate)]);
+  }, [JSON.stringify(choosableDateList)]);
 
   useEffect(() => {
     const workingDaysTemp = [];
@@ -907,14 +959,14 @@ const RequestInformation = (props) => {
         listDate: [],
         leaveTimeLists: [],
       });
-      setListDate([]);
+      setChoosableDateList([]);
     }
   }, [employeeBehalfOf]);
 
   const dateRender = (currentDate) => {
     let isSelected;
-    if (listDate.length) {
-      isSelected = listDate.indexOf(moment(currentDate).format(TIMEOFF_DATE_FORMAT)) > -1;
+    if (choosableDateList.length) {
+      isSelected = choosableDateList.indexOf(moment(currentDate).format(TIMEOFF_DATE_FORMAT)) > -1;
     }
     return <div className={isSelected ? styles.selectDate : ''}>{currentDate.date()}</div>;
   };
@@ -934,6 +986,7 @@ const RequestInformation = (props) => {
 
   const renderLeaveTimeList = () => {
     if ([D].includes(selectedType)) {
+      const normalListDate = choosableDateList.sort((a, b) => new Date(a) - new Date(b));
       return (
         <>
           <Row className={styles.eachRow}>
@@ -947,7 +1000,7 @@ const RequestInformation = (props) => {
                   <Col span={TIMEOFF_COL_SPAN_1.DAY}>To</Col>
                   <Col span={TIMEOFF_COL_SPAN_1.COUNT}>No. of Days</Col>
                 </Row>
-                {(!durationFrom || !durationTo) && (
+                {!normalListDate.length && (
                   <div className={styles.content}>
                     <div className={styles.emptyContent}>
                       <span>Selected duration will show as days</span>
@@ -959,7 +1012,7 @@ const RequestInformation = (props) => {
             <Col lg={6} sm={0} />
           </Row>
 
-          {durationFrom && durationTo && (
+          {normalListDate && !!normalListDate.length && (
             <Form.List name="leaveTimeLists">
               {() => (
                 <Row key={1} className={styles.eachRow}>
@@ -968,9 +1021,9 @@ const RequestInformation = (props) => {
                   </Col>
                   <Col lg={12} sm={16} className={styles.leaveDaysContainer}>
                     <LeaveTimeRow2
-                      fromDate={durationFrom}
-                      toDate={durationTo}
-                      noOfDays={dateLists.length}
+                      fromDate={normalListDate[0]}
+                      toDate={normalListDate[normalListDate.length - 1]}
+                      noOfDays={normalListDate.length}
                     />
                   </Col>
                   <Col lg={6} sm={0} />
@@ -1020,7 +1073,7 @@ const RequestInformation = (props) => {
           <Col lg={12} sm={16}>
             <div className={styles.extraTimeSpent}>
               {renderTableHeader()}
-              {(!durationFrom || !durationTo) && !listDate.length && (
+              {(!durationFrom || !durationTo) && !choosableDateList.length && (
                 <div className={styles.content}>
                   <div className={styles.emptyContent}>
                     <span>Selected duration will show as days</span>
@@ -1032,7 +1085,7 @@ const RequestInformation = (props) => {
           <Col lg={6} sm={0} />
         </Row>
 
-        {((durationFrom && durationTo) || !!listDate.length) && (
+        {((durationFrom && durationTo) || !!choosableDateList.length) && (
           <Form.List name="leaveTimeLists">
             {() => (
               <Row key={1} className={styles.eachRow}>
@@ -1041,12 +1094,12 @@ const RequestInformation = (props) => {
                 </Col>
                 <Col lg={12} sm={16} className={styles.leaveDaysContainer}>
                   {showAllDateList ? (
-                    (!isNormalType ? dateLists : listDate).map((date, index) => {
+                    (!isNormalType ? continuousDateList : choosableDateList).map((date, index) => {
                       return (
                         <LeaveTimeRow
                           eachDate={date}
                           index={index}
-                          listLength={dateLists.length}
+                          listLength={continuousDateList.length}
                           needValidate={needValidate}
                           findInvalidHalfOfDay={findInvalidHalfOfDay}
                           BY_HOUR={BY_HOUR}
@@ -1059,7 +1112,7 @@ const RequestInformation = (props) => {
                     <LeaveTimeRow2
                       fromDate={durationFrom}
                       toDate={durationTo}
-                      noOfDays={dateLists.length}
+                      noOfDays={continuousDateList.length}
                     />
                   )}
                 </Col>
@@ -1120,6 +1173,7 @@ const RequestInformation = (props) => {
                     fetchOptions={fetchEmailsListByCompany}
                     showSearch
                     allowClear
+                    name="employeeBehalf"
                   />
                 </Form.Item>
               </Col>
@@ -1194,7 +1248,7 @@ const RequestInformation = (props) => {
             <Col lg={12} sm={16}>
               <Row gutter={['20', '0']}>
                 {isNormalType ? (
-                  <Col span={24}>
+                  <Col span={24} className={styles.durationSelector}>
                     {renderFormItem(
                       <Form.Item name="listDate">
                         <Select
@@ -1203,9 +1257,9 @@ const RequestInformation = (props) => {
                           onFocus={() => setVisible(true)}
                           onBlur={() => setVisible(false)}
                           open={visible}
-                          value={listDate}
+                          value={choosableDateList}
                           tagRender={renderTag}
-                          onClear={() => setListDate([])}
+                          onClear={() => setChoosableDateList([])}
                           allowClear
                           dropdownMatchSelectWidth={false}
                           dropdownStyle={{ height: '270px', width: '280px', minWidth: '0' }}
@@ -1231,7 +1285,7 @@ const RequestInformation = (props) => {
                   </Col>
                 ) : (
                   <>
-                    <Col span={12}>
+                    <Col span={12} className={styles.durationSelector}>
                       {renderFormItem(
                         <Form.Item
                           name="durationFrom"
@@ -1254,7 +1308,7 @@ const RequestInformation = (props) => {
                         </Form.Item>,
                       )}
                     </Col>
-                    <Col span={12}>
+                    <Col span={12} className={styles.durationSelector}>
                       {renderFormItem(
                         <Form.Item
                           name="durationTo"
@@ -1334,14 +1388,60 @@ const RequestInformation = (props) => {
                     },
                   ]}
                 >
-                  <DebounceSelect
-                    placeholder="Search a person you want to loop"
-                    fetchOptions={fetchEmailsListByCompany}
-                    showSearch
-                    allowClear
-                    mode="multiple"
-                    disabled={!selectedTypeName}
-                  />
+                  {action === EDIT_LEAVE_REQUEST ? (
+                    <Select
+                      mode="multiple"
+                      allowClear
+                      placeholder="Search a person you want to loop"
+                      disabled={!selectedTypeName}
+                      filterOption={(input, option) => {
+                        return (
+                          option.children[1].props.children
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                    >
+                      {emailsList.map((value) => {
+                        const { _id = '', generalInfoInfo: { workEmail = '', avatar = '' } = {} } =
+                          value;
+
+                        return (
+                          <Option key={_id} value={_id}>
+                            <div style={{ display: 'inline', marginRight: '10px' }}>
+                              <img
+                                style={{
+                                  borderRadius: '50%',
+                                  width: '30px',
+                                  height: '30px',
+                                }}
+                                src={avatar}
+                                alt="user"
+                                onError={(e) => {
+                                  e.target.src = DefaultAvatar;
+                                }}
+                              />
+                            </div>
+                            <span
+                              style={{ fontSize: '13px', color: '#161C29' }}
+                              className={styles.ccEmail}
+                            >
+                              {workEmail}
+                            </span>
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  ) : (
+                    <DebounceSelect
+                      placeholder="Search a person you want to loop"
+                      fetchOptions={fetchEmailsListByCompany}
+                      showSearch
+                      allowClear
+                      mode="multiple"
+                      disabled={!selectedTypeName}
+                    />
+                  )}
                 </Form.Item>,
               )}
             </Col>

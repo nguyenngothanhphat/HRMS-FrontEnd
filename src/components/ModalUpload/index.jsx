@@ -113,7 +113,7 @@ class ModalUpload extends Component {
     dispatch({
       type: 'upload/uploadFile',
       payload: formData,
-      showNotification: false
+      showNotification: false,
     }).then((resp) => {
       this.setState({ imageUrl: '' });
       getResponse(resp);

@@ -72,9 +72,8 @@ const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) =>
     },
   );
   try {
-    const updateData = { ...data };
-    delete updateData.cancelToken;
-    const res = await instance[method.toLowerCase()](url, updateData);
+    delete data.cancelToken;
+    const res = await instance[method.toLowerCase()](url, data);
     return res.data;
   } catch (e) {
     const isCancel = axios.isCancel(e);

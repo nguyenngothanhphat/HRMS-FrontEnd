@@ -83,7 +83,7 @@ const FilterContent = (props) => {
         <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
           {employeeList.map((item) => {
             return (
-              <Select.Option value={item._id} key={item}>
+              <Select.Option value={item?.generalInfo?.userId} key={item._id}>
                 {item.generalInfo?.legalName}
               </Select.Option>
             );
