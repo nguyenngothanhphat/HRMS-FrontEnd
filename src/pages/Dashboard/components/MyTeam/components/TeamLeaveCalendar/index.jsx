@@ -2,6 +2,7 @@ import { Avatar, Calendar, Spin, Tooltip } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 import mockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
@@ -18,26 +19,27 @@ const TeamLeaveCalendar = (props) => {
   const endOfMonth = moment(selectedMonth).endOf('month').format('MM/DD/YYYY');
   useEffect(() => {
     // refresh data by month here
-    dispatch({
-      type: 'dashboard/fetchTeamLeaveRequests',
-      payload: {
-        status: [TIMEOFF_STATUS.ACCEPTED],
-        fromDate: startOfMonth,
-        toDate: endOfMonth,
-        type: listTimeOffType,
-        page: 1,
-        limit: 100,
-        search: '',
-      },
-    });
-  }, [selectedMonth]);
+    if (!isEmpty(listTimeOffType)) {
+      dispatch({
+        type: 'dashboard/fetchTeamLeaveRequests',
+        payload: {
+          status: [TIMEOFF_STATUS.ACCEPTED],
+          fromDate: startOfMonth,
+          toDate: endOfMonth,
+          type: listTimeOffType,
+          page: 1,
+          limit: 100,
+          search: '',
+        },
+      });
+    }
+  }, [selectedMonth, listTimeOffType]);
 
   // FUNCTIONS
   const checkDate = (date, listDate) => {
     return (
       listDate.filter(
-        (val) =>
-          moment(val.date).format('MM/DD/YYYY') === moment(date).format('MM/DD/YYYY'),
+        (val) => moment(val.date).format('MM/DD/YYYY') === moment(date).format('MM/DD/YYYY'),
       ) || []
     );
   };
