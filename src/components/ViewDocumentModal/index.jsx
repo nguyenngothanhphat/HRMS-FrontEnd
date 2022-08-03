@@ -88,10 +88,10 @@ class ViewDocumentModal extends PureComponent {
     return (
       <>
         <p className={styles.fileName}>{fileName}</p>
-        <object width="100%" height="100%" data={url} type="application/pdf">
+        <object width="100%" height="530" data={url} type="application/pdf">
           <iframe
             width="100%"
-            height="560"
+            height="530"
             src={`https://docs.google.com/viewer?url=${url}&embedded=true`}
             title="pdf-viewer"
           />
