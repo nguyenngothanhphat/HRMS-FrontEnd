@@ -20,7 +20,7 @@ const TableTickets = (props) => {
     data = [],
     textEmpty = 'No raise ticket is submitted',
     loading,
-    locationsList = [],
+    companyLocationList = [],
   } = props;
 
   const [ticket, setTicket] = useState({});
@@ -243,7 +243,7 @@ const TableTickets = (props) => {
       dataIndex: 'location',
       key: 'location',
       render: (location) => {
-        const locationTemp = locationsList.find((val) => val._id === location);
+        const locationTemp = companyLocationList.find((val) => val._id === location);
         return (
           <AddressPopover location={locationTemp || {}}>
             <span style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}>
@@ -253,8 +253,8 @@ const TableTickets = (props) => {
         );
       },
       sorter: (a, b) => {
-        const locationA = locationsList.find((val) => val._id === a.location);
-        const locationB = locationsList.find((val) => val._id === b.location);
+        const locationA = companyLocationList.find((val) => val._id === a.location);
+        const locationB = companyLocationList.find((val) => val._id === b.location);
         if (locationA && locationB) {
           return locationA.name.localeCompare(locationB.name);
         }
@@ -345,12 +345,11 @@ const TableTickets = (props) => {
 export default connect(
   ({
     loading,
-    ticketManagement: { listEmployee = [], locationsList = [] } = {},
+    ticketManagement: { listEmployee = [] } = {},
     user: { currentUser: { employee = {} } = {} } = {},
     location: { companyLocationList = [] },
   }) => ({
     listEmployee,
-    locationsList,
     employee,
     companyLocationList,
     loadingUpdate: loading.effects['ticketManagement/updateTicket'],

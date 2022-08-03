@@ -1,5 +1,5 @@
 import { Table } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect, Link } from 'umi';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import EmptyComponent from '@/components/Empty';
@@ -8,35 +8,8 @@ import EmployeeDetailModal from '../../../EmployeeDetailModal';
 import styles from './index.less';
 // import UserPopover from './components/UserPopover';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { getTimezoneViaCity } from '@/utils/times';
 
 const WeeklyTable = (props) => {
-  // const [timezoneList, setTimezoneList] = useState([]);
-  const timezoneList = [];
-  const { companyLocationList = [] } = props;
-  const fetchTimezone = () => {
-    companyLocationList.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id = '',
-      } = location;
-      timezoneList.push({
-        locationId: _id,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    // setTimezoneList({
-    //   timezoneList,
-    // });
-  };
-  useEffect(() => {
-    fetchTimezone();
-  });
-
   const {
     data = [],
     selectedEmployees = [],
@@ -47,11 +20,7 @@ const WeeklyTable = (props) => {
   const [pageSize, setPageSize] = useState(10);
   const [handlingEmployee, setHandlingEmployee] = useState();
   const [employeeDetailModalVisible, setEmployeeDetailModalVisible] = useState(false);
-  // const handleProfileEmployee = (tenantId, userId) => {
-  //   localStorage.setItem('tenantCurrentEmployee', tenantId);
-  //   const pathname = isOwner()`/directory/employee-profile/${userId}`;
-  //   return pathname;
-  // };
+
   const handleProfileEmployee = (userId) => {
     return `/directory/employee-profile/${userId}`;
   };

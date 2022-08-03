@@ -102,12 +102,6 @@ export async function getDepartmentList(payload) {
     data: payload,
   });
 }
-export async function getLocationList(payload) {
-  return request('/api/locationtenant/list', {
-    method: 'POST',
-    data: payload,
-  });
-}
 
 export async function getSupportTeamList(payload) {
   return request('/api/settingtickettenant/list', {
@@ -126,4 +120,11 @@ export async function deleteOneTicket(payload) {
     false,
     API_KEYS.TICKET_API,
   );
+}
+
+export async function getLocationsOfCountries(params) {
+  return request('/api/locationtenant/group-country', {
+    method: 'GET',
+    params,
+  });
 }

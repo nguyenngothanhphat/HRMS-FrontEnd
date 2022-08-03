@@ -11,10 +11,10 @@ import {
   getOffAllTicketList,
   getDepartmentList,
   getOffToTalList,
-  getLocationList,
   uploadFile,
   getSupportTeamList,
   getListMyTeam,
+  getLocationsOfCountries,
 } from '../services/ticketManagement';
 
 const ticketManagement = {
@@ -27,7 +27,6 @@ const ticketManagement = {
     totalAll: [],
     listEmployee: [],
     listDepartment: [],
-    locationsList: [],
     ticketDetail: {},
     employeeRaiseList: [],
     employeeAssignedList: [],
@@ -36,6 +35,7 @@ const ticketManagement = {
     isLocationLoaded: false,
     supportTeamList: [],
     employeeFilterList: [],
+    locationsOfCountries: [],
   },
   effects: {
     *addTicket({ payload }, { call }) {
@@ -242,22 +242,6 @@ const ticketManagement = {
       }
       return response;
     },
-    *fetchLocationList({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(getLocationList, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data: locationsList = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { locationsList } });
-        return response;
-      } catch (errors) {
-        dialog(errors);
-        return {};
-      }
-    },
 
     *fetchEmployeeRaiseListEffect({ payload }, { call, put }) {
       try {
@@ -329,6 +313,26 @@ const ticketManagement = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+    *getLocationsOfCountriesEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getLocationsOfCountries, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: { locationsOfCountries: data },
+        });
+      } catch (error) {
+        dialog(error);
       }
       return response;
     },

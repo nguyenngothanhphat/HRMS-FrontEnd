@@ -6,6 +6,7 @@ import { connect, history, Link } from 'umi';
 import PersonIcon from '@/assets/assignPerson.svg';
 import TeamIcon from '@/assets/assignTeam.svg';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
+import AddressPopover from '@/components/AddressPopover';
 import CommonTable from '@/components/CommonTable';
 import EmptyComponent from '@/components/Empty';
 import UserProfilePopover from '@/components/UserProfilePopover';
@@ -13,7 +14,6 @@ import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { PRIORITY_COLOR } from '@/constants/ticketManagement';
 import AssignTeamModal from '@/pages/TicketManagement/components/AssignTeamModal';
 import { getEmployeeUrl } from '@/utils/directory';
-import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import TicketItem from './components/TicketItem';
 import styles from './index.less';
 
@@ -26,7 +26,6 @@ const TableTickets = (props) => {
     dispatch,
     employee: { _id: employeeId = '' },
     employee = {},
-    locationsList = [],
     loading = false,
     pageSelected = 1,
     size,
@@ -40,9 +39,7 @@ const TableTickets = (props) => {
     loadingUpdate = false,
     permissions: { assignTicket, appendTicket, viewTicketByAdmin },
   } = props;
-  const [timezoneListState, setTimezoneListState] = useState([]);
   const [ticket, setTicket] = useState({});
-  const [currentTimeState, setCurrentTimeState] = useState(moment());
   const [nameSearch, setNameSearch] = useState('');
   const [oldName, setOldName] = useState('');
   const [selected, setSelected] = useState(true);
@@ -146,79 +143,6 @@ const TableTickets = (props) => {
           loading={loadingFetchEmployee || loadingUpdate}
         />
       </Suspense>
-    );
-  };
-
-  const fetchTimezone = () => {
-    const timezoneList = [];
-    companyLocationList.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id: locationId = '',
-      } = location;
-      timezoneList.push({
-        locationId,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    setTimezoneListState(timezoneList);
-  };
-
-  const setCurrentTime = () => {
-    // compare two time by hour & minute. If minute changes, get new time
-    const timeFormat = 'HH:mm';
-    const parseTime = (timeString) => moment(timeString, timeFormat);
-    const check = parseTime(moment().format(timeFormat)).isAfter(
-      parseTime(moment(currentTimeState).format(timeFormat)),
-    );
-
-    if (check) {
-      setCurrentTimeState(moment());
-    }
-  };
-
-  const locationContent = (location) => {
-    const result =
-      locationsList.length > 0 ? locationsList.filter((val) => val._id === location)[0] : [] || [];
-    const {
-      headQuarterAddress: {
-        addressLine1 = '',
-        addressLine2 = '',
-        state = '',
-        country = {},
-        zipCode = '',
-      } = {},
-      _id = '',
-    } = result;
-
-    const address = [addressLine1, addressLine2, state, country.name || country || null, zipCode]
-      .filter(Boolean)
-      .join(', ');
-    const findTimezone = timezoneListState.find((timezone) => timezone.locationId === _id) || {};
-
-    return (
-      <div className={styles.locationContent}>
-        <span
-          style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
-        >
-          Address:
-        </span>
-        <span style={{ display: 'block', fontSize: '13px', marginBottom: '10px' }}>{address}</span>
-        <span
-          style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
-        >
-          Local time{state && ` in  ${state}`}:
-        </span>
-        <span style={{ display: 'block', fontSize: '13px' }}>
-          {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-            ? getCurrentTimeOfTimezone(currentTimeState, findTimezone.timezone)
-            : 'Not enough data in address'}
-        </span>
-      </div>
     );
   };
 
@@ -374,27 +298,20 @@ const TableTickets = (props) => {
         key: 'location',
         render: (location) => {
           if (location) {
-            const locationNew = locationsList.find((val) => val._id === location);
+            const locationTemp = companyLocationList.find((val) => val._id === location);
             return (
-              <Popover
-                content={locationContent(location)}
-                title={locationNew?.name}
-                trigger="hover"
-              >
-                <span
-                  style={{ wordWrap: 'break-word', wordBreak: 'break-word', cursor: 'pointer' }}
-                  onMouseEnter={setCurrentTime}
-                >
-                  {locationNew?.name}
+              <AddressPopover location={locationTemp || {}}>
+                <span style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}>
+                  {location ? locationTemp?.name : '-'}
                 </span>
-              </Popover>
+              </AddressPopover>
             );
           }
           return '';
         },
         sorter: (a, b) => {
-          const locationA = locationsList.find((val) => val._id === a.location);
-          const locationB = locationsList.find((val) => val._id === b.location);
+          const locationA = companyLocationList.find((val) => val._id === a.location);
+          const locationB = companyLocationList.find((val) => val._id === b.location);
           if (locationA && locationB) {
             return locationA.name.localeCompare(locationB.name);
           }
@@ -488,10 +405,6 @@ const TableTickets = (props) => {
   }, [selectedFilterTab]);
 
   useEffect(() => {
-    fetchTimezone();
-  }, [JSON.stringify(companyLocationList)]);
-
-  useEffect(() => {
     if (nameSearch) {
       const roleEmployee = employee && employee?.title ? employee.title.roles : [];
       const companyInfo = employee ? employee.company : {};
@@ -541,12 +454,11 @@ const TableTickets = (props) => {
 export default connect(
   ({
     loading,
-    ticketManagement: { listEmployee = [], locationsList = [], employeeFilterList = [] } = {},
+    ticketManagement: { listEmployee = [], employeeFilterList = [] } = {},
     user: { currentUser: { employee = {} } = {}, permissions = {} } = {},
     location: { companyLocationList = [] },
   }) => ({
     listEmployee,
-    locationsList,
     employeeFilterList,
     employee,
     permissions,

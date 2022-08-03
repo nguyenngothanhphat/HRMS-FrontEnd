@@ -11,6 +11,7 @@ const ContentPopover = (props) => {
     onCheckAll = () => {},
     selected = [],
     indeterminate = false,
+    disabled = false,
   } = props;
 
   const RenderTree = () => {
@@ -39,7 +40,7 @@ const ContentPopover = (props) => {
       </Row>
     );
   };
-
+  if (disabled) return children;
   return (
     <Popover
       content={<RenderTree />}

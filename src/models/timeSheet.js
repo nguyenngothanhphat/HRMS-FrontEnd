@@ -38,6 +38,7 @@ import {
   getMyRequest,
   resubmitMyRequest,
   getHolidaysByDate,
+  getLocationsOfCountries,
 } from '@/services/timeSheet';
 import { getCountry, getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay, pushSuccess } from '@/utils/timeSheet';
@@ -99,6 +100,7 @@ const initialState = {
   isLocationLoaded: false,
   isIncompleteTimesheet: false,
   employeeSchedule: {},
+  locationsOfCountries: [],
 };
 
 const TimeSheet = {
@@ -804,6 +806,26 @@ const TimeSheet = {
         notification.success({ message: msg });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+    *getLocationsOfCountriesEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getLocationsOfCountries, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: { locationsOfCountries: data },
+        });
+      } catch (error) {
+        dialog(error);
       }
       return response;
     },

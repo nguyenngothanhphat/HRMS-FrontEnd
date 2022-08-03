@@ -1,8 +1,7 @@
 import { Skeleton, Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history, Redirect } from 'umi';
-import SmallDownArrow from '@/assets/dashboard/smallDownArrow.svg';
-import CheckboxMenu from '@/components/CheckboxMenu';
+import LocationDropdownSelector from '@/components/LocationDropdownSelector';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentLocation } from '@/utils/authority';
 import MyTickets from './components/MyTickets';
@@ -14,7 +13,7 @@ const EmployeeTicket = (props) => {
 
   const {
     dispatch,
-    companyLocationList = [],
+    // companyLocationList = [],
     listOffAllTicket = [],
     totalStatus = [],
     tabName = '',
@@ -22,35 +21,59 @@ const EmployeeTicket = (props) => {
     role = '',
     selectedLocations: selectedLocationsProp = [],
     isLocationLoaded = false,
+    locationsOfCountries = [],
   } = props;
 
   if (!tabName) return <Redirect to="/ticket-management/ticket-queue" />;
 
   const [selectedLocationsState, setSelectedLocationsState] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     setSelectedLocationsState(selectedLocationsProp);
   }, [JSON.stringify(selectedLocationsProp)]);
 
   useEffect(() => {
-    const currentLocation = getCurrentLocation();
-    if (currentLocation) {
+    if (!tabName) {
+      history.replace(`/ticket-management/ticket-queue`);
+    } else {
       dispatch({
-        type: 'ticketManagement/save',
-        payload: {
-          selectedLocations: [currentLocation],
-          isLocationLoaded: true,
-        },
+        type: 'ticketManagement/getLocationsOfCountriesEffect',
       });
     }
+    return () => {
+      setData([]);
+      setSelectedLocationsState([]);
+      dispatch({
+        type: 'ticketManagement/save',
+        locationsOfCountries: [],
+      });
+    };
   }, []);
 
-  const fetchLocation = () => {
-    dispatch({
-      type: 'ticketManagement/fetchLocationList',
-      payload: {},
+  useEffect(() => {
+    const tempData = locationsOfCountries.map((x, i) => {
+      return {
+        title: x.country?.name,
+        key: i,
+        children: x.data.map((y) => {
+          return {
+            title: y.name,
+            key: y._id,
+          };
+        }),
+      };
     });
-  };
+    setSelectedLocationsState([getCurrentLocation()]);
+    setData(tempData);
+    dispatch({
+      type: 'ticketManagement/save',
+      payload: {
+        selectedLocations: [getCurrentLocation()],
+        isLocationLoaded: true,
+      },
+    });
+  }, [JSON.stringify(locationsOfCountries)]);
 
   const handleChangeTable = (key) => {
     history.push(`/ticket-management/${key}`);
@@ -60,67 +83,24 @@ const EmployeeTicket = (props) => {
     dispatch({
       type: 'ticketManagement/save',
       payload: {
-        selectedLocations: [...selection],
+        selectedLocations: selection,
       },
     });
-    setSelectedLocationsState([...selection]);
-  };
-
-  const getSelectedLocationName = () => {
-    if (selectedLocationsState.length === 1) {
-      return companyLocationList.find((x) => x._id === selectedLocationsState[0])?.name || '';
-    }
-    if (
-      selectedLocationsState.length > 0 &&
-      selectedLocationsState.length < companyLocationList.length
-    ) {
-      return `${selectedLocationsState.length} locations selected`;
-    }
-    if (selectedLocationsState.length === companyLocationList.length) {
-      return 'All';
-    }
-    return 'None';
   };
 
   const renderFilterLocation = () => {
-    const selectedLocationName = getSelectedLocationName();
-    const locationOptions = companyLocationList.map((x) => {
-      return {
-        _id: x._id,
-        name: x.name,
-      };
-    });
     return (
       <div className={styles.item}>
-        <span className={styles.label}>Location</span>
-
-        <CheckboxMenu
-          options={locationOptions}
-          onChange={onLocationChange}
-          list={companyLocationList}
-          default={selectedLocationsState}
-        >
-          <div className={styles.dropdown} onClick={(e) => e.preventDefault()}>
-            <span>{selectedLocationName}</span>
-            <img src={SmallDownArrow} alt="" />
-          </div>
-        </CheckboxMenu>
+        <LocationDropdownSelector
+          saveLocationToRedux={onLocationChange}
+          selectedLocations={selectedLocationsState}
+          data={data}
+        />
       </div>
     );
   };
 
-  useEffect(() => {
-    fetchLocation();
-    return () => {
-      dispatch({
-        type: 'ticketManagement/save',
-        payload: {
-          selectedLocations: [],
-        },
-      });
-    };
-  }, []);
-
+  if (!tabName) return '';
   return (
     <div className={styles.TicketManagement}>
       <PageContainer>
@@ -169,12 +149,14 @@ export default connect(
       totalStatus = [],
       selectedLocations = [],
       isLocationLoaded = false,
+      locationsOfCountries = [],
     } = {},
     user: { currentUser: { employee = {} } = {} } = {},
     location: { companyLocationList = [] },
   }) => ({
     employee,
     listOffAllTicket,
+    locationsOfCountries,
     totalStatus,
     companyLocationList,
     selectedLocations,
