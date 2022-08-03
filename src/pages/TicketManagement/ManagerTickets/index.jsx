@@ -28,9 +28,21 @@ const ManagerTicket = (props) => {
   }, [JSON.stringify(selectedLocationsProp)]);
 
   useEffect(() => {
-    dispatch({
-      type: 'ticketManagement/getLocationsOfCountriesEffect',
-    });
+    if (!tabName) {
+      history.replace(`/ticket-management/all-tickets`);
+    } else {
+      dispatch({
+        type: 'ticketManagement/getLocationsOfCountriesEffect',
+      });
+    }
+    return () => {
+      setData([]);
+      setSelectedLocationsState([]);
+      dispatch({
+        type: 'ticketManagement/save',
+        locationsOfCountries: [],
+      });
+    };
   }, []);
 
   useEffect(() => {
@@ -55,22 +67,7 @@ const ManagerTicket = (props) => {
         isLocationLoaded: true,
       },
     });
-    return () => {
-      setData([]);
-      setSelectedLocationsState([]);
-      dispatch({
-        type: 'ticketManagement/save',
-        locationsOfCountries: [],
-      });
-    };
   }, [JSON.stringify(locationsOfCountries)]);
-
-  const fetchLocationList = () => {
-    dispatch({
-      type: 'ticketManagement/fetchLocationList',
-      payload: {},
-    });
-  };
 
   const onLocationChange = (selection) => {
     dispatch({
@@ -92,22 +89,6 @@ const ManagerTicket = (props) => {
       </div>
     );
   };
-
-  useEffect(() => {
-    if (!tabName) {
-      history.replace(`/ticket-management/all-tickets`);
-    }
-    fetchLocationList();
-
-    return () => {
-      dispatch({
-        type: 'ticketManagement/save',
-        payload: {
-          selectedLocations: [],
-        },
-      });
-    };
-  }, []);
 
   if (!tabName) return '';
   return (

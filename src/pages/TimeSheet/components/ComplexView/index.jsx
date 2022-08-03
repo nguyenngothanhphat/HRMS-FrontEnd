@@ -50,12 +50,6 @@ const ComplexView = (props) => {
   }, [JSON.stringify(selectedLocationsProp)]);
 
   useEffect(() => {
-    dispatch({
-      type: 'timeSheet/getLocationsOfCountriesEffect',
-    });
-  }, []);
-
-  useEffect(() => {
     const tempData = locationsOfCountries.map((x, i) => {
       return {
         title: x.country?.name,
@@ -238,6 +232,10 @@ const ComplexView = (props) => {
       }
       return;
     }
+    dispatch({
+      type: 'timeSheet/getLocationsOfCountriesEffect',
+    });
+
     if (
       divisionList.length === 0 &&
       [TAB_NAME.HR_REPORTS, TAB_NAME.FINANCE_REPORTS].includes(tabName)

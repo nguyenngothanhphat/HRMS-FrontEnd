@@ -32,9 +32,21 @@ const EmployeeTicket = (props) => {
   }, [JSON.stringify(selectedLocationsProp)]);
 
   useEffect(() => {
-    dispatch({
-      type: 'ticketManagement/getLocationsOfCountriesEffect',
-    });
+    if (!tabName) {
+      history.replace(`/ticket-management/ticket-queue`);
+    } else {
+      dispatch({
+        type: 'ticketManagement/getLocationsOfCountriesEffect',
+      });
+    }
+    return () => {
+      setData([]);
+      setSelectedLocationsState([]);
+      dispatch({
+        type: 'ticketManagement/save',
+        locationsOfCountries: [],
+      });
+    };
   }, []);
 
   useEffect(() => {
@@ -59,22 +71,7 @@ const EmployeeTicket = (props) => {
         isLocationLoaded: true,
       },
     });
-    return () => {
-      setData([]);
-      setSelectedLocationsState([]);
-      dispatch({
-        type: 'ticketManagement/save',
-        locationsOfCountries: [],
-      });
-    };
   }, [JSON.stringify(locationsOfCountries)]);
-
-  const fetchLocation = () => {
-    dispatch({
-      type: 'ticketManagement/fetchLocationList',
-      payload: {},
-    });
-  };
 
   const handleChangeTable = (key) => {
     history.push(`/ticket-management/${key}`);
@@ -100,21 +97,6 @@ const EmployeeTicket = (props) => {
       </div>
     );
   };
-
-  useEffect(() => {
-    if (!tabName) {
-      history.replace(`/ticket-management/ticket-queue`);
-    }
-    fetchLocation();
-    return () => {
-      dispatch({
-        type: 'ticketManagement/save',
-        payload: {
-          selectedLocations: [],
-        },
-      });
-    };
-  }, []);
 
   if (!tabName) return '';
   return (

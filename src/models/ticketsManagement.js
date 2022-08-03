@@ -11,7 +11,6 @@ import {
   getOffAllTicketList,
   getDepartmentList,
   getOffToTalList,
-  getLocationList,
   uploadFile,
   getSupportTeamList,
   getListMyTeam,
@@ -243,22 +242,6 @@ const ticketManagement = {
         dialog(error);
       }
       return response;
-    },
-    *fetchLocationList({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(getLocationList, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data: locationsList = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { locationsList } });
-        return response;
-      } catch (errors) {
-        dialog(errors);
-        return {};
-      }
     },
 
     *fetchEmployeeRaiseListEffect({ payload }, { call, put }) {
