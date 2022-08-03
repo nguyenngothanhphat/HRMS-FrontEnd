@@ -85,7 +85,7 @@ const ManagerViewRequestForm = (props) => {
                   <RightContent data={viewingLeaveRequest} status={status} />
                 </>
               )}
-              <TimeOffHistory />
+              <TimeOffHistory data={viewingLeaveRequest} />
             </Col>
           </Row>
         </Spin>
