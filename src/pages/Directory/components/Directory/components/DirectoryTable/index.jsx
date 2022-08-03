@@ -2,15 +2,14 @@
 /* eslint-disable no-console */
 import { Avatar, Button, Popover, Tag } from 'antd';
 import { isEmpty } from 'lodash';
-import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect, formatMessage, Link } from 'umi';
 import avtDefault from '@/assets/avtDefault.jpg';
+import AddressPopover from '@/components/AddressPopover';
 import CommonModal from '@/components/CommonModal';
 import CommonTable from '@/components/CommonTable';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import { isOwner } from '@/utils/authority';
-import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import TerminateModalContent from '../TerminateModalContent';
 import styles from './index.less';
 
@@ -39,7 +38,6 @@ const DirectoryTable = (props) => {
     totalMyTeam,
     pageSelected,
     rowSize,
-    companyLocationList = [],
     permissions = {},
     profileOwner = false,
     dispatch,
@@ -51,32 +49,6 @@ const DirectoryTable = (props) => {
 
   const [terminalModalVisible, setTerminalModalVisible] = useState(false);
   const [rowData, setRowData] = useState({});
-  const [timezoneList, setTimezoneList] = useState([]);
-  const [currentTime, setCurrentTime] = useState(moment());
-  const [hoveringLocation, setHoveringLocation] = useState('');
-
-  const fetchTimezone = () => {
-    const timezoneListTemp = [];
-    companyLocationList.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id = '',
-      } = location;
-      timezoneListTemp.push({
-        locationId: _id,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    setTimezoneList(timezoneListTemp);
-  };
-
-  useEffect(() => {
-    fetchTimezone();
-  }, [JSON.stringify(companyLocationList)]);
 
   const getAvatarUrl = (avatar, isShowAvatar) => {
     if (isShowAvatar) return avatar || avtDefault;
@@ -161,49 +133,6 @@ const DirectoryTable = (props) => {
       type: 'employee/saveFilter',
       payload: { [fieldName]: [value] },
     });
-  };
-
-  const getCurrentTime = () => {
-    setCurrentTime(moment());
-  };
-
-  const locationContent = (location) => {
-    const {
-      headQuarterAddress: {
-        addressLine1 = '',
-        addressLine2 = '',
-        state = '',
-        country = {},
-        zipCode = '',
-      } = {},
-      _id = '',
-    } = location;
-
-    const address = [addressLine1, addressLine2, state, country.name || country || null, zipCode]
-      .filter(Boolean)
-      .join(', ');
-    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id);
-
-    return (
-      <div className={styles.locationContent}>
-        <span
-          style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
-        >
-          Address:
-        </span>
-        <span style={{ display: 'block', fontSize: '13px', marginBottom: '10px' }}>{address}</span>
-        <span
-          style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
-        >
-          Local time{state && ` in  ${state}`}:
-        </span>
-        <span style={{ display: 'block', fontSize: '13px' }}>
-          {findTimezone?.timezone && Object.keys(findTimezone).length > 0
-            ? getCurrentTimeOfTimezone(currentTime, findTimezone.timezone)
-            : 'Not enough data in the address'}
-        </span>
-      </div>
-    );
   };
 
   const generateColumns = () => {
@@ -319,23 +248,12 @@ const DirectoryTable = (props) => {
         title: formatMessage({ id: 'component.directory.table.location' }),
         dataIndex: 'location',
         key: 'location',
-        render: (location = {}, row = {}) => (
-          <Popover
-            content={hoveringLocation === row._id ? locationContent(location) : null}
-            title={location?.name}
-            onVisibleChange={(visible) => {
-              setHoveringLocation(visible ? row._id : null);
-            }}
-            visible={hoveringLocation === row._id}
-            trigger="hover"
-          >
-            <span
-              style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
-              onMouseEnter={getCurrentTime}
-            >
+        render: (location = {}) => (
+          <AddressPopover location={location}>
+            <span style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}>
               {location ? location.name : ''}
             </span>
-          </Popover>
+          </AddressPopover>
         ),
         width: '10%',
         ellipsis: true,

@@ -1,17 +1,17 @@
 import { Col, Popover, Row, Tag } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect, history, Link } from 'umi';
 import ArrowDownIcon from '@/assets/ticketManagement/ic_arrowDown.svg';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
+import AddressPopover from '@/components/AddressPopover';
 import CommonTable from '@/components/CommonTable';
 import EmptyComponent from '@/components/Empty';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { PRIORITY_COLOR } from '@/constants/ticketManagement';
 import { getEmployeeUrl } from '@/utils/directory';
-import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import TicketItem from './components/TicketItem';
 import styles from './index.less';
 
@@ -20,36 +20,10 @@ const TableTickets = (props) => {
     data = [],
     textEmpty = 'No raise ticket is submitted',
     loading,
-    companyLocationList = [],
     locationsList = [],
   } = props;
 
   const [ticket, setTicket] = useState({});
-  const [currentTime, setCurrentTime] = useState(moment());
-  const [timezoneList, setTimezoneList] = useState([]);
-
-  const fetchTimezone = () => {
-    const timezoneListTemp = [];
-    companyLocationList.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id = '',
-      } = location || {};
-      timezoneListTemp.push({
-        locationId: _id,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    setTimezoneList(timezoneListTemp);
-  };
-
-  useEffect(() => {
-    fetchTimezone();
-  }, [JSON.stringify(companyLocationList)]);
 
   const openViewTicket = (ticketID) => {
     let id = '';
@@ -114,59 +88,6 @@ const TableTickets = (props) => {
         refreshFetchTotalList();
       }
     });
-  };
-
-  const getCurrentTime = () => {
-    // compare two time by hour & minute. If minute changes, get new time
-    const timeFormat = 'HH:mm';
-    const parseTime = (timeString) => moment(timeString, timeFormat);
-    const check = parseTime(moment().format(timeFormat)).isAfter(
-      parseTime(moment(currentTime).format(timeFormat)),
-    );
-
-    if (check) {
-      setCurrentTime(moment());
-    }
-  };
-
-  const locationContent = (location) => {
-    const result =
-      locationsList.length > 0 ? locationsList.filter((val) => val._id === location)[0] : [] || [];
-    const { headQuarterAddress = {}, _id = '' } = result || {};
-
-    const {
-      addressLine1 = '',
-      addressLine2 = '',
-      state = '',
-      country = {},
-      zipCode = '',
-    } = headQuarterAddress || {};
-
-    const address = [addressLine1, addressLine2, state, country.name || country || null, zipCode]
-      .filter(Boolean)
-      .join(', ');
-    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
-
-    return (
-      <div className={styles.locationContent}>
-        <span
-          style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
-        >
-          Address:
-        </span>
-        <span style={{ display: 'block', fontSize: '13px', marginBottom: '10px' }}>{address}</span>
-        <span
-          style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
-        >
-          Local time{state && ` in  ${state}`}:
-        </span>
-        <span style={{ display: 'block', fontSize: '13px' }}>
-          {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-            ? getCurrentTimeOfTimezone(currentTime, findTimezone.timezone)
-            : 'Not enough data in address'}
-        </span>
-      </div>
-    );
   };
 
   const viewProfile = (userId) => {
@@ -322,18 +243,13 @@ const TableTickets = (props) => {
       dataIndex: 'location',
       key: 'location',
       render: (location) => {
-        const locationNew =
-          locationsList.length > 0 ? locationsList.filter((val) => val._id === location) : [];
-        const name = locationNew.length > 0 ? locationNew[0].name : '';
+        const locationTemp = locationsList.find((val) => val._id === location);
         return (
-          <Popover content={locationContent(location)} title={name} trigger="hover">
-            <span
-              style={{ wordWrap: 'break-word', wordBreak: 'break-word', cursor: 'pointer' }}
-              onMouseEnter={getCurrentTime}
-            >
-              {location ? name : '_'}
+          <AddressPopover location={locationTemp || {}}>
+            <span style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}>
+              {location ? locationTemp?.name : '-'}
             </span>
-          </Popover>
+          </AddressPopover>
         );
       },
       sorter: (a, b) => {
