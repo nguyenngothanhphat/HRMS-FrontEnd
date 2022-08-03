@@ -167,12 +167,12 @@ const ResourcesCard = (props) => {
   };
 
   // functions
-  const fetchResourceOfProject = (name, p, l) => {
+  const fetchResourceOfProject = (payload, p, l) => {
     dispatch({
       type: 'projectDetails/fetchResourceOfProjectEffect',
       payload: {
         projects: [id],
-        ...name,
+        ...payload,
         page: p,
         limit: l,
         adminMode: true,
@@ -181,7 +181,7 @@ const ResourcesCard = (props) => {
   };
 
   useEffect(() => {
-    fetchResourceOfProject({ name: searchValue }, page, limit);
+    fetchResourceOfProject({ payload: searchValue }, page, limit);
   }, [page, limit]);
 
   // useEffect(() => {
@@ -194,7 +194,7 @@ const ResourcesCard = (props) => {
   };
 
   const onSearchDebounce = debounce((value) => {
-    fetchResourceOfProject({ name: value });
+    fetchResourceOfProject({ payload: value }, page, limit);
     setSearchValue(value);
   }, 1000);
 
@@ -204,7 +204,7 @@ const ResourcesCard = (props) => {
   };
 
   const onFilter = (filterPayload) => {
-    fetchResourceOfProject({ name: searchValue, ...filterPayload }, page, limit);
+    fetchResourceOfProject({ payload: searchValue, ...filterPayload }, page, limit);
     if (Object.keys(filterPayload).length > 0) {
       setIsFiltering(true);
       setApplied(Object.keys(filterPayload).length);
@@ -233,7 +233,7 @@ const ResourcesCard = (props) => {
         setRemovingPackage('');
         const tempData = data.filter((x) => x._id !== key);
         setData(tempData);
-        fetchResourceOfProject({ name: searchValue }, page, limit);
+        fetchResourceOfProject({ payload: searchValue }, page, limit);
       }
     }
   };
@@ -439,7 +439,7 @@ const ResourcesCard = (props) => {
       <AddResourcesModal
         visible={addResourceModalVisible}
         onClose={() => setAddResourceModalVisible(false)}
-        refreshResourceList={() => fetchResourceOfProject({ name: searchValue }, page, limit)}
+        refreshResourceList={() => fetchResourceOfProject({ payload: searchValue }, page, limit)}
       />
       <CommonModal
         visible={removeResourceModalVisible}
