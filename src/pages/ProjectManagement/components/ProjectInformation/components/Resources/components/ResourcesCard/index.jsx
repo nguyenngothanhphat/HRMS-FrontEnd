@@ -167,12 +167,12 @@ const ResourcesCard = (props) => {
   };
 
   // functions
-  const fetchResourceOfProject = (name, p, l) => {
+  const fetchResourceOfProject = (payload, p, l) => {
     dispatch({
       type: 'projectDetails/fetchResourceOfProjectEffect',
       payload: {
         projects: [id],
-        ...name,
+        ...payload,
         page: p,
         limit: l,
         adminMode: true,
@@ -194,7 +194,7 @@ const ResourcesCard = (props) => {
   };
 
   const onSearchDebounce = debounce((value) => {
-    fetchResourceOfProject({ name: value });
+    fetchResourceOfProject({ name: value }, page, limit);
     setSearchValue(value);
   }, 1000);
 
