@@ -435,7 +435,7 @@ const TimeSheet = {
           { id: payload.id, dateTimes: payload.dateTimes },
           { ...payload, tenantId },
         );
-        const { code, data = {}, msg = [] } = response;
+        const { code, data = {}, msg = '' } = response;
         const { error = [] } = data;
 
         if (code !== 200) {
