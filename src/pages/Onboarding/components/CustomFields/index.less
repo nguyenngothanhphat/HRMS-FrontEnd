@@ -1,12 +1,12 @@
 .CustomFields {
-  background-color: #ffffff;
   min-height: 100vh;
   padding-bottom: 15px;
+  background-color: #ffffff;
   .CustomFieldsTop {
     display: flex;
     flex-flow: row;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     height: 215px;
     background-color: #f6f7f9;
   }
@@ -15,36 +15,36 @@
   }
   .contentLeftTitle {
     margin-bottom: 0;
-    font-size: 18px;
-    font-weight: 700;
-    text-align: left;
     color: #161c29;
+    font-weight: 700;
+    font-size: 18px;
+    text-align: left;
   }
   .contentLeftText {
     margin-top: 16px;
     margin-bottom: 20px;
+    color: #707177;
     font-size: 13px;
     text-align: left;
-    color: #707177;
   }
   .buttonAddNewSection {
     width: 176px;
     height: 40px;
-    font-size: 14px;
     color: #ffffff;
-    border-radius: 25px;
-    border: solid 1px #ffa100;
+    font-size: 14px;
     background-color: #ffa100;
+    border: solid 1px #ffa100;
+    border-radius: 25px;
   }
   .buttonAddNewField {
     width: 157px;
     height: 40px;
     margin-left: 20px;
-    font-size: 14px;
     color: #ffffff;
-    border-radius: 25px;
-    border: solid 1px #ffa100;
+    font-size: 14px;
     background-color: #ffa100;
+    border: solid 1px #ffa100;
+    border-radius: 25px;
   }
   .imgContentRight {
     margin-top: 40px;
@@ -55,48 +55,48 @@
     margin-left: 50px;
     :global {
       th.ant-table-cell {
-        background: #ffffff !important;
         color: #161c29;
+        background: #ffffff !important;
       }
       .ant-table-thead > tr > th {
-        border-top: 1px solid #d6dce0;
-        border-bottom: 1px solid #d6dce0;
+        border-top: 1px solid @border-color-base;
+        border-bottom: 1px solid @border-color-base;
       }
       .ant-table-thead > tr:first-child > th:first-child {
-        border-bottom-left-radius: 0;
-        border-left: 1px solid #d6dce0;
         padding-left: 16px;
+        border-left: 1px solid @border-color-base;
+        border-bottom-left-radius: 0;
       }
 
       .ant-table-thead > tr:first-child > th:nth-last-of-type(2) {
         padding-left: 20px;
       }
       .ant-table-thead > tr:first-child > th:last-child {
+        border-right: 1px solid @border-color-base;
         border-bottom-right-radius: 0;
-        border-right: 1px solid #d6dce0;
       }
       .ant-table-tbody > tr > td:first-child {
-        border-left: solid 1px #d6dce0;
+        border-left: solid 1px @border-color-base;
         // text-align: center;
       }
       .ant-table-tbody > tr > td {
-        border-left: solid 1px #d6dce0;
+        border-left: solid 1px @border-color-base;
       }
       .ant-table-tbody > tr:nth-last-of-type(2) > td:first-child {
+        border-left: solid 1px @border-color-base;
         border-bottom-left-radius: 5px;
-        border-left: solid 1px #d6dce0;
         // text-align: center;
       }
       .ant-table-tbody > tr:first-child > td:last-child {
-        border-right: solid 1px #d6dce0;
+        border-right: solid 1px @border-color-base;
       }
       .ant-table-tbody > tr > td:last-child {
-        border-right: solid 1px #d6dce0;
+        border-right: solid 1px @border-color-base;
         border-left: none;
       }
       .ant-table-tbody > tr:last-child > td:last-child {
+        border-right: solid 1px @border-color-base;
         border-bottom-right-radius: 5px;
-        border-right: solid 1px #d6dce0;
       }
       .ant-table-tbody > tr > td:nth-last-of-type(2) {
         padding-left: 16px;
@@ -107,21 +107,21 @@
     }
   }
   .CustomFieldsBotBackGround {
-    padding-top: 50px;
     z-index: 1;
+    padding-top: 50px;
   }
   .CustomFieldsBotTitle {
-    margin-left: 50px;
     margin-bottom: 25px;
-    font-size: 14px;
-    font-weight: 500;
+    margin-left: 50px;
     color: #161c29;
+    font-weight: 500;
+    font-size: 14px;
   }
   .actionIcon {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
   }
   .iconTrash {
     margin-right: 16px;
@@ -131,8 +131,8 @@
 .loadingCustom {
   display: flex;
   flex-flow: row;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: 100%;
   height: 300px;
 }

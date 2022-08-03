@@ -1,14 +1,14 @@
 .Notes {
   box-sizing: border-box;
   background-color: #fff;
-  border: 1px solid #d6dce0;
+  border: 1px solid @border-color-base;
   border-radius: 5px;
   .documentHeader {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 64px;
-    border-bottom: 1px solid #d6dce0;
+    border-bottom: 1px solid @border-color-base;
     padding-inline: 24px;
     .documentHeaderTitle {
       line-height: 3;
@@ -39,7 +39,7 @@
     }
     .note {
       &:not(:last-child) {
-        border-bottom: 1px solid #d6dce0;
+        border-bottom: 1px solid @border-color-base;
       }
       padding-block: @padding-lg;
       p {
@@ -93,7 +93,7 @@
 .tableRow {
   .itemTop {
     padding: 24px 0;
-    border-top: 1px solid #d6dce0;
+    border-top: 1px solid @border-color-base;
     .itemTopTitle {
       margin-bottom: 0;
       line-height: 3;

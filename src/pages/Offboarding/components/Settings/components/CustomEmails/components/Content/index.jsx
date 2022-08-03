@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
-import React, { PureComponent } from 'react';
-import { Table, Spin, Tooltip, Tabs } from 'antd';
-import { formatMessage, connect, Link, history } from 'umi';
+import { Tabs, Tooltip } from 'antd';
 import moment from 'moment';
-import CustomEmailImage from '@/assets/customEmail.svg';
-import FileIcon from './images/doc.svg';
+import React, { PureComponent } from 'react';
+import { connect, formatMessage, history, Link } from 'umi';
 import DeleteIcon from './images/delete.svg';
+import FileIcon from './images/doc.svg';
 
+import CommonTable from '@/components/CommonTable';
 import styles from './index.less';
 
 @connect(
@@ -17,21 +17,14 @@ import styles from './index.less';
     loadingFetchList: loading.effects['employeeSetting/fetchListCustomEmailOffboarding'],
   }),
 )
-class CustomEmailsTableField extends PureComponent {
+class Content extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageSelected: 1,
       currentRecord: {},
       activeKey: '1',
     };
   }
-
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageSelected: pageNumber,
-    });
-  };
 
   handleClickCustomEmail = (row) => {
     this.setState({
@@ -173,39 +166,18 @@ class CustomEmailsTableField extends PureComponent {
 
   _renderTable = (list) => {
     const { loadingFetchList } = this.props;
-    const { pageSelected } = this.state;
-    const rowSize = 5;
 
-    const pagination = {
-      position: ['bottomRight'],
-      total: list.length,
-      showTotal: (total, range) => (
-        <span>
-          {' '}
-          {formatMessage({ id: 'component.customEmailsTableField.pagination.showing' })}{' '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          {formatMessage({ id: 'component.customEmailsTableField.pagination.of' })} {total}{' '}
-        </span>
-      ),
-      pageSize: rowSize,
-      current: pageSelected,
-      onChange: this.onChangePagination,
-    };
     return (
-      <Table
-        dataSource={this._renderData(list)}
+      <CommonTable
+        list={this._renderData(list)}
         columns={this._renderColumns()}
-        size="middle"
         loading={loadingFetchList}
         onRow={(record) => {
           return {
             onMouseEnter: () => this.handleClickCustomEmail(record), // click row
           };
         }}
-        rowKey={(record) => record._id}
-        pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
+        rowKey="_id"
       />
     );
   };
@@ -215,17 +187,13 @@ class CustomEmailsTableField extends PureComponent {
     const { activeKey } = this.state;
 
     return (
-      <div className={styles.CustomEmailsTableField}>
+      <div className={styles.Content}>
         <Tabs onTabClick={this.fetchData} activeKey={activeKey}>
           <Tabs.TabPane tab="System Default Emails" key="1">
-            <div className={styles.CustomEmailsTableField_table}>
-              {this._renderTable(listCustomEmailOffboarding)}
-            </div>
+            {this._renderTable(listCustomEmailOffboarding)}
           </Tabs.TabPane>
           <Tabs.TabPane tab="Custom Emails" key="2">
-            <div className={styles.CustomEmailsTableField_table}>
-              {this._renderTable(listCustomEmailOffboarding)}
-            </div>
+            {this._renderTable(listCustomEmailOffboarding)}
           </Tabs.TabPane>
         </Tabs>
       </div>
@@ -233,4 +201,4 @@ class CustomEmailsTableField extends PureComponent {
   }
 }
 
-export default CustomEmailsTableField;
+export default Content;

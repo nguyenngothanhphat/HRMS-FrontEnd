@@ -3,7 +3,7 @@
 @lightGrayColor: #707177;
 @commonPadding: 15px;
 @contentPadding: 24px;
-@borderColor: #d6dce0;
+@borderColor: @border-color-base;
 
 .TicketDetailModal {
   :global {
@@ -102,7 +102,7 @@
   .container {
     &__details {
       background: #ffffff;
-      border: 1px solid #d6dce0;
+      border: 1px solid @border-color-base;
       border-radius: 5px;
       .abovePart {
         padding: 24px;
@@ -140,7 +140,7 @@
         align-items: center;
         justify-content: space-between;
         padding: 16px 24px;
-        border-top: 1px solid #d6dce0;
+        border-top: 1px solid @border-color-base;
         .status {
           span {
             display: inline-block;

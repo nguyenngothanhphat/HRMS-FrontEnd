@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { Button } from 'antd';
 import React from 'react';
 import AddIcon from '@/assets/projectManagement/add.svg';
@@ -11,6 +12,7 @@ const CustomAddButton = (props) => {
       onClick={onClick}
       icon={<img src={icon || AddIcon} alt="" />}
       className={styles.CustomAddButton}
+      {...props}
     >
       {children}
     </Button>

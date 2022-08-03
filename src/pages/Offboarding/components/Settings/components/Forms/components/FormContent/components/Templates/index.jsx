@@ -1,13 +1,10 @@
+import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { Tabs, Input } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import styles from './index.less';
-import SystemDefault from './components/SystemDefault';
 import Custom from './components/Custom';
-import SortIcon from './images/sort.svg';
-import ViewModeIcon from './images/view.svg';
-import SearchIcon from './images/search.svg';
+import SystemDefault from './components/SystemDefault';
+import styles from './index.less';
 
 const { TabPane } = Tabs;
 
@@ -60,33 +57,13 @@ class Templates extends PureComponent {
     });
   };
 
-  operations = () => {
-    return (
-      <div className={styles.operations}>
-        <div className={styles.searchBox}>
-          <Input placeholder="Search" prefix={<img src={SearchIcon} alt="search" />} />
-        </div>
-        <div className={styles.sortIcon}>
-          <img src={SortIcon} alt="sort" />
-        </div>
-        <div className={styles.viewModeIcon}>
-          <img src={ViewModeIcon} alt="viewMode" />
-        </div>
-      </div>
-    );
-  };
-
   render() {
     const { list, loading } = this.props;
 
     return (
       <div className={styles.Templates}>
         <div className={styles.tabs}>
-          <Tabs
-            defaultActiveKey="1"
-            onTabClick={this.fetchData}
-            // tabBarExtraContent={this.operations()}
-          >
+          <Tabs defaultActiveKey="1" onTabClick={this.fetchData}>
             <TabPane tab="System Default Forms" key="1">
               <SystemDefault list={list} loading={loading} />
             </TabPane>

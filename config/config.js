@@ -40,6 +40,9 @@ export default defineConfig({
     'table-header-bg': defaultSettings.primaryColor,
     'table-header-color': '#ffffff',
     'table-padding-vertical-md': '8px',
+    // border-color
+    'border-color-base' : '#d6dce0', // base border outline a component
+    'border-color-split': '#d6dce0'
   },
   // @ts-ignore
   title: false,

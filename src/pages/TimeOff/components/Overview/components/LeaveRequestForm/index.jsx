@@ -143,7 +143,7 @@ const LeaveRequestForm = (props) => {
   const Note = {
     title: 'Note',
     icon: Icon1,
-    borderColor: '#ebeff2',
+    borderColor: '#d6dce0',
     data: (
       <Typography.Text>
         Timeoff requests requires approvals.

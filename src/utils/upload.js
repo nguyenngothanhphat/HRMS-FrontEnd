@@ -35,7 +35,7 @@ const getTypeText = (arr) => {
   if (arr.includes(FILE_TYPE.PDF)) {
     res.push('pdf');
   }
-  return res.join(',');
+  return res.join(', ');
 };
 
 export const beforeUpload = (file, types = [FILE_TYPE.IMAGE, FILE_TYPE.PDF], size = 3) => {

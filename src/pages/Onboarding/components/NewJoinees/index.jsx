@@ -1,26 +1,20 @@
+import { Card } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { connect, history } from 'umi';
+import { connect, history, Link } from 'umi';
 import CommonTable from '@/components/CommonTable';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterPopover from '@/components/FilterPopover';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { removeEmptyFields } from '@/utils/utils';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
+import UserProfilePopover from '@/components/UserProfilePopover';
 
 const NewJoinees = (props) => {
-  const {
-    loadingTable,
-    listNewComer,
-    dispatch,
-    companyLocationList,
-    companiesOfUser,
-    filterList,
-    // filterJoining,
-  } = props;
-  const { listCountry = [] } = filterList;
+  const { loadingTable, listNewComer, dispatch } = props;
 
   const [keySearch, setKeySearch] = useState('');
   const [filter, setFilter] = useState({
@@ -34,71 +28,6 @@ const NewJoinees = (props) => {
   });
   const [isSearch, setIsSearch] = useState(true);
 
-  const fetchListEmployee = () => {
-    const currentCompany = getCurrentCompany();
-    const currentLocation = getCurrentLocation();
-
-    const companyPayload = companiesOfUser.filter((lo) => lo?._id === currentCompany);
-    let locationPayload = [];
-
-    if (!currentLocation) {
-      locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
-        let stateList = [];
-        listCountry.forEach(
-          ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
-            if (countryItem1 === countryItem2) {
-              stateList = [...stateList, stateItem2];
-            }
-          },
-        );
-        return {
-          country: countryItem1,
-          state: stateList,
-        };
-      });
-    } else {
-      const currentLocationObj = companyLocationList.find((loc) => loc?._id === currentLocation);
-      const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
-      const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
-
-      locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
-        let stateList = [];
-        listCountry.forEach(
-          ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
-            if (
-              countryItem1 === countryItem2 &&
-              currentLocationCountry === countryItem2 &&
-              currentLocationState === stateItem2
-            ) {
-              stateList = [...stateList, stateItem2];
-            }
-          },
-        );
-        return {
-          country: countryItem1,
-          state: stateList,
-        };
-      });
-    }
-    dispatch({
-      type: 'onboarding/fetchEmployeeList',
-      payload: {
-        company: companyPayload,
-        department: ['HR'],
-        location: locationPayload,
-      },
-    });
-    dispatch({
-      type: 'onboarding/fetchHRManagerList',
-      payload: {
-        company: companyPayload,
-        department: ['HR'],
-        roles: ['HR-MANAGER'],
-        location: locationPayload,
-      },
-    });
-  };
-
   useEffect(() => {
     dispatch({
       type: 'onboarding/fetchFilterList',
@@ -111,7 +40,9 @@ const NewJoinees = (props) => {
       type: 'onboarding/fetchJobTitleList',
       payload: {},
     });
-    fetchListEmployee();
+    dispatch({
+      type: 'onboarding/fetchEmployeeList',
+    });
   }, []);
 
   useEffect(() => {
@@ -138,8 +69,18 @@ const NewJoinees = (props) => {
       key: 'ticketID',
       dataIndex: 'candidate',
       width: 150,
-      render: ({ ticketID } = {}) => (
-        <span className={styles.blueText} style={{ paddingLeft: '10px' }}>
+      render: ({ ticketID } = {}, record) => (
+        <span
+          className={styles.blueText}
+          style={{ paddingLeft: '10px', cursor: 'pointer' }}
+          onClick={() => {
+            dispatch({
+              type: 'onboarding/saveJoiningFormalities',
+              payload: { itemNewComer: record },
+            });
+            history.push(`/onboarding/new-joinees/view-detail/${record?._id}`);
+          }}
+        >
           #{ticketID}
         </span>
       ),
@@ -150,10 +91,7 @@ const NewJoinees = (props) => {
       key: 'employee',
       width: 250,
       render: ({ firstName = '', middleName = '', lastName = '' } = {}) => {
-        let fullName = firstName;
-        if (middleName) fullName += ` ${middleName}`;
-        if (lastName) fullName += ` ${lastName}`;
-
+        const fullName = [firstName, middleName, lastName].filter(Boolean).join(' ');
         return <div>{fullName}</div>;
       },
     },
@@ -162,7 +100,9 @@ const NewJoinees = (props) => {
       dataIndex: 'joiningDate',
       key: 'joiningDate',
       width: 200,
-      render: (joiningDate) => <span>{moment(joiningDate).locale('en').format('DD-MM-YYYY')}</span>,
+      render: (joiningDate) => (
+        <span>{moment(joiningDate).locale('en').format(DATE_FORMAT_MDY)}</span>
+      ),
       align: 'left',
     },
     {
@@ -185,8 +125,10 @@ const NewJoinees = (props) => {
       key: 'hrEmployee',
       dataIndex: 'hrEmployee',
       width: 150,
-      render: ({ generalInfoInfo: { legalName = '' } = {} } = {}) => (
-        <span className={styles.blueText}>{legalName}</span>
+      render: (hrEmployee = {}) => (
+        <UserProfilePopover data={{ ...hrEmployee, ...hrEmployee.generalInfoInfo }}>
+          <span className={styles.blueText}>{hrEmployee?.generalInfoInfo?.legalName}</span>
+        </UserProfilePopover>
       ),
     },
     {
@@ -194,8 +136,10 @@ const NewJoinees = (props) => {
       key: 'hrManager',
       dataIndex: 'hrManager',
       width: 150,
-      render: ({ generalInfoInfo: { legalName = '' } = {} } = {}) => (
-        <span className={styles.blueText}>{legalName}</span>
+      render: (hrManager = {}) => (
+        <UserProfilePopover data={{ ...hrManager, ...hrManager.generalInfoInfo }}>
+          <span className={styles.blueText}>{hrManager?.generalInfoInfo?.legalName}</span>
+        </UserProfilePopover>
       ),
     },
   ];
@@ -205,35 +149,24 @@ const NewJoinees = (props) => {
     setIsSearch(true);
   };
 
-  return (
-    <div className={styles.approvalPage}>
-      <div className={styles.approvalPage__table}>
-        <div className={styles.searchFilter}>
-          <FilterPopover content={<FilterContent onApply={onApply} />} placement="bottomRight">
-            <CustomOrangeButton>Filter</CustomOrangeButton>
-          </FilterPopover>
-          <CustomSearchBox onChange={onChangeKeySearch} placeholder="Search by Name" />
-        </div>
-        <div className={styles.table}>
-          <CommonTable
-            columns={columns}
-            list={listNewComer}
-            loading={loadingTable}
-            onRow={(record) => {
-              const { _id = '' } = record;
-              return {
-                onClick: () => {
-                  dispatch({
-                    type: 'onboarding/saveJoiningFormalities',
-                    payload: { itemNewComer: record },
-                  });
-                  history.push(`/onboarding/newJoinees/view-detail/${_id}`);
-                }, // click row
-              };
-            }}
-          />
-        </div>
+  const options = () => {
+    return (
+      <div className={styles.options}>
+        <FilterPopover content={<FilterContent onApply={onApply} />} placement="bottomRight">
+          <CustomOrangeButton>Filter</CustomOrangeButton>
+        </FilterPopover>
+        <CustomSearchBox onChange={onChangeKeySearch} placeholder="Search by Name" />
       </div>
+    );
+  };
+
+  return (
+    <div className={styles.NewJoinees}>
+      <Card title="New Joinees" extra={options()}>
+        <div className={styles.container}>
+          <CommonTable columns={columns} list={listNewComer} loading={loadingTable} />
+        </div>
+      </Card>
     </div>
   );
 };

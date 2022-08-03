@@ -3,7 +3,7 @@
 @lightGrayColor: #707177;
 @commonPadding: 15px;
 @contentPadding: 24px;
-@borderColor: #d6dce0;
+@borderColor: @border-color-base;
 
 .AddResourcesModal {
   :global {
@@ -51,14 +51,14 @@
       align-items: center;
       justify-content: flex-start;
       padding: 12px 24px 12px 12px;
-      border-bottom: 1px solid #d6dce0;
+      border-bottom: 1px solid @border-color-base;
       border-top-left-radius: 8px;
       img {
         margin-right: 12px;
         padding: 10px;
         cursor: pointer;
         &:hover {
-          background-color: #d6dce048;
+          background-color: @border-color-base;
           border-radius: 5px;
         }
       }
@@ -76,7 +76,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 13px 24px;
-      border-top: 1px solid #d6dce0;
+      border-top: 1px solid @border-color-base;
     }
     .ant-select-selection-overflow-item .ant-select-selection-overflow-item-suffix {
       display: none;
@@ -201,7 +201,7 @@
     }
   }
   .abovePart {
-    border-bottom: 1px solid #d6dce0;
+    border-bottom: 1px solid @border-color-base;
     .item {
       display: flex;
       align-items: flex-start;
@@ -227,7 +227,7 @@
     }
   }
   .divider {
-    border-bottom: 1px solid #d6dce0;
+    border-bottom: 1px solid @border-color-base;
   }
 }
 

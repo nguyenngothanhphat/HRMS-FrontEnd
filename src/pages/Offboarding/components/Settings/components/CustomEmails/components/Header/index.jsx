@@ -1,15 +1,16 @@
 import React, { PureComponent } from 'react';
 import { history } from 'umi';
+import CustomBlueButton from '@/components/CustomBlueButton';
 import styles from './index.less';
 
-class CustomEmailsHeader extends PureComponent {
+class Header extends PureComponent {
   createCustomEmail = () => {
     history.push('/offboarding/settings/custom-emails/create-custom-email');
   };
 
   render() {
     return (
-      <div className={styles.CustomEmailsHeader}>
+      <div className={styles.Header}>
         <div className={styles.leftPart}>
           <div className={styles.title}>Custom emails</div>
           <div className={styles.subTitle}>
@@ -20,13 +21,13 @@ class CustomEmailsHeader extends PureComponent {
           </div>
         </div>
         <div className={styles.rightPart}>
-          <div className={styles.addButton} onClick={this.createCustomEmail}>
-            <span>Create your custom e-mail</span>
-          </div>
+          <CustomBlueButton onClick={this.createCustomEmail}>
+            Create your custom e-mail
+          </CustomBlueButton>
         </div>
       </div>
     );
   }
 }
 
-export default CustomEmailsHeader;
+export default Header;

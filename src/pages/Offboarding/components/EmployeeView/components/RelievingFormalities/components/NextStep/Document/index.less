@@ -1,18 +1,18 @@
 .Document {
-  margin-right: 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  border: 1px solid #D6DCE0;
-  background: #FFFFFF;
-  border-radius: 8px;
+  justify-content: space-between;
   width: 100%;
+  margin-right: 20px;
   padding: 10px 20px;
+  background: #ffffff;
+  border: 1px solid @border-color-base;
+  border-radius: 8px;
   &:hover {
-    cursor: pointer;
     border: 1px solid rgb(45, 120, 247);
-    transition: 0.3s;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.07);
+    cursor: pointer;
+    transition: 0.3s;
   }
   .left {
     display: flex;
@@ -27,9 +27,9 @@
   }
 
   .right {
-    min-height: 30px;
     display: flex;
     align-items: center;
+    min-height: 30px;
   }
 
   &:last-child {

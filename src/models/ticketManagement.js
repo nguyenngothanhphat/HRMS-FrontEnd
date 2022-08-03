@@ -171,8 +171,9 @@ const ticketManagement = {
       }
     },
     *fetchListEmployee({ payload }, { call, put }) {
+      let response;
       try {
-        const response = yield call(getListEmployee, {
+        response = yield call(getListEmployee, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -186,6 +187,7 @@ const ticketManagement = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *searchEmployee({ payload }, { call, put }) {
       try {

@@ -333,13 +333,25 @@ const routes = [
             authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
           },
           {
-            path: '/offboarding/:tabName',
+            path: '/offboarding/:tabName(company-wide)',
             component: './Offboarding',
             authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
             hideInMenu: true,
           },
           {
-            path: '/offboarding/settings/:type',
+            path: '/offboarding/:tabName(team)',
+            component: './Offboarding',
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
+            hideInMenu: true,
+          },
+          {
+            path: '/offboarding/:tabName(settings)',
+            component: './Offboarding',
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
+            hideInMenu: true,
+          },
+          {
+            path: '/offboarding/:tabName(settings)/:type',
             component: './Offboarding',
             authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
             hideInMenu: true,
@@ -366,13 +378,13 @@ const routes = [
             hideInMenu: true,
           },
           {
-            path: '/time-off/:tabName/:type',
+            path: '/time-off/:tabName(setup)/:type',
             component: './TimeOff',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
             hideInMenu: true,
           },
           {
-            path: '/time-off/setup/types-rules/:action(add)',
+            path: '/time-off/:tabName(setup)/:type(types-rules)/:action(add)',
             name: 'time-off-type-configuration',
             component:
               './TimeOff/components/SetupTimeoff/components/TimeOffType/components/TypeConfiguration',
@@ -380,7 +392,7 @@ const routes = [
             hideInMenu: true,
           },
           {
-            path: '/time-off/setup/types-rules/:action(configure)/:typeId',
+            path: '/time-off/:tabName(setup)/:type(types-rules)/:action(configure)/:typeId',
             name: 'time-off-type-configuration',
             component:
               './TimeOff/components/SetupTimeoff/components/TimeOffType/components/TypeConfiguration',

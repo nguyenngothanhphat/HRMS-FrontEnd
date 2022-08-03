@@ -3,7 +3,7 @@
 @lightGrayColor: #707177;
 @commonPadding: 15px;
 @contentPadding: 24px;
-@borderColor: #d6dce0;
+@borderColor: @border-color-base;
 
 .EditBillableHeadCountContent {
   :global {
@@ -68,7 +68,7 @@
     }
     .ant-modal-header {
       padding: 24px;
-      border-bottom: 1px solid #d6dce0;
+      border-bottom: 1px solid @border-color-base;
       border-top-left-radius: 8px;
     }
     .ant-modal-content {
@@ -81,7 +81,7 @@
     }
     .ant-modal-footer {
       padding: 13px 24px;
-      border-top: 1px solid #d6dce0;
+      border-top: 1px solid @border-color-base;
     }
     .ant-select-selection-overflow-item .ant-select-selection-overflow-item-suffix {
       display: none;
@@ -156,6 +156,6 @@
   }
 
   .divider {
-    border-bottom: 1px solid #d6dce0;
+    border-bottom: 1px solid @border-color-base;
   }
 }

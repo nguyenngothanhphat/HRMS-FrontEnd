@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
 import { history } from 'umi';
+import CustomBlueButton from '@/components/CustomBlueButton';
 import styles from './index.less';
 
-class FormsHeader extends PureComponent {
+class Header extends PureComponent {
   render() {
     return (
-      <div className={styles.FormsHeader}>
+      <div className={styles.Header}>
         <div className={styles.leftPart}>
           <div className={styles.title}>Forms</div>
           <div className={styles.subTitle}>
@@ -14,16 +15,15 @@ class FormsHeader extends PureComponent {
           </div>
         </div>
         <div className={styles.rightPart}>
-          <div
+          <CustomBlueButton
             onClick={() => history.push('/offboarding/settings/forms/form-detail/add')}
-            className={styles.addButton}
           >
-            <span>Create a new form template</span>
-          </div>
+            Create a new form template
+          </CustomBlueButton>
         </div>
       </div>
     );
   }
 }
 
-export default FormsHeader;
+export default Header;

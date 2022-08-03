@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
-import { formatMessage } from 'umi';
+import CustomBlueButton from '@/components/CustomBlueButton';
 import styles from './index.less';
 
-class DocsTemplatesHeader extends PureComponent {
+class Header extends PureComponent {
   render() {
     return (
-      <div className={styles.DocsTemplatesHeader}>
+      <div className={styles.Header}>
         <div className={styles.leftPart}>
           <div className={styles.title}>Document & Templates</div>
           <div className={styles.subTitle}>
@@ -14,13 +14,11 @@ class DocsTemplatesHeader extends PureComponent {
           </div>
         </div>
         <div className={styles.rightPart}>
-          <div className={styles.addButton}>
-            <span>Create New Templates</span>
-          </div>
+          <CustomBlueButton>Create New Templates</CustomBlueButton>
         </div>
       </div>
     );
   }
 }
 
-export default DocsTemplatesHeader;
+export default Header;

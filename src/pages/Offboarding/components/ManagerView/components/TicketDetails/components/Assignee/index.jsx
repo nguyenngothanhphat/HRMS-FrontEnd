@@ -1,58 +1,15 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Card, Col, Empty, Row, Select, Spin } from 'antd';
-import { debounce, isEmpty } from 'lodash';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Card, Col, Row } from 'antd';
+import { isEmpty } from 'lodash';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import DownArrowIcon from '@/assets/offboarding/downArrow.png';
 import CustomEmployeeTag from '@/components/CustomEmployeeTag';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import DebounceSelect from '@/components/DebounceSelect';
 import { OFFBOARDING } from '@/constants/offboarding';
 import { getEmployeeName } from '@/utils/offboarding';
 import styles from './index.less';
-
-const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
-  const [fetching, setFetching] = useState(false);
-  const [options, setOptions] = useState([]);
-  const fetchRef = useRef(0);
-  const debounceFetcher = useMemo(() => {
-    const loadOptions = (value) => {
-      fetchRef.current += 1;
-      const fetchId = fetchRef.current;
-      setOptions([]);
-      setFetching(true);
-      fetchOptions(value).then((newOptions) => {
-        if (fetchId !== fetchRef.current) {
-          // for fetch callback order
-          return;
-        }
-        setOptions(newOptions);
-        setFetching(false);
-      });
-    };
-
-    return debounce(loadOptions, debounceTimeout);
-  }, [fetchOptions, debounceTimeout]);
-
-  return (
-    <Select
-      labelInValue
-      filterOption={false}
-      onSearch={debounceFetcher}
-      notFoundContent={
-        <Spin size="small" spinning={fetching}>
-          <Empty description="No data, type to search" />
-        </Spin>
-      }
-      {...props}
-    >
-      {options.map((option) => (
-        <Select.Option key={option.value} value={option.value}>
-          {option.label}
-        </Select.Option>
-      ))}
-    </Select>
-  );
-};
 
 const Assignee = (props) => {
   const {

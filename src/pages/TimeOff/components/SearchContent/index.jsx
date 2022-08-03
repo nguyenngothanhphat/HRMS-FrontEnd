@@ -59,7 +59,9 @@ const TimeOffFilter = (props) => {
     const newType = typeData.length ? splitArrayItem([...typeData]) : listIdType;
     dispatch({
       type: 'timeOff/save',
-      payload: { filter: { ...search, type: newType } },
+      payload: {
+        filter: { ...search, type: newType, fromDate: values.fromDate, toDate: values.toDate },
+      },
     });
   };
 

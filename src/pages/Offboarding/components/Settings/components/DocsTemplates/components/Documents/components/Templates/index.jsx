@@ -1,12 +1,12 @@
+import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { Tabs, Input } from 'antd';
-import styles from './index.less';
-import SystemDefault from './components/SystemDefault';
+import CustomSearchBox from '@/components/CustomSearchBox';
 import Custom from './components/Custom';
+import SystemDefault from './components/SystemDefault';
 import SortIcon from './images/sort.svg';
 import ViewModeIcon from './images/view.svg';
-import SearchIcon from './images/search.svg';
+import styles from './index.less';
 
 const { TabPane } = Tabs;
 
@@ -37,9 +37,7 @@ class Templates extends PureComponent {
   operations = () => {
     return (
       <div className={styles.operations}>
-        <div className={styles.searchBox}>
-          <Input placeholder="Search" prefix={<img src={SearchIcon} alt="search" />} />
-        </div>
+        <CustomSearchBox />
         <div className={styles.sortIcon}>
           <img src={SortIcon} alt="sort" />
         </div>

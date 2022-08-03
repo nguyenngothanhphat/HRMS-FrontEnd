@@ -1,20 +1,20 @@
 .Divisions {
   overflow: hidden;
   background-color: #fff;
-  border: 1px solid #d6dce0;
+  border: 1px solid @border-color-base;
   border-radius: 5px;
   .DivisionCard {
     box-sizing: border-box;
     background-color: #fff;
     &:not(:last-child) {
-      border-bottom: 1px solid #d6dce0;
+      border-bottom: 1px solid @border-color-base;
     }
     .divisionsHeader {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: @padding-md @padding-lg;
-      border-bottom: 1px solid #d6dce0;
+      border-bottom: 1px solid @border-color-base;
       span {
         margin: 0;
         & > img {
@@ -46,13 +46,13 @@
     }
 
     .divider {
-      border-top: 1px solid #d6dce0;
+      border-top: 1px solid @border-color-base;
     }
 
     .divisionFooter {
       padding: 24px;
       background-color: #fff;
-      border-top: 1px solid #d6dce0;
+      border-top: 1px solid @border-color-base;
     }
   }
   .addDivision {

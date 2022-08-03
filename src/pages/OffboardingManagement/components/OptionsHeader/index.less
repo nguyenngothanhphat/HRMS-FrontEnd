@@ -1,5 +1,5 @@
 .OptionsHeader {
-  border-bottom: solid 1px #d6dce0;
+  border-bottom: solid 1px @border-color-base;
   .container {
     padding: 20px 24px 20px 24px;
 
@@ -10,8 +10,8 @@
     }
     .statusFilter {
       display: flex;
-      justify-content: flex-start;
       align-items: center;
+      justify-content: flex-start;
       :global {
         .ant-form-item {
           padding-top: 0 !important;
@@ -19,18 +19,19 @@
       }
       .itemLabel {
         display: inline;
-        margin-right: 20px;
         margin-top: 10px;
+        margin-right: 20px;
       }
     }
 
     .buttons {
       display: flex;
       flex-wrap: wrap;
-      justify-content: flex-end;
       align-items: flex-end;
+      justify-content: flex-end;
       margin-bottom: 10px;
       .submitBtn {
+        margin-right: 10px;
         background-color: #ffa100;
         border: none;
         border-radius: 35px;
@@ -38,7 +39,6 @@
           color: white;
           font-weight: 700;
         }
-        margin-right: 10px;
       }
 
       .downloadCSVBtn {
@@ -55,15 +55,15 @@
     .ant-form-item {
       display: flex;
       flex-direction: column;
-      padding-top: 10px;
       margin-bottom: 0;
+      padding-top: 10px;
     }
     .ant-picker {
       width: 100%;
     }
     .ant-col {
-      width: 100%;
       justify-content: flex-start;
+      width: 100%;
       padding-bottom: 0 !important;
     }
     .ant-form-item-label {
@@ -78,8 +78,8 @@
       // border: 2px solid #29971f !important;
     }
     .ant-checkbox-checked .ant-checkbox-inner {
-      border: 1px solid #29971f;
       background-color: white;
+      border: 1px solid #29971f;
     }
     .ant-checkbox-checked .ant-checkbox-inner::after {
       border-color: #29971f;

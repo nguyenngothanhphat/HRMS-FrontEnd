@@ -1,20 +1,16 @@
-import React, { Component } from 'react';
-import { Table, Empty, message } from 'antd';
-import { formatMessage, connect, history } from 'umi';
-import moment from 'moment';
+import { message } from 'antd';
 import axios from 'axios';
+import moment from 'moment';
+import React, { Component } from 'react';
+import { connect, history } from 'umi';
 import DownloadIcon from './images/download.svg';
 // import EditIcon from './images/edit.svg';
+import CommonTable from '@/components/CommonTable';
 import DeleteIcon from './images/delete.svg';
 import DocIcon from './images/doc.svg';
 import styles from './index.less';
 
 class TemplateTable extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { pageSelected: 1 };
-  }
-
   generateColumns = () => {
     const { isDefaultTemplate = false } = this.props;
     const columns = [
@@ -118,12 +114,6 @@ class TemplateTable extends Component {
     history.push(`/offboarding/settings/documents-templates/template-detail/${id}`);
   };
 
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageSelected: pageNumber,
-    });
-  };
-
   parseList = () => {
     const { list = [] } = this.props;
     return list.map((value) => {
@@ -139,67 +129,14 @@ class TemplateTable extends Component {
   };
 
   render() {
-    const { pageSelected } = this.state;
-    const { list = [], loading = false } = this.props;
-    const rowSize = 10;
-
-    const rowSelection = {
-      // onChange: (selectedRowKeys, selectedRows) => {
-      // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      // },
-      getCheckboxProps: (record) => ({
-        disabled: record.name === 'Disabled User',
-        // Column configuration not to be checked
-        name: record.name,
-      }),
-    };
-
-    const pagination = {
-      position: ['bottomLeft'],
-      total: list.length,
-      showTotal: (total, range) => (
-        <span>
-          {' '}
-          {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-        </span>
-      ),
-      pageSize: rowSize,
-      current: pageSelected,
-      onChange: this.onChangePagination,
-    };
-
-    const { columnArr, type, inTab, hasCheckbox } = this.props;
+    const { loading = false, columnArr, type, inTab } = this.props;
     return (
       <>
         <div className={`${styles.TemplateTable} ${inTab ? styles.inTab : ''}`}>
-          <Table
-            size="small"
-            rowSelection={
-              hasCheckbox && {
-                type: 'checkbox',
-                ...rowSelection,
-              }
-            }
-            locale={{
-              emptyText: (
-                <Empty
-                  description={formatMessage(
-                    { id: 'component.onboardingOverview.noData' },
-                    { format: 0 },
-                  )}
-                />
-              ),
-            }}
+          <CommonTable
             columns={this.generateColumns(columnArr, type)}
-            dataSource={this.parseList()}
+            list={this.parseList()}
             loading={loading}
-            // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-            pagination={{ ...pagination, total: list.length }}
-            // scroll={{ x: 1000, y: 'max-content' }}
           />
         </div>
       </>
