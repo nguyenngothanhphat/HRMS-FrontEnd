@@ -35,3 +35,22 @@ export const beforeUpload = (file) => {
   }
   return checkType && isLt3M;
 };
+
+export const UPLOAD = {
+  PATH: {
+    IMAGE: 'images/',
+    ATTACHMENT: 'attachments/',
+    PDF: 'pdfs/',
+    LANGUAGE: 'languages/',
+    ROOT: 'roots/',
+    PAYROLL: 'payrolls/',
+  },
+  TYPE_FILE: {
+    IMAGE: 'image',
+    PDF: 'pdf',
+    ATTACHMENT: 'attachment',
+    LANGUAGE: 'language',
+    ROOT: 'root',
+    PAYROLL: 'payroll',
+  },
+};

@@ -4,6 +4,7 @@ import { Upload, message, Spin } from 'antd';
 import { connect } from 'umi';
 import undo from '@/assets/undo-signs.svg';
 import styles from './index.less';
+import UploadFirebase from '../UploadProcess';
 
 @connect()
 class UploadImage extends Component {
@@ -47,15 +48,16 @@ class UploadImage extends Component {
   };
 
   handleUpload = (file) => {
-    const { dispatch, getResponse = () => {} } = this.props;
-    const formData = new FormData();
-    formData.append('uri', file);
-    dispatch({
-      type: 'upload/uploadFile',
-      payload: formData,
-    }).then((resp) => {
-      getResponse(resp);
-    });
+    UploadFirebase(file);
+    // const { dispatch, getResponse = () => {} } = this.props;
+    // const formData = new FormData();
+    // formData.append('uri', file);
+    // dispatch({
+    //   type: 'upload/uploadFile',
+    //   payload: formData,
+    // }).then((resp) => {
+    //   getResponse(resp);
+    // });
   };
 
   render() {

@@ -8,6 +8,7 @@ import { connect } from 'umi';
 import { InboxOutlined } from '@ant-design/icons';
 import { Document, Page } from 'react-pdf';
 import styles from './index.less';
+import UploadFirebase from '../UploadProcess';
 
 const { Dragger } = Upload;
 const propsUpload = {
@@ -104,20 +105,11 @@ class ModalUpload extends Component {
     );
   };
 
-  handleUploadToServer = () => {
-    const { dispatch, getResponse = () => {} } = this.props;
+  handleUploadToServer = async () => {
+    // const { dispatch, getResponse = () => {} } = this.props;
     const { croppedImage, fileType, fileData } = this.state;
-    const formData = new FormData();
     const dataUri = fileType === PDF_TYPE ? fileData : croppedImage;
-    formData.append('uri', dataUri);
-    dispatch({
-      type: 'upload/uploadFile',
-      payload: formData,
-      showNotification: false,
-    }).then((resp) => {
-      this.setState({ imageUrl: '' });
-      getResponse(resp);
-    });
+    return UploadFirebase({ file: dataUri });
   };
 
   renderHeaderModal = () => {
