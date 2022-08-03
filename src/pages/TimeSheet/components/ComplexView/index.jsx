@@ -72,6 +72,9 @@ const ComplexView = (props) => {
         isLocationLoaded: true,
       },
     });
+  }, [JSON.stringify(locationsOfCountries), viewLocationHR, viewLocationFinance]);
+
+  useEffect(() => {
     return () => {
       setData([]);
       setSelectedLocations([]);
@@ -80,7 +83,7 @@ const ComplexView = (props) => {
         locationsOfCountries: [],
       });
     };
-  }, [JSON.stringify(locationsOfCountries), viewLocationHR, viewLocationFinance]);
+  }, []);
 
   const requestLeave = () => {
     history.push('/time-off/overview/personal-timeoff/new');
@@ -232,9 +235,6 @@ const ComplexView = (props) => {
       }
       return;
     }
-    dispatch({
-      type: 'timeSheet/getLocationsOfCountriesEffect',
-    });
 
     if (
       divisionList.length === 0 &&
@@ -245,6 +245,9 @@ const ComplexView = (props) => {
         payload: {
           name: 'Engineering',
         },
+      });
+      dispatch({
+        type: 'timeSheet/getLocationsOfCountriesEffect',
       });
     }
     dispatch({

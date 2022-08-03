@@ -33,6 +33,14 @@ const ManagerView = (props) => {
     dispatch({
       type: 'offboarding/getLocationsOfCountriesEffect',
     });
+    return () => {
+      setData([]);
+      setSelectedLocation([]);
+      dispatch({
+        type: 'offboarding/save',
+        locationsOfCountries: [],
+      });
+    };
   }, []);
 
   useEffect(() => {
@@ -57,14 +65,6 @@ const ManagerView = (props) => {
         selectedLocations: [getCurrentLocation()],
       },
     });
-    return () => {
-      setData([]);
-      setSelectedLocation([]);
-      dispatch({
-        type: 'offboarding/save',
-        locationsOfCountries: [],
-      });
-    };
   }, [JSON.stringify(locationsOfCountries)]);
 
   const onLocationChange = (selection) => {

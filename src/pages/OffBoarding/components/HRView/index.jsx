@@ -33,6 +33,14 @@ const HRView = (props) => {
     dispatch({
       type: 'offboarding/getLocationsOfCountriesEffect',
     });
+    return () => {
+      setData([]);
+      setSelectedLocation([]);
+      dispatch({
+        type: 'offboarding/save',
+        locationsOfCountries: [],
+      });
+    };
   }, []);
 
   useEffect(() => {
@@ -56,14 +64,6 @@ const HRView = (props) => {
         selectedLocations: [getCurrentLocation()],
       },
     });
-    return () => {
-      setData([]);
-      setSelectedLocation([]);
-      dispatch({
-        type: 'offboarding/save',
-        locationsOfCountries: [],
-      });
-    };
   }, [JSON.stringify(locationsOfCountries)]);
 
   const onLocationChange = (selection) => {

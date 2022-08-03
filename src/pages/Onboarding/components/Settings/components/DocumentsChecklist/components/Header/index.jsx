@@ -26,6 +26,14 @@ const Header = (props) => {
     dispatch({
       type: 'onboardingSettings/getLocationsOfCountriesEffect',
     });
+    return () => {
+      setData([]);
+      setSelectedLocations([]);
+      dispatch({
+        type: 'onboardingSettings/save',
+        locationsOfCountries: [],
+      });
+    };
   }, []);
 
   useEffect(() => {
@@ -50,14 +58,6 @@ const Header = (props) => {
         isLocationLoaded: true,
       },
     });
-    return () => {
-      setData([]);
-      setSelectedLocations([]);
-      dispatch({
-        type: 'onboardingSettings/save',
-        locationsOfCountries: [],
-      });
-    };
   }, [JSON.stringify(locationsOfCountries)]);
 
   const onLocationChange = (value) => {
