@@ -9,6 +9,7 @@ import RequestTable from '../RequestTable';
 import Settings from '../Settings';
 import styles from './index.less';
 import { getCurrentLocation } from '@/utils/authority';
+import LocationDropdownSelector from '@/components/LocationDropdownSelector';
 
 const { TabPane } = Tabs;
 
@@ -17,37 +18,61 @@ const HRView = (props) => {
     dispatch,
     tabName = '',
     type = '',
-    companyLocationList = [],
-    offboarding: { selectedLocations: selectedLocationsProp = [] },
+    offboarding: { selectedLocations: selectedLocationsProp = [], locationsOfCountries = [] },
   } = props;
 
   const [selectedLocations, setSelectedLocation] = useState([]);
   const [selectedDivisions, setSelectedDivisions] = useState('');
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     setSelectedLocation(selectedLocationsProp);
   }, [JSON.stringify(selectedLocationsProp)]);
 
   useEffect(() => {
-    const currentLocation = getCurrentLocation();
-    if (currentLocation) {
+    dispatch({
+      type: 'offboarding/getLocationsOfCountriesEffect',
+    });
+    return () => {
+      setData([]);
+      setSelectedLocation([]);
       dispatch({
         type: 'offboarding/save',
-        payload: {
-          selectedLocations: [currentLocation],
-        },
+        locationsOfCountries: [],
       });
-    }
+    };
   }, []);
+
+  useEffect(() => {
+    const tempData = locationsOfCountries.map((x, i) => {
+      return {
+        title: x.country?.name,
+        key: i,
+        children: x.data.map((y) => {
+          return {
+            title: y.name,
+            key: y._id,
+          };
+        }),
+      };
+    });
+    setSelectedLocation([getCurrentLocation()]);
+    setData(tempData);
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        selectedLocations: [getCurrentLocation()],
+      },
+    });
+  }, [JSON.stringify(locationsOfCountries)]);
 
   const onLocationChange = (selection) => {
     dispatch({
       type: 'offboarding/save',
       payload: {
-        selectedLocations: [...selection],
+        selectedLocations: selection,
       },
     });
-    setSelectedLocation([...selection]);
   };
 
   const onDivisionChange = (selection) => {
@@ -60,24 +85,13 @@ const HRView = (props) => {
     setSelectedDivisions([...selection]);
   };
 
-  const renderLocationOptions = () => {
-    return companyLocationList.map((x) => {
-      return {
-        _id: x._id,
-        name: x.name,
-      };
-    });
-  };
-
   const options = () => {
     return (
       <div className={styles.options}>
-        <CustomDropdownSelector
-          options={renderLocationOptions()}
-          onChange={onLocationChange}
-          disabled={renderLocationOptions().length < 2}
-          label="Location"
-          selectedList={selectedLocations}
+        <LocationDropdownSelector
+          saveLocationToRedux={onLocationChange}
+          selectedLocations={selectedLocations}
+          data={data}
         />
         <CustomDropdownSelector
           options={[]}

@@ -105,7 +105,9 @@ const RequestTable = (props) => {
   };
 
   useEffect(() => {
-    fetchData();
+    if (selectedLocations && selectedLocations.length) {
+      fetchData();
+    }
   }, [
     currentStatus,
     page,

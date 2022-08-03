@@ -18,6 +18,7 @@ import {
   deleteDocument,
   uploadFile,
   getListEmployeeSingleCompany,
+  getLocationsOfCountries,
 } from '../services/onboardingSettings';
 
 const onboardingSettings = {
@@ -33,6 +34,7 @@ const onboardingSettings = {
     action: '',
     recordEdit: {},
     selectedLocations: [],
+    locationsOfCountries: [],
   },
   effects: {
     *fetchListInsurances({ payload = {} }, { call, put }) {
@@ -338,6 +340,28 @@ const onboardingSettings = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+    *getLocationsOfCountriesEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getLocationsOfCountries, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: {
+            locationsOfCountries: data,
+          },
+        });
+      } catch (error) {
+        dialog(error);
       }
       return response;
     },

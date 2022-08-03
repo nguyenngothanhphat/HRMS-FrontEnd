@@ -8,6 +8,7 @@ const LocationDropdownSelector = ({
   label = 'Location',
   selectedLocations = [],
   saveLocationToRedux = () => {},
+  disabled = false,
 }) => {
   const [dataLength, setDataLength] = useState(0);
   const [selectedLocationsLength, setSelectedLocationsLength] = useState(0);
@@ -83,13 +84,14 @@ const LocationDropdownSelector = ({
         onCheck={onCheck}
         onCheckAll={onCheckAll}
         indeterminate={indeterminate}
+        disabled={disabled}
       >
         <div
-          className={`${data.length < 2 ? styles.noDropdown : styles.dropdown}`}
+          className={`${disabled ? styles.noDropdown : styles.dropdown}`}
           onClick={(e) => e.preventDefault()}
         >
           <span>{getSelectedLocationName()}</span>
-          {data.length < 2 ? null : <img src={SmallDownArrow} alt="" />}
+          {disabled ? null : <img src={SmallDownArrow} alt="" />}
         </div>
       </ContentPopover>
     </div>
