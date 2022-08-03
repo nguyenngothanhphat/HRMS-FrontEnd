@@ -1,6 +1,7 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-undef */
 import { List, notification } from 'antd';
+import moment from 'moment';
 import pathRegexp from 'path-to-regexp';
 import { parse } from 'querystring';
 import React from 'react';
