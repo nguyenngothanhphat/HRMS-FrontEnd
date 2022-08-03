@@ -1,14 +1,14 @@
 import { Col, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
-import {
-  convertMsToHours,
-  MNG_MT_SECONDARY_COL_SPAN,
-  MNG_MT_THIRD_COL_SPAN,
-  employeeColor,
-} from '@/utils/timeSheet';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import UserProfilePopover from '@/components/UserProfilePopover';
+import {
+  employeeColor,
+  MNG_MT_SECONDARY_COL_SPAN,
+  MNG_MT_THIRD_COL_SPAN,
+} from '@/constants/timeSheet';
+import { convertMsToHours } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const { DESIGNATION, DEPARTMENT, PROJECT_GROUP } = MNG_MT_SECONDARY_COL_SPAN;

@@ -6,9 +6,10 @@ import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import CheckBoxIcon from '@/assets/onboarding/checkbox.svg';
 import UnCheckBoxIcon from '@/assets/onboarding/uncheckbox.svg';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 
 const { Option } = Select;
 const { TreeNode } = TreeSelect;
@@ -319,8 +320,7 @@ const JobDetailForm = (props) => {
             treeIcon
             treeDefaultExpandAll
             filterTreeNode={(input, treeNode) =>
-              treeNode.title.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+              treeNode.title.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             <TreeNode icon={CustomIconHeader()} title="Office Location">
               {locationList
@@ -546,7 +546,7 @@ const JobDetailForm = (props) => {
             className={styles}
             placeholder="Select a date"
             picker="date"
-            format="MM/DD/YYYY"
+            format={DATE_FORMAT_MDY}
             disabledDate={disabledDate}
             onChange={(value) => onChangeValue(value, 'dateOfJoining')}
           />

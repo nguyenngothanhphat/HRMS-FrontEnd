@@ -1,15 +1,15 @@
+@import '~antd/es/style/themes/default.less';
+
 @darkColour: #161c29;
-@blueColour: #2c6df9;
 @lightGrayColor: #707177;
 @commonPadding: 15px;
-@contentPadding: 24px;
-@borderColor: #d6dce0;
+@borderColor: @border-color-base;
 
 .CommonModal {
   :global {
     .ant-modal-header {
       padding: 24px;
-      border-bottom: 1px solid #d6dce0;
+      border-bottom: 1px solid @border-color-base;
       border-top-left-radius: 8px;
     }
     .ant-modal-content {
@@ -22,7 +22,7 @@
     }
     .ant-modal-footer {
       padding: 13px 24px;
-      border-top: 1px solid #d6dce0;
+      border-top: 1px solid @border-color-base;
     }
     .ant-select-selection-overflow-item .ant-select-selection-overflow-item-suffix {
       display: none;
@@ -35,7 +35,7 @@
       width: 54px;
       height: 48px;
       color: #fff;
-      background-color: #2c6df9;
+      background-color: @primary-color;
       border-top-right-radius: 8px;
       border-bottom-right-radius: 8px;
       &:active {
@@ -85,7 +85,7 @@
 .withPadding {
   :global {
     .ant-modal-body {
-      padding: @contentPadding;
+      padding: 24px;
     }
   }
 }

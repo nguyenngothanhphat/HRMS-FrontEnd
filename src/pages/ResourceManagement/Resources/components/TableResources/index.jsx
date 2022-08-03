@@ -1,27 +1,28 @@
-import React, { PureComponent } from 'react';
 import { Table, Tag } from 'antd';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import AddModal from './components/Add';
-import EditModal from './components/Edit';
-import HistoryModal from './components/History';
+import addAction from '@/assets/resource-action-add1.svg';
 import editIcon from '@/assets/resource-management-edit-history.svg';
 import historyIcon from '@/assets/resource-management-edit1.svg';
-import addAction from '@/assets/resource-action-add1.svg';
 import changeManagerIcon from '@/assets/resourceManagement/changeManagerIcon.svg';
 import currentToNewManager from '@/assets/resourceManagement/currentToNewManager.svg';
-import styles from './index.less';
-import ProjectProfile from '../ComplexView/components/PopoverProfiles/components/ProjectProfile';
-import CommentModal from './components/Comment';
-import CommentOverlay from '../ComplexView/components/Overlay';
-import ChangeManagerModal from './components/ChangeManager';
-import WarnningModal from './components/Warnning';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import EmptyComponent from '@/components/Empty';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import ProjectRow from './components/ProjectRow';
-import ProjectLayout from './components/ProjectLayout';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { checkUtilization, projectDateFormat } from '@/utils/resourceManagement';
+import CommentOverlay from '../ComplexView/components/Overlay';
+import ProjectProfile from '../ComplexView/components/PopoverProfiles/components/ProjectProfile';
+import AddModal from './components/Add';
+import ChangeManagerModal from './components/ChangeManager';
+import CommentModal from './components/Comment';
+import EditModal from './components/Edit';
+import HistoryModal from './components/History';
+import ProjectLayout from './components/ProjectLayout';
+import ProjectRow from './components/ProjectRow';
+import WarnningModal from './components/Warnning';
+import styles from './index.less';
 
 @connect(
   ({
@@ -120,17 +121,17 @@ class TableResources extends PureComponent {
     this.setState({
       visibleModalWarn: false,
     });
-  }
+  };
 
   isShowModalManagerChange = (row) => {
     this.setState({
       visibleManagerChange: true,
-      dataPassRow: row
+      dataPassRow: row,
     });
     this.setState({
       visibleModalWarn: false,
     });
-  }
+  };
 
   setCurrentTime = () => {
     // compare two time by hour & minute. If minute changes, get new time
@@ -515,7 +516,7 @@ class TableResources extends PureComponent {
           title: (
             <div className={styles.dateHeaderContainer}>
               <div>Start Date</div>
-              <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
+              <div className={styles.dateFormat}>({DATE_FORMAT_MDY.toLowerCase()})</div>
             </div>
           ),
           dataIndex: 'startDate',
@@ -542,7 +543,7 @@ class TableResources extends PureComponent {
           title: (
             <div className={styles.dateHeaderContainer}>
               <div>End Date</div>
-              <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
+              <div className={styles.dateFormat}>({DATE_FORMAT_MDY.toLowerCase()})</div>
             </div>
           ),
           dataIndex: 'endDate',
@@ -569,7 +570,7 @@ class TableResources extends PureComponent {
           title: (
             <div className={styles.dateHeaderContainer}>
               <div>Revised End Date</div>
-              <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
+              <div className={styles.dateFormat}>({DATE_FORMAT_MDY.toLowerCase()})</div>
             </div>
           ),
           dataIndex: 'revisedEndDate',

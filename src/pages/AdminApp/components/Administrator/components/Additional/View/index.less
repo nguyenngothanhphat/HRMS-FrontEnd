@@ -1,6 +1,6 @@
 .addAdminstrator {
-  padding-top: 30px;
   width: 100%;
+  padding-top: 30px;
   // padding-bottom: 10px;
   color: #161c29;
   font-weight: normal;
@@ -11,7 +11,7 @@
   }
 
   :global {
-    .ant-row{
+    .ant-row {
       margin-bottom: 8px;
     }
 
@@ -19,7 +19,7 @@
       font-size: 13px;
     }
     .ant-collapse-header {
-      color: #2c6df9 !important;
+      color: @primary-color !important;
       font-weight: 500;
       font-size: 12px;
       line-height: 14px;
@@ -34,9 +34,9 @@
       font-size: 14px;
     }
     .ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
+      right: auto;
       // top: 2px;
       left: 106px;
-      right: auto;
     }
     .ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header {
       padding: 12px 0;
@@ -48,7 +48,7 @@
   }
 
   /////////////////////// NEW UI ///////////////////////
-  &__row{
+  &__row {
     width: 100%;
   }
 
@@ -59,9 +59,9 @@
 
     .listRole {
       display: flex;
+      flex-wrap: wrap;
       // align-items: center;
       justify-content: flex-start;
-      flex-wrap: wrap;
 
       .role {
         margin-right: 15px;
@@ -74,7 +74,7 @@
         line-height: 12px;
         text-align: center;
 
-        background: #2c6df9;
+        background: @primary-color;
         border-radius: 13px;
       }
     }
@@ -115,7 +115,7 @@
     line-height: 15px;
 
     .name {
-      color: #2c6df9;
+      color: @primary-color;
       font-weight: 500;
     }
 
@@ -146,10 +146,6 @@
     }
   }
 
-
-
-
-
   /////////////////////// OLD UI ///////////////////////
 
   &__header {
@@ -159,9 +155,9 @@
 
     .listRole {
       display: flex;
+      flex-wrap: wrap;
       // align-items: center;
       justify-content: flex-start;
-      flex-wrap: wrap;
 
       .role {
         margin-right: 15px;
@@ -174,7 +170,7 @@
         line-height: 12px;
         text-align: center;
 
-        background: #2c6df9;
+        background: @primary-color;
         border-radius: 13px;
       }
     }
@@ -220,7 +216,7 @@
     line-height: 15px;
 
     .name {
-      color: #2c6df9;
+      color: @primary-color;
     }
 
     img {

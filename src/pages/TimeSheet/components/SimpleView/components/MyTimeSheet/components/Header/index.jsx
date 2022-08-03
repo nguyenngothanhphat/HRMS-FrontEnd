@@ -3,7 +3,7 @@ import { DatePicker } from 'antd';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import { rangePickerFormat } from '@/utils/timeSheet';
+import { rangePickerFormat } from '@/constants/timeSheet';
 import PrevIcon from '@/assets/timeSheet/prev.svg';
 import NextIcon from '@/assets/timeSheet/next.svg';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';

@@ -4,8 +4,8 @@ import { connect } from 'umi';
 import DoneIcon from '@/assets/candidatePortal/doneSign.svg';
 // import WarningGrayIcon from '@/assets/candidatePortal/warningGrayIcon.png';
 import WarningIcon from '@/assets/candidatePortal/warningIcon.svg';
-import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
-import { mapType } from '@/utils/newCandidateForm';
+import { DOCUMENT_TYPES } from '@/constants/candidatePortal';
+import { MAP_TYPE } from '@/constants/newCandidateForm';
 import UploadComponent from '../UploadComponent';
 import styles from './index.less';
 
@@ -34,7 +34,7 @@ const File = (props) => {
     dispatch({
       type: 'candidatePortal/saveOrigin',
       payload: {
-        [mapType[type]]: result,
+        [MAP_TYPE[type]]: result,
       },
     });
   };
@@ -65,7 +65,7 @@ const File = (props) => {
       };
 
       if (fetchedDocument) {
-        let items = [...data[mapType[type]]];
+        let items = [...data[MAP_TYPE[type]]];
 
         if (type !== 'E') {
           items = onAddFetchedDocToRedux(items);

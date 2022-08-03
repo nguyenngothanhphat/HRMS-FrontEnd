@@ -31,7 +31,13 @@ const PostLikedModalContent = (props) => {
     return (
       <div className={styles.user}>
         <div className={styles.avatar}>
-          <img src={avatar || MockAvatar} alt="" />
+          <img
+            src={avatar || MockAvatar}
+            alt=""
+            onError={(e) => {
+              e.target.src = MockAvatar;
+            }}
+          />
         </div>
         <div className={styles.information}>
           <span

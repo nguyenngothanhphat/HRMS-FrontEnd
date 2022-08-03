@@ -1,25 +1,25 @@
-import { Card, Tag, Tooltip, Popover } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
+import { Card, Popover, Tooltip } from 'antd';
 import { debounce } from 'lodash';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import ActionIcon from '@/assets/projectManagement/actionIcon.svg';
-import ViewIcon from '@/assets/projectManagement/viewIcon.svg';
-import EditIcon from '@/assets/projectManagement/editIcon.svg';
-import DeleteIcon from '@/assets/projectManagement/deleteIcon.svg';
 import AssignIcon from '@/assets/projectManagement/assignIcon.svg';
-import OrangeAddButton from '../../../OrangeAddButton';
+import DeleteIcon from '@/assets/projectManagement/deleteIcon.svg';
+import EditIcon from '@/assets/projectManagement/editIcon.svg';
+import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
+import ViewIcon from '@/assets/projectManagement/viewIcon.svg';
 import CommonModal from '@/components/CommonModal';
 import CommonTable from '@/components/CommonTable';
-import FilterButton from '@/components/FilterButton';
-import FilterPopover from '@/components/FilterPopover';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
+import FilterPopover from '@/components/FilterPopover';
 import AddResourceTypeContent from '../AddResourceTypeContent';
-import DeleteResourceTypeContent from '../DeleteResourceTypeContent';
 import AssignResourcesModal from '../AssignResourcesModal';
+import DeleteResourceTypeContent from '../DeleteResourceTypeContent';
+import ViewResourceTable from '../ViewResourceTable';
 import FilterResourceTypeContent from './components/FilterResourceTypeContent';
 import styles from './index.less';
-import ViewResourceTable from '../ViewResourceTable';
 
 const ResourceTypeCard = (props) => {
   const {
@@ -27,9 +27,11 @@ const ResourceTypeCard = (props) => {
     data = [],
     refreshResourceType = () => {},
     loadingAdd = false,
-    setUnfilter = () => {},
     loadingEdit = false,
     loadingDelete = false,
+    setFilter = () => {},
+    setSearchValue = () => {},
+    filter = {},
   } = props;
 
   // permissions
@@ -47,19 +49,13 @@ const ResourceTypeCard = (props) => {
   const [deleteRecord, setDeleteRecord] = useState({});
   const [viewRecord, setViewRecord] = useState({});
 
-  const [applied, setApplied] = useState(0);
-  // if reselect project status or search, clear filter form
-  const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
-  const [isFiltering, setIsFiltering] = useState(false);
-
   const onSearchDebounce = debounce((value) => {
-    refreshResourceType(value);
+    setSearchValue(value);
   }, 1000);
 
   const onSearch = (e = {}) => {
     const { value = '' } = e.target;
     onSearchDebounce(value);
-    setUnfilter(false);
   };
 
   const handleLongString = (str) => {
@@ -67,21 +63,8 @@ const ResourceTypeCard = (props) => {
     return `${str.slice(0, 72)}...`;
   };
 
-  const onFilter = (filterPayload) => {
-    refreshResourceType('', filterPayload);
-    if (Object.keys(filterPayload).length > 0) {
-      setIsFiltering(true);
-      setApplied(Object.keys(filterPayload).length);
-      setUnfilter(false);
-    } else {
-      setIsFiltering(false);
-      setApplied(0);
-    }
-  };
-
-  const clearFilter = () => {
-    onFilter({});
-    setNeedResetFilterForm(true);
+  const onFilter = (values) => {
+    setFilter(values);
   };
 
   const renderComment = (str = '') => {
@@ -263,34 +246,28 @@ const ResourceTypeCard = (props) => {
   };
 
   const renderOption = () => {
-    const content = (
-      <FilterResourceTypeContent
-        onFilter={onFilter}
-        needResetFilterForm={needResetFilterForm}
-        setNeedResetFilterForm={setNeedResetFilterForm}
-        setApplied={setApplied}
-        setIsFiltering={setIsFiltering}
-      />
-    );
+    const applied = Object.values(filter).filter((v) => v).length;
+
+    const content = <FilterResourceTypeContent onFilter={onFilter} filter={filter} />;
     return (
       <div className={styles.options}>
-        {applied > 0 && (
-          <Tag
-            className={styles.tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined />}
-            onClose={() => {
-              clearFilter();
-            }}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
+        <FilterCountTag
+          count={applied}
+          onClearFilter={() => {
+            onFilter({});
+          }}
+        />
         <FilterPopover placement="bottomRight" content={content}>
-          <FilterButton showDot={isFiltering} />
+          <CustomOrangeButton showDot={applied > 0} />
         </FilterPopover>
         {allowModify && (
-          <OrangeAddButton text="Add Resource Type" onClick={handleAddResourceTypeModalVisible} />
+          <CustomOrangeButton
+            icon={OrangeAddIcon}
+            onClick={handleAddResourceTypeModalVisible}
+            fontSize={13}
+          >
+            Add Resource Type
+          </CustomOrangeButton>
         )}
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Resource Type" />
       </div>

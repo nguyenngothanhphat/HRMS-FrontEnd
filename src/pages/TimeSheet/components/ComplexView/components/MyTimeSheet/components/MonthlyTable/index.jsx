@@ -1,20 +1,16 @@
 /* eslint-disable no-nested-ternary */
 import { Table, Tooltip } from 'antd';
 import moment from 'moment';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import {
-  checkHolidayInWeek,
-  convertMsToTime,
-  holidayFormatDate,
-  projectColor,
-} from '@/utils/timeSheet';
-import EmptyComponent from '@/components/Empty';
-import TimeoffPopover from './components/TimeoffPopover';
-import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import AirPlanIcon from '@/assets/timeSheet/airplanIcon.svg';
+import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
+import EmptyComponent from '@/components/Empty';
+import { projectColor } from '@/constants/timeSheet';
+import { checkHolidayInWeek, convertMsToTime, holidayFormatDate } from '@/utils/timeSheet';
 import TaskPopover from './components/TaskPopover';
+import TimeoffPopover from './components/TimeoffPopover';
 import styles from './index.less';
 
 const MonthlyTable = (props) => {

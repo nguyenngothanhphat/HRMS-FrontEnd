@@ -4,6 +4,7 @@ import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
 import CheckIcon from '@/assets/changePasswordCheck.svg';
 import styles from './index.less';
+import CustomPrimaryButton from '../CustomPrimaryButton';
 
 const arrText = [
   'Use a minimum of 8 characters.',
@@ -40,14 +41,15 @@ class ChangePasswordBox extends PureComponent {
     const valuePsw = getFieldValue('newPassword');
     const valueConfirm = getFieldValue('confirmPassword');
     return (
-      <Button
+      <CustomPrimaryButton
         type="primary"
         htmlType="submit"
         loading={loading}
         disabled={!valuePsw || !valueConfirm || valuePsw !== valueConfirm}
+        style={{ width: '100%' }}
       >
         {formatMessage({ id: 'page.changePassword' })}
-      </Button>
+      </CustomPrimaryButton>
     );
   };
 

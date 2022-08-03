@@ -1,7 +1,7 @@
 import { Button, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import exportToCSV from '@/utils/exportAsExcel';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 import Information from './components/Information';
 import TaskTable from './components/TaskTable';
 import WhiteDownloadIcon from '@/assets/timeSheet/whiteDownload.svg';
@@ -47,11 +47,11 @@ const EmployeeDetailModal = (props) => {
   };
 
   const getSelectedData = () => {
-    const newData = data?.userDetail.filter((el) => selectedRowKeys.includes(el.date));
+    const newData = data?.userDetail.filter((el) => selectedRowKeys.includes(el.date)) || [];
     return newData;
   };
 
-  const processData = (array) => {
+  const processData = (array = []) => {
     return array.map((item) => {
       const {
         date = '',
@@ -80,7 +80,7 @@ const EmployeeDetailModal = (props) => {
 
   const downloadTemplate = () => {
     const result = getSelectedData();
-    exportToCSV(processData(result), 'EmployeeDetailslData.xlsx');
+    exportArrayDataToCsv('EmployeeDetailData', processData(result));
   };
 
   const renderModalContent = () => {

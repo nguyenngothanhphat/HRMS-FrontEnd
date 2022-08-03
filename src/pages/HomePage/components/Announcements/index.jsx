@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import ShowMoreIcon from '@/assets/homePage/downArrow.svg';
 import EmptyComponent from '@/components/Empty';
 import { getCurrentLocation } from '@/utils/authority';
-import { TAB_IDS } from '@/utils/homePage';
+import { TAB_IDS } from '@/constants/homePage';
 import EmployeeTag from './components/EmployeeTag';
 import LikeComment from './components/LikeComment';
 import PostContent from './components/PostContent';

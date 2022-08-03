@@ -9,7 +9,7 @@ import styles from './index.less';
 
 @connect(
   ({
-    user: { currentUser = {}, permissions = {}, } = {},
+    user: { currentUser = {}, permissions = {} } = {},
     frequentlyAskedQuestions: { list = [], listDefault = {}, getListByCompany = {} } = {},
   }) => ({
     list,
@@ -31,9 +31,7 @@ class FAQs extends PureComponent {
   }
 
   render() {
-    const {
-      permissions
-    } = this.props;
+    const { permissions } = this.props;
     const checkRoleHrAndManager = permissions.viewFAQSetting !== -1;
     return (
       <PageContainer>
@@ -44,7 +42,7 @@ class FAQs extends PureComponent {
               <div className={styles.header__right}>
                 {checkRoleHrAndManager ? (
                   <Button>
-                    <Link to="/faqpage/settings">
+                    <Link to="/faq/settings">
                       <span className={styles.buttonSetting__text}>Settings</span>
                     </Link>
                   </Button>

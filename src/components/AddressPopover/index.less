@@ -1,0 +1,61 @@
+.AddressPopover {
+  :global {
+    .ant-popover-inner {
+      min-width: 350px;
+      max-width: 350px;
+      padding: 0;
+      border: 1px solid #eaecef;
+      border-radius: 8px;
+    }
+    .ant-popover-inner-content {
+      padding: 0 !important;
+    }
+    .ant-popover-arrow {
+      //   left: -2.5px !important;
+      width: 18px;
+      height: 18px;
+      .ant-popover-arrow-content {
+        width: 12px;
+        height: 12px;
+        box-shadow: none;
+      }
+    }
+
+    .ant-tag-has-color {
+      margin-bottom: 8px;
+      border-radius: 4px;
+    }
+  }
+  .popupContainer {
+    position: relative;
+
+    .divider {
+      border-bottom: 1px solid #eaecef;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      padding: @padding-md;
+      span {
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+
+    .userInfo {
+      padding: 6px 16px;
+      .eachRow {
+        margin-block: 10px;
+        &__label {
+          color: #212020;
+          font-weight: 500;
+          font-size: 13px;
+        }
+        &__value {
+          color: #212020;
+          font-size: 13px;
+        }
+      }
+    }
+  }
+}

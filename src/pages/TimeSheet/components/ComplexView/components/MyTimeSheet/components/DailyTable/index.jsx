@@ -4,12 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import {
   dateFormatAPI,
+  DEFAULT_TOP_HOUR,
   EMP_MT_MAIN_COL_SPAN,
   EMP_MT_SECONDARY_COL_SPAN,
   hourFormatAPI,
   WORKING_HOURS,
-  DEFAULT_TOP_HOUR,
-} from '@/utils/timeSheet';
+} from '@/constants/timeSheet';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import ActivityList from './components/ActivityList';
 import styles from './index.less';
 
@@ -56,8 +57,8 @@ const DailyTable = (props) => {
     return (
       data.find(
         (item) =>
-          moment(item.date, dateFormatAPI).format('MM/DD/YYYY') ===
-          moment(selectedDate).format('MM/DD/YYYY'),
+          moment(item.date, dateFormatAPI).format(DATE_FORMAT_MDY) ===
+          moment(selectedDate).format(DATE_FORMAT_MDY),
       ) || {}
     );
   };

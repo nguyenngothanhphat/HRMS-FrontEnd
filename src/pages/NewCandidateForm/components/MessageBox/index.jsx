@@ -3,10 +3,11 @@ import { Button, Form, Input, Skeleton } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { ChatEvent, socket } from '@/utils/socket';
-import { getCurrentCompany } from '@/utils/authority';
-import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
+import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
+import { CHAT_EVENT } from '@/constants/socket';
+import { getCurrentCompany } from '@/utils/authority';
+import { socket } from '@/utils/socket';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -125,7 +126,7 @@ class MessageBox extends PureComponent {
   };
 
   componentWillUnmount = () => {
-    // socket.on(ChatEvent.DISCONNECT);
+    // socket.on(CHAT_EVENT.DISCONNECT);
     const { dispatch } = this.props;
     dispatch({
       type: 'conversation/clearState',
@@ -310,7 +311,7 @@ class MessageBox extends PureComponent {
     const { activeId } = this.state;
     const { message } = values;
     if (activeId && message) {
-      socket.emit(ChatEvent.SEND_MESSAGE, {
+      socket.emit(CHAT_EVENT.SEND_MESSAGE, {
         conversationId: activeId,
         senderId: hrId?._id || hrId || '',
         receiverId: candidate,

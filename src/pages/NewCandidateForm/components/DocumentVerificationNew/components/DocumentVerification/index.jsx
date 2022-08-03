@@ -5,7 +5,7 @@ import { connect, history } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
 import { Page } from '../../../../utils';
 import MessageBox from '../../../MessageBox';
 import NoteComponent from '../../../NewNoteComponent';
@@ -16,7 +16,7 @@ import ModalContentComponent from './components/ModalContentComponent';
 import SendEmail from './components/SendEmail';
 import Title from './components/Title';
 import styles from './styles.less';
-import { mapType } from '@/utils/newCandidateForm';
+import { MAP_TYPE } from '@/constants/newCandidateForm';
 
 const DocumentVerification = (props) => {
   const {
@@ -396,7 +396,7 @@ const DocumentVerification = (props) => {
   ]);
 
   const getItemByType = (type) => {
-    return tempData[mapType[type]];
+    return tempData[MAP_TYPE[type]];
   };
 
   if (loadingFetchCandidate) return <Skeleton />;

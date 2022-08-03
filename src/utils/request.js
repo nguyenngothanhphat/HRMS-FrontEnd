@@ -1,7 +1,7 @@
 import { notification } from 'antd';
 import axios from 'axios';
 import { getDvaApp } from 'umi';
-import { proxy, API_KEYS } from '../../config/proxy';
+import { PROXY, API_KEYS } from '../../config/proxy';
 import { getToken } from './token';
 
 const codeMessage = {
@@ -58,7 +58,7 @@ const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) =>
     Authorization: !noAuth ? `Bearer ${token}` : '',
   };
   const instance = axios.create({
-    baseURL: proxy[apiKey],
+    baseURL: PROXY[apiKey],
     headers,
     params,
     cancelToken,

@@ -1,67 +1,67 @@
-import { Dropdown, Empty, Menu, Table } from 'antd';
+import { Dropdown, Empty, Menu } from 'antd';
 import moment from 'moment';
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect, formatMessage, history, Link } from 'umi';
 import AcceptIcon from '@/assets/Accept-icon-onboarding.svg';
 import MessageIcon from '@/assets/message.svg';
 import MenuIcon from '@/assets/projectManagement/actionIcon.svg';
-import { getAuthority, getCurrentTenant } from '@/utils/authority';
+import CommonModal from '@/components/CommonModal';
+import CommonTable from '@/components/CommonTable';
+import UserProfilePopover from '@/components/UserProfilePopover';
 import {
   NEW_PROCESS_STATUS,
+  NEW_PROCESS_STATUS_TABLE_NAME,
+  ONBOARDING_COLUMN_NAME,
   ONBOARDING_FORM_LINK,
   ONBOARDING_FORM_STEP_LINK,
+} from '@/constants/onboarding';
+import { getAuthority, getCurrentTenant } from '@/utils/authority';
+import {
+  compare,
+  dateDiffInDays,
+  formatDate,
+  getActionText,
+  getColumnWidth,
 } from '@/utils/onboarding';
-
-import { COLUMN_NAME, TABLE_TYPE } from '../utils';
-import JoiningFormalitiesModal from './components/JoiningFormalitiesModal';
-import ReassignModal from './components/ReassignModal';
-import RenewModal from './components/RenewModal';
-import { getActionText, getColumnWidth } from './utils';
-
 import ConfirmModal from './components/ConfirmModal/index';
+import JoiningFormalitiesModal from './components/JoiningFormalitiesModal';
+import ReassignModalContent from './components/ReassignModalContent';
+import RenewModal from './components/RenewModal';
 import styles from './index.less';
-
-import EyeIcon from '@/assets/eyes.svg';
-import LaunchIcon from '@/assets/launchIcon.svg';
-import JoiningIcon from '@/assets/Vector.svg';
-import UserProfilePopover from '@/components/UserProfilePopover';
 import WithdrawOfferModal from '@/pages/NewCandidateForm/components/PreviewOffer/components/WithdrawOfferModal';
 
-const compare = (dateTimeA, dateTimeB) => {
-  const momentA = moment(dateTimeA, 'DD/MM/YYYY');
-  const momentB = moment(dateTimeB, 'DD/MM/YYYY');
-  if (momentA > momentB) return 1;
-  if (momentA < momentB) return -1;
-  return 0;
-};
-class OnboardTable extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      reassignModalVisible: false,
-      currentEmpId: '',
-      currentEmpName: '',
-      reassignTicketId: '',
-      reassignStatus: '',
-      reassignType: '',
+const OnboardTable = (props) => {
+  const {
+    dispatch,
+    list = [],
+    pageSelected,
+    size,
+    loadingReassign = false,
+    columnArr,
+    type,
+    inTab,
+    loading = false,
+    loadingAll = false,
+    loadingFetch = false,
+    loadingSearch = false,
+    loadingWithdrawOffer = false,
+    documentChecklist,
+    activeConversationUnseen,
+    currentUser: { employee: { _id: empId = '' } = {} } = {},
+  } = props;
 
-      // expiry tickets
-      renewModalVisible: false,
-      selectedExpiryTicketId: '',
-      expiryStatus: '',
-      expiryType: '',
+  const [reassignModalVisible, setReassignModalVisible] = useState(false);
+  const [renewModalVisible, setRenewModalVisible] = useState(false);
 
-      // Joining Formalities
-      openModalName: '',
-      dateJoinCandidate: '',
-      selectedCandidateId: '',
-      selectRookieId: '',
-    };
-  }
+  const [openModalName, setOpenModalName] = useState('');
 
-  handleActionDelete = (id, processStatus) => {
-    const { dispatch } = this.props;
+  const [handlingRecord, setHandlingRecord] = useState();
 
+  const viewProfile = (_id) => {
+    history.push(`/directory/employee-profile/${_id}`);
+  };
+
+  const handleActionDelete = (id, processStatus) => {
     if (!dispatch) {
       return;
     }
@@ -76,20 +76,18 @@ class OnboardTable extends Component {
     });
   };
 
-  handleWithdrawOffer = async (reason) => {
-    const { dispatch, type } = this.props;
-    const { candidateSelected, processStatus } = this.state;
+  const handleWithdrawOffer = async (reason) => {
     const { ALL } = NEW_PROCESS_STATUS;
     const res = await dispatch({
       type: 'onboarding/withdrawTicket',
       payload: {
-        candidate: candidateSelected,
+        candidate: handlingRecord?._id,
         reasonForWithdraw: reason,
       },
-      processStatus,
+      processStatus: handlingRecord?.processStatus,
     });
     if (res.statusCode === 200) {
-      this.setState({ withdrawOfferModalVisible: false });
+      setOpenModalName('');
       if (type === ALL)
         dispatch({
           type: 'onboarding/fetchOnboardListAll',
@@ -101,11 +99,12 @@ class OnboardTable extends Component {
     }
   };
 
-  handleActionWithDraw = (candidate, processStatus) => {
-    this.setState({ withdrawOfferModalVisible: true, candidateSelected: candidate, processStatus });
+  const handleActionWithDraw = (row) => {
+    setHandlingRecord(row);
+    setOpenModalName('withdraw');
   };
 
-  renderCandidateId = (candidateId = '', row) => {
+  const renderCandidateId = (candidateId = '', row) => {
     const id = candidateId.replace('#', '') || '';
     const { currentStep = 0 } = row;
     const find = ONBOARDING_FORM_STEP_LINK.find((v) => v.id === currentStep) || {
@@ -113,17 +112,13 @@ class OnboardTable extends Component {
     };
     return (
       <Link className={styles.candidateId} to={`/onboarding/list/view/${id}/${find.link}`}>
-        <span>{candidateId}</span>
+        <span>#{candidateId}</span>
       </Link>
     );
   };
 
-  renderNotice = (selectedPerson) => {
-    const { activeConversationUnseen } = this.props;
-
-    const isNotice = activeConversationUnseen.some(
-      (item) => item.candidateId === selectedPerson.candidateId.replace('#', ''),
-    );
+  const renderNotice = (candidateId) => {
+    const isNotice = activeConversationUnseen.some((item) => item.candidateId === candidateId);
 
     return (
       isNotice && (
@@ -134,80 +129,74 @@ class OnboardTable extends Component {
     );
   };
 
-  renderName = (id) => {
-    const { list } = this.props;
-    const selectedPerson = list.find((item) => item.candidateId === id);
+  const renderName = (record) => {
     const {
-      candidateName: name = '',
-      isNew,
-      offerExpiryDate = '',
-      processStatusId,
-    } = selectedPerson;
-    const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
+      expiryDate = '',
+      processStatus = '',
+      firstName = '',
+      lastName = '',
+      middleName = '',
+      ticketID = '',
+      updatedAt = '',
+    } = record;
+
+    const fullName = `${firstName ? `${firstName} ` : ''}${middleName ? `${middleName} ` : ''}${
+      lastName ? `${lastName} ` : ''
+    }`;
+
+    const isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
+
+    const isExpired = compare(moment(), moment(expiryDate)) === 1;
 
     if (isExpired) {
       return (
         <p>
-          {name && <span className={styles.name}>{name}</span>}
+          {fullName && <span className={styles.name}>{fullName}</span>}
           <span className={styles.expired}>Expired</span>
-          {this.renderNotice(selectedPerson)}
+          {renderNotice(ticketID)}
         </p>
       );
     }
     if (
       isNew &&
-      processStatusId !== NEW_PROCESS_STATUS.OFFER_ACCEPTED &&
-      processStatusId !== NEW_PROCESS_STATUS.JOINED
+      processStatus !== NEW_PROCESS_STATUS.OFFER_ACCEPTED &&
+      processStatus !== NEW_PROCESS_STATUS.JOINED
     ) {
       return (
         <p>
-          {name && <span className={styles.name}>{name}</span>}
+          {fullName && <span className={styles.name}>{fullName}</span>}
           <span className={styles.new}>
             {formatMessage({ id: 'component.onboardingOverview.new' })}
           </span>
-          {this.renderNotice(selectedPerson)}
+          {renderNotice(ticketID)}
         </p>
       );
     }
 
     if (
-      processStatusId === NEW_PROCESS_STATUS.OFFER_ACCEPTED ||
-      processStatusId === NEW_PROCESS_STATUS.JOINED
+      processStatus === NEW_PROCESS_STATUS.OFFER_ACCEPTED ||
+      processStatus === NEW_PROCESS_STATUS.JOINED
     ) {
       return (
         <p>
-          {name && <span className={styles.name}>{name}</span>}
+          {fullName && <span className={styles.name}>{fullName}</span>}
           <span>
             <img alt="accepted-icon" src={AcceptIcon} />
           </span>
-          {this.renderNotice(selectedPerson)}
+          {renderNotice(ticketID)}
         </p>
       );
     }
 
     return (
       <p>
-        {name || '-'}
-        {this.renderNotice(selectedPerson)}
+        {fullName || '-'}
+        {renderNotice(ticketID)}
       </p>
     );
   };
 
-  initiateBackgroundCheck = (id) => {
-    const { dispatch } = this.props;
-    if (!dispatch) {
-      return;
-    }
-    dispatch({
-      type: 'onboard/initiateBackgroundCheckEffect',
-      payload: {
-        rookieID: id,
-        tenantId: getCurrentTenant(),
-      },
-    });
-  };
-
-  checkPermission = (role) => {
+  const checkPermissionFunc = (role) => {
     const getAuth = getAuthority();
     let check = false;
     getAuth.forEach((item) => {
@@ -218,8 +207,8 @@ class OnboardTable extends Component {
     return check;
   };
 
-  getColorClassName = (type = 'A') => {
-    const tempType = type.toLowerCase().replace(/ +/g, '');
+  const getColorClassName = (typeProp = 'A') => {
+    const tempType = typeProp.toLowerCase().replace(/ +/g, '');
     if (tempType === 'draft' || tempType === 'needchanges') {
       return styles.blueTag;
     }
@@ -232,203 +221,47 @@ class OnboardTable extends Component {
     return styles.yellowTag;
   };
 
-  dataHover = (data) => {
+  const dataHover = (data) => {
     return {
       ...data,
       locationInfo: data?.location,
     };
   };
 
-  generateColumns = (columnArr = ['id'], type = TABLE_TYPE.ALL) => {
-    const {
-      ID,
-      NAME,
-      POSITION,
-      LOCATION,
-      DATE_JOIN,
-      ACTION,
-      ASSIGN_TO,
-      ASSIGNEE_MANAGER,
-      PROCESS_STATUS: PROCESS_STATUS_1,
-    } = COLUMN_NAME;
-
-    const { list = [] } = this.props;
-
-    const columns = [
-      {
-        // title: 'Rookie Id',
-        title: formatMessage({ id: 'component.onboardingOverview.candidateId' }),
-        dataIndex: 'candidateId',
-        key: 'candidateId',
-        width: getColumnWidth('candidateId', type, list.length),
-        render: (candidateId = '', row) => this.renderCandidateId(candidateId, row),
-        columnName: ID,
-        fixed: 'left',
+  // discard offer
+  const discardOffer = async (row = {}) => {
+    await dispatch({
+      type: 'onboarding/handleExpiryTicket',
+      payload: {
+        id: row.ticketID,
+        tenantId: getCurrentTenant(),
+        type: 2, // discard
+        isAll: type === 'ALL',
+        processStatus: row.processStatus,
+        page: pageSelected,
+        limit: size,
       },
-      {
-        // title: 'Rookie Name',
-        title: formatMessage({ id: 'component.onboardingOverview.candidateName' }),
-        dataIndex: 'candidateId',
-        key: 'candidateID2',
-        render: (candidateId) => this.renderName(candidateId),
-        columnName: NAME,
-        width: getColumnWidth('candidateName', type, list.length),
-        align: 'left',
-      },
-      {
-        // title: 'Position',
-        title: formatMessage({ id: 'component.onboardingOverview.position' }),
-        dataIndex: 'position',
-        key: 'position',
-        render: (position) => <span className={styles.position}>{position || '-'}</span>,
-        columnName: POSITION,
-        width: getColumnWidth('position', type, list.length),
-        align: 'left',
-      },
-      {
-        // title: 'Date of Joining',
-        title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
-        dataIndex: 'dateJoin',
-        key: 'dateJoin',
-        render: (dateJoin) => <span className={styles.dateJoin}>{dateJoin || '-'}</span>,
-        columnName: DATE_JOIN,
-        width: getColumnWidth('dateJoin', type, list.length),
-        align: 'left',
-      },
-      {
-        // title: 'Location',
-        title: formatMessage({ id: 'component.onboardingOverview.location' }),
-        dataIndex: 'location',
-        key: 'location',
-        render: (location) => <span className={styles.location}>{location || '-'}</span>,
-        columnName: LOCATION,
-        width: getColumnWidth('location', type, list.length),
-        align: 'left',
-      },
-      {
-        title: 'Assigned to',
-        dataIndex: 'assignTo',
-        key: 'assignTo',
-        render: (assignTo) => (
-          <UserProfilePopover data={this.dataHover(assignTo)} placement="bottomRight">
-            <span
-              className={styles.renderAssignee}
-              onClick={() => this.viewProfile(assignTo?.generalInfo?.userId)}
-            >
-              {assignTo?.generalInfo?.legalName || '-'}
-            </span>
-          </UserProfilePopover>
-        ),
-        columnName: ASSIGN_TO,
-        width: getColumnWidth('assignTo', type, list.length),
-        align: 'left',
-      },
-      {
-        title: 'HR Manager',
-        dataIndex: 'assigneeManager',
-        key: 'assigneeManager',
-        render: (assigneeManager) => (
-          <UserProfilePopover data={this.dataHover(assigneeManager)} placement="bottomRight">
-            <span
-              className={styles.renderAssignee}
-              onClick={() => this.viewProfile(assigneeManager?.generalInfo?.userId)}
-            >
-              {assigneeManager?.generalInfo?.legalName || '-'}
-            </span>
-          </UserProfilePopover>
-        ),
-        columnName: ASSIGNEE_MANAGER,
-        width: getColumnWidth('assigneeManager', type, list.length),
-        align: 'left',
-      },
-      {
-        title: 'Status',
-        dataIndex: 'processStatus',
-        key: 'processStatus',
-        render: (processStatus) => (
-          <span
-            className={`${this.getColorClassName(processStatus)}
-              ${styles.processStatus}
-            `}
-          >
-            {processStatus}
-          </span>
-        ),
-        columnName: PROCESS_STATUS_1,
-        width: getColumnWidth('processStatus', type, list.length),
-        align: 'left',
-        fixed: 'right',
-      },
-      {
-        dataIndex: 'actions',
-        key: 'actions',
-        width: getColumnWidth('actions', type, list.length),
-        fixed: 'right',
-        align: 'center',
-        render: (_, row) => {
-          const { currentUser: { employee: { _id: empId = '' } = {} } = {} } = this.props;
-          const {
-            processStatusId = '',
-            candidateId = '',
-            assignTo = {},
-            assigneeManager = {},
-            offerExpiryDate = '',
-            candidate = '',
-            currentStep = 0,
-            dateJoin = '',
-          } = row;
-
-          const actionText = getActionText(type, processStatusId);
-
-          const id = candidateId.replace('#', '') || '';
-
-          const checkPermission =
-            this.checkPermission('hr-manager') ||
-            assignTo._id === empId ||
-            assigneeManager._id === empId;
-
-          const payload = {
-            id,
-            assignToId: assignTo?._id,
-            assignToName: assignTo?.generalInfo?.legalName,
-            type,
-            actionText,
-            processStatusId,
-            offerExpiryDate,
-            currentStep,
-            dateJoin,
-          };
-          if (checkPermission)
-            return (
-              <Dropdown
-                className={styles.menuIcon}
-                overlay={this.actionMenu(payload, candidate, id)}
-                placement="bottomRight"
-              >
-                <img src={MenuIcon} alt="menu" />
-              </Dropdown>
-            );
-          return '';
-        },
-        columnName: ACTION,
-      },
-    ];
-
-    // Filter only columns that are needed
-    const newColumns = columns.filter((column) => columnArr.includes(column.columnName));
-
-    return newColumns;
+    });
   };
 
-  handleSendPreJoining = (ticketId, candidate, processStatus) => {
-    const { dispatch, documentChecklist, type } = this.props;
+  const handleExpiryTicket = (typeProp, row = {}) => {
+    if (typeProp === 'renew') {
+      setRenewModalVisible(true);
+      setHandlingRecord(row);
+    }
+    if (typeProp === 'discard') {
+      discardOffer(row);
+    }
+  };
+
+  const handleSendPreJoining = (ticketID, candidate, processStatus) => {
     dispatch({
       type: 'newCandidateForm/sendCheckListEffect',
       payload: {
         processStatus: NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION,
         currentStep: 8,
         documentChecklist,
-        rookieId: ticketId,
+        rookieId: ticketID,
         candidate,
       },
     }).then((data) => {
@@ -453,53 +286,81 @@ class OnboardTable extends Component {
     });
   };
 
-  actionMenu = (payload = {}, candidate, candidateId) => {
-    const {
-      id = '',
-      assignToId: currentEmpId = '',
-      assignToName: currentEmpName = '',
-      type = '',
-      actionText = '',
-      processStatusId = '',
-      offerExpiryDate = '',
-      currentStep = 0,
-      dateJoin = '',
-    } = payload;
+  const handleReassignModal = (row) => {
+    setReassignModalVisible(true);
+    setHandlingRecord(row);
+  };
+
+  const handleRenewModal = (value) => {
+    setRenewModalVisible(value);
+  };
+
+  // JoiningFormalitiesModal
+  const handleOpenJoiningFormalitiesModal = (value, row) => {
+    setOpenModalName(value);
+    setHandlingRecord(row);
+  };
+
+  const cancelJoiningFormalities = () => {
+    setOpenModalName('');
+    setHandlingRecord({});
+  };
+
+  // userName modal
+  const cancelCandidateUserName = () => {
+    setOpenModalName('initiate');
+  };
+
+  const onSubmitUserName = () => {
+    setOpenModalName('detail');
+  };
+
+  // detail info candidate modal
+  const onMaybeLater = () => {
+    dispatch({
+      type: 'onboarding/save',
+      payload: { reloadTableData: true },
+    });
+    setOpenModalName('');
+  };
+
+  const actionMenu = (row = {}) => {
+    const { processStatus = '', ticketID = '', expiryDate = '', _id = '', currentStep = 0 } = row;
+
+    const actionText = getActionText(type, processStatus);
 
     const { DRAFT, OFFER_RELEASED, OFFER_ACCEPTED, JOINED, OFFER_WITHDRAWN } = NEW_PROCESS_STATUS; // new status
 
-    const isRemovable = processStatusId === DRAFT;
-    const isHRManager = this.checkPermission('hr-manager');
+    const isRemovable = processStatus === DRAFT;
+
     const find = ONBOARDING_FORM_STEP_LINK.find((v) => v.id === currentStep) || {
       link: ONBOARDING_FORM_LINK.BASIC_INFORMATION,
     };
 
-    const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
+    const isExpired = compare(moment(), moment(expiryDate)) === 1;
+    const isHRManager = checkPermissionFunc('hr-manager');
+
     let menuItem = '';
 
-    switch (processStatusId) {
+    switch (processStatus) {
       case OFFER_RELEASED:
         menuItem = isExpired ? (
           <>
             <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`}>
+              <Link to={`/onboarding/list/view/${_id}`}>
                 <span>{actionText}</span>
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <span onClick={() => this.handleExpiryTicket(id, 'renew', processStatusId, type)}>
-                Renew
-              </span>
+              <span onClick={() => handleExpiryTicket('renew', row)}>Renew</span>
             </Menu.Item>
             <Menu.Item>
-              <span onClick={() => this.handleExpiryTicket(id, 'discard', processStatusId, type)}>
-                Discard
-              </span>
+              <span onClick={() => handleExpiryTicket('discard', row)}>Discard</span>
             </Menu.Item>
           </>
         ) : (
           <Menu.Item>
-            <Link to={`/onboarding/list/view/${id}`}>
+            <Link to={`/onboarding/list/view/${_id}`}>
               <span>{actionText}</span>
             </Link>
           </Menu.Item>
@@ -513,15 +374,14 @@ class OnboardTable extends Component {
             <Menu.Item>
               <Link
                 className={styles.actionText}
-                onClick={() => this.handleSendPreJoining(id, candidate, processStatusId)}
+                onClick={() => handleSendPreJoining(ticketID, _id, processStatus)}
+                to="#"
               >
-                <img className={styles.actionIcon} src={JoiningIcon} alt="joiningIcon" />
                 <span>Send Pre-Joining Documents</span>
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
-                <img className={styles.actionIcon} src={EyeIcon} alt="eyesIcon" />
+              <Link className={styles.actionText} to={`/onboarding/list/view/${_id}/${find.link}`}>
                 <span>{actionText}</span>
               </Link>
             </Menu.Item>
@@ -533,16 +393,11 @@ class OnboardTable extends Component {
         menuItem = (
           <>
             <Menu.Item>
-              <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
-                <img className={styles.actionIcon} src={EyeIcon} alt="eyesIcon" />
+              <Link className={styles.actionText} to={`/onboarding/list/view/${_id}/${find.link}`}>
                 <span>{actionText}</span>
               </Link>
             </Menu.Item>
-            <Menu.Item
-              onClick={() =>
-                this.handleOpenJoiningFormalitiesModal('initiate', dateJoin, candidate, candidateId)}
-            >
-              <img className={styles.actionIcon} src={LaunchIcon} alt="launchIcon" />
+            <Menu.Item onClick={() => handleOpenJoiningFormalitiesModal('initiate', row)}>
               <span>Initiate joining formalities</span>
             </Menu.Item>
           </>
@@ -551,7 +406,7 @@ class OnboardTable extends Component {
       default:
         menuItem = (
           <Menu.Item>
-            <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
+            <Link className={styles.actionText} to={`/onboarding/list/view/${_id}/${find.link}`}>
               <span>{actionText}</span>
             </Link>
           </Menu.Item>
@@ -563,22 +418,11 @@ class OnboardTable extends Component {
       <Menu className={styles.menu}>
         {menuItem}
         {isHRManager &&
-          processStatusId !== OFFER_ACCEPTED &&
-          processStatusId !== JOINED &&
-          processStatusId !== OFFER_WITHDRAWN && (
+          processStatus !== OFFER_ACCEPTED &&
+          processStatus !== JOINED &&
+          processStatus !== OFFER_WITHDRAWN && (
             <Menu.Item>
-              <div
-                onClick={() =>
-                  this.handleReassignModal(
-                    true,
-                    currentEmpId,
-                    currentEmpName,
-                    id,
-                    processStatusId,
-                    type,
-                  )}
-                className={styles.actionText}
-              >
+              <div onClick={() => handleReassignModal(row)} className={styles.actionText}>
                 Re-assign
               </div>
             </Menu.Item>
@@ -587,21 +431,16 @@ class OnboardTable extends Component {
           <Menu.Item disabled={!isRemovable}>
             <div
               className={styles.actionText}
-              onClick={isRemovable ? () => this.handleActionDelete(id, processStatusId) : () => {}}
+              onClick={isRemovable ? () => handleActionDelete(_id, processStatus) : () => {}}
             >
               Delete
             </div>
           </Menu.Item>
         )}
-        {!isRemovable && processStatusId !== JOINED && processStatusId !== OFFER_WITHDRAWN && (
+        {!isRemovable && processStatus !== JOINED && processStatus !== OFFER_WITHDRAWN && (
           <Menu.Item>
-            {/* <img className={styles.actionIcon} src={DeleteIcon} alt="deleteIcon" /> */}
             <span
-              onClick={
-                !isRemovable
-                  ? () => this.handleActionWithDraw(candidate, processStatusId)
-                  : () => {}
-              }
+              onClick={!isRemovable ? () => handleActionWithDraw(row) : () => {}}
               className={styles.actionText}
             >
               Withdraw
@@ -612,252 +451,247 @@ class OnboardTable extends Component {
     );
   };
 
-  // JoiningFormalitiesModal
-  handleOpenJoiningFormalitiesModal = (value, dateJoin = '', selectedId = '', rookieId = '') => {
-    this.setState({
-      openModalName: value,
-      dateJoinCandidate: dateJoin,
-      selectedCandidateId: selectedId,
-      selectRookieId: rookieId,
-    });
-  };
-
-  cancelJoiningFormalities = () => {
-    this.setState({
-      openModalName: '',
-      dateJoinCandidate: '',
-      selectedCandidateId: '',
-      selectRookieId: '',
-    });
-  };
-
-  onConvertEmployee = () => {
-    this.setState({
-      openModalName: 'username',
-    });
-  };
-
-  // userName modal
-  cancelCandidateUserName = () => {
-    this.setState({
-      openModalName: 'initiate',
-    });
-  };
-
-  onSubmitUserName = () => {
-    this.setState({
-      openModalName: 'detail',
-    });
-  };
-
-  // detail infor candidate modal
-  onMaybeLater = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'onboard/save',
-      payload: { reloadTableData: true },
-    });
-    this.setState({
-      openModalName: '',
-    });
-  };
-
-  // end
-
-  handleReassignModal = (value, currentEmpId, currentEmpName, id, processStatusId, type) => {
-    this.setState({
-      reassignModalVisible: value,
-      currentEmpId,
-      currentEmpName,
-      reassignTicketId: id,
-      reassignStatus: processStatusId,
-      reassignType: type,
-    });
-  };
-
-  handleExpiryTicket = (id, type, processStatusId, tableType) => {
-    if (type === 'renew') {
-      this.setState({
-        renewModalVisible: true,
-        selectedExpiryTicketId: id,
-        expiryStatus: processStatusId,
-        expiryType: tableType,
-      });
-    }
-    if (type === 'discard') {
-      this.discardOffer(id, tableType, processStatusId);
-    }
-  };
-
-  // discard offer
-  discardOffer = async (id, tableType, processStatusId) => {
-    const { dispatch } = this.props;
-    const { pageSelected, size } = this.props;
-
-    await dispatch({
-      type: 'onboarding/handleExpiryTicket',
-      payload: {
-        id,
-        tenantId: getCurrentTenant(),
-        type: 2, // discard
-        isAll: tableType === 'ALL',
-        processStatus: processStatusId,
-        page: pageSelected,
-        limit: size,
-      },
-    });
-  };
-
-  handleRenewModal = (value) => {
-    this.setState({
-      renewModalVisible: value,
-    });
-  };
-
-  viewProfile = (_id) => {
-    history.push(`/directory/employee-profile/${_id}`);
-  };
-
-  render() {
-    const { list = [], pageSelected, size, getPageAndSize, total: totalData } = this.props;
-
+  const generateColumns = () => {
     const {
-      reassignModalVisible = false,
-      currentEmpId = '',
-      reassignTicketId = '',
-      reassignStatus = '',
-      reassignType = '',
-      selectedExpiryTicketId,
-      renewModalVisible,
-      dateJoinCandidate,
-      selectedCandidateId,
-      selectRookieId,
-      expiryStatus,
-      expiryType,
-    } = this.state;
+      ID,
+      NAME,
+      POSITION,
+      LOCATION,
+      DATE_JOIN,
+      ACTION,
+      ASSIGN_TO,
+      ASSIGNEE_MANAGER,
+      PROCESS_STATUS: PROCESS_STATUS_1,
+    } = ONBOARDING_COLUMN_NAME;
 
-    const rowSelection = {
-      getCheckboxProps: (record) => ({
-        disabled: record.name === 'Disabled User',
-        // Column configuration not to be checked
-        name: record.name,
-      }),
-    };
-
-    const pagination = {
-      position: ['bottomLeft'],
-      total: totalData,
-      showTotal: (total, range) => (
-        <span>
-          {' '}
-          {formatMessage({ id: 'component.directory.pagination.showing' })}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-        </span>
-      ),
-      defaultPageSize: size,
-      showSizeChanger: true,
-      pageSizeOptions: ['10', '25', '50', '100'],
-      pageSize: size,
-      current: pageSelected,
-      onChange: (page, pageSize) => {
-        getPageAndSize(page, pageSize);
+    const columns = [
+      {
+        // title: 'Rookie Id',
+        title: formatMessage({ id: 'component.onboardingOverview.candidateId' }),
+        dataIndex: 'ticketID',
+        key: 'ticketID',
+        width: getColumnWidth('candidateId', type, list.length),
+        render: (ticketID = '', row) => renderCandidateId(ticketID, row),
+        columnName: ID,
+        fixed: 'left',
       },
-    };
+      {
+        // title: 'Rookie Name',
+        title: formatMessage({ id: 'component.onboardingOverview.candidateName' }),
+        dataIndex: 'candidateId',
+        key: 'candidateID2',
+        render: (_, row) => renderName(row),
+        columnName: NAME,
+        width: getColumnWidth('candidateName', type, list.length),
+        align: 'left',
+      },
+      {
+        // title: 'Position',
+        title: formatMessage({ id: 'component.onboardingOverview.position' }),
+        dataIndex: 'title',
+        key: 'title',
+        render: (title) => <span className={styles.position}>{title?.name || '-'}</span>,
+        columnName: POSITION,
+        width: getColumnWidth('position', type, list.length),
+        align: 'left',
+      },
+      {
+        // title: 'Date of Joining',
+        title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
+        dataIndex: 'dateOfJoining',
+        key: 'dateOfJoining',
+        render: (dateOfJoining) => (
+          <span className={styles.dateJoin}>{formatDate(dateOfJoining) || '-'}</span>
+        ),
+        columnName: DATE_JOIN,
+        width: getColumnWidth('dateJoin', type, list.length),
+        align: 'left',
+      },
+      {
+        // title: 'Location',
+        title: formatMessage({ id: 'component.onboardingOverview.location' }),
+        dataIndex: 'location',
+        key: 'location',
+        render: (_, row) => {
+          const { workLocation, clientLocation, workFromHome } = row;
+          const location = workLocation
+            ? workLocation.name
+            : clientLocation || (workFromHome && 'Work From Home');
 
-    const {
-      columnArr,
-      type,
-      inTab,
-      hasCheckbox,
-      loading,
-      loading2,
-      loading3,
-      loadingFetch,
-      loadingSearch,
-      loadingWithdrawOffer = false,
-    } = this.props;
-    const { openModalName, currentEmpName, withdrawOfferModalVisible } = this.state;
+          return <span className={styles.location}>{location || '-'}</span>;
+        },
+        columnName: LOCATION,
+        width: getColumnWidth('location', type, list.length),
+        align: 'left',
+      },
+      {
+        title: 'Assigned to',
+        dataIndex: 'assignTo',
+        key: 'assignTo',
+        render: (assignTo) => (
+          <UserProfilePopover data={dataHover(assignTo)} placement="bottomRight">
+            <span
+              className={styles.renderAssignee}
+              onClick={() => viewProfile(assignTo?.generalInfo?.userId)}
+            >
+              {assignTo?.generalInfo?.legalName || '-'}
+            </span>
+          </UserProfilePopover>
+        ),
+        columnName: ASSIGN_TO,
+        width: getColumnWidth('assignTo', type, list.length),
+        align: 'left',
+      },
+      {
+        title: 'HR Manager',
+        dataIndex: 'assigneeManager',
+        key: 'assigneeManager',
+        render: (assigneeManager) => (
+          <UserProfilePopover data={dataHover(assigneeManager)} placement="bottomRight">
+            <span
+              className={styles.renderAssignee}
+              onClick={() => viewProfile(assigneeManager?.generalInfo?.userId)}
+            >
+              {assigneeManager?.generalInfo?.legalName || '-'}
+            </span>
+          </UserProfilePopover>
+        ),
+        columnName: ASSIGNEE_MANAGER,
+        width: getColumnWidth('assigneeManager', type, list.length),
+        align: 'left',
+      },
+      {
+        title: 'Status',
+        dataIndex: 'processStatus',
+        key: 'processStatus',
+        render: (processStatus = '') => {
+          const statusName = NEW_PROCESS_STATUS_TABLE_NAME[processStatus];
+          return (
+            <span
+              className={`${getColorClassName(statusName)}
+              ${styles.processStatus}
+            `}
+            >
+              {statusName}
+            </span>
+          );
+        },
+        columnName: PROCESS_STATUS_1,
+        width: getColumnWidth('processStatus', type, list.length),
+        align: 'left',
+        fixed: 'right',
+      },
+      {
+        dataIndex: 'actions',
+        key: 'actions',
+        width: getColumnWidth('actions', type, list.length),
+        fixed: 'right',
+        align: 'center',
+        render: (_, row) => {
+          const { assignTo = {}, assigneeManager = {} } = row;
 
-    return (
-      <>
-        <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
-          <Table
-            size="middle"
-            rowSelection={
-              hasCheckbox && {
-                type: 'checkbox',
-                ...rowSelection,
-              }
-            }
-            locale={{
-              emptyText: (
-                <Empty
-                  description={formatMessage(
-                    { id: 'component.onboardingOverview.noData' },
-                    { format: 0 },
-                  )}
-                />
-              ),
-            }}
-            columns={this.generateColumns(columnArr, type)}
-            dataSource={list}
-            loading={loading || loadingFetch || loadingSearch || loading2 || loading3}
-            pagination={pagination}
-            scroll={list.length > 0 ? { x: '90vw', y: 'max-content' } : {}}
-          />
-        </div>
-        <ReassignModal
-          visible={reassignModalVisible}
-          currentEmpId={currentEmpId}
-          currentEmpName={currentEmpName}
-          reassignTicketId={reassignTicketId}
-          handleReassignModal={this.handleReassignModal}
-          type={reassignType}
-          processStatus={reassignStatus}
-          page={pageSelected}
-          limit={size}
-        />
-        <RenewModal
-          visible={renewModalVisible}
-          ticketId={selectedExpiryTicketId}
-          handleRenewModal={this.handleRenewModal}
-          processStatus={expiryStatus}
-          type={expiryType}
-          page={pageSelected}
-          limit={size}
-        />
-        <JoiningFormalitiesModal
-          visible={openModalName === 'initiate'}
-          onOk={this.onSubmitUserName}
-          candidate={{
-            dateOfJoining: dateJoinCandidate,
-            candidateId: selectedCandidateId,
-            rookieId: selectRookieId,
+          const checkPermission =
+            assignTo?._id === empId ||
+            assigneeManager?._id === empId ||
+            checkPermissionFunc('hr-manager');
+
+          if (!checkPermission) return '';
+          return (
+            <Dropdown className={styles.menuIcon} overlay={actionMenu(row)} placement="bottomRight">
+              <img src={MenuIcon} alt="menu" />
+            </Dropdown>
+          );
+        },
+        columnName: ACTION,
+      },
+    ];
+
+    // Filter only columns that needed
+    const newColumns = columns.filter((column) => columnArr.includes(column.columnName));
+
+    return newColumns;
+  };
+
+  return (
+    <>
+      <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
+        <CommonTable
+          locale={{
+            emptyText: (
+              <Empty
+                description={formatMessage(
+                  { id: 'component.onboardingOverview.noData' },
+                  { format: 0 },
+                )}
+              />
+            ),
           }}
-          onClose={this.cancelJoiningFormalities}
+          columns={generateColumns()}
+          list={list}
+          loading={loading || loadingFetch || loadingSearch || loadingAll}
+          scrollable
+          width="90vw"
+          height={500}
         />
-        <ConfirmModal
-          visible={openModalName === 'detail'}
-          onCancel={this.cancelCandidateUserName}
-          onOk={this.onMaybeLater}
-          onClose={this.cancelJoiningFormalities}
-        />
-        {withdrawOfferModalVisible && (
-          <WithdrawOfferModal
-            title="Offer Withdraw"
-            visible={withdrawOfferModalVisible}
-            onClose={() => this.setState({ withdrawOfferModalVisible: false })}
-            loading={loadingWithdrawOffer}
-            onFinish={this.handleWithdrawOffer}
+      </div>
+
+      <CommonModal
+        visible={reassignModalVisible}
+        title="Re-assign Employee"
+        onClose={() => {
+          setReassignModalVisible(false);
+          setHandlingRecord(null);
+        }}
+        width={500}
+        firstText="Add"
+        loading={loadingReassign}
+        content={
+          <ReassignModalContent
+            item={handlingRecord}
+            onClose={() => {
+              setReassignModalVisible(false);
+              setHandlingRecord(null);
+            }}
+            page={pageSelected}
+            limit={size}
+            visible={reassignModalVisible}
+            type={type}
           />
-        )}
-      </>
-    );
-  }
-}
+        }
+      />
+
+      <RenewModal
+        visible={renewModalVisible}
+        handleRenewModal={handleRenewModal}
+        item={handlingRecord}
+        type={type}
+        page={pageSelected}
+        limit={size}
+      />
+      <JoiningFormalitiesModal
+        visible={openModalName === 'initiate'}
+        onOk={onSubmitUserName}
+        candidate={handlingRecord}
+        onClose={cancelJoiningFormalities}
+      />
+      <ConfirmModal
+        visible={openModalName === 'detail'}
+        onCancel={cancelCandidateUserName}
+        onOk={onMaybeLater}
+        onClose={cancelJoiningFormalities}
+      />
+      {openModalName === 'withdraw' && (
+        <WithdrawOfferModal
+          title="Offer Withdraw"
+          visible={openModalName === 'withdraw'}
+          onClose={() => setOpenModalName('')}
+          loading={loadingWithdrawOffer}
+          onFinish={handleWithdrawOffer}
+        />
+      )}
+    </>
+  );
+};
 
 export default connect(
   ({
@@ -869,9 +703,9 @@ export default connect(
     newCandidateForm: { tempData: { documentChecklist = [] } = {} } = {},
   }) => ({
     isAddNewMember: newCandidateForm.isAddNewMember,
-    loading: loading.effects['onboard/fetchOnboardList'],
-    loading2: loading.effects['onboarding/fetchOnboardList'],
-    loading3: loading.effects['onboarding/fetchOnboardListAll'],
+    loading: loading.effects['onboarding/fetchOnboardList'],
+    loadingAll: loading.effects['onboarding/fetchOnboardListAll'],
+    loadingReassign: loading.effects['onboarding/reassignTicket'],
     loadingWithdrawOffer: loading.effects['onboarding/withdrawTicket'],
     currentUser,
     documentChecklist,

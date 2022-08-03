@@ -1,89 +1,87 @@
-.root{
-  :global{
-    .ant-input[disabled]{
+.root {
+  :global {
+    .ant-input[disabled] {
       color: #000;
       background-color: #fff;
     }
   }
-    width: 100%;
-  height: fit-content;
-  background: #ffffff;
-  border: 1px solid #d6dce0;
   box-sizing: border-box;
-  border-radius: 5px;
+  width: 100%;
+  height: fit-content;
   margin-top: 24px;
+  background: #ffffff;
+  border: 1px solid @border-color-base;
+  border-radius: 5px;
   .blockContent {
     border-bottom: 1px solid #f0f0f0;
-    &__header{
-    border-bottom: 1px solid #f0f0f0;
-    padding: 24px;
+    &__header {
+      padding: 24px;
+      border-bottom: 1px solid #f0f0f0;
       .title {
         margin: 0;
         font-weight: 700;
         font-size: 16px;
         line-height: 19px;
       }
-      p{
+      p {
         margin-top: 1em;
         margin-bottom: 1em;
       }
-      }
-      &__bottom{
-        height: fit-content;
-        color: #161c29;
-        font-size: 13px;
-        line-height: 15px;
-        padding: 24px;
-          &__row{
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            &__textLabel{
-                font-size: 13px;
-            }
-            input{
-              padding: 10px;
-            }
-            .column{
-              position: relative;
-              .action{
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                cursor: pointer;
-                color: #FFA100;
-                font-weight: bold;
-              }
-              .afterAction {
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                cursor: pointer;
-                // span {
-                  .save{
-                    margin-right: 15px;
-                    color: green;
-                    font-weight: bold;
-                    cursor: pointer;
-                  }
-                  .cancel{
-                    color: red;
-                    font-weight: bold;
-                    cursor: pointer;
-                    
-                  }
-                // }
-              }
-              
-            }
+    }
+    &__bottom {
+      height: fit-content;
+      padding: 24px;
+      color: #161c29;
+      font-size: 13px;
+      line-height: 15px;
+      &__row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        &__textLabel {
+          font-size: 13px;
+        }
+        input {
+          padding: 10px;
+        }
+        .column {
+          position: relative;
+          .action {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: #ffa100;
+            font-weight: bold;
+            cursor: pointer;
           }
+          .afterAction {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            // span {
+            .save {
+              margin-right: 15px;
+              color: green;
+              font-weight: bold;
+              cursor: pointer;
+            }
+            .cancel {
+              color: red;
+              font-weight: bold;
+              cursor: pointer;
+            }
+            // }
+          }
+        }
       }
+    }
   }
-  .hide{
+  .hide {
     visibility: hidden;
   }
-  .unhide{
+  .unhide {
     visibility: visible;
   }
 }

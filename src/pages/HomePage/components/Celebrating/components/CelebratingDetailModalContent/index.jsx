@@ -13,7 +13,9 @@ import CommonModal from '@/components/CommonModal';
 import PostLikedModalContent from '@/components/PostLikedModalContent';
 import UserComment from '@/components/UserComment';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { CELEBRATE_TYPE, LIKE_ACTION, POST_OR_CMT, roundNumber, TAB_IDS } from '@/utils/homePage';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
+import { CELEBRATE_TYPE, LIKE_ACTION, POST_OR_CMT, TAB_IDS } from '@/constants/homePage';
+import { roundNumber } from '@/utils/homePage';
 import { getCompanyName, singularify } from '@/utils/utils';
 import styles from './index.less';
 
@@ -210,7 +212,7 @@ const CelebratingDetailModalContent = (props) => {
     if (eventType === CELEBRATE_TYPE.ANNIVERSARY) {
       const yearCount = moment
         .utc()
-        .diff(moment.utc(createdBy?.joinDate).format('YYYY-MM-DD'), 'years', true);
+        .diff(moment.utc(createdBy?.joinDate).format(DATE_FORMAT_YMD), 'years', true);
       return (
         <span>
           Congratulations {employeeName} on completing {roundNumber(yearCount)}{' '}

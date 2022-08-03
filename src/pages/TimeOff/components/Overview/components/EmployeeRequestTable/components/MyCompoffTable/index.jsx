@@ -1,12 +1,13 @@
-import React, { PureComponent } from 'react';
-import { Table, Avatar, Tooltip, Spin } from 'antd';
-import { history, connect } from 'umi';
-import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
+import { Avatar, Spin, Table, Tooltip } from 'antd';
+import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect, history } from 'umi';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 
-import styles from './index.less';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { roundNumber } from '@/utils/timeOff';
+import styles from './index.less';
 
 @connect(({ dispatch, timeOff, loading, user }) => ({
   loadingFetchMyCompoffRequests: loading.effects['timeOff/fetchMyCompoffRequests'],
@@ -48,7 +49,7 @@ class MyCompoffTable extends PureComponent {
       title: `Requested on `,
       dataIndex: 'onDate',
       align: 'left',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('MM/DD/YYYY')}</span>,
+      render: (onDate) => <span>{moment(onDate).locale('en').format(DATE_FORMAT_MDY)}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
         compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
@@ -151,8 +152,8 @@ class MyCompoffTable extends PureComponent {
       if (extraTime.length !== 0) {
         const fromDate = extraTime[0].date;
         const toDate = extraTime[extraTime.length - 1].date;
-        duration = `${moment(fromDate).format('MM/DD/YYYY')} - ${moment(toDate).format(
-          'MM/DD/YYYY',
+        duration = `${moment(fromDate).format(DATE_FORMAT_MDY)} - ${moment(toDate).format(
+          DATE_FORMAT_MDY,
         )}`;
       }
 

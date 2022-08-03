@@ -1,16 +1,16 @@
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/destructuring-assignment */
-import React, { useEffect, useState } from 'react';
-import { Table, Popover } from 'antd';
-import { formatMessage, connect, history, Link } from 'umi';
-import moment from 'moment';
+import { Card } from 'antd';
 import { isEmpty } from 'lodash';
-import filterIcon from '@/assets/offboarding-filter.svg';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { connect, history, Link } from 'umi';
 import iconPDF from '@/assets/pdf-2.svg';
+import CommonTable from '@/components/CommonTable';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { isOwner } from '@/utils/authority';
-import { getTimezoneViaCity } from '@/utils/times';
-import PopoverInfo from '@/pages/Directory/components/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
 import styles from '../../index.less';
 
 const DocumentResult = React.memo((props) => {
@@ -19,47 +19,19 @@ const DocumentResult = React.memo((props) => {
     loadTableData,
     dispatch,
     isSearch,
-    documnetAdvance,
+    documentAdvance,
     documentList,
     isSearchAdvance,
-    totalDocuments,
     loadTableData2,
     tabName,
-    companyLocationList,
   } = props;
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [timezoneList, setTimezoneList] = useState([]);
-  const [currentTime] = useState(moment());
-
-  const fetchTimezone = () => {
-    const timezoneListTemp = [];
-    companyLocationList.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id = '',
-      } = location;
-      timezoneListTemp.push({
-        locationId: _id,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    setTimezoneList(timezoneListTemp);
-  };
-  useEffect(() => {
-    fetchTimezone();
-  }, []);
 
   useEffect(() => {
     if (isSearch && tabName === 'documents') {
       if (isSearchAdvance) {
         dispatch({
           type: 'searchAdvance/searchDocument',
-          payload: { ...documnetAdvance },
+          payload: { ...documentAdvance },
         });
       } else if (keySearch) {
         dispatch({
@@ -73,13 +45,12 @@ const DocumentResult = React.memo((props) => {
     }
   }, [isSearch]);
 
-  const dateFormat = 'DD.MM.YY';
-  const [visable, setVisiable] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [urlDocument, setUrlDocument] = useState('');
   const [displayDocumentName, setDisplayDocumentName] = useState('');
   const viewDocument = (document) => {
     const { name: attachmentName = '', url: attachmentUrl = '' } = document;
-    setVisiable(true);
+    setVisible(true);
     setUrlDocument(attachmentUrl);
     setDisplayDocumentName(attachmentName);
   };
@@ -134,27 +105,16 @@ const DocumentResult = React.memo((props) => {
             location,
             employeeType,
           };
+
           return (
-            <Popover
-              content={
-                <PopoverInfo
-                  companyLocationList={companyLocationList}
-                  propsState={{ currentTime, timezoneList }}
-                  data={manager}
-                />
+            <Link
+              className={styles.managerName}
+              to={() =>
+                handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
               }
-              placement="bottomRight"
-              trigger="hover"
             >
-              <Link
-                className={styles.managerName}
-                to={() =>
-                  handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
-                }
-              >
-                {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
-              </Link>
-            </Popover>
+              {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
+            </Link>
           );
         }
         return '-';
@@ -164,13 +124,13 @@ const DocumentResult = React.memo((props) => {
       title: 'Created On',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (createdAt) => <div>{moment(createdAt).format(dateFormat)}</div>,
+      render: (createdAt) => <div>{moment(createdAt).format(DATE_FORMAT_MDY)}</div>,
     },
     {
       title: 'Last Modified On',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
-      render: (updatedAt) => <div>{moment(updatedAt).format(dateFormat)}</div>,
+      render: (updatedAt) => <div>{moment(updatedAt).format(DATE_FORMAT_MDY)}</div>,
     },
     {
       title: 'Last Modified By',
@@ -197,26 +157,14 @@ const DocumentResult = React.memo((props) => {
             employeeType,
           };
           return (
-            <Popover
-              content={
-                <PopoverInfo
-                  companyLocationList={companyLocationList}
-                  propsState={{ currentTime, timezoneList }}
-                  data={manager}
-                />
+            <Link
+              className={styles.managerName}
+              to={() =>
+                handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
               }
-              placement="bottomRight"
-              trigger="hover"
             >
-              <Link
-                className={styles.managerName}
-                to={() =>
-                  handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
-                }
-              >
-                {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
-              </Link>
-            </Popover>
+              {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
+            </Link>
           );
         }
         return '-';
@@ -224,49 +172,30 @@ const DocumentResult = React.memo((props) => {
     },
   ];
 
-  const pagination = {
-    position: ['bottomLeft'],
-    total: totalDocuments,
-    showTotal: (total, range) => (
-      <span>
-        {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-        <b>
-          {range[0]} - {range[1]}
-        </b>{' '}
-        {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-      </span>
-    ),
-    defaultPageSize: 10,
-    showSizeChanger: true,
-    pageSizeOptions: ['10', '25', '50', '100'],
-    pageSize: limit,
-    current: page,
-    onChange: (nextPage, pageSize) => {
-      setPage(nextPage);
-      setLimit(pageSize);
-    },
+  const renderOption = () => {
+    return (
+      <div className={styles.options}>
+        <CustomOrangeButton onClick={clickFilter}>Filter</CustomOrangeButton>
+      </div>
+    );
   };
   return (
-    <div className={styles.resultContent}>
-      <div className={styles.filter}>
-        <img src={filterIcon} alt="filter icon" onClick={clickFilter} />
-      </div>
-      <div className={styles.result}>
-        <Table
+    <Card className={styles.ResultContent} extra={renderOption()}>
+      <div className={styles.tableContainer}>
+        <CommonTable
           columns={columns}
-          dataSource={documentList}
-          size="middle"
-          pagination={pagination}
+          list={documentList}
           loading={loadTableData || loadTableData2}
+          scrollable
         />
       </div>
       <ViewDocumentModal
-        visible={visable}
+        visible={visible}
         fileName={displayDocumentName}
         url={urlDocument}
-        onClose={() => setVisiable(false)}
+        onClose={() => setVisible(false)}
       />
-    </div>
+    </Card>
   );
 });
 export default connect(
@@ -277,7 +206,7 @@ export default connect(
       keySearch = '',
       isSearch,
       isSearchAdvance,
-      documnetAdvance,
+      documentAdvance,
       globalSearchAdvance: { employeeDoc: documentList, totalDocuments },
     },
   }) => ({
@@ -285,7 +214,7 @@ export default connect(
     loadTableData2: loading.effects['searchAdvance/searchGlobalByType'],
     documentList,
     totalDocuments,
-    documnetAdvance,
+    documentAdvance,
     isSearch,
     isSearchAdvance,
     keySearch,

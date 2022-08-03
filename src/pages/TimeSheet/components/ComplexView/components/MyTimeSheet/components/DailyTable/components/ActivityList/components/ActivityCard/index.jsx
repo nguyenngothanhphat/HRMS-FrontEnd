@@ -1,27 +1,27 @@
 import { Col, Row, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
-import { connect } from 'umi';
 import Draggable from 'react-draggable';
+import { connect } from 'umi';
 import DeleteIcon from '@/assets/timeSheet/del.svg';
-import EditIcon from '@/assets/timeSheet/edit.svg';
 import DuplicateIcon from '@/assets/timeSheet/duplicate.svg';
+import EditIcon from '@/assets/timeSheet/edit.svg';
 import ModalImage from '@/assets/timeSheet/modalImage2.png';
 import CommonModal from '@/components/CommonModal';
-import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/EditTaskModal';
-import { getCurrentCompany } from '@/utils/authority';
 import {
   activityColor,
-  convertMsToTime,
   dateFormatAPI,
   EMP_MT_SECONDARY_COL_SPAN,
   EMP_ROW_HEIGHT,
   hourFormat,
   hourFormatAPI,
-} from '@/utils/timeSheet';
-import styles from './index.less';
-import DuplicateTaskModal from '../../../../../../../DuplicateTaskModal';
+} from '@/constants/timeSheet';
+import EditTaskModal from '@/pages/TimeSheet/components/ComplexView/components/EditTaskModal';
+import { getCurrentCompany } from '@/utils/authority';
+import { convertMsToTime } from '@/utils/timeSheet';
 import { diffTime } from '@/utils/utils';
+import DuplicateTaskModal from '../../../../../../../DuplicateTaskModal';
+import styles from './index.less';
 
 const { PROJECT, TASK, DESCRIPTION, TIME, TOTAL_HOURS, ACTIONS } = EMP_MT_SECONDARY_COL_SPAN;
 const ORIGINAL_TEXT_LONG = 48;

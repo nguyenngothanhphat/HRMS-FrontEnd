@@ -1,0 +1,44 @@
+.EmployeeView {
+  .root {
+    padding: 20px;
+
+    .spinLoading {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+    }
+  }
+  .viewActivityLogs {
+    margin-right: 20px;
+  }
+  :global {
+    .ant-btn-secondary {
+      height: 16px;
+      height: 40px;
+      color: @primary-color;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.13px;
+      background-color: transparent;
+      border: none;
+      border-radius: 35px;
+    }
+
+    .ant-tabs-tab-btn {
+      color: #707177;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 19px;
+      letter-spacing: 0.02em;
+      opacity: 1;
+    }
+
+    .ant-tabs-tab-active .ant-tabs-tab-btn {
+      color: @primary-color;
+    }
+
+    .ant-tabs-tab-active .ant-tabs-tab-disabled {
+      font-weight: 500;
+    }
+  }
+}

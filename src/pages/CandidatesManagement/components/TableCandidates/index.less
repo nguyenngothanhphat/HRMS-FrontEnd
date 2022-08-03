@@ -1,0 +1,149 @@
+.mixin-border-bottom-row {
+  border-bottom: solid 1px @border-color-base;
+}
+
+.TableCandidates {
+  padding: 24px 24px 0 24px;
+
+  .fullName {
+    overflow: hidden;
+    color: @primary-color;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+  .rookieId {
+    padding-left: 16px !important;
+  }
+
+  :global {
+    .ant-table-body {
+      overflow-x: auto !important;
+    }
+
+    .ant-table.ant-table-small:after {
+      position: absolute;
+      bottom: -1px;
+      left: -24px;
+      width: 150%;
+      height: 1px;
+      background-color: @border-color-base;
+      content: '';
+    }
+
+    .ant-table-body {
+      height: 400px;
+      color: #000000;
+    }
+
+    // .ant-table-tbody {
+    //   height: 100%;
+    //   overflow: scroll;
+    // }
+
+    .ant-table-tbody > tr:last-child > td {
+      // border-bottom: none;
+    }
+
+    .ant-table-tbody > tr > td {
+      .mixin-border-bottom-row();
+      color: #464646;
+    }
+
+    // Sort active icon
+
+    .ant-table-column-sorter-down {
+      margin-left: -1em;
+    }
+
+    .ant-table-column-sorter-inner {
+      display: inline;
+    }
+
+    .ant-table-column-sorter-up.active,
+    .ant-table-column-sorter-down.active {
+      color: #ffffff;
+      opacity: 1;
+    }
+
+    .ant-table-column-sorter-up,
+    .ant-table-column-sorter-down {
+      margin-top: 0.5em;
+      font-size: 14px;
+      opacity: 0;
+    }
+
+    .ant-table-thead th.ant-table-column-has-sorters:hover {
+      background: #6495ff;
+      opacity: 1;
+    }
+
+    //Box-shadow first column
+    td.ant-table-cell.ant-table-cell-fix-left.ant-table-cell-fix-left-last {
+      box-shadow: 4px 0 5px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .ant-table-column-sorters-with-tooltip {
+      box-shadow: 4px 0 5px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .ant-table.ant-table-small .ant-table-thead .ant-table-column-sorters {
+      padding: 8px 17px;
+    }
+
+    .ant-table-cell-scrollbar {
+      box-shadow: none;
+    }
+
+    // checkbox
+    .ant-checkbox-inner {
+      width: 13px;
+      height: 13px;
+      border-radius: 30px;
+    }
+    .ant-checkbox-checked::after {
+      border-radius: 30px;
+    }
+
+    .ant-table .table {
+      width: 100vw;
+      height: 20px !important;
+    }
+  }
+
+  .userPasswordReset {
+    .userPassword {
+      margin-right: 15px;
+      color: black !important;
+      font-weight: 700;
+    }
+    div {
+      display: inline-block;
+      padding: 0 10px;
+      background-color: #c4c4c4;
+      border-radius: 1px;
+      cursor: pointer;
+      span {
+        color: #565656;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .userAction {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    .editUserBtn {
+      color: black;
+      cursor: pointer;
+    }
+    .deleteUserBtn {
+      color: red;
+      cursor: pointer;
+    }
+  }
+}

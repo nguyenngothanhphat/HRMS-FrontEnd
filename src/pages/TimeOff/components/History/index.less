@@ -1,10 +1,10 @@
 .History {
-  border: 1px solid #ebeff2;
+  border: 1px solid @border-color-base;
   border-radius: 5px;
   :global {
     .ant-card-head-title {
       color: #161c29;
-      font-weight: 700;
+      font-weight: 500;
       font-size: 16px;
     }
     .ant-steps-item-description {
@@ -38,11 +38,11 @@
     :global {
       .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after {
         background-color: transparent;
-        border-left: 2px dashed #2c6df9;
+        border-left: 2px dashed @primary-color;
       }
       .ant-steps-item-tail::after {
         background-color: transparent;
-        border-left: 2px dashed #2c6df9;
+        border-left: 2px dashed @primary-color;
       }
     }
     .avatar {
@@ -50,18 +50,18 @@
       height: 40px;
       margin-right: 8px;
       padding: 1px;
-      border: 1px solid #2c6df9;
+      border: 1px solid @primary-color;
       border-radius: 50%;
     }
     .nameStep {
       color: #161c29;
-      font-weight: 600;
+      font-weight: 500;
       font-size: 14px;
     }
     .containerStatus {
       font-size: 13px;
       .status {
-        color: #2c6df9;
+        color: @primary-color;
         font-weight: 500;
         font-size: 14px;
       }
@@ -74,11 +74,11 @@
     :global {
       .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after {
         background-color: transparent;
-        border-left: 2px solid #2c6df9;
+        border-left: 2px solid @primary-color;
       }
       .ant-steps-item-tail::after {
         background-color: transparent;
-        border-left: 2px solid #2c6df9;
+        border-left: 2px solid @primary-color;
       }
     }
     .avatar {
@@ -86,18 +86,18 @@
       height: 40px;
       margin-right: 8px;
       padding: 1px;
-      border: 1px solid #2c6df9;
+      border: 1px solid @primary-color;
       border-radius: 50%;
     }
     .nameStep {
       color: #161c29;
-      font-weight: 600;
+      font-weight: 500;
       font-size: 14px;
     }
     .containerStatus {
       font-size: 13px;
       .status {
-        color: #2c6df9;
+        color: @primary-color;
         font-weight: 500;
         font-size: 14px;
       }
@@ -112,12 +112,12 @@
   .header {
     padding: 30px 0;
     color: #161c29;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 20px;
   }
   .note {
     padding-bottom: 24px;
-    border-bottom: 1px solid #ebeff2;
+    border-bottom: 1px solid @border-color-base;
     .titleNote {
       display: flex;
       gap: 8px;

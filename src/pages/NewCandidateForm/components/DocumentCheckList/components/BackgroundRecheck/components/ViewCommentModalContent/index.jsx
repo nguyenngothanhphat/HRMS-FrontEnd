@@ -1,6 +1,6 @@
 import { Form, Input } from 'antd';
 import React from 'react';
-import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
+import { DOCUMENT_TYPES } from '@/constants/candidatePortal';
 import styles from './index.less';
 
 const ViewCommentModalContent = (props) => {

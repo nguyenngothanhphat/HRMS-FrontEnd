@@ -2,21 +2,16 @@ import { Table, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import {
-  checkHolidayInWeek,
-  convertMsToTime,
-  dateFormatAPI,
-  holidayFormatDate,
-  projectColor,
-} from '@/utils/timeSheet';
-import EmptyComponent from '@/components/Empty';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import IconWarning from '@/assets/timeSheet/ic_warning.svg';
+import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+import EmptyComponent from '@/components/Empty';
+import UserProfilePopover from '@/components/UserProfilePopover';
+import { dateFormatAPI, projectColor } from '@/constants/timeSheet';
+import { getCurrentCompany } from '@/utils/authority';
+import { checkHolidayInWeek, convertMsToTime, holidayFormatDate } from '@/utils/timeSheet';
 import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
-import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
-import IconWarning from '@/assets/timeSheet/ic_warning.svg';
-import UserProfilePopover from '@/components/UserProfilePopover';
-import { getCurrentCompany } from '@/utils/authority';
 
 const MonthlyTable = (props) => {
   const {

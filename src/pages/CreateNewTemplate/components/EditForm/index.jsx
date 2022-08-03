@@ -1,7 +1,7 @@
-import REACT_APP_TINYMCE_KEY from '@/utils/editor';
 import { Editor } from '@tinymce/tinymce-react';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
+import REACT_APP_TINYMCE_KEY from '@/constants/editor';
 import styles from './index.less';
 
 @connect(({ employeeSetting, loading }) => ({

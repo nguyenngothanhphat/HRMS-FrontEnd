@@ -1,30 +1,30 @@
-import React, { Component } from 'react';
 import {
-  message,
   Button,
-  Spin,
-  Modal,
-  Form,
-  Select,
   DatePicker,
+  Form,
   Input,
-  Upload,
+  message,
+  Modal,
+  Select,
+  Spin,
   Tooltip,
+  Upload,
 } from 'antd';
-import { connect } from 'umi';
-import moment from 'moment';
 import { isEmpty } from 'lodash';
+import moment from 'moment';
+import React, { Component } from 'react';
+import { connect } from 'umi';
 
-import CalendarIcon from '@/assets/calendar-v2.svg';
 import AttachmentIcon from '@/assets/attachment.svg';
-import TrashIcon from '@/assets/trash.svg';
+import CalendarIcon from '@/assets/calendar-v2.svg';
 import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';
+import TrashIcon from '@/assets/trash.svg';
 
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const { Option } = Select;
-const formatDate = 'YYYY-MM-DD';
 const { Dragger } = Upload;
 
 @connect(({ onboardingSettings: { listBenefitDefault = [] } = {}, loading }) => ({
@@ -113,8 +113,8 @@ class ModalAddBenefit extends Component {
   };
 
   destroyOnClose = () => {
-    const { handleCandelModal = () => {} } = this.props;
-    handleCandelModal();
+    const { handleCancelModal = () => {} } = this.props;
+    handleCancelModal();
   };
 
   handlePreview = (nameFile, idFile) => {
@@ -178,18 +178,18 @@ class ModalAddBenefit extends Component {
 
   onValuesChange = (value) => {
     if ('deductionDate' in value) {
-      const deductionDate = moment(value.deductionDate).format(formatDate);
+      const deductionDate = moment(value.deductionDate).format(DATE_FORMAT_YMD);
       this.setState({ deductionDate });
     }
 
     if ('validTill' in value) {
-      const validTill = moment(value.validTill).format(formatDate);
+      const validTill = moment(value.validTill).format(DATE_FORMAT_YMD);
       this.setState({ validTill });
     }
   };
 
   onFinish = (value) => {
-    const { countryId, dispatch, handleCandelModal = () => {} } = this.props;
+    const { countryId, dispatch, handleCancelModal = () => {} } = this.props;
     const { validTill, deductionDate, uploadedFileList = [] } = this.state;
 
     const documents = uploadedFileList?.map((item) => {
@@ -217,7 +217,7 @@ class ModalAddBenefit extends Component {
         const { statusCode } = response;
         if (statusCode === 200) {
           this.setState({ uploadedFileList: [], fileNameList: [] });
-          handleCandelModal();
+          handleCancelModal();
         }
       });
     } else {

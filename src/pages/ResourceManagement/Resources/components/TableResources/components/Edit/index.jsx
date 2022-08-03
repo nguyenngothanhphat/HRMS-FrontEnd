@@ -1,10 +1,11 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable compat/compat */
 /* eslint-disable prefer-promise-reject-errors */
-import React, { Component } from 'react';
-import { Row, Col, Button, Modal, Form, Input, Select, DatePicker, notification } from 'antd';
+import { Button, Col, DatePicker, Form, Input, Modal, notification, Row, Select } from 'antd';
 import moment from 'moment';
+import React, { Component } from 'react';
 import { connect } from 'umi';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import styles from './index.less';
 
@@ -60,9 +61,9 @@ class Edit extends Component {
         project,
         status,
         utilization,
-        startDate: startDate && moment(startDate).format('YYYY-MM-DD'),
-        endDate: endDate && moment(endDate).format('YYYY-MM-DD'),
-        revisedEndDate: (revisedEndDate && moment(revisedEndDate).format('YYYY-MM-DD')) || null,
+        startDate: startDate && moment(startDate).format(DATE_FORMAT_YMD),
+        endDate: endDate && moment(endDate).format(DATE_FORMAT_YMD),
+        revisedEndDate: (revisedEndDate && moment(revisedEndDate).format(DATE_FORMAT_YMD)) || null,
       },
     }).then(() => {
       refreshData();
@@ -188,7 +189,7 @@ class Edit extends Component {
                   >
                     <DatePicker
                       placeholder="Start Date"
-                      format="MM/DD/YYYY"
+                      format={DATE_FORMAT_MDY}
                       suffixIcon={<img src={datePickerIcon} alt="" />}
                     />
                   </Form.Item>
@@ -199,14 +200,14 @@ class Edit extends Component {
                   >
                     <DatePicker
                       placeholder="Enter End Date"
-                      format="MM/DD/YYYY"
+                      format={DATE_FORMAT_MDY}
                       suffixIcon={<img src={datePickerIcon} alt="" />}
                     />
                   </Form.Item>
                   <Form.Item label="Revised End Date" name="revisedEndDate">
                     <DatePicker
                       placeholder="Enter Date"
-                      format="MM/DD/YYYY"
+                      format={DATE_FORMAT_MDY}
                       suffixIcon={<img src={datePickerIcon} alt="" />}
                     />
                   </Form.Item>

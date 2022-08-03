@@ -31,6 +31,9 @@ const CustomEmployeeTag = ({
           src={avatar || DefaultAvatar}
           alt="avatar"
           style={highlight ? { borderColor: getColor(), backgroundColor: getColor() } : {}}
+          onError={(e) => {
+            e.target.src = DefaultAvatar;
+          }}
         />
         {highlight && (
           <div

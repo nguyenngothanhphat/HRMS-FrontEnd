@@ -26,6 +26,7 @@ const CommonModal = ({
   onSecondButtonClick = () => {},
   maskClosable = false,
   disabledButton = false,
+  formName = 'myForm',
 }) => {
   const renderModalHeader = () => {
     return (
@@ -75,7 +76,7 @@ const CommonModal = ({
               )}
               <CustomPrimaryButton
                 disabled={disabledButton}
-                form="myForm"
+                form={formName}
                 key="submit"
                 htmlType="submit"
                 loading={loading}

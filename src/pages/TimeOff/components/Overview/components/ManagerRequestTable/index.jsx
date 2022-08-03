@@ -2,9 +2,9 @@ import { Spin, Tabs } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import { addZeroToNumber, splitArrayItem } from '@/utils/utils';
+import { getTypeListByTab } from '@/utils/timeOff';
 import RequestScopeTabs from './components/RequestScopeTabs';
 import styles from './index.less';
-import { getTypeListByTab } from '@/utils/timeOff';
 
 const { TabPane } = Tabs;
 

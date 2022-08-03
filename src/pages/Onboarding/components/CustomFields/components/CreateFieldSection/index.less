@@ -2,63 +2,63 @@
   .Title {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: flex-start;
     align-items: center;
+    justify-content: flex-start;
     height: 65px;
-    background-color: #ffffff;
-    padding-left: 16px;
     margin-bottom: 50px;
+    padding-left: 16px;
+    background-color: #ffffff;
     h2 {
-      margin-left: 16px;
       margin-top: 10px;
-      font-size: 18px;
-      font-weight: 700;
+      margin-left: 16px;
       color: #161c29;
+      font-weight: 700;
+      font-size: 18px;
     }
   }
   .boxFieldSection1 {
-    width: 868px;
-    height: 149px;
-    margin-left: 50px;
-    margin-bottom: 33px;
     display: flex;
     flex-flow: column;
     justify-content: center;
-    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
+    width: 868px;
+    height: 149px;
+    margin-bottom: 33px;
+    margin-left: 50px;
+    padding: 40px;
     background-color: #ffffff;
     border-radius: 5px;
-    padding: 40px;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
     &__Title {
       margin-bottom: 10px;
-      font-size: 16px;
-      font-weight: 700;
       color: #161c29;
+      font-weight: 700;
+      font-size: 16px;
     }
     :global {
       .ant-input {
-        border-radius: 5px;
         border: solid 1px #d6dce4;
+        border-radius: 5px;
         box-shadow: none;
       }
     }
   }
   .boxFieldSection2 {
     width: 868px;
-    padding-bottom: 32px;
     margin-bottom: 30px;
     margin-left: 50px;
+    padding-bottom: 32px;
+    background-color: #ffffff;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
-    background-color: #ffffff;
     &__Title {
-      padding: 32px 40px;
-      border-bottom: solid 1px #d6dce0;
       margin-bottom: 40px;
+      padding: 32px 40px;
+      border-bottom: solid 1px @border-color-base;
       p {
         margin-bottom: 0;
-        font-size: 16px;
-        font-weight: 700;
         color: #161c29;
+        font-weight: 700;
+        font-size: 16px;
       }
     }
     &__Content {
@@ -67,19 +67,19 @@
     &__Content1 {
       margin-bottom: 32px;
       &__Text {
-        font-size: 13px;
         color: #707177;
+        font-size: 13px;
       }
       &__Text1 {
-        font-size: 14px;
         color: #161c29;
+        font-size: 14px;
       }
       &__Radio {
         margin-top: 17px;
         :global {
           .ant-radio-wrapper {
-            font-size: 14px;
             color: #707177;
+            font-size: 14px;
           }
         }
       }
@@ -88,35 +88,35 @@
   .buttonFooter {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: flex-end;
     align-items: center;
+    justify-content: flex-end;
     width: 868px;
     margin-left: 50px;
   }
   .buttonFooterSave {
     height: 35px;
-    font-size: 14px;
     color: #ffffff;
-    border-radius: 25px;
-    border: solid 1px #ffa100;
+    font-size: 14px;
     background-color: #ffa100;
+    border: solid 1px #ffa100;
+    border-radius: 25px;
     cursor: pointer;
   }
   .buttonFooterCancel {
     height: 35px;
     margin-left: 24px;
-    font-size: 14px;
-    font-weight: 500;
     color: #ffa100;
-    border-radius: 25px;
+    font-weight: 500;
+    font-size: 14px;
     border: solid 1px #ffa100;
+    border-radius: 25px;
     cursor: pointer;
   }
   .switchField {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: space-around;
     align-items: center;
+    justify-content: space-around;
     width: 188px;
     height: 34px;
     margin-top: 34px;
@@ -133,33 +133,33 @@
   .itemField1Active {
     display: flex;
     flex-flow: row;
-    justify-content: center;
     align-items: center;
-    height: 36px;
+    justify-content: center;
     width: 100%;
+    height: 36px;
     margin: 0 -15px;
-    font-size: 13px;
+    color: #ffffff;
     font-weight: 500;
+    font-size: 13px;
     background-image: url('../backgroundImage/Rectangle-item.svg');
     background-repeat: no-repeat;
     background-size: 99px 40px;
-    color: #ffffff;
-    transition: 0.35s ease-in-out 0s;
     cursor: pointer;
+    transition: 0.35s ease-in-out 0s;
   }
   .itemField1 {
     display: flex;
     flex-flow: row;
-    justify-content: center;
     align-items: center;
-    height: 36px;
+    justify-content: center;
     width: 100%;
+    height: 36px;
     margin: 0 -15px;
-    font-size: 13px;
-    font-weight: 500;
     color: #161c29;
-    transition: 0.35s ease-in-out 0s;
+    font-weight: 500;
+    font-size: 13px;
     cursor: pointer;
+    transition: 0.35s ease-in-out 0s;
   }
   .selectFilter {
     margin: 17px 0;
@@ -177,14 +177,14 @@
     :global {
       .ant-select-selector {
         height: 42px;
-        border-radius: 5px;
-        border: solid 1px #d6dce0;
         background-color: #ffffff;
+        border: solid 1px @border-color-base;
+        border-radius: 5px;
       }
       .ant-select-selection-item {
         padding-top: 5px;
-        font-size: 14px;
         color: #161c29;
+        font-size: 14px;
       }
       .ant-select-selection-placeholder {
         padding-top: 5px;
@@ -192,11 +192,11 @@
     }
   }
   .line {
+    border: solid 1px @border-color-base;
     opacity: 0.5;
-    border: solid 1px #d6dce0;
   }
   .line:last-child {
-    opacity: none;
     border: none;
+    opacity: none;
   }
 }

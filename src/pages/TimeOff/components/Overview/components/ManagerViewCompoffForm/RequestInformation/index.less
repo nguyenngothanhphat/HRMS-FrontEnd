@@ -1,22 +1,22 @@
 .RequestInformation {
   .requesteeDetails {
-    border: 1px solid #ebeff2;
-    border-radius: 5px;
     width: 100%;
-    background-color: white;
     margin-bottom: 20px;
+    background-color: white;
+    border: 1px solid @border-color-base;
+    border-radius: 5px;
 
     .formTitle {
-      padding: 16px 24px;
-      border-bottom: 1px solid #e2e4e8;
-      .title {
-        font-size: 16px;
-        color: #161c29;
-        font-weight: 700;
-      }
-      color: #161c29;
       display: flex;
       align-items: center;
+      padding: 16px 24px;
+      color: #161c29;
+      border-bottom: 1px solid #e2e4e8;
+      .title {
+        color: #161c29;
+        font-weight: 700;
+        font-size: 16px;
+      }
     }
 
     .formContent {
@@ -29,58 +29,58 @@
           margin-right: 10px;
         }
         .employeeLink {
-          color: #2c6df9;
+          color: @primary-color;
           cursor: pointer;
         }
         .projectHealth {
           // max-width: 250px;
           :global {
             .ant-progress-text {
-              font-weight: 700;
               color: #161c29;
+              font-weight: 700;
             }
           }
           .bar {
-            width: 150px;
             display: inline-block;
+            width: 150px;
           }
           .viewReport {
-            margin-left: 20px;
             display: inline-block;
+            margin-left: 20px;
+            color: @primary-color;
             font-weight: 700;
-            color: #2c6df9;
+            font-size: 12px;
             text-decoration: underline;
             cursor: pointer;
-            font-size: 12px;
             &:hover {
               transition: 0.3s;
             }
           }
         }
         .extraTimeSpent {
-          font-size: 13px;
           color: #707177;
+          font-size: 13px;
           .header {
-            background-color: #e1e9fa;
-            border-radius: 5px;
+            margin-bottom: 5px;
+            padding: 7px 10px;
             color: #00000083;
             font-weight: 700;
-            padding: 7px 10px;
             font-size: 13px;
-            margin-bottom: 5px;
+            background-color: #e1e9fa;
+            border-radius: 5px;
           }
           .content {
             width: 100%;
             .rowContainer {
+              margin-bottom: 5px;
+              padding: 5px 10px;
               border: 1px solid #d6dce4;
               border-radius: 5px;
-              padding: 5px 10px;
-              margin-bottom: 5px;
               :global {
                 .ant-col {
                   display: flex;
-                  justify-content: flex-start;
                   align-items: center;
+                  justify-content: flex-start;
                 }
                 .ant-form-item {
                   margin-bottom: 0 !important;
@@ -92,8 +92,8 @@
                   background-color: #c4c4c433;
                 }
                 .ant-input {
-                  background-color: rgba(0, 0, 0, 0) !important;
                   min-height: 20px !important;
+                  background-color: rgba(0, 0, 0, 0) !important;
                 }
                 .ant-input-suffix {
                   color: #707177;
@@ -117,21 +117,21 @@
   .rejectComment {
     margin-bottom: 20px;
     .title {
+      display: block;
+      margin-bottom: 10px;
+      margin-left: 20px;
+      color: #161c29;
       font-weight: 700;
       font-size: 16px;
-      color: #161c29;
-      margin-bottom: 10px;
-      display: block;
-      margin-left: 20px;
     }
     :global {
       .ant-input {
+        padding: 10px 20px;
         font-size: 13px;
         border-radius: 5px;
-        padding: 10px 20px;
       }
       .ant-input:focus {
-        border-color: #2c6df9;
+        border-color: @primary-color;
         outline: 0;
         box-shadow: unset;
       }
@@ -139,47 +139,23 @@
   }
 
   .footer {
-    padding: 16px 24px;
-    border: 1px solid #ebeff2;
     display: flex;
-    border-radius: 5px;
     justify-content: space-between;
+    padding: 16px 24px;
     background: #fff;
+    border: 1px solid @border-color-base;
+    border-radius: 5px;
     .note {
-      font-size: 12px;
-      padding-right: 100px;
       display: flex;
       align-items: center;
+      padding-right: 100px;
       color: #161c2980; // hex with alpha 0.5
+      font-size: 12px;
     }
     .formButtons {
       display: flex;
+      align-items: center;
       justify-content: flex-end;
-      :global {
-        .ant-btn-link {
-          background-color: white !important;
-          span {
-            font-weight: bold !important;
-            color: #fd4546 !important;
-          }
-        }
-        .ant-btn {
-          background-color: #ffa100;
-          border: none;
-          border-radius: 30px;
-          height: 40px;
-          // width: 120px;
-          padding: 0 30px;
-          margin-left: 20px;
-          span {
-            color: white;
-            font-weight: 700;
-          }
-          &:hover {
-            background-color: #ffa100cc; // hex with alpha 0.8
-          }
-        }
-      }
     }
   }
 }

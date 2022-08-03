@@ -9,11 +9,7 @@ import ApprovalIcon from '@/assets/dashboard/approvalIcon.svg';
 import CommonModal from '@/components/CommonModal';
 import AppCard from './components/AppCard';
 import ShowAllAppModalContent from './components/ShowAllAppModalContent';
-// import ExpensoIcon from '@/assets/dashboard/expenso.svg';
-// import ReportIcon from '@/assets/dashboard/reports.svg';
-// import TicketIcon from '@/assets/ticketManagement-assign.svg';
 import styles from './index.less';
-import ROLES from '@/utils/roles';
 
 const MyApps = (props) => {
   const {
@@ -54,7 +50,7 @@ const MyApps = (props) => {
         <div className={styles.content}>
           <Row gutter={[24, 24]}>
             {listMyApps.map((app) => (
-              <AppCard app={app} />
+              <AppCard app={app} key={app.name} />
             ))}
           </Row>
         </div>

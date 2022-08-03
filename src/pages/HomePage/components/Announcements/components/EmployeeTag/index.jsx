@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React from 'react';
 import { connect, history } from 'umi';
-import { dateFormat } from '@/utils/homePage';
+import { DATE_FORMAT } from '@/constants/homePage';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import styles from './index.less';
 
@@ -25,7 +25,7 @@ const EmployeeTag = (props) => {
   };
 
   const Timestamp = () => {
-    const date = moment(createDate).locale('en').format(dateFormat);
+    const date = moment(createDate).locale('en').format(DATE_FORMAT);
     return <span className={styles.timestamp}>{date}</span>;
   };
 
