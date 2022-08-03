@@ -1,4 +1,5 @@
 import { Avatar, Calendar, Spin, Tooltip } from 'antd';
+import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
@@ -19,19 +20,21 @@ const TeamLeaveCalendar = (props) => {
   const endOfMonth = moment(selectedMonth).endOf('month').format(DATE_FORMAT_MDY);
   useEffect(() => {
     // refresh data by month here
-    dispatch({
-      type: 'dashboard/fetchTeamLeaveRequests',
-      payload: {
-        status: [TIMEOFF_STATUS.ACCEPTED],
-        fromDate: startOfMonth,
-        toDate: endOfMonth,
-        type: listTimeOffType,
-        page: 1,
-        limit: 100,
-        search: '',
-      },
-    });
-  }, [selectedMonth]);
+    if (!isEmpty(listTimeOffType)) {
+      dispatch({
+        type: 'dashboard/fetchTeamLeaveRequests',
+        payload: {
+          status: [TIMEOFF_STATUS.ACCEPTED],
+          fromDate: startOfMonth,
+          toDate: endOfMonth,
+          type: listTimeOffType,
+          page: 1,
+          limit: 100,
+          search: '',
+        },
+      });
+    }
+  }, [selectedMonth, listTimeOffType]);
 
   // FUNCTIONS
   const checkDate = (date, listDate) => {
