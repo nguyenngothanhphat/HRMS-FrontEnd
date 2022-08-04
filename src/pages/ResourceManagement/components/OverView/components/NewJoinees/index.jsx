@@ -1,15 +1,16 @@
+import { CloseOutlined } from '@ant-design/icons';
 import { Card, Tag } from 'antd';
+import { debounce } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { debounce } from 'lodash';
-import { CloseOutlined } from '@ant-design/icons';
-import CommonTable from '../CommonTable';
-import FilterButton from '@/components/FilterButton';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import FilterPopover from '@/components/FilterPopover';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
+import CommonTable from '../CommonTable';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
-import CustomSearchBox from '@/components/CustomSearchBox';
 
 const NewJoinees = (props) => {
   const {
@@ -70,7 +71,7 @@ const NewJoinees = (props) => {
         dataIndex: 'joiningDate',
         key: 'joiningDate',
         render: (joiningDate) => (
-          <span>{moment(joiningDate).locale('en').format('MM/DD/YYYY')}</span>
+          <span>{moment(joiningDate).locale('en').format(DATE_FORMAT_MDY)}</span>
         ),
       },
     ];
@@ -114,7 +115,7 @@ const NewJoinees = (props) => {
               <FilterContent setApplied={setApplied} setForm={setForm} onFilter={fetchData} />
             }
           >
-            <FilterButton />
+            <CustomOrangeButton showDot={applied > 0} />
           </FilterPopover>
         </div>
         <CustomSearchBox placeholder="Search by Candidate ID, Name..." onSearch={onChangeSearch} />

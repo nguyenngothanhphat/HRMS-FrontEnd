@@ -3,7 +3,7 @@ export default {
   'component.employeeOnboarding.settings': 'Settings',
   'component.employeeOnboarding.newJoinees': 'New Joiness',
   'component.employeeOnboarding.customFields': 'Custom fields',
-  'component.employeeOnboarding.generate': 'Export as excel',
+  'component.employeeOnboarding.generate': 'Export',
   'component.employeeOnboarding.viewActivityLogs': 'View Activity log ',
   'component.onboardingOverview.viewActivityLogs': 'View Activity log ',
   'component.onboardingOverview.sentEligibilityForms': 'Sent Eligibility forms ',

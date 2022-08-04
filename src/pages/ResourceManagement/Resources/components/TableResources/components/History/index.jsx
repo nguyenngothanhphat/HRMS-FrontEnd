@@ -2,7 +2,9 @@ import { Modal, Table } from 'antd';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { connect } from 'umi';
-import DefaultAvatar from '@/assets/defaultAvatar.png';
+import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
+
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 @connect(({ resourceManagement: { resourceList } }) => ({ resourceList }))
@@ -67,7 +69,7 @@ class HistoryActionBTN extends Component {
         title: (
           <div>
             <div>Start Date</div>
-            <div className={styles.date}>(mm/dd/yyyy)</div>
+            <div className={styles.date}>({DATE_FORMAT_MDY.toLowerCase()})</div>
           </div>
         ),
         dataIndex: 'startDate',
@@ -78,7 +80,7 @@ class HistoryActionBTN extends Component {
         title: (
           <div>
             <div>End Date</div>
-            <div className={styles.date}>(mm/dd/yyyy)</div>
+            <div className={styles.date}>({DATE_FORMAT_MDY.toLowerCase()})</div>
           </div>
         ),
         dataIndex: 'endDate',
@@ -143,7 +145,7 @@ class HistoryActionBTN extends Component {
             <div className={styles.showInfoName}>
               Name: <span className={styles.showInfoEmp}> {`${legalName} (${userId})`}</span>
               <div className={styles.avatar}>
-                <img src={avatar || DefaultAvatar} alt="" onError={`this.src=${DefaultAvatar}`} />
+                <img src={avatar || MockAvatar} alt="" onError={`this.src=${MockAvatar}`} />
               </div>
             </div>
             <p className={styles.showInfo}>

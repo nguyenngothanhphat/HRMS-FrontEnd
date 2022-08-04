@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 import MyLeaveTable from '@/pages/TimeOff/components/Overview/components/EmployeeRequestTable/components/MyLeaveTable';
-import ROLES from '@/utils/roles';
-import { getShortType, TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/utils/timeOff';
+import ROLES from '@/constants/roles';
+import { getShortType } from '@/utils/timeOff';
+import { TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/constants/timeOff';
 import FilterBar from '../FilterBar';
 import TeamLeaveTable from '../TeamLeaveTable';
 import styles from './index.less';
@@ -202,7 +203,7 @@ const TimeOffRequestTab = (props) => {
   };
 
   useEffect(() => {
-    if (timeOffTypes.length > 0 || (currentPayloadTypes.length > 0 && isEmpty(filter))) {
+    if (currentPayloadTypes.length > 0) {
       fetchData();
     }
   }, [selectedTabNumber, page, limit, JSON.stringify(filter), JSON.stringify(currentPayloadTypes)]);

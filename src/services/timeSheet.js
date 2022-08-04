@@ -359,3 +359,10 @@ export async function sendMailInCompleteTimeSheet(payload) {
     API_KEYS.TIMESHEET_API,
   );
 }
+
+export async function getLocationsOfCountries(params) {
+  return request('/api/locationtenant/group-country', {
+    method: 'GET',
+    params,
+  });
+}

@@ -23,12 +23,12 @@ const CandidateUserName = (props) => {
     const { userName: name = '' } = value;
     if (name) {
       const isExistingUserName = await dispatch({
-        type: 'onboard/checkExistedUserName',
+        type: 'onboarding/checkExistedUserName',
         payload: { userName: name },
       });
       if (isExistingUserName === false) {
         const response = await dispatch({
-          type: 'onboard/createEmployee',
+          type: 'onboarding/createEmployee',
           payload: { userName: name, candidateId },
         });
         const { statusCode = '' } = response;
@@ -92,8 +92,10 @@ const CandidateUserName = (props) => {
   );
 };
 
-export default connect(({ loading, onboard: { joiningFormalities: { userName = '' } = {} } }) => ({
-  userName,
-  loadingCheckUserName: loading.effects['onboard/checkExistedUserName'],
-  loadingCreateEmployee: loading.effects['onboard/createEmployee'],
-}))(CandidateUserName);
+export default connect(
+  ({ loading, onboarding: { joiningFormalities: { userName = '' } = {} } }) => ({
+    userName,
+    loadingCheckUserName: loading.effects['onboarding/checkExistedUserName'],
+    loadingCreateEmployee: loading.effects['onboarding/createEmployee'],
+  }),
+)(CandidateUserName);

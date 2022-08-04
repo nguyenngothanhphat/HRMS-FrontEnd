@@ -1,0 +1,25 @@
+.CustomAddButton {
+  height: 40px;
+  color: @primary-color;
+  font-weight: 500;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding-inline: 0;
+  img {
+    margin-right: 5px;
+  }
+  &:hover {
+    background-color: transparent;
+  }
+  &:disabled,
+  &[disabled],
+  &[disabled]:hover,
+  &[disabled]:focus,
+  &[disabled]:active {
+    background-color: transparent;
+    cursor: default;
+    opacity: 0.5;
+  }
+}

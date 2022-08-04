@@ -4,7 +4,7 @@ import { connect, formatMessage } from 'umi';
 import { every, indexOf } from 'lodash';
 import { TYPE_QUESTION, SPECIFY, MODE } from '@/components/Question/utils';
 import QuestionItemView from '@/components/Question/QuestionItemView';
-import { PROCESS_STATUS } from '@/utils/onboarding';
+import { PROCESS_STATUS } from '@/constants/onboarding';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
 import s from './index.less';

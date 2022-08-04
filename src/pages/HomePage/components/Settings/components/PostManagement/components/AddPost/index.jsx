@@ -3,8 +3,12 @@ import { debounce } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { TAB_IDS } from '@/utils/homePage';
-import { beforeUpload } from '@/utils/upload';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import { TAB_IDS } from '@/constants/homePage';
+import { FILE_TYPE } from '@/constants/upload';
+import { beforeUpload, compressImage } from '@/utils/upload';
+import { getCurrentCompanyObj } from '@/utils/utils';
 import AnnouncementContent from './components/AnnouncementContent';
 import BannerContent from './components/BannerContent';
 import BirthdayContent from './components/BirthdayContent';
@@ -95,7 +99,7 @@ const AddPost = (props) => {
   useEffect(() => {
     if (editing) {
       let tempFormValues = {};
-      const { attachments = [], location: locationProps = [] } = record;
+      const { attachments = [], location: locationProps = [], postAsCompany = false } = record;
       const fileListTemp = () => {
         return attachments.map((x, i) => {
           return {
@@ -116,6 +120,7 @@ const AddPost = (props) => {
             postType: TAB_IDS.ANNOUNCEMENTS,
             descriptionA: record.description,
             uploadFilesA: { fileList: [...fileListTemp()] },
+            postAsCompany,
           };
           break;
         }
@@ -185,7 +190,7 @@ const AddPost = (props) => {
 
     const commonFunc = (name) => {
       let { fileList: fileListTemp = [] } = tempAllValues[name] || {};
-      fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
+      fileListTemp = fileListTemp.filter((x) => beforeUpload(x, [FILE_TYPE.IMAGE]));
       setFileList([...fileListTemp]);
       if (tempAllValues[name]) {
         tempAllValues[name].fileList = fileListTemp;
@@ -230,8 +235,9 @@ const AddPost = (props) => {
             if (x.url) {
               list.push({ id: x.id || x._id });
             } else {
+              const compressedFile = await compressImage(x.originFileObj);
               const formData = new FormData();
-              formData.append('uri', x.originFileObj);
+              formData.append('blob', compressedFile, x.originFileObj?.name);
               const upload = await dispatch({
                 type: 'upload/uploadFile',
                 payload: formData,
@@ -261,6 +267,7 @@ const AddPost = (props) => {
           description: values.descriptionA,
           createdBy: employee?._id,
           location: values.location,
+          postAsCompany: values.postAsCompany,
         };
         break;
       }
@@ -336,6 +343,7 @@ const AddPost = (props) => {
           postType: TAB_IDS.ANNOUNCEMENTS,
           description: values.descriptionA,
           location: values.location,
+          postAsCompany: values.postAsCompany,
         };
         break;
       }
@@ -402,7 +410,13 @@ const AddPost = (props) => {
   const renderTypeContent = () => {
     switch (mode) {
       case TAB_IDS.ANNOUNCEMENTS:
-        return <AnnouncementContent defaultFileList={fileList} />;
+        return (
+          <AnnouncementContent
+            defaultFileList={fileList}
+            company={getCurrentCompanyObj()}
+            employee={employee}
+          />
+        );
       case TAB_IDS.ANNIVERSARY:
         return <BirthdayContent defaultFileList={fileList} />;
       case TAB_IDS.IMAGES:
@@ -429,6 +443,8 @@ const AddPost = (props) => {
             postType: mode,
             responsesP: [{}, {}, {}],
             location,
+            createBy: employee?.generalInfo?.legalName,
+            postAsCompany: false,
           }}
           onFinish={editing ? onEdit : onPost}
         >
@@ -472,12 +488,11 @@ const AddPost = (props) => {
         </Form>
         <div className={styles.footer}>
           {!editing && (
-            <Button className={styles.btnReset} onClick={onReset}>
-              Reset
-            </Button>
+            <CustomSecondaryButton onClick={onReset}>
+              <span style={{ color: '#ffa100' }}>Reset</span>
+            </CustomSecondaryButton>
           )}
-          <Button
-            className={styles.btnPost}
+          <CustomPrimaryButton
             type="primary"
             form="myForm"
             key="submit"
@@ -485,7 +500,7 @@ const AddPost = (props) => {
             loading={loadingAddPost || loadingEditPost}
           >
             {editing ? 'Update' : 'Post'}
-          </Button>
+          </CustomPrimaryButton>
         </div>
       </div>
     );
@@ -507,7 +522,13 @@ const AddPost = (props) => {
     return (
       <div className={styles.previewContainer}>
         <p className={styles.title}>Preview post</p>
-        <Preview mode={mode} editing={editing} formValues={formValues} owner={owner} />
+        <Preview
+          mode={mode}
+          editing={editing}
+          formValues={formValues}
+          owner={owner}
+          company={getCurrentCompanyObj()}
+        />
       </div>
     );
   };

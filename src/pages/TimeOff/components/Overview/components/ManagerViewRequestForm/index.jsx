@@ -2,7 +2,7 @@ import { Affix, Col, Row, Spin } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
-import { TIMEOFF_COLOR, TIMEOFF_STATUS_NAME } from '@/utils/timeOff';
+import { TIMEOFF_COLOR, TIMEOFF_STATUS_NAME } from '@/constants/timeOff';
 import { PageContainer } from '@/layouts/layout/src';
 import styles from './index.less';
 import RequestInformation from './RequestInformation';

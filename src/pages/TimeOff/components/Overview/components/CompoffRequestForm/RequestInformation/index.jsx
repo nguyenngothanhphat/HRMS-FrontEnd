@@ -1,12 +1,13 @@
-import React, { PureComponent } from 'react';
-import { Select, DatePicker, Input, Button, Row, Col, Form } from 'antd';
-import { connect, history } from 'umi';
+import { Button, Col, DatePicker, Form, Input, Row, Select } from 'antd';
 import moment from 'moment';
-import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
+import React, { PureComponent } from 'react';
+import { connect, history } from 'umi';
+import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/constants/timeOff';
 import TimeOffModal from '@/components/TimeOffModal';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import ExtraTimeSpentRow from './ExtraTimeSpentRow';
 
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -121,7 +122,7 @@ class RequestInformation extends PureComponent {
       const dateLists = extraTime.map((value) => {
         const { date = '', timeSpend = 0 } = value;
         return {
-          date: moment(date).format('YYYY-MM-DD'),
+          date: moment(date).format(DATE_FORMAT_YMD),
           timeSpend,
         };
       });
@@ -334,7 +335,7 @@ class RequestInformation extends PureComponent {
     const dates = [];
     while (now.isBefore(end) || now.isSame(end)) {
       const obj = {
-        date: now.format('YYYY-MM-DD'),
+        date: now.format(DATE_FORMAT_YMD),
         timeSpend: null,
       };
       dates.push(obj);

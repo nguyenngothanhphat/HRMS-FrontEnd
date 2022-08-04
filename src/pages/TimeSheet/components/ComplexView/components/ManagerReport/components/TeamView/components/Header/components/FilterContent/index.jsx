@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
-import { Form, Select, AutoComplete, Input, Spin } from 'antd';
-import { debounce } from 'lodash';
+import { AutoComplete, Form, Input, Select, Spin } from 'antd';
+import { debounce, isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import SearchIcon from '@/assets/directory/search.svg';
@@ -10,10 +10,13 @@ const FilterContent = (props) => {
   const [form] = Form.useForm();
   const {
     dispatch,
-    timeSheet: { designationList = [], departmentList = [], employeeNameList = [] } = {},
+    timeSheet: {
+      filterManagerReport = {},
+      designationList = [],
+      departmentList = [],
+      employeeNameList = [],
+    } = {},
     loadingFetchEmployeeNameList = false,
-    setForm = () => {},
-    setApplied = () => {},
   } = props;
 
   const [employeeNameListState, setEmployeeNameListState] = useState([]);
@@ -36,7 +39,6 @@ const FilterContent = (props) => {
     dispatch({
       type: 'timeSheet/fetchDesignationListEffect',
     });
-    setForm(form);
   }, []);
 
   useEffect(() => {
@@ -69,18 +71,19 @@ const FilterContent = (props) => {
   };
 
   const onFinishDebounce = debounce((values) => {
-    const filteredObj = Object.entries(values).filter(
-      ([, value]) => value !== undefined && value.length > 0,
-    );
-    const newObj = Object.fromEntries(filteredObj);
-    setApplied(Object.keys(newObj).length);
     onFinish(values);
   }, 700);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
+
+  // clear values
+  useEffect(() => {
+    if (isEmpty(filterManagerReport)) {
+      form.resetFields();
+    }
+  }, [JSON.stringify(filterManagerReport)]);
 
   const onSearchEmployeeDebounce = debounce((type, value) => {
     let typeTemp = '';

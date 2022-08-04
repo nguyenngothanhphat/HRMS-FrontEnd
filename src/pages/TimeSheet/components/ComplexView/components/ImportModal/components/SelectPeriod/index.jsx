@@ -2,7 +2,7 @@ import { Col, DatePicker, Form, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { dateFormatImport } from '@/utils/timeSheet';
+import { dateFormatImport } from '@/constants/timeSheet';
 import styles from './index.less';
 
 const { RangePicker } = DatePicker;

@@ -1,6 +1,13 @@
+import { notification } from 'antd';
 import moment from 'moment';
 import { history } from 'umi';
-import { notification } from 'antd';
+import {
+  CANDIDATE_TASK_LINK,
+  CANDIDATE_TASK_STATUS,
+  DOCUMENT_TYPES
+} from '@/constants/candidatePortal';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import {
   addAttachmentService,
   addReference,
@@ -8,21 +15,13 @@ import {
   generateOfferLetter,
   getById,
   getCountryList,
-  getDocumentByCandidate,
-  getStateListByCountry,
+  getDocumentByCandidate, getSalaryStructureByGrade, getStateListByCountry,
   sendEmailByCandidateModel,
   updateByCandidate,
-  upsertCandidateDocument,
-  getSalaryStructureByGrade,
+  upsertCandidateDocument
 } from '@/services/candidatePortal';
-import {
-  CANDIDATE_TASK_LINK,
-  CANDIDATE_TASK_STATUS,
-  DOCUMENT_TYPES,
-} from '@/utils/candidatePortal';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
-import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { dialog } from '@/utils/utils';
 
 const pendingTaskDefault = [
   {
@@ -358,7 +357,6 @@ const candidatePortal = {
     // pending tasks
     *refreshPendingTasks(_, { put, select }) {
       try {
-        const dateFormat = 'MM/DD/YYYY';
         const tempPendingTasks = JSON.parse(JSON.stringify(pendingTaskDefault));
         const {
           // candidate = '',
@@ -436,7 +434,7 @@ const candidatePortal = {
             // case NEW_PROCESS_STATUS.OFFER_REJECTED:
             // offer letter
             tempPendingTasks[4].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
-            tempPendingTasks[4].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';
+            tempPendingTasks[4].dueDate = expiryDate ? moment(expiryDate).format(DATE_FORMAT_MDY) : '';
             break;
 
           case NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION:

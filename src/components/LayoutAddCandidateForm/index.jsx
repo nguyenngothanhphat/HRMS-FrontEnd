@@ -3,7 +3,7 @@
 import { Button, Col, Row, Spin } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/constants/onboarding';
 import BasicInformation from '../../pages/NewCandidateForm/components/BasicInformation';
 import ItemMenu from './components/ItemMenu';
 // import BottomBar from '../BottomBar';

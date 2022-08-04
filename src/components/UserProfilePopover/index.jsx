@@ -2,9 +2,10 @@ import { Col, Popover, Row, Tag } from 'antd';
 import { isEmpty } from 'lodash';
 import React, { useState } from 'react';
 import { connect, Link } from 'umi';
-import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import CloseX from '@/assets/dashboard/closeX.svg';
+import { getEmployeeUrl } from '@/utils/directory';
+import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
 import styles from './index.less';
 
 const listColors = [
@@ -64,7 +65,7 @@ const UserProfilePopover = (props) => {
   const [showPopover, setShowPopover] = useState(false);
 
   const onViewProfile = (id) => {
-    const url = `/directory/employee-profile/${id}`;
+    const url = getEmployeeUrl(id);
     window.open(url, '_blank');
   };
 
@@ -92,11 +93,19 @@ const UserProfilePopover = (props) => {
     );
   };
 
-  const getCountry = () => {
-    let result = '';
-    if (typeof country === 'string') result = country;
-    result = countryName || countryName1 || '';
-    return `, ${result}`;
+  const getLocation = () => {
+    const getCountry = () => {
+      let result = '';
+      if (typeof country === 'string') result = country;
+      result = countryName || countryName1 || '';
+      return result;
+    };
+    const arr = [];
+    if (location || locationInfo) {
+      arr.push(state || state1 || '');
+    }
+    arr.push(getCountry());
+    return arr.filter(Boolean).join(', ');
   };
 
   const formatListSkill = (skillsProps, colors) => {
@@ -125,6 +134,7 @@ const UserProfilePopover = (props) => {
     const timezone =
       getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone;
     const time = getCurrentTimeOfTimezoneOption(new Date(), timezone);
+
     const skillList =
       skills !== null && skills !== undefined ? formatListSkill(skills, listColors) || [] : [];
 
@@ -148,7 +158,7 @@ const UserProfilePopover = (props) => {
       },
       {
         label: 'Location',
-        value: location || locationInfo ? `${state || state1}${getCountry()}` : '',
+        value: getLocation(),
       },
       {
         label: 'Local Time',

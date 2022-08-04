@@ -1,25 +1,16 @@
-import {
-  Button,
-  Checkbox,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  Modal,
-  notification,
-  Row,
-  Select,
-} from 'antd';
+import { Checkbox, Col, DatePicker, Form, Input, Modal, notification, Row, Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import CustomTimePicker from '@/components/CustomTimePicker';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/constants/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
-import CustomTimePicker from '@/components/CustomTimePicker';
 
 const { Option } = Select;
-const dateFormat = 'MM/DD/YYYY';
 const countryIdUS = 'US';
 
 const TASKS = [];
@@ -190,7 +181,7 @@ const EditTaskModal = (props) => {
                 fieldKey="date"
                 labelCol={{ span: 24 }}
               >
-                <DatePicker format={dateFormat} />
+                <DatePicker format={DATE_FORMAT_MDY} />
               </Form.Item>
             </Col>
             <Col xs={24} md={12} />
@@ -343,19 +334,15 @@ const EditTaskModal = (props) => {
       maskClosable={false}
       footer={
         <>
-          <Button className={styles.btnCancel} onClick={handleCancel}>
-            Cancel
-          </Button>
-          <Button
-            className={styles.btnSubmit}
-            type="primary"
+          <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+          <CustomPrimaryButton
             form="myForm"
             key="submit"
             htmlType="submit"
             loading={loadingUpdateTask}
           >
             Update
-          </Button>
+          </CustomPrimaryButton>
         </>
       }
       title={renderModalHeader()}

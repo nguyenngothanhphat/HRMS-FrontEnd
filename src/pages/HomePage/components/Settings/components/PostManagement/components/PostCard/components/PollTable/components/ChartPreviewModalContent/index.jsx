@@ -65,16 +65,19 @@ const ChartPreviewModalContent = (props) => {
           id: 'response1',
           text: pollDetail.response1,
           percent: pollResult.find((x) => x._id === 'response1')?.percent || 0,
+          count: pollResult.find((x) => x._id === 'response1')?.count || 0,
         },
         {
           id: 'response2',
           text: pollDetail.response2,
           percent: pollResult.find((x) => x._id === 'response2')?.percent || 0,
+          count: pollResult.find((x) => x._id === 'response2')?.count || 0,
         },
         {
           id: 'response3',
           text: pollDetail.response3,
           percent: pollResult.find((x) => x._id === 'response3')?.percent || 0,
+          count: pollResult.find((x) => x._id === 'response3')?.count || 0,
         },
       ];
       setOptions(temp);

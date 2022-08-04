@@ -3,6 +3,7 @@ import Parser from 'html-react-parser';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect, Link } from 'umi';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import EditIcon from '@/assets/homePage/editIcon.svg';
 import CommonTable from '../CommonTable';
@@ -76,7 +77,7 @@ const TimeOffTable = (props) => {
         dataIndex: 'attachmentInfo',
         key: 'attachmentInfo',
         render: (attachments = []) => {
-          return attachments.map((x) => <div>{x.name}</div>);
+          return attachments.map((x) => <div key={x._id || x.id}>{x.name}</div>);
         },
       },
       {
@@ -86,6 +87,7 @@ const TimeOffTable = (props) => {
         render: (employees = {}) => {
           return employees.map((employee) => (
             <Link
+              key={employee?._id}
               style={{ fontWeight: 500 }}
               to={`/directory/employee-profile/${employee?.userId}`}
             >
@@ -99,7 +101,7 @@ const TimeOffTable = (props) => {
         dataIndex: 'createdAt',
         key: 'createdAt',
         render: (createdAt = {}) => {
-          return <span>{createdAt ? moment(createdAt).format('MM/DD/YYYY') : ''}</span>;
+          return <span>{createdAt ? moment(createdAt).format(DATE_FORMAT_MDY) : ''}</span>;
         },
       },
 

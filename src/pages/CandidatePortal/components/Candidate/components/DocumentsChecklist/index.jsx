@@ -7,7 +7,7 @@ import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import ModalUpload from '@/components/ModalUpload';
 import SignatureModal from '@/components/SignatureModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import { DOCUMENT_KEYS, DOCUMENT_TYPES } from '@/utils/candidatePortal';
+import { DOCUMENT_KEYS, DOCUMENT_TYPES } from '@/constants/candidatePortal';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NoteComponent';
 import PanelItem from './components/PanelItem';

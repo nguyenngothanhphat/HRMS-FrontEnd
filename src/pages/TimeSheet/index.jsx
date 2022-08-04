@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { TIMESHEET_DATE_FORMAT } from '@/utils/dashboard';
+import { TIMESHEET_DATE_FORMAT } from '@/constants/dashboard';
 import SimpleView from './components/SimpleView';
 import ComplexView from './components/ComplexView';
 import { goToTop } from '@/utils/utils';
@@ -19,7 +19,7 @@ const TimeSheet = (props) => {
 
   // clear state when unmounting
   useEffect(() => {
-    goToTop()
+    goToTop();
     return () => {
       dispatch({
         type: 'timeSheet/clearState',

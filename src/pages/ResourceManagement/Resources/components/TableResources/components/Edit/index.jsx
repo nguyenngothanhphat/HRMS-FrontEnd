@@ -6,6 +6,7 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import { disabledEndDate } from '@/utils/resourceManagement';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import styles from './index.less';
 
@@ -70,9 +71,9 @@ const Edit = (props) => {
         project,
         status,
         utilization,
-        startDate: startDate && moment(startDate).format('YYYY-MM-DD'),
-        endDate: endDate && moment(endDate).format('YYYY-MM-DD'),
-        revisedEndDate: (revisedEndDate && moment(revisedEndDate).format('YYYY-MM-DD')) || null,
+        startDate: startDate && moment(startDate).format(DATE_FORMAT_YMD),
+        endDate: endDate && moment(endDate).format(DATE_FORMAT_YMD),
+        revisedEndDate: (revisedEndDate && moment(revisedEndDate).format(DATE_FORMAT_YMD)) || null,
       },
     }).then((res) => {
       const { statusCode = '' } = res;
@@ -178,7 +179,7 @@ const Edit = (props) => {
                 <DatePicker
                   onChange={(val) => handleChangeStartDate(val)}
                   placeholder="Start Date"
-                  format="MM/DD/YYYY"
+                  format={DATE_FORMAT_MDY}
                   suffixIcon={<img src={datePickerIcon} alt="" />}
                 />
               </Form.Item>
@@ -191,7 +192,7 @@ const Edit = (props) => {
                   disabledDate={(current) =>
                     disabledEndDate(current, !startDateState ? startDateProp : startDateState)}
                   placeholder="Enter End Date"
-                  format="MM/DD/YYYY"
+                  format={DATE_FORMAT_MDY}
                   suffixIcon={<img src={datePickerIcon} alt="" />}
                 />
               </Form.Item>
@@ -200,7 +201,7 @@ const Edit = (props) => {
                   disabledDate={(current) =>
                     disabledEndDate(current, !startDateState ? startDateProp : startDateState)}
                   placeholder="Enter Date"
-                  format="MM/DD/YYYY"
+                  format={DATE_FORMAT_MDY}
                   suffixIcon={<img src={datePickerIcon} alt="" />}
                 />
               </Form.Item>

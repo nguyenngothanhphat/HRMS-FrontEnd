@@ -1,12 +1,13 @@
-import { Popconfirm, Image } from 'antd';
+import { Image, Popconfirm } from 'antd';
+import Parser from 'html-react-parser';
+import moment from 'moment';
 import React from 'react';
 import { connect, Link } from 'umi';
-import moment from 'moment';
-import Parser from 'html-react-parser';
-import CommonTable from '../CommonTable';
-import styles from './index.less';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import EditIcon from '@/assets/homePage/editIcon.svg';
+import CommonTable from '../CommonTable';
+import styles from './index.less';
 
 const BirthdayTable = (props) => {
   const {
@@ -57,7 +58,7 @@ const BirthdayTable = (props) => {
           return (
             <Image.PreviewGroup>
               {attachments.map((x) => {
-                return <Image width={32} height={32} src={x.url} />;
+                return <Image width={32} height={32} src={x.url} key={x._id || x.id} />;
               })}
             </Image.PreviewGroup>
           );
@@ -85,7 +86,7 @@ const BirthdayTable = (props) => {
         key: 'createdAt',
         width: '10%',
         render: (createdAt = {}) => {
-          return <span>{createdAt ? moment(createdAt).format('MM/DD/YYYY') : ''}</span>;
+          return <span>{createdAt ? moment(createdAt).format(DATE_FORMAT_MDY) : ''}</span>;
         },
       },
       {

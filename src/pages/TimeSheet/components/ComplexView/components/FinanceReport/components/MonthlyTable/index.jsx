@@ -2,9 +2,10 @@ import { Table } from 'antd';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import { convertMsToTime, projectColor } from '@/utils/timeSheet';
-import EmptyComponent from '@/components/Empty';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
+import EmptyComponent from '@/components/Empty';
+import { projectColor } from '@/constants/timeSheet';
+import { convertMsToTime } from '@/utils/timeSheet';
 import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
 

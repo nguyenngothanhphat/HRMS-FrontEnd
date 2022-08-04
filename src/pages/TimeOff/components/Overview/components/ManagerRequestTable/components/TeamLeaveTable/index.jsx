@@ -13,11 +13,10 @@ import {
   isUpdatedRequest,
   checkNormalTypeTimeoff,
   roundNumber,
-  TIMEOFF_DATE_FORMAT,
-  TIMEOFF_STATUS,
 } from '@/utils/timeOff';
 import RejectCommentModal from '../RejectCommentModal';
 import styles from './index.less';
+import { TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/constants/timeOff';
 
 const { IN_PROGRESS, REJECTED, ON_HOLD } = TIMEOFF_STATUS;
 

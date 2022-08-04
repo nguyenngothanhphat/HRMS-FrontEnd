@@ -5,14 +5,14 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const NotificationTag = (props) => {
-  const { item: { date = '', userId = '', name = '', type } = {} } = props;
+  const { item: { date = '', userId = '', name = '', type, _id = '' } = {} } = props;
 
   // RENDER UI
   const renderTag = () => {
     const dateTemp = moment(date).date();
     const monthTemp = moment(date).locale('en').format('MMM');
     return (
-      <Col span={24}>
+      <Col span={24} key={_id}>
         <div className={styles.NotificationTag}>
           <Row align="middle" justify="space-between">
             <Col span={20} className={styles.leftPart}>

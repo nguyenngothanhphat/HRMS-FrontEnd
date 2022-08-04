@@ -3,11 +3,13 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
-import { dateFormatAPI } from '@/utils/timeSheet';
+import { dateFormatAPI } from '@/constants/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
 import SelectTasks from './components/SelectTasks';
 import SelectPeriod from './components/SelectPeriod';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const ImportModal = (props) => {
   const {
@@ -142,37 +144,29 @@ const ImportModal = (props) => {
               )}
             </div>
             <div className={styles.mainButtons}>
-              <Button className={styles.btnCancel} onClick={handleCancel}>
-                Cancel
-              </Button>
-              <Button
-                className={styles.btnSubmit}
-                type="primary"
+              <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+              <CustomPrimaryButton
                 onClick={handleNextStep}
                 loading={loadingImportTimesheet}
                 disabled={isEmpty(importingIds)}
               >
                 Next
-              </Button>
+              </CustomPrimaryButton>
             </div>
           </>
         );
       case 2:
         return (
           <div className={styles.containerButtons}>
-            <Button className={styles.btnCancel} onClick={() => setStep(1)}>
-              Previous
-            </Button>
-            <Button
-              className={styles.btnSubmit}
-              type="primary"
+            <CustomSecondaryButton onClick={() => setStep(1)}>Previous</CustomSecondaryButton>
+            <CustomPrimaryButton
               onClick={handleFinish}
               loading={loadingImportTimesheet}
               htmlType="submit"
               form="myForm"
             >
               Import
-            </Button>
+            </CustomPrimaryButton>
           </div>
         );
       default:

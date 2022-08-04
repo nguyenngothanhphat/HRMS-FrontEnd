@@ -3,12 +3,12 @@ import { Button, Col, Row, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
 import moment from 'moment';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
 import { formatData } from '@/utils/resourceManagement';
 import SearchTable from '../SearchTable';
 import TableResources from '../TableResources';
 import ResourceStatus from './components/ResourceStatus';
 import styles from './index.less';
-import { exportRawDataToCSV } from '@/utils/utils';
 
 const ResourceList = (props) => {
   const {
@@ -161,7 +161,7 @@ const ResourceList = (props) => {
     setSort(sortProp);
   };
 
-  const exportToExcel = async () => {
+  const exportData = async () => {
     const date = moment().locale('en').format('MM-DD-YYYY');
     const fileName = `resource - ${date}.csv`;
     const getListExport = await dispatch({
@@ -243,7 +243,7 @@ const ResourceList = (props) => {
                   icon={<DownloadOutlined />}
                   className={styles.generate}
                   type="text"
-                  onClick={exportToExcel}
+                  onClick={exportData}
                 >
                   {formatMessage({ id: 'Export' })}
                 </Button>

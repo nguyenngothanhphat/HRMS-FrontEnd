@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
 import NextIcon from '@/assets/timeSheet/next.svg';
 import PrevIcon from '@/assets/timeSheet/prev.svg';
-import { rangePickerFormat } from '@/utils/timeSheet';
+import { rangePickerFormat } from '@/constants/timeSheet';
 import styles from './index.less';
 
 const CustomDatePicker = (props) => {

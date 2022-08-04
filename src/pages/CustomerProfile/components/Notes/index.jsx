@@ -1,59 +1,51 @@
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Col, Form, Input, Popover, Row, Skeleton } from 'antd';
+import { Form, Spin } from 'antd';
 import { debounce } from 'lodash';
 import moment from 'moment';
-import React, { PureComponent } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
-import cancelIcon from '../../../../assets/cancelIcon.svg';
-import { FilterIcon } from './components/FilterIcon';
-import NotesFilter from './components/NotesFilter';
+import CommentBox from '@/components/CommentBox';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterPopover from '@/components/FilterPopover';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import FilterContent from './components/FilterContent';
 import styles from './index.less';
 
-@connect(
-  ({
-    loading,
-    location: { companyLocationList = [] } = {},
-    user: { companiesOfUser = [], currentUser: { _id = '', firstName = '' } = {} } = {},
-    customerProfile: { info: { customerId = '' } = {}, notes = [] } = {},
-    customerManagement: { employeeList = [] } = {},
-  }) => ({
-    loadingNotes: loading.effects['customerProfile/fetchNotes'],
-    loadingFilterNotes: loading.effects['customerProfile/filterNotes'],
-    notes,
-    customerId,
-    _id,
-    firstName,
-    companyLocationList,
-    companiesOfUser,
-    employeeList,
-  }),
-)
-class Notes extends PureComponent {
-  formRef = React.createRef();
+const Notes = (props) => {
+  const messagesEndRef = useRef(null);
+  const containerRef = useRef(null);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isUnhide: false,
-    };
-    this.delaySearch = debounce((value) => {
-      this.handleSearch(value);
-    }, 1000);
-  }
+  const {
+    dispatch,
+    info: { customerId = '' } = {},
+    notes = [],
+    reId,
+    employeeList = [],
+    loadingFetchNotes = false,
+    loadingAddNote = false,
+    employee = {},
+  } = props;
 
-  componentDidMount() {
-    this.fetchNotes();
-  }
+  const [searchValue, setSearchValue] = useState('');
+  const [noteValue, setNoteValue] = useState('');
+  const [filter, setFilter] = useState({});
 
-  componentDidUpdate = (prevProps) => {
-    const { customerId } = this.props;
-    if (prevProps.customerId !== customerId) {
-      this.fetchNotes();
-    }
+  const scrollToBottom = () => {
+    containerRef.current?.scrollTo({
+      top: messagesEndRef.current?.offsetTop,
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'center',
+    });
   };
 
-  fetchNotes = () => {
-    const { dispatch, customerId } = this.props;
+  useEffect(() => {
+    setTimeout(() => {
+      scrollToBottom();
+    }, 500);
+  }, [notes]);
+
+  const fetchNotes = () => {
     dispatch({
       type: 'customerProfile/fetchNotes',
       payload: {
@@ -62,37 +54,34 @@ class Notes extends PureComponent {
     });
   };
 
-  handleVisible = () => {
-    const { isUnhide } = this.state;
-    this.setState({
-      isUnhide: !isUnhide,
+  const filterNotes = () => {
+    dispatch({
+      type: 'customerProfile/filterNotes',
+      payload: {
+        customerId,
+        author: filter?.byAuthor,
+        fromDate: filter?.fromDate,
+        toDate: filter?.toDate,
+      },
     });
   };
 
-  showModal = () => {
-    const { visible } = this.state;
-    this.setState({
-      visible: !visible,
-    });
-  };
+  useEffect(() => {
+    fetchNotes();
+  }, [customerId]);
 
-  closeModal = () => {
-    const { visible } = this.state;
-    this.setState({
-      visible: !visible,
-    });
-  };
+  useEffect(() => {
+    filterNotes();
+  }, [JSON.stringify(filter)]);
 
-  renderNotes = () => {
-    const { notes } = this.props;
-
+  const renderNotes = () => {
     return (
-      <div className={styles.documentBody}>
-        {notes.map((note) => {
+      <div className={styles.documentBody} ref={containerRef}>
+        {notes.map((note, i) => {
           const { owner = '', text = '' } = note;
-          const time = moment(note.created_at).locale('en').format('DD MMM YY');
+          const time = moment(note.created_at).locale('en').format(DATE_FORMAT_MDY);
           return (
-            <div className={styles.note}>
+            <div className={styles.note} ref={i + 1 === notes.length ? messagesEndRef : null}>
               <p>{text}</p>
               <div className={styles.smallText}>
                 <span className={styles.author}>{owner}</span>
@@ -101,147 +90,88 @@ class Notes extends PureComponent {
             </div>
           );
         })}
+        {/* <div ref={messagesEndRef} /> */}
       </div>
     );
   };
 
-  addNote = (values) => {
-    const { dispatch, _id, firstName, reId } = this.props;
-
+  const addNote = () => {
     dispatch({
       type: 'customerProfile/addNote',
       payload: {
-        text: values.note,
-        owner: firstName,
-        owner_id: _id,
+        text: noteValue,
+        owner: employee?.generalInfo?.legalName,
+        owner_id: employee?._id,
         customerId: reId,
       },
     }).then(() => {
-      this.formRef?.current?.resetFields();
+      setNoteValue('');
     });
   };
 
-  handleSearch = (value) => {
-    const { dispatch, reId } = this.props;
-    dispatch({
-      type: 'customerProfile/searchNotes',
-      payload: {
-        id: reId,
-        searchKey: value,
-      },
-    });
+  const onFilter = (values) => {
+    setFilter(values);
   };
 
-  onFilter = (values) => {
-    const { byAuthor, fromDate, toDate } = values;
-    const { dispatch, info: { customerId = '' } = {} } = this.props;
-    dispatch({
-      type: 'customerProfile/filterNotes',
-      payload: {
-        customerId,
-        author: byAuthor,
-        fromDate: fromDate || '',
-        toDate: toDate || '',
-      },
-    });
+  const onSearchDebounce = debounce((value) => {
+    setSearchValue(value);
+  }, 1000);
+
+  const onSearch = (e) => {
+    const { value = '' } = e.target;
+    onSearchDebounce(value);
   };
 
-  render() {
-    const { isUnhide } = this.state;
-    const { employeeList = [], loadingNotes = false, loadingFilterNotes = false } = this.props;
-
-    const filter = (
-      <>
-        <NotesFilter employeeList={employeeList} onFilter={this.onFilter} />
-        <div className={styles.btnForm}>
-          <Button className={styles.btnClose} onClick={this.handleVisible}>
-            Close
-          </Button>
-          <Button
-            className={styles.btnApply}
-            form="filter"
-            htmlType="submit"
-            key="submit"
-            onClick={this.handleSubmit}
-            loading={loadingFilterNotes}
+  return (
+    <div className={styles.Notes}>
+      <div className={styles.documentHeader}>
+        <div className={styles.documentHeaderTitle}>
+          <span>Notes</span>
+        </div>
+        <div className={styles.documentHeaderFunction}>
+          <FilterPopover
+            placement="bottomRight"
+            content={<FilterContent employeeList={employeeList} onFilter={onFilter} />}
           >
-            Apply
-          </Button>
-        </div>
-      </>
-    );
-
-    if (loadingNotes) return <Skeleton />;
-    return (
-      <div className={styles.Notes}>
-        <div className={styles.documentHeader}>
-          <div className={styles.documentHeaderTitle}>
-            <span>Notes</span>
-          </div>
-          <div className={styles.documentHeaderFunction}>
-            {/* Filter */}
-            <div>
-              <Popover
-                placement="bottomRight"
-                content={filter}
-                title={() => (
-                  <div className={styles.popoverHeader}>
-                    <span className={styles.headTitle}>Filters</span>
-                    <span
-                      className={styles.closeIcon}
-                      style={{ cursor: 'pointer' }}
-                      onClick={this.handleVisible}
-                    >
-                      <img src={cancelIcon} alt="close" />
-                    </span>
-                  </div>
-                )}
-                trigger="click"
-                visible={isUnhide}
-                onVisibleChange={this.handleVisible}
-                overlayClassName={styles.FilterPopover}
-              >
-                <div className={styles.filterButton} style={{ cursor: 'pointer' }}>
-                  <FilterIcon />
-                  <span className={styles.textButtonFilter}>Filter</span>
-                </div>
-              </Popover>
-            </div>
-            {/* Search */}
-            <div className={styles.searchInp}>
-              <Input
-                placeholder="Search by Key Words"
-                prefix={<SearchOutlined />}
-                onChange={(e) => this.delaySearch(e.target.value)}
-              />
-            </div>
-          </div>
-        </div>
-
-        {this.renderNotes()}
-
-        <div className={styles.notesFooter}>
-          <Form ref={this.formRef} layout="horizontal" onFinish={(values) => this.addNote(values)}>
-            <Row gutter={[24, 0]} align="middle" justify="space-between">
-              <Col lg={18} xl={20}>
-                <Form.Item name="note">
-                  <Input placeholder="Add a note for reference" />
-                </Form.Item>
-              </Col>
-              <Col lg={6} xl={4}>
-                <Form.Item>
-                  <Button htmlType="submit" className={styles.btnAdd}>
-                    <PlusOutlined />
-                    Add notes
-                  </Button>
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
+            <CustomOrangeButton />
+          </FilterPopover>
+          <CustomSearchBox placeholder="Search by Key Words" onSearch={onSearch} />
         </div>
       </div>
-    );
-  }
-}
 
-export default Notes;
+      <Spin spinning={loadingFetchNotes}>{renderNotes()}</Spin>
+
+      <div className={styles.notesFooter}>
+        <CommentBox
+          placeholder="Add a note for reference"
+          submitText="Add notes"
+          onChange={(val) => setNoteValue(val)}
+          onSubmit={addNote}
+          value={noteValue}
+          disabled={loadingAddNote}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default connect(
+  ({
+    loading,
+    location: { companyLocationList = [] } = {},
+    user: { companiesOfUser = [], currentUser: { employee = {} } = {} } = {},
+    customerProfile: { info: { customerId = '' } = {}, notes = [] } = {},
+    customerManagement: { employeeList = [] } = {},
+  }) => ({
+    loadingFetchNotes:
+      loading.effects['customerProfile/fetchNotes'] ||
+      loading.effects['customerProfile/filterNotes'],
+    loadingAddNote: loading.effects['customerProfile/addNote'],
+    notes,
+    customerId,
+    employee,
+    companyLocationList,
+    companiesOfUser,
+    employeeList,
+  }),
+)(Notes);

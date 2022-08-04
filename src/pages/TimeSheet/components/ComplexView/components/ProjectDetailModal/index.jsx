@@ -1,7 +1,8 @@
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import exportToCSV from '@/utils/exportAsExcel';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import Information from './components/Information';
 import TaskTable from './components/TaskTable';
 import styles from './index.less';
@@ -43,7 +44,7 @@ const ProjectDetailModal = (props) => {
     );
   };
 
-  const processData = (array) => {
+  const processData = (array = []) => {
     const result = [];
     array.forEach((item) => {
       const { task = '', description = '', department = '', projectMembers = [] } = item;
@@ -67,7 +68,7 @@ const ProjectDetailModal = (props) => {
   };
 
   const downloadTemplate = () => {
-    exportToCSV(processData(data?.projectDetail), 'ProjectDetailData.xlsx');
+    exportArrayDataToCsv('ProjectDetailData', processData(data?.projectDetail || []));
   };
 
   const renderModalContent = () => {
@@ -98,14 +99,9 @@ const ProjectDetailModal = (props) => {
         width={750}
         footer={
           <>
-            <Button
-              disabled={disabledBtn()}
-              className={styles.btnSubmit}
-              type="primary"
-              onClick={downloadTemplate}
-            >
+            <CustomPrimaryButton disabled={disabledBtn()} onClick={downloadTemplate}>
               Download
-            </Button>
+            </CustomPrimaryButton>
           </>
         }
         title={renderModalHeader()}

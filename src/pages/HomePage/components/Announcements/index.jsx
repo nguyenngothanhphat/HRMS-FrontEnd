@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import ShowMoreIcon from '@/assets/homePage/downArrow.svg';
 import EmptyComponent from '@/components/Empty';
 import { getCurrentLocation } from '@/utils/authority';
-import { TAB_IDS } from '@/utils/homePage';
+import { TAB_IDS } from '@/constants/homePage';
 import EmployeeTag from './components/EmployeeTag';
 import LikeComment from './components/LikeComment';
 import PostContent from './components/PostContent';
@@ -63,7 +63,12 @@ const Announcements = (props) => {
           <LazyLoad key={x._id} height={200} offset={[-100, 0]}>
             <Col span={24}>
               <div className={styles.card}>
-                <EmployeeTag employee={x.createdBy} createDate={x.createdAt} />
+                <EmployeeTag
+                  employee={x.createdBy}
+                  createDate={x.createdAt}
+                  postAsCompany={x.postAsCompany}
+                  company={x.company}
+                />
                 <PostContent post={x} />
                 <LikeComment
                   post={x}

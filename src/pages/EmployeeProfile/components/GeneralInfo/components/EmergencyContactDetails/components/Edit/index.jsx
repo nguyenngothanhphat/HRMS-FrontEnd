@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import { Row, Form, Input, Button, Col, Select, notification } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { Col, Form, Input, notification, Row, Select } from 'antd';
+import React, { Component } from 'react';
 import { connect, formatMessage } from 'umi';
 import removeIcon from '../assets/removeIcon.svg';
-
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import styles from './index.less';
 
 @connect(
@@ -303,18 +304,14 @@ class Edit extends Component {
           </Col>
 
           <div className={styles.spaceFooter}>
-            <div className={styles.cancelFooter} onClick={handleCancel}>
-              Cancel
-            </div>
-            <Button
-              type="primary"
+            <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+            <CustomPrimaryButton
               htmlType="submit"
-              className={styles.buttonFooter}
               loading={loading}
               onClick={this.handleSaveContactDetail}
             >
               Save
-            </Button>
+            </CustomPrimaryButton>
           </div>
         </Form>
       </Row>

@@ -16,7 +16,6 @@ class UserNode extends Component {
       dataOrgChart,
       propsState: { isCollapsedChild, itemSelected } = {},
       idCurrentUser,
-      userRef,
       renderCardInfo = () => {},
       handleCollapse = () => {},
     } = this.props;
@@ -34,7 +33,7 @@ class UserNode extends Component {
     const className2 = isCurrentUser ? styles.currentUserNode : styles.userNode;
 
     return (
-      <div id={idUser} className={`${className2} ${styles.node} ${className}`} ref={userRef}>
+      <div id={idUser} className={`${className2} ${styles.node} ${className}`}>
         {renderCardInfo(user, 'user')}
         {listEmployees.length === 0 ? null : (
           <div className={styles.node__bottom}>

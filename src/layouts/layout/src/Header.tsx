@@ -77,6 +77,7 @@ class HeaderView extends Component<HeaderViewProps, HeaderViewState> {
       prefixCls,
       headerHeight,
     } = this.props;
+
     const needFixedHeader = fixedHeader || layout === 'mix';
     const isTop = layout === 'top';
 

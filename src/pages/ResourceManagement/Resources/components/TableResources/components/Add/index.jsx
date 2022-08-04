@@ -9,6 +9,7 @@ import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import CommonModal from '@/components/CommonModal';
 import { disabledEndDate } from '@/utils/resourceManagement';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -59,9 +60,9 @@ const AddActionBTN = (props) => {
         project,
         status,
         utilization,
-        startDate: (startDate && moment(startDate).format('YYYY-MM-DD')) || null,
-        endDate: (endDate && moment(endDate).format('YYYY-MM-DD')) || null,
-        revisedEndDate: (revisedEndDate && moment(revisedEndDate).format('YYYY-MM-DD')) || null,
+        startDate: (startDate && moment(startDate).format(DATE_FORMAT_YMD)) || null,
+        endDate: (endDate && moment(endDate).format(DATE_FORMAT_YMD)) || null,
+        revisedEndDate: (revisedEndDate && moment(revisedEndDate).format(DATE_FORMAT_YMD)) || null,
         comment,
         milestone: '',
       },

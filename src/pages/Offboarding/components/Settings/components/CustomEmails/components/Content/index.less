@@ -1,0 +1,70 @@
+.Content {
+  box-sizing: border-box;
+  // position: absolute;
+  width: 100%;
+  overflow: hidden;
+  background-color: #fff;
+  border: 1px solid @border-color-base;
+  border-radius: 5px;
+
+  &_title {
+    display: flex;
+    align-items: center;
+    padding: 18px 20px;
+    border-bottom: 1px solid @border-color-base;
+
+    .title {
+      // line-height: 1.14;
+      color: @primary-color;
+      font-weight: 700;
+      font-size: 14px;
+      font-style: normal;
+    }
+  }
+
+  &_loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    p {
+      font-weight: 500;
+    }
+  }
+
+  .trashIcon {
+    cursor: pointer;
+  }
+
+  .fileName {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    img {
+      margin-right: 10px;
+    }
+    span {
+      color: @primary-color;
+      font-weight: 700;
+    }
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    img {
+      margin-left: 10px;
+      cursor: pointer;
+    }
+  }
+  :global {
+    .ant-tabs-tab {
+      .ant-tabs-tab-btn {
+        font-size: 14px;
+      }
+    }
+    .ant-tabs-content-holder {
+      padding: @padding-lg;
+    }
+  }
+}

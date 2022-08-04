@@ -5,7 +5,7 @@ import { debounce } from 'lodash';
 
 import AllTab from './components/AllTab';
 import styles from '../index.less';
-import SearchOnboarding from '../SearchOnboarding';
+import SearchFilterBar from '../SearchFilterBar';
 
 const { TabPane } = Tabs;
 
@@ -84,7 +84,7 @@ class OnboardingAll extends Component {
         <div className={styles.tabs}>
           <Tabs
             defaultActiveKey="all"
-            tabBarExtraContent={<SearchOnboarding onChangeSearch={this.onChangeSearch} />}
+            tabBarExtraContent={<SearchFilterBar onChangeSearch={this.onChangeSearch} />}
           >
             <TabPane key="1">
               <AllTab

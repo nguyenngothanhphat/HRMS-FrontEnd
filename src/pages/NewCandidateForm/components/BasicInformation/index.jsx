@@ -2,7 +2,7 @@ import { Button, Card, Col, Form, Row } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';

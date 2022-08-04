@@ -3,7 +3,7 @@ import { history, connect } from 'umi';
 import { flattenDeep } from 'lodash';
 import { Spin } from 'antd';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import { TAB_IDS_QUICK_LINK } from '@/utils/homePage';
+import { TAB_IDS_QUICK_LINK } from '@/constants/homePage';
 import s from './index.less';
 import EmptyComponent from '../Empty';
 
@@ -36,7 +36,7 @@ class QuickLinks extends Component {
   mapItemMenu = (value) => {
     const { _id } = value;
     history.push({
-      pathname: `/faqpage`,
+      pathname: `/faq`,
       query: {
         id: _id,
       },
