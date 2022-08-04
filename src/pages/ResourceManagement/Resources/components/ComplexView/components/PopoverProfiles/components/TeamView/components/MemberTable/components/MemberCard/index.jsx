@@ -1,7 +1,7 @@
 import { Col, Row } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import { MNG_MT_SECONDARY_COL_SPAN, MNG_MT_THIRD_COL_SPAN } from '@/utils/timeSheet';
+import { MNG_MT_SECONDARY_COL_SPAN, MNG_MT_THIRD_COL_SPAN } from '@/constants/timeSheet';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import UserProfilePopover from '../../../../../UserProfile';
 import styles from './index.less';

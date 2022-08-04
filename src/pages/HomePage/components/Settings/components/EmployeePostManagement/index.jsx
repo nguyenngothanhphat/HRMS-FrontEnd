@@ -1,17 +1,17 @@
+import { CloseOutlined } from '@ant-design/icons';
+import { Image, Popconfirm, Tag } from 'antd';
+import Parser from 'html-react-parser';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import Parser from 'html-react-parser';
-import { Image, Popconfirm, Tag } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
-import CommonTable from '@/components/CommonTable';
-import { POST_TYPE, STATUS_POST } from '@/utils/homePage';
-import FilterButton from '@/components/FilterButton';
-import FilterPopover from '@/components/FilterPopover';
 import HideIcon from '@/assets/homePage/hideIconWhite.svg';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
-import FilterForm from './components/FilterForm';
 import CommonModal from '@/components/CommonModal';
+import CommonTable from '@/components/CommonTable';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
+import FilterPopover from '@/components/FilterPopover';
 import AnnouncementsCard from '@/pages/HomePage/components/Announcements/components/AnnouncementsCard';
+import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
+import FilterForm from './components/FilterForm';
 import styles from './index.less';
 
 function EmployeePostManagement(props) {
@@ -212,7 +212,7 @@ function EmployeePostManagement(props) {
             visible={visible}
             onVisibleChange={() => setVisible(!visible)}
           >
-            <FilterButton fontSize={14} showDot={false} />
+            <CustomOrangeButton showDot={applied > 0}>Filter</CustomOrangeButton>
           </FilterPopover>
         </div>
       </div>

@@ -1,11 +1,12 @@
 /* eslint-disable no-nested-ternary */
 
-import React, { PureComponent } from 'react';
 import { Checkbox, Skeleton, Typography } from 'antd';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import styles from './index.less';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import EmptyComponent from '@/components/Empty';
+import styles from './index.less';
 
 @connect(({ loading }) => ({
   loading: loading.effects['newCandidateForm/fetchListBenefit'],
@@ -14,7 +15,7 @@ class GlobalEmpoyeeComponent extends PureComponent {
   getCreateBenefitAt = (createdAt) => {
     let takeEffect = '';
 
-    takeEffect = moment(createdAt).locale('en').format('DD/MM/YYYY');
+    takeEffect = moment(createdAt).locale('en').format(DATE_FORMAT_MDY);
     return createdAt ? (
       <div className={styles.headerText}>Coverage will take effect on {takeEffect}</div>
     ) : (

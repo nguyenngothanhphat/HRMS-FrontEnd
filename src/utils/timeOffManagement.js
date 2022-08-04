@@ -1,17 +1,7 @@
 import moment from 'moment';
-import exportToCsv from '@/utils/exportToCsv';
-import { TIMEOFF_STATUS } from './timeOff';
-
-export const TIMEOFF_NAME_BY_ID = [
-  { value: TIMEOFF_STATUS.ACCEPTED, label: 'Approved' },
-  { value: TIMEOFF_STATUS.IN_PROGRESS, label: 'In Progress' },
-  // { value: TIMEOFF_STATUS.IN_PROGRESS_NEXT, label: 'In Progress' },
-  { value: TIMEOFF_STATUS.REJECTED, label: 'Rejected' },
-  { value: TIMEOFF_STATUS.DRAFTS, label: 'Draft' },
-  { value: TIMEOFF_STATUS.ON_HOLD, label: 'On-hold' },
-  { value: TIMEOFF_STATUS.DELETED, label: 'Deleted' },
-  { value: TIMEOFF_STATUS.WITHDRAWN, label: 'Withdrawn' },
-];
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { TIMEOFF_NAME_BY_ID } from '@/constants/timeOffManagement';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 
 const processCSVData = (array = []) => {
   if (array.length > 0) {
@@ -25,8 +15,8 @@ const processCSVData = (array = []) => {
         'First Name': item.employee?.generalInfoInfo?.firstName || '-',
         'Middle Name': item.employee?.generalInfoInfo?.middleName || '-',
         'Last Name': item.employee?.generalInfoInfo?.lastName || '-',
-        'From Date': item.fromDate ? moment(item.fromDate).format('MM/DD/YYYY') : '-',
-        'To Date': item.toDate ? moment(item.toDate).format('MM/DD/YYYY') : '-',
+        'From Date': item.fromDate ? moment(item.fromDate).format(DATE_FORMAT_MDY) : '-',
+        'To Date': item.toDate ? moment(item.toDate).format(DATE_FORMAT_MDY) : '-',
         'Count/Q.ty': item.duration || '-',
         'Leave Type': item.type?.name || '-',
         Subject: item.subject || '-',
@@ -52,7 +42,9 @@ const processCSVData = (array = []) => {
 };
 
 export const exportCSV = (data) => {
-  exportToCsv(`Time-Off-Report-${moment().format('YYYY-MM-DD')}.csv`, processCSVData(data));
+  exportArrayDataToCsv(`Time-Off-Report-${moment().format('YYYY-MM-DD')}`, processCSVData(data));
 };
 
-export const dateFormat = 'MM/DD/YYYY';
+export default {
+  exportCSV,
+};

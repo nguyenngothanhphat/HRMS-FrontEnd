@@ -1,7 +1,7 @@
 import { Skeleton } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import BackgroundRecheck from './components/BackgroundRecheck';
 import DocumentVerification from './components/DocumentVerification';
 import { goToTop } from '@/utils/utils';

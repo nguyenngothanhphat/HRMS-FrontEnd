@@ -11,7 +11,7 @@ import DeleteIcon from '@/assets/relievingDel.svg';
 import CommonModal from '@/components/CommonModal';
 import EmptyComponent from '@/components/Empty';
 import { getCurrentLocation } from '@/utils/authority';
-import { POST_TYPE, STATUS_POST } from '@/utils/homePage';
+import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
 import { getCompanyName } from '@/utils/utils';
 import AddPostContent from './components/AddPostContent';
 import AnnouncementsCard from './components/AnnouncementsCard';

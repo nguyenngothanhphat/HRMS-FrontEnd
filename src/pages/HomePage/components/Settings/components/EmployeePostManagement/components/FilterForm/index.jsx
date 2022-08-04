@@ -2,7 +2,7 @@ import { Col, DatePicker, Form, Row, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { debounce } from 'lodash';
-import { STATUS_POST } from '@/utils/homePage';
+import { STATUS_POST } from '@/constants/homePage';
 import styles from './index.less';
 import { removeEmptyFields } from '@/utils/utils';
 
@@ -80,6 +80,7 @@ const FilterContent = (props) => {
           }
           showArrow
           disabled={loadingFetchListEmployeeCreated}
+          loading={loadingFetchListEmployeeCreated}
         >
           {listEmployeeName.map((x) => {
             const { generalInfoInfo: { legalName = '' } = {} } = x;

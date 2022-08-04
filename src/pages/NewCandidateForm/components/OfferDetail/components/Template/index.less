@@ -1,22 +1,22 @@
 @gray: #707177;
-@border-color: #d6dce0;
+@border-color: @border-color-base;
 @header-color: #161c29;
 @red: #ff5252;
 @gray-icon: #636872;
 
 .templateContainer {
-  border-radius: 5px;
-  border: solid 1px @border-color;
   background-color: white;
+  border: solid 1px @border-color;
+  border-radius: 5px;
 
   &:first-child {
     margin-bottom: 16px;
   }
 
   .templateHeader {
-    padding: 32px;
     display: flex;
     align-items: center;
+    padding: 32px;
     border-bottom: solid 1px @border-color;
 
     h3 {
@@ -26,8 +26,8 @@
     }
 
     span {
-      font-size: 13px;
       color: @gray;
+      font-size: 13px;
     }
 
     .newIcon {
@@ -74,9 +74,9 @@
         align-items: center;
 
         svg {
-          margin-left: 14px;
           width: 14px;
           height: 14px;
+          margin-left: 14px;
           cursor: pointer;
 
           &:hover {

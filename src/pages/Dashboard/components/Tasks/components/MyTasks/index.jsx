@@ -32,7 +32,7 @@ const MyTasks = (props) => {
     <div className={styles.MyTasks} style={isInModal ? { maxHeight: '600px' } : {}}>
       <Row gutter={[16, 16]}>
         {mockTask.map((task) => {
-          return <TaskTag task={task} />;
+          return <TaskTag task={task} key={task.id} />;
         })}
       </Row>
     </div>

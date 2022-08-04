@@ -12,7 +12,7 @@ import CommentBox from '@/components/CommentBox';
 import CommonModal from '@/components/CommonModal';
 import PostLikedModalContent from '@/components/PostLikedModalContent';
 import UserComment from '@/components/UserComment';
-import { LIKE_ACTION, POST_OR_CMT } from '@/utils/homePage';
+import { LIKE_ACTION, POST_OR_CMT } from '@/constants/homePage';
 import styles from './index.less';
 import { singularify } from '@/utils/utils';
 

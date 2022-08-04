@@ -28,7 +28,7 @@ const TicketTag = (props) => {
     const monthTemp = moment(onDateSupportRequest).locale('en').format('MMM');
     const monthTempTimeoff = moment(onDate).locale('en').format('MMM');
     return (
-      <Col span={24}>
+      <Col span={24} key={ticketID}>
         <div className={styles.TicketTag}>
           <Row align="middle" justify="space-between">
             {onDate ? (

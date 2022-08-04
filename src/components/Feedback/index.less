@@ -19,15 +19,24 @@
     .spanText {
       display: flex;
       align-items: center;
-      justify-content: space-around;
+      justify-content: space-evenly;
+      img {
+        padding-inline: 7px;
+      }
     }
 
     &:hover {
-      width: 129px;
+      width: 144px;
       .feedbackText {
         max-width: 300px;
         -webkit-transition: color 0.25s 0.25s, max-width 1s;
         transition: color 0.25s 0.25s, max-width 1s;
+      }
+      .spanText {
+        span {
+          padding-right: 7px;
+          transition: 0.3s;
+        }
       }
     }
 
@@ -58,7 +67,7 @@
   :global {
     .ant-affix {
       // padding-right: 24px;
-      right: 24px;
+      right: 12px;
       z-index: 1000;
       // width: 100px !important;
     }

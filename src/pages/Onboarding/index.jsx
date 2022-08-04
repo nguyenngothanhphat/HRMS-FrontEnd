@@ -1,15 +1,16 @@
-import React, { PureComponent } from 'react';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { Tabs, Button, Row, Col } from 'antd';
+import { Button, Col, Row, Tabs } from 'antd';
+import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
+import CustomBlueButton from '@/components/CustomBlueButton';
+import { NEW_PROCESS_STATUS, ONBOARDING_TABS } from '@/constants/onboarding';
 import { PageContainer } from '@/layouts/layout/src';
-import exportToCSV from '@/utils/exportAsExcel';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
+import { goToTop } from '@/utils/utils';
+import NewJoinees from './components/NewJoinees/index';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
 import styles from './index.less';
-import NewJoinees from './components/NewJoinees/index';
-import { goToTop } from '@/utils/utils';
 
 @connect(({ user: { permissions = [] } = {}, onboarding: { onboardingOverview = {} } = {} }) => ({
   permissions,
@@ -34,7 +35,7 @@ class Onboarding extends PureComponent {
     });
   };
 
-  checkPathLocation = () => {
+  getExportData = () => {
     const {
       onboardingOverview: {
         dataAll = [],
@@ -55,7 +56,7 @@ class Onboarding extends PureComponent {
       } = {},
     } = this.props;
 
-    let data = '';
+    let data = [];
 
     switch (currentStatus) {
       case NEW_PROCESS_STATUS.DRAFT:
@@ -106,11 +107,11 @@ class Onboarding extends PureComponent {
   };
 
   downloadTemplate = () => {
-    const data = this.checkPathLocation();
-    exportToCSV(this.processData(data), 'DataOnboarding.xlsx');
+    const data = this.getExportData();
+    exportArrayDataToCsv('OnboardingData', this.processData(data));
   };
 
-  processData = (array) => {
+  processData = (array = []) => {
     // Uppercase first letter
     let capsPopulations = [];
     capsPopulations = array.map((item) => {
@@ -121,9 +122,7 @@ class Onboarding extends PureComponent {
         generalInfo: { firstName: name },
       } = item.assigneeManager;
       return {
-        //      'Candidate Id': item.candidateId,
         Candidate: item.candidate,
-        //      'Candidate Name': item.candidateName,
         'First Name': item.firstName,
         'Middle Name': item.middleName,
         'Last Name': item.lastName,
@@ -184,7 +183,7 @@ class Onboarding extends PureComponent {
             </Col>
           )}
 
-          {tabName === 'settings' && (type === '' || type === 'documents-templates') && (
+          {tabName === ONBOARDING_TABS.SETTINGS && (type === '' || type === 'documents-templates') && (
             <Col>
               <Button
                 icon={<UploadOutlined />}
@@ -197,9 +196,7 @@ class Onboarding extends PureComponent {
             </Col>
           )}
           <Col>
-            <Button className={styles.view} type="link">
-              {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })} (15)
-            </Button>
+            <CustomBlueButton>View activity log</CustomBlueButton>
           </Col>
         </Row>
       </div>
@@ -233,7 +230,7 @@ class Onboarding extends PureComponent {
               {viewOnboardingOverviewTab && (
                 <TabPane
                   tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
-                  key="list"
+                  key={ONBOARDING_TABS.OVERVIEW}
                 >
                   <OnboardingOverview type={type} />
                 </TabPane>
@@ -242,7 +239,7 @@ class Onboarding extends PureComponent {
                 <>
                   <TabPane
                     tab={formatMessage({ id: 'component.employeeOnboarding.settings' })}
-                    key="settings"
+                    key={ONBOARDING_TABS.SETTINGS}
                   >
                     <Settings type={type} />
                   </TabPane>
@@ -252,7 +249,7 @@ class Onboarding extends PureComponent {
                 <>
                   <TabPane
                     tab={formatMessage({ id: 'component.employeeOnboarding.newJoinees' })}
-                    key="newJoinees"
+                    key={ONBOARDING_TABS.NEW_JOINEES}
                   >
                     <NewJoinees type={type} />
                   </TabPane>

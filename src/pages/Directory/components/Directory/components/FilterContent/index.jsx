@@ -1,5 +1,5 @@
 import { Form, Select, AutoComplete, Input, Spin, InputNumber, Row, Col } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import SearchIcon from '@/assets/directory/search.svg';
@@ -43,7 +43,6 @@ const FilterContent = (props) => {
     loadingFetchEmployeeIDList = false,
     loadingFetchEmployeeNameList = false,
     loadingFetchManagerList = false,
-    handleFilterCounts = () => {},
   } = props;
 
   const [countryListState, setCountryListState] = useState([]);
@@ -75,6 +74,9 @@ const FilterContent = (props) => {
   }, [JSON.stringify(listCountry)]);
 
   useEffect(() => {
+    if (isEmpty(filter)) {
+      form.resetFields();
+    }
     // this is needed for directly filtering when clicking on title or department on the table
     form.setFieldsValue({
       ...filter,
@@ -162,7 +164,6 @@ const FilterContent = (props) => {
   };
 
   const onFinishDebounce = debounce((values) => {
-    handleFilterCounts(values);
     onFinish(values);
   }, 700);
 

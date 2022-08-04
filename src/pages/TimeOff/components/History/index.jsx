@@ -7,7 +7,7 @@ import ErrorIcon from '@/assets/timeOff/error.svg';
 import DotIcon from '@/assets/timeOff/dot.svg';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import styles from './index.less';
-import { TIMEOFF_HISTORY_STATUS, TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_HISTORY_STATUS, TIMEOFF_STATUS } from '@/constants/timeOff';
 
 const { Step } = Steps;
 

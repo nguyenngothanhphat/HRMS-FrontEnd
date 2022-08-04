@@ -4,7 +4,7 @@ import { connect, history } from 'umi';
 import LayoutAddCandidateForm from '@/components/LayoutAddCandidateForm';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentTenant } from '@/utils/authority';
-import { ONBOARDING_FORM_LINK, ONBOARDING_FORM_STEP_LINK } from '@/utils/onboarding';
+import { ONBOARDING_FORM_LINK, ONBOARDING_FORM_STEP_LINK } from '@/constants/onboarding';
 import BasicInformation from './components/BasicInformation';
 import Benefit from './components/Benefits';
 import DocumentVerificationNew from './components/DocumentVerificationNew';
@@ -234,7 +234,7 @@ class NewCandidateForm extends PureComponent {
     }
 
     const response = await dispatch({
-      type: 'onboard/deleteTicketDraft',
+      type: 'onboarding/deleteTicketDraft',
       payload: {
         id: ticketID,
         tenantId: getCurrentTenant(),

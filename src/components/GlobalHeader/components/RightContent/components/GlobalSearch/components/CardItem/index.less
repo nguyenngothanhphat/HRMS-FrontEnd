@@ -1,0 +1,40 @@
+.card {
+  width: 100%;
+  min-width: fit-content;
+  height: 163px;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid @border-color-base;
+  border-radius: 8px;
+
+  &__top {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eaecef;
+    cursor: pointer;
+
+    .title {
+      margin-left: 12px;
+    }
+  }
+
+  &__content {
+    .row {
+      display: flex;
+      align-items: center;
+      margin-top: 12px;
+
+      &__text {
+        padding-left: 10px;
+        color: rgba(0, 0, 0, 0.48);
+        font-size: 12px;
+      }
+
+      &__icon {
+        width: 14px;
+      }
+    }
+  }
+}

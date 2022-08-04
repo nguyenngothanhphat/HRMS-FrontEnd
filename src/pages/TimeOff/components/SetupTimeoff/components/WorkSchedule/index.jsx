@@ -3,7 +3,7 @@ import { Button, Card, Col, Form, InputNumber, Radio, Row, Spin, TimePicker } fr
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { TIMEOFF_WORK_DAYS } from '@/utils/timeOff';
+import { TIMEOFF_WORK_DAYS } from '@/constants/timeOff';
 import { getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import WorkInProgress from '@/components/WorkInProgress';
 import s from './index.less';

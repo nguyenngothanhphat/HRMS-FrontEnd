@@ -47,8 +47,8 @@ class ModalAddDocument extends Component {
   };
 
   destroyOnClose = () => {
-    const { handleCandelModal = () => {} } = this.props;
-    handleCandelModal();
+    const { handleCancelModal = () => {} } = this.props;
+    handleCancelModal();
   };
 
   handlePreview = (fileName) => {
@@ -95,7 +95,7 @@ class ModalAddDocument extends Component {
   };
 
   onFinish = () => {
-    const { dispatch, handleCandelModal = () => {}, idBenefit = '', idCountry } = this.props;
+    const { dispatch, handleCancelModal = () => {}, idBenefit = '', idCountry } = this.props;
     const { uploadedFile: { id = '', url = '', name = '' } = {}, uploadedFile = {} } = this.state;
     const payload = {
       country: idCountry,
@@ -117,7 +117,7 @@ class ModalAddDocument extends Component {
         const { statusCode } = response;
         if (statusCode === 200) {
           this.setState({ uploadedFile: {}, fileName: '' });
-          handleCandelModal();
+          handleCancelModal();
         }
       });
     } else {

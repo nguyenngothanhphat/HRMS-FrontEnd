@@ -1,6 +1,6 @@
-@borderColor: #d6dce0;
+@borderColor: @border-color-base;
 @borderColor2: #d6dce4;
-@blueColor: #2c6df9;
+@blueColor: @primary-color;
 @commonSpace: 24px;
 .Header {
   display: flex;
@@ -42,10 +42,7 @@
   .Header__left {
     max-width: 35%;
   }
-  .tagCountFilter {
-    padding: 5px;
-    border-radius: 15px;
-  }
+
   // the middle item will be always centered
   &__left,
   &__right {

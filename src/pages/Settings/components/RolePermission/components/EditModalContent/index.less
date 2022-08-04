@@ -1,0 +1,91 @@
+.EditModalContent {
+  padding: @padding-lg;
+  :global {
+    .ant-form-item-explain {
+      div {
+        font-size: 13px;
+      }
+    }
+    .ant-select-selection-item {
+      color: #161c29 !important;
+    }
+    .ant-select-selector,
+    .ant-input {
+      height: 42px !important;
+
+      padding: 5px 11px !important;
+
+      background: transparent !important;
+      border-radius: 5px !important;
+    }
+    .ant-select-selection-search-input {
+      height: 42px !important;
+      border-radius: 5px;
+    }
+    .ant-form-item-label
+      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      display: none;
+    }
+    .ant-form-item-label label {
+      height: 0;
+      color: #707177;
+      font-size: 13px;
+    }
+
+    .ant-form-item {
+      margin-bottom: 12px;
+    }
+
+    // check box tree
+    .ant-tree-checkbox-checked .ant-tree-checkbox-inner::after {
+      border-right-color: rgb(44, 109, 249) !important;
+      border-bottom-color: rgb(44, 109, 249) !important;
+    }
+    .ant-tree-checkbox-checked .ant-tree-checkbox-inner {
+      border: 1px solid @primary-color !important;
+    }
+    .ant-tree-checkbox-inner {
+      background: #f0f3f9;
+      border: 1px solid #b9bac2;
+      border-radius: 3px;
+    }
+
+    .ant-tree-checkbox-indeterminate .ant-tree-checkbox-inner {
+      border: 1px solid @primary-color !important;
+    }
+    .ant-tree-checkbox-indeterminate .ant-tree-checkbox-inner::after {
+      position: absolute;
+      top: 6px !important;
+      left: 3px !important;
+      width: 5px;
+      height: 9px;
+      background-color: #f0f3f9;
+      border: 2px solid #fff;
+      border-top: 0;
+      border-right-color: @primary-color !important;
+      border-bottom-color: @primary-color !important;
+      border-left: 0;
+      transform: rotate(45deg) scale(1) translate(-50%, -50%);
+      opacity: 1;
+      transition: all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
+    }
+  }
+
+  .permissionTitle {
+    display: block;
+    margin: 20px 0 10px;
+    color: #161c29;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  .roleList {
+    max-height: 300px;
+    overflow-y: auto;
+    :global {
+      .ant-tree-title {
+        color: #707177;
+        font-size: 13px;
+      }
+    }
+  }
+}

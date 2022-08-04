@@ -3,8 +3,8 @@ describe('Ticket Management', () => {
     cy.visit('https://stghrms.paxanimi.ai/login');
   });
 
-  let employee_email = 'narmada.biradar@mailinator.com';
-  let password = '12345678@Tc';
+  const employee_email = 'narmada.biradar@mailinator.com';
+  const password = '12345678@Tc';
 
   it('Ticket Management', () => {
     cy.get('#basic_userEmail.ant-input').type(employee_email);
@@ -25,7 +25,7 @@ describe('Ticket Management', () => {
 
     cy.get('.ant-tabs-tab-btn').eq(2).click();
     cy.wait(3000);
-    cy.get('.FilterButton___qz7iA').click({ force: true });
+    cy.get('.CustomOrangeButton___qz7iA').click({ force: true });
     cy.wait(2000);
     cy.get('#formFilter_employeeRaise.ant-input')
       .type('Narmada Vivekanad Biradar')
@@ -68,7 +68,7 @@ describe('Ticket Management', () => {
 
     cy.get('.ant-tabs-tab-btn').eq(3).click();
     cy.wait(3000);
-    cy.get('.FilterButton___qz7iA').click({ force: true }).wait(2000);
+    cy.get('.CustomOrangeButton___qz7iA').click({ force: true }).wait(2000);
 
     cy.get('.ant-input-affix-wrapper.ant-select-selection-search-input')
       .eq(0)
@@ -117,7 +117,7 @@ describe('Ticket Management', () => {
 
     cy.get('.ant-tabs-tab-btn').eq(4).click({ force: true });
     cy.wait(2000);
-    cy.get('.FilterButton___qz7iA').click({ force: true });
+    cy.get('.CustomOrangeButton___qz7iA').click({ force: true });
     cy.get('.ant-input-affix-wrapper.ant-select-selection-search-input')
       .eq(0)
       .type('Narmada Vivekanad Biradar' + '{enter}')
@@ -129,7 +129,7 @@ describe('Ticket Management', () => {
 
     cy.get('.ant-tabs-tab-btn').eq(6).click();
     cy.wait(2000);
-    cy.get('.FilterButton___qz7iA').click({ force: true });
+    cy.get('.CustomOrangeButton___qz7iA').click({ force: true });
 
     cy.get('.ant-input-affix-wrapper.ant-select-selection-search-input')
       .eq(0)
@@ -179,7 +179,7 @@ describe('Ticket Management', () => {
     cy.get('.ant-tabs-tab-btn').eq(7).click({ force: true });
     cy.wait(2000);
 
-    cy.get('.FilterButton___qz7iA').click({ force: true });
+    cy.get('.CustomOrangeButton___qz7iA').click({ force: true });
     cy.get('.ant-input-affix-wrapper.ant-select-selection-search-input')
       .eq(0)
       .type('Aashwij Pai' + '{enter}')

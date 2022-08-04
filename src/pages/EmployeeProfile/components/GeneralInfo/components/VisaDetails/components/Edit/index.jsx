@@ -5,6 +5,8 @@ import { connect } from 'umi';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import VisaGeneral from './components/Visa';
 import styles from './index.less';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 @connect(
   ({
@@ -250,13 +252,9 @@ class Edit extends Component {
             />
           </div>
           <div className={styles.spaceFooter}>
-            <div className={styles.cancelFooter} onClick={handleCancel}>
-              Cancel
-            </div>
-            <Button
-              type="primary"
+            <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+            <CustomPrimaryButton
               htmlType="submit"
-              className={styles.buttonFooter}
               disabled={
                 isLt5M === false ||
                 getContent === false ||
@@ -265,7 +263,7 @@ class Edit extends Component {
               }
             >
               Save
-            </Button>
+            </CustomPrimaryButton>
           </div>
           <ViewDocumentModal visible={visible} onClose={this.handleCancel} url={linkImage} />
         </Form>

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button, Modal, Input } from 'antd';
-// import { TIMEOFF_STATUS } from '@/utils/timeOff';
+// import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import styles from './index.less';
 
 const { TextArea } = Input;

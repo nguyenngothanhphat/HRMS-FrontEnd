@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import EditIcon from '@/assets/projectManagement/edit2.svg';
 import RemoveIcon from '@/assets/projectManagement/recycleBin.svg';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
-import { DATE_FORMAT_2 } from '@/utils/projectManagement';
+import { DATE_FORMAT_2 } from '@/constants/projectManagement';
 import styles from './index.less';
 
 const MilestoneCard = (props) => {

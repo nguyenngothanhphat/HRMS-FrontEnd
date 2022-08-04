@@ -3,7 +3,7 @@ import { connect } from 'umi';
 import PostCard from './components/PostCard';
 import AddPost from './components/AddPost';
 import styles from './index.less';
-import { TAB_IDS } from '@/utils/homePage';
+import { TAB_IDS } from '@/constants/homePage';
 import { goToTop } from '@/utils/utils';
 
 const PostManagement = () => {

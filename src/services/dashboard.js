@@ -197,7 +197,7 @@ export async function getProjectList(payload) {
   );
 }
 
-export async function getMyResoucreList(payload) {
+export async function getMyResourceList(payload) {
   return request(
     '/api-project/resourcetenant/list',
     {
@@ -221,4 +221,16 @@ export async function getTimeOffTypeByCountry(payload) {
     method: 'POST',
     data: payload,
   });
+}
+
+export async function getMyTickets(payload) {
+  return request(
+    '/api-ticket/tickettenant/list-my-ticket',
+    {
+      method: 'GET',
+      params: payload,
+    },
+    false,
+    API_KEYS.TICKET_API,
+  );
 }

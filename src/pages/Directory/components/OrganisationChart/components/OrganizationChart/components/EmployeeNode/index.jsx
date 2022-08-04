@@ -12,19 +12,6 @@ class EmployeeNode extends Component {
     this.state = {};
   }
 
-  addToRefs = (el, id) => {
-    const { employeeRef, refTemp } = this.props;
-    if (el && !refTemp.includes(el)) {
-      refTemp.push(el);
-      employeeRef.push({
-        ref: el,
-        id,
-      });
-    }
-
-    return el;
-  };
-
   render() {
     const {
       employee = {},
@@ -43,11 +30,7 @@ class EmployeeNode extends Component {
     const className2 = isCurrentUser ? styles.currentUserNode : styles.employeeNode;
 
     return (
-      <div
-        ref={(el) => this.addToRefs(el, idEmpl)}
-        id={idEmpl}
-        className={`${className2} ${styles.node} ${className}`}
-      >
+      <div id={idEmpl} className={`${className2} ${styles.node} ${className}`}>
         {renderCardInfo(employee, 'employee')}
         {listActiveEmployee.length > 0 && isCollapsed ? (
           <div className={styles.node__bottom_reportees}>

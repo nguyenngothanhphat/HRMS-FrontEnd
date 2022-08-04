@@ -4,7 +4,7 @@ import { connect } from 'umi';
 
 import styles from './index.less';
 
-@connect(({ onboard: { settings: { backgroundChecks } = {} } = {} }) => ({
+@connect(({ onboarding: { settings: { backgroundChecks } = {} } = {} }) => ({
   backgroundChecks,
 }))
 class MotorVehicleReports extends Component {
@@ -29,7 +29,7 @@ class MotorVehicleReports extends Component {
     backgroundChecks[name] = value;
 
     dispatch({
-      type: 'onboard/save',
+      type: 'onboarding/save',
       payload: {
         backgroundChecks,
       },

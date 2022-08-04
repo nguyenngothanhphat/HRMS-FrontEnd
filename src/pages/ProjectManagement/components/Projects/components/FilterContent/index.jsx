@@ -1,31 +1,12 @@
 import { Form, Input, Select } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
 const FilterContent = (props) => {
   const [form] = Form.useForm();
-  const {
-    onFilter = () => {},
-    dispatch,
-    needResetFilterForm = false,
-    setNeedResetFilterForm = () => {},
-    setIsFiltering = () => {},
-    setApplied = () => {},
-    projectManagement: {
-      filter: {
-        customerId = [],
-        division = [],
-        engagementType = [],
-        projectId = '',
-        projectManager = [],
-        projectName = [],
-        projectStatus = [],
-      } = {},
-      filter = {},
-    } = {},
-  } = props;
+  const { onFilter = () => {}, dispatch, filter = {} } = props;
 
   // redux
   const {
@@ -40,17 +21,11 @@ const FilterContent = (props) => {
     loadingFetchEmployeeList = false,
   } = props;
 
+  // clear values
   useEffect(() => {
-    form.setFieldsValue({
-      ...filter,
-      customerId,
-      division,
-      engagementType,
-      projectId,
-      projectManager,
-      projectName,
-      projectStatus,
-    });
+    if (isEmpty(filter)) {
+      form.resetFields();
+    }
   }, [JSON.stringify(filter)]);
 
   useEffect(() => {
@@ -77,7 +52,7 @@ const FilterContent = (props) => {
     });
   }, []);
 
-  const onFormSubmit = (values) => {
+  const onFinish = (values) => {
     const newValues = { ...values };
 
     // remove empty fields
@@ -99,23 +74,12 @@ const FilterContent = (props) => {
   };
 
   const onFinishDebounce = debounce((values) => {
-    onFormSubmit(values);
+    onFinish(values);
   }, 700);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
-
-  // clear values
-  useEffect(() => {
-    if (needResetFilterForm) {
-      form.resetFields();
-      setNeedResetFilterForm(false);
-      setIsFiltering(false);
-      setApplied(0);
-    }
-  }, [needResetFilterForm]);
 
   return (
     <div className={styles.FilterContent}>
@@ -130,8 +94,7 @@ const FilterContent = (props) => {
             style={{ width: '100%' }}
             placeholder="Select Division"
             filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {divisionList.map((x) => (
               <Select.Option value={x.name} key={x}>
@@ -148,8 +111,7 @@ const FilterContent = (props) => {
             style={{ width: '100%' }}
             placeholder="Select Project Name"
             filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {projectNameList.map((item) => {
               return (
@@ -188,8 +150,7 @@ const FilterContent = (props) => {
             style={{ width: '100%' }}
             placeholder="Select Engagement Type"
             filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {projectTypeList.map((x) => {
               return (
@@ -208,8 +169,7 @@ const FilterContent = (props) => {
             loading={loadingFetchEmployeeList}
             placeholder="Select Project Manager"
             filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {employeeList.map((x) => (
               <Select.Option value={x._id} key={x._id}>
@@ -226,8 +186,7 @@ const FilterContent = (props) => {
             style={{ width: '100%' }}
             placeholder="Select Status"
             filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {projectStatusList.map((x) => (
               <Select.Option value={x.id} key={x.id}>

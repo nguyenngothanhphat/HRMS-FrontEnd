@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Steps } from 'antd';
 import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import styles from './index.less';
 
 const { Step } = Steps;

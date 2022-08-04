@@ -1,11 +1,11 @@
-import { Col, DatePicker, Popover, Radio, Row, Tooltip, Typography } from 'antd';
+import { Col, DatePicker, Popover, Radio, Row, Typography } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import WarningIcon from '@/assets/candidatePortal/warningIcon.svg';
 import InternalStyle from './FilledByCandidate.less';
 
-const dateFormat = 'MM/DD/YYYY';
 @connect(({ candidatePortal: { data, tempData = {}, checkMandatory } = {} }) => ({
   data,
   tempData,
@@ -107,7 +107,7 @@ class FilledByCandidate extends PureComponent {
               disabledDate={this.disabledDate}
               placeholder=""
               picker="date"
-              format={dateFormat}
+              format={DATE_FORMAT_MDY}
               disabled
               // onChange={(value) => _handleSelect(value, candidateField[2].title)}
               value={originalDOJ ? moment(originalDOJ) : undefined}
@@ -149,7 +149,7 @@ class FilledByCandidate extends PureComponent {
                 disabledDate={this.disabledDate}
                 placeholder="Select a date"
                 picker="date"
-                format={dateFormat}
+                format={DATE_FORMAT_MDY}
                 onChange={(value) => _handleSelect(value, candidateField[2].title)}
                 value={tempDOJ ? moment(tempDOJ) : null}
               />

@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import AttachmentIcon from '@/assets/attachment.svg';
 import UploadFileURLIcon from '@/assets/homePage/uploadURLIcon.svg';
 import styles from './index.less';
-import { POST_TYPE, STATUS_POST } from '@/utils/homePage';
+import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
 
 const { Dragger } = Upload;
 
@@ -32,6 +32,11 @@ const AddPostContent = (props) => {
   useEffect(() => {
     if (isEdit) {
       const { description = '', attachments = [] } = record;
+
+      if (attachments && attachments.length) {
+        setIsUpload(true);
+      }
+
       const fileListTemp = () => {
         return attachments.map((x, i) => {
           return {

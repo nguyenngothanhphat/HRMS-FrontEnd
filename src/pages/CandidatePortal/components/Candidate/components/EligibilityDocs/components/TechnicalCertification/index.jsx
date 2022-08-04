@@ -2,7 +2,7 @@ import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { Collapse } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
-import { mapType } from '@/utils/newCandidateForm';
+import { MAP_TYPE } from '@/constants/newCandidateForm';
 import File from '../File';
 import Certification from './components/Certification';
 import styles from './index.less';
@@ -21,7 +21,7 @@ const TechnicalCertification = (props) => {
     dispatch({
       type: 'candidatePortal/saveOrigin',
       payload: {
-        [mapType[type]]: result,
+        [MAP_TYPE[type]]: result,
       },
     });
   };

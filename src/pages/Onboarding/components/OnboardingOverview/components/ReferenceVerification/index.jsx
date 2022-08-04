@@ -3,11 +3,11 @@ import { connect } from 'umi';
 import { Tabs } from 'antd';
 import { debounce } from 'lodash';
 
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import ReferenceVerificationTab from './components/ReferenceVerificationTab';
 
 import styles from '../index.less';
-import SearchOnboarding from '../SearchOnboarding';
+import SearchFilterBar from '../SearchFilterBar';
 
 const { TabPane } = Tabs;
 
@@ -72,7 +72,7 @@ const ReferenceVerification = (props) => {
         <Tabs
           defaultActiveKey={tabId}
           // onChange={onChangeTab}
-          tabBarExtraContent={<SearchOnboarding onChangeSearch={onChangeSearch} />}
+          tabBarExtraContent={<SearchFilterBar onChangeSearch={onChangeSearch} />}
         >
           <TabPane key="1">
             <ReferenceVerificationTab

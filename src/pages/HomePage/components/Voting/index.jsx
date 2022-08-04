@@ -6,7 +6,7 @@ import BarGraph from './components/BarGraph';
 import styles from './index.less';
 import Options from './components/Options';
 import EmptyComponent from '@/components/Empty';
-import { TAB_IDS } from '@/utils/homePage';
+import { TAB_IDS } from '@/constants/homePage';
 import { getCurrentLocation } from '@/utils/authority';
 
 const Voting = (props) => {
@@ -73,7 +73,10 @@ const Voting = (props) => {
             yy: '%dY',
           },
         });
-        const timeLeftTemp = moment(endDate).fromNow();
+        const diffTime = Math.abs(moment(endDate) - moment(new Date()));
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const timeLeftTemp =
+          diffDays < 7 ? moment(endDate).fromNow() : moment(endDate).format('Do MMM, YYYY');
         setTimeLeft(timeLeftTemp);
       }
     }
@@ -121,16 +124,19 @@ const Voting = (props) => {
           id: 'response1',
           text: activePoll?.pollDetail?.response1,
           percent: choiceSummary.find((x) => x._id === 'response1')?.percent || 0,
+          count: choiceSummary.find((x) => x._id === 'response1')?.count || 0,
         },
         {
           id: 'response2',
           text: activePoll?.pollDetail?.response2,
           percent: choiceSummary.find((x) => x._id === 'response2')?.percent || 0,
+          count: choiceSummary.find((x) => x._id === 'response2')?.count || 0,
         },
         {
           id: 'response3',
           text: activePoll?.pollDetail?.response3,
           percent: choiceSummary.find((x) => x._id === 'response3')?.percent || 0,
+          count: choiceSummary.find((x) => x._id === 'response3')?.count || 0,
         },
       ];
       setOptions(temp);

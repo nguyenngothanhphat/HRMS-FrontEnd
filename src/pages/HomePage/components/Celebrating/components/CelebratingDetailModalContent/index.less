@@ -1,5 +1,5 @@
 @commonPadding: 24px;
-@blue: #2c6df9;
+@blue: @primary-color;
 @black: #171924;
 
 .CelebratingDetailModalContent {
@@ -48,7 +48,7 @@
       }
     }
     .below {
-      border-top: 1px solid #d8d8d8;
+      border-top: 1px solid @border-color-base;
       :global {
         .ant-collapse,
         .ant-collapse-content,
@@ -114,7 +114,7 @@
         }
         &__pressed {
           span {
-            color: #2c6df9;
+            color: @primary-color;
             font-weight: 500;
           }
         }
@@ -175,7 +175,7 @@
               border: none;
               box-shadow: none;
               span {
-                color: #2c6df9;
+                color: @primary-color;
                 font-weight: 500;
                 font-size: 13px;
                 font-style: normal;

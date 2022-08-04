@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 // import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { Table, Tabs, Tooltip } from 'antd';
+import { Tabs, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, history, Link } from 'umi';
+import CommonTable from '@/components/CommonTable';
 import DeleteIcon from './images/delete.svg';
 import FileIcon from './images/doc.svg';
 import styles from './index.less';
@@ -197,41 +198,22 @@ class CustomEmailsTableField extends PureComponent {
   _renderTable = (list) => {
     const { loadingFetchList } = this.props;
     const { pageSelected, size } = this.state;
-    const length = list.length;
-    // const rowSize = 5;
 
-    const pagination = {
-      position: ['bottomLeft'],
-      showTotal: (total, range) => (
-        <span>
-          {' '}
-          {formatMessage({ id: 'component.customEmailsTableField.pagination.showing' })}{' '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          {formatMessage({ id: 'component.customEmailsTableField.pagination.of' })} {total}{' '}
-        </span>
-      ),
-      defaultPageSize: size,
-      showSizeChanger: true,
-      pageSizeOptions: ['10', '25', '50', '100'],
-      pageSize: size,
-      current: pageSelected,
-      onChange: (page, pageSize) => this.onChangePagination(page, pageSize),
-    };
     return (
-      <Table
-        dataSource={this._renderData(list)}
+      <CommonTable
+        list={this._renderData(list)}
         columns={this._renderColumns()}
-        size="middle"
         loading={loadingFetchList}
         onRow={(record) => {
           return {
             onMouseEnter: () => this.handleClickCustomEmail(record), // click row
           };
         }}
-        rowKey={(record) => record._id}
-        pagination={pagination}
+        rowKey="_id"
+        isBackendPaging
+        onChangePage={this.onChangePagination}
+        page={pageSelected}
+        limit={size}
       />
     );
   };
