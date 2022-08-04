@@ -65,12 +65,16 @@ const CommonModal = ({
           hasFooter ? (
             <div className={styles.footer}>
               {hasCancelButton && (
-                <CustomSecondaryButton type={cancelButtonType} onClick={handleCancel}>
+                <CustomSecondaryButton
+                  type={cancelButtonType}
+                  onClick={handleCancel}
+                  paddingInline={0}
+                >
                   {cancelText}
                 </CustomSecondaryButton>
               )}
               {hasSecondButton && (
-                <CustomSecondaryButton onClick={onSecondButtonClick}>
+                <CustomSecondaryButton onClick={onSecondButtonClick} paddingInline={0}>
                   {secondText}
                 </CustomSecondaryButton>
               )}

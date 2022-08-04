@@ -1,11 +1,11 @@
-import { CloseOutlined } from '@ant-design/icons';
-import { Skeleton, Tag, Tooltip } from 'antd';
+import { Skeleton, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
 import { dateFormatAPI, VIEW_TYPE } from '@/constants/timeSheet';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
@@ -15,7 +15,6 @@ import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
-import FilterCountTag from '@/components/FilterCountTag';
 
 const Header = (props) => {
   const {
