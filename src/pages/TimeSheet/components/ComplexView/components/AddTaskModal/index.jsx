@@ -27,11 +27,16 @@ import {
   TIME_DEFAULT,
   VIEW_TYPE,
 } from '@/constants/timeSheet';
+import { sortAlphabet } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
+import {
+  checkHolidayInWeek,
+  getAllProjectsWithoutAssigned,
+  holidayFormatDate,
+} from '@/utils/timeSheet';
 import styles from './index.less';
 
-const { Option } = Select;
+const { Option, OptGroup } = Select;
 const countryIdUS = 'US';
 const TASKS = [];
 const { RangePicker } = DatePicker;
@@ -48,6 +53,7 @@ const AddTaskModal = (props) => {
       myTimesheetByDay = [],
       myTimesheetByWeek = [],
       myTimesheetByMonth = [],
+      myProjects = [],
     } = {},
     date = '',
     taskDetail: {
@@ -336,14 +342,15 @@ const AddTaskModal = (props) => {
       if (projectList.length === 0) {
         fetchProjectList();
       }
+      const datesTemp = (moment(forDate).isValid() && [moment(forDate), moment(forDate)]) ||
+        (moment(date).isValid() && [moment(date), moment(date)]) || ['', ''];
 
-      const datesTemp = forDate ? [moment(forDate), moment(forDate)] : [moment(date), moment(date)];
       setDates(datesTemp);
       form.setFieldsValue({
         dates: datesTemp,
         tasks: [
           {
-            projectId: projectId || null,
+            projectId: projectId || myProjects.length === 1 ? myProjects[0].project.id : null,
             startTime: endTime
               ? moment(endTime, hourFormatAPI).format(hourFormat)
               : getDefaultValueStartTime(),
@@ -448,11 +455,30 @@ const AddTaskModal = (props) => {
                         filterOption={(input, option) =>
                           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
-                        {projectList.map((val) => (
-                          <Option key={val.id} value={val.id}>
-                            {`${val.projectName} - ${val.customerName}`}
-                          </Option>
-                        ))}
+                        <OptGroup label="My Projects">
+                          {sortAlphabet(myProjects, 'project', 'projectName').map((project) => {
+                            const {
+                              id = '',
+                              projectName = '',
+                              customerName = '',
+                            } = project.project;
+                            return (
+                              <Option key={id} value={id}>
+                                {projectName} - {customerName}
+                              </Option>
+                            );
+                          })}
+                        </OptGroup>
+                        <OptGroup label="All Projects">
+                          {sortAlphabet(
+                            getAllProjectsWithoutAssigned(projectList, myProjects),
+                            'projectName',
+                          ).map((val) => (
+                            <Option key={val.id} value={val.id}>
+                              {val.projectName} - {val.customerName}
+                            </Option>
+                          ))}
+                        </OptGroup>
                       </Select>
                     </Form.Item>
                   </Col>

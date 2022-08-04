@@ -112,3 +112,8 @@ export const pushSuccess = (errorList = [], text, msg) => {
   }
   return null;
 };
+
+export const getAllProjectsWithoutAssigned = (allProjects, assignedProjects) =>
+  allProjects.filter((project) =>
+    assignedProjects.every((myProject) => myProject.project.id !== project.id),
+  );
