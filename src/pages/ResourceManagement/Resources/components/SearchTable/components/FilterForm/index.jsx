@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { DatePicker, Form, Input, Select, Tag, AutoComplete, Spin } from 'antd';
+import { DatePicker, Form, Input, Select, Tag } from 'antd';
 import moment from 'moment';
 import { debounce } from 'lodash';
 import { connect } from 'umi';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
 import CalendarIcon from '@/assets/calendar_icon.svg';
-import SearchIcon from '@/assets/directory/search.svg';
+// import SearchIcon from '@/assets/directory/search.svg';
 import { dateFormatAPI } from '@/constants/timeSheet';
 import styles from './index.less';
 
@@ -15,6 +15,7 @@ const FilterForm = (props) => {
   const [form] = Form.useForm();
 
   const {
+    // eslint-disable-next-line no-unused-vars
     dispatch,
     filter: filterProp,
     onFilterChange = () => {},
@@ -23,69 +24,27 @@ const FilterForm = (props) => {
     employeeList = [],
     divisions = [],
     titleList = [],
-    loadingFetchEmployeeNameList = false,
+    // eslint-disable-next-line no-unused-vars
     visible = false,
     setApplied = () => {},
     setForm,
     listSkill = [],
   } = props;
 
+  // eslint-disable-next-line no-unused-vars
   const [durationFrom, setDurationFrom] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [durationTo, setDurationTo] = useState('');
   const [filter, setFilter] = useState({});
-  const [employeeNameListState, setEmployeeNameListState] = useState([]);
-  const [employeeNameState, setEmployeeNameState] = useState('');
-  const [searchIcons, setSearchIcons] = useState({
-    name: false,
-  });
 
   useEffect(() => {
     setFilter({ ...filterProp });
   }, [JSON.stringify(filter)]);
 
   useEffect(() => {
-    setEmployeeNameListState(
-      employeeList.map((x) => {
-        return {
-          value: x.generalInfo?.legalName,
-          label: x.generalInfo.legalName,
-        };
-      }),
-    );
-  }, [JSON.stringify(employeeList)]);
-
-  useEffect(() => {
-    if (!employeeNameState) {
-      setEmployeeNameListState([]);
-    }
-  }, [employeeNameState]);
-
-  useEffect(() => {
     setForm(form);
   }, []);
 
-  // const clearFilter = () => {
-  //   setFilter({
-  //     filter: {
-  //       name: undefined,
-  //       title: [],
-  //       tagDivision: [],
-  //       statuses: undefined,
-  //       projects: [],
-  //       skill: undefined,
-  //       fromDate: null,
-  //       toDate: null,
-  //       expYearBegin: undefined,
-  //       expYearEnd: undefined,
-  //       tentativeEndDateEnd: undefined,
-  //       tentativeEndDateStart: undefined,
-  //     },
-  //   });
-  //   setDurationFrom('');
-  //   setDurationTo('');
-  //   form.resetFields();
-  //   onFilterChange({ ...filter, filter });
-  // };
   const disabledDate = (currentDate, type) => {
     if (type === 'fromDate') {
       return (
@@ -158,55 +117,7 @@ const FilterForm = (props) => {
     setApplied(Object.keys(newObj).length);
     onFinishDebounce(values);
   };
-  const onSearchEmployeeDebounce = debounce((type, value) => {
-    let typeTemp = '';
-    switch (type) {
-      // case 'id':
-      //   typeTemp = 'employee/fetchEmployeeIDListEffect';
-      //   break;
-      case 'name':
-        typeTemp = 'resourceManagement/getListEmployee';
-        setEmployeeNameState(value);
-        break;
-      // case 'manager':
-      //   typeTemp = 'employee/fetchManagerListEffect';
-      //   break;
-      default:
-        break;
-    }
-    if (typeTemp && value) {
-      dispatch({
-        type: typeTemp,
-        payload: {
-          name: value,
-          department: ['Engineering'],
-        },
-      });
-    }
-    if (!value) {
-      switch (type) {
-        // case 'id':
-        //   setEmployeeIDListState([]);
-        //   break;
-        case 'name':
-          setEmployeeNameListState([]);
-          break;
-        // case 'manager':
-        //   setManagerListState([]);
-        //   break;
-        default:
-          break;
-      }
-    }
-  }, 1000);
 
-  const handleEmployeeSearch = (type, value) => {
-    onSearchEmployeeDebounce(type, value);
-  };
-
-  // const employees = employeeList.map((x) => {
-  //   return { _id: x._id, name: x.generalInfo.legalName };
-  // });
   const division = divisions.map((x) => {
     return { _id: x.name, name: x.name };
   });
@@ -275,22 +186,34 @@ const FilterForm = (props) => {
         form={form}
       >
         <div className={styles.form__top}>
-          <Form.Item label="BY NAME/USER ID" name="name">
-            <AutoComplete
-              dropdownMatchSelectWidth={252}
-              notFoundContent={loadingFetchEmployeeNameList ? <Spin /> : 'No matches'}
-              options={employeeNameListState}
-              onSearch={(val) => handleEmployeeSearch('name', val)}
-              onFocus={() => setSearchIcons({ ...searchIcons, name: true })}
-              onBlur={() => setSearchIcons({ ...searchIcons, name: false })}
+          <Form.Item label="BY NAME/USER ID" name="userName">
+            <Select
+              allowClear
+              showArrow
+              showSearch
+              filterOption={(input, option) => {
+                return (
+                  input &&
+                  ((option.key && option.key.toLowerCase().indexOf(input.toLowerCase()) >= 0) ||
+                    (option.value &&
+                      option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0))
+                );
+              }}
+              mode="multiple"
+              placeholder="Select employee"
+              dropdownClassName={styles.dropdown}
             >
-              <Input
-                placeholder="Search by Name/User ID"
-                prefix={searchIcons.name ? <img src={SearchIcon} alt="search" /> : null}
-                allowClear
-              />
-            </AutoComplete>
-            {/* <Input placeholder="Search by Name/User ID" /> */}
+              {employeeList.map((option) => {
+                return (
+                  <Option
+                    key={option?.generalInfoInfo?.userId}
+                    value={option?.generalInfoInfo?.legalName}
+                  >
+                    <span>{option?.generalInfoInfo?.legalName}</span>
+                  </Option>
+                );
+              })}
+            </Select>
           </Form.Item>
           {fieldsArray.map((field) => (
             <Form.Item key={field.name} label={field.label} name={field.name}>
