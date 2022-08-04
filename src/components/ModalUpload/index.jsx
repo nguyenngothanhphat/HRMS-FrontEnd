@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable compat/compat */
-import { InboxOutlined } from '@ant-design/icons';
-import { Button, message, Modal, Upload } from 'antd';
 import React, { Component } from 'react';
+import { Modal, Button, Upload, message, Progress } from 'antd';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { connect } from 'umi';
+import { InboxOutlined } from '@ant-design/icons';
 import styles from './index.less';
+import uploadFirebase from '@/services/firebase';
 
 const { Dragger } = Upload;
 const propsUpload = {
@@ -46,6 +47,8 @@ class ModalUpload extends Component {
         height: 75,
       },
       croppedImage: null,
+      percent: 0,
+      isUpload: false,
     };
   }
 
@@ -98,25 +101,49 @@ class ModalUpload extends Component {
           height: 75,
         },
         croppedImage: null,
+        percent: 0,
+        isUpload: false,
       },
       () => handleCancel(),
     );
   };
 
-  handleUploadToServer = () => {
+  setPercent = (val) => {
+    this.setState({ percent: val });
+  };
+
+  handleUploadToServer = async () => {
     const { dispatch, getResponse = () => {} } = this.props;
     const { croppedImage, fileType, fileData } = this.state;
-    const formData = new FormData();
     const dataUri = fileType === PDF_TYPE ? fileData : croppedImage;
-    formData.append('uri', dataUri);
+    this.setState({ isUpload: true });
+    const info = {
+      percent: 0,
+      status: '',
+    };
+    const payload = await uploadFirebase({ file: dataUri, typeFile: 'IMAGE' }, (val) => {
+      this.setPercent(val);
+    });
+
     dispatch({
-      type: 'upload/uploadFile',
-      payload: formData,
-      showNotification: false,
+      type: 'upload/addAttachment',
+      payload,
+      showNotification: true,
     }).then((resp) => {
+      info.percent = 100;
+      this.setState({ percent: 100 });
       this.setState({ imageUrl: '' });
       getResponse(resp);
     });
+  };
+
+  componentDidUpdate = (props) => {
+    if (!props.visible) {
+      this.setState({
+        percent: 0,
+        isUpload: false,
+      });
+    }
   };
 
   renderHeaderModal = () => {
@@ -183,7 +210,7 @@ class ModalUpload extends Component {
   render() {
     const { visible = false, widthImage = '', loading } = this.props;
     const width = widthImage || 'auto';
-    const { imageUrl, crop, fileType } = this.state;
+    const { imageUrl, crop, fileType, percent, isUpload } = this.state;
     return (
       <Modal
         className={styles.modalUpload}
@@ -221,16 +248,18 @@ class ModalUpload extends Component {
                   />
                 </object>
               ) : (
-                <ReactCrop
-                  className={styles.viewImg__img}
-                  style={{ width }}
-                  src={imageUrl}
-                  crop={crop}
-                  ruleOfThirds
-                  onImageLoaded={this.onImageLoaded}
-                  onComplete={this.onCropComplete}
-                  onChange={this.onCropChange}
-                />
+                <>
+                  <ReactCrop
+                    className={styles.viewImg__img}
+                    style={{ width }}
+                    src={imageUrl}
+                    crop={crop}
+                    ruleOfThirds
+                    onImageLoaded={this.onImageLoaded}
+                    onComplete={this.onCropComplete}
+                    onChange={this.onCropChange}
+                  />
+                </>
               )}
             </>
           ) : (
@@ -249,6 +278,16 @@ class ModalUpload extends Component {
             </Dragger>
           )}
         </div>
+        {isUpload && (
+          <Progress
+            strokeColor={{
+              '0%': '#108ee9',
+              '100%': '#87d068',
+            }}
+            percent={percent}
+            status="active"
+          />
+        )}
       </Modal>
     );
   }

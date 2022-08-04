@@ -42,7 +42,7 @@ const ViewInformation = (props) => {
     const { statusCode, data = [] } = resp;
     //  const check = employee === myEmployeeID;
     if (statusCode === 200) {
-      const [first] = data;
+      const first = data;
       handleCancel();
       dispatch({
         type: 'customerProfile/updateCustomerEffect',

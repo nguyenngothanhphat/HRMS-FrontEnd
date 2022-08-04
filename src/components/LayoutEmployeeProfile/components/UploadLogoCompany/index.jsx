@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import logoDefault from '@/assets/companyDefault.png';
 import { Button, Image } from 'antd';
 import { connect } from 'umi';
+import logoDefault from '@/assets/companyDefault.png';
 import ModalUpload from '@/components/ModalUpload';
 import s from './index.less';
 
@@ -44,7 +44,7 @@ class UploadLogoCompany extends Component {
     const { dispatch, companyDetails: { company: { _id: id = '', tenant = '' } = {} } = {} } =
       this.props;
     if (statusCode === 200) {
-      const [first] = data;
+      const first = data;
       if (id) {
         dispatch({
           type: 'companiesManagement/updateCompany',
