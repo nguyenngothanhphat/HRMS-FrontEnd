@@ -59,7 +59,7 @@ class UploadLogoCompany extends Component {
     const tenantId = getCurrentTenant();
 
     if (statusCode === 200) {
-      const [first] = data;
+      const first = data;
       if (id) {
         dispatch({
           type: 'companiesManagement/updateCompany',

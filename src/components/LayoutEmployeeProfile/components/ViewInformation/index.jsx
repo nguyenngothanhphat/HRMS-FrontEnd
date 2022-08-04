@@ -167,7 +167,7 @@ class ViewInformation extends Component {
     const { statusCode, data = [] } = resp;
     const check = employee === myEmployeeID;
     if (statusCode === 200) {
-      const [first] = data;
+      const first = data;
       this.handleCancel();
       dispatch({
         type: 'employeeProfile/updateGeneralInfo',
