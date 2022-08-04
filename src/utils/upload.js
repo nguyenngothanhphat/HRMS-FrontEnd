@@ -1,11 +1,13 @@
 import * as axios from 'axios';
 import { message } from 'antd';
+import imageCompression from 'browser-image-compression';
+import { FILE_TYPE } from '@/constants/upload';
 
 export default async function uploadFile(files, params) {
   return axios.post('/file/upload', { files, params });
 }
 
-const identifyImage = (fileName = '') => {
+export const identifyFile = (fileName = '') => {
   if (fileName) {
     const parts = fileName.split('.');
     const ext = parts[parts.length - 1];
@@ -13,25 +15,58 @@ const identifyImage = (fileName = '') => {
       case 'jpg':
       case 'jpeg':
       case 'png':
-        return 1;
-
+        return FILE_TYPE.IMAGE;
+      case 'pdf':
+        return FILE_TYPE.PDF;
       default:
-        return 0;
+        return FILE_TYPE.OTHER;
     }
   }
-  return 0;
+  return FILE_TYPE.OTHER;
 };
 
-export const beforeUpload = (file) => {
-  const checkType = identifyImage(file.name) === 1;
-  if (!checkType) {
-    message.error('You can only upload png, jpg, jpeg image files!');
-    return false;
+const getTypeText = (arr) => {
+  const res = [];
+  if (arr.includes(FILE_TYPE.IMAGE)) {
+    res.push('png');
+    res.push('jpg');
+    res.push('jpeg');
   }
-  const isLt3M = file.size / 1024 / 1024 < 3;
-  if (!isLt3M) {
-    message.error('Image must smaller than 3MB!');
-    return false;
+  if (arr.includes(FILE_TYPE.PDF)) {
+    res.push('pdf');
   }
-  return checkType && isLt3M;
+  return res.join(', ');
 };
+
+export const beforeUpload = (file, types = [FILE_TYPE.IMAGE, FILE_TYPE.PDF], size = 3) => {
+  const checkType = types.includes(identifyFile(file.name));
+  if (!checkType) {
+    message.error(`You can only upload ${getTypeText(types)} image files!`);
+    return false;
+  }
+  const isLtSize = file.size / 1024 / 1024 < size;
+  if (!isLtSize) {
+    message.error(`File must smaller than ${size}MB!`);
+    return false;
+  }
+  return checkType && isLtSize;
+};
+
+export async function compressImage(file) {
+  let res = file;
+  if (identifyFile(file.name) === FILE_TYPE.IMAGE) {
+    const options = {
+      maxSizeMB: 0.7,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+      alwaysKeepResolution: true,
+    };
+    try {
+      res = await imageCompression(file, options);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  }
+  return res;
+}

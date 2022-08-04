@@ -3,9 +3,9 @@ import { Steps } from 'antd';
 import { history } from 'umi';
 import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
-// import { TIMEOFF_STATUS } from '@/utils/timeOff';
+// import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import styles from './index.less';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
 
 const { Step } = Steps;
 const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DELETED, WITHDRAWN } = TIMEOFF_STATUS;

@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Select, Spin, Image, Skeleton } from 'antd';
-import { Document, Page, pdfjs } from 'react-pdf';
 import { formatMessage, connect } from 'umi';
 import { LoadingOutlined } from '@ant-design/icons';
 import UploadImage from '@/components/UploadImage';
@@ -13,7 +12,7 @@ import ModalImg from '@/assets/modal_img_1.png';
 import NoImage from '@/assets/no-photo-available-icon.jpg';
 import styles from './index.less';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+// pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const { Option } = Select;
 
@@ -335,26 +334,14 @@ class ViewDocument extends PureComponent {
             )}
 
             {identifyImageOrPdf(url) !== 0 && !loadingFileDetail && (
-              <Document
-                className={styles.pdfFrame}
-                onLoadSuccess={this.onDocumentLoadSuccess}
-                file={url}
-                loading={
-                  <div style={{ padding: '24px' }}>
-                    <Skeleton />
-                  </div>
-                }
-                noData={this.documentWarning('URL is not available.')}
-              >
-                {Array.from(new Array(numPages), (el, index) => (
-                  <Page
-                    loading=""
-                    className={styles.pdfPage}
-                    key={`page_${index + 1}`}
-                    pageNumber={index + 1}
-                  />
-                ))}
-              </Document>
+              <object width="100%" height="560" data={url} type="application/pdf">
+                <iframe
+                  width="100%"
+                  height="560"
+                  src={`https://docs.google.com/viewer?url=${url}&embedded=true`}
+                  title="pdf-viewer"
+                />
+              </object>
             )}
           </div>
 

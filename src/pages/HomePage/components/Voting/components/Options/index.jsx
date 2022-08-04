@@ -1,8 +1,9 @@
-import { Col, Row } from 'antd';
+import { Col, Row, Tooltip } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 import GrayDot from '@/assets/homePage/grayDot.svg';
+import ChartIcon from '@/assets/homePage/chart.svg';
 
 const Options = (props) => {
   const {
@@ -37,7 +38,7 @@ const Options = (props) => {
           {previewOptions.length > 0
             ? previewOptions.map((reply, index) => {
                 return (
-                  <Col span={24}>
+                  <Col span={24} key={`${index + 1}`}>
                     <div className={styles.reply}>
                       <span>{reply.response || `Response ${index + 1}`}</span>
                     </div>
@@ -46,7 +47,7 @@ const Options = (props) => {
               })
             : [1, 2, 3].map((reply, index) => {
                 return (
-                  <Col span={24}>
+                  <Col span={24} key={`${index + 1}`}>
                     <div className={styles.reply}>
                       <span>Response {index + 1}</span>
                     </div>
@@ -86,7 +87,7 @@ const Options = (props) => {
       <p className={styles.questionText}>{question}</p>
       <Row gutter={[0, 10]} className={styles.poll}>
         {options.map((reply) => (
-          <Col span={24}>
+          <Col span={24} key={reply.id}>
             <div className={styles.reply} onClick={() => onVote(reply.id)}>
               <span>{reply.text}</span>
             </div>
@@ -94,12 +95,18 @@ const Options = (props) => {
         ))}
       </Row>
       <div className={styles.votingInformation}>
-        <span className={styles.number}>{countVotes()} votes</span>
+        <span className={styles.number}>
+          {' '}
+          <Tooltip title="Number of Employees whose votes have been recorded.">
+            <img src={ChartIcon} alt="icon" />
+          </Tooltip>
+          {countVotes()} votes
+        </span>
         {timeLeft && (
-          <>
-            <img src={GrayDot} alt="" />
-            <span className={styles.dueTime}>{timeLeft}</span>
-          </>
+          <span>
+            <span className={styles.dueTime}>Poll Ends on</span>
+            <span className={styles.number}>{timeLeft}</span>
+          </span>
         )}
       </div>
     </div>

@@ -314,8 +314,9 @@ const customerProfile = {
     },
 
     *addDoc({ payload }, { call }) {
+      let response = {}
       try {
-        const response = yield call(addDocument, {
+        response = yield call(addDocument, {
           tenantId: getCurrentTenant(),
           ...payload,
         });
@@ -325,6 +326,7 @@ const customerProfile = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *filterDoc({ payload }, { call, put }) {

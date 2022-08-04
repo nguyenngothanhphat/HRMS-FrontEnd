@@ -1,7 +1,8 @@
-import React from 'react';
-import { formatMessage, connect } from 'umi';
-import moment from 'moment';
 import { isEmpty } from 'lodash';
+import moment from 'moment';
+import React from 'react';
+import { connect, formatMessage } from 'umi';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import RemoveIcon from '../Edit/assets/removeIcon.svg';
 import styles from './styles.less';
 
@@ -68,7 +69,7 @@ const DependentTabs = (props) => {
           <div className={styles.containerSelft__title}>Date of Birth</div>
           {DOB !== '' && DOB !== null ? (
             <div className={styles.containerSelft__content}>
-              <p>{moment(DOB).locale('en').format('DD/MM/YYYY')}</p>
+              <p>{moment(DOB).locale('en').format(DATE_FORMAT_MDY)}</p>
             </div>
           ) : (
             <div className={styles.containerSelft__content}> </div>
@@ -109,7 +110,7 @@ const DependentTabs = (props) => {
                         foo = data.relationship;
                         break;
                       case dob:
-                        foo = moment(data.dob).locale('en').format('DD/MM/YYYY');
+                        foo = moment(data.dob).locale('en').format(DATE_FORMAT_MDY);
                         break;
                       default:
                         return foo;

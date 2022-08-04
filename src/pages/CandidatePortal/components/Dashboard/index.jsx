@@ -1,7 +1,7 @@
 import { Col, Row } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { NEW_COMER_CLASS } from '@/utils/candidatePortal';
+import { NEW_COMER_CLASS } from '@/constants/candidatePortal';
 import CompanyProfile from './components/CompanyProfile';
 import ApplicationStatus from './components/NewApplicationStatus';
 import PendingTasks from './components/PendingTasks';

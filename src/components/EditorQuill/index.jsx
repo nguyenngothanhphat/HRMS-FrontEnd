@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 // import { debounce } from 'lodash';
 import { history, connect } from 'umi';
-import REACT_APP_TINYMCE_KEY from '@/utils/editor';
+import REACT_APP_TINYMCE_KEY from '@/constants/editor';
 
 import styles from './index.less';
 

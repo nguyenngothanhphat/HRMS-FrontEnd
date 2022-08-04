@@ -39,7 +39,12 @@ const TaskPopover = (props) => {
           )}
           {showingTasks.map((task) => {
             return (
-              <Row className={styles.eachRow} justify="space-between" align="middle">
+              <Row
+                className={styles.eachRow}
+                justify="space-between"
+                align="middle"
+                key={task._id || task.id}
+              >
                 <Col span={18} className={styles.taskName}>
                   <span>{task.taskName || 'No name'}</span>
                 </Col>

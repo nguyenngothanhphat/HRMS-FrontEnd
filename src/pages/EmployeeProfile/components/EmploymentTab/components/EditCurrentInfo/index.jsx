@@ -4,6 +4,8 @@ import { Button, DatePicker, Form, Input, Select, Skeleton } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -319,17 +321,15 @@ class EditCurrentInfo extends PureComponent {
           )}
 
           <div className={styles.spaceFooter}>
-            <div className={styles.btnCancel} onClick={handleCancel}>
+            <CustomSecondaryButton onClick={handleCancel}>
               Cancel
-            </div>
-            <Button
-              type="primary"
+            </CustomSecondaryButton>
+            <CustomPrimaryButton
               htmlType="submit"
-              className={styles.btnSubmit}
               loading={loadingUpdate}
             >
               Save
-            </Button>
+            </CustomPrimaryButton>
           </div>
         </Form>
       </div>

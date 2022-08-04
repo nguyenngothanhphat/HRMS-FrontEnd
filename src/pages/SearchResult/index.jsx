@@ -1,25 +1,27 @@
-import React, { useEffect } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
 import { Tabs } from 'antd';
-import { history, connect } from 'umi';
 import { includes } from 'lodash';
-import styles from './index.less';
-import EmployeeResult from './components/EmployeesResult/index';
-import DocumentResult from './components/DocumentResult/index';
-import TicketResult from './components/TicketResult/index';
+import React, { useEffect } from 'react';
+import { connect, history } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
+import AdvancedSearchDocument from './components/AdvancedSearchDocument';
 import AdvancedSearchEmployee from './components/AdvancedSearchEmployee';
 import AdvancedSearchTicket from './components/AdvancedSearchTicket';
-import AdvancedSearchDocument from './components/AdvancedSearchDocument';
+import DocumentResult from './components/DocumentResult/index';
+import EmployeeResult from './components/EmployeesResult/index';
+import TicketResult from './components/TicketResult/index';
+import styles from './index.less';
 
 const { TabPane } = Tabs;
 
 const SearchResult = React.memo((props) => {
   const { match: { params: { tabName, advanced } = {} } = {}, dispatch } = props;
+
   useEffect(() => {
     if (!tabName) {
       history.replace('search-result/employees');
     }
   }, []);
+
   const changeTab = (key) => {
     if (!advanced) {
       dispatch({

@@ -1,12 +1,15 @@
 .ViewDocument {
-  // border-radius: 5px;
-  // border: solid 1px #d6dce0;
-  background-color: white;
   width: 100%;
+  // border-radius: 5px;
+  // border: solid 1px @border-color-base;
+  background-color: white;
   .tableTitle {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    height: 67px;
+    padding: 0 24px;
+    border-bottom: solid 1px @border-color-base;
     span {
       font-weight: 700;
       font-size: 16px;
@@ -17,36 +20,33 @@
         margin-top: -5px;
       }
       span {
-        color: #2c6df9;
         margin-left: 15px;
+        color: @primary-color;
       }
       &:hover {
         opacity: 0.8;
       }
     }
-    border-bottom: solid 1px #d6dce0;
-    padding: 0 24px;
-    height: 67px;
   }
 
   .tableContent {
     padding: 24px 24px 0 24px;
-    border-bottom: solid 1px #d6dce0;
+    border-bottom: solid 1px @border-color-base;
     .documentPreviewFrame {
-      border-radius: 5px;
-      background-color: #f3f7ff;
-      max-height: 450px;
       min-height: 350px;
-      overflow-x: hidden;
-      border: 1px solid #2c6df9;
+      max-height: 450px;
       margin-bottom: 24px;
+      overflow-x: hidden;
+      background-color: #f3f7ff;
+      border: 1px solid @primary-color;
+      border-radius: 5px;
       .pdfFrame {
         .pdfPage {
           margin-bottom: 20px;
           canvas {
-            margin: 0 auto;
             width: 100% !important;
             height: 100% !important;
+            margin: 0 auto;
           }
         }
       }
@@ -60,21 +60,21 @@
 
     .documentPagination {
       display: flex;
+      align-items: center;
       justify-content: space-between;
       margin-top: 7px;
-      align-items: center;
       .numberOfFiles {
-        font-size: 16px;
         font-weight: 700;
+        font-size: 16px;
         span {
           color: #2d6ef9;
         }
       }
       .filesPagination {
         img {
+          height: 12px;
           margin-left: 24px;
           cursor: pointer;
-          height: 12px;
         }
       }
     }
@@ -93,8 +93,8 @@
       }
       .searchIcon {
         position: absolute;
-        right: 0;
         top: 0;
+        right: 0;
       }
       .shareViaEmailInput {
         position: relative;
@@ -104,9 +104,9 @@
             width: 299px;
             padding: 7px;
             object-fit: contain;
-            border-radius: 5px;
-            border: solid 1px #2c6df9;
             background-color: #ffffff;
+            border: solid 1px @primary-color;
+            border-radius: 5px;
             .ant-select-selection-item {
               // remove icon
               flex-direction: row-reverse;
@@ -116,8 +116,8 @@
               .anticon,
               .anticon-close {
                 margin-right: 8px;
-                border-radius: 30px;
                 border: 1px solid #676767;
+                border-radius: 30px;
                 svg {
                   color: #676767;
                 }
@@ -140,30 +140,30 @@
   }
   .operationButton {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
+    justify-content: flex-end;
     padding: 24px;
     :global {
       .ant-upload {
+        margin-right: 20px;
         color: #ffa100 !important;
         font-weight: bold !important;
         cursor: pointer;
-        margin-right: 20px;
       }
     }
     .loadingIcon {
-      color: #ffa100;
       margin-left: 5px;
+      color: #ffa100;
       font-size: 20px;
     }
     .saveButton {
-      font-weight: 700;
-      border-radius: 25px;
-      border: solid 1px #ffa100;
-      background-color: #ffa100;
-      height: 40px;
       width: 95px;
+      height: 40px;
       color: white;
+      font-weight: 700;
+      background-color: #ffa100;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
     }
   }
 }

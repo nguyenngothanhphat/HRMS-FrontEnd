@@ -1,9 +1,10 @@
 import { Spin, Tabs } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { addZeroToNumber } from '@/utils/utils';
+import { addZeroToNumber, splitArrayItem } from '@/utils/utils';
 import TimeOffRequestTab from './components/TimeOffRequestTab';
 import styles from './index.less';
+import { getTypeListByTab } from '@/utils/timeOff';
 
 const { TabPane } = Tabs;
 
@@ -13,7 +14,6 @@ const EmployeeRequestTable = (props) => {
     timeOff: {
       currentLeaveTypeTab = '',
       yourTimeOffTypes = {},
-      yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
       totalByType = {
         A: 0,
         B: 0,
@@ -24,34 +24,18 @@ const EmployeeRequestTable = (props) => {
     loadingTimeOffType = false,
     eligibleForCompOff = false,
     currentScopeTab = '',
+    typeList = [],
   } = props;
 
   const saveCurrentTypeTab = (type) => {
-    let arr = [];
-    switch (type) {
-      case '1':
-        arr = commonLeaves.filter((x) => x.type === 'A');
-        break;
-      case '2':
-        arr = specialLeaves.filter((x) => x.type === 'C');
-        break;
-      case '3':
-        arr = commonLeaves.filter((x) => x.type === 'B');
-        break;
-      case '4':
-        arr = specialLeaves.filter((x) => x.type === 'D');
-        break;
-      default:
-        arr = [];
-        break;
-    }
-    arr = arr.map((item) => item._id);
+    const listType = getTypeListByTab(typeList, type);
+    const listIdType = splitArrayItem(listType.map((item) => item.ids));
     dispatch({
       type: 'timeOff/save',
       payload: {
         currentLeaveTypeTab: String(type),
         currentFilterTab: '1',
-        currentPayloadTypes: arr,
+        currentPayloadTypes: listIdType,
       },
     });
 
@@ -115,8 +99,9 @@ const EmployeeRequestTable = (props) => {
   );
 };
 
-export default connect(({ timeOff, user, loading }) => ({
+export default connect(({ timeOff, user, loading, timeOffManagement: { typeList = [] } }) => ({
   timeOff,
   user,
+  typeList,
   loadingTimeOffType: loading.effects['timeOff/fetchTimeOffTypeByEmployeeEffect'],
 }))(EmployeeRequestTable);

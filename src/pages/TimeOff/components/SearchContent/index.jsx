@@ -1,30 +1,28 @@
-import { Col, DatePicker, Form, Row, Select, Skeleton, Space, Tag } from 'antd';
+import { Col, DatePicker, Form, Row, Select, Skeleton, Space } from 'antd';
 import { debounce } from 'lodash';
+import moment from 'moment';
 import React, { Suspense, useEffect } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
-import FilterButton from '@/components/FilterButton';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
-import { removeEmptyFields } from '@/utils/utils';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { splitArrayItem } from '@/utils/utils';
 import styles from './index.less';
 
 const TimeOffFilter = (props) => {
   const [form] = Form.useForm();
-
   const {
     dispatch,
-    yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
     filter: { search, type = [], fromDate, toDate },
     filter = {},
     saveCurrentTypeTab = () => {},
     currentLeaveTypeTab = '',
     shortType = '',
+    typeList: typeListData = [],
   } = props;
-
-  const typeList = [...commonLeaves, ...specialLeaves].filter((x) =>
-    shortType ? x.type === shortType : true,
-  );
+  const typeList = [...typeListData].filter((x) => (shortType ? x.type === shortType : true));
 
   const onSearchDebounce = debounce((value) => {
     dispatch({
@@ -56,12 +54,14 @@ const TimeOffFilter = (props) => {
   };
 
   const onFinish = (values) => {
-    const filterTemp = removeEmptyFields(values);
-
-    // dispatch action
+    const { type: typeData = [] } = values;
+    const listIdType = splitArrayItem(typeList.map((item) => item.ids));
+    const newType = typeData.length ? splitArrayItem([...typeData]) : listIdType;
     dispatch({
       type: 'timeOff/save',
-      payload: { filter: { ...search, ...filterTemp } },
+      payload: {
+        filter: { ...search, type: newType, fromDate: values.fromDate, toDate: values.toDate },
+      },
     });
   };
 
@@ -72,10 +72,6 @@ const TimeOffFilter = (props) => {
   const onValuesChange = (changedValues, allValues) => {
     onFinishDebounce(allValues);
   };
-
-  useEffect(() => {
-    form.setFieldsValue({ type, fromDate, toDate });
-  }, [filter]);
 
   const countFilter = () => {
     let count = 0;
@@ -88,8 +84,6 @@ const TimeOffFilter = (props) => {
     return count;
   };
 
-  const getFilterActive = type.length > 0 || fromDate || toDate;
-
   const onClearFilter = () => {
     saveCurrentTypeTab(currentLeaveTypeTab);
     // dispatch action
@@ -97,7 +91,18 @@ const TimeOffFilter = (props) => {
       type: 'timeOff/save',
       payload: { filter: {} },
     });
+    form.resetFields();
   };
+
+  useEffect(() => {
+    dispatch({
+      type: 'timeOffManagement/getTimeOffTypeListEffect',
+      payload: {
+        company: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
+      },
+    });
+  }, []);
 
   const FilterContent = () => {
     return (
@@ -105,10 +110,8 @@ const TimeOffFilter = (props) => {
         layout="vertical"
         name="filter"
         form={form}
-        initialValues={{ type, fromDate, toDate }}
         onValuesChange={onValuesChange}
         className={styles.FilterContent}
-        onFinish={() => {}}
       >
         <Form.Item label="BY TIMEOFF TYPES" name="type">
           <Select
@@ -117,15 +120,14 @@ const TimeOffFilter = (props) => {
             mode="multiple"
             style={{ width: '100%' }}
             placeholder="Search by Timeoff Types"
-            filterOption={
-              (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              // eslint-disable-next-line react/jsx-curly-newline
-            }
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             showArrow
           >
             {typeList.map((x) => {
+              const id = x.ids.join(',');
               return (
-                <Select.Option value={x._id} key={x._id}>
+                <Select.Option value={id} key={id}>
                   {x.name}
                 </Select.Option>
               );
@@ -153,11 +155,11 @@ const TimeOffFilter = (props) => {
     );
   };
 
+  const applied = countFilter();
+
   return (
     <Space direction="horizontal" className={styles.TimeOffFilter}>
-      <Tag className={styles.appliedTag} closable onClose={onClearFilter} visible={getFilterActive}>
-        {countFilter()} filters applied
-      </Tag>
+      <FilterCountTag count={applied} onClearFilter={onClearFilter} />
 
       <div className={styles.rightContentHeader}>
         <FilterPopover
@@ -169,7 +171,7 @@ const TimeOffFilter = (props) => {
           }
           realTime
         >
-          <FilterButton fontSize={14} showDot={getFilterActive} />
+          <CustomOrangeButton fontSize={14} showDot={applied > 0} />
         </FilterPopover>
 
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Employee ID, name..." />
@@ -180,10 +182,12 @@ const TimeOffFilter = (props) => {
 export default connect(
   ({
     dispatch,
+    timeOffManagement: { typeList = [] },
     timeOff: { yourTimeOffTypes = {}, filter = {}, currentScopeTab, currentLeaveTypeTab },
   }) => ({
     dispatch,
     yourTimeOffTypes,
+    typeList,
     filter,
     currentScopeTab,
     currentLeaveTypeTab,

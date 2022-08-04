@@ -1,19 +1,21 @@
+import { CloseOutlined } from '@ant-design/icons';
+import { Skeleton, Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { Suspense, useEffect, useState } from 'react';
-import { Button, Skeleton, Tag, Tooltip } from 'antd';
 import { connect } from 'umi';
-import { CloseOutlined } from '@ant-design/icons';
-import exportToCSV from '@/utils/exportAsExcel';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
+import FilterPopover from '@/components/FilterPopover';
+import { dateFormatAPI, VIEW_TYPE } from '@/constants/timeSheet';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
-import { checkHolidayInWeek, dateFormatAPI, holidayFormatDate, VIEW_TYPE } from '@/utils/timeSheet';
-import styles from './index.less';
-import FilterButton from '@/components/FilterButton';
-import FilterPopover from '@/components/FilterPopover';
-import FilterContent from './components/FilterContent';
 import { getCurrentCompany } from '@/utils/authority';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
+import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
+import FilterContent from './components/FilterContent';
+import styles from './index.less';
+import FilterCountTag from '@/components/FilterCountTag';
 
 const Header = (props) => {
   const {
@@ -35,8 +37,8 @@ const Header = (props) => {
         location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
       } = {},
     } = {},
+    timeSheet: { filterHrView = {} },
   } = props;
-  const [applied, setApplied] = useState(0);
   const [holidays, setHolidays] = useState([]);
   const [form, setForm] = useState(null);
 
@@ -78,7 +80,7 @@ const Header = (props) => {
     setEndDate(dates[1]);
   };
 
-  const processData = (array) => {
+  const processData = (array = []) => {
     return array.map((item) => {
       const {
         legalName = '',
@@ -125,14 +127,13 @@ const Header = (props) => {
   };
 
   const downloadTemplate = () => {
-    exportToCSV(processData(data), 'HumanResourceReportData.xlsx');
+    exportArrayDataToCsv('HRReportData', processData(data));
   };
 
   const handleClearFilter = () => {
     dispatch({
       type: 'timeSheet/clearFilter',
     });
-    setApplied(0);
     form?.resetFields();
   };
 
@@ -154,6 +155,7 @@ const Header = (props) => {
   }, [startDate, endDate]);
 
   const isHoliday = checkHolidayInWeek(startDate, endDate, holidays);
+  const applied = Object.values(filterHrView).filter((v) => v).length;
 
   // MAIN AREA
   return (
@@ -190,29 +192,21 @@ const Header = (props) => {
       <div className={styles.Header__middle}>{viewChangeComponent()}</div>
 
       <div className={styles.Header__right}>
-        {applied > 0 && (
-          <Tag
-            className={styles.Header__tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined onClick={handleClearFilter} />}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
-        <div className={styles.downloadIcon} onClick={downloadTemplate}>
-          <img src={DownloadIcon} alt="Icon Download" />
-          <Button>Download</Button>
-        </div>
+        <FilterCountTag count={applied} onClearFilter={handleClearFilter} />
+        <CustomOrangeButton onClick={downloadTemplate} icon={DownloadIcon}>
+          Download
+        </CustomOrangeButton>
+
         <FilterPopover
           placement="bottomRight"
           content={
             <Suspense fallback={<Skeleton active />}>
-              <FilterContent setForm={setForm} setApplied={setApplied} />
+              <FilterContent setForm={setForm} />
             </Suspense>
           }
           realTime
         >
-          <FilterButton />
+          <CustomOrangeButton showDot={applied > 0} />
         </FilterPopover>
         <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>

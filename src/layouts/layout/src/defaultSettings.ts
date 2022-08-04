@@ -32,7 +32,7 @@ export interface PureSettings {
   /**
    * sticky siderbar
    */
-  fixSiderbar: boolean;
+  fixSidebar: boolean;
   menu: { locale?: boolean; defaultOpenAll?: boolean };
   title: string;
   // Your custom iconfont Symbol script Url
@@ -52,7 +52,7 @@ const defaultSettings: ProSettings = {
   layout: 'side',
   contentWidth: 'Fluid',
   fixedHeader: false,
-  fixSiderbar: false,
+  fixSidebar: false,
   menu: {
     locale: true,
   },

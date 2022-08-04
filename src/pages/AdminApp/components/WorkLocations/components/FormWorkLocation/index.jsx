@@ -51,6 +51,13 @@ class FormWorkLocation extends Component {
     return listState;
   };
 
+  findListTimezone = (countryId) => {
+    const { listCountry = [] } = this.props;
+    const timezone = listCountry.find((item) => item._id === countryId) || [];
+    const { timezones = [] } = timezone;
+    return timezones;
+  };
+
   showConfirm = (id) => {
     const { removeLocation = () => {} } = this.props;
     confirm({
@@ -83,6 +90,7 @@ class FormWorkLocation extends Component {
     } = this.props;
 
     const listState = this.findListState(country) || [];
+    const listTimezone = this.findListTimezone(country);
     const itemLocation = listLocation[field.name] || {};
     return (
       <div className={s.FormWorkLocation} style={field.name > 0 ? { marginTop: '24px' } : {}}>
@@ -191,7 +199,7 @@ class FormWorkLocation extends Component {
             </Col>
           </Row>
           <Row gutter={[24, 24]} className={s.FormWorkLocation__viewBottom__row}>
-            <Col span={8} className={s.viewFormVertical}>
+            <Col span={6} className={s.viewFormVertical}>
               <p className={classnames(s.FormWorkLocation__viewBottom__row__textLabel, s.mgb10)}>
                 Country*
               </p>
@@ -213,7 +221,7 @@ class FormWorkLocation extends Component {
                   showSearch
                   onChange={this.onChangeCountry}
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
                 >
                   {listCountry.map((item) => (
@@ -222,7 +230,7 @@ class FormWorkLocation extends Component {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={8} className={s.viewFormVertical}>
+            <Col span={6} className={s.viewFormVertical}>
               <p className={classnames(s.FormWorkLocation__viewBottom__row__textLabel, s.mgb10)}>
                 State*
               </p>
@@ -244,7 +252,7 @@ class FormWorkLocation extends Component {
                   showSearch
                   disabled={!country}
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
                 >
                   {listState.map((item) => (
@@ -253,7 +261,7 @@ class FormWorkLocation extends Component {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={8} className={s.viewFormVertical}>
+            <Col span={6} className={s.viewFormVertical}>
               <p className={classnames(s.FormWorkLocation__viewBottom__row__textLabel, s.mgb10)}>
                 Zip/Postal Code*
               </p>
@@ -270,6 +278,37 @@ class FormWorkLocation extends Component {
                 ]}
               >
                 <Input placeholder="Zip/Postal Code" />
+              </Form.Item>
+            </Col>
+            <Col span={6} className={s.viewFormVertical}>
+              <p className={classnames(s.FormWorkLocation__viewBottom__row__textLabel, s.mgb10)}>
+                Timezone*
+              </p>
+              <Form.Item
+                {...field}
+                label={false}
+                name={[field.name, 'timezone']}
+                fieldKey={[field.fieldKey, 'timezone']}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter Timezone!',
+                  },
+                ]}
+              >
+                <Select
+                  placeholder="Select Timezone"
+                  showArrow
+                  showSearch
+                  disabled={!country}
+                  filterOption={(input, option) =>
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {listTimezone.map((item) => (
+                    <Option key={item}>{item}</Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
           </Row>

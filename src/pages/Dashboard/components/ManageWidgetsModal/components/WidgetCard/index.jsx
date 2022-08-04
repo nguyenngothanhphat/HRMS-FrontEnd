@@ -15,7 +15,7 @@ const WidgetCard = (props) => {
     onSelectWidget(id, checkedTemp);
   };
   return (
-    <Col span={12} className={styles.WidgetCard}>
+    <Col span={12} className={styles.WidgetCard} key={id}>
       <Row gutter={[16]}>
         <Col span={3}>
           <Checkbox defaultChecked={checked} onChange={onChange} />

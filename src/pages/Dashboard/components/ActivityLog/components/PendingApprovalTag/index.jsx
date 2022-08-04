@@ -7,7 +7,7 @@ import RejectCommentModal from './components/RejectCommentModal';
 import ViewIcon from '@/assets/dashboard/open.svg';
 import ApproveIcon from '@/assets/dashboard/approve.svg';
 import CancelIcon from '@/assets/dashboard/cancel.svg';
-import { TYPE_TICKET_APPROVAL } from '@/utils/dashboard';
+import { TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
 import styles from './index.less';
 
 const PendingApprovalTag = (props) => {
@@ -16,7 +16,7 @@ const PendingApprovalTag = (props) => {
       createdAt: date = '',
       employee: { generalInfo: { legalName = '', userId = '' } = {} || {} } = {} || {},
       employeeInfo: { legalName: nameTimeSheet = '', userId: userTimeSheet = '' } = {} || {},
-      type: { typeName = '' } = {} || {},
+      // type: { typeName = '' } = {} || {},
       typeTicket = '',
       ticketID = '',
       ticketId = '',
@@ -103,67 +103,65 @@ const PendingApprovalTag = (props) => {
     const dateTemp = moment(date).date();
     const monthTemp = moment(date).locale('en').format('MMM');
     return (
-      <>
-        <Col span={24}>
-          <div className={styles.PendingApprovalTag}>
-            <Row align="middle" justify="space-between">
-              <Col span={20} className={styles.leftPart}>
-                <div className={styles.dateTime}>
-                  <span>{dateTemp}</span>
-                  <span>{monthTemp}</span>
-                </div>
-                <div className={styles.content}>
-                  New{' '}
-                  {typeTicket === TYPE_TICKET_APPROVAL.LEAVE_REQUEST ? (
-                    <span className={styles.timeoffType}>Timeoff</span>
-                  ) : (
-                    <span className={styles.timesheetType}>Timesheet</span>
-                  )}{' '}
-                  request from{' '}
-                  <span>
-                    {typeTicket === TYPE_TICKET_APPROVAL.LEAVE_REQUEST
-                      ? `${legalName}(${userId})`
-                      : `${nameTimeSheet}(${userTimeSheet})`}
-                  </span>{' '}
-                  has been received.
-                </div>
-              </Col>
-              <Col span={4} className={styles.rightPart}>
-                <div className={styles.viewBtn} onClick={handleViewDetail}>
-                  <Tooltip title="View">
-                    <img src={ViewIcon} alt="View Icon" />
-                  </Tooltip>
-                </div>
-                <div className={styles.viewBtn} onClick={() => onApproveClick(item)}>
-                  <Tooltip title="Approve">
-                    <img src={ApproveIcon} alt="Approve Icon" />
-                  </Tooltip>
-                </div>
-                <div className={styles.viewBtn} onClick={() => setCommentModalVisible(true)}>
-                  <Tooltip title="Reject">
-                    <img src={CancelIcon} alt="Cancel Icon" />
-                  </Tooltip>
-                </div>
-              </Col>
-            </Row>
-          </div>
-        </Col>
-        <DetailTicket
-          openModal={openModal}
-          viewedDetail={viewedDetail}
-          ticket={item}
-          onCancel={() => setOpenModal(false)}
-          setViewedDetail={setViewedDetail}
-          refreshData={refreshData}
-        />
-        <RejectCommentModal
-          visible={commentModalVisible}
-          onClose={() => setCommentModalVisible(false)}
-          onReject={onReject}
-          ticketID={ticketID}
-          loading={loadingReject}
-        />
-      </>
+      <Col span={24}>
+        <div className={styles.PendingApprovalTag}>
+          <Row align="middle" justify="space-between">
+            <Col span={20} className={styles.leftPart}>
+              <div className={styles.dateTime}>
+                <span>{dateTemp}</span>
+                <span>{monthTemp}</span>
+              </div>
+              <div className={styles.content}>
+                New{' '}
+                {typeTicket === TYPE_TICKET_APPROVAL.LEAVE_REQUEST ? (
+                  <span className={styles.timeoffType}>Timeoff</span>
+                ) : (
+                  <span className={styles.timesheetType}>Timesheet</span>
+                )}{' '}
+                request from{' '}
+                <span>
+                  {typeTicket === TYPE_TICKET_APPROVAL.LEAVE_REQUEST
+                    ? `${legalName}(${userId})`
+                    : `${nameTimeSheet} (${userTimeSheet})`}
+                </span>{' '}
+                has been received.
+              </div>
+            </Col>
+            <Col span={4} className={styles.rightPart}>
+              <div className={styles.viewBtn} onClick={handleViewDetail}>
+                <Tooltip title="View">
+                  <img src={ViewIcon} alt="View Icon" />
+                </Tooltip>
+              </div>
+              <div className={styles.viewBtn} onClick={() => onApproveClick(item)}>
+                <Tooltip title="Approve">
+                  <img src={ApproveIcon} alt="Approve Icon" />
+                </Tooltip>
+              </div>
+              <div className={styles.viewBtn} onClick={() => setCommentModalVisible(true)}>
+                <Tooltip title="Reject">
+                  <img src={CancelIcon} alt="Cancel Icon" />
+                </Tooltip>
+              </div>
+            </Col>
+          </Row>
+          <DetailTicket
+            openModal={openModal}
+            viewedDetail={viewedDetail}
+            ticket={item}
+            onCancel={() => setOpenModal(false)}
+            setViewedDetail={setViewedDetail}
+            refreshData={refreshData}
+          />
+          <RejectCommentModal
+            visible={commentModalVisible}
+            onClose={() => setCommentModalVisible(false)}
+            onReject={onReject}
+            ticketID={ticketID}
+            loading={loadingReject}
+          />
+        </div>
+      </Col>
     );
   };
 

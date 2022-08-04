@@ -14,7 +14,7 @@ import {
   hourFormatAPI,
   MT_SECONDARY_COL_SPAN,
   hourFormat,
-} from '@/utils/timeSheet';
+} from '@/constants/timeSheet';
 import styles from './index.less';
 
 const { Option } = Select;

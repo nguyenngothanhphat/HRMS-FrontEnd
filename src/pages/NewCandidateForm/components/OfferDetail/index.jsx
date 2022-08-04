@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 // import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
 import AddDocumentModal from './components/AddDocumentModal';
 import DocumentItem from './components/DocumentItem';
 // import { Page } from '../../utils';

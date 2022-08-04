@@ -1,14 +1,15 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable prefer-promise-reject-errors */
-import React, { Component } from 'react';
-import { Row, Col, Button, Modal, Form, Input, Select, DatePicker, Card, notification } from 'antd';
+import { Button, Card, Col, DatePicker, Form, Input, Modal, notification, Row, Select } from 'antd';
 import moment from 'moment';
+import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
-import styles from './index.less';
 import CommonModal from '@/components/CommonModal';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
+import styles from './index.less';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -91,9 +92,9 @@ class AddActionBTN extends Component {
         project,
         status,
         utilization,
-        startDate: (startDate && moment(startDate).format('YYYY-MM-DD')) || null,
-        endDate: (endDate && moment(endDate).format('YYYY-MM-DD')) || null,
-        revisedEndDate: (revisedEndDate && moment(revisedEndDate).format('YYYY-MM-DD')) || null,
+        startDate: (startDate && moment(startDate).format(DATE_FORMAT_YMD)) || null,
+        endDate: (endDate && moment(endDate).format(DATE_FORMAT_YMD)) || null,
+        revisedEndDate: (revisedEndDate && moment(revisedEndDate).format(DATE_FORMAT_YMD)) || null,
         comment,
         milestone: '',
       },

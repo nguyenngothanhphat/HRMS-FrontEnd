@@ -1,0 +1,130 @@
+.NextStep {
+  width: 100%;
+  margin-bottom: 20px;
+  background-color: white;
+  border: 1px solid #ebeff2;
+  border-radius: 5px;
+
+  .aboveContainer {
+    padding: 20px;
+    .abovePart {
+      display: flex;
+      flex-direction: column;
+      span {
+        margin-bottom: 10px;
+      }
+      .title {
+        font-weight: 700;
+        // color: #464646;
+        font-size: 16px;
+      }
+    }
+    .stepBoxes {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      .divider {
+        margin: 0 68px;
+        border-right: 2px solid @border-color-base;
+      }
+      .eachBox {
+        display: flex;
+        flex: 4/7;
+        justify-content: flex-start;
+        &:nth-of-type(1) {
+          flex: 3/7;
+        }
+        .indexNumber {
+          span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            color: white;
+            font-weight: 700;
+            background: @primary-color;
+            border-radius: 50%;
+          }
+        }
+        .content1,
+        .content2 {
+          padding-left: 10px;
+          font-size: 13px;
+          p {
+            margin-bottom: 0;
+            color: #464646;
+          }
+        }
+        .content2 {
+          .scheduleTime {
+            margin-top: 10px;
+            color: @primary-color;
+            font-weight: 500;
+            font-size: 13px;
+            font-style: normal;
+            line-height: 19px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.mailExit {
+  box-sizing: border-box;
+  margin-bottom: 24px;
+
+  background: #ffffff;
+  border: 1px solid @border-color-base;
+  border-radius: 5px;
+
+  .titleBelow {
+    padding: @padding-lg;
+    border-bottom: 1px solid #e2e4e8;
+    .title {
+      color: #464646;
+      font-weight: 700;
+    }
+  }
+
+  .belowContainer {
+    padding: @padding-lg;
+
+    .submitDocuments {
+      // margin: 10px 0;
+
+      .loadingSpin {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 15px 0;
+      }
+
+      .submitFiles {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        .submittedTime {
+          color: #afafaf;
+          font-size: 13px;
+        }
+        .submitButton {
+          color: @primary-color;
+          font-weight: 700;
+          text-decoration: underline;
+          cursor: pointer;
+          transition: all 0.3s ease-in-out;
+          &:hover {
+            opacity: 0.5;
+          }
+        }
+        .disableButton {
+          cursor: default;
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+}

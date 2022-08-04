@@ -1,21 +1,23 @@
-import { CloseOutlined } from '@ant-design/icons';
-import { Button, Card, Popover, Table, Tag } from 'antd';
-import { debounce, filter, isEmpty } from 'lodash';
+import { Button, Card } from 'antd';
+import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { connect, formatMessage } from 'umi';
+import { connect, Link } from 'umi';
 import approvalIcon from '@/assets/approve.svg';
 import rejectIcon from '@/assets/cancel.svg';
 import ViewIcon from '@/assets/dashboard/open.svg';
+import CommonTable from '@/components/CommonTable';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
-import FilterButton from '@/components/FilterButton';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
+import UserProfilePopover from '@/components/UserProfilePopover';
+import { TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { TYPE_TICKET_APPROVAL } from '@/utils/dashboard';
-import { getTimezoneViaCity } from '@/utils/times';
+import { getEmployeeUrl } from '@/utils/directory';
 import RejectCommentModal from '../../../ActivityLog/components/PendingApprovalTag/components/RejectCommentModal';
 import DetailTicket from '../DetailTicket';
-import PopoverInfo from '../PopoverInfo';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
 
@@ -27,39 +29,30 @@ const ApprovalPage = (props) => {
     isLoadData,
     loadingReject,
     loadingApproval,
-    companyLocationList,
     loadingApprovalTimeSheet,
     employee: { _id: idEmployee = '' } = {},
   } = props;
   const [openModal, setOpenModal] = useState(false);
   const [ticket, setTicket] = useState({});
-  const [keySearch, setKeySearch] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const [listData, setListData] = useState([]);
-  const [timezoneList, settimezoneList] = useState([]);
-  const [currentTime, setcurrentTime] = useState(moment());
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [applied, setApplied] = useState(0);
-  const [isFiltering, setIsFiltering] = useState(false);
   const [commentModalVisible, setCommentModalVisible] = useState(false);
   const [recordDetail, setRecordDetail] = useState({});
   const [viewedDetail, setViewedDetail] = useState(false);
-  const [form, setForm] = useState(null);
+  const [filter, setFilter] = useState({});
 
-  const fetchListTicket = (searchKey = '', filterPayload = {}) => {
+  const fetchListTicket = () => {
     dispatch({
       type: 'dashboard/fetchAllListTicket',
       payload: {
         employeeId: idEmployee,
-        search: searchKey,
-        ...filterPayload,
+        search: searchValue,
+        ...filter,
       },
     });
   };
 
   useEffect(() => {
-    fetchListTicket(keySearch);
     const tenantId = getCurrentTenant();
     const company = getCurrentCompany();
     dispatch({
@@ -69,38 +62,21 @@ const ApprovalPage = (props) => {
         tenantId,
       },
     });
-  }, [keySearch]);
+  }, []);
+
   useEffect(() => {
-    if (isLoadData) fetchListTicket();
+    fetchListTicket();
+  }, [searchValue, JSON.stringify(filter)]);
+
+  useEffect(() => {
+    if (isLoadData) {
+      fetchListTicket();
+    }
   }, [isLoadData]);
-
-  const fetchTimezone = () => {
-    const timeZoneList = [];
-    companyLocationList.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id = '',
-      } = location;
-      timeZoneList.push({
-        locationId: _id,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    settimezoneList(timeZoneList);
-  };
-
-  useEffect(() => {
-    fetchTimezone();
-  }, [companyLocationList]);
 
   useEffect(() => {
     setListData(allTicket);
-    setTotal(allTicket.length);
-  }, [keySearch, allTicket]);
+  }, [searchValue, allTicket]);
 
   const viewDetail = (record) => {
     setOpenModal(true);
@@ -179,48 +155,14 @@ const ApprovalPage = (props) => {
   };
 
   const onSearchDebounce = debounce((value) => {
-    setKeySearch(value);
+    setSearchValue(value);
   }, 1000);
 
   const onChangeKeySearch = (e) => {
     const { value = '' } = e.target;
     onSearchDebounce(value);
-    setPage(1);
   };
-  const pagination = {
-    position: ['bottomLeft'],
-    total,
-    // eslint-disable-next-line no-nested-ternary
-    showTotal: (totalData, range) => {
-      return (
-        <span>
-          {' '}
-          {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-          <b>
-            {' '}
-            {range[0]} - {range[1]}{' '}
-          </b>{' '}
-          {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-        </span>
-      );
-    },
-    defaultPageSize: limit,
-    showSizeChanger: true,
-    pageSizeOptions: ['10', '25', '50', '100'],
-    pageSize: limit,
-    current: page,
-    onChange: (currentPage, pageSize) => {
-      setPage(currentPage);
-      setLimit(pageSize);
-    },
-  };
-  // const dummyData = [
-  //   {
-  //     ticketID: 1,
-  //     employee: { generalInfo: { userId: '123', legalName: 'test' } },
-  //     assignee: { generalInfo: { userId: '123', legalName: 'test' } },
-  //   },
-  // ];
+
   const columns = [
     {
       title: <div style={{ paddingLeft: '10px' }}> Ticket ID</div>,
@@ -252,32 +194,39 @@ const ApprovalPage = (props) => {
       dataIndex: 'employeeInfo',
       key: 'name',
       width: 250,
-      render: (employee) => (
-        <Popover
-          content={
-            <PopoverInfo
-              companyLocationList={companyLocationList}
-              propsState={{ currentTime, timezoneList }}
-              data={employee}
-            />
-          }
-          placement="bottomRight"
-          trigger="hover"
-        >
-          {!isEmpty(employee) ? (
-            <span className={styles.employeeName}>{employee?.legalName}</span>
-          ) : (
-            ''
-          )}
-        </Popover>
-      ),
+      render: (employee) => {
+        return (
+          <UserProfilePopover data={employee}>
+            {!isEmpty(employee) ? (
+              <Link
+                to={getEmployeeUrl(employee?.generalInfo?.userId)}
+                className={styles.employeeName}
+              >
+                {employee?.legalName}
+              </Link>
+            ) : (
+              ''
+            )}
+          </UserProfilePopover>
+        );
+      },
     },
     {
       title: 'Manager',
       dataIndex: 'employeeInfo',
       key: 'manager',
       width: 250,
-      render: ({ manager: { legalName = '' } = {} }) => <span>{legalName || ''}</span>,
+      render: ({ manager = {} }) => (
+        <UserProfilePopover data={manager}>
+          {!isEmpty(manager) ? (
+            <Link to={getEmployeeUrl(manager?.userId)} className={styles.employeeName}>
+              {manager?.legalName}
+            </Link>
+          ) : (
+            ''
+          )}
+        </UserProfilePopover>
+      ),
       align: 'left',
     },
     {
@@ -286,7 +235,7 @@ const ApprovalPage = (props) => {
       key: 'department',
       width: 200,
       render: ({ department: { name = '' } = {} } = {}) => (
-        <span className={styles.directoryTable_deparmentText}>{name || ''}</span>
+        <span className={styles.directoryTable_departmentText}>{name || ''}</span>
       ),
       align: 'left',
     },
@@ -300,7 +249,7 @@ const ApprovalPage = (props) => {
         const { fromDate, toDate } = row;
         return (
           <span>
-            {moment(fromDate).format('DD-MM-YYYY')} to {moment(toDate).format('DD-MM-YYYY')}
+            {moment(fromDate).format(DATE_FORMAT_MDY)} to {moment(toDate).format(DATE_FORMAT_MDY)}
           </span>
         );
       },
@@ -318,7 +267,7 @@ const ApprovalPage = (props) => {
             typeReport === TYPE_TICKET_APPROVAL.TIMEOFF ? styles.yellowText : styles.blueText
           }
         >
-          {typeReport === TYPE_TICKET_APPROVAL.TIMEOFF ? 'TimeOff' : 'TimeSheet'}
+          {typeReport === TYPE_TICKET_APPROVAL.TIMEOFF ? 'Timeoff' : 'Timesheet'}
         </span>
       ),
       align: 'left',
@@ -352,51 +301,25 @@ const ApprovalPage = (props) => {
     },
   ];
 
-  const onFilter = (filterPayload) => {
-    if (Object.keys(filterPayload).length > 0) {
-      setIsFiltering(true);
-      setApplied(Object.keys(filterPayload).length);
-    } else {
-      setIsFiltering(false);
-      setApplied(0);
-      fetchListTicket();
-      setPage(1);
-    }
-  };
-
-  const clearFilter = () => {
-    onFilter({});
-    form?.resetFields();
+  const onFilter = (values) => {
+    setFilter(values);
   };
 
   const renderOption = () => {
+    const applied = Object.values(filter).filter((v) => v).length;
     const content = (
-      <FilterContent
-        onFilter={onFilter}
-        setForm={setForm}
-        // needResetFilterForm={needResetFilterForm}
-        // setNeedResetFilterForm={setNeedResetFilterForm}
-        setApplied={setApplied}
-        setIsFiltering={setIsFiltering}
-        fetchListTicket={fetchListTicket}
-      />
+      <FilterContent onFilter={onFilter} filter={filter} fetchListTicket={fetchListTicket} />
     );
     return (
       <div className={styles.searchFilter}>
-        {applied > 0 && (
-          <Tag
-            className={styles.tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined />}
-            onClose={() => {
-              clearFilter();
-            }}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
+        <FilterCountTag
+          count={applied}
+          onClearFilter={() => {
+            onFilter({});
+          }}
+        />
         <FilterPopover placement="bottomRight" content={content}>
-          <FilterButton showDot={isFiltering} />
+          <CustomOrangeButton showDot={applied > 0} />
         </FilterPopover>
         <CustomSearchBox onSearch={onChangeKeySearch} placeholder="Search by Name" />
       </div>
@@ -407,12 +330,11 @@ const ApprovalPage = (props) => {
     <div className={styles.approvalPage}>
       <Card className={styles.approvalPage__table} extra={renderOption()}>
         <div className={styles.tableApproval}>
-          <Table
+          <CommonTable
             columns={columns}
-            dataSource={listData}
+            list={listData}
             loading={loadingTable || loadingReject || loadingApproval || loadingApprovalTimeSheet}
             size="small"
-            pagination={pagination}
           />
         </div>
       </Card>

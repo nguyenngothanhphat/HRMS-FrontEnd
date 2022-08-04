@@ -1,7 +1,7 @@
 .Resources {
   :global {
     .ant-card {
-      border: 1px solid #d6dce0;
+      border: 1px solid @border-color-base;
       border-radius: 5px;
       .ant-card-head {
         display: flex;
@@ -48,21 +48,6 @@
       font-size: 14px;
       text-align: center;
     }
-    .addResources {
-      height: 36px;
-      background-color: #ffa100;
-      border: none;
-      border-radius: 25px;
-      outline: none;
-      padding-inline: 25px;
-      img {
-        margin-right: 10px;
-      }
-      span {
-        color: #fff;
-        font-weight: 500;
-      }
-    }
   }
 
   .contentCard {
@@ -78,7 +63,7 @@
         line-height: 14px;
       }
       .ant-tabs-tab-active {
-        color: #2c6df9 !important;
+        color: @primary-color !important;
         opacity: 1 !important;
       }
       .ant-tabs-content-holder {

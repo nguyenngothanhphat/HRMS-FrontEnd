@@ -75,9 +75,9 @@ const customerManagement = {
     *addNewCustomer({ payload }, { call }) {
       try {
         const response = yield call(addCustomer, payload);
-        const { statusCode, message } = response;
+        const { statusCode, message: statusMessage = '' } = response;
         if (statusCode !== 200) throw response;
-        notification.success({ message });
+        notification.success({ message: statusMessage });
       } catch (error) {
         dialog(error);
       }
@@ -196,11 +196,9 @@ const customerManagement = {
           ...payload,
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, message } = response;
+        const { statusCode, message: statusMessage = '' } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
+        notification.success({ message: statusMessage });
       } catch (errors) {
         dialog(errors);
       }

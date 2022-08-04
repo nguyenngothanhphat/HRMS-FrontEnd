@@ -1,5 +1,5 @@
 import { Form, Input, Select } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -13,10 +13,7 @@ const FilterResourcesListContent = (props) => {
     projectDetails: { divisionList = [], projectId = '', titleList = [] } = {},
     projectManagement: { projectList = [] },
     onFilter = () => {},
-    needResetFilterForm = false,
-    setNeedResetFilterForm = () => {},
-    setIsFiltering = () => {},
-    setApplied = () => {},
+    filter = {},
   } = props;
 
   const fetchDataList = () => {
@@ -54,25 +51,19 @@ const FilterResourcesListContent = (props) => {
   const onFinishDebounce = debounce((values) => {
     onFinish(values);
   }, 700);
-
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
+
+  useEffect(() => {
+    if (isEmpty(filter)) {
+      form.resetFields();
+    }
+  }, [JSON.stringify(filter)]);
 
   useEffect(() => {
     fetchDataList();
   }, []);
-
-  // clear values
-  useEffect(() => {
-    if (needResetFilterForm) {
-      form.resetFields();
-      setNeedResetFilterForm(false);
-      setIsFiltering(false);
-      setApplied(0);
-    }
-  }, [needResetFilterForm]);
 
   return (
     <Form

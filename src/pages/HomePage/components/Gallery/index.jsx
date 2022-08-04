@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import Card from './components/Card';
 import styles from './index.less';
-import { TAB_IDS } from '@/utils/homePage';
+import { TAB_IDS } from '@/constants/homePage';
 import { getCurrentLocation } from '@/utils/authority';
 
 const Gallery = (props) => {

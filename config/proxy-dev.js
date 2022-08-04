@@ -8,7 +8,7 @@ export const API_KEYS = {
   CUSTOMER_API: 'CUSTOMER_API',
 };
 
-export const proxy = {
+export const PROXY = {
   [API_KEYS.BASE_API]: BASE_API,
   [API_KEYS.TIMESHEET_API]: BASE_API + '/timesheet',
   [API_KEYS.PROJECT_API]: BASE_API,

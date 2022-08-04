@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Select, Input, Button, Col, Row, Tag } from 'antd';
-import { connect, formatMessage } from 'umi';
 import { CloseOutlined, DownloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Col, Input, Row, Select, Tag } from 'antd';
 import { debounce } from 'lodash';
-import FilterButton from '@/components/FilterButton';
+import React, { useEffect, useState } from 'react';
+import { connect, formatMessage } from 'umi';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
 import FilterPopover from '../FilterPopover';
 import styles from './index.less';
-import { exportRawDataToCSV } from '@/utils/utils';
 
 const { Option } = Select;
 
@@ -55,7 +55,7 @@ const HeaderProjectRM = (props) => {
     );
   };
 
-  const exportToExcel = async () => {
+  const exportData = async () => {
     const fileName = 'rm-projects.csv';
     const getListExport = await dispatch({
       type: 'resourceManagement/exportReportProject',
@@ -121,7 +121,7 @@ const HeaderProjectRM = (props) => {
                 icon={<DownloadOutlined />}
                 className={styles.generate}
                 type="text"
-                onClick={exportToExcel}
+                onClick={exportData}
               >
                 {formatMessage({ id: 'Export' })}
               </Button>
@@ -135,8 +135,8 @@ const HeaderProjectRM = (props) => {
           needResetFilterForm={needResetFilterForm}
           setNeedResetFilterForm={setNeedResetFilterForm}
         >
-          {/* <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} /> */}
-          <FilterButton fontSize={14} />
+          {/* <CustomOrangeButton fontSize={14} showDot={Object.keys(filter).length > 0} /> */}
+          <CustomOrangeButton fontSize={14} showDot={applied > 0} />
         </FilterPopover>
         <div className={styles.searchBar}>
           <Input

@@ -5,13 +5,19 @@ import { getCurrentCompany } from '@/utils/authority';
 import Header from './components/Header';
 import TimelineTable from './components/TimelineTable';
 import styles from './index.less';
-import { dateFormatAPI, convertMsToTime } from '@/utils/timeSheet';
+import { dateFormatAPI } from '@/constants/timeSheet';
+import { convertMsToTime } from '@/utils/timeSheet';
 
 const MyTimeSheet = (props) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [myTotalHours, setMyTotalHours] = useState('');
-  const { dispatch, employee: { _id: employeeId = '' } = {}, myTimesheet = [], currentDateProp = '', } = props;
+  const {
+    dispatch,
+    employee: { _id: employeeId = '' } = {},
+    myTimesheet = [],
+    currentDateProp = '',
+  } = props;
   // FUNCTION AREA
   const fetchMyTimesheetEffect = () => {
     dispatch({
@@ -58,7 +64,7 @@ const MyTimeSheet = (props) => {
   }, []);
 
   useEffect(() => {
-    if (moment(currentDateProp).isValid() ===  true) {
+    if (moment(currentDateProp).isValid() === true) {
       setStartDate(moment(currentDateProp));
     }
   }, [currentDateProp]);

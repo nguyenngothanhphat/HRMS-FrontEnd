@@ -1,16 +1,17 @@
 import { notification } from 'antd';
 import moment from 'moment';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
 import { exportCSV } from '@/utils/timeOffManagement';
-import { dialog, exportRawDataToCSV } from '@/utils/utils';
+import { dialog } from '@/utils/utils';
 import {
   getListEmployees,
   getListTimeOff,
   getLocationsOfCountries,
-  getTimeOffTypeList,
   getMissingLeaveDates,
   getTimeOffTypeByCountry,
-  // getListTimeOffManagement,
+  getTimeOffTypeList,
 } from '../services/timeOffManagement';
 
 const timeOffManagement = {
@@ -136,7 +137,7 @@ const timeOffManagement = {
         if (response) {
           exportRawDataToCSV(
             response,
-            `Time-Off-Missing-Leave-Dates-Report-${moment().format('YYYY-MM-DD')}`,
+            `Time-Off-Missing-Leave-Dates-Report-${moment().format(DATE_FORMAT_YMD)}`,
           );
         } else {
           notification.error('Something failed. Please try again.');

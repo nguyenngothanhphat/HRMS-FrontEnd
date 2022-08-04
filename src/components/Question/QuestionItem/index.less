@@ -4,8 +4,7 @@
   border-radius: 5px;
 
   :global {
-
-    .ant-checkbox-wrapper{
+    .ant-checkbox-wrapper {
       padding-bottom: 24px;
     }
 
@@ -39,7 +38,7 @@
   &__type {
     padding-top: 24px;
     padding-bottom: 24px;
-    border-bottom: 1px solid #d6dce0;
+    border-bottom: 1px solid @border-color-base;
   }
   &__question {
     padding-top: 32px;
@@ -52,7 +51,7 @@
         &__input {
           display: flex;
           margin-left: 8px;
-          border: 1px solid #d6dce0;
+          border: 1px solid @border-color-base;
           border-radius: 5px !important;
           :global {
             .ant-select-selector,
@@ -67,7 +66,7 @@
                 top: 25%;
                 width: 1px;
                 height: 50%;
-                background: #d6dce0;
+                background: @border-color-base;
                 content: '';
               }
             }
@@ -138,7 +137,7 @@
     // padding-top: 12px !important;
     padding-top: 24px !important;
 
-    &__display{
+    &__display {
       display: flex;
       align-items: center;
     }

@@ -6,7 +6,7 @@ import AddIcon from '@/assets/timeSheet/add.svg';
 import ActivityCard from './components/ActivityCard';
 import AddCard from './components/AddCard';
 import styles from './index.less';
-import { dateFormat, MT_MAIN_COL_SPAN } from '@/utils/timeSheet';
+import { dateFormat, MT_MAIN_COL_SPAN } from '@/constants/timeSheet';
 
 const { DATE, REMAINING } = MT_MAIN_COL_SPAN;
 

@@ -1,0 +1,48 @@
+.root {
+  padding: 24px;
+  .textLabel {
+    color: #000000;
+    font-size: 13px;
+  }
+  .textValue {
+    position: relative;
+    color: #707177;
+    font-size: 13px;
+    &__website {
+      color: @primary-color;
+      font-weight: 500;
+    }
+    .urlData {
+      margin-right: 16px;
+      margin-bottom: 0;
+      text-decoration: underline;
+    }
+    .viewFileUpLoad {
+      position: absolute;
+      top: 7px;
+      right: 24px;
+      display: flex;
+    }
+  }
+  .iconQuestTion {
+    margin-top: 2px;
+    margin-left: 9px;
+  }
+}
+.GenEITooltip {
+  :global {
+    .ant-tooltip-content {
+      border-radius: 5px;
+    }
+    .ant-tooltip-inner {
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 12px;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      text-align: center;
+    }
+  }
+}

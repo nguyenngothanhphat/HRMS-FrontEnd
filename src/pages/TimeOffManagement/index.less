@@ -1,0 +1,52 @@
+@commonSpace: 24px;
+@blueColor: @primary-color;
+@grayColor: #707177;
+@greenColor: #00c598;
+
+.TimeOffManagement {
+  :global {
+    .ant-tabs-content-holder {
+      padding: @commonSpace;
+    }
+    .ant-tabs-tab-btn {
+      color: #707177;
+      opacity: 1;
+    }
+
+    .ant-tabs-tab-active .ant-tabs-tab-disabled {
+      font-weight: 500;
+    }
+    .ant-tabs-nav {
+      box-shadow: 0px 1px 2px #eeeeee;
+    }
+    .ant-tabs-tab + .ant-tabs-tab {
+      margin-left: 30px;
+    }
+    .ant-tabs-tab-btn {
+      color: @grayColor;
+      font-weight: 500;
+      font-size: 16px;
+      opacity: 1;
+    }
+    .ant-tabs-tab-active {
+      .ant-tabs-tab-btn {
+        color: @blueColor;
+        font-weight: 500;
+      }
+    }
+  }
+  .options {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 24px;
+    .generate {
+      margin-right: 12px;
+      color: #ffa100;
+      font-weight: 500;
+      border-color: transparent;
+      box-shadow: transparent !important;
+    }
+  }
+}

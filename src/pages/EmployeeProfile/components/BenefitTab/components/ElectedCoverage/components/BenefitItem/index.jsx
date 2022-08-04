@@ -1,6 +1,7 @@
 import { Col, Row } from 'antd';
 import moment from 'moment';
 import React from 'react';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const BenefitItem = (props) => {
@@ -28,7 +29,7 @@ const BenefitItem = (props) => {
         </Col>
         <Col span={18}>
           <span className={styles.value}>
-            {moment(deductionDate, 'YYYY-MM-DD').locale('en').format('Do MMMM YYYY')}
+            {moment(deductionDate, DATE_FORMAT_YMD).locale('en').format('Do MMMM YYYY')}
           </span>
         </Col>
       </Row>

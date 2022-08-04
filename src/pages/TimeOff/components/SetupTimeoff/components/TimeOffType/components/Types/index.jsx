@@ -1,8 +1,8 @@
 import { DeleteOutlined } from '@ant-design/icons';
-import { Button, Col, Popconfirm, Row, Select, Spin } from 'antd';
+import { Col, Popconfirm, Row, Select, Spin } from 'antd';
 import React, { Component } from 'react';
 import { history } from 'umi';
-import EmptyComponent from '@/components/Empty';
+import CustomBlueButton from '@/components/CustomBlueButton';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -23,9 +23,9 @@ class Types extends Component {
             </Col>
             <Col span={8} />
             <Col span={8} className={styles.colAction}>
-              <Button className={styles.buttonRequest} onClick={() => this.addNewType(item)}>
+              <CustomBlueButton onClick={() => this.addNewType(item)}>
                 {item.button}
-              </Button>
+              </CustomBlueButton>
             </Col>
           </Row>
           {children.length !== 0 && <div className={styles.straightLine} />}

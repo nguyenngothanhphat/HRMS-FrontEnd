@@ -32,7 +32,7 @@ const ConfirmModal = (props) => {
 
   const convertToEmployee = async () => {
     const response = await dispatch({
-      type: 'onboard/createEmployee',
+      type: 'onboarding/createEmployee',
       payload: { userName, candidateId: candidate, domain },
     });
     const { statusCode = '' } = response;
@@ -164,7 +164,7 @@ export default connect(
     newCandidateForm: {
       tempData: { reportingManager = {}, reportees = [], title = {}, candidate },
     },
-    onboard: { joiningFormalities: { employeeData = {}, userName = '', domain = '' } = {} },
+    onboarding: { joiningFormalities: { employeeData = {}, userName = '', domain = '' } = {} },
   }) => ({
     employeeData,
     userName,
@@ -173,7 +173,7 @@ export default connect(
     reportees,
     title,
     candidate,
-    loadingCreateEmployee: loading.effects['onboard/createEmployee'],
+    loadingCreateEmployee: loading.effects['onboarding/createEmployee'],
     loadingEmployeeDetail: loading.effects['newCandidateForm/fetchCandidateByRookie'],
   }),
 )(ConfirmModal);

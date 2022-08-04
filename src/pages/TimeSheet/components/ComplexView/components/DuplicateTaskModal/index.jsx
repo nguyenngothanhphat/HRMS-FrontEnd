@@ -1,11 +1,13 @@
-import { Button, Col, DatePicker, Form, Input, Modal, Row } from 'antd';
+import { Col, DatePicker, Form, Input, Modal, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomTimePicker from '@/components/CustomTimePicker';
 import EmptyComponent from '@/components/Empty';
+import { commonDateFormat, dateFormatAPI, hourFormat, hourFormatAPI } from '@/constants/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
-import { commonDateFormat, dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const { RangePicker } = DatePicker;
@@ -276,14 +278,10 @@ const DuplicateTaskModal = (props) => {
   const renderModalFooter = () => {
     return (
       <div className={styles.mainButtons}>
-        <Button className={styles.btnCancel} onClick={() => onClose()}>
-          Cancel
-        </Button>
-        <Button
-          className={styles.btnSubmit}
+        <CustomSecondaryButton onClick={() => onClose()}>Cancel</CustomSecondaryButton>
+        <CustomPrimaryButton
           form="myForm"
           key="submit"
-          type="primary"
           htmlType="submit"
           disabled={
             dates === null || (Array.isArray(dates) && (dates[0] === null || dates[1] === null))
@@ -291,7 +289,7 @@ const DuplicateTaskModal = (props) => {
           loading={loadingDuplicate}
         >
           Duplicate
-        </Button>
+        </CustomPrimaryButton>
       </div>
     );
   };

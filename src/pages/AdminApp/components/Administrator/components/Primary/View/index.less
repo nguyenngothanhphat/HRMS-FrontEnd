@@ -12,7 +12,7 @@
       font-size: 13px;
     }
     .ant-collapse-header {
-      color: #2c6df9 !important;
+      color: @primary-color !important;
       font-weight: 500;
       font-size: 12px;
       line-height: 14px;
@@ -27,9 +27,9 @@
       font-size: 14px;
     }
     .ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
+      right: auto;
       // top: 2px;
       left: 106px;
-      right: auto;
     }
     .ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header {
       padding: 12px 0;
@@ -41,24 +41,23 @@
   }
 
   &__right {
-    
     display: flex;
     align-items: flex-start;
     img {
       margin-right: 11px;
     }
 
-    .position, .company {
+    .position,
+    .company {
       color: #707177;
     }
-    
   }
 
   &__left {
     font-weight: normal;
     font-size: 13px;
     line-height: 15.23px;
-    
+
     .company {
       margin-bottom: 14px;
     }
@@ -68,7 +67,7 @@
     }
 
     .name {
-      color: #2c6df9;
+      color: @primary-color;
     }
   }
 

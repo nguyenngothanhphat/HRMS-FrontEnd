@@ -1,23 +1,23 @@
 .RightContent {
-  border: 1px solid #ebeff2;
-  border-radius: 5px;
   width: 100%;
   background-color: white;
+  border: 1px solid @border-color-base;
+  border-radius: 5px;
   .header {
     padding: 16px 24px;
     .title {
-      font-size: 16px;
+      display: block;
       color: #464646;
       font-weight: 700;
-      display: block;
+      font-size: 16px;
     }
     .description {
-      font-size: 14px;
-      margin-top: 16px;
       display: block;
+      margin-top: 16px;
+      font-size: 14px;
       .text1 {
-        font-weight: 700;
         margin-bottom: 10px;
+        font-weight: 700;
       }
       .text2 {
         color: #707177;
@@ -27,12 +27,12 @@
   .content {
     padding: 0 24px 24px 24px;
     .title {
-      font-size: 16px;
-      color: #464646;
-      font-weight: 700;
       display: block;
       margin-top: 10px;
       margin-bottom: 16px;
+      color: #464646;
+      font-weight: 700;
+      font-size: 16px;
     }
     .avatar {
       position: relative;
@@ -45,11 +45,11 @@
       // check icon
       span {
         position: absolute;
-        bottom: 0;
         right: 0;
-        font-size: 14px;
+        bottom: 0;
         // color: rgb(0, 197, 152);
         font-weight: 700;
+        font-size: 14px;
         // margin-right: 10px;
       }
     }
@@ -80,14 +80,14 @@
         .ant-steps-icon {
           border-radius: 50%;
           img {
-            border: 2px solid #2c6df9;
+            border: 2px solid @primary-color;
             border-radius: 50%;
           }
         }
         .ant-steps-item-title {
+          font-weight: 700;
           font-size: 13px;
           line-height: 1.5;
-          font-weight: 700;
         }
       }
       .ant-steps-item-finish {

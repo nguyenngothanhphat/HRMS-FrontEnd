@@ -6,7 +6,7 @@ import { connect } from 'umi';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import SearchIcon from '@/assets/directory/search.svg';
-import { dateFormatAPI } from '@/utils/timeSheet';
+import { dateFormatAPI } from '@/constants/timeSheet';
 import styles from './index.less';
 
 const { Option } = Select;

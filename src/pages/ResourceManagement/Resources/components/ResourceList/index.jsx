@@ -2,12 +2,12 @@ import { CloseOutlined, DownloadOutlined } from '@ant-design/icons';
 import { Button, Col, Row, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
 import { formatData } from '@/utils/resourceManagement';
 import SearchTable from '../SearchTable';
 import TableResources from '../TableResources';
 import ResourceStatus from './components/ResourceStatus';
 import styles from './index.less';
-import { exportRawDataToCSV } from '@/utils/utils';
 
 const ResourceList = (props) => {
   const {
@@ -160,8 +160,8 @@ const ResourceList = (props) => {
     setSort(sortProp);
   };
 
-  const exportToExcel = async () => {
-    const fileName = 'resource.csv';
+  const exportData = async () => {
+    const fileName = 'resource';
     const getListExport = await dispatch({
       type: 'resourceManagement/exportResourceManagement',
       payload: {
@@ -241,7 +241,7 @@ const ResourceList = (props) => {
                   icon={<DownloadOutlined />}
                   className={styles.generate}
                   type="text"
-                  onClick={exportToExcel}
+                  onClick={exportData}
                 >
                   {formatMessage({ id: 'Export' })}
                 </Button>

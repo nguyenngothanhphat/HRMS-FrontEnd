@@ -13,7 +13,7 @@ const JoiningFormalities = (props) => {
 
   const getEmployeeIdFormatByLocation = (locationId) => {
     dispatch({
-      type: 'onboard/getEmployeeIdFormatByLocation',
+      type: 'onboarding/getEmployeeIdFormatByLocation',
       payload: {
         location: locationId,
       },
@@ -35,7 +35,7 @@ const JoiningFormalities = (props) => {
     const { prefix, generatedId: start } = value;
 
     const response = await dispatch({
-      type: 'onboard/updateEmployeeFormatByGlobal',
+      type: 'onboarding/updateEmployeeFormatByGlobal',
       payload: {
         prefix,
         start,
@@ -45,7 +45,7 @@ const JoiningFormalities = (props) => {
     if (statusCode === 200) {
       setIsEdit(false);
       dispatch({
-        type: 'onboard/getEmployeeIdFormatList',
+        type: 'onboarding/getEmployeeIdFormatList',
         payload: {
           page: 1,
           limit: 10,
@@ -139,15 +139,15 @@ export default connect(
   ({
     loading,
     user: { currentUser: { location = '' } } = {},
-    onboard: {
+    onboarding: {
       joiningFormalities: { listJoiningFormalities = [], idItem = '', settingId = {} } = {},
     },
   }) => ({
-    loadingAdd: loading.effects['onboard/addJoiningFormalities'],
-    loadingUpdate: loading.effects['onboard/updateJoiningFormalities'],
-    loadingRemove: loading.effects['onboard/removeJoiningFormalities'],
-    loadingUpdateEmployeeId: loading.effects['onboard/updateEmployeeFormatByLocation'],
-    loadingGetEmployeeId: loading.effects['onboard/getSettingEmployeeId'],
+    loadingAdd: loading.effects['onboarding/addJoiningFormalities'],
+    loadingUpdate: loading.effects['onboarding/updateJoiningFormalities'],
+    loadingRemove: loading.effects['onboarding/removeJoiningFormalities'],
+    loadingUpdateEmployeeId: loading.effects['onboarding/updateEmployeeFormatByLocation'],
+    loadingGetEmployeeId: loading.effects['onboarding/getSettingEmployeeId'],
     listJoiningFormalities,
     idItem,
     location,

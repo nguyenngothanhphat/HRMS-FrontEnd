@@ -1,6 +1,6 @@
 import { Form, Select } from 'antd';
 import React, { useEffect } from 'react';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -12,10 +12,7 @@ const FilterResourceTypeContent = (props) => {
     dispatch,
     projectDetails: { divisionList = [], titleList = [], billingStatusList = [] } = {},
     onFilter = () => {},
-    needResetFilterForm = false,
-    setNeedResetFilterForm = () => {},
-    setApplied = () => {},
-    setIsFiltering = () => {},
+    filter = {},
   } = props;
 
   const fetchDataList = () => {
@@ -52,20 +49,15 @@ const FilterResourceTypeContent = (props) => {
     onFinish(values);
   }, 700);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
 
-  // clear values
   useEffect(() => {
-    if (needResetFilterForm) {
+    if (isEmpty(filter)) {
       form.resetFields();
-      setNeedResetFilterForm(false);
-      setIsFiltering(false);
-      setApplied(0);
     }
-  }, [needResetFilterForm]);
+  }, [JSON.stringify(filter)]);
 
   useEffect(() => {
     fetchDataList();

@@ -1,19 +1,16 @@
-import React, { useState, useEffect } from 'react';
-
-import { formatMessage, connect } from 'umi';
-import { Row, Col, Typography, Button } from 'antd';
+import { Button, Col, Row, Typography } from 'antd';
 import { every } from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { connect, formatMessage } from 'umi';
 import FileIcon from '@/assets/pdf_icon.png';
 import CustomModal from '@/components/CustomModal/index';
 import AnswerQuestion from '@/components/Question/AnswerQuestion';
-import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
-import NoteComponent from '../NoteComponent';
-import FileContent from '../FileContent';
-import mockFiles from './components/utils';
+import { SPECIFY, TYPE_QUESTION } from '@/components/Question/utils';
 import { Page } from '../../../../../NewCandidateForm/utils';
+import FileContent from '../FileContent';
+import NoteComponent from '../NoteComponent';
+import mockFiles from './components/utils';
 import s from './index.less';
-
-// pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const Note = {
   title: 'Note',
