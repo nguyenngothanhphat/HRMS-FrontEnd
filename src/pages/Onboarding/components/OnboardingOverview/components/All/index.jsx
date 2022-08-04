@@ -6,6 +6,7 @@ import { debounce } from 'lodash';
 import AllTab from './components/AllTab';
 import styles from '../index.less';
 import SearchFilterBar from '../SearchFilterBar';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 
 const { TabPane } = Tabs;
 
@@ -76,8 +77,17 @@ class OnboardingAll extends Component {
   };
 
   render() {
-    const { dataAll = [], total = 0, loadingAll, loadingFilter } = this.props;
+    const { dataAll = [], loadingAll, loadingFilter } = this.props;
     const { pageSelected, size, loadingSearch } = this.state;
+
+    const listDataInProgress = dataAll.filter(
+      (x) =>
+        ![
+          NEW_PROCESS_STATUS.JOINED,
+          NEW_PROCESS_STATUS.OFFER_REJECTED,
+          NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+        ].includes(x.processStatus),
+    );
 
     return (
       <div className={styles.onboardingTab}>
@@ -88,13 +98,13 @@ class OnboardingAll extends Component {
           >
             <TabPane key="1">
               <AllTab
-                list={dataAll}
+                list={listDataInProgress}
                 loading={loadingAll || loadingFilter}
                 loadingSearch={loadingSearch}
                 pageSelected={pageSelected}
                 size={size}
                 getPageAndSize={this.getPageAndSize}
-                total={total}
+                total={listDataInProgress.length}
               />
             </TabPane>
           </Tabs>
