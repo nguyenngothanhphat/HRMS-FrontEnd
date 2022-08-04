@@ -81,7 +81,7 @@ export const defaultRenderCollapsedButton = (collapsed?: boolean) =>
 const SiderMenu: React.FC<SiderMenuProps> = (props) => {
   const {
     collapsed,
-    fixSiderbar,
+    fixSidebar,
     menuFooterRender,
     onCollapse,
     theme,
@@ -102,7 +102,7 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
   const baseClassName = `${prefixCls}-sider`;
   const { flatMenuKeys } = MenuCounter.useContainer();
   const siderClassName = classNames(`${baseClassName}`, {
-    [`${baseClassName}-fixed`]: fixSiderbar,
+    [`${baseClassName}-fixed`]: fixSidebar,
     [`${baseClassName}-layout-${layout}`]: layout && !isMobile,
     [`${baseClassName}-light`]: theme === 'light',
   });
@@ -124,101 +124,103 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
   );
   return (
     <Affix offsetTop={0} className="viewAffixSider">
-      {fixSiderbar && (
-        <div
+      <div>
+        {fixSidebar && (
+          <div
+            style={{
+              width: collapsed ? 80 : siderWidth,
+              overflow: 'hidden',
+              flex: `0 0 ${collapsed ? 80 : siderWidth}px`,
+              maxWidth: collapsed ? 80 : siderWidth,
+              minWidth: collapsed ? 80 : siderWidth,
+              ...style,
+            }}
+          />
+        )}
+        <Sider
+          collapsible={true}
+          trigger={null}
+          collapsed={collapsed}
+          breakpoint={breakpoint === false ? undefined : breakpoint}
+          onCollapse={(collapse) => {
+            if (!isMobile) {
+              if (onCollapse) {
+                onCollapse(collapse);
+              }
+            }
+          }}
+          collapsedWidth={80}
           style={{
-            width: collapsed ? 80 : siderWidth,
             overflow: 'hidden',
-            flex: `0 0 ${collapsed ? 80 : siderWidth}px`,
-            maxWidth: collapsed ? 80 : siderWidth,
-            minWidth: collapsed ? 80 : siderWidth,
+            paddingTop: layout === 'mix' && !isMobile ? headerHeight : undefined,
+            position: 'absolute',
+            height: '100%',
             ...style,
           }}
-        />
-      )}
-      <Sider
-        collapsible={true}
-        trigger={null}
-        collapsed={collapsed}
-        breakpoint={breakpoint === false ? undefined : breakpoint}
-        onCollapse={(collapse) => {
-          if (!isMobile) {
-            if (onCollapse) {
-              onCollapse(collapse);
-            }
-          }
-        }}
-        collapsedWidth={80}
-        style={{
-          overflow: 'hidden',
-          paddingTop: layout === 'mix' && !isMobile ? headerHeight : undefined,
-          position: 'absolute',
-          height: '100%',
-          ...style,
-        }}
-        width={siderWidth}
-        theme={theme}
-        className={siderClassName}
-      >
-        {headerDom && (
-          <div
-            className={`${baseClassName}-logo`}
-            onClick={layout !== 'mix' ? onMenuHeaderClick : undefined}
-            id="logo"
-          >
-            {headerDom}
-          </div>
-        )}
-        {extraDom && (
-          <div
-            className={`${baseClassName}-extra ${!headerDom && `${baseClassName}-extra-no-logo`}`}
-          >
-            {extraDom}
-          </div>
-        )}
-        <div
-          style={{
-            flex: 1,
-            overflowY: 'auto',
-            overflowX: 'hidden',
-          }}
+          width={siderWidth}
+          theme={theme}
+          className={siderClassName}
         >
-          {menuContentRender ? menuContentRender(props, menuDom) : menuDom}
-        </div>
-        <div className={`${baseClassName}-links`}>
-          <Menu
-            theme={theme}
-            inlineIndent={16}
-            className={`${baseClassName}-link-menu`}
-            selectedKeys={[]}
-            openKeys={[]}
-            mode="inline"
+          {headerDom && (
+            <div
+              className={`${baseClassName}-logo`}
+              onClick={layout !== 'mix' ? onMenuHeaderClick : undefined}
+              id="logo"
+            >
+              {headerDom}
+            </div>
+          )}
+          {extraDom && (
+            <div
+              className={`${baseClassName}-extra ${!headerDom && `${baseClassName}-extra-no-logo`}`}
+            >
+              {extraDom}
+            </div>
+          )}
+          <div
+            style={{
+              flex: 1,
+              overflowY: 'auto',
+              overflowX: 'hidden',
+            }}
           >
-            {(links || []).map((node, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <Menu.Item className={`${baseClassName}-link`} key={index}>
-                {node}
-              </Menu.Item>
-            ))}
-            {collapsedButtonRender && !isMobile && (
-              <Menu.Item
-                className={`${baseClassName}-collapsed-button`}
-                title={false}
-                onClick={() => {
-                  if (onCollapse) {
-                    onCollapse(!collapsed);
-                  }
-                }}
-              >
-                {collapsedButtonRender(collapsed)}
-              </Menu.Item>
-            )}
-          </Menu>
-        </div>
-        {menuFooterRender && (
-          <div className={`${baseClassName}-footer`}>{menuFooterRender(props)}</div>
-        )}
-      </Sider>
+            {menuContentRender ? menuContentRender(props, menuDom) : menuDom}
+          </div>
+          <div className={`${baseClassName}-links`}>
+            <Menu
+              theme={theme}
+              inlineIndent={16}
+              className={`${baseClassName}-link-menu`}
+              selectedKeys={[]}
+              openKeys={[]}
+              mode="inline"
+            >
+              {(links || []).map((node, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Menu.Item className={`${baseClassName}-link`} key={index}>
+                  {node}
+                </Menu.Item>
+              ))}
+              {collapsedButtonRender && !isMobile && (
+                <Menu.Item
+                  className={`${baseClassName}-collapsed-button`}
+                  title={false}
+                  onClick={() => {
+                    if (onCollapse) {
+                      onCollapse(!collapsed);
+                    }
+                  }}
+                >
+                  {collapsedButtonRender(collapsed)}
+                </Menu.Item>
+              )}
+            </Menu>
+          </div>
+          {menuFooterRender && (
+            <div className={`${baseClassName}-footer`}>{menuFooterRender(props)}</div>
+          )}
+        </Sider>
+      </div>
     </Affix>
   );
 };

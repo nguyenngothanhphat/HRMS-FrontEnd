@@ -1,10 +1,13 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable compat/compat */
+import UploadImage from '@/assets/uploadIcon.svg';
+import { FILE_TYPE } from '@/constants/upload';
+import { beforeUpload, compressImage } from '@/utils/upload';
+import { Button, message, Modal, Upload } from 'antd';
 import React, { Component } from 'react';
-import { Modal, Button, Upload, message } from 'antd';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { connect } from 'umi';
-import UploadImage from '@/assets/uploadIcon.svg';
 import styles from './index.less';
 
 const { Dragger } = Upload;
@@ -42,18 +45,6 @@ class ModalUploadFeedBack extends Component {
     reader.readAsDataURL(img);
   };
 
-  beforeUpload = (file) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    if (!isJpgOrPng) {
-      message.error('You can only upload JPG/PNG file!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
-    }
-    return isJpgOrPng && isLt2M;
-  };
-
   onChange = (info) => {
     const { status } = info.file;
     if (status === 'done') {
@@ -89,11 +80,12 @@ class ModalUploadFeedBack extends Component {
     );
   };
 
-  handleUploadToServer = () => {
+  handleUploadToServer = async () => {
     const { dispatch, handleUploadScreenshot = () => {} } = this.props;
     const { croppedImage } = this.state;
+    const compressedFile = await compressImage(croppedImage);
     const formData = new FormData();
-    formData.append('uri', croppedImage);
+    formData.append('blob', compressedFile, croppedImage.name);
     dispatch({
       type: 'upload/uploadFile',
       payload: formData,
@@ -114,7 +106,11 @@ class ModalUploadFeedBack extends Component {
       <div className={styles.header}>
         <p className={styles.header__text}>{titleModal}</p>
         {imageUrl && (
-          <Upload {...propsUpload} onChange={this.onChange} beforeUpload={this.beforeUpload}>
+          <Upload
+            {...propsUpload}
+            onChange={this.onChange}
+            beforeUpload={(file) => beforeUpload(file, [FILE_TYPE.IMAGE, FILE_TYPE.PDF], 2)}
+          >
             <div className={styles.header__upload}>
               <img
                 className={styles.header__upload__icon}
@@ -226,7 +222,11 @@ class ModalUploadFeedBack extends Component {
               onChange={this.onCropChange}
             />
           ) : (
-            <Dragger {...propsUpload} onChange={this.onChange} beforeUpload={this.beforeUpload}>
+            <Dragger
+              {...propsUpload}
+              onChange={this.onChange}
+              beforeUpload={(file) => beforeUpload(file, [FILE_TYPE.IMAGE, FILE_TYPE.PDF], 2)}
+            >
               <p className="ant-upload-drag-icon">
                 <img src={UploadImage} alt="" />
               </p>

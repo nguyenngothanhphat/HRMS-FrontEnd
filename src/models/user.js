@@ -12,7 +12,7 @@ import {
   setFirstChangePassword,
   setIsFirstLogin,
   setIsSwitchingRole,
-  setTenantId,
+  setTenantId
 } from '@/utils/authority';
 import { checkPermissions } from '@/utils/permissions';
 

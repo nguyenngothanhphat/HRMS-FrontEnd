@@ -1,0 +1,27 @@
+.document {
+  &__item {
+    display: flex;
+    align-items: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eaecef;
+    cursor: pointer;
+
+    .text {
+      padding-right: 20px;
+      color: @primary-color;
+      font-size: 13px;
+      line-height: 15px;
+      text-decoration: underline;
+    }
+  }
+
+  :first-child {
+    padding-top: 0;
+  }
+
+  :last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+}

@@ -2,7 +2,7 @@ import { Button, Col, Row, Skeleton, Steps } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
-import { CANDIDATE_TASK_LINK } from '@/utils/candidatePortal';
+import { CANDIDATE_TASK_LINK } from '@/constants/candidatePortal';
 // import AdditionalQuestion from './components/AdditionalQuestion';
 import BasicInformation from './components/BasicInfomation';
 // import Benefits from './components/Benefits';

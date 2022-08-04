@@ -49,7 +49,7 @@ const HomePage = (props) => {
     <div className={styles.HomePage}>
       {/* <Spin spinning={loadingMain} size="large"> */}
       <Row gutter={[24, 24]}>
-        <Col xs={24} lg={8}>
+        <Col xs={24} md={10} lg={7}>
           <Row gutter={[24, 24]}>
             <Col span={24}>
               <Welcome />
@@ -70,7 +70,7 @@ const HomePage = (props) => {
             )}
           </Row>
         </Col>
-        <Col xs={24} lg={16}>
+        <Col xs={24} md={14} lg={17}>
           <Row gutter={[24, 24]}>
             <Col span={24}>
               <Carousel />

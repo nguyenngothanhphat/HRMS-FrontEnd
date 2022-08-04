@@ -2,16 +2,15 @@ import { Col, Popover, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import CloseX from '@/assets/dashboard/closeX.svg';
-
 import {
   checkHolidayInWeek,
   convertMsToTime,
   holidayFormatDate,
   sortedDate,
 } from '@/utils/timeSheet';
+import { TIMEOFF_PERIOD } from '@/constants/timeOff';
+import CloseX from '@/assets/dashboard/closeX.svg';
 import styles from './index.less';
-import { TIMEOFF_PERIOD } from '@/utils/timeOff';
 
 const TimeoffPopover = (props) => {
   const {
@@ -80,7 +79,12 @@ const TimeoffPopover = (props) => {
           {showingTimeOff.length !== 0 &&
             sortedDate(showingTimeOff).map((timeoffProp) => {
               return (
-                <Row key={timeoffProp?.date} className={styles.eachRow} justify="space-between" align="middle">
+                <Row
+                  key={timeoffProp?.date}
+                  className={styles.eachRow}
+                  justify="space-between"
+                  align="middle"
+                >
                   <Col span={16} className={styles.taskName}>
                     {timeoffProp?.isHoliday ? (
                       <span> Timeoff - {holidayFormatDate(timeoffProp?.date)} </span>

@@ -6,7 +6,6 @@ import {
   getAllListTicket,
   getListMyTicket,
   getLeaveRequestOfEmployee,
-  aprovalCompoffRequest,
   approveRequest,
   rejectRequest,
   approveTimeSheetRequest,
@@ -16,7 +15,7 @@ import {
   uploadFile,
   addNotes,
   getProjectList,
-  getMyResoucreList,
+  getMyResourceList,
 
   // NEW DASHBOARD
   syncGoogleCalendar,
@@ -28,6 +27,7 @@ import {
   getHolidaysByCountry,
   getMyTeamLeaveRequestList,
   getTimeOffTypeByCountry,
+  getMyTickets,
 } from '../services/dashboard';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 
@@ -166,13 +166,6 @@ const dashboard = {
       let response;
       try {
         switch (typeTicket) {
-          case 'compoffRequest':
-            response = yield call(aprovalCompoffRequest, {
-              _id,
-              tenantId: getCurrentTenant(),
-              company: getCurrentCompany(),
-            });
-            break;
           case 'leaveRequest':
             response = yield call(approveRequest, {
               _id,
@@ -491,11 +484,11 @@ const dashboard = {
       }
       return response;
     },
-    // RESOUCRE MANAGEMENT
+    // RESOUrcE MANAGEMENT
     *fetchResourceList({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getMyResoucreList, {
+        response = yield call(getMyResourceList, {
           ...payload,
           company: [getCurrentCompany()],
           tenantId: getCurrentTenant(),
@@ -505,7 +498,7 @@ const dashboard = {
         yield put({
           type: 'save',
           payload: {
-            resoucreList: data,
+            resourceList: data,
           },
         });
       } catch (errors) {
@@ -575,6 +568,19 @@ const dashboard = {
         dialog(error);
       }
       return response;
+    },
+    *fetchMyTicketList({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getMyTickets, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listMyTicket: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
   reducers: {

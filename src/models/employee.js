@@ -221,45 +221,22 @@ const employee = {
       }
       return response;
     },
-    *fetchAllListUser(
-      {
-        payload: {
-          company = [],
-          department = [],
-          location = [],
-          employeeType = [],
-          name = '',
-          title = [],
-          skill = [],
-          limit = 10,
-          page = 1,
-        } = {},
-      },
-      { call, put },
-    ) {
+    *fetchAllListUser({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getListEmployee, {
-          // status: ['ACTIVE', 'INACTIVE'],
-          status: ['ACTIVE'],
-          company,
-          department,
-          location,
-          employeeType,
-          name,
-          title,
-          skill,
-          limit,
-          page,
+        response = yield call(getListEmployeeSingleCompany, {
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+          ...payload,
         });
         const { statusCode, data: listEmployeeAll = [] } = response;
         if (statusCode !== 200) throw response;
 
         yield put({ type: 'listEmployeeAll', payload: { listEmployeeAll } });
-        return response;
       } catch (errors) {
         // dialog(errors);
-        return 0;
       }
+      return response;
     },
 
     *exportEmployees({ payload }, { call }) {

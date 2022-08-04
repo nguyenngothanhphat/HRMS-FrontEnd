@@ -1,8 +1,9 @@
 import { Col, Form, Input, Popconfirm, Radio, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { convertDaysToHours, convertHoursToDays, FORM_ITEM_NAME, TIME_TEXT } from '@/utils/timeOff';
 import DelIcon from '@/assets/timeOff/del.svg';
+import { FORM_ITEM_NAME, TIME_TEXT } from '@/constants/timeOff';
+import { convertDaysToHours, convertHoursToDays } from '@/utils/timeOff';
 import styles from './index.less';
 
 const { CARRY_FORWARD_POLICY, FROM, TO, UNIT, ALLOWED, VALUE, MAXIMUM_CARRY_FORWARD_VALUE } =

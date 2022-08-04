@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
-import { Table, Popover } from 'antd';
+import { Popover, Table } from 'antd';
 import moment from 'moment';
-import { connect, formatMessage, history, Link } from 'umi';
+import React, { Component } from 'react';
+import { connect, formatMessage, Link } from 'umi';
+import UserProfilePopover from '@/components/UserProfilePopover';
 import AddComment from './components/AddComment';
 import OverviewComment from './components/OverviewComment';
-import UserProfilePopover from '@/components/UserProfilePopover';
-import PopupProjectName from './components/PopupProjectName';
 import PopupCustomer from './components/PopupCustomer';
+import PopupProjectName from './components/PopupProjectName';
 
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 class TableProject extends Component {
@@ -52,7 +53,7 @@ class TableProject extends Component {
   };
 
   viewCustomer = (customerId) => {
-    return `/customer-management/customers/customer-profile/${customerId}`;
+    return `/customer-management/list/customer-profile/${customerId}`;
   };
 
   viewProject = (projectId) => {
@@ -102,9 +103,9 @@ class TableProject extends Component {
         customerId: obj.customerId || '-',
         projectType: obj.engagementType || '-',
         projectManager: obj.projectManager || '-',
-        startDate: this.formatDate(obj.startDate, 'MM/DD/YYYY'),
-        endDate: this.formatDate(obj.endDate, 'MM/DD/YYYY'),
-        resivedEndDate: this.formatDate(obj.newEndDate, 'MM/DD/YYYY'),
+        startDate: this.formatDate(obj.startDate, DATE_FORMAT_MDY),
+        endDate: this.formatDate(obj.endDate, DATE_FORMAT_MDY),
+        resivedEndDate: this.formatDate(obj.newEndDate, DATE_FORMAT_MDY),
         status: obj.projectStatus || '-',
         resourcePlan: obj.resourcesPlanned || '-',
         resourceAssigned: obj.resourcesAssigned || '-',
@@ -217,7 +218,7 @@ class TableProject extends Component {
         title: (
           <div className={styles.dateHeaderContainer}>
             <div>Start Date</div>
-            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
+            <div className={styles.dateFormat}>({DATE_FORMAT_MDY.toLowerCase()})</div>
           </div>
         ),
         dataIndex: 'startDate',
@@ -228,7 +229,7 @@ class TableProject extends Component {
         title: (
           <div className={styles.dateHeaderContainer}>
             <div>End Date</div>
-            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
+            <div className={styles.dateFormat}>({DATE_FORMAT_MDY.toLowerCase()})</div>
           </div>
         ),
         dataIndex: 'endDate',
@@ -239,7 +240,7 @@ class TableProject extends Component {
         title: (
           <div className={styles.dateHeaderContainer}>
             <div>Revised End Date</div>
-            <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
+            <div className={styles.dateFormat}>({DATE_FORMAT_MDY.toLowerCase()})</div>
           </div>
         ),
         dataIndex: 'resivedEndDate',

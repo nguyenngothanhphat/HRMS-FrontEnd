@@ -23,6 +23,7 @@ const EmployeeCard = (props) => {
       className={styles.EmployeeCard}
       style={isMySelf ? { borderColor: '#2C6DF9' } : null}
       onClick={onViewProfileClick}
+      key={userId}
     >
       <div className={styles.container}>
         <div className={styles.avatar}>

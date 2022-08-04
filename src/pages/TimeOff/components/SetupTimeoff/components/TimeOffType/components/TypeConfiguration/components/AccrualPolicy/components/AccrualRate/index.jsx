@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import styles from './index.less';
 // import EditIcon from '@/assets/timeOff/edit.svg';
 import DelIcon from '@/assets/timeOff/del.svg';
-import { FORM_ITEM_NAME, TIMEOFF_ACCRUAL_METHOD } from '@/utils/timeOff';
+import { FORM_ITEM_NAME, TIMEOFF_ACCRUAL_METHOD } from '@/constants/timeOff';
 
 const { DAYS_OF_YEAR, DAYS_OF_QUARTER, DAYS_OF_MONTH, DAYS_OF_FORTNIGHT } = TIMEOFF_ACCRUAL_METHOD;
 

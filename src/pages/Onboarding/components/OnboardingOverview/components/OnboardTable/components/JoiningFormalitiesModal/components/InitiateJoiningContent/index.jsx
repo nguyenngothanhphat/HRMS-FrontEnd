@@ -18,7 +18,7 @@ const InitiateJoiningContent = (props) => {
 
   useEffect(() => {
     dispatch({
-      type: 'onboard/getEmployeeIdFormatByLocation',
+      type: 'onboarding/getEmployeeIdFormatByLocation',
       payload: {
         location: _id,
       },
@@ -83,7 +83,7 @@ const InitiateJoiningContent = (props) => {
 
 export default connect(
   ({
-    onboard: { joiningFormalities: { listJoiningFormalities = [], settingId = {} } = {} },
+    onboarding: { joiningFormalities: { listJoiningFormalities = [], settingId = {} } = {} },
     newCandidateForm: {
       tempData: { workLocation = {} },
     },

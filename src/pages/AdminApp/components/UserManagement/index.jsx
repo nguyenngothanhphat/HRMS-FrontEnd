@@ -1,6 +1,7 @@
-import React, { PureComponent } from 'react';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import AddAdminForm from './components/AddAdminForm';
 import TableAdministrator from './components/TableAdministrator';
 import s from './index.less';
@@ -54,7 +55,7 @@ class UserManagement extends PureComponent {
     const { dispatch } = this.props;
     const payload = {
       ...values,
-      joinDate: moment(values.joinDate).format('YYYY-MM-DD'),
+      joinDate: moment(values.joinDate).format(DATE_FORMAT_YMD),
       roles: [...values.roles, 'EMPLOYEE'],
       id: userSelected?._id,
     };

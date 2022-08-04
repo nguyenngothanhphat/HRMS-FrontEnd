@@ -1,0 +1,47 @@
+.TerminateModalContent {
+  padding: @padding-lg;
+  :global {
+    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+      height: 42px;
+    }
+    .ant-select-single.ant-select-show-arrow .ant-select-selection-item {
+      margin-top: 5px;
+    }
+
+    .ant-form-item-control-input-content {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
+  .formModal {
+    display: flex;
+    flex-direction: column;
+    :global {
+      .ant-form-item-label {
+        text-align: left;
+      }
+    }
+
+    .fieldModal {
+      border-radius: 5px;
+    }
+  }
+
+  .datePickerForm {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 50%;
+    :global {
+      .ant-form-item-control {
+        width: 100%;
+      }
+    }
+    .datePicker {
+      width: 100%;
+      height: 42px;
+      border-radius: 5px;
+    }
+  }
+}

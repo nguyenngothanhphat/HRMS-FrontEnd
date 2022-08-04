@@ -1,23 +1,23 @@
-import { Card, Form, DatePicker, Popconfirm, Tag } from 'antd';
+import { Card, DatePicker, Form, Popconfirm } from 'antd';
 import { debounce } from 'lodash';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
-import { CloseOutlined } from '@ant-design/icons';
-import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
-import EditIcon from '@/assets/projectManagement/edit2.svg';
-import CancelXIcon from '@/assets/projectManagement/cancelX.svg';
 import ApproveCheckIcon from '@/assets/projectManagement/approveCheck.svg';
+import CancelXIcon from '@/assets/projectManagement/cancelX.svg';
+import EditIcon from '@/assets/projectManagement/edit2.svg';
+import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
+import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
+import CommonModal from '@/components/CommonModal';
 import CommonTable from '@/components/CommonTable';
-import FilterButton from '@/components/FilterButton';
-import FilterPopover from '@/components/FilterPopover';
-import OrangeAddButton from '../../../OrangeAddButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
+import FilterPopover from '@/components/FilterPopover';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import AddResourcesModal from '../AddResourcesModal';
 import FilterResourcesContent from './components/FilterResourcesContent';
-import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import styles from './index.less';
-import CommonModal from '@/components/CommonModal';
 
 const EditableCell = ({
   editing,
@@ -45,7 +45,7 @@ const EditableCell = ({
             },
           ]}
         >
-          <DatePicker format={DATE_FORMAT_LIST} />
+          <DatePicker format={DATE_FORMAT_MDY} />
         </Form.Item>
       ) : (
         children
@@ -57,14 +57,12 @@ const EditableCell = ({
 const ResourcesCard = (props) => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [searchValue, setSearchValue] = useState('');
   const [addResourceModalVisible, setAddResourceModalVisible] = useState('');
   const [removeResourceModalVisible, setRemoveResourceModalVisible] = useState('');
   const [removingPackage, setRemovingPackage] = useState('');
-  const [applied, setApplied] = useState(0);
+  const [filter, setFilter] = useState({});
+  const [searchValue, setSearchValue] = useState('');
   // if reselect project status or search, clear filter form
-  const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
-  const [isFiltering, setIsFiltering] = useState(false);
 
   const {
     dispatch,
@@ -93,9 +91,9 @@ const ResourcesCard = (props) => {
         type: 'projectDetails/updateResourceOfProjectEffect',
         payload: {
           id: findRecord.resourceId,
-          startDate: record.startDate ? moment(record.startDate).format('YYYY-MM-DD') : null,
+          startDate: record.startDate ? moment(record.startDate).format(DATE_FORMAT_YMD) : null,
           revisedEndDate: record.revisedEndDate
-            ? moment(record.revisedEndDate).format('YYYY-MM-DD')
+            ? moment(record.revisedEndDate).format(DATE_FORMAT_YMD)
             : null,
         },
       });
@@ -167,26 +165,23 @@ const ResourcesCard = (props) => {
   };
 
   // functions
-  const fetchResourceOfProject = (name, p, l) => {
+  const fetchResourceOfProject = () => {
     dispatch({
       type: 'projectDetails/fetchResourceOfProjectEffect',
       payload: {
         projects: [id],
-        ...name,
-        page: p,
-        limit: l,
+        ...filter,
+        name: searchValue,
+        page,
+        limit,
         adminMode: true,
       },
     });
   };
 
   useEffect(() => {
-    fetchResourceOfProject({ name: searchValue }, page, limit);
-  }, [page, limit]);
-
-  // useEffect(() => {
-  //   fetchResourceOfProject();
-  // }, []);
+    fetchResourceOfProject();
+  }, [page, limit, searchValue, JSON.stringify(filter)]);
 
   const onChangePage = (p, l) => {
     setPage(p);
@@ -194,7 +189,6 @@ const ResourcesCard = (props) => {
   };
 
   const onSearchDebounce = debounce((value) => {
-    fetchResourceOfProject({ name: value });
     setSearchValue(value);
   }, 1000);
 
@@ -203,20 +197,8 @@ const ResourcesCard = (props) => {
     onSearchDebounce(value);
   };
 
-  const onFilter = (filterPayload) => {
-    fetchResourceOfProject({ name: searchValue, ...filterPayload }, page, limit);
-    if (Object.keys(filterPayload).length > 0) {
-      setIsFiltering(true);
-      setApplied(Object.keys(filterPayload).length);
-    } else {
-      setIsFiltering(false);
-      setApplied(0);
-    }
-  };
-
-  const clearFilter = () => {
-    onFilter({});
-    setNeedResetFilterForm(true);
+  const onFilter = (values) => {
+    setFilter(values);
   };
 
   const removeResourceOfProject = async (key) => {
@@ -241,8 +223,8 @@ const ResourcesCard = (props) => {
   const renderTimeTitle = (title) => {
     return (
       <span className={styles.timeTitle}>
-        <span>{title}</span>
-        <span className={styles.smallText}>(mm/dd/yyyy)</span>
+        <span>{title}</span>{' '}
+        <span className={styles.smallText}>({DATE_FORMAT_MDY.toLowerCase()})</span>
       </span>
     );
   };
@@ -293,7 +275,7 @@ const ResourcesCard = (props) => {
         editable: true,
         render: (startDate) => {
           return (
-            <span>{startDate ? moment(startDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
+            <span>{startDate ? moment(startDate).locale('en').format(DATE_FORMAT_MDY) : '-'}</span>
           );
         },
       },
@@ -304,7 +286,7 @@ const ResourcesCard = (props) => {
         align: 'center',
         render: (endDate) => {
           return (
-            <span>{endDate ? moment(endDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
+            <span>{endDate ? moment(endDate).locale('en').format(DATE_FORMAT_MDY) : '-'}</span>
           );
         },
       },
@@ -317,7 +299,7 @@ const ResourcesCard = (props) => {
         render: (revisedEndDate) => {
           return (
             <span>
-              {revisedEndDate ? moment(revisedEndDate).locale('en').format(DATE_FORMAT_LIST) : '-'}
+              {revisedEndDate ? moment(revisedEndDate).locale('en').format(DATE_FORMAT_MDY) : '-'}
             </span>
           );
         },
@@ -379,34 +361,28 @@ const ResourcesCard = (props) => {
   });
 
   const renderOption = () => {
-    const content = (
-      <FilterResourcesContent
-        onFilter={onFilter}
-        needResetFilterForm={needResetFilterForm}
-        setNeedResetFilterForm={setNeedResetFilterForm}
-        setIsFiltering={setIsFiltering}
-        setApplied={setApplied}
-      />
-    );
+    const applied = Object.values(filter).filter((v) => v).length;
+
+    const content = <FilterResourcesContent onFilter={onFilter} filter={filter} />;
     return (
       <div className={styles.options}>
-        {applied > 0 && (
-          <Tag
-            className={styles.tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined />}
-            onClose={() => {
-              clearFilter();
-            }}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
+        <FilterCountTag
+          count={applied}
+          onClearFilter={() => {
+            onFilter({});
+          }}
+        />
         <FilterPopover placement="bottomRight" content={content}>
-          <FilterButton showDot={isFiltering} />
+          <CustomOrangeButton showDot={applied > 0} />
         </FilterPopover>
         {allowModify && (
-          <OrangeAddButton text="Add Resources" onClick={() => setAddResourceModalVisible(true)} />
+          <CustomOrangeButton
+            onClick={() => setAddResourceModalVisible(true)}
+            icon={OrangeAddIcon}
+            fontSize={13}
+          >
+            Add Resources
+          </CustomOrangeButton>
         )}
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Name, Resource Type" />
       </div>

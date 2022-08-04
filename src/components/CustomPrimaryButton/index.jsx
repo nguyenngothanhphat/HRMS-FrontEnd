@@ -3,11 +3,18 @@ import { Button } from 'antd';
 import React from 'react';
 import styles from './index.less';
 
-const CustomPrimaryButton = ({ children, ...props }) => {
+const CustomPrimaryButton = ({ children, height = 42, backgroundColor = '#ffa100', ...props }) => {
   return (
-    <div className={styles.CustomPrimaryButton}>
-      <Button {...props}>{children}</Button>
-    </div>
+    <Button
+      {...props}
+      className={styles.CustomPrimaryButton}
+      style={{
+        height,
+        backgroundColor,
+      }}
+    >
+      {children}
+    </Button>
   );
 };
 export default CustomPrimaryButton;

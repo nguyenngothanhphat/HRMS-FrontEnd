@@ -1,128 +1,40 @@
-import React, { Component } from 'react';
-import Avatar from 'antd/lib/avatar/avatar';
 import { UserOutlined } from '@ant-design/icons';
-import { connect } from 'umi';
+import { Avatar, Popover, Spin } from 'antd';
 import { isEmpty } from 'lodash';
+import React, { useState } from 'react';
 import { Collapse } from 'react-collapse';
-import { Popover, Spin } from 'antd';
-import avtDefault from '@/assets/avtDefault.jpg';
-import line from '@/assets/lineParent.svg';
+import { connect } from 'umi';
 import lines from '@/assets/lines.svg';
+import line from '@/assets/lineParent.svg';
 import bigLines from '@/assets/bigLines.svg';
+import avtDefault from '@/assets/avtDefault.jpg';
 import EmployeeNode from './components/EmployeeNode';
-
-import styles from './index.less';
 import ManagerNode from './components/ManagerNode';
 import UserNode from './components/UserNode';
+import styles from './index.less';
 
-@connect(({ employee: { dataOrgChart = {}, listEmployeeAll = [] } = {}, loading }) => ({
-  dataOrgChart,
-  loading: loading.effects['employee/fetchDataOrgChart'],
-  listEmployeeAll,
-}))
-class OrganizationChart extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isCollapsed: true,
-      isCollapsedChild: true,
-      itemSelected: '',
-    };
-    this.userRef = React.createRef();
-    this.managerRef = React.createRef();
+const OrganizationChart = (props) => {
+  const { dataOrgChart = {}, loading, selectedId, setSelectedId = () => {} } = props;
 
-    this.employeeRef = React.createRef([]); // list employees => to store employee refs.
-    this.employeeRef.current = [];
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsedChild, setIsCollapsedChild] = useState(true);
 
-    this.refTemp = React.createRef([]); // temp => to handle/set condition.
-    this.refTemp.current = [];
-  }
-
-  componentDidMount = () => {
-    document.addEventListener('mousedown', this.handleClickOutSide);
-  };
-
-  componentDidUpdate = (prevProps) => {
-    const { idSelect = '', dispatch } = this.props;
-    if (prevProps.idSelect !== idSelect && prevProps.idSelect) {
-      dispatch({
-        type: 'employee/fetchDataOrgChart',
-        payload: { employee: idSelect },
-      });
-      this.autoFocusNodeById(idSelect);
-    }
-  };
-
-  componentWillUnmount = () => {
-    document.removeEventListener('mousedown', this.handleClickOutSide);
-  };
-
-  autoFocusNodeById = (id) => {
-    // auto focus on the node when select user
-    this.setState({ itemSelected: id });
-  };
-
-  handleClickOutSide = (event) => {
-    const { target } = event;
-    if (!this.userRef.current?.contains(target)) {
-      this.setState({ itemSelected: '' });
-    }
-  };
-
-  handleCollapse = (name) => {
-    const { isCollapsed = false, isCollapsedChild = false } = this.state;
-
+  const handleCollapse = (name) => {
     if (name === 'parent') {
-      this.setState({ isCollapsed: !isCollapsed });
+      setIsCollapsed(!isCollapsed);
     } else {
-      this.setState({ isCollapsedChild: !isCollapsedChild });
+      setIsCollapsedChild(!isCollapsedChild);
     }
   };
 
-  handleScrollView = (userData, name) => {
-    const { _id: userId = '' } = userData;
-    const arrEmployeeRef = this.employeeRef.current;
-    let userRef = [];
-
-    switch (name) {
-      case 'user':
-        this.userRef.current.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: 'center',
-        });
-        break;
-      case 'manager':
-        this.managerRef.current.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: 'center',
-        });
-        break;
-      default:
-        userRef = arrEmployeeRef?.map((item) => (item.id === userId ? item.ref : null));
-        userRef = userRef.filter((item) => item !== null);
-        userRef = [...new Set(userRef)];
-
-        if (userRef.length > 0) {
-          userRef[0].scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-            inline: 'center',
-          });
-        }
-        break;
-    }
-  };
-
-  truncate = (value) => {
+  const truncate = (value) => {
     if (value.length > 30) {
       return `${value.substr(0, 6)}...${value.substr(value.length - 5, value.length)}`;
     }
     return value;
   };
 
-  truncateLegalName = (value) => {
+  const truncateLegalName = (value) => {
     if (value.length > 20) {
       return (
         <Popover
@@ -137,14 +49,11 @@ class OrganizationChart extends Component {
     return value;
   };
 
-  clickCardInfo = (userData, name) => {
-    const { handleClickNode = () => {} } = this.props;
-    handleClickNode(userData);
-    this.setState({ itemSelected: userData._id });
-    this.handleScrollView(userData, name);
+  const clickCardInfo = (userData) => {
+    setSelectedId(userData._id);
   };
 
-  renderCardInfo = (userData, name) => {
+  const renderCardInfo = (userData, name) => {
     const {
       generalInfo: {
         legalName = '',
@@ -170,7 +79,7 @@ class OrganizationChart extends Component {
     };
 
     return (
-      <div className={styles.node__card} onClick={() => this.clickCardInfo(userData, name)}>
+      <div className={styles.node__card} onClick={() => clickCardInfo(userData, name)}>
         <Popover placement="rightTop" content={popupImg(avatar || avtDefault)} trigger="hover">
           <Avatar
             className={styles.avatar}
@@ -180,56 +89,47 @@ class OrganizationChart extends Component {
           />
         </Popover>
         <div className={styles.node__card__info}>
-          <div className={styles.legalName}>{this.truncateLegalName(legalFullName)}</div>
-          <div className={styles.deptName}>{`${this.truncate(jobTitleName)}, ${deptName}`}</div>
+          <div className={styles.legalName}>{truncateLegalName(legalFullName)}</div>
+          <div className={styles.deptName}>{`${truncate(jobTitleName)}, ${deptName}`}</div>
           <div className={styles.countryName}>{countryName}</div>
         </div>
       </div>
     );
   };
 
-  renderManagerNode = () => {
-    const { dataOrgChart: { manager = {} } = {} } = this.props;
-    const { isCollapsed, itemSelected = '' } = this.state;
-    const propsState = { itemSelected, isCollapsed };
+  const renderManagerNode = () => {
+    const { dataOrgChart: { manager = {} } = {} } = props;
+    const propsState = { itemSelected: selectedId, isCollapsed };
 
     return (
       <>
         {isEmpty(manager) ? null : (
           <ManagerNode
-            renderCardInfo={this.renderCardInfo}
-            handleCollapse={this.handleCollapse}
+            renderCardInfo={renderCardInfo}
+            handleCollapse={handleCollapse}
             propsState={propsState}
             manager={manager}
-            managerRef={this.managerRef}
           />
         )}
       </>
     );
   };
 
-  renderUserNode = () => {
-    const { dataOrgChart } = this.props;
-    const { isCollapsedChild = false, itemSelected = '' } = this.state;
-
-    const propsState = { itemSelected, isCollapsedChild };
-
+  const renderUserNode = () => {
+    const propsState = { itemSelected: selectedId, isCollapsedChild };
     if (isEmpty(dataOrgChart)) return null;
 
     return (
       <UserNode
-        renderCardInfo={this.renderCardInfo}
-        handleCollapse={this.handleCollapse}
+        renderCardInfo={renderCardInfo}
+        handleCollapse={handleCollapse}
         propsState={propsState}
         dataOrgChart={dataOrgChart}
-        userRef={this.userRef}
       />
     );
   };
 
-  renderChildrenList = () => {
-    const { dataOrgChart } = this.props;
-    const { isCollapsedChild = false, isCollapsed = false, itemSelected = '' } = this.state;
+  const renderChildrenList = () => {
     const { employees: listEmployees = [] } = dataOrgChart;
 
     const handleGetLine = (length) => {
@@ -270,11 +170,9 @@ class OrganizationChart extends Component {
                 <EmployeeNode
                   isCollapsed={checkCollapse()}
                   key={employee._id}
-                  itemSelected={itemSelected}
+                  itemSelected={selectedId}
                   employee={employee}
-                  renderCardInfo={this.renderCardInfo}
-                  employeeRef={this.employeeRef.current}
-                  refTemp={this.refTemp.current}
+                  renderCardInfo={renderCardInfo}
                 />
               );
             })}
@@ -284,35 +182,37 @@ class OrganizationChart extends Component {
     );
   };
 
-  render() {
-    const { dataOrgChart, loading } = this.props;
-    const { isCollapsed } = this.state;
-    const { manager = {} } = dataOrgChart;
+  const { manager = {} } = dataOrgChart;
 
-    return (
-      <div className={styles.orgChartRoot}>
-        {loading ? (
-          <div className={styles.viewLoading}>
-            <Spin size="large" />
-          </div>
-        ) : (
-          <div className={styles.charts}>
-            {this.renderManagerNode()}
+  return (
+    <div className={styles.orgChartRoot}>
+      {loading ? (
+        <div className={styles.viewLoading}>
+          <Spin size="large" />
+        </div>
+      ) : (
+        <div className={styles.charts}>
+          {renderManagerNode()}
 
-            <Collapse isOpened={isCollapsed} hasNestedCollapse>
-              {isEmpty(manager) ? null : (
-                <div className={styles.charts__line}>
-                  <img alt="line" src={line} />
-                </div>
-              )}
-              {this.renderUserNode()}
-              {this.renderChildrenList()}
-            </Collapse>
-          </div>
-        )}
-      </div>
-    );
-  }
-}
+          <Collapse isOpened={isCollapsed} hasNestedCollapse>
+            {isEmpty(manager) ? null : (
+              <div className={styles.charts__line}>
+                <img alt="line" src={line} />
+              </div>
+            )}
+            {renderUserNode()}
+            {renderChildrenList()}
+          </Collapse>
+        </div>
+      )}
+    </div>
+  );
+};
 
-export default OrganizationChart;
+export default connect(
+  ({ employee: { dataOrgChart = {}, listEmployeeAll = [] } = {}, loading }) => ({
+    dataOrgChart,
+    loading: loading.effects['employee/fetchDataOrgChart'],
+    listEmployeeAll,
+  }),
+)(OrganizationChart);

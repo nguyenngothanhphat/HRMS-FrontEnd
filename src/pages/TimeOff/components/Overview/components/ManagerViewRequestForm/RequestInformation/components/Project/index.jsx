@@ -2,7 +2,7 @@ import { Col, Row } from 'antd';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { history, Link } from 'umi';
-import { TIMEOFF_DATE_FORMAT } from '@/utils/timeOff';
+import { TIMEOFF_DATE_FORMAT } from '@/constants/timeOff';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import ProjectDetailPopover from '@/components/ProjectDetailPopover';
 import styles from './index.less';

@@ -2,11 +2,11 @@ import React, { PureComponent } from 'react';
 import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import styles from './index.less';
-import ROLES from '@/utils/roles';
+import ROLES from '@/constants/roles';
 
 const { HR_MANAGER, REGION_HEAD } = ROLES;
 const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DELETED, DRAFTS } =

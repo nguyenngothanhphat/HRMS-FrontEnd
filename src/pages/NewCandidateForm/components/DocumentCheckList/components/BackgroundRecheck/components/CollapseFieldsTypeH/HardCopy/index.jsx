@@ -1,7 +1,7 @@
 import { Input } from 'antd';
 import { debounce } from 'lodash';
 import React from 'react';
-import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
+import { DOCUMENT_TYPES } from '@/constants/candidatePortal';
 import ResubmitIcon from '@/assets/candidatePortal/resubmitIcon.svg';
 import DoneIcon from '@/assets/candidatePortal/doneSign.svg';
 import styles from './index.less';

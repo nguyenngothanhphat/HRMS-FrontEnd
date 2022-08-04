@@ -1,41 +1,51 @@
 /* eslint-disable react/jsx-curly-newline */
-import React, { PureComponent } from 'react';
-import { Input, Select, Button, Empty, notification, Form } from 'antd';
+import { Card, Empty, Form, Input, notification, Select } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import styles from './index.less';
 
 const { Option } = Select;
-@connect(({ loading, user: { currentUser: { employee = {} } = {} } = {} }) => ({
-  employee,
-  loadingUpdateTicket: loading.effects['ticketManagement/updateTicket'],
-}))
-class RightContent extends PureComponent {
-  formRef = React.createRef();
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      status: '',
-      timeTaken: 0,
-    };
-  }
+const RightContent = (props) => {
+  const [form] = Form.useForm();
 
-  componentDidMount = () => {
-    const { data: { status = '' } = {} } = this.props;
-    this.setState({
-      status,
+  const { dispatch, loadingUpdateTicket = false, data = {}, employee: { _id = '' } = {} } = props;
+
+  const {
+    id = '',
+    status: statusProps = '',
+    time_taken: timeTakenProps = 0,
+    employee_assignee: employeeAssignee = '',
+    employee_raise: employeeRaise = '',
+    query_type: queryType = '',
+    subject = '',
+    description = '',
+    priority = '',
+    cc_list: ccList = [],
+    attachments = [],
+    department_assign: departmentAssign = '',
+  } = data;
+
+  const [status, setStatus] = useState('');
+  const [timeTaken, setTimeTaken] = useState(0);
+
+  useEffect(() => {
+    setStatus(statusProps);
+    form.setFieldsValue({
+      status: statusProps,
+      timeTaken: timeTakenProps,
     });
-  };
+  }, [statusProps]);
 
-  renderOption = () => {
-    const { status } = this.state;
+  const renderOption = () => {
     if (status) {
       return (
         <Select
           value={status}
           style={{ width: 100 }}
-          onChange={(value) => this.setState({ status: value })}
+          onChange={(value) => setStatus(value)}
+          disabled={!employeeAssignee}
         >
           <Option value="Assigned">Assigned</Option>
           <Option value="In Progress">In Progress</Option>
@@ -46,7 +56,7 @@ class RightContent extends PureComponent {
       );
     }
     return (
-      <Select style={{ width: 100 }}>
+      <Select style={{ width: 100 }} disabled={!employeeAssignee}>
         <Option disabled>
           <Empty />
         </Option>
@@ -54,28 +64,13 @@ class RightContent extends PureComponent {
     );
   };
 
-  getTimeTaken = () => {
-    const { timeTaken } = this.state;
-    const { data: { time_taken: timeTakenProps = '' } = {} } = this.props;
+  const getTimeTaken = () => {
     return timeTaken !== 0 ? timeTaken : timeTakenProps;
   };
 
-  onSubmitUpdate = () => {
-    const { status, timeTaken } = this.state;
-    const { dispatch, data = {}, employee: { _id = '' } = {} } = this.props;
-    const {
-      id = '',
-      employee_assignee: employeeAssignee = '',
-      employee_raise: employeeRaise = '',
-      query_type: queryType = '',
-      subject = '',
-      description = '',
-      priority = '',
-      cc_list: ccList = [],
-      attachments = [],
-      status: statusProps = '',
-      department_assign: departmentAssign = '',
-    } = data;
+  const onSubmitUpdate = (values) => {
+    const { status: status1 = '' } = values;
+
     const payload = {
       id,
       status,
@@ -89,11 +84,11 @@ class RightContent extends PureComponent {
       attachments,
       departmentAssign,
       employee: _id,
-      timeTaken: this.getTimeTaken(),
+      timeTaken: getTimeTaken(),
     };
 
-    if (statusProps !== 'New') {
-      if ((status === 'Resolved' || statusProps === 'Resolved') && timeTaken === '') {
+    if (status1 !== 'New') {
+      if (status1 === 'Resolved' && !timeTaken) {
         notification.error({
           message: 'Please input time taken',
         });
@@ -116,25 +111,21 @@ class RightContent extends PureComponent {
     }
   };
 
-  render() {
-    const { status = '', timeTaken = '' } = this.state;
-    const {
-      data: { status: statusProps = '', time_taken: timeTakenProps = '' } = {},
-      loadingUpdateTicket = false,
-    } = this.props;
-
-    return (
-      <div className={styles.RightContent}>
-        <div className={styles.RightContent__title}>Action</div>
+  return (
+    <div className={styles.RightContent}>
+      <Card title="Action">
         <Form
-          name="formUpdate"
-          ref={this.formRef}
-          id="formUpdate"
-          onFinish={this.onSubmitUpdate}
-          initialValues={{ timeTaken: 0 }}
+          name="updateForm"
+          form={form}
+          id="updateForm"
+          onFinish={onSubmitUpdate}
+          initialValues={{ timeTaken: timeTakenProps || 0, status: statusProps }}
+          className={styles.container}
         >
           <Form.Item
             name="timeTaken"
+            labelCol={{ span: 24 }}
+            label="Time taken"
             rules={[
               {
                 pattern: /^[0-9]*([.][0-9]{1})?$/,
@@ -142,44 +133,37 @@ class RightContent extends PureComponent {
               },
             ]}
           >
-            <div className={styles.RightContent__time}>
-              <p>Time taken:</p>
-              <Input
-                defaultValue={timeTakenProps}
-                addonAfter="Hours"
-                onChange={(e) =>
-                  this.setState({
-                    timeTaken: e.target.value,
-                  })
-                }
-              />
-            </div>
+            <Input
+              defaultValue={timeTakenProps}
+              addonAfter="Hours"
+              disabled={!employeeAssignee}
+              onChange={(e) => setTimeTaken(e.target.value)}
+            />
           </Form.Item>
-          <Form.Item>
-            <div className={styles.RightContent__status}>
-              <p>Status:</p>
-              {this.renderOption()}
-            </div>
-          </Form.Item>
-          <Form.Item>
-            <div className={styles.RightContent__btn}>
-              <Button
-                className={`${
-                  (status === 'Resolved' && timeTaken === '') || statusProps === 'New'
-                    ? styles.btnUpdate__disable
-                    : styles.btnUpdate
-                }`}
-                htmlType="submit"
-                loading={loadingUpdateTicket}
-              >
-                Update
-              </Button>
-            </div>
+
+          <Form.Item labelCol={{ span: 24 }} label="Status" name="status">
+            {renderOption()}
           </Form.Item>
         </Form>
-      </div>
-    );
-  }
-}
+        <div className={styles.buttonContainer}>
+          <CustomPrimaryButton
+            disabled={
+              (status === 'Resolved' && !timeTaken) || status === 'New' || !employeeAssignee
+            }
+            htmlType="submit"
+            form="updateForm"
+            key="submit"
+            loading={loadingUpdateTicket}
+          >
+            Update
+          </CustomPrimaryButton>
+        </div>
+      </Card>
+    </div>
+  );
+};
 
-export default RightContent;
+export default connect(({ loading, user: { currentUser: { employee = {} } = {} } = {} }) => ({
+  employee,
+  loadingUpdateTicket: loading.effects['ticketManagement/updateTicket'],
+}))(RightContent);

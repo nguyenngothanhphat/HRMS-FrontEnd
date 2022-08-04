@@ -1,23 +1,28 @@
-import React, { PureComponent } from 'react';
 import { Table, Tag } from 'antd';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import AddModal from './components/Add';
-import EditModal from './components/Edit';
-import HistoryModal from './components/History';
+import addAction from '@/assets/resource-action-add1.svg';
 import editIcon from '@/assets/resource-management-edit-history.svg';
 import historyIcon from '@/assets/resource-management-edit1.svg';
-import addAction from '@/assets/resource-action-add1.svg';
-import styles from './index.less';
-import ProjectProfile from '../ComplexView/components/PopoverProfiles/components/ProjectProfile';
-import CommentModal from './components/Comment';
-import CommentOverlay from '../ComplexView/components/Overlay';
+import changeManagerIcon from '@/assets/resourceManagement/changeManagerIcon.svg';
+import currentToNewManager from '@/assets/resourceManagement/currentToNewManager.svg';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import EmptyComponent from '@/components/Empty';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import ProjectRow from './components/ProjectRow';
-import ProjectLayout from './components/ProjectLayout';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { checkUtilization, projectDateFormat } from '@/utils/resourceManagement';
+import CommentOverlay from '../ComplexView/components/Overlay';
+import ProjectProfile from '../ComplexView/components/PopoverProfiles/components/ProjectProfile';
+import AddModal from './components/Add';
+import ChangeManagerModal from './components/ChangeManager';
+import CommentModal from './components/Comment';
+import EditModal from './components/Edit';
+import HistoryModal from './components/History';
+import ProjectLayout from './components/ProjectLayout';
+import ProjectRow from './components/ProjectRow';
+import WarnningModal from './components/Warnning';
+import styles from './index.less';
 
 @connect(
   ({
@@ -44,6 +49,8 @@ class TableResources extends PureComponent {
       dataPassRow: {},
       visibleAdd: false,
       visibleHistory: false,
+      visibleManagerChange: false,
+      visibleModalWarn: false,
     };
   }
 
@@ -87,6 +94,42 @@ class TableResources extends PureComponent {
   handleCancelHistory = () => {
     this.setState({
       visibleHistory: false,
+    });
+  };
+
+  showModalManagerChange = (row) => {
+    if (row.projects && row.projects.length > 1) {
+      this.setState({
+        visibleModalWarn: true,
+        dataPassRow: row,
+      });
+    } else {
+      this.setState({
+        visibleManagerChange: true,
+        dataPassRow: row,
+      });
+    }
+  };
+
+  handleCancelChangeManager = () => {
+    this.setState({
+      visibleManagerChange: false,
+    });
+  };
+
+  handleCancelWarnning = () => {
+    this.setState({
+      visibleModalWarn: false,
+    });
+  };
+
+  isShowModalManagerChange = (row) => {
+    this.setState({
+      visibleManagerChange: true,
+      dataPassRow: row,
+    });
+    this.setState({
+      visibleModalWarn: false,
     });
   };
 
@@ -171,7 +214,14 @@ class TableResources extends PureComponent {
       allowModify = true,
     } = this.props;
 
-    const { visible, dataPassRow, visibleHistory, visibleAdd } = this.state;
+    const {
+      visible,
+      dataPassRow,
+      visibleHistory,
+      visibleAdd,
+      visibleManagerChange,
+      visibleModalWarn,
+    } = this.state;
 
     const pagination = {
       position: ['bottomLeft'],
@@ -340,6 +390,34 @@ class TableResources extends PureComponent {
           // sortDirections: ['ascend', 'descend'],
         },
         {
+          title: 'Current Manager',
+          dataIndex: 'managerName',
+          key: 'managerName',
+          render: (value, row, index) => {
+            const managerChanged = row.managerChanged
+              ? row.managerChanged?.managerInfo?.generalInfo.legalName
+              : '';
+            const dateEffective =
+              row.managerChanged && row.managerChanged.effectiveDate
+                ? moment(row.managerChanged.effectiveDate).locale('en').format('Do MMMM YYYY')
+                : '';
+            const children = (
+              <span className={styles.basicCellField}>
+                {value}
+                {row.managerChanged && managerChanged !== value ? (
+                  <p>
+                    <img src={currentToNewManager} alt="" />{' '}
+                    <a href="#" className={styles.currentToNewManager}>
+                      {managerChanged} <p>{dateEffective}</p>
+                    </a>
+                  </p>
+                ) : null}
+              </span>
+            );
+            return getRowSpan(children, row, index);
+          },
+        },
+        {
           title: 'Experience (in yrs)',
           dataIndex: 'experience',
           render: (value, row, index) => {
@@ -438,7 +516,7 @@ class TableResources extends PureComponent {
           title: (
             <div className={styles.dateHeaderContainer}>
               <div>Start Date</div>
-              <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
+              <div className={styles.dateFormat}>({DATE_FORMAT_MDY.toLowerCase()})</div>
             </div>
           ),
           dataIndex: 'startDate',
@@ -465,7 +543,7 @@ class TableResources extends PureComponent {
           title: (
             <div className={styles.dateHeaderContainer}>
               <div>End Date</div>
-              <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
+              <div className={styles.dateFormat}>({DATE_FORMAT_MDY.toLowerCase()})</div>
             </div>
           ),
           dataIndex: 'endDate',
@@ -492,7 +570,7 @@ class TableResources extends PureComponent {
           title: (
             <div className={styles.dateHeaderContainer}>
               <div>Revised End Date</div>
-              <div className={styles.dateFormat}>(mm/dd/yyyy)</div>
+              <div className={styles.dateFormat}>({DATE_FORMAT_MDY.toLowerCase()})</div>
             </div>
           ),
           dataIndex: 'revisedEndDate',
@@ -614,6 +692,13 @@ class TableResources extends PureComponent {
                   )}
 
                   <img
+                    src={changeManagerIcon}
+                    alt="changemangerIcon"
+                    onClick={() => this.showModalManagerChange(row)}
+                    className={styles.buttonAdd}
+                  />
+
+                  <img
                     src={historyIcon}
                     alt="historyIcon"
                     onClick={() => this.showModalHistory(row)}
@@ -663,6 +748,21 @@ class TableResources extends PureComponent {
           visible={visibleHistory}
           dataPassRow={dataPassRow}
           onClose={() => this.handleCancelHistory(false)}
+          mode="multiple"
+        />
+        <ChangeManagerModal
+          visible={visibleManagerChange}
+          refreshData={refreshData}
+          dataPassRow={dataPassRow}
+          onClose={() => this.handleCancelChangeManager(false)}
+          mode="multiple"
+        />
+        <WarnningModal
+          visible={visibleModalWarn}
+          refreshData={refreshData}
+          dataPassRow={dataPassRow}
+          onClose={() => this.handleCancelWarnning(false)}
+          onClick={() => this.isShowModalManagerChange(dataPassRow)}
           mode="multiple"
         />
       </div>

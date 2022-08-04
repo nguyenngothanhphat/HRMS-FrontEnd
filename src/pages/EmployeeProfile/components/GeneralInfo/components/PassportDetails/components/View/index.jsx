@@ -1,9 +1,8 @@
-import React, { PureComponent, Fragment } from 'react';
-import { Row, Col } from 'antd';
-import { connect } from 'umi';
+import { Col, Row } from 'antd';
 import Moment from 'moment';
+import React, { Fragment, PureComponent } from 'react';
+import { connect } from 'umi';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import iconPDF from '@/assets/pdf-2.svg';
 import ConformIcondata from '../../../confirmIcon';
 import styles from './index.less';
 
@@ -59,7 +58,7 @@ class View extends PureComponent {
         </Col>
         <Col span={18} className={`${styles.textValue} ${styles.setIconEarly}`}>
           {item.passportNumber}
-          {item.document ? (
+          {item.document && (
             <div className={styles.viewFileUpLoad}>
               <p
                 onClick={() => this.handleOpenModalReview(item.document.attachment.url)}
@@ -71,8 +70,6 @@ class View extends PureComponent {
                 data={item.document.attachment ? item.document.attachment.name : ''}
               />
             </div>
-          ) : (
-            <img src={iconPDF} alt="iconFilePDF" className={styles.iconEarly} />
           )}
         </Col>
         <Col span={6} className={styles.textLabel}>
@@ -102,19 +99,13 @@ class View extends PureComponent {
   };
 
   handleRenderDataDummyPassport = (dummyData) => {
-    return dummyData.map((item, index) => (
+    return dummyData.map((item) => (
       <Fragment key={item.label}>
         <Col span={6} className={styles.textLabel}>
           {item.label}
         </Col>
         <Col span={18} className={styles.EarlyIcon}>
           {item.value}
-          {(item.label === 'Passport Number' && index === 0) ||
-          (item.label === 'Passport Number' && index === 1) ? (
-            <img src={iconPDF} alt="iconFilePDF" />
-          ) : (
-            ''
-          )}
         </Col>
       </Fragment>
     ));

@@ -10,7 +10,7 @@ import {
   TIMEOFF_MAX_LEAVE_HOUR,
   TIMEOFF_MIN_LEAVE_HOUR,
   TIMEOFF_PERIOD,
-} from '@/utils/timeOff';
+} from '@/constants/timeOff';
 import CustomTimePicker from '@/components/CustomTimePicker';
 import styles from './index.less';
 

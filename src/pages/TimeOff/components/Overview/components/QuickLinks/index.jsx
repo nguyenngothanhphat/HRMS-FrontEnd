@@ -3,7 +3,7 @@ import { Tabs } from 'antd';
 import { connect } from 'umi';
 import { flattenDeep } from 'lodash';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import { TAB_IDS_QUICK_LINK } from '@/utils/homePage';
+import { TAB_IDS_QUICK_LINK } from '@/constants/homePage';
 import EmptyComponent from '@/components/Empty';
 import styles from './index.less';
 

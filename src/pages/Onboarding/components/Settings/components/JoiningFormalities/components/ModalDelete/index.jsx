@@ -13,7 +13,7 @@ const ModalDelete = (props) => {
   } = props;
   const onDelete = async () => {
     await dispatch({
-      type: 'onboard/removeJoiningFormalities',
+      type: 'onboarding/removeJoiningFormalities',
       payload: {
         _id,
       },
@@ -52,5 +52,5 @@ const ModalDelete = (props) => {
 };
 
 export default connect(({ loading }) => ({
-  loadingRemove: loading.effects['onboard/removeJoiningFormalities'],
+  loadingRemove: loading.effects['onboarding/removeJoiningFormalities'],
 }))(ModalDelete);

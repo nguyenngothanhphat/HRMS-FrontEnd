@@ -4,7 +4,7 @@
 @commonPadding: 15px;
 @commonPadding2: 24px;
 @commonPadding3: 32px;
-@borderColor: #d6dce0;
+@borderColor: @border-color-base;
 
 .References {
   position: relative;
@@ -46,7 +46,7 @@
   .bottomBar {
     padding: @commonPadding;
     background-color: #ffffff;
-    border: solid 1px #d6dce0;
+    border: solid 1px @border-color-base;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
 
@@ -122,7 +122,7 @@
 
   .divider {
     margin: 0;
-    border-top: 1px solid #d6dce0;
+    border-top: 1px solid @border-color-base;
   }
 
   :global {

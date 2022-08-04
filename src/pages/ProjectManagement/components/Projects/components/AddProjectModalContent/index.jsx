@@ -1,8 +1,9 @@
 import { Col, DatePicker, Form, Input, Row, Select, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
 import CreatableSelect from 'react-select/creatable';
+import { connect } from 'umi';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import HelpIcon from '@/assets/projectManagement/help.svg';
 import CalendarIcon from '@/assets/projectManagement/calendar.svg';
 import styles from './index.less';
@@ -143,8 +144,8 @@ const AddProjectModal = (props) => {
       type: 'projectManagement/addProjectEffect',
       payload: {
         ...values,
-        startDate: moment(values.startDate).format('YYYY-MM-DD'),
-        tentativeEndDate: moment(values.tentativeEndDate).format('YYYY-MM-DD'),
+        startDate: moment(values.startDate).format(DATE_FORMAT_YMD),
+        tentativeEndDate: moment(values.tentativeEndDate).format(DATE_FORMAT_YMD),
         customerName: customer?.legalName,
         ownerName,
         tags: name,

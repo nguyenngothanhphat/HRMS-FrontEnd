@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'umi';
 import DeleteIcon from '@/assets/projectManagement/recycleBin.svg';
 import CommonTable from '@/components/CommonTable';
-import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const ReviewResourceTable = (props) => {
@@ -19,7 +19,7 @@ const ReviewResourceTable = (props) => {
     return (
       <span className={styles.timeTitle}>
         <span>{title}</span>
-        <span className={styles.smallText}>(mm/dd/yyyy)</span>
+        <span className={styles.smallText}>({DATE_FORMAT_MDY.toLowerCase()})</span>
       </span>
     );
   };
@@ -61,7 +61,7 @@ const ReviewResourceTable = (props) => {
         key: 'startDate',
         align: 'center',
         render: () => {
-          const value = startDate ? moment(startDate).format(DATE_FORMAT_LIST) : null;
+          const value = startDate ? moment(startDate).format(DATE_FORMAT_MDY) : null;
           return <span>{value || '-'}</span>;
         },
       },
@@ -71,7 +71,7 @@ const ReviewResourceTable = (props) => {
         key: 'endDate',
         align: 'center',
         render: () => {
-          const value = endDate ? moment(endDate).format(DATE_FORMAT_LIST) : null;
+          const value = endDate ? moment(endDate).format(DATE_FORMAT_MDY) : null;
           return <span>{value || '-'}</span>;
         },
       },

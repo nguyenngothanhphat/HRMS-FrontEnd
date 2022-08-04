@@ -1,9 +1,9 @@
 import { Table } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
 import { connect, formatMessage } from 'umi';
-import styles from './index.less';
-import { TAB_IDS_QUICK_LINK } from '@/utils/homePage';
+import { TAB_IDS_QUICK_LINK } from '@/constants/homePage';
 import EmptyComponent from '@/components/Empty';
+import styles from './index.less';
 
 const CommonTable = (props) => {
   const {

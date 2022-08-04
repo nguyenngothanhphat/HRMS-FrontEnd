@@ -15,7 +15,7 @@ const ViewInformation = (props) => {
   const [isEditCustomer, setIsEditCustomer] = useState(false);
   const [visible, setVisible] = useState(false);
 
-  const { info = {}, loadingInfo = false, dispatch } = props;
+  const { info = {}, loadingInfo = false, dispatch, loadingUpdateCustomer = false } = props;
   const {
     accountOwner: { generalInfo: { legalName: nameLegal = '' } = {} } = {} || {},
     tags = [],
@@ -29,12 +29,6 @@ const ViewInformation = (props) => {
     customerId = '',
     openLeads = '',
   } = info || {};
-
-  // const getAvatarUrl = (avatar, isShowAvatar) => {
-  //   if (isShowAvatar || permissions.viewAvatarEmployee !== -1 || profileOwner)
-  //     return avatar || avtDefault;
-  //   return avtDefault;
-  // };
 
   const openModalUpload = () => {
     setVisible(true);
@@ -69,7 +63,7 @@ const ViewInformation = (props) => {
   };
 
   return (
-    <Spin spinning={loadingInfo}>
+    <Spin spinning={loadingInfo} indicator={null}>
       <div className={s.viewRight__infoEmployee} style={{ position: 'relative' }}>
         <Button className={s.btnEdit} onClick={() => setIsEditCustomer(true)}>
           Edit
@@ -79,7 +73,14 @@ const ViewInformation = (props) => {
           alt="img-cover"
           className={s.infoEmployee__imgCover}
         />
-        <img src={avatar || MockCustomerLogo} alt="img-avt" className={s.infoEmployee__imgAvt} />
+        <img
+          src={avatar || MockCustomerLogo}
+          alt="img-avt"
+          className={s.infoEmployee__imgAvt}
+          onError={(e) => {
+            e.target.src = MockCustomerLogo;
+          }}
+        />
         {/* {(permissions.updateAvatarEmployee !== -1 || profileOwner) && ( */}
         <img
           src="/assets/images/iconUploadImage.svg"
@@ -210,7 +211,7 @@ const ViewInformation = (props) => {
           firstText="Edit Customer"
           cancelText="Cancel"
           title="Edit Customer"
-          // loading={loadingUpdateProject}
+          loading={loadingUpdateCustomer}
           content={
             <EditCustomerModalContent
               visible={isEditCustomer}
@@ -228,4 +229,5 @@ const ViewInformation = (props) => {
 export default connect(({ loading, customerProfile: { info = {} } = {} }) => ({
   info,
   loadingInfo: loading.effects['customerProfile/fetchCustomerInfo'],
+  loadingUpdateCustomer: loading.effects['customerProfile/updateCustomerEffect'],
 }))(ViewInformation);

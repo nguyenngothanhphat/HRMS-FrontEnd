@@ -1,12 +1,13 @@
-import { Button, Card, Tabs, Skeleton } from 'antd';
-import React, { useState, useEffect } from 'react';
+import { Card, Skeleton, Tabs } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import WhiteAddIcon from '@/assets/projectManagement/whitePlus.svg';
 import CommonModal from '@/components/CommonModal';
+import WhiteAddIcon from '@/assets/projectManagement/whitePlus.svg';
 import AddResourceTypeContent from './components/AddResourceTypeContent';
 import ResourcesCard from './components/ResourcesCard';
 import ResourceTypeCard from './components/ResourceTypeCard';
 
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -19,17 +20,18 @@ const Resources = (props) => {
     loadingFetch = false,
   } = props;
   const [addResourceTypeModalVisible, setAddResourceTypeModalVisible] = useState(false);
-  const [unfilter, setUnfilter] = useState(true);
+  const [filter, setFilter] = useState({});
+  const [searchValue, setSearchValue] = useState('');
 
   // permissions
   const { allowModify = false } = props;
 
-  const fetchResourceTypeList = (searchKey, filter) => {
+  const fetchResourceTypeList = () => {
     dispatch({
       type: 'projectDetails/fetchResourceTypeListEffect',
       payload: {
         projectId,
-        searchKey,
+        searchKey: searchValue,
         ...filter,
       },
     });
@@ -37,7 +39,7 @@ const Resources = (props) => {
 
   useEffect(() => {
     fetchResourceTypeList();
-  }, []);
+  }, [searchValue, JSON.stringify(filter)]);
 
   // render ui
   const renderEmptyCard = () => {
@@ -48,14 +50,14 @@ const Resources = (props) => {
           <span className={styles.secondText}>
             You are required to add the resource types after which you can add the resources.
           </span>
-          <Button
+          <CustomPrimaryButton
             icon={<img src={WhiteAddIcon} alt="" />}
-            className={styles.addResources}
             onClick={() => setAddResourceTypeModalVisible(true)}
             disabled={!allowModify}
+            height={36}
           >
             Add Resource Type
-          </Button>
+          </CustomPrimaryButton>
         </div>
       </Card>
     );
@@ -75,7 +77,10 @@ const Resources = (props) => {
               data={resourceTypeList}
               refreshResourceType={fetchResourceTypeList}
               allowModify={allowModify}
-              setUnfilter={(value) => setUnfilter(value)}
+              setFilter={setFilter}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+              filter={filter}
             />
           </TabPane>
           <TabPane tab="Resources" key="2">
@@ -86,7 +91,10 @@ const Resources = (props) => {
     );
   };
 
-  if (loadingFetch && resourceTypeList.length === 0 && unfilter) {
+  const applied = Object.values(filter).filter((v) => v).length;
+  const isAllEmpty = applied === 0 && !searchValue && resourceTypeList.length === 0;
+
+  if (loadingFetch && isAllEmpty) {
     return (
       <div className={styles.Resources}>
         <Skeleton active />
@@ -95,7 +103,7 @@ const Resources = (props) => {
   }
   return (
     <div className={styles.Resources}>
-      {resourceTypeList.length === 0 && unfilter ? renderEmptyCard() : renderDataCard()}
+      {isAllEmpty ? renderEmptyCard() : renderDataCard()}
       <CommonModal
         visible={addResourceTypeModalVisible}
         onClose={() => setAddResourceTypeModalVisible(false)}

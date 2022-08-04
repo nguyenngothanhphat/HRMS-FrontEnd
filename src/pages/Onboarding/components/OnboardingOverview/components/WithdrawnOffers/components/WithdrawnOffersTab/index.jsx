@@ -1,9 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import {
-  COLUMN_NAME,
-  TABLE_TYPE,
-} from '@/pages/Onboarding/components/OnboardingOverview/components/utils';
+import { ONBOARDING_COLUMN_NAME, ONBOARDING_TABLE_TYPE } from '@/constants/onboarding';
 import OnboardTable from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable';
 
 const {
@@ -16,8 +13,8 @@ const {
   ASSIGNEE_MANAGER,
   PROCESS_STATUS,
   ACTION,
-} = COLUMN_NAME;
-const { OFFER_WITHDRAWN } = TABLE_TYPE;
+} = ONBOARDING_COLUMN_NAME;
+const { OFFER_WITHDRAWN } = ONBOARDING_TABLE_TYPE;
 
 class RejectedOffersTab extends PureComponent {
   render() {

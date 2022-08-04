@@ -1,7 +1,7 @@
 .Withdraw2Modal {
   :global {
     .ant-input:focus {
-      border-color: #2c6df9;
+      border-color: @primary-color;
       outline: 0;
       box-shadow: unset;
     }
@@ -17,16 +17,16 @@
     }
     .ant-picker,
     .ant-input {
-      border-radius: 5px !important;
       min-height: 42px !important;
       font-size: 13px;
+      border-radius: 5px !important;
     }
 
     .ant-select-selector {
-      border-radius: 5px !important;
       height: 42px !important;
-      font-size: 13px;
       padding-top: 5px !important;
+      font-size: 13px;
+      border-radius: 5px !important;
     }
 
     // text area
@@ -46,14 +46,14 @@
     justify-content: center;
     padding: 32px;
     .title {
+      color: #161c29;
       font-weight: 700;
       font-size: 18px;
-      color: #161c29;
     }
     .subtitle1 {
       margin-top: 10px;
-      font-size: 14px;
       color: #161c29;
+      font-size: 14px;
     }
     .subtitle2 {
       color: #707177;
@@ -72,10 +72,10 @@
       }
       .cancelBtn {
         margin-left: 20px;
+        background-color: #ffa1001a !important;
         span {
           color: #161c29 !important;
         }
-        background-color: #ffa1001a !important;
       }
     }
 
@@ -84,13 +84,13 @@
         border-radius: 10px;
       }
       .ant-btn {
+        height: 40px;
         margin-top: 15px;
+        // width: 108px;
+        padding: 0 30px;
         background-color: #ffa100;
         border: none;
         border-radius: 30px;
-        height: 40px;
-        // width: 108px;
-        padding: 0 30px;
         span {
           color: white;
           font-weight: 700;

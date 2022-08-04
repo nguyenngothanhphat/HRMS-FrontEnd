@@ -1,8 +1,8 @@
 import { Modal, Popover, Table, Avatar } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import { find, trim, trimStart } from 'lodash';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import styles from './index.less';
 
 const SalaryReference = (props) => {

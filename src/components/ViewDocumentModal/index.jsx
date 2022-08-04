@@ -3,25 +3,17 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { message, Modal, Spin } from 'antd';
 import axios from 'axios';
 import React, { PureComponent } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
 import ReactToPrint from 'react-to-print';
 import { connect } from 'umi';
-import PrintIcon from '@/assets/printIconTimeOff.svg';
-import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
 import CloseIcon from '@/assets/closeIconTimeOff.svg';
-import styles from './index.less';
+import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
+import PrintIcon from '@/assets/printIconTimeOff.svg';
+import { FILE_TYPE } from '@/constants/upload';
+import { identifyFile } from '@/utils/upload';
 import { getCountryId } from '@/utils/utils';
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+import styles from './index.less';
 
 class ViewDocumentModal extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      numPages: null,
-    };
-  }
-
   componentDidUpdate = (prevProps) => {
     const { dispatch, visible = false } = this.props;
     if (visible !== prevProps.visible && visible) {
@@ -31,7 +23,7 @@ class ViewDocumentModal extends PureComponent {
     }
   };
 
-  onDownload = (url) => {
+  onDownload = (url = '') => {
     const fileName = url.split('/').pop();
     message.loading('Downloading file. Please wait...');
     axios({
@@ -52,29 +44,6 @@ class ViewDocumentModal extends PureComponent {
   onPrint = (url) => {
     // event.preventDefault();
     window.open(url, 'PRINT');
-  };
-
-  identifyImageOrPdf = (fileName) => {
-    const parts = fileName.split('.');
-    const ext = parts[parts.length - 1];
-    switch (ext.toLowerCase()) {
-      case 'jpg':
-      case 'jpeg':
-      case 'gif':
-      case 'bmp':
-      case 'png':
-        return 0;
-      case 'pdf':
-        return 1;
-      default:
-        return 0;
-    }
-  };
-
-  onDocumentLoadSuccess = ({ numPages }) => {
-    this.setState({
-      numPages,
-    });
   };
 
   renderLoading = () => {
@@ -116,28 +85,17 @@ class ViewDocumentModal extends PureComponent {
 
   _renderViewPDF = () => {
     const { url = '', fileName = 'View Document' } = this.props;
-    const { numPages } = this.state;
-
     return (
       <>
         <p className={styles.fileName}>{fileName}</p>
-        <Document
-          className={styles.pdfFrame}
-          onLoadSuccess={this.onDocumentLoadSuccess}
-          file={url}
-          loading={this.renderLoading()}
-          noData="Document Not Found"
-          ref={(el) => (this.componentRef = el)}
-        >
-          {Array.from(new Array(numPages), (el, index) => (
-            <Page
-              loading=""
-              className={styles.pdfPage}
-              key={`page_${index + 1}`}
-              pageNumber={index + 1}
-            />
-          ))}
-        </Document>
+        <object width="100%" height="530" data={url} type="application/pdf">
+          <iframe
+            width="100%"
+            height="530"
+            src={`https://docs.google.com/viewer?url=${url}&embedded=true`}
+            title="pdf-viewer"
+          />
+        </object>
       </>
     );
   };
@@ -180,14 +138,14 @@ class ViewDocumentModal extends PureComponent {
   render() {
     const { visible, onClose = () => {}, url = '', disableDownload = false } = this.props;
 
-    const viewType = this.identifyImageOrPdf(url); // 0: images, 1: pdf
+    const viewType = identifyFile(url); // 0: images, 1: pdf
 
     return (
       <Modal
         className={styles.ViewDocumentModal}
         destroyOnClose
         // eslint-disable-next-line no-nested-ternary
-        width={viewType === 0 ? 500 : 900}
+        width={viewType === FILE_TYPE.IMAGE ? 500 : 900}
         visible={visible}
         footer={null}
         onCancel={() => onClose(false)}
@@ -200,10 +158,10 @@ class ViewDocumentModal extends PureComponent {
           onContextMenu={disableDownload ? (e) => e.preventDefault() : null}
         >
           <div className={viewType === 0 ? styles.contentViewImage : styles.contentViewPDF}>
-            {viewType === 0 && this._renderViewImage()}
-            {viewType === 1 && this._renderViewPDF()}
+            {viewType === FILE_TYPE.IMAGE && this._renderViewImage()}
+            {viewType === FILE_TYPE.PDF && this._renderViewPDF()}
           </div>
-          {viewType === 1 && this._renderStickyFooter()}
+          {this._renderStickyFooter()}
         </div>
       </Modal>
     );

@@ -1,44 +1,29 @@
-import ROLES from '../src/utils/roles';
+import ROLES from '../src/constants/roles';
 const {
-  HR_MANAGER,
-  HR,
   EMPLOYEE,
-  REGION_HEAD,
-  CEO,
-  MANAGER,
   ADMIN,
-  DEPARTMENT_HEAD,
   OWNER,
-  PROJECT_MANAGER,
-  PEOPLE_MANAGER,
-  FINANCE,
   CANDIDATE,
 } = ROLES;
 
 const routes = [
-  // {
-  //   path: '/',
-  //   redirect: '/dashboard',
-  //   authority: [OWNER],
-  // },
   {
     path: '/',
     redirect: '/home',
-    // authority: [EMPLOYEE],
   },
   {
     path: '/signin-google',
-    component: './SignupGoogle',
+    component: './SignInGoogle',
     routes: [
       {
         path: '/signin-google',
-        component: './SignupGoogle',
+        component: './SignInGoogle',
       },
     ],
   },
   {
     path: '/login',
-    component: '../layouts/AuthLayout',
+    component: '../layouts/components/AuthLayout',
     routes: [
       {
         path: '/login',
@@ -47,38 +32,38 @@ const routes = [
     ],
   },
   {
-    path: '/signup',
-    component: '../layouts/SignUpLayout1',
+    path: '/sign-up',
+    component: '../layouts/components/SignUpLayout1',
     routes: [
       {
-        path: '/signup',
+        path: '/sign-up',
         component: './SignUp1',
       },
     ],
   },
   {
-    path: '/signup-verify',
-    component: '../layouts/SignUpLayout1',
+    path: '/sign-up/verify',
+    component: '../layouts/components/SignUpLayout1',
     routes: [
       {
-        path: '/signup-verify',
+        path: '/sign-up/verify',
         component: './SignUp2',
       },
     ],
   },
   {
-    path: '/signup-configlocation',
-    component: '../layouts/SignUpLayout2',
+    path: '/sign-up/location-config',
+    component: '../layouts/components/SignUpLayout2',
     routes: [
       {
-        path: '/signup-configlocation',
+        path: '/sign-up/location-config',
         component: './SignUpConfigLocation',
       },
     ],
   },
   {
     path: '/candidate',
-    component: '../layouts/TerralogicCandidateLoginLayout',
+    component: '../layouts/components/TerralogicCandidateLoginLayout',
     routes: [
       {
         path: '/candidate',
@@ -88,7 +73,7 @@ const routes = [
   },
   {
     path: '/forgot-password',
-    component: '../layouts/AuthLayout',
+    component: '../layouts/components/AuthLayout',
     routes: [
       {
         path: '/forgot-password',
@@ -98,7 +83,7 @@ const routes = [
   },
   {
     path: '/reset-password/:reId',
-    component: '../layouts/AuthLayout',
+    component: '../layouts/components/AuthLayout',
     routes: [
       {
         path: '/reset-password/:reId',
@@ -108,7 +93,7 @@ const routes = [
   },
   {
     path: '/active-user/:id',
-    component: '../layouts/ActiveUserLayout',
+    component: '../layouts/components/ActiveUserLayout',
     routes: [
       {
         path: '/active-user/:id',
@@ -127,7 +112,7 @@ const routes = [
   },
   {
     path: '/first-change-password',
-    component: '../layouts/AccountSetupLayout',
+    component: '../layouts/components/AccountSetupLayout',
     routes: [
       {
         path: '/first-change-password',
@@ -141,12 +126,12 @@ const routes = [
   },
   {
     path: '/candidate-portal',
-    component: '../layouts/CandidatePortalLayout',
+    component: '../layouts/components/CandidatePortalLayout',
     authority: [CANDIDATE],
     routes: [
       {
         path: '/candidate-portal',
-        name: 'candidatePortal',
+        name: 'candidate-portal',
         icon: '/assets/images/menuIcons/dashboard.svg',
         hideInMenu: true,
         authority: [CANDIDATE],
@@ -170,13 +155,13 @@ const routes = [
   },
   {
     path: '/candidate-change-password',
-    component: '../layouts/CandidatePortalLayout',
+    component: '../layouts/components/CandidatePortalLayout',
     authority: [CANDIDATE],
     routes: [
       // for change password
       {
         path: '/candidate-change-password',
-        name: 'candidateChangePassword',
+        name: 'candidate-change-password',
         hideInMenu: true,
         authority: [CANDIDATE],
         component: './CandidateChangePassword',
@@ -185,29 +170,29 @@ const routes = [
   },
   {
     path: '/',
-    component: '../layouts/SecurityLayout',
+    component: '../layouts/components/SecurityLayout',
     routes: [
       {
         path: '/control-panel',
-        component: '../layouts/AccountSetupLayout',
+        component: '../layouts/components/AccountSetupLayout',
         // authority: [ADMIN, OWNER, EMPLOYEE, CANDIDATE],
         routes: [
           {
             path: '/control-panel',
             component: './ControlPanel',
-            name: 'controlPanel.name',
+            name: 'control-panel.name',
             // authority: [ADMIN, OWNER, EMPLOYEE, CANDIDATE],
           },
           {
             path: '/control-panel/company-profile/:id',
             component: './CompanyProfile',
-            name: 'controlPanel.companyProfile',
+            name: 'control-panel.companyProfile',
             authority: [OWNER],
           },
           {
             path: '/control-panel/add-company',
             component: './CompanyProfile',
-            name: 'controlPanel.companyProfile',
+            name: 'control-panel.companyProfile',
             authority: [OWNER],
           },
           {
@@ -222,13 +207,14 @@ const routes = [
       },
       {
         // path: '/',
-        component: '../layouts/BasicLayout',
+        component: '../layouts/components/BasicLayout',
         routes: [
           {
             path: '/home',
             name: 'home',
             icon: '/assets/images/menuIcons/home.svg',
             component: './HomePage',
+            authority: [EMPLOYEE],
           },
           {
             path: '/home/settings',
@@ -237,7 +223,7 @@ const routes = [
             redirect: '/home/settings/post-management',
           },
           {
-            name: 'homeSettings',
+            name: 'home-settings',
             path: '/home/settings/:reId',
             hideInMenu: true,
             component: './HomePage/components/Settings',
@@ -252,14 +238,14 @@ const routes = [
           },
           {
             path: '/dashboard/approvals',
-            name: 'dashboardApprovals',
+            name: 'dashboard-approvals',
             hideInMenu: true,
             component: './Dashboard/components/Approval',
             authority: ['P_APPROVALS_PAGE_VIEW'],
           },
           {
             path: '/admin-app',
-            name: 'adminApp',
+            name: 'admin-app',
             icon: '/assets/images/menuIcons/adminApp.svg',
             component: './AdminApp',
             authority: [OWNER],
@@ -330,72 +316,84 @@ const routes = [
             path: '/onboarding/list/view/:reId',
             redirect: '/onboarding/list/view/:reId/basic-information',
             hideInMenu: true,
-            name: 'Add a team member',
+            name: 'add-team-member',
           },
           {
-            path: '/onboarding/newJoinees/view-detail/:userId',
-            name: 'candidateProfile',
+            path: '/onboarding/new-joinees/view-detail/:userId',
+            name: 'candidate-profile',
             hideInMenu: true,
-            component: './Onboarding/components/NewJoinees/CandidateProfile',
+            component: './Onboarding/components/NewJoinees/components/CandidateProfile',
             authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'P_ONBOARDING_ALL'],
           },
           {
             path: '/offboarding',
             name: 'offboarding',
             icon: '/assets/images/menuIcons/offboarding.svg',
-            component: './OffBoarding',
+            component: './Offboarding',
             authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
           },
           {
-            path: '/offboarding/:tabName',
-            component: './OffBoarding',
+            path: '/offboarding/:tabName(company-wide)',
+            component: './Offboarding',
             authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
             hideInMenu: true,
           },
           {
-            path: '/offboarding/settings/:type',
-            component: './OffBoarding',
+            path: '/offboarding/:tabName(team)',
+            component: './Offboarding',
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
+            hideInMenu: true,
+          },
+          {
+            path: '/offboarding/:tabName(settings)',
+            component: './Offboarding',
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
+            hideInMenu: true,
+          },
+          {
+            path: '/offboarding/:tabName(settings)/:type',
+            component: './Offboarding',
             authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
             hideInMenu: true,
           },
           {
             path: '/time-off',
-            name: 'timeOff',
+            name: 'time-off',
             icon: '/assets/images/menuIcons/timeoff.svg',
             component: './TimeOff',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
           },
           {
             path: '/time-off/:tabName(overview)',
-            name: 'Overview',
+            name: 'timeoff-overview',
             component: './TimeOff',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
             hideInMenu: true,
           },
           {
             path: '/time-off/:tabName(setup)',
-            name: 'Setup Timeoff policy',
+            name: 'timeoff-setup',
             component: './TimeOff',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
             hideInMenu: true,
           },
           {
-            path: '/time-off/:tabName/:type',
+            path: '/time-off/:tabName(setup)/:type',
             component: './TimeOff',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
             hideInMenu: true,
           },
           {
-            path: '/time-off/setup/types-rules/:action(add)',
-            name: 'timeOffTypeConfiguration',
+            path: '/time-off/:tabName(setup)/:type(types-rules)/:action(add)',
+            name: 'time-off-type-configuration',
             component:
               './TimeOff/components/SetupTimeoff/components/TimeOffType/components/TypeConfiguration',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
             hideInMenu: true,
           },
           {
-            path: '/time-off/setup/types-rules/:action(configure)/:typeId',
-            name: 'timeOffTypeConfiguration',
+            path: '/time-off/:tabName(setup)/:type(types-rules)/:action(configure)/:typeId',
+            name: 'time-off-type-configuration',
             component:
               './TimeOff/components/SetupTimeoff/components/TimeOffType/components/TypeConfiguration',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
@@ -405,7 +403,7 @@ const routes = [
             path: '/users-management',
             name: 'users',
             icon: '/assets/images/menuIcons/user.svg',
-            component: '../pages_admin/UsersManagement',
+            component: './UsersManagement',
             authority: ['M_USER_MANAGEMENT_VIEW', OWNER],
           },
           {
@@ -421,7 +419,7 @@ const routes = [
           },
           {
             path: '/user-profile/:reId',
-            name: 'userProfile',
+            name: 'user-profile',
             component: './UserProfile',
             hideInMenu: true,
             authority: [OWNER, ADMIN],
@@ -430,20 +428,20 @@ const routes = [
             path: '/companies-management',
             name: 'companies',
             icon: '/assets/images/menuIcons/company.svg',
-            component: '../pages_admin/CompaniesManagement',
+            component: './CompaniesManagement',
             authority: ['M_COMPANY_MANAGEMENT_VIEW', OWNER],
           },
           {
             path: '/companies-management/add-company',
-            name: 'addCompany',
+            name: 'add-company',
             hideInMenu: true,
-            component: '../pages_admin/CompaniesManagement/components/AddCompany',
+            component: './CompaniesManagement/components/AddCompany',
             authority: [OWNER],
           },
           {
             path: '/companies-management/company-detail/:reId',
-            name: 'companyDetail',
-            component: '../pages_admin/CompaniesManagement/components/CompanyDetail',
+            name: 'company-detail',
+            component: './CompaniesManagement/components/CompanyDetail',
             hideInMenu: true,
             authority: [OWNER],
           },
@@ -451,12 +449,12 @@ const routes = [
             path: '/candidates-management',
             name: 'candidates',
             icon: '/assets/images/menuIcons/candidate.svg',
-            component: '../pages_admin/CandidatesManagement',
+            component: './CandidatesManagement',
             authority: ['M_CANDIDATE_MANAGEMENT_VIEW', OWNER],
           },
           {
             path: '/candidates-management/:action(candidate-detail)/:reId',
-            name: 'candidateDetail',
+            name: 'candidate-detail',
             icon: '/assets/images/menuIcons/candidate.svg',
             hideInMenu: true,
             component: './NewCandidateForm',
@@ -467,38 +465,38 @@ const routes = [
             name: 'documents',
             // icon: '/assets/images/menuIcons/documents.svg',
             icon: '/assets/images/menuIcons/icon3.svg',
-            component: '../pages_admin/DocumentsManagement',
+            component: './DocumentsManagement',
             // authority: ['admin-sa'],
             authority: ['M_DOCUMENT_MANAGEMENT_VIEW', OWNER],
           },
           {
             path: '/time-off-management',
-            name: 'timeOffManagement',
+            name: 'timeoff-management',
             icon: '/assets/images/timeOff.svg',
-            component: '../pages_admin/TimeOffManagement',
+            component: './TimeOffManagement',
             authority: ['M_TIMEOFF_MANAGEMENT_VIEW', OWNER],
           },
           {
             path: '/offboarding-management',
-            name: 'offBoardingManagement',
+            name: 'offboarding-management',
             icon: '/assets/images/iconOffboarding.svg',
-            component: '../pages_admin/OffBoardingManagement',
+            component: './OffboardingManagement',
             authority: ['M_OFFBOARDING_MANAGEMENT_VIEW', OWNER],
           },
 
           {
             path: '/documents/upload-document',
-            name: 'uploadDocument',
+            name: 'upload-document',
             hideInMenu: true,
-            component: '../pages_admin/DocumentsManagement/components/UploadDocument',
+            component: './DocumentsManagement/components/UploadDocument',
             // authority: ['admin-sa'],
             authority: ['M_DOCUMENT_MANAGEMENT_VIEW', OWNER],
           },
           {
             path: '/documents/create-template',
-            name: 'createTemplate',
+            name: 'create-template',
             hideInMenu: true,
-            component: '../pages_admin/DocumentsManagement/components/CreateNewTemplate',
+            component: './DocumentsManagement/components/CreateNewTemplate',
             // authority: ['admin-sa'],
             authority: ['M_DOCUMENT_MANAGEMENT_VIEW', OWNER],
           },
@@ -506,35 +504,35 @@ const routes = [
           {
             // path: '/time-off/new-leave-request',
             path: '/time-off/overview/personal-timeoff/:action(new)',
-            name: 'requestForTimeOff',
+            name: 'request-for-timeoff',
             hideInMenu: true,
             component: './TimeOff/components/Overview/components/LeaveRequestForm',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
           },
           {
             path: '/time-off/overview/personal-timeoff/:action(new-behalf-of)',
-            name: 'requestForTimeOff',
+            name: 'request-for-timeoff',
             hideInMenu: true,
             component: './TimeOff/components/Overview/components/LeaveRequestForm',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
           },
           {
             path: '/time-off/overview/personal-timeoff/:action(edit)/:reId',
-            name: 'editTimeoffRequest',
+            name: 'edit-timeoff-request',
             hideInMenu: true,
             component: './TimeOff/components/Overview/components/LeaveRequestForm',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
           },
           {
             path: '/time-off/overview/personal-timeoff/view/:reId',
-            name: 'viewTimeoffRequest',
+            name: 'view-timeoff-request',
             hideInMenu: true,
             component: './TimeOff/components/Overview/components/ViewRequestForm',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
           },
           {
             path: '/time-off/overview/manager-timeoff/view/:reId',
-            name: 'viewTimeoffRequest',
+            name: 'view-timeoff-request',
             hideInMenu: true,
             component: './TimeOff/components/Overview/components/ManagerViewRequestForm',
             authority: [
@@ -548,28 +546,28 @@ const routes = [
           {
             // path: '/time-off/new-leave-request',
             path: '/time-off/overview/personal-compoff/:action(new)',
-            name: 'requestForCompoff',
+            name: 'request-for-compoff',
             hideInMenu: true,
             component: './TimeOff/components/Overview/components/CompoffRequestForm',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
           },
           {
             path: '/time-off/overview/personal-compoff/:action(edit)/:reId',
-            name: 'editCompoffRequest',
+            name: 'edit-compoff-request',
             hideInMenu: true,
             component: './TimeOff/components/Overview/components/CompoffRequestForm',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
           },
           {
             path: '/time-off/overview/personal-compoff/view/:reId',
-            name: 'viewCompoffRequest',
+            name: 'view-compoff-request',
             hideInMenu: true,
             component: './TimeOff/components/Overview/components/ViewCompoffRequestForm',
             authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
           },
           {
             path: '/time-off/overview/manager-compoff/view/:reId',
-            name: 'viewCompoffRequest',
+            name: 'view-compoff-request',
             hideInMenu: true,
             component: './TimeOff/components/Overview/components/ManagerViewCompoffForm',
             authority: [
@@ -589,26 +587,26 @@ const routes = [
           },
           {
             path: '/directory/employee-profile/:reId/:tabName',
-            name: 'employeeProfile',
+            name: 'employee-profile',
             component: './EmployeeProfile',
             hideInMenu: true,
           },
           {
             path: '/onboarding/CreateFieldSection',
-            name: 'onboarding.createFieldSection',
+            name: 'onboarding.create-field-section',
             component: './Onboarding/components/CustomFields/components/CreateFieldSection',
             hideInMenu: true,
           },
           {
             path: '/onboarding/CreateNewField',
-            name: 'onboarding.createFieldSection',
+            name: 'onboarding.create-field-section',
             component: './Onboarding/components/CustomFields/components/CreateNewField',
             hideInMenu: true,
           },
 
           {
             path: '/onboarding/list/:action(view)/:reId',
-            name: 'addTeamMember',
+            name: 'add-team-member',
             hideInMenu: true,
             component: './NewCandidateForm',
             authority: ['P_ONBOARDING_VIEW', 'P_ONBOARDING_ALL'],
@@ -621,35 +619,35 @@ const routes = [
           },
           {
             path: '/onboarding/:tabName/:type/create-email-reminder',
-            name: 'createEmailReminder',
+            name: 'create-email-reminder',
             hideInMenu: true,
             component: './EmailReminder',
             authority: ['P_ONBOARDING_VIEW', 'P_ONBOARDING_ALL'],
           },
           {
             path: '/onboarding/:tabName/edit-email/:reId',
-            name: 'editEmail',
+            name: 'edit-email',
             component: './EditEmail',
             hideInMenu: true,
             authority: ['P_ONBOARDING_VIEW', 'P_ONBOARDING_ALL'],
           },
           {
             path: '/onboarding/:tabName/view-email/:reId',
-            name: 'viewEmail',
+            name: 'view-email',
             component: './EditEmail',
             hideInMenu: true,
             authority: ['P_ONBOARDING_VIEW', 'P_ONBOARDING_ALL'],
           },
           {
             path: '/template-details/:templateId',
-            name: 'templateDetails',
+            name: 'template-details',
             hideInMenu: true,
             component: './TemplateDetails',
             authority: ['P_ONBOARDING_VIEW', 'P_ONBOARDING_ALL'],
           },
           {
             path: '/onboarding/:tabName/:type/create-new-template',
-            name: 'createNewTemplate',
+            name: 'create-new-template',
             hideInMenu: true,
             component: './CreateNewTemplate',
             authority: ['P_ONBOARDING_VIEW', 'P_ONBOARDING_ALL'],
@@ -658,89 +656,89 @@ const routes = [
           // OFFBOARDING
           // {
           //   path: '/offboarding/employeeView',
-          //   name: 'resignationRequest',
+          //   name: 'resignation-request',
           //   hideInMenu: true,
-          //   component: './OffBoarding/components/EmployeeView',
+          //   component: './Offboarding/components/EmployeeView',
           //   authority: ['P_OFFBOARDING_VIEW'],
           // },
           // {
           //   path: '/offboarding/my-request/new',
-          //   name: 'resignationRequest',
+          //   name: 'resignation-request',
           //   hideInMenu: true,
-          //   component: './OffBoarding/components/EmployeeView/components/ReasonForm',
+          //   component: './Offboarding/components/EmployeeView/components/ReasonForm',
           //   authority: ['P_OFFBOARDING_VIEW'],
           // },
           {
             path: '/offboarding/my-request/:action(new)',
-            name: 'Resignation Request',
+            name: 'resignation-request',
             hideInMenu: true,
-            component: './OffBoarding/components/EmployeeView/components/ReasonForm',
+            component: './Offboarding/components/EmployeeView/components/ReasonForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/my-request/review-ticket/:reId',
-            name: 'Resignation Request',
+            name: 'resignation-request',
             hideInMenu: true,
-            component: './OffBoarding/components/EmployeeView/components/ResignationRequest',
+            component: './Offboarding/components/EmployeeView/components/ResignationRequest',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/my-request/:action(edit)/:reId',
-            name: 'Resignation Request',
+            name: 'resignation-request',
             hideInMenu: true,
-            component: './OffBoarding/components/EmployeeView/components/ReasonForm',
+            component: './Offboarding/components/EmployeeView/components/ReasonForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           // {
           //   path: '/offboarding/my-request/review/:id',
-          //   name: 'reviewResignationTicket',
-          //   component: './OffBoarding/components/ReviewTicket',
+          //   name: 'review-resignation-ticket',
+          //   component: './Offboarding/components/ReviewTicket',
           //   hideInMenu: true,
           //   authority: ['P_OFFBOARDING_VIEW','M_OFFBOARDING_VIEW'],
           // },
           {
             path: '/offboarding/list/review/:id',
-            name: 'reviewResignationTicket',
-            component: './OffBoarding/components/ManagerView/components/TicketDetails',
+            name: 'review-resignation-ticket',
+            component: './Offboarding/components/ManagerView/components/TicketDetails',
             hideInMenu: true,
             authority: ['P_OFFBOARDING_VIEW', 'M_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/list/hr-review/:id',
-            name: 'reviewResignationTicket',
-            component: './OffBoarding/components/HRView/components/TicketDetails',
+            name: 'review-resignation-ticket',
+            component: './Offboarding/components/HRView/components/TicketDetails',
             hideInMenu: true,
             authority: ['P_OFFBOARDING_VIEW', 'M_OFFBOARDING_VIEW'],
           },
           // {
           //   path: '/offboarding/my-request/:id',
-          //   name: 'reviewResignationTicket',
-          //   component: './OffBoarding/components/EmployeeView/Request',
+          //   name: 'review-resignation-ticket',
+          //   component: './Offboarding/components/EmployeeView/Request',
           //   hideInMenu: true,
           //   authority: ['P_OFFBOARDING_VIEW'],
           // },
           // {
           //   path: '/offboarding/hr-relieving-formalities/relieving-detail/:ticketId',
-          //   name: 'offboarding.relievingDetail',
+          //   name: 'offboarding.relieving-detail',
           //   component:
-          //     './OffBoarding/components/HRView/components/RelievingFormalities/components/RelievingDetails',
+          //     './Offboarding/components/HRView/components/RelievingFormalities/components/RelievingDetails',
           //   hideInMenu: true,
           //   authority: ['P_OFFBOARDING_VIEW'],
           // },
           {
             path: '/offboarding/settings/:type/create-custom-email',
-            name: 'createCustomEmail',
+            name: 'create-custom-email',
             hideInMenu: true,
             component:
-              './OffBoarding/components/Settings/components/CustomEmails/components/CreateCustomEmail',
+              './Offboarding/components/Settings/components/CustomEmails/components/CreateCustomEmail',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/settings/:type/edit-email/:reId',
-            name: 'editEmail',
+            name: 'edit-email',
             hideInMenu: true,
             component:
-              './OffBoarding/components/Settings/components/CustomEmails/components/EditEmail',
+              './Offboarding/components/Settings/components/CustomEmails/components/EditEmail',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
@@ -748,33 +746,36 @@ const routes = [
             name: 'offboarding.template.email',
             hideInMenu: true,
             component:
-              './OffBoarding/components/Settings/components/DocsTemplates/components/TemplateDetails',
+              './Offboarding/components/Settings/components/DocsTemplates/components/TemplateDetails',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/settings/:type/form-detail/:id/view',
-            name: 'offboarding.setting.form.viewForm',
+            name: 'offboarding.setting.form.view-form',
             hideInMenu: true,
-            component: './OffBoarding/components/Settings/components/Forms/components/ViewForm',
+            component:
+              './Offboarding/components/Settings/components/Forms/components/ViewForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/settings/:type/form-detail/add',
-            name: 'offboarding.setting.form.addForm',
+            name: 'offboarding.setting.form.add-form',
             hideInMenu: true,
-            component: './OffBoarding/components/Settings/components/Forms/components/HandleForm',
+            component:
+              './Offboarding/components/Settings/components/Forms/components/HandleForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/settings/:type/form-detail/:id/edit',
-            name: 'offboarding.setting.form.editForm',
+            name: 'offboarding.setting.form.edit-form',
             hideInMenu: true,
-            component: './OffBoarding/components/Settings/components/Forms/components/HandleForm',
+            component:
+              './Offboarding/components/Settings/components/Forms/components/HandleForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
             path: '/time-sheet',
-            name: 'timeSheet',
+            name: 'timesheet',
             icon: '/assets/images/menuIcons/timeSheet.svg',
             component: './TimeSheet',
             authority: ['P_TIMESHEET_VIEW'],
@@ -789,10 +790,11 @@ const routes = [
           // TICKET MANAGEMENT
           {
             path: '/ticket-management',
-            name: 'ticketManagement',
+            name: 'ticket-management',
             icon: '/assets/images/menuIcons/ticketManagement.svg',
             component: './TicketManagement',
             authority: [
+              'M_ADMIN_VIEW_TICKETS',
               'P_TICKET_MANAGEMENT_VIEW',
               'P_TICKET_MANAGEMENT_T_HR_TICKETS_VIEW',
               'P_TICKET_MANAGEMENT_T_IT_TICKETS_VIEW',
@@ -803,6 +805,7 @@ const routes = [
             path: '/ticket-management/:tabName',
             component: './TicketManagement',
             authority: [
+              'M_ADMIN_VIEW_TICKETS',
               'P_TICKET_MANAGEMENT_VIEW',
               'P_TICKET_MANAGEMENT_T_HR_TICKETS_VIEW',
               'P_TICKET_MANAGEMENT_T_IT_TICKETS_VIEW',
@@ -814,27 +817,22 @@ const routes = [
           // customer-management
           {
             path: '/customer-management',
-            name: 'customerManagement',
+            redirect: '/customer-management/list',
+            name: 'customer-management',
             icon: '/assets/images/menuIcons/customer.svg',
-            // hideInMenu: true,
-            component: './Customer',
-            authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
           },
           {
             path: '/customer-management/:tabName',
-            hideInMenu: true,
-            component: './Customer',
+            component: './CustomerManagement',
             authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
           },
           {
-            path: '/customer-management/customers/customer-profile/:reId',
-            hideInMenu: true,
-            name: 'viewCustomer',
-            component: './CustomerProfile',
-            authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
+            path: '/customer-management/list/customer-profile/:reId',
+            redirect: '/customer-management/list/customer-profile/:reId/contact-info',
           },
           {
-            path: '/customer-management/customers/customer-profile/:reId/:tabName',
+            path: '/customer-management/list/customer-profile/:reId/:tabName',
+            name: 'view-customer',
             hideInMenu: true,
             component: './CustomerProfile',
             authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
@@ -843,10 +841,11 @@ const routes = [
           // PROJECTS MANAGEMENT
           {
             path: '/project-management',
-            name: 'projectManagement',
+            name: 'project-management',
             icon: '/assets/images/menuIcons/project.svg',
             component: './ProjectManagement',
             authority: ['P_PROJECT_MANAGEMENT_VIEW', 'M_PROJECT_MANAGEMENT_VIEW', OWNER],
+            redirect: '/project-management/list',
           },
           {
             path: '/project-management/:tabName',
@@ -857,7 +856,7 @@ const routes = [
           {
             path: '/project-management/list/:reId',
             hideInMenu: true,
-            name: 'projectManagement.viewProject',
+            name: 'project-management.view-project',
             component: './ProjectManagement/components/ProjectInformation',
             authority: ['P_PROJECT_MANAGEMENT_VIEW', 'M_PROJECT_MANAGEMENT_VIEW', OWNER],
           },
@@ -869,14 +868,14 @@ const routes = [
           },
           {
             path: '/ticket-management/detail/:id',
-            name: 'ticketManagement.viewTicket',
+            name: 'ticket-management.view-ticket',
             component: './TicketManagement/components/TicketDetails',
             hideInMenu: true,
             // authority: [MANAGER,EMPLOYEE, HR, HR_MANAGER, CEO, REGION_HEAD, DEPARTMENT_HEAD], // TEMPORARY VALUES
           },
           {
             path: '/view-document/:documentId',
-            name: 'viewDocument',
+            name: 'view-document',
             hideInMenu: true,
             component: './ViewDocument',
             // authority: [EMPLOYEE, HR, REGION_HEAD, OWNER, ADMIN],
@@ -884,7 +883,7 @@ const routes = [
           // RESOURCE MANAGEMENT
           {
             path: '/resource-management',
-            name: 'resourceManagement',
+            name: 'resource-management',
             icon: '/assets/images/menuIcons/resource.svg',
             component: './ResourceManagement',
             authority: ['P_RESOURCE_MANAGEMENT_VIEW', 'M_RESOURCE_MANAGEMENT_VIEW'],
@@ -902,26 +901,26 @@ const routes = [
             component: './ChangePassword',
           },
           {
-            path: '/faqpage',
+            path: '/faq',
             name: 'faqs',
             hideInMenu: true,
             component: './FAQs',
           },
           {
-            path: '/faqpage/settings',
+            path: '/faq/settings',
             name: 'settings',
             hideInMenu: true,
             component: './FAQs/components/SettingFAQ',
           },
           {
             path: '/policies-regulations',
-            name: 'policiesRegulations',
+            name: 'policies-regulations',
             hideInMenu: true,
             component: './PoliciesRegulations',
           },
           {
             path: '/policies-regulations/certify',
-            name: 'Policies Certification',
+            name: 'policies-certification',
             hideInMenu: true,
             component: './PoliciesRegulations',
           },
@@ -933,7 +932,7 @@ const routes = [
           },
           {
             path: '/search-result',
-            name: 'searchResult',
+            name: 'search-result',
             hideInMenu: true,
             component: './SearchResult',
           },
@@ -944,7 +943,7 @@ const routes = [
           },
           {
             path: '/search-result/:tabName/:advanced(advanced-search)',
-            name: 'searchResult.advancedSearch',
+            name: 'search-result.advanced-search',
             hideInMenu: true,
             component: './SearchResult',
           },
@@ -952,12 +951,12 @@ const routes = [
             path: '/settings',
             name: 'settings',
             icon: '/assets/images/menuIcons/settings.svg',
-            component: '../pages_admin/Settings',
+            component: './Settings',
             authority: ['M_SETTING_VIEW', OWNER, 'M_SETTINGS_ALL'],
           },
           {
             path: '/settings/:tabName',
-            component: '../pages_admin/Settings',
+            component: './Settings',
             hideInMenu: true,
             authority: ['M_SETTING_VIEW', OWNER, 'M_SETTINGS_ALL'],
           },

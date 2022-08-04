@@ -4,13 +4,15 @@ import { Table } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { projectColor, convertMsToTime, VIEW_TYPE } from '@/utils/timeSheet';
 import AirPlanIcon from '@/assets/timeSheet/airplanIcon.svg';
-import TaskPopover from './components/TaskPopover';
-import TimeoffPopover from './components/TimeoffPopover';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import EmptyComponent from '@/components/Empty';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { projectColor } from '@/constants/timeSheet';
+import { convertMsToTime } from '@/utils/timeSheet';
 import CellMenu from './components/CellMenu';
+import TaskPopover from './components/TaskPopover';
+import TimeoffPopover from './components/TimeoffPopover';
 import styles from './index.less';
 
 const WeeklyTable = (props) => {
@@ -34,7 +36,7 @@ const WeeklyTable = (props) => {
     const dates = [];
 
     while (now.isSameOrBefore(endDate1)) {
-      dates.push(now.format('MM/DD/YYYY'));
+      dates.push(now.format(DATE_FORMAT_MDY));
       now.add(1, 'days');
     }
     return dates;
@@ -42,7 +44,7 @@ const WeeklyTable = (props) => {
 
   // check if the same date
   const isTheSameDay = (date1, date2) => {
-    return moment(date1).format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
+    return moment(date1).format(DATE_FORMAT_MDY) === moment(date2).format(DATE_FORMAT_MDY);
   };
 
   const getColorByIndex = (index) => {
@@ -77,13 +79,13 @@ const WeeklyTable = (props) => {
   const renderDateHeaderItem = (date) => {
     return (
       <div className={styles.timeStamp}>
-        <div className={styles.left}>{moment(date, 'MM/DD/YYYY').locale('en').format('DD')}</div>
+        <div className={styles.left}>{moment(date, DATE_FORMAT_MDY).locale('en').format('DD')}</div>
         <div className={styles.right}>
           <span className={styles.date}>
-            {moment(date, 'MM/DD/YYYY').locale('en').format('dddd')}
+            {moment(date, DATE_FORMAT_MDY).locale('en').format('dddd')}
           </span>
           <span className={styles.month}>
-            {moment(date, 'MM/DD/YYYY').locale('en').format('MMMM')}
+            {moment(date, DATE_FORMAT_MDY).locale('en').format('MMMM')}
           </span>
         </div>
       </div>
@@ -97,7 +99,7 @@ const WeeklyTable = (props) => {
   };
 
   // const onViewDetail = (date) => {
-  // setSelectedDate(moment(date, 'MM/DD/YYYY'));
+  // setSelectedDate(moment(date, DATE_FORMAT_MDY));
   // setSelectedView(VIEW_TYPE.D);
   // };
 

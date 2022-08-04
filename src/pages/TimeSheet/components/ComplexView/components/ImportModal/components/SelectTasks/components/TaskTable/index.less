@@ -1,15 +1,15 @@
-@border-color: #d6dce0;
+@border-color: @border-color-base;
 @orange: #fe5d27;
 @new-background: #fff4f1;
-@border-color: #d6dce0;
+@border-color: @border-color-base;
 @checkbox-background: #e7eaee;
 @checkbox-border: #707177;
 @gray: #707177;
 @red: #ff5252;
-@blue: #2c6df9;
+@blue: @primary-color;
 
 .mixin-border-bottom-row {
-  border-bottom: solid 1px #d6dce0;
+  border-bottom: solid 1px @border-color-base;
 }
 
 .TaskTable {
@@ -84,18 +84,7 @@
       min-height: 245px;
       overflow-y: auto !important;
     }
-    .ant-empty {
-      margin-block: 45px;
-      .ant-empty-image {
-        height: 109px;
-      }
-      .ant-empty-description {
-        color: #474747;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 19px;
-      }
-    }
+
     .ant-table-row {
       height: 55px;
     }
@@ -177,7 +166,7 @@
     }
 
     .ant-menu-item {
-      color: #2c6df9;
+      color: @primary-color;
       font-weight: 500;
       letter-spacing: 0.12px;
     }

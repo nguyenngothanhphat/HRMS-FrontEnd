@@ -77,7 +77,7 @@ const QuickLinkTable = (props) => {
         key: 'attachmentInfo',
         width: '10%',
         render: (attachments = []) => {
-          return attachments.map((x) => <div>{x.name}</div>);
+          return attachments.map((x) => <div key={x._id || x.id}>{x.name}</div>);
         },
       },
       {
@@ -88,6 +88,7 @@ const QuickLinkTable = (props) => {
         render: (employees = {}) => {
           return employees.map((employee) => (
             <Link
+              key={employee?._id}
               style={{ fontWeight: 500 }}
               to={`/directory/employee-profile/${employee?.userId}`}
             >

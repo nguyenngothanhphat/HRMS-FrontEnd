@@ -1,6 +1,5 @@
 import {
   Alert,
-  Button,
   Checkbox,
   Col,
   DatePicker,
@@ -16,24 +15,28 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import AddIcon from '@/assets/timeSheet/add.svg';
 import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomTimePicker from '@/components/CustomTimePicker';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import {
-  checkHolidayInWeek,
   dateFormatAPI,
-  getAllProjectsWithoutAssigned,
-  holidayFormatDate,
   hourFormat,
   hourFormatAPI,
   TIMESHEET_ADD_TASK_ALERT,
   TIME_DEFAULT,
   VIEW_TYPE,
+} from '@/constants/timeSheet';
+import { sortAlphabet } from '@/utils/utils';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import {
+  checkHolidayInWeek,
+  getAllProjectsWithoutAssigned,
+  holidayFormatDate,
 } from '@/utils/timeSheet';
 import styles from './index.less';
-import { sortAlphabet } from '@/utils/utils';
 
 const { Option, OptGroup } = Select;
-const dateFormat = 'MM/DD/YYYY';
 const countryIdUS = 'US';
 const TASKS = [];
 const { RangePicker } = DatePicker;
@@ -62,6 +65,7 @@ const AddTaskModal = (props) => {
       forDate = '',
     } = {},
     loadingTime = false,
+    onValuesChangeProp = () => {},
   } = props;
 
   const {
@@ -120,7 +124,7 @@ const AddTaskModal = (props) => {
   };
 
   const formatEndTimeShow = (timeFormat) => {
-    return moment(timeFormat, hourFormat).add(30, 'minutes').format(hourFormat);
+    return moment(timeFormat, hourFormat).add(60, 'minutes').format(hourFormat);
   };
 
   const getLastEndTimeElement = (lastEle) => {
@@ -191,17 +195,19 @@ const AddTaskModal = (props) => {
   const onStartTimeChange = (index) => {
     const { tasks = [] } = form.getFieldsValue();
 
-    form.setFieldsValue({
-      tasks: tasks.map((x, i) => {
-        if (i === index) {
-          return {
-            ...x,
-            endTime: moment(x.startTime, hourFormat).add(30, 'minutes').format(hourFormat),
-          };
-        }
-        return x;
-      }),
+    const updateTasks = tasks.map((x, i) => {
+      if (i === index) {
+        return {
+          ...x,
+          endTime: moment(x.startTime, hourFormat).add(60, 'minutes').format(hourFormat),
+        };
+      }
+      return x;
     });
+    form.setFieldsValue({
+      tasks: updateTasks,
+    });
+    onValuesChangeProp(updateTasks.length && updateTasks[0]);
   };
 
   const onValuesChange = (changedValues, allValues) => {
@@ -212,6 +218,7 @@ const AddTaskModal = (props) => {
       return temp;
     });
     setDisabledHourBefore(disabledHourBeforeTemp);
+    onValuesChangeProp(tasks.length && tasks[0]);
   };
 
   const disabledDate = (current) => {
@@ -348,7 +355,7 @@ const AddTaskModal = (props) => {
               ? moment(endTime, hourFormatAPI).format(hourFormat)
               : getDefaultValueStartTime(),
             endTime: endTime
-              ? moment(endTime, hourFormatAPI).add(30, 'minutes').format(hourFormat)
+              ? moment(endTime, hourFormatAPI).add(60, 'minutes').format(hourFormat)
               : formatEndTimeShow(getDefaultValueStartTime()),
             clientLocation,
             breakTime,
@@ -383,7 +390,9 @@ const AddTaskModal = (props) => {
       if (dates) {
         if (dates.length < 2) {
           check = false;
-        } else if (moment(dates[0]).format(dateFormat) !== moment(dates[1]).format(dateFormat)) {
+        } else if (
+          moment(dates[0]).format(DATE_FORMAT_MDY) !== moment(dates[1]).format(DATE_FORMAT_MDY)
+        ) {
           check = false;
         }
       }
@@ -637,7 +646,7 @@ const AddTaskModal = (props) => {
                 labelCol={{ span: 24 }}
               >
                 <RangePicker
-                  format={dateFormat}
+                  format={DATE_FORMAT_MDY}
                   ranges={{
                     Today: [moment(), moment()],
                     'This Week': [moment().startOf('week'), moment().endOf('week')],
@@ -686,19 +695,15 @@ const AddTaskModal = (props) => {
         maskClosable={false}
         footer={
           <>
-            <Button className={styles.btnCancel} onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button
-              className={styles.btnSubmit}
-              type="primary"
+            <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+            <CustomPrimaryButton
               form="myForm"
               key="submit"
               htmlType="submit"
               loading={loadingAddTask}
             >
               Submit
-            </Button>
+            </CustomPrimaryButton>
           </>
         }
         title={renderModalHeader()}

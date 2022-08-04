@@ -2,7 +2,7 @@ import { Button, Divider, Modal } from 'antd';
 import moment from 'moment';
 import React, { useLayoutEffect, useState } from 'react';
 import { connect } from 'umi';
-import { dateFormatAPI } from '@/utils/timeSheet';
+import { dateFormatAPI } from '@/constants/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import WeeklyTable from './components/WeeklyTable';

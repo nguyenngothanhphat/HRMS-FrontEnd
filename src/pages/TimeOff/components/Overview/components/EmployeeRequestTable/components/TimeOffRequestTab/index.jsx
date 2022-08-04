@@ -2,7 +2,8 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { getShortType, TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/utils/timeOff';
+import { getShortType } from '@/utils/timeOff';
+import { TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/constants/timeOff';
 import FilterBar from '../FilterBar';
 import MyCompoffTable from '../MyCompoffTable';
 import MyLeaveTable from '../MyLeaveTable';
@@ -168,7 +169,7 @@ const TimeOffRequestTab = (props) => {
   };
 
   useEffect(() => {
-    if (timeOffTypes.length > 0 || (currentPayloadTypes.length > 0 && isEmpty(filter))) {
+    if (currentPayloadTypes.length > 0) {
       fetchData();
     }
   }, [selectedTabNumber, page, limit, JSON.stringify(filter), JSON.stringify(currentPayloadTypes)]);

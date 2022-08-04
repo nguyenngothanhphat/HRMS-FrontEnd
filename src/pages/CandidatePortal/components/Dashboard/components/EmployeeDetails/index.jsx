@@ -1,6 +1,7 @@
-import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
+import { Col, Row } from 'antd';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 class EmployeeDetails extends PureComponent {
@@ -40,7 +41,7 @@ class EmployeeDetails extends PureComponent {
       },
       {
         name: 'Joining Date',
-        value: dateOfJoining ? moment(dateOfJoining).format('MM/DD/YYYY') : '-',
+        value: dateOfJoining ? moment(dateOfJoining).format(DATE_FORMAT_MDY) : '-',
       },
       {
         name: 'Department',

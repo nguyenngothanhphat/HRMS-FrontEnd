@@ -30,8 +30,8 @@ import {
   getListPolicy,
 } from '../services/homePage';
 import { getCurrentCompany, getCurrentTenant } from '../utils/authority';
-import { TAB_IDS } from '@/utils/homePage';
-// import { TAB_IDS } from '@/utils/homePage';
+import { TAB_IDS } from '@/constants/homePage';
+// import { TAB_IDS } from '@/constants/homePage';
 
 const getVarStateName = (type) => {
   switch (type) {

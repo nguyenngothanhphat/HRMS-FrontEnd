@@ -1,0 +1,142 @@
+.edit {
+  width: 100%;
+  :global {
+    .ant-form-item-label {
+      text-align: left;
+    }
+    .ant-form-item-label > label {
+      color: #000000;
+      font-size: 13px;
+    }
+    .ant-form-item-label > label::after {
+      content: '';
+    }
+    .ant-form-item {
+      width: 100%;
+      padding: 0px 24px;
+    }
+    .ant-form-item:first-child {
+      margin-top: 35px;
+    }
+    .ant-input:focus {
+      border-color: @primary-color;
+      outline: 0;
+      box-shadow: unset;
+    }
+    .ant-picker-focused {
+      border-color: @primary-color;
+      box-shadow: unset;
+    }
+    .ant-picker-suffix {
+      color: #161c29;
+    }
+    .ant-form-item-has-error .ant-form-item-explain,
+    .ant-form-item-has-error .ant-form-item-split {
+      color: #ff4d4f;
+      font-size: 13px;
+    }
+  }
+
+  .nothingChangedBanner {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+
+    padding: 12px 24px;
+    background-color: #fd4546;
+    border-radius: 2px;
+
+    .icon {
+      margin-right: 15px;
+    }
+    span {
+      display: inline-block;
+      color: #fff;
+      font-weight: 500;
+      font-size: 14px;
+    }
+  }
+
+  &_btn {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 24px;
+    border-top: solid 1px @border-color-base;
+
+    :global {
+      .ant-btn-primary[disabled],
+      .ant-btn-primary[disabled]:hover,
+      .ant-btn-primary[disabled]:focus,
+      .ant-btn-primary[disabled]:active {
+        color: #ffffff;
+        background-color: #ffa100;
+        border: solid 1px #ffa100;
+        opacity: 0.5;
+      }
+
+      .ant-btn-text[disabled],
+      .ant-btn-text[disabled]:hover,
+      .ant-btn-text[disabled]:focus,
+      .ant-btn-text[disabled]:active {
+        color: #ffa100;
+        opacity: 0.5;
+      }
+    }
+
+    &_save {
+      width: 95px;
+      height: 40px;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      background-color: #ffa100;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
+      &:hover {
+        background-color: #b1740c;
+        border: solid 1px #b1740c;
+      }
+      &:focus {
+        background-color: #b1740c;
+        border: solid 1px #b1740c;
+      }
+    }
+    &_cancel {
+      width: 95px;
+      height: 40px;
+      margin-right: 10px;
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+      background-color: unset;
+      border-radius: 25px;
+      &:hover {
+        color: #b1740c;
+      }
+    }
+  }
+
+  &_form {
+    .savedBanner {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+
+      padding: 12px 24px;
+      background-color: #00c598;
+      border-radius: 2px;
+
+      .icon {
+        margin-right: 15px;
+      }
+      span {
+        display: inline-block;
+        color: #fff;
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+  }
+}

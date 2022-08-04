@@ -1,0 +1,57 @@
+.EditModalContent {
+  padding: @padding-lg;
+  :global {
+    .ant-form-item-explain {
+      div {
+        font-size: 13px;
+      }
+    }
+    .ant-select-selection-item {
+      color: #161c29 !important;
+    }
+    .ant-select-selector,
+    .ant-input {
+      height: 42px !important;
+
+      padding: 5px 11px !important;
+
+      background: transparent !important;
+      border-radius: 5px !important;
+    }
+    .ant-select-selection-search-input {
+      height: 42px !important;
+      border-radius: 5px;
+    }
+    .ant-form-item-label
+      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      display: none;
+    }
+    .ant-form-item-label label {
+      height: 0;
+      color: #707177;
+      font-size: 13px;
+    }
+
+    .ant-form-item {
+      margin-bottom: 12px;
+    }
+  }
+
+  .permissionTitle {
+    display: block;
+    margin: 20px 0 10px;
+    color: #161c29;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  .roleList {
+    max-height: 300px;
+    overflow-y: auto;
+    :global {
+      .ant-tree-title {
+        color: #707177;
+        font-size: 13px;
+      }
+    }
+  }
+}

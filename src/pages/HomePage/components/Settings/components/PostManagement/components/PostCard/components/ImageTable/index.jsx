@@ -1,13 +1,14 @@
-import { Popconfirm, Image } from 'antd';
+import { Image, Popconfirm } from 'antd';
+import Parser from 'html-react-parser';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import moment from 'moment';
-import Parser from 'html-react-parser';
-import CommonTable from '../CommonTable';
-import styles from './index.less';
+import { goToTop } from '@/utils/utils';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import EditIcon from '@/assets/homePage/editIcon.svg';
-import { goToTop } from '@/utils/utils';
+import CommonTable from '../CommonTable';
+import styles from './index.less';
 
 const ImageTable = (props) => {
   const {
@@ -50,7 +51,7 @@ const ImageTable = (props) => {
         title: 'ID',
         dataIndex: 'postID',
         key: 'postID',
-        width: '15%',
+        width: '10%',
         render: (postID) => <span className={styles.blueText}>#{postID}</span>,
       },
       {
@@ -70,6 +71,7 @@ const ImageTable = (props) => {
         title: 'Location',
         dataIndex: 'location',
         key: 'location',
+        width: '16%',
         render: (location = []) => (
           <div style={{ lineHeight: '22px' }}>
             {location.map((x, index) => {
@@ -92,7 +94,7 @@ const ImageTable = (props) => {
           return (
             <Image.PreviewGroup>
               {attachments.map((x) => {
-                return <Image width={32} height={32} src={x.url} />;
+                return <Image width={32} height={32} src={x.url} key={x._id || x.id} />;
               })}
             </Image.PreviewGroup>
           );
@@ -121,7 +123,7 @@ const ImageTable = (props) => {
         key: 'createdAt',
         width: '10%',
         render: (createdAt = {}) => {
-          return <span>{createdAt ? moment(createdAt).format('MM/DD/YYYY') : ''}</span>;
+          return <span>{createdAt ? moment(createdAt).format(DATE_FORMAT_MDY) : ''}</span>;
         },
       },
       {

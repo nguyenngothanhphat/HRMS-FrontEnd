@@ -1,14 +1,16 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-console */
-import { Avatar, Button, Popover, Table, Tag } from 'antd';
+import { Avatar, Button, Popover, Tag } from 'antd';
 import { isEmpty } from 'lodash';
-import moment from 'moment';
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect, formatMessage, Link } from 'umi';
-import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
-import { isOwner } from '@/utils/authority';
-import UserProfilePopover from '@/components/UserProfilePopover';
 import avtDefault from '@/assets/avtDefault.jpg';
-import ModalTerminate from './components/ModalTerminate';
+import AddressPopover from '@/components/AddressPopover';
+import CommonModal from '@/components/CommonModal';
+import CommonTable from '@/components/CommonTable';
+import UserProfilePopover from '@/components/UserProfilePopover';
+import { isOwner } from '@/utils/authority';
+import TerminateModalContent from '../TerminateModalContent';
 import styles from './index.less';
 
 const departmentTag = [
@@ -26,68 +28,29 @@ const departmentTag = [
   { name: 'Customer services', color: '#f50' },
   { name: 'Business development', color: '#87d068' },
 ];
-@connect(
-  ({
+
+const DirectoryTable = (props) => {
+  const {
+    list = [],
     loading,
-    offboarding: { approvalflow = [] } = {},
-    user: { permissions = {} },
-    location: { companyLocationList = [] },
-  }) => ({
-    loadingTerminateReason: loading.effects['offboarding/terminateReason'],
-    approvalflow,
-    permissions,
-    companyLocationList,
-  }),
-)
-class DirectoryTable extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      sortedName: {},
-      openModal: false,
-      rowData: {},
-      valueReason: '',
-      timezoneList: [],
-      selectColumn: false,
-      currentTime: moment(),
-    };
-  }
+    keyTab,
+    loadingTerminateReason,
+    totalMyTeam,
+    pageSelected,
+    rowSize,
+    permissions = {},
+    profileOwner = false,
+    dispatch,
+    refreshData = () => {},
+    totalActiveEmployee,
+    totalInactiveEmployee,
+    tabName = '',
+  } = props;
 
-  componentDidMount = () => {
-    this.fetchTimezone();
-  };
+  const [terminalModalVisible, setTerminalModalVisible] = useState(false);
+  const [rowData, setRowData] = useState({});
 
-  componentDidUpdate(prevProps) {
-    const { companyLocationList = [] } = this.props;
-    if (JSON.stringify(prevProps.companyLocationList) !== JSON.stringify(companyLocationList)) {
-      this.fetchTimezone();
-    }
-  }
-
-  fetchTimezone = () => {
-    const { companyLocationList = [] } = this.props;
-    const timezoneList = [];
-    companyLocationList.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id = '',
-      } = location;
-      timezoneList.push({
-        locationId: _id,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    this.setState({
-      timezoneList,
-    });
-  };
-
-  getAvatarUrl = (avatar, isShowAvatar) => {
-    const { permissions = {}, profileOwner = false } = this.props;
+  const getAvatarUrl = (avatar, isShowAvatar) => {
     if (isShowAvatar) return avatar || avtDefault;
     if (permissions.viewAvatarEmployee !== -1 || profileOwner) {
       if (avatar) return avatar;
@@ -96,12 +59,16 @@ class DirectoryTable extends Component {
     return avtDefault;
   };
 
-  ac = (val) => `/time-off/${val}`;
+  const handleProfileEmployee = (userId) => {
+    const pathname = isOwner()
+      ? `/employees/employee-profile/${userId}`
+      : `/directory/employee-profile/${userId}`;
+    return pathname;
+  };
 
-  renderUser = (employeePack) => {
-    const { _id = '', generalInfo = {}, tenant = '' } = employeePack;
-    const { isShowAvatar = true, avatar = '' } = generalInfo;
-    const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
+  const renderUser = (generalInfoProp = {}) => {
+    const { isShowAvatar = true, avatar = '', userId = '', legalName = '' } = generalInfoProp;
+    const avatarUrl = getAvatarUrl(avatar, isShowAvatar);
 
     const popupImg = () => {
       return (
@@ -120,76 +87,25 @@ class DirectoryTable extends Component {
             <Avatar className={styles.avatar_emptySrc} alt="avatar" />
           )}
         </Popover>
-        <Link
-          className={styles.directoryTableName__name}
-          to={() => this.handleProfileEmployee(_id, tenant, generalInfo?.userId)}
-        >
-          {generalInfo?.legalName}
+        <Link className={styles.directoryTableName__name} to={() => handleProfileEmployee(userId)}>
+          {legalName}
         </Link>
       </div>
     );
   };
 
-  handleClick = (e, item = {}) => {
+  const handleClick = (e, item = {}) => {
     e.stopPropagation();
-    this.setState({
-      rowData: item,
-      openModal: true,
-    });
+    setRowData(item);
+    setTerminalModalVisible(true);
   };
 
-  handleCandelModal = () => {
-    // e.stopPropagation();
-    this.setState({
-      openModal: false,
-    });
+  const onTerminateModalClose = () => {
+    setTerminalModalVisible(false);
+    refreshData();
   };
 
-  getPayload = (id, reasonForLeaving, lastWorkingDate) => {
-    const { approvalflow = [] } = this.props;
-
-    let approvalFlowID = '';
-    approvalflow.forEach((item) => {
-      approvalFlowID = item._id;
-    });
-
-    const payload = {
-      action: 'submit',
-      employee: id,
-      reasonForLeaving,
-      approvalFlow: approvalFlowID,
-      lastWorkingDate,
-    };
-
-    return payload;
-  };
-
-  handleSubmit = (values) => {
-    const { rowData = {} } = this.state;
-    const { dispatch, refreshData = () => {} } = this.props;
-    const { _id = '' } = rowData;
-    const { reason, lastWorkingDate } = values;
-
-    const payload = this.getPayload(_id, reason, lastWorkingDate);
-
-    dispatch({
-      type: 'offboarding/terminateReason',
-      payload,
-    }).then((res) => {
-      if (res.statusCode === 200) {
-        refreshData();
-        this.setState({
-          openModal: false,
-        });
-      }
-    });
-  };
-
-  // onChangeReason = ({ target: { value } }) => {
-  //   this.setState({ valueReason: value });
-  // };
-
-  dataHover = (manager = {}) => {
+  const dataHover = (manager = {}) => {
     const {
       generalInfo = {} || {},
       department = {} || {},
@@ -212,9 +128,14 @@ class DirectoryTable extends Component {
     };
   };
 
-  generateColumns = (sortedName, keyTab) => {
-    const { permissions = {} } = this.props;
+  const onFilter = async (value, fieldName) => {
+    dispatch({
+      type: 'employee/saveFilter',
+      payload: { [fieldName]: [value] },
+    });
+  };
 
+  const generateColumns = () => {
     const columns = [
       {
         title: (
@@ -223,18 +144,16 @@ class DirectoryTable extends Component {
             {/* {isSort ? null : <CaretDownOutlined className={styles.directoryTable_iconSort} />} */}
           </div>
         ),
-        dataIndex: 'employeePack',
-        key: 'employeePack',
-        render: (employeePack) => (employeePack ? this.renderUser(employeePack) : ''),
+        dataIndex: 'generalInfo',
+        key: 'legalName',
+        render: (generalInfo = {}) => (generalInfo ? renderUser(generalInfo) : ''),
         align: 'left',
         sorter: (a, b) => {
-          return a.employeePack?.generalInfo && a.employeePack.generalInfo?.legalName
-            ? a.employeePack?.generalInfo?.legalName.localeCompare(
-                `${b.employeePack?.generalInfo?.legalName}`,
-              )
+          return a.generalInfo && a.generalInfo?.legalName
+            ? a.generalInfo?.legalName.localeCompare(`${b.generalInfo?.legalName}`)
             : null;
         },
-        sortOrder: sortedName.columnKey === 'employeePack' && sortedName.order,
+        // sortOrder: sortedName.columnKey === 'employeePack' && sortedName.order,
         fixed: 'left',
         width: '16%',
         defaultSortOrder: 'ascend',
@@ -244,15 +163,15 @@ class DirectoryTable extends Component {
       {
         title: formatMessage({ id: 'component.directory.table.userID' }),
         dataIndex: 'generalInfo',
-        key: 'userName',
-        render: (generalInfo = {}) => (
+        key: '_id',
+        render: (generalInfo) => (
           <span style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}>
             {generalInfo?.userId}
           </span>
         ),
         width: '10%',
         align: 'left',
-        sortOrder: sortedName.columnKey === 'userName' && sortedName.order,
+        // sortOrder: sortedName.columnKey === 'userName' && sortedName.order,
         sorter: (a, b) => {
           return a?.generalInfo && a?.generalInfo?.userId
             ? a?.generalInfo?.userId.localeCompare(`${b?.generalInfo?.userId}`)
@@ -268,7 +187,7 @@ class DirectoryTable extends Component {
         render: (generalInfo = {}) => <span>{generalInfo ? generalInfo?.employeeId : ''}</span>,
         width: '10%',
         align: 'left',
-        sortOrder: sortedName.columnKey === 'employeeId' && sortedName.order,
+        // sortOrder: sortedName.columnKey === 'employeeId' && sortedName.order,
         sorter: (a, b) => {
           return a?.generalInfo && a?.generalInfo?.employeeId
             ? a?.generalInfo?.employeeId.localeCompare(`${b?.generalInfo?.employeeId}`)
@@ -280,14 +199,12 @@ class DirectoryTable extends Component {
         title: 'Work Number',
         dataIndex: 'generalInfo',
         key: 'workNumber',
-        render: (generalInfo) => (
-          <span style={{ fontSize: '13px' }}>
-            {generalInfo?.workNumber ? generalInfo.workNumber : '-'}
-          </span>
+        render: (generalInfo = {}) => (
+          <span style={{ fontSize: '13px' }}>{generalInfo?.workNumber || '-'}</span>
         ),
         width: '10%',
         align: 'left',
-        sortOrder: sortedName.columnKey === 'workNumber' && sortedName.order,
+        // sortOrder: sortedName.columnKey === 'workNumber' && sortedName.order,
         sorter: (a, b) => {
           return a?.generalInfo && a?.generalInfo?.workNumber
             ? a?.generalInfo?.workNumber.localeCompare(`${b?.generalInfo?.workNumber}`)
@@ -302,7 +219,7 @@ class DirectoryTable extends Component {
         render: (generalInfo = {}) => <span>{generalInfo?.workEmail}</span>,
         width: '16%',
         align: 'left',
-        sortOrder: sortedName.columnKey === 'workEmail' && sortedName.order,
+        // sortOrder: sortedName.columnKey === 'workEmail' && sortedName.order,
         sorter: (a, b) => {
           return a?.generalInfo && a?.generalInfo?.workEmail
             ? a?.generalInfo?.workEmail.localeCompare(`${b?.generalInfo?.workEmail}`)
@@ -315,13 +232,13 @@ class DirectoryTable extends Component {
         dataIndex: 'title',
         key: 'title',
         render: (title) => (
-          <span className={styles.title} onClick={() => this.onFilter(title?._id, 'title')}>
-            {title ? title.name : ''}
+          <span className={styles.title} onClick={() => onFilter(title?._id, 'title')}>
+            {title?.name || ''}
           </span>
         ),
         width: '12%',
         align: 'left',
-        sortOrder: sortedName.columnKey === 'title' && sortedName.order,
+        // sortOrder: sortedName.columnKey === 'title' && sortedName.order,
         sorter: (a, b) => {
           return a.title && a.title?.name ? a.title?.name.localeCompare(`${b.title?.name}`) : null;
         },
@@ -332,23 +249,16 @@ class DirectoryTable extends Component {
         dataIndex: 'location',
         key: 'location',
         render: (location = {}) => (
-          <Popover
-            content={() => this.locationContent(location)}
-            title={location?.name}
-            trigger="hover"
-          >
-            <span
-              style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
-              onMouseEnter={this.setCurrentTime}
-            >
+          <AddressPopover location={location}>
+            <span style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}>
               {location ? location.name : ''}
             </span>
-          </Popover>
+          </AddressPopover>
         ),
         width: '10%',
         ellipsis: true,
         align: 'left',
-        sortOrder: sortedName.columnKey === 'location' && sortedName.order,
+        // sortOrder: sortedName.columnKey === 'location' && sortedName.order,
         sorter: (a, b) => {
           return a.location && a.location?.name
             ? a.location?.name.localeCompare(`${b.location?.name}`)
@@ -361,15 +271,11 @@ class DirectoryTable extends Component {
         dataIndex: 'manager',
         key: 'manager',
         render: (manager = {}) => (
-          <UserProfilePopover data={this.dataHover(manager)}>
+          <UserProfilePopover data={dataHover(manager)}>
             <Link
               className={styles.managerName}
               to={() =>
-                this.handleProfileEmployee(
-                  manager?._id,
-                  manager?.tenant,
-                  manager?.generalInfo?.userId,
-                )}
+                handleProfileEmployee(manager?._id, manager?.tenant, manager?.generalInfo?.userId)}
             >
               {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
             </Link>
@@ -377,7 +283,7 @@ class DirectoryTable extends Component {
         ),
         align: 'left',
         width: '14%',
-        sortOrder: sortedName.columnKey === 'manager' && sortedName.order,
+        // sortOrder: sortedName.columnKey === 'manager' && sortedName.order,
         sorter: (a, b) => {
           return a?.manager?.generalInfo && a?.manager?.generalInfo?.legalName
             ? a?.manager?.generalInfo?.legalName.localeCompare(
@@ -398,19 +304,16 @@ class DirectoryTable extends Component {
           return (
             <Tag
               className={styles.department}
-              onClick={() => this.onFilter(department?.name, 'department')}
+              onClick={() => onFilter(department?.name, 'department')}
               color={tag.color}
             >
               {department?.name}
             </Tag>
           );
-          //   <span className={styles.directoryTable_deparmentText}>
-          //   {department ? department.name : ''}
-          // </span>
         },
         width: '10%',
         align: 'left',
-        sortOrder: sortedName.columnKey === 'department' && sortedName.order,
+        // sortOrder: sortedName.columnKey === 'department' && sortedName.order,
         sorter: (a, b) => {
           return a.department && a.department?.name
             ? a.department?.name.localeCompare(`${b.department?.name}`)
@@ -425,7 +328,7 @@ class DirectoryTable extends Component {
         render: (empTypeOther) => <span>{empTypeOther || '-'}</span>,
         align: 'left',
         width: '10%',
-        sortOrder: sortedName.columnKey === 'empTypeOther' && sortedName.order,
+        // sortOrder: sortedName.columnKey === 'empTypeOther' && sortedName.order,
         sorter: (a, b) => {
           return a.empTypeOther ? a.empTypeOther.localeCompare(`${b.empTypeOther}`) : null;
         },
@@ -438,7 +341,7 @@ class DirectoryTable extends Component {
         render: (employeeType) => <span>{employeeType ? employeeType.name : ''}</span>,
         align: 'left',
         width: '10%',
-        sortOrder: sortedName.columnKey === 'employeeType' && sortedName.order,
+        // sortOrder: sortedName.columnKey === 'employeeType' && sortedName.order,
         sorter: (a, b) => {
           return a.employeeType && a.employeeType?.name
             ? a.employeeType?.name.localeCompare(`${b.employeeType?.name}`)
@@ -456,7 +359,7 @@ class DirectoryTable extends Component {
           return (
             <div className={styles.viewAction}>
               {keyTab === 'active' ? (
-                <Button onClick={(e) => this.handleClick(e, row)} className={styles.actionBtn}>
+                <Button onClick={(e) => handleClick(e, row)} className={styles.actionBtn}>
                   Terminate
                 </Button>
               ) : null}
@@ -478,215 +381,67 @@ class DirectoryTable extends Component {
     }));
   };
 
-  handleChangeTable = (_pagination, _filters, sorter) => {
-    this.setState({
-      sortedName: sorter,
-    });
+  const onChangePage = (page, limit) => {
+    const { getPageSelected, getSize } = props;
+    getPageSelected(page);
+    getSize(limit);
   };
 
-  handleProfileEmployee = (_id, tenant, userId) => {
-    localStorage.setItem('tenantCurrentEmployee', tenant);
-
-    const pathname = isOwner()
-      ? `/employees/employee-profile/${userId}`
-      : `/directory/employee-profile/${userId}`;
-    return pathname;
-  };
-
-  checkPermissionViewProfile = (permissions) => {
-    const viewProfile = 'P_PROFILE_VIEW';
-    const findIndexViewProfile = permissions.indexOf(viewProfile);
-    return findIndexViewProfile;
-  };
-
-  onFilter = async (value, fieldName) => {
-    const { dispatch } = this.props;
-
-    dispatch({
-      type: 'employee/saveFilter',
-      payload: { [fieldName]: [value] },
-    });
-  };
-
-  setCurrentTime = () => {
-    // compare two time by hour & minute. If minute changes, get new time
-    const timeFormat = 'HH:mm';
-    const { currentTime } = this.state;
-    const parseTime = (timeString) => moment(timeString, timeFormat);
-    const check = parseTime(moment().format(timeFormat)).isAfter(
-      parseTime(moment(currentTime).format(timeFormat)),
-    );
-
-    if (check) {
-      this.setState({
-        currentTime: moment(),
-      });
-    }
-  };
-
-  locationContent = (location = {}) => {
-    const { headQuarterAddress = {} || {}, _id = '' } = location || {};
-    const {
-      addressLine1 = '',
-      addressLine2 = '',
-      state = '',
-      country = {},
-      zipCode = '',
-    } = headQuarterAddress || {};
-    const { timezoneList, currentTime } = this.state;
-    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
-
-    return (
-      <div className={styles.locationContent}>
-        <span
-          style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
-        >
-          Address:
-        </span>
-        <span style={{ display: 'block', fontSize: '13px', marginBottom: '10px' }}>
-          {addressLine1}
-          {addressLine2 && ', '}
-          {addressLine2}
-          {state && ', '}
-          {state}
-          {country ? ', ' : ''}
-          {country?.name || country || ''}
-          {zipCode && ', '}
-          {zipCode}
-        </span>
-        <span
-          style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
-        >
-          Local time{state && ` in  ${state}`}:
-        </span>
-        <span style={{ display: 'block', fontSize: '13px' }}>
-          {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-            ? getCurrentTimeOfTimezone(currentTime, findTimezone.timezone)
-            : 'Not enough data in address'}
-        </span>
-      </div>
-    );
-  };
-
-  getNewList = (list) => {
-    return list.map((item) => {
-      return {
-        ...item,
-        employeePack: {
-          _id: item._id,
-          generalInfo: item?.generalInfo,
-          tenant: item.tenant,
-        },
-        managerPack: {
-          _id: item?.manager?._id,
-          generalInfo: item?.manager?.generalInfo,
-          tenant: item.tenant,
-        },
-      };
-    });
-  };
-
-  renderTotal = () => {
-    const { totalActiveEmployee, totalInactiveEmployee, tabName } = this.props;
-    if (tabName === 'Active Employees') {
-      return totalActiveEmployee;
-    }
-    if (tabName === 'Inactive Employees') {
-      return totalInactiveEmployee;
-    }
-    return 0;
-  };
-
-  render() {
-    const {
-      sortedName = {},
-      // pageSelected,
-      openModal = false,
-      valueReason = '',
-      // rowSize,
-      selectColumn,
-    } = this.state;
-    const {
-      list = [],
-      loading,
-      keyTab,
-      loadingTerminateReason,
-      totalActiveEmployee,
-      totalInactiveEmployee,
-      totalMyTeam,
-      tabName,
-      pageSelected,
-      rowSize,
-    } = this.props;
-    const newList = this.getNewList(list);
-    const pagination = {
-      position: ['bottomLeft'],
-      total:
-        // eslint-disable-next-line no-nested-ternary
-        tabName === 'Active Employees'
-          ? totalActiveEmployee
-          : tabName === 'Inactive Employees'
-          ? totalInactiveEmployee
-          : totalMyTeam,
-      showTotal: (total, range) => {
-        return (
-          <span>
-            {' '}
-            {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-            <b>
-              {' '}
-              {range[0]} - {range[1]}{' '}
-            </b>{' '}
-            {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-          </span>
-        );
-      },
-      defaultPageSize: rowSize,
-      showSizeChanger: true,
-      pageSizeOptions: ['10', '25', '50', '100'],
-      pageSize: rowSize,
-      current: pageSelected,
-      onChange: (page, pageSize) => {
-        const { getPageSelected, getSize } = this.props;
-        getPageSelected(page);
-        getSize(pageSize);
-      },
-    };
-    const scroll = {
-      x: '140vw',
-      y: 'max-content',
-    };
-
-    return (
-      <>
-        <div className={`${styles.directoryTable} ${selectColumn ? styles.selectCol : null}`}>
-          <Table
-            size="small"
-            columns={this.generateColumns(sortedName, keyTab)}
-            dataSource={newList}
-            rowKey={(record) => record._id}
-            pagination={pagination}
-            loading={loading}
-            onChange={this.handleChangeTable}
-            scroll={scroll}
-            onHeaderRow={() => {
-              return {
-                onClick: () => this.setState({ selectColumn: true }), // if select column, the whole column will be highlighted.
-              };
-            }}
-          />
-        </div>
-        <ModalTerminate
-          loading={loadingTerminateReason}
-          visible={openModal}
-          handleSubmit={this.handleSubmit}
-          handleCandelModal={this.handleCandelModal}
-          valueReason={valueReason}
-          onChange={this.onChangeReason}
+  return (
+    <>
+      <div className={styles.directoryTable}>
+        <CommonTable
+          // size="small"
+          columns={generateColumns()}
+          list={list}
+          rowKey="_id"
+          loading={loading}
+          page={pageSelected}
+          limit={rowSize}
+          total={
+            tabName === 'Active Employees'
+              ? totalActiveEmployee
+              : tabName === 'Inactive Employees'
+              ? totalInactiveEmployee
+              : totalMyTeam
+          }
+          onChangePage={onChangePage}
+          isBackendPaging
+          // scroll={scroll}
+          scrollable
+          width="140vw"
+          height={500}
         />
-      </>
-    );
-  }
-}
+      </div>
 
-export default DirectoryTable;
+      <CommonModal
+        visible={terminalModalVisible}
+        content={
+          <TerminateModalContent
+            visible={terminalModalVisible}
+            onClose={onTerminateModalClose}
+            employee={rowData?._id}
+          />
+        }
+        onClose={onTerminateModalClose}
+        title="Terminate employee"
+        loading={loadingTerminateReason}
+        width={550}
+      />
+    </>
+  );
+};
+
+export default connect(
+  ({
+    loading,
+    offboarding: { approvalflow = [] } = {},
+    user: { permissions = {} },
+    location: { companyLocationList = [] },
+  }) => ({
+    loadingTerminateReason: loading.effects['offboarding/terminateReason'],
+    approvalflow,
+    permissions,
+    companyLocationList,
+  }),
+)(DirectoryTable);

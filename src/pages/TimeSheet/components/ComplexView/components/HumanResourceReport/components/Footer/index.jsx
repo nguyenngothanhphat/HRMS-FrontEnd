@@ -2,10 +2,10 @@ import { Button } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
-import exportToCSV from '@/utils/exportAsExcel';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 import DownloadIcon from '@/assets/timeSheet/solidDownload.svg';
 import styles from './index.less';
-import { dateFormatAPI } from '@/utils/timeSheet';
+import { dateFormatAPI } from '@/constants/timeSheet';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const Footer = (props) => {
@@ -35,7 +35,7 @@ const Footer = (props) => {
     return newData;
   };
 
-  const processData = (array) => {
+  const processData = (array = []) => {
     return array.map((item) => {
       const {
         legalName = '',
@@ -81,7 +81,7 @@ const Footer = (props) => {
 
   const downloadTemplate = () => {
     const result = getSelectedData();
-    exportToCSV(processData(result), 'HumanResourceReportData.xlsx');
+    exportArrayDataToCsv('HRReportData', processData(result));
   };
 
   const remindEmployee = () => {
@@ -114,7 +114,9 @@ const Footer = (props) => {
           </div>
         ) : (
           <div className={styles.downloadIcon} onClick={downloadTemplate}>
-            <Button icon={<img src={DownloadIcon} alt="Icon Download" />}>Download</Button>
+            <CustomPrimaryButton icon={<img src={DownloadIcon} alt="Icon Download" />}>
+              Download
+            </CustomPrimaryButton>
           </div>
         )}
       </div>

@@ -2,12 +2,11 @@ import { Checkbox, Col, Divider, Row } from 'antd';
 import classNames from 'classnames';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect } from 'umi';
-import DoneIcon from '@/assets/candidatePortal/doneSign.svg';
 import CheckIcon from '@/assets/onboarding/checkIcon.svg';
 import Resubmit from '@/assets/resubmit.svg';
+import { DOCUMENT_TYPES } from '@/constants/candidatePortal';
+import { DOCUMENTS_CHECKLIST_TYPE } from '@/constants/newCandidateForm';
 import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
-import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
-import { DOCUMENTS_CHECKLIST_TYPE } from '@/utils/newCandidateForm';
 
 const PreJoiningDocContent = (props) => {
   const {

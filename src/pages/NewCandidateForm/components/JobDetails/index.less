@@ -3,7 +3,7 @@
 @lightGrayColor: #707177;
 @commonPadding: 15px;
 @commonPadding2: 24px;
-@borderColor: #d6dce0;
+@borderColor: @border-color-base;
 
 .JobDetailsComponent {
   :global {
@@ -20,7 +20,7 @@
     margin-top: @commonPadding2;
     padding: @commonPadding;
     background-color: #ffffff;
-    border: solid 1px #d6dce0;
+    border: solid 1px @border-color-base;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
 
@@ -147,7 +147,7 @@
 .bottomBar {
   padding: 4 * @spacing-xxs;
   background-color: #ffffff;
-  border: solid 1px #d6dce0;
+  border: solid 1px @border-color-base;
   // position: fixed;
   // bottom: 0;
   // width: inherit;

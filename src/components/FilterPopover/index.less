@@ -61,8 +61,8 @@
         font-size: 13px;
         line-height: unset !important;
         background: #ffffff;
-        border: 1px solid #d6dce0;
-        border-left: 4px solid #2c6df9;
+        border: 1px solid @border-color-base;
+        border-left: 4px solid @primary-color;
         border-radius: 5px;
       }
       .ant-select-selection-item-remove {
@@ -120,51 +120,29 @@
       }
     }
   }
+  // .separator {
+  //   display: flex;
+  //   justify-content: center;
+  //   span {
+  //     padding-top: 12px;
+  //     color: #707177;
+  //     font-size: 12px;
+  //   }
+  // }
   .popoverHeader {
     display: flex;
     justify-content: space-between;
 
     .headTitle {
-      color: #2c6df9;
+      color: @primary-color;
       font-weight: 500;
       font-size: 16px;
     }
   }
-
-  .buttons {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    width: 100%;
-    padding: 16px;
-    text-align: right;
-    // border-top: 1px solid #e1dfdf;
-    box-shadow: 0px 1px 40px rgba(0, 0, 0, 0.1);
-    .btnApply {
-      height: 40px;
-      margin-left: 20px;
-      color: #fff;
-      font-weight: 500;
-      background-color: #ffa100;
-      border: none;
-      border-radius: 25px;
-      outline: none;
-      padding-inline: 25px;
-    }
-    .btnClose {
-      color: #464646;
-      font-weight: 500;
-      background-color: #fff;
-      border: none;
-      outline: none;
-      box-shadow: none;
-    }
-  }
-
   .popupContainer {
     position: relative;
     max-height: 60vh;
-    padding: 16px 16px 0;
+    padding: 16px 16px 8px;
     overflow-y: auto;
     .closeButton {
       position: absolute;

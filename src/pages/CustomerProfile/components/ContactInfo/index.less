@@ -1,51 +1,175 @@
 .ContactInfo {
-  box-sizing: border-box;
-  background-color: #fff;
-  border: 1px solid #d6dce0;
-  border-radius: 5px;
-  p {
-    margin-bottom: 0;
-  }
-  .contactInfoHeader {
-    display: flex;
-    justify-content: space-between;
-    padding: 32px;
-    border-bottom: 1px solid #d6dce0;
-    p {
-      margin: 0;
-      & > img {
-        margin-right: 16px;
+  :global {
+    .ant-card {
+      overflow: hidden;
+      border: 1px solid @border-color-base;
+      border-radius: 5px;
+      .ant-card-head {
+        display: flex;
+        align-items: center;
+        height: 75px;
+        border-bottom: 1px solid @border-color-base;
+        .ant-card-head-wrapper {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          .ant-card-head-title {
+            color: #161c29;
+            font-weight: 500;
+            font-size: 16px;
+          }
+        }
       }
-      &.contactInfoHeaderTitle {
-        color: #161c29;
-        font-weight: 700;
-        font-size: 16px;
+      .ant-card-body {
+        padding: 0px;
       }
+    }
+    .ant-table-cell {
+      line-height: 20px;
     }
   }
 
-  .label {
-    color: #707177;
-    font-weight: 500;
-    font-size: 14px;
+  .viewMode {
+    padding: @padding-lg;
+    .label {
+      color: #707177;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .value {
+      color: #161c29;
+      font-size: 14px;
+    }
   }
-  .value {
-    color: #161c29;
-    font-size: 16px;
-  }
-  .btnEdit {
-    color: #2c6df9;
-    font-weight: 700;
-    cursor: pointer;
-  }
+  .editMode {
+    .form {
+      padding: @padding-lg;
+    }
 
-  .contactInfoBody {
-    padding: 32px 32px 0 32px;
-
+    .btnForm {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      width: 100%;
+      padding: @padding-lg;
+      border-top: 1px solid #e1dfdf;
+    }
+    .calendarIcon {
+      filter: invert(57%) sepia(76%) saturate(7481%) hue-rotate(216deg) brightness(102%)
+        contrast(95%);
+    }
     :global {
-      .ant-col {
-        margin-bottom: 24px;
+      .ant-form-item {
+        margin-bottom: 16px;
+      }
+      .ant-form-item-label {
+        display: flex;
+        align-items: center;
+        text-align: left;
+        label {
+          color: #707177;
+          font-weight: 500;
+          font-size: 14px;
+        }
+      }
+      // SELECT
+      .ant-select {
+        width: 60% !important;
+      }
+      .ant-select-selector {
+        min-height: 42px !important;
+        border: 1px solid #d6dce4 !important;
+        border-radius: 5px !important;
+      }
+      .ant-select-single {
+        .ant-select-selection-search-input {
+          height: 42px !important;
+        }
+      }
+      .ant-select-selection-item,
+      .ant-select-selection-placeholder {
+        font-size: 14px !important;
+        line-height: 42px !important;
+      }
+      .ant-select-multiple {
+        .ant-select-selection-item {
+          height: 28px !important;
+          padding-top: 3px !important;
+          font-size: 14px;
+          line-height: unset !important;
+          background: #ffffff;
+          border: 1px solid @border-color-base;
+          border-left: 4px solid @primary-color;
+          border-radius: 5px;
+        }
+        .ant-select-selection-item-remove {
+          margin-top: 3px;
+          margin-inline: 5px;
+
+          .anticon-close {
+            border: 0.75px solid #707177;
+            border-radius: 50%;
+          }
+        }
+      }
+      .ant-select-multiple .ant-select-selection-item-remove > * {
+        line-height: 0;
+      }
+      .ant-select-auto-complete {
+        .ant-input {
+          border: none !important;
+        }
+      }
+
+      .ant-select-selector {
+        overflow: hidden;
+      }
+      .ant-input-affix-wrapper {
+        .ant-input-prefix {
+          margin-right: 9px;
+        }
+        .ant-input {
+          height: unset !important;
+        }
+        border: none !important;
+      }
+      // INPUT + DATE PICKER
+      .ant-input,
+      .ant-input-number,
+      .ant-picker {
+        width: 60%;
+        height: 42px !important;
+        border: 1px solid #d6dce4 !important;
+        border-radius: 5px !important;
+      }
+      .ant-input-number,
+      .ant-input {
+        font-size: 14px;
+      }
+      .ant-picker {
+        input {
+          font-size: 14px;
+        }
+      }
+      .ant-input-number-input-wrap {
+        input {
+          height: 40px !important;
+        }
       }
     }
+  }
+  .tableContainer {
+    padding: @padding-lg;
+    span {
+      line-height: 20px;
+    }
+  }
+  .blueText {
+    color: @primary-color;
+    font-weight: 500;
+  }
+  .clickableTag {
+    .blueText();
+    cursor: pointer;
   }
 }

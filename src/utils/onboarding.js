@@ -1,174 +1,145 @@
-export const NEW_PROCESS_STATUS = {
-  ALL: 'ALL',
-  DRAFT: 'DRAFT',
-  PROFILE_VERIFICATION: 'PROFILE_VERIFICATION',
-  DOCUMENT_VERIFICATION: 'DOCUMENT_VERIFICATION',
-  REFERENCE_VERIFICATION: 'REFERENCE_VERIFICATION',
-  SALARY_NEGOTIATION: 'SALARY_NEGOTIATION',
-  AWAITING_APPROVALS: 'AWAITING_APPROVALS',
-  OFFER_RELEASED: 'OFFER_RELEASED',
-  NEEDS_CHANGES: 'NEEDS_CHANGES',
-  OFFER_ACCEPTED: 'OFFER_ACCEPTED',
-  OFFER_REJECTED: 'OFFER_REJECTED',
-  OFFER_WITHDRAWN: 'OFFER_WITHDRAWN',
-  DOCUMENT_CHECKLIST_VERIFICATION: 'DOCUMENT_CHECKLIST_VERIFICATION',
-  JOINED: 'JOINED',
+import moment from 'moment';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { ONBOARDING_DATE_FORMAT, ONBOARDING_TABLE_TYPE } from '@/constants/onboarding';
+
+export const compare = (dateTimeA, dateTimeB) => {
+  const momentA = moment(dateTimeA, DATE_FORMAT_MDY);
+  const momentB = moment(dateTimeB, DATE_FORMAT_MDY);
+  if (momentA > momentB) return 1;
+  if (momentA < momentB) return -1;
+  return 0;
 };
 
-export const NEW_PROCESS_STATUS_TABLE_NAME = {
-  DRAFT: 'Draft',
-  PROFILE_VERIFICATION: 'Profile Verification',
-  DOCUMENT_VERIFICATION: 'Document Verification',
-  REFERENCE_VERIFICATION: 'Reference Verification',
-  SALARY_NEGOTIATION: 'Salary Proposal',
-  AWAITING_APPROVALS: 'Awaiting Approvals',
-  NEEDS_CHANGES: 'Needs Changes',
-  OFFER_RELEASED: 'Offer Released',
-  OFFER_ACCEPTED: 'Offer Accepted',
-  OFFER_REJECTED: 'Offer Rejected',
-  OFFER_WITHDRAWN: 'Offer Withdrawn',
-  DOCUMENT_CHECKLIST_VERIFICATION: 'Document Checklist Verification',
-  JOINED: 'Joined',
+export const formatDate = (date, format = ONBOARDING_DATE_FORMAT) => {
+  if (!date) return '';
+  return moment(date).format(format);
 };
 
-export const ONBOARDING_FORM_LINK = {
-  BASIC_INFORMATION: 'basic-information',
-  JOB_DETAILS: 'job-details',
-  DOCUMENT_VERIFICATION: 'document-verification',
-  REFERENCES: 'references',
-  SALARY_STRUCTURE: 'salary-structure',
-  BENEFITS: 'benefits',
-  OFFER_DETAILS: 'offer-details',
-  OFFER_LETTER: 'offer-letter',
-  DOCUMENT_CHECKLIST_VERIFICATION: 'document-checklist',
+export const dateDiffInDays = (a, b) => {
+  if (!a || !b) {
+    return 10;
+  }
+  // a and b are javascript Date objects
+  const SECOND_IN_DAY = 1000 * 60 * 60 * 24;
+  const firstDate = new Date(a);
+  const secondDate = new Date(b);
+
+  const diff = parseFloat((firstDate.getDate() - secondDate.getDate()) / SECOND_IN_DAY);
+  return diff;
 };
 
-export const ONBOARDING_STEPS = {
-  BASIC_INFORMATION: 0,
-  JOB_DETAILS: 1,
-  DOCUMENT_VERIFICATION: 2,
-  REFERENCES: 3,
-  SALARY_STRUCTURE: 4,
-  BENEFITS: 5,
-  OFFER_DETAILS: 6,
-  OFFER_LETTER: 7,
-  DOCUMENT_CHECKLIST_VERIFICATION: 8,
+export const getActionText = (type, processStatus) => {
+  const { DRAFT, ALL } = ONBOARDING_TABLE_TYPE;
+  switch (type) {
+    case DRAFT:
+      return 'Continue';
+    case ALL:
+      if (processStatus === DRAFT) return 'Continue';
+      return 'View Form';
+    default:
+      return 'View Form';
+  }
 };
 
-export const ONBOARDING_FORM_STEP_LINK = [
-  {
-    id: ONBOARDING_STEPS.BASIC_INFORMATION,
-    link: ONBOARDING_FORM_LINK.BASIC_INFORMATION,
-  },
-  {
-    id: ONBOARDING_STEPS.JOB_DETAILS,
-    link: ONBOARDING_FORM_LINK.JOB_DETAILS,
-  },
-  {
-    id: ONBOARDING_STEPS.DOCUMENT_VERIFICATION,
-    link: ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION,
-  },
-  {
-    id: ONBOARDING_STEPS.REFERENCES,
-    link: ONBOARDING_FORM_LINK.REFERENCES,
-  },
-  {
-    id: ONBOARDING_STEPS.SALARY_STRUCTURE,
-    link: ONBOARDING_FORM_LINK.SALARY_STRUCTURE,
-  },
-  {
-    id: ONBOARDING_STEPS.BENEFITS,
-    link: ONBOARDING_FORM_LINK.BENEFITS,
-  },
-  {
-    id: ONBOARDING_STEPS.OFFER_DETAILS,
-    link: ONBOARDING_FORM_LINK.OFFER_DETAILS,
-  },
-  {
-    id: ONBOARDING_STEPS.OFFER_LETTER,
-    link: ONBOARDING_FORM_LINK.OFFER_LETTER,
-  },
-  {
-    id: ONBOARDING_STEPS.DOCUMENT_CHECKLIST_VERIFICATION,
-    link: ONBOARDING_FORM_LINK.DOCUMENT_CHECKLIST_VERIFICATION,
-  },
-];
+export const getColumnWidth = (columnName, tableType, arrLength) => {
+  const {
+    ALL,
+    DRAFT,
+    PROFILE_VERIFICATION,
+    DOCUMENT_VERIFICATION,
+    SALARY_NEGOTIATION,
+    AWAITING_APPROVALS,
+    NEEDS_CHANGES,
+    OFFER_RELEASED,
+    OFFER_ACCEPTED,
+    OFFER_REJECTED,
+    OFFER_WITHDRAWN,
+    DOCUMENT_CHECKLIST_VERIFICATION,
+  } = ONBOARDING_TABLE_TYPE;
+  if (arrLength > 0) {
+    if (
+      tableType === ALL ||
+      tableType === PROFILE_VERIFICATION ||
+      tableType === DOCUMENT_VERIFICATION ||
+      tableType === SALARY_NEGOTIATION ||
+      tableType === AWAITING_APPROVALS ||
+      tableType === OFFER_RELEASED ||
+      tableType === OFFER_ACCEPTED ||
+      tableType === OFFER_REJECTED ||
+      tableType === OFFER_WITHDRAWN ||
+      tableType === DOCUMENT_CHECKLIST_VERIFICATION
+    ) {
+      switch (columnName) {
+        case 'candidateId':
+          return '10%';
+        case 'candidateName':
+          return '16%';
+        case 'position':
+          return '12%';
+        case 'location':
+          return '10%';
+        case 'dateJoin':
+          return '10%';
+        case 'actions':
+          return '3%';
+        case 'assignTo':
+          return '10%';
+        case 'assigneeManager':
+          return '10%';
+        case 'processStatus':
+          return '13%';
+        default:
+          return '';
+      }
+    }
 
-/// ////////////////////////// [END] NEW ONBOARDING /// //////////////////////////
-
-export const PROCESS_STATUS = {
-  PROVISIONAL_OFFER_DRAFT: 'DRAFT',
-  FINAL_OFFERS_DRAFT: 'FINAL-OFFER-DRAFT',
-
-  SENT_PROVISIONAL_OFFERS: 'SENT-PROVISIONAL-OFFER',
-  ACCEPTED_PROVISIONAL_OFFERS: 'ACCEPT-PROVISIONAL-OFFER',
-  RENEGOTIATE_PROVISIONAL_OFFERS: 'RENEGOTIATE-PROVISONAL-OFFER',
-
-  PENDING: 'PENDING-BACKGROUND-CHECK',
-  ELIGIBLE_CANDIDATES: 'ELIGIBLE-CANDIDATE',
-  INELIGIBLE_CANDIDATES: 'INELIGIBLE-CANDIDATE',
-
-  SENT_FOR_APPROVAL: 'PENDING-APPROVAL-FINAL-OFFER',
-  APPROVED_OFFERS: 'APPROVED-FINAL-OFFER',
-
-  SENT_FINAL_OFFERS: 'SENT-FINAL-OFFER',
-  ACCEPTED_FINAL_OFFERS: 'ACCEPT-FINAL-OFFER',
-  RENEGOTIATE_FINAL_OFFERS: 'RENEGOTIATE-FINAL-OFFERS',
-
-  PROVISIONAL_OFFERS: 'DISCARDED-PROVISONAL-OFFER',
-
-  FINAL_OFFERS: 'FINAL-OFFERS',
-  FINAL_OFFERS_HR: 'REJECT-FINAL-OFFER-HR',
-  FINAL_OFFERS_CANDIDATE: 'REJECT-FINAL-OFFER-CANDIDATE',
-
-  DOCUMENT_CHECKLIST_VERIFICATION: 'DOCUMENT-CHECKLIST-VERIFICATION',
-
-  ALL: [
-    'DRAFT',
-    'FINAL-OFFER-DRAFT',
-    'SENT-PROVISIONAL-OFFER',
-    'ACCEPT-PROVISIONAL-OFFER',
-    'RENEGOTIATE-PROVISONAL-OFFER',
-    'PENDING-BACKGROUND-CHECK',
-    'ELIGIBLE-CANDIDATE',
-    'INELIGIBLE-CANDIDATE',
-    'PENDING-APPROVAL-FINAL-OFFER',
-    'APPROVED-FINAL-OFFER',
-    'SENT-FINAL-OFFER',
-    'ACCEPT-FINAL-OFFER',
-    'RENEGOTIATE-FINAL-OFFERS',
-    'DISCARDED-PROVISONAL-OFFER',
-    'FINAL-OFFERS',
-    'REJECT-FINAL-OFFER-HR',
-    'REJECT-FINAL-OFFER-CANDIDATE',
-    'DOCUMENT-CHECKLIST-VERIFICATION',
-  ],
-};
-
-export const PROCESS_STATUS_TABLE_NAME = {
-  DRAFT: 'Provisional Offer Drafts',
-  'FINAL-OFFER-DRAFT': 'Final Offers Draft',
-
-  'SENT-PROVISIONAL-OFFER': 'Sent Provisional Offers',
-  'ACCEPT-PROVISIONAL-OFFER': 'Accepted Provisional Offers',
-  'RENEGOTIATE-PROVISONAL-OFFER': 'Renegotiate Provisional Offers',
-
-  'PENDING-BACKGROUND-CHECK': 'Pending',
-  'ELIGIBLE-CANDIDATE': 'Eligible Candidates',
-  'INELIGIBLE-CANDIDATE': 'Ineligible Candidates',
-
-  'PENDING-APPROVAL-FINAL-OFFER': 'Sent For Approval',
-  'APPROVED-FINAL-OFFER': 'Approved Offers',
-
-  'SENT-FINAL-OFFER': 'Sent Final Offers',
-  'ACCEPT-FINAL-OFFER': 'Accepted Final Offers',
-
-  'DISCARDED-PROVISONAL-OFFER': 'Provisional Offers',
-
-  'RENEGOTIATE-FINAL-OFFERS': 'Re-Negotiate Final Offers',
-
-  'REJECT-FINAL-OFFER-HR': 'Final Offers',
-  'REJECT-FINAL-OFFER-CANDIDATE': 'Final Offers',
-
-  'DOCUMENT-CHECKLIST-VERIFICATION': 'Document Checklist Verification',
+    if (tableType === DRAFT || tableType === NEEDS_CHANGES) {
+      switch (columnName) {
+        case 'candidateId':
+          return '10%';
+        case 'candidateName':
+          return '16%';
+        case 'position':
+          return '12%';
+        case 'location':
+          return '10%';
+        case 'dateJoin':
+          return '10%';
+        case 'actions':
+          return '3%';
+        case 'assignTo':
+          return '10%';
+        case 'assigneeManager':
+          return '10%';
+        case 'processStatus': // change
+          return '6%';
+        default:
+          return '';
+      }
+    }
+  } else {
+    switch (columnName) {
+      case 'candidateId':
+        return '13%';
+      case 'candidateName':
+        return '16%';
+      case 'position':
+        return '12%';
+      case 'location':
+        return '10%';
+      case 'dateJoin':
+        return '10%';
+      case 'actions':
+        return '8%';
+      case 'assignTo':
+        return '10%';
+      case 'assigneeManager':
+        return '10%';
+      case 'processStatus': // change
+        return '6%';
+      default:
+        return '';
+    }
+  }
+  return '';
 };

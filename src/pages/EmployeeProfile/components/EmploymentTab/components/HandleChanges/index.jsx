@@ -2,7 +2,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { getCurrentCompany } from '@/utils/authority';
-import { MAKE_CHANGE_TYPE } from '@/utils/employeeProfile';
+import { MAKE_CHANGE_TYPE } from '@/constants/employeeProfile';
 import { dialog } from '@/utils/utils';
 import FifthStep from './components/FifthStep';
 import FirstStep from './components/FirstStep';
