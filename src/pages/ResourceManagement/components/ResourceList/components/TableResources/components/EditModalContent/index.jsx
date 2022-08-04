@@ -3,8 +3,9 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Col, DatePicker, Form, Input, notification, Row, Select } from 'antd';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
+import { disabledEndDate } from '@/utils/resourceManagement';
 import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import styles from './index.less';
@@ -12,9 +13,10 @@ import styles from './index.less';
 const { Option } = Select;
 
 const EditModalContent = (props) => {
+  const [form] = Form.useForm();
+
   const {
     projectList = [],
-    resourceList = [],
     statusList = [],
     onClose = () => {},
     dispatch,
@@ -27,6 +29,15 @@ const EditModalContent = (props) => {
       return '';
     }
     return moment(date, formatDate);
+  };
+
+  const [startDateState, setStartDateState] = useState('');
+
+  const handleChangeStartDate = (value) => {
+    setStartDateState(value);
+    form.setFieldsValue({
+      endDate: null,
+    });
   };
 
   const handleSubmitAssign = async (values) => {
@@ -58,26 +69,20 @@ const EditModalContent = (props) => {
         endDate: endDate && moment(endDate).format(DATE_FORMAT_YMD),
         revisedEndDate: (revisedEndDate && moment(revisedEndDate).format(DATE_FORMAT_YMD)) || null,
       },
-    }).then(() => {
-      refreshData();
+    }).then((res) => {
+      if (res.statusCode === 200) {
+        onClose();
+        refreshData();
+      }
     });
-    onClose();
   };
 
-  const startDate = parseDate(dataPassRow?.startDate || '');
-  const endDate = parseDate(dataPassRow?.endDate || '');
-  const revisedEndDate = parseDate(dataPassRow?.revisedEndDate || '');
-  const projectId = dataPassRow?.projectId || '';
-  const utilization = dataPassRow?.utilization || '';
+  const startDateProp = parseDate(dataPassRow?.startDate || '');
+  const endDateProp = parseDate(dataPassRow?.endDate || '');
+  const revisedEndDateProp = parseDate(dataPassRow?.revisedEndDate || '');
+  const projectIdProp = dataPassRow?.projectId || '';
+  const utilizationProp = dataPassRow?.utilization || '';
   const billStatus = dataPassRow?.billStatus || '';
-
-  const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
-  const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
-  const sumUtilization = listProjectsOfEmp.reduce(
-    (prevValue, currentValue) => prevValue + currentValue.utilization,
-    0,
-  );
-  const maxEnterUtilization = 100 - sumUtilization + dataPassRow.utilization;
 
   return (
     <div className={styles.EditModalContent}>
@@ -85,15 +90,16 @@ const EditModalContent = (props) => {
         layout="vertical"
         className={styles.formAdd}
         method="POST"
+        form={form}
         name="editForm"
         id="editForm"
         onFinish={(values) => handleSubmitAssign(values)}
         initialValues={{
-          startDate,
-          endDate,
-          revisedEndDate,
-          project: projectId,
-          utilization,
+          startDate: startDateProp,
+          endDate: endDateProp,
+          revisedEndDate: revisedEndDateProp,
+          project: projectIdProp,
+          utilization: utilizationProp,
           status: billStatus,
         }}
       >
@@ -132,7 +138,7 @@ const EditModalContent = (props) => {
               </Select>
             </Form.Item>
             <Form.Item
-              label="Bandwith Allocation (%)"
+              label="Bandwidth Allocation (%)"
               name="utilization"
               rules={[
                 { required: true, message: 'Please enter the bandwith allocation (%)!' },
@@ -141,19 +147,18 @@ const EditModalContent = (props) => {
                     if (value && isNaN(value)) {
                       return Promise.reject(`Value enter has to be a number!`);
                     }
-                    if (value > maxEnterUtilization) {
+                    if (value && value > 100) {
                       return Promise.reject(
-                        `Your cannot enter a value that is more than ${maxEnterUtilization}!`,
+                        `The bandwidth allocation (%) can't be greater than 100%!`,
                       );
                     }
-                    if (value < 0) {
+                    if (value < 1 && value) {
                       return Promise.reject(`Your cannot enter a value that is less than 0!`);
                     }
                     return Promise.resolve();
                   },
                 }),
               ]}
-              validateTrigger="onBlur"
             >
               <Input addonAfter="%" />
             </Form.Item>
@@ -165,6 +170,7 @@ const EditModalContent = (props) => {
               rules={[{ required: true, message: 'Start date value could not be empty!' }]}
             >
               <DatePicker
+                onChange={(val) => handleChangeStartDate(val)}
                 placeholder="Start Date"
                 format={DATE_FORMAT_MDY}
                 suffixIcon={<img src={datePickerIcon} alt="" />}
@@ -176,6 +182,8 @@ const EditModalContent = (props) => {
               rules={[{ required: true, message: 'End date value could not be empty!' }]}
             >
               <DatePicker
+                disabledDate={(current) =>
+                  disabledEndDate(current, !startDateState ? startDateProp : startDateState)}
                 placeholder="Enter End Date"
                 format={DATE_FORMAT_MDY}
                 suffixIcon={<img src={datePickerIcon} alt="" />}

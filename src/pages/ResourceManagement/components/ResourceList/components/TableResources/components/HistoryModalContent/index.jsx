@@ -18,7 +18,8 @@ class HistoryModalContent extends Component {
     const { resourceList = [], dataPassRow = {} } = this.props;
     const getEmpInListResource = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const { projects = [] } = getEmpInListResource || {};
-    const { managerInfo = {} } = getEmpInListResource || {};
+    const { generalInfo: { employeeId = '', legalName = '', userId = '', avatar = '' } = {} } =
+      getEmpInListResource || {};
 
     const dateFormat = (date) => (date ? moment(date).format(DATE_FORMAT_MDY) : '-');
 
@@ -119,13 +120,13 @@ class HistoryModalContent extends Component {
       <div className={styles.HistoryModalContent}>
         <div className={styles.resourceInfo}>
           <p className={styles.showInfo}>
-            Emp Id:<span className={styles.showInfoEmp}> {managerInfo.employeeId || '-'}</span>
+            Emp Id:<span className={styles.showInfoEmp}> {employeeId || '-'}</span>
           </p>
           <div className={styles.showInfoName}>
-            Name: <span className={styles.showInfoEmp}> {dataPassRow.employeeName}</span>
+            Name: <span className={styles.showInfoEmp}> {`${legalName} (${userId})`}</span>
             <div className={styles.avatar}>
               <img
-                src={dataPassRow.avatar || MockAvatar}
+                src={avatar || MockAvatar}
                 alt=""
                 onError={(e) => {
                   e.target.src = MockAvatar;
@@ -133,17 +134,16 @@ class HistoryModalContent extends Component {
               />
             </div>
           </div>
-          <p className={styles.showInfo}>
-            Designation: <span className={styles.showInfoEmp}> {dataPassRow.designation}</span>
-          </p>
-          <p className={styles.showInfo}>
-            Experience: <span className={styles.showInfoEmp}> {dataPassRow.experience} yrs</span>
-          </p>
-          <p className={styles.showInfo}>
-            Total Projects: <span className={styles.showInfoEmp}>{projects.length}</span>
-          </p>
         </div>
-
+        <p className={styles.showInfo}>
+          Designation: <span className={styles.showInfoEmp}> {dataPassRow.designation}</span>
+        </p>
+        <p className={styles.showInfo}>
+          Experience: <span className={styles.showInfoEmp}> {dataPassRow.experience} yrs</span>
+        </p>
+        <p className={styles.showInfo}>
+          Total Projects: <span className={styles.showInfoEmp}>{projects.length}</span>
+        </p>
         <CommonTable list={dataSource} columns={columns} showPagination={false} />
       </div>
     );

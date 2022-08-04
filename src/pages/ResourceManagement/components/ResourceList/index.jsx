@@ -1,4 +1,5 @@
 import { debounce, isEmpty } from 'lodash';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
@@ -140,7 +141,8 @@ const ResourceList = (props) => {
   };
 
   const exportData = async () => {
-    const fileName = 'resource';
+    const date = moment().locale('en').format('MM-DD-YYYY');
+    const fileName = `resource - ${date}.csv`;
     const getListExport = await dispatch({
       type: 'resourceManagement/exportResourceManagement',
       payload: {

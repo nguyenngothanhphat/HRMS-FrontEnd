@@ -29,7 +29,7 @@ const OrganizationChart = (props) => {
 
   const truncate = (value) => {
     if (value.length > 30) {
-      return `${value.substr(0, 6)}...${value.substr(value.length - 5, value.length)}`;
+      return `${value.substr(0, 12)}...`;
     }
     return value;
   };
@@ -42,7 +42,7 @@ const OrganizationChart = (props) => {
           content={<span style={{ fontWeight: 500 }}>{value}</span>}
           trigger="hover"
         >
-          {value.substr(0, 10)}...{value.substr(value.length - 5, value.length)}
+          {value.substr(0, 15)}...
         </Popover>
       );
     }

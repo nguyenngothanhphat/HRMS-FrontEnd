@@ -4,8 +4,9 @@
 import { Card, Col, DatePicker, Form, Input, notification, Row, Select } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { disabledEndDate } from '@/utils/resourceManagement';
 import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import styles from './index.less';
@@ -22,12 +23,13 @@ const AddModalContent = (props) => {
     setSuccessVisible = () => {},
     projectList = [],
     visible,
-    resourceList = [],
     statusList = [],
     loadingFetchProjectList = false,
     setSelectedProject = () => {},
     selectedProject = {},
   } = props;
+
+  const [startDateState, setStartDateState] = useState('');
 
   useEffect(() => {
     setSelectedProject({});
@@ -84,13 +86,10 @@ const AddModalContent = (props) => {
     setSuccessVisible();
   };
 
-  const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
-  const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
-  const sumUtilization = listProjectsOfEmp.reduce(
-    (prevValue, currentValue) => prevValue + currentValue.utilization,
-    0,
-  );
-  const maxEnterUtilization = 100 - sumUtilization;
+  const handleChangeStartDate = (value) => {
+    setStartDateState(value);
+    form.setFieldsValue({ endDate: null });
+  };
 
   const projectDetails = [
     {
@@ -154,6 +153,7 @@ const AddModalContent = (props) => {
               rules={[{ required: true, message: 'Start date value could not be empty!' }]}
             >
               <DatePicker
+                onChange={(val) => handleChangeStartDate(val)}
                 placeholder="Enter Start Date"
                 suffixIcon={<img src={datePickerIcon} alt="" />}
                 format={DATE_FORMAT_MDY}
@@ -187,6 +187,7 @@ const AddModalContent = (props) => {
               rules={[{ required: true, message: 'End date value could not be empty!' }]}
             >
               <DatePicker
+                disabledDate={(current) => disabledEndDate(current, startDateState)}
                 placeholder="Enter End Date"
                 suffixIcon={<img src={datePickerIcon} alt="" />}
                 format={DATE_FORMAT_MDY}
@@ -199,25 +200,23 @@ const AddModalContent = (props) => {
               name="utilization"
               rules={[
                 { required: true, message: 'Please enter the bandwidth allocation (%)!' },
-
                 () => ({
                   validator(_, value) {
                     if (value && isNaN(value)) {
                       return Promise.reject(`Value enter has to be a number!`);
                     }
-                    if (value > maxEnterUtilization) {
+                    if (value && value > 100) {
                       return Promise.reject(
-                        `Your cannot enter a value that is more than ${maxEnterUtilization}!`,
+                        `The bandwidth allocation (%) can't be greater than 100%!`,
                       );
                     }
-                    if (value < 0) {
+                    if (value < 1 && value) {
                       return Promise.reject(`Your cannot enter a value that is less than 0!`);
                     }
                     return Promise.resolve();
                   },
                 }),
               ]}
-              validateTrigger="onBlur"
             >
               <Input addonAfter="%" />
             </Form.Item>
@@ -225,6 +224,7 @@ const AddModalContent = (props) => {
           <Col span={12}>
             <Form.Item label="Revised End Date" name="revisedEndDate">
               <DatePicker
+                disabledDate={(current) => disabledEndDate(current, startDateState)}
                 placeholder="Enter Date"
                 suffixIcon={<img src={datePickerIcon} alt="" />}
                 format={DATE_FORMAT_MDY}

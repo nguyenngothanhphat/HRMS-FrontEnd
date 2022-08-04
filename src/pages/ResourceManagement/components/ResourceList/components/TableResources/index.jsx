@@ -20,7 +20,7 @@ import EmptyComponent from '@/components/Empty';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { RESOURCE } from '@/constants/resourceManagement';
-import { checkUtilization, projectDateFormat } from '@/utils/resourceManagement';
+import { projectDateFormat } from '@/utils/resourceManagement';
 import AddCommentModalContent from './components/AddCommentModalContent';
 import AddModalContent from './components/AddModalContent';
 import ChangeManagerModalContent from './components/ChangeManagerModalContent';
@@ -482,7 +482,11 @@ const TableResources = (props) => {
                 <div className={styles.mask}>
                   <div className={styles.buttonContainer}>
                     {allowModify && (
-                      <img src={EditCommentIcon} alt="" onClick={() => onShowModal(row, EDIT_COMMENT)} />
+                      <img
+                        src={EditCommentIcon}
+                        alt=""
+                        onClick={() => onShowModal(row, EDIT_COMMENT)}
+                      />
                     )}
                     <img
                       src={ViewCommentIcon}
@@ -553,7 +557,6 @@ const TableResources = (props) => {
         // dataIndex: 'subject',
         key: 'action',
         render: (value, row, index) => {
-          const checkAction = checkUtilization(row?.projects);
           const action = (
             <div className={styles.actionParent}>
               <div className={styles.buttonGroup}>
@@ -562,9 +565,9 @@ const TableResources = (props) => {
                     <img
                       src={AssignIcon}
                       alt=""
-                      onClick={() => checkAction && onShowModal(row, ADD)}
-                      style={{ cursor: checkAction ? 'pointer' : 'not-allowed' }}
                       className={styles.buttonAdd}
+                      onClick={() => onShowModal(row, ADD)}
+                      style={{ cursor: 'pointer' }}
                     />
                   </Tooltip>
                 )}
@@ -658,6 +661,7 @@ const TableResources = (props) => {
         firstText="Done"
         hasCancelButton={false}
         onFinish={onClose}
+        width={800}
         content={
           <HistoryModalContent
             visible={visible === HISTORY}

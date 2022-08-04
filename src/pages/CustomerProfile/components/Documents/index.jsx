@@ -245,7 +245,7 @@ const Documents = (props) => {
             </FilterPopover>
           </div>
 
-          <CustomSearchBox onSearch={onSearch} placeholder="Search by name, type and upload by" />
+          <CustomSearchBox onSearch={onSearch} placeholder="Search by Document Type" />
         </div>
       </div>
       <div className={styles.documentBody}>

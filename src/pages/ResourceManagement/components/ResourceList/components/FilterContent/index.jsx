@@ -1,11 +1,11 @@
-import { AutoComplete, Col, DatePicker, Form, Input, Row, Select, Spin, Tag } from 'antd';
+import { Col, DatePicker, Form, Input, Row, Select } from 'antd';
 import { debounce } from 'lodash';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import CalendarIcon from '@/assets/calendar_icon.svg';
-import SearchIcon from '@/assets/directory/search.svg';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import CalendarIcon from '@/assets/calendar_icon.svg';
+// import SearchIcon from '@/assets/directory/search.svg';
 import { dateFormatAPI } from '@/constants/timeSheet';
 import styles from './index.less';
 
@@ -15,6 +15,7 @@ const FilterContent = (props) => {
   const [form] = Form.useForm();
 
   const {
+    // eslint-disable-next-line no-unused-vars
     dispatch,
     filter = {},
     onFilterChange = () => {},
@@ -23,32 +24,8 @@ const FilterContent = (props) => {
     employeeList = [],
     divisions = [],
     titleList = [],
-    loadingFetchEmployeeNameList = false,
     listSkill = [],
   } = props;
-
-  const [employeeNameListState, setEmployeeNameListState] = useState([]);
-  const [employeeNameState, setEmployeeNameState] = useState('');
-  const [searchIcons, setSearchIcons] = useState({
-    name: false,
-  });
-
-  useEffect(() => {
-    setEmployeeNameListState(
-      employeeList.map((x) => {
-        return {
-          value: x.generalInfo?.legalName,
-          label: x.generalInfo.legalName,
-        };
-      }),
-    );
-  }, [JSON.stringify(employeeList)]);
-
-  useEffect(() => {
-    if (!employeeNameState) {
-      setEmployeeNameListState([]);
-    }
-  }, [employeeNameState]);
 
   useEffect(() => {
     if (Object.keys(filter).length === 0) {
@@ -93,40 +70,6 @@ const FilterContent = (props) => {
 
   const onValuesChange = (changeValues, allValues) => {
     onFinishDebounce(allValues);
-  };
-
-  const onSearchEmployeeDebounce = debounce((type, value) => {
-    let typeTemp = '';
-    switch (type) {
-      case 'name':
-        typeTemp = 'resourceManagement/getListEmployee';
-        setEmployeeNameState(value);
-        break;
-      default:
-        break;
-    }
-    if (typeTemp && value) {
-      dispatch({
-        type: typeTemp,
-        payload: {
-          name: value,
-          department: ['Engineering'],
-        },
-      });
-    }
-    if (!value) {
-      switch (type) {
-        case 'name':
-          setEmployeeNameListState([]);
-          break;
-        default:
-          break;
-      }
-    }
-  }, 1000);
-
-  const handleEmployeeSearch = (type, value) => {
-    onSearchEmployeeDebounce(type, value);
   };
 
   const division = divisions.map((x) => {
@@ -198,21 +141,33 @@ const FilterContent = (props) => {
         form={form}
       >
         <div className={styles.form__top}>
-          <Form.Item label="BY NAME/USER ID" name="name">
-            <AutoComplete
-              dropdownMatchSelectWidth={252}
-              notFoundContent={loadingFetchEmployeeNameList ? <Spin /> : 'No matches'}
-              options={employeeNameListState}
-              onSearch={(val) => handleEmployeeSearch('name', val)}
-              onFocus={() => setSearchIcons({ ...searchIcons, name: true })}
-              onBlur={() => setSearchIcons({ ...searchIcons, name: false })}
+          <Form.Item label="BY NAME/USER ID" name="userName">
+            <Select
+              allowClear
+              showArrow
+              showSearch
+              filterOption={(input, option) => {
+                return (
+                  input &&
+                  ((option.key && option.key.toLowerCase().indexOf(input.toLowerCase()) >= 0) ||
+                    (option.value && option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0))
+                );
+              }}
+              mode="multiple"
+              placeholder="Select employee"
+              dropdownClassName={styles.dropdown}
             >
-              <Input
-                placeholder="Search by Name/User ID"
-                prefix={searchIcons.name ? <img src={SearchIcon} alt="search" /> : null}
-                allowClear
-              />
-            </AutoComplete>
+              {employeeList.map((option) => {
+                return (
+                  <Option
+                    key={option?.generalInfoInfo?.userId}
+                    value={option?.generalInfoInfo?.legalName}
+                  >
+                    <span>{option?.generalInfoInfo?.legalName}</span>
+                  </Option>
+                );
+              })}
+            </Select>
           </Form.Item>
           {fieldsArray.map((field) => (
             <Form.Item key={field.name} label={field.label} name={field.name}>
