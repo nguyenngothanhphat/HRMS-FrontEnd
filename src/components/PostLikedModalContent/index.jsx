@@ -71,7 +71,7 @@ const PostLikedModalContent = (props) => {
         {list.length > 0 ? (
           list.map((x) => renderUser(x))
         ) : (
-          <EmptyComponent height={70} showDescription={false} />
+          <EmptyComponent height={123} showDescription={false} />
         )}
       </Spin>
       {renderShowMoreBtn()}

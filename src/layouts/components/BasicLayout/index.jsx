@@ -17,6 +17,7 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../../../assets/logo.svg';
 import ProLayout from '../../layout/src';
 import styles from './index.less';
+import GoToTop from '@/components/GoToTop';
 
 const noMatch = (
   <Result
@@ -147,11 +148,7 @@ const BasicLayout = (props) => {
 
   return (
     <>
-      <div
-        className={classnames(`${styles.root}`, classNameBreadCrumb, {
-          [styles.hiddenBreadCrumb]: pathname === '/dashboard',
-        })}
-      >
+      <div className={classnames(`${styles.root}`, classNameBreadCrumb)}>
         <ProLayout
           logo={getCurrentLogo() || logo}
           headerHeight={76}
@@ -215,6 +212,7 @@ const BasicLayout = (props) => {
       </div>
       <Feedback />
       <AppFooter />
+      <GoToTop />
     </>
   );
 };
