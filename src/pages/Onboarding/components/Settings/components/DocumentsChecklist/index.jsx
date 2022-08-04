@@ -1,7 +1,6 @@
 import { Col, Row } from 'antd';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { getCurrentLocation } from '@/utils/authority';
 import Header from './components/Header';
 import TableDocuments from './components/TableDocuments';
 import UploadDocument from './components/UploadDocument';
