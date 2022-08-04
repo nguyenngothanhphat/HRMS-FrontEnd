@@ -26,7 +26,11 @@ import {
   getListSkill,
 } from '@/services/resourceManagement';
 
-import { getSelectedDivisions, getSelectedLocations, handlingResourceAvailableStatus } from '@/utils/resourceManagement';
+import {
+  getSelectedDivisions,
+  getSelectedLocations,
+  handlingResourceAvailableStatus,
+} from '@/utils/resourceManagement';
 
 const initialState = {
   resourceList: [],
@@ -108,8 +112,9 @@ const resourceManagement = {
       return response;
     },
     *updateProject({ payload }, { call }) {
+      let response = {};
       try {
-        const response = yield call(updateProjectDetail, {
+        response = yield call(updateProjectDetail, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -122,6 +127,7 @@ const resourceManagement = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *updateComment({ payload }, { call, put }) {
       let response = {};

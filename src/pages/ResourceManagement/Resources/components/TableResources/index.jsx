@@ -17,7 +17,7 @@ import EmptyComponent from '@/components/Empty';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import ProjectRow from './components/ProjectRow';
 import ProjectLayout from './components/ProjectLayout';
-import { checkUtilization, projectDateFormat } from '@/utils/resourceManagement';
+import { projectDateFormat } from '@/utils/resourceManagement';
 
 @connect(
   ({
@@ -608,7 +608,6 @@ class TableResources extends PureComponent {
                       src={addAction}
                       alt="attachIcon"
                       onClick={() => this.showModalAdd(row)}
-                      // style={{ cursor: checkAction ? 'pointer' : 'not-allowed' }}
                       style={{ cursor: 'pointer' }}
                       className={styles.buttonAdd}
                     />

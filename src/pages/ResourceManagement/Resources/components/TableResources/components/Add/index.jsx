@@ -1,9 +1,9 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable prefer-promise-reject-errors */
-import { Button, Card, Col, DatePicker, Form, Input, Modal, notification, Row, Select } from 'antd';
+import { Button, Card, Col, DatePicker, Form, Input, Modal, Row, Select } from 'antd';
 import moment from 'moment';
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
@@ -14,78 +14,44 @@ import styles from './index.less';
 const { TextArea } = Input;
 const { Option } = Select;
 
-@connect(
-  ({
-    loading = {},
-    resourceManagement: { projectList = [], resourceList = [], statusList = [] } = {},
-  }) => ({
-    loading: loading.effects['resourceManagement/assignResourceToProject'],
-    projectList,
-    resourceList,
-    statusList,
-  }),
-)
-class AddActionBTN extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      visibleModalSuccess: false,
-      projectId: '',
-      projectAssignedId: '',
-      startDate: '',
-    };
-  }
+const AddActionBTN = (props) => {
+  const [form] = Form.useForm();
+  const {
+    dispatch,
+    dataPassRow,
+    refreshData,
+    onClose = () => {},
+    projectList = [],
+    statusList = [],
+    visible,
+    loading = false,
+  } = props;
 
-  componentDidUpdate(prevProps) {
-    const { visible } = this.props;
-    if (prevProps.visible !== visible) {
-      this.clearState();
-    }
-  }
+  const [visibleModalSuccess, setVisibleModalSuccess] = useState(false);
+  const [projectId, setProjectId] = useState('');
+  const [projectAssignedId, setProjectAssignedId] = useState('');
+  const [startDateState, setStartDate] = useState('');
 
-  clearState = () => {
-    this.setState({
-      projectId: '',
-    });
+  const clearState = () => {
+    setProjectId('');
   };
 
-  handleCancelModelSuccess = () => {
-    this.setState({
-      visibleModalSuccess: false,
-    });
-    this.setState({
-      projectId: '',
-    });
+  const handleCancelModelSuccess = () => {
+    setVisibleModalSuccess(false);
+    clearState();
   };
 
-  handleViewProject = () => {
-    const { projectAssignedId } = this.state;
+  const handleViewProject = () => {
     history.push(`/project-management/list/${projectAssignedId}/summary`);
   };
 
-  handleOnchange = (event) => {
-    this.setState({ projectId: event });
+  const handleOnchange = (event) => {
+    setProjectId({ projectId: event });
   };
 
-  handleSubmitAssign = async (values) => {
-    const { dispatch, dataPassRow, refreshData, onClose = () => {}, projectList = [] } = this.props;
+  const handleSubmitAssign = async (values) => {
     const { project, status, utilization, startDate, endDate, comment, revisedEndDate } = values;
 
-    if (
-      new Date(endDate).getTime() <= new Date(startDate).getTime() ||
-      new Date(revisedEndDate).getTime() <= new Date(startDate).getTime()
-    ) {
-      notification.error({
-        message: 'End date or resived end date cannot less than start date',
-      });
-      return;
-    }
-    if (new Date(revisedEndDate).getTime() <= new Date(endDate).getTime()) {
-      notification.error({
-        message: 'Resived date cannot less than end date',
-      });
-      return;
-    }
     await dispatch({
       type: 'resourceManagement/assignResourceToProject',
       payload: {
@@ -101,40 +67,30 @@ class AddActionBTN extends Component {
       },
     }).then((response) => {
       if (response.statusCode === 200) {
-        this.setState({
-          visibleModalSuccess: true,
-          projectAssignedId: projectList.find((item) => item.id === project).projectId,
-        });
+        setVisibleModalSuccess(true);
+        setProjectAssignedId(projectList.find((item) => item.id === project).projectId);
         onClose();
       }
       refreshData();
     });
   };
 
-  modalContent = () => {
-    const { projectList = [], statusList = [] } = this.props;
-    // const { dataPassRow = {}, projectList = [], resourceList = [], statusList = [] } = this.props;
-    const { startDate } = this.state;
-    // const getUtilizationOfEmp = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
+  const handleChangeStartDate = (value) => {
+    setStartDate(value);
+    form.setFieldsValue({ endDate: null });
+  };
 
-    // const listProjectsOfEmp = getUtilizationOfEmp ? getUtilizationOfEmp.projects : [];
-    // const sumUtilization = checkUtilizationPercent(listProjectsOfEmp);
-
-    const { projectId } = this.state;
-    // const projectFist = projectList.length > 0 ? projectList[0] : {};
-    // const statusBill = statusList.length > 0 ? statusList[0] : 'Billable';
-    // const maxEnterUtilization = 100 - sumUtilization;
+  const modalContent = () => {
     const projectId1 = projectId !== -1 ? projectId : 0;
-
     const projectDetail = projectList.find((obj) => obj.id === projectId1) || {};
-
     return (
       <Form
         layout="vertical"
         className={styles.formAdd}
         method="POST"
         id="myForm"
-        onFinish={(values) => this.handleSubmitAssign(values)}
+        form={form}
+        onFinish={(values) => handleSubmitAssign(values)}
       >
         <Row gutter={[24, 24]}>
           <Col span={12}>
@@ -145,7 +101,7 @@ class AddActionBTN extends Component {
             >
               <Select
                 placeholder="Select the project"
-                onChange={(event) => this.handleOnchange(event)}
+                onChange={(event) => handleOnchange(event)}
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
@@ -179,20 +135,23 @@ class AddActionBTN extends Component {
                 name="utilization"
                 rules={[
                   { required: true, message: 'Please enter the bandwith allocation (%)!' },
-
                   () => ({
                     validator(_, value) {
                       if (value && isNaN(value)) {
                         return Promise.reject(`Value enter has to be a number!`);
                       }
-                      if (value < 1) {
+                      if (value && value > 100) {
+                        return Promise.reject(
+                          `The bandwith allocation (%) can't be greater than 100%!`,
+                        );
+                      }
+                      if (value < 1 && value) {
                         return Promise.reject(`Your cannot enter a value that is less than 0!`);
                       }
                       return Promise.resolve();
                     },
                   }),
                 ]}
-                validateTrigger="onBlur"
               >
                 <Input addonAfter="%" />
               </Form.Item>
@@ -205,7 +164,7 @@ class AddActionBTN extends Component {
               rules={[{ required: true, message: 'Start date value could not be empty!' }]}
             >
               <DatePicker
-                onChange={(val) => this.setState({ startDate: val })}
+                onChange={(val) => handleChangeStartDate(val)}
                 placeholder="Enter Start Date"
                 suffixIcon={<img src={datePickerIcon} alt="" />}
               />
@@ -216,14 +175,14 @@ class AddActionBTN extends Component {
               rules={[{ required: true, message: 'End date value could not be empty!' }]}
             >
               <DatePicker
-                disabledDate={(current) => disabledEndDate(current, startDate)}
+                disabledDate={(current) => disabledEndDate(current, startDateState)}
                 placeholder="Enter End Date"
                 suffixIcon={<img src={datePickerIcon} alt="" />}
               />
             </Form.Item>
             <Form.Item label="Revised End Date" name="revisedEndDate">
               <DatePicker
-                disabledDate={(current) => disabledEndDate(current, startDate)}
+                disabledDate={(current) => disabledEndDate(current, startDateState)}
                 placeholder="Enter Date"
                 suffixIcon={<img src={datePickerIcon} alt="" />}
               />
@@ -267,7 +226,7 @@ class AddActionBTN extends Component {
                   <Row>
                     <Col span={12}>Current resource allocation :</Col>
                     <Col span={12}>
-                      {projectDetail?.resourceTypes.length > 0 ? (
+                      {projectDetail?.resourceTypes?.length > 0 ? (
                         projectDetail?.resourceTypes.map((item) => {
                           return (
                             <p>
@@ -292,54 +251,60 @@ class AddActionBTN extends Component {
     );
   };
 
-  render() {
-    const { onClose = () => {}, visible, loading = false } = this.props;
+  useEffect(() => {
+    clearState();
+  }, [visible]);
 
-    const { visibleModalSuccess } = this.state;
-    // const projectFist = projectList.length > 0 ? projectList[0] : {};
-    // const statusBill = statusList.length > 0 ? statusList[0] : 'Billable';
+  return (
+    <div className={styles.Add}>
+      <CommonModal
+        title="Assign to project"
+        visible={visible}
+        footer={null}
+        onClose={onClose}
+        width={600}
+        content={modalContent()}
+        firstText="Assign to project"
+        disabledButton={loading}
+      />
 
-    return (
-      <div className={styles.Add}>
-        <CommonModal
-          title="Assign to project"
-          visible={visible}
-          footer={null}
-          onClose={onClose}
-          width={600}
-          content={this.modalContent()}
-          firstText="Assign to project"
-          disabledButton={loading}
-        />
-
-        <Modal
-          visible={visibleModalSuccess}
-          className={styles.modalAdd}
-          footer={null}
-          width="396px"
-          onCancel={this.handleCancelModelSuccess}
-        >
-          <div style={{ textAlign: 'center' }}>
-            <img src={imageAddSuccess} alt="add success" />
+      <Modal
+        visible={visibleModalSuccess}
+        className={styles.modalAdd}
+        footer={null}
+        width="396px"
+        onCancel={handleCancelModelSuccess}
+      >
+        <div style={{ textAlign: 'center' }}>
+          <img src={imageAddSuccess} alt="add success" />
+        </div>
+        <br />
+        <br />
+        <h3 style={{ textAlign: 'center' }}>Resource assigned!</h3>
+        <p style={{ textAlign: 'center', color: '#707177' }}>
+          The resource has been successfully assigned to the project
+        </p>
+        <div className={styles.spaceFooterModalSuccess}>
+          <div className={styles.btnCancel} onClick={handleViewProject}>
+            View Project
           </div>
-          <br />
-          <br />
-          <h3 style={{ textAlign: 'center' }}>Resource assigned!</h3>
-          <p style={{ textAlign: 'center', color: '#707177' }}>
-            The resource has been successfully assigned to the project
-          </p>
-          <div className={styles.spaceFooterModalSuccess}>
-            <div className={styles.btnCancel} onClick={this.handleViewProject}>
-              View Project
-            </div>
-            <Button onClick={this.handleCancelModelSuccess} className={styles.btnSubmit}>
-              Close
-            </Button>
-          </div>
-        </Modal>
-      </div>
-    );
-  }
-}
+          <Button onClick={handleCancelModelSuccess} className={styles.btnSubmit}>
+            Close
+          </Button>
+        </div>
+      </Modal>
+    </div>
+  );
+};
 
-export default AddActionBTN;
+export default connect(
+  ({
+    loading = {},
+    resourceManagement: { projectList = [], resourceList = [], statusList = [] } = {},
+  }) => ({
+    loading: loading.effects['resourceManagement/assignResourceToProject'],
+    projectList,
+    resourceList,
+    statusList,
+  }),
+)(AddActionBTN);
