@@ -10,8 +10,10 @@ import currentToNewManager from '@/assets/resourceManagement/currentToNewManager
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import EmptyComponent from '@/components/Empty';
 import UserProfilePopover from '@/components/UserProfilePopover';
+import ProjectRow from './components/ProjectRow';
+import ProjectLayout from './components/ProjectLayout';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
-import { checkUtilization, projectDateFormat } from '@/utils/resourceManagement';
+import { projectDateFormat } from '@/utils/resourceManagement';
 import CommentOverlay from '../ComplexView/components/Overlay';
 import ProjectProfile from '../ComplexView/components/PopoverProfiles/components/ProjectProfile';
 import AddModal from './components/Add';
@@ -19,8 +21,6 @@ import ChangeManagerModal from './components/ChangeManager';
 import CommentModal from './components/Comment';
 import EditModal from './components/Edit';
 import HistoryModal from './components/History';
-import ProjectLayout from './components/ProjectLayout';
-import ProjectRow from './components/ProjectRow';
 import WarnningModal from './components/Warnning';
 import styles from './index.less';
 
@@ -677,7 +677,7 @@ class TableResources extends PureComponent {
           // dataIndex: 'subject',
           key: 'action',
           render: (value, row, index) => {
-            const checkAction = checkUtilization(row?.projects);
+            // const checkAction = checkUtilization(row?.projects);
             const action = (
               <div className={styles.actionParent}>
                 <div className={styles.buttonGroup}>
@@ -685,8 +685,8 @@ class TableResources extends PureComponent {
                     <img
                       src={addAction}
                       alt="attachIcon"
-                      onClick={() => checkAction && this.showModalAdd(row)}
-                      style={{ cursor: checkAction ? 'pointer' : 'not-allowed' }}
+                      onClick={() => this.showModalAdd(row)}
+                      style={{ cursor: 'pointer' }}
                       className={styles.buttonAdd}
                     />
                   )}

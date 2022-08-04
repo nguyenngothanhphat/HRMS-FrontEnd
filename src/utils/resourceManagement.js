@@ -119,3 +119,7 @@ export const setSelectedDivisions = (data) => {
 export const getSelectedDivisions = () => {
   return JSON.parse(localStorage.getItem('resourceSelectedDivision'));
 };
+
+export const disabledEndDate = (currentDate, startDate) => {
+  return currentDate && currentDate < moment(startDate).add(1, 'days');
+};

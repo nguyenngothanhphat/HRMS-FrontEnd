@@ -18,7 +18,8 @@ class HistoryActionBTN extends Component {
     const { resourceList = [], dataPassRow = {}, visible, onClose = () => {} } = this.props;
     const getEmpInListResource = resourceList.find((obj) => obj._id === dataPassRow.employeeId);
     const { projects = [] } = getEmpInListResource || {};
-    const { managerInfo = {} } = getEmpInListResource || {};
+    const { generalInfo: { employeeId = '', legalName = '', userId = '', avatar = '' } = {} } =
+      getEmpInListResource || {};
 
     const dateFormat = (date) => (date ? moment(date).format('MM-DD-YYYY') : '-');
 
@@ -139,16 +140,12 @@ class HistoryActionBTN extends Component {
         >
           <div className={styles.resourceInfo}>
             <p className={styles.showInfo}>
-              Emp Id:<span className={styles.showInfoEmp}> {managerInfo.employeeId || '-'}</span>
+              Emp Id:<span className={styles.showInfoEmp}> {employeeId || '-'}</span>
             </p>
             <div className={styles.showInfoName}>
-              Name: <span className={styles.showInfoEmp}> {dataPassRow.employeeName}</span>
+              Name: <span className={styles.showInfoEmp}> {`${legalName} (${userId})`}</span>
               <div className={styles.avatar}>
-                <img
-                  src={dataPassRow.avatar || MockAvatar}
-                  alt=""
-                  onError={`this.src=${MockAvatar}`}
-                />
+                <img src={avatar || MockAvatar} alt="" onError={`this.src=${MockAvatar}`} />
               </div>
             </div>
             <p className={styles.showInfo}>

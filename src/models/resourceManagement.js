@@ -115,8 +115,9 @@ const resourceManagement = {
       return response;
     },
     *updateProject({ payload }, { call }) {
+      let response = {};
       try {
-        const response = yield call(updateProjectDetail, {
+        response = yield call(updateProjectDetail, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -129,6 +130,7 @@ const resourceManagement = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *updateComment({ payload }, { call, put }) {
       let response = {};

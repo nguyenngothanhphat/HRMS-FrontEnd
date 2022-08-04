@@ -3,11 +3,11 @@ import { Button, Col, Row, Tabs } from 'antd';
 import { debounce } from 'lodash';
 import React, { Component } from 'react';
 import { connect, formatMessage, history } from 'umi';
+import { getCurrentLocation } from '@/utils/authority';
+import OverView from '@/pages/ResourceManagement/components/OverView';
+import { PageContainer } from '@/layouts/layout/src';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
 import LocationDropdownSelector from '@/components/LocationDropdownSelector';
-import { PageContainer } from '@/layouts/layout/src';
-import OverView from '@/pages/ResourceManagement/components/OverView';
-import { getCurrentLocation } from '@/utils/authority';
 import { exportRawDataToCSV } from '@/utils/exportToCsv';
 import {
   getSelectedDivisions,
