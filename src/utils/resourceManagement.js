@@ -28,14 +28,6 @@ export const checkUtilization = (projects) => {
   return true;
 };
 
-export const checkUtilizationPercent = (projects) => {
-  let sum = 0;
-  projects.forEach((project) => {
-    sum += project?.utilization || 0;
-  });
-  return sum;
-};
-
 export function formatData(rawData) {
   const dataList = [];
   rawData.forEach((obj) => {
