@@ -1,5 +1,5 @@
 import { notification } from 'antd';
-import { uploadFile, addAttachment } from '@/services/upload';
+import { uploadFile } from '@/services/upload';
 import { dialog } from '@/utils/utils';
 // import employeeSetting from './employeeSetting';
 
@@ -24,47 +24,6 @@ export default {
   },
 
   effects: {
-    *addAttachment({ payload, name, index, showNotification = true }, { call, put }) {
-      let response = {};
-      switch (name) {
-        case 'passport':
-          yield put({
-            type: 'save',
-            payload: { loadingPassPort: true },
-          });
-          yield put({
-            type: 'saveLoadingPassport',
-            payload: index,
-          });
-          break;
-        case 'visa':
-          yield put({
-            type: 'saveLoadingVisa',
-            payload: index,
-          });
-          break;
-
-        default:
-          break;
-      }
-      try {
-        response = yield call(addAttachment, payload);
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        if (showNotification) {
-          notification.success({
-            message: 'Upload File Successfully',
-          });
-        }
-        yield put({
-          type: 'save',
-          payload: { urlImage: data.url },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response;
-    },
     *uploadFile({ payload, name, index, showNotification = true }, { call, put }) {
       let response = {};
       switch (name) {

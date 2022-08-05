@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
+import logoDefault from '@/assets/companyDefault.png';
 import { Button, Image, Spin } from 'antd';
 import { connect } from 'umi';
-import { DeleteOutlined } from '@ant-design/icons';
-import logoDefault from '@/assets/companyDefault.png';
 import ModalUpload from '@/components/ModalUpload';
 import { getCurrentTenant } from '@/utils/authority';
+import { DeleteOutlined } from '@ant-design/icons';
 import s from './index.less';
 import ModalRemoveLogo from './components/ModalRemoveLogo';
 
@@ -50,7 +50,7 @@ class UploadLogoCompany extends Component {
   };
 
   getResponse = (resp) => {
-    const { statusCode, data = {} } = resp;
+    const { statusCode, data = [] } = resp;
     const {
       dispatch,
       companyDetails = {},
@@ -59,10 +59,11 @@ class UploadLogoCompany extends Component {
     const tenantId = getCurrentTenant();
 
     if (statusCode === 200) {
+      const [first] = data;
       if (id) {
         dispatch({
           type: 'companiesManagement/updateCompany',
-          payload: { id, logoUrl: data?.url, tenantId },
+          payload: { id, logoUrl: first?.url, tenantId },
           // dataTempKept: {},
           // isAccountSetup: true,
         }).then(({ statusCode: check }) => {
@@ -73,7 +74,7 @@ class UploadLogoCompany extends Component {
       } else {
         dispatch({
           type: 'companiesManagement/saveCompanyDetails',
-          payload: { ...companyDetails?.company, logoUrl: data?.url },
+          payload: { ...companyDetails?.company, logoUrl: first?.url },
           // dataTempKept: {},
           // isAccountSetup: true,
         });

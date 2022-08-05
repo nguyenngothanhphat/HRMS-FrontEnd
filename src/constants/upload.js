@@ -7,22 +7,3 @@ export const FILE_TYPE = {
 export default {
   FILE_TYPE,
 };
-
-export const UPLOAD = {
-  PATH: {
-    IMAGE: 'images/',
-    ATTACHMENT: 'attachments/',
-    PDF: 'pdfs/',
-    LANGUAGE: 'languages/',
-    ROOT: 'roots/',
-    PAYROLL: 'payrolls/',
-  },
-  TYPE_FILE: {
-    IMAGE: 'image',
-    PDF: 'pdf',
-    ATTACHMENT: 'attachment',
-    LANGUAGE: 'language',
-    ROOT: 'root',
-    PAYROLL: 'payroll',
-  },
-};

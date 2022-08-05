@@ -164,15 +164,16 @@ class ViewInformation extends Component {
       generalData: { _id: id = '', employee = '' } = {},
       myEmployeeID = '',
     } = this.props;
-    const { statusCode, data = {} } = resp;
+    const { statusCode, data = [] } = resp;
     const check = employee === myEmployeeID;
     if (statusCode === 200) {
+      const [first] = data;
       this.handleCancel();
       dispatch({
         type: 'employeeProfile/updateGeneralInfo',
         payload: {
           id,
-          avatar: data.url,
+          avatar: first.url,
           tenantId: getCurrentTenant(),
         },
         dataTempKept: {},
