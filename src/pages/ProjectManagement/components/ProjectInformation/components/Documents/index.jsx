@@ -21,12 +21,7 @@ import styles from './index.less';
 const Documents = (props) => {
   const {
     dispatch,
-    projectDetails: {
-      projectId = '',
-      documentList = [],
-      documentTypeList = [],
-      employeeList = [],
-    } = {},
+    projectDetails: { projectId = '', documentList = [], documentTypeList = [] } = {},
     loadingAddDocument = false,
     loadingFetchDocument = false,
   } = props;
@@ -160,11 +155,6 @@ const Documents = (props) => {
     if (isEmpty(documentTypeList)) {
       dispatch({
         type: 'projectDetails/fetchDocumentTypeListEffect',
-      });
-    }
-    if (isEmpty(employeeList)) {
-      dispatch({
-        type: 'projectDetails/fetchEmployeeListEffect',
       });
     }
   };

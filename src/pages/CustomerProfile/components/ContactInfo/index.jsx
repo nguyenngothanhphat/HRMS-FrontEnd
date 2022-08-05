@@ -221,7 +221,7 @@ const ContactInfo = (props) => {
                           style={{ paddingLeft: 16 }}
                           onClick={() => {
                             // eslint-disable-next-line compat/compat
-                            navigator.clipboard.writeText(val.value);
+                            navigator.clipboard?.writeText(val.value);
                             message.success('Copied to clipboard');
                           }}
                         />

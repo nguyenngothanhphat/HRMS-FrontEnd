@@ -206,9 +206,9 @@ const TableProject = (props) => {
           <div className={styles.dateFormat}>({DATE_FORMAT_MDY.toLowerCase()})</div>
         </div>
       ),
-      dataIndex: 'resivedEndDate',
-      key: 'resivedEndDate',
-      sorter: (a, b) => moment(a.resivedEndDate).unix() - moment(b.resivedEndDate).unix(),
+      dataIndex: 'revisedEndDate',
+      key: 'revisedEndDate',
+      sorter: (a, b) => moment(a.revisedEndDate).unix() - moment(b.revisedEndDate).unix(),
     },
     {
       title: 'Status',
@@ -248,15 +248,15 @@ const TableProject = (props) => {
     },
     {
       title: 'Billable Effort (days)',
-      dataIndex: 'billableEffor',
-      key: 'billableEffor',
-      sorter: (a, b) => a.billableEffor - b.billableEffor,
+      dataIndex: 'billableEffort',
+      key: 'billableEffort',
+      sorter: (a, b) => a.billableEffort - b.billableEffort,
     },
     {
       title: 'Spent Effort (days)',
-      dataIndex: 'spentEffor',
-      key: 'spentEffor',
-      sorter: (a, b) => a.spentEffor - b.spentEffor,
+      dataIndex: 'spentEffort',
+      key: 'spentEffort',
+      sorter: (a, b) => a.spentEffort - b.spentEffort,
     },
     {
       title: 'Variance',

@@ -6,7 +6,7 @@ export const AVAILABLE_STATUS = {
 export const RESOURCE = {
   MODAL_TYPE: {
     EDIT: 'EDIT',
-    ADD: 'ADD',
+    ASSIGN: 'ASSIGN',
     HISTORY: 'HISTORY',
     WARN: 'WARN',
     MANAGER_CHANGE: 'MANAGER_CHANGE',

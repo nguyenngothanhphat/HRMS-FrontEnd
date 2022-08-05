@@ -1,7 +1,8 @@
-import { Form, Select, Row, Col, DatePicker } from 'antd';
+import { Col, DatePicker, Form, Row, Select } from 'antd';
+import { debounce } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { debounce } from 'lodash';
+import { DATE_FORMAT_STR } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const FilterContent = (props) => {
@@ -11,7 +12,7 @@ const FilterContent = (props) => {
     onFilter = () => {},
     resourceManagement: { newJoineeList = [], titleList = [] } = {},
     setApplied = () => {},
-    setForm  = () => {},
+    setForm = () => {},
   } = props;
   const onFinish = (values) => {
     const newValues = { ...values };
@@ -128,7 +129,7 @@ const FilterContent = (props) => {
         <Row>
           <Col span={11}>
             <Form.Item name="fromDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker format={DATE_FORMAT_STR} />
             </Form.Item>
           </Col>
           <Col span={2} className={styles.separator}>
@@ -136,7 +137,7 @@ const FilterContent = (props) => {
           </Col>
           <Col span={11}>
             <Form.Item name="toDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker format={DATE_FORMAT_STR} />
             </Form.Item>
           </Col>
         </Row>

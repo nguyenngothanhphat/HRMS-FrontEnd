@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import iconImage from '@/assets/group-14-copy.svg';
 
-class ConformIcondata extends PureComponent {
+class ConfirmIconData extends PureComponent {
   setIcon = (data) => {
     if (data) {
       if (data.includes('jpg') || data.includes('png') || data.includes('jpeg')) {
@@ -18,6 +18,6 @@ class ConformIcondata extends PureComponent {
   }
 }
 
-ConformIcondata.propTypes = {};
+ConfirmIconData.propTypes = {};
 
-export default ConformIcondata;
+export default ConfirmIconData;

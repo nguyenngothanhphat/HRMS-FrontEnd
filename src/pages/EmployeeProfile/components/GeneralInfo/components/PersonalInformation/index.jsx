@@ -1,35 +1,30 @@
 /* eslint-disable react/jsx-indent */
-import React, { PureComponent } from 'react';
+import { Card } from 'antd';
+import React from 'react';
 import { connect } from 'umi';
-import EditBtn from '@/assets/edit.svg';
-import styles from './index.less';
+import CustomEditButton from '@/components/CustomEditButton';
 import Edit from './components/Edit';
 import View from './components/View';
+import styles from './index.less';
 
-@connect(
-  ({
-    employeeProfile: {
-      editGeneral: { openPersonalInfo = false },
-      originData: { generalData: generalDataOrigin = {} } = {},
-      tempData: { generalData = {} } = {},
-    } = {},
-  }) => ({
-    openPersonalInfo,
-    generalDataOrigin,
+const PersonalInformation = (props) => {
+  const {
     generalData,
-  }),
-)
-class PersonalInformation extends PureComponent {
-  handleEdit = () => {
-    const { dispatch } = this.props;
+    openPersonalInfo,
+    permissions = {},
+    isProfileOwner,
+    generalDataOrigin,
+    dispatch,
+  } = props;
+
+  const handleEdit = () => {
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
       payload: { openPersonalInfo: true },
     });
   };
 
-  handleCancel = () => {
-    const { generalDataOrigin, generalData, dispatch } = this.props;
+  const handleCancel = () => {
     const {
       personalNumber = '',
       personalEmail = '',
@@ -64,28 +59,37 @@ class PersonalInformation extends PureComponent {
     });
   };
 
-  render() {
-    const { generalData, openPersonalInfo, permissions = {}, isProfileOwner } = this.props;
-    const renderComponent = openPersonalInfo ? (
-      <Edit handleCancel={this.handleCancel} isProfileOwner={isProfileOwner} />
-    ) : (
-      <View dataAPI={generalData} permissions={permissions} isProfileOwner={isProfileOwner} />
-    );
+  const options = () => {
     return (
-      <div className={styles.PersonalInformation}>
-        <div className={styles.spaceTitle}>
-          <p className={styles.EmployeeTitle}>Personal Information</p>
-          {!openPersonalInfo && (permissions.editPersonalInfo !== -1 || isProfileOwner) && (
-            <div className={styles.flexEdit} onClick={this.handleEdit}>
-              <img src={EditBtn} alt="" className={styles.IconEdit} />
-              <p className={styles.Edit}>Edit</p>
-            </div>
-          )}
-        </div>
-        <div className={styles.viewBottom}>{renderComponent}</div>
-      </div>
+      !openPersonalInfo &&
+      (permissions.editPersonalInfo !== -1 || isProfileOwner) && (
+        <CustomEditButton onClick={handleEdit}>Edit</CustomEditButton>
+      )
     );
-  }
-}
+  };
 
-export default PersonalInformation;
+  const renderComponent = openPersonalInfo ? (
+    <Edit handleCancel={handleCancel} isProfileOwner={isProfileOwner} />
+  ) : (
+    <View dataAPI={generalData} permissions={permissions} isProfileOwner={isProfileOwner} />
+  );
+  return (
+    <Card className={styles.PersonalInformation} title="Personal Information" extra={options()}>
+      <div className={styles.container}>{renderComponent}</div>
+    </Card>
+  );
+};
+
+export default connect(
+  ({
+    employeeProfile: {
+      editGeneral: { openPersonalInfo = false },
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    openPersonalInfo,
+    generalDataOrigin,
+    generalData,
+  }),
+)(PersonalInformation);

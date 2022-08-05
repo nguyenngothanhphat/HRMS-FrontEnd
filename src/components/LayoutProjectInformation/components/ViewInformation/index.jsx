@@ -1,14 +1,14 @@
 import { Button, Col, Divider, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
+import { connect, Link } from 'umi';
 import MockCustomerLogo from '@/assets/mockCustomerLogo.png';
 import EditIcon from '@/assets/projectManagement/edit2.svg';
+import CommonModal from '@/components/CommonModal';
+import EditProjectModalContent from '@/pages/ProjectManagement/components/EditProjectModalContent';
+import EditProjectStatusModalContent from '@/pages/ProjectManagement/components/EditProjectStatusModalContent';
+import { getEmployeeUrl } from '@/utils/utils';
 import s from '../../index.less';
 import CustomTag from '../CustomTag';
-import EditProjectStatusModalContent from '@/pages/ProjectManagement/components/EditProjectStatusModalContent';
-import EditProjectModalContent from '@/pages/ProjectManagement/components/EditProjectModalContent';
-
-import CommonModal from '@/components/CommonModal';
 
 const ViewInformation = (props) => {
   const { projectDetail = {}, permissions = {}, dispatch, loadingUpdateProject = false } = props;
@@ -42,11 +42,6 @@ const ViewInformation = (props) => {
 
   // permissions
   const modifyProjectPermission = permissions.modifyProject !== -1;
-
-  const viewProfile = (id) => {
-    const url = `/directory/employee-profile/${id}`;
-    window.open(url, '_blank');
-  };
 
   const onRefresh = async () => {
     dispatch({
@@ -95,25 +90,25 @@ const ViewInformation = (props) => {
     {
       name: 'Account Owner',
       value: (
-        <span className={s.clickable} onClick={() => viewProfile(accountOwnerId)}>
+        <Link target="_blank" rel="noopener noreferrer" to={getEmployeeUrl(accountOwnerId)}>
           {accountOwnerName}
-        </span>
+        </Link>
       ),
     },
     {
       name: 'Engineering Owner',
       value: (
-        <span className={s.clickable} onClick={() => viewProfile(engineeringOwnerId)}>
+        <Link target="_blank" rel="noopener noreferrer" to={getEmployeeUrl(engineeringOwnerId)}>
           {engineeringOwnerName}
-        </span>
+        </Link>
       ),
     },
     {
       name: 'Project Manager',
       value: (
-        <span className={s.clickable} onClick={() => viewProfile(projectManagerId)}>
+        <Link target="_blank" rel="noopener noreferrer" to={getEmployeeUrl(projectManagerId)}>
           {projectManagerName}
-        </span>
+        </Link>
       ),
     },
   ];

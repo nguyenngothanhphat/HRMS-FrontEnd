@@ -33,7 +33,6 @@ const SearchFilterBar = ({ dispatch, onChangeSearch = () => {}, currentStatus = 
     dispatch({
       type: 'onboarding/filterOnboardList',
       payload,
-      currentStatus,
     });
   };
 

@@ -204,3 +204,7 @@ export const sortAlphabet = (array, ...sortKeys) => {
 };
 
 export const splitArrayItem = (arr = []) => (arr.length ? arr.toString().split(',') : []);
+
+export const getEmployeeUrl = (userId) => {
+  return `/directory/employee-profile/${userId}`;
+};

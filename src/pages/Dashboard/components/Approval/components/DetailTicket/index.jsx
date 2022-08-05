@@ -3,7 +3,7 @@ import { DownOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Col, Divider, Input, Modal, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
+import { connect, Link } from 'umi';
 import ModalImage from '@/assets/projectManagement/modalImage1.png';
 import CommonModal from '@/components/CommonModal';
 import { TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
@@ -12,6 +12,7 @@ import { dateFormatAPI } from '@/constants/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import WeeklyTable from './components/WeeklyTable';
 import styles from './index.less';
+import { getEmployeeUrl } from '@/utils/utils';
 
 const DetailTicket = (props) => {
   const {
@@ -51,18 +52,15 @@ const DetailTicket = (props) => {
       typeReport = '',
     },
     dispatch,
-    loadingApprovel,
+    loadingApproval,
     loadingReject,
     myTimesheetByWeek = [],
     timeoffList = [],
-    // location: { state: { currentDateProp: currentDateProps = '' } = {} } = {},
   } = props;
   const [showDetail, setShowDetail] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [comment, setComment] = useState('');
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
-  // const [selectedDate, setSelectedDate] = useState(moment());
-  // const [selectedView, setSelectedView] = useState(VIEW_TYPE.W);
   const [checkType, setCheckType] = useState(false);
 
   useEffect(() => {
@@ -72,9 +70,8 @@ const DetailTicket = (props) => {
     ) {
       setCheckType(true);
     }
-  }, []);
+  }, [typeTicket]);
 
-  // const currentDateProp = moment(currentDateProps, TIMESHEET_DATE_FORMAT);
   const onApproval = async () => {
     let response = {};
     if (checkType) {
@@ -179,7 +176,9 @@ const DetailTicket = (props) => {
             Requester's Name:
           </Col>
           <Col span={16} className={styles.containEmployee}>
-            {nameInfo} ({userId})
+            <Link to={getEmployeeUrl(userId)}>
+              {nameInfo} ({userId})
+            </Link>
           </Col>
         </Row>
         <Row className={styles.ticketTimeoffInfo__row}>
@@ -211,7 +210,7 @@ const DetailTicket = (props) => {
             Request Type:
           </Col>
           <Col span={16} className={styles.contain}>
-            {typeName && typeTicket === TYPE_TICKET_APPROVAL.LEAVE_REQUEST ? 'Timeoff' : 'Comoff'}
+            {typeName && typeTicket === TYPE_TICKET_APPROVAL.LEAVE_REQUEST ? 'Timeoff' : 'Compoff'}
           </Col>
         </Row>
         {subject && (
@@ -264,37 +263,9 @@ const DetailTicket = (props) => {
     );
   };
 
-  return (
-    <Modal
-      className={styles.modalCustom}
-      visible={openModal}
-      onCancel={onCancel}
-      destroyOnClose
-      title={`${checkType ? 'Timeoff' : 'Timesheet'} Detail`}
-      maskClosable={false}
-      width={600}
-      footer={[
-        <Button
-          key="cancel"
-          className={styles.btnCancel}
-          onClick={() => setOpenModalConfirm(true)}
-          loading={loadingReject}
-        >
-          Reject
-        </Button>,
-        <Button
-          key="submit"
-          htmlType="submit"
-          type="primary"
-          onClick={onApproval}
-          className={styles.btnSubmit}
-          loading={loadingApprovel}
-        >
-          Approve
-        </Button>,
-      ]}
-    >
-      <>
+  const renderContent = () => {
+    return (
+      <div className={styles.DetailTicket}>
         <div className={checkType ? styles.ticketTimeoffInfo : styles.ticketTimesheetInfo}>
           {checkType ? renderUITimeOff() : renderUITimeSheet()}
           {showDetail && checkType && (
@@ -368,7 +339,30 @@ const DetailTicket = (props) => {
             onChange={(e) => setComment(e.target.value)}
           />
         )}
-      </>
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      <CommonModal
+        visible={openModal}
+        onClose={onCancel}
+        destroyOnClose
+        title={`${checkType ? 'Timeoff' : 'Timesheet'} Detail`}
+        maskClosable={false}
+        width={checkType ? 600 : '80%'}
+        content={renderContent()}
+        hasCancelButton={false}
+        hasSecondButton
+        secondText="Reject"
+        firstText="Approve"
+        onSecondButtonClick={() => setOpenModalConfirm(true)}
+        onFinish={onApproval}
+        loading={loadingApproval}
+        loadingSecond={loadingReject}
+      />
+
       <CommonModal
         firstText="Yes"
         visible={openModalConfirm}
@@ -393,7 +387,7 @@ const DetailTicket = (props) => {
           </div>
         }
       />
-    </Modal>
+    </div>
   );
 };
 export default connect(
@@ -402,8 +396,12 @@ export default connect(
     location: { companyLocationList = [] },
     timeSheet: { myTimesheetByWeek = [], timeoffList = [] } = {},
   }) => ({
-    loadingApprovel: loading.effects['dashboard/approvalTicket'],
-    loadingReject: loading.effects['dashboard/rejectTicket'],
+    loadingApproval:
+      loading.effects['dashboard/approveRequest'] ||
+      loading.effects['dashboard/approveTimeSheetRequest'],
+    loadingReject:
+      loading.effects['dashboard/rejectRequest'] ||
+      loading.effects['dashboard/rejectTimeSheetRequest'],
     companyLocationList,
     myTimesheetByWeek,
     timeoffList,

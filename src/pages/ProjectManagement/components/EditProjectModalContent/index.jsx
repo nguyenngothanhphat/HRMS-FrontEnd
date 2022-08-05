@@ -69,6 +69,9 @@ const EditProjectModalContent = (props) => {
       });
       dispatch({
         type: 'projectManagement/fetchEmployeeListEffect',
+        payload: {
+          name: '',
+        },
       });
     }
   }, [visible]);
