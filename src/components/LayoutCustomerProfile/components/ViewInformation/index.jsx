@@ -47,7 +47,7 @@ const ViewInformation = (props) => {
         type: 'customerProfile/updateCustomerEffect',
         payload: {
           customerId,
-          avatar: data.url,
+          avatar: data?.url,
           tenantId: getCurrentTenant(),
         },
       });

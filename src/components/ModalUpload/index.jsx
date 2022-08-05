@@ -137,8 +137,9 @@ class ModalUpload extends Component {
     });
   };
 
-  componentDidUpdate = (props) => {
-    if (!props.visible) {
+  componentDidUpdate = (preProps) => {
+    const { visible = false } = this.props;
+    if (preProps.visible !== visible) {
       this.setState({
         percent: 0,
         isUpload: false,
