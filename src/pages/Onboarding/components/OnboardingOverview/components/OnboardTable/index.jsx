@@ -34,68 +34,59 @@ const OnboardTable = (props) => {
   const {
     dispatch,
     list = [],
-    pageSelected,
-    size,
+    page = 1,
+    limit = 10,
+    total,
+    onChangePage = () => {},
     loadingReassign = false,
-    columnArr,
-    type,
-    inTab,
     loading = false,
-    loadingAll = false,
     loadingFetch = false,
     loadingSearch = false,
     loadingWithdrawOffer = false,
     documentChecklist,
     activeConversationUnseen,
+    activeTab = {},
+    refreshData = () => {},
     currentUser: { employee: { _id: empId = '' } = {} } = {},
   } = props;
 
   const [reassignModalVisible, setReassignModalVisible] = useState(false);
   const [renewModalVisible, setRenewModalVisible] = useState(false);
-
   const [openModalName, setOpenModalName] = useState('');
-
   const [handlingRecord, setHandlingRecord] = useState();
 
   const viewProfile = (_id) => {
     history.push(`/directory/employee-profile/${_id}`);
   };
 
-  const handleActionDelete = (id, processStatus) => {
+  const handleActionDelete = async (id) => {
     if (!dispatch) {
       return;
     }
 
-    dispatch({
+    const res = await dispatch({
       type: 'onboarding/deleteTicketDraft',
       payload: {
         id,
         tenantId: getCurrentTenant(),
       },
-      processStatus,
     });
+    if (res.statusCode === 200) {
+      refreshData();
+    }
   };
 
   const handleWithdrawOffer = async (reason) => {
-    const { ALL } = NEW_PROCESS_STATUS;
     const res = await dispatch({
       type: 'onboarding/withdrawTicket',
       payload: {
         candidate: handlingRecord?._id,
         reasonForWithdraw: reason,
       },
-      processStatus: handlingRecord?.processStatus,
     });
     if (res.statusCode === 200) {
       setOpenModalName('');
-      if (type === ALL)
-        dispatch({
-          type: 'onboarding/fetchOnboardListAll',
-          payload: {
-            tenantId: getCurrentTenant(),
-            processStatus: '',
-          },
-        });
+      refreshData();
     }
   };
 
@@ -236,10 +227,6 @@ const OnboardTable = (props) => {
         id: row.ticketID,
         tenantId: getCurrentTenant(),
         type: 2, // discard
-        isAll: type === 'ALL',
-        processStatus: row.processStatus,
-        page: pageSelected,
-        limit: size,
       },
     });
   };
@@ -254,7 +241,7 @@ const OnboardTable = (props) => {
     }
   };
 
-  const handleSendPreJoining = (ticketID, candidate, processStatus) => {
+  const handleSendPreJoining = (ticketID, candidate) => {
     dispatch({
       type: 'newCandidateForm/sendCheckListEffect',
       payload: {
@@ -267,21 +254,7 @@ const OnboardTable = (props) => {
     }).then((data) => {
       const { statusCode } = data;
       if (statusCode === 200) {
-        if (type === processStatus) {
-          dispatch({
-            type: 'onboarding/fetchOnboardList',
-            payload: {
-              processStatus: [processStatus],
-            },
-          });
-        } else {
-          dispatch({
-            type: 'onboarding/fetchOnboardListAll',
-            payload: {
-              processStatus: '',
-            },
-          });
-        }
+        refreshData();
       }
     });
   };
@@ -327,7 +300,7 @@ const OnboardTable = (props) => {
   const actionMenu = (row = {}) => {
     const { processStatus = '', ticketID = '', expiryDate = '', _id = '', currentStep = 0 } = row;
 
-    const actionText = getActionText(type, processStatus);
+    const actionText = getActionText(activeTab.id, processStatus);
 
     const { DRAFT, OFFER_RELEASED, OFFER_ACCEPTED, JOINED, OFFER_WITHDRAWN } = NEW_PROCESS_STATUS; // new status
 
@@ -470,7 +443,7 @@ const OnboardTable = (props) => {
         title: formatMessage({ id: 'component.onboardingOverview.candidateId' }),
         dataIndex: 'ticketID',
         key: 'ticketID',
-        width: getColumnWidth('candidateId', type, list.length),
+        width: getColumnWidth('candidateId', activeTab.id, list.length),
         render: (ticketID = '', row) => renderCandidateId(ticketID, row),
         columnName: ID,
         fixed: 'left',
@@ -482,7 +455,7 @@ const OnboardTable = (props) => {
         key: 'candidateID2',
         render: (_, row) => renderName(row),
         columnName: NAME,
-        width: getColumnWidth('candidateName', type, list.length),
+        width: getColumnWidth('candidateName', activeTab.id, list.length),
         align: 'left',
       },
       {
@@ -492,7 +465,7 @@ const OnboardTable = (props) => {
         key: 'title',
         render: (title) => <span className={styles.position}>{title?.name || '-'}</span>,
         columnName: POSITION,
-        width: getColumnWidth('position', type, list.length),
+        width: getColumnWidth('position', activeTab.id, list.length),
         align: 'left',
       },
       {
@@ -504,7 +477,7 @@ const OnboardTable = (props) => {
           <span className={styles.dateJoin}>{formatDate(dateOfJoining) || '-'}</span>
         ),
         columnName: DATE_JOIN,
-        width: getColumnWidth('dateJoin', type, list.length),
+        width: getColumnWidth('dateJoin', activeTab.id, list.length),
         align: 'left',
       },
       {
@@ -521,7 +494,7 @@ const OnboardTable = (props) => {
           return <span className={styles.location}>{location || '-'}</span>;
         },
         columnName: LOCATION,
-        width: getColumnWidth('location', type, list.length),
+        width: getColumnWidth('location', activeTab.id, list.length),
         align: 'left',
       },
       {
@@ -539,7 +512,7 @@ const OnboardTable = (props) => {
           </UserProfilePopover>
         ),
         columnName: ASSIGN_TO,
-        width: getColumnWidth('assignTo', type, list.length),
+        width: getColumnWidth('assignTo', activeTab.id, list.length),
         align: 'left',
       },
       {
@@ -557,7 +530,7 @@ const OnboardTable = (props) => {
           </UserProfilePopover>
         ),
         columnName: ASSIGNEE_MANAGER,
-        width: getColumnWidth('assigneeManager', type, list.length),
+        width: getColumnWidth('assigneeManager', activeTab.id, list.length),
         align: 'left',
       },
       {
@@ -577,14 +550,14 @@ const OnboardTable = (props) => {
           );
         },
         columnName: PROCESS_STATUS_1,
-        width: getColumnWidth('processStatus', type, list.length),
+        width: getColumnWidth('processStatus', activeTab.id, list.length),
         align: 'left',
         fixed: 'right',
       },
       {
         dataIndex: 'actions',
         key: 'actions',
-        width: getColumnWidth('actions', type, list.length),
+        width: getColumnWidth('actions', activeTab.id, list.length),
         fixed: 'right',
         align: 'center',
         render: (_, row) => {
@@ -607,14 +580,15 @@ const OnboardTable = (props) => {
     ];
 
     // Filter only columns that needed
-    const newColumns = columns.filter((column) => columnArr.includes(column.columnName));
-
+    const newColumns = columns.filter((column) =>
+      (activeTab?.columns || []).includes(column.columnName),
+    );
     return newColumns;
   };
 
   return (
     <>
-      <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
+      <div className={styles.OnboardTable}>
         <CommonTable
           locale={{
             emptyText: (
@@ -628,10 +602,15 @@ const OnboardTable = (props) => {
           }}
           columns={generateColumns()}
           list={list}
-          loading={loading || loadingFetch || loadingSearch || loadingAll}
+          loading={loading || loadingFetch || loadingSearch}
           scrollable
           width="90vw"
           height={500}
+          page={page}
+          limit={limit}
+          total={total}
+          onChangePage={onChangePage}
+          isBackendPaging
         />
       </div>
 
@@ -652,10 +631,8 @@ const OnboardTable = (props) => {
               setReassignModalVisible(false);
               setHandlingRecord(null);
             }}
-            page={pageSelected}
-            limit={size}
             visible={reassignModalVisible}
-            type={type}
+            refreshData={refreshData}
           />
         }
       />
@@ -664,9 +641,7 @@ const OnboardTable = (props) => {
         visible={renewModalVisible}
         handleRenewModal={handleRenewModal}
         item={handlingRecord}
-        type={type}
-        page={pageSelected}
-        limit={size}
+        refreshData={refreshData}
       />
       <JoiningFormalitiesModal
         visible={openModalName === 'initiate'}
@@ -704,7 +679,6 @@ export default connect(
   }) => ({
     isAddNewMember: newCandidateForm.isAddNewMember,
     loading: loading.effects['onboarding/fetchOnboardList'],
-    loadingAll: loading.effects['onboarding/fetchOnboardListAll'],
     loadingReassign: loading.effects['onboarding/reassignTicket'],
     loadingWithdrawOffer: loading.effects['onboarding/withdrawTicket'],
     currentUser,

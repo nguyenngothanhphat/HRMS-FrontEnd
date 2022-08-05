@@ -2,65 +2,25 @@
 import { Col, DatePicker, Form, Row, Select } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-
 import { debounce, isEmpty } from 'lodash';
 import CalendarIcon from '@/assets/calendar_icon.svg';
-import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
-
+import {
+  NEW_PROCESS_STATUS,
+  NEW_PROCESS_STATUS_TABLE_NAME,
+  ONBOARDING_TABLE_TYPE,
+} from '@/constants/onboarding';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { removeEmptyFields } from '@/utils/utils';
 import styles from './index.less';
 
 const { Option } = Select;
-const arrStatus = [
-  {
-    label: 'Draft',
-    value: NEW_PROCESS_STATUS.DRAFT,
-  },
-  {
-    label: 'Profile Verification',
-    value: NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
-  },
-  {
-    label: 'Document Verification',
-    value: NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
-  },
-  {
-    label: 'Salary Proposal',
-    value: NEW_PROCESS_STATUS.SALARY_NEGOTIATION,
-  },
-  {
-    label: 'Awaiting Approvals',
-    value: NEW_PROCESS_STATUS.AWAITING_APPROVALS,
-  },
-  {
-    label: 'Needs Changes',
-    value: NEW_PROCESS_STATUS.NEEDS_CHANGES,
-  },
-  {
-    label: 'Offer Released',
-    value: NEW_PROCESS_STATUS.OFFER_RELEASED,
-  },
-  {
-    label: 'Offer Accepted',
-    value: NEW_PROCESS_STATUS.OFFER_ACCEPTED,
-  },
-  {
-    label: 'Reference Verification',
-    value: NEW_PROCESS_STATUS.REFERENCE_VERIFICATION,
-  },
-  {
-    label: 'Document Checklist',
-    value: NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION,
-  },
-];
 
 const FilterForm = (props) => {
   const [form] = Form.useForm();
 
   const {
     dispatch,
-    currentStatus = '',
+    activeTab = {},
     filter = {},
     onFilter = () => {},
     jobTitleList = [],
@@ -109,6 +69,15 @@ const FilterForm = (props) => {
     },
   ];
 
+  const arrStatus = Object.keys(NEW_PROCESS_STATUS).filter(
+    (x) =>
+      ![
+        NEW_PROCESS_STATUS.JOINED,
+        NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+        NEW_PROCESS_STATUS.OFFER_REJECTED,
+      ].includes(x),
+  );
+
   return (
     <div className={styles.FilterForm}>
       <Form layout="vertical" name="filter" onValuesChange={onValuesChange} form={form}>
@@ -121,13 +90,13 @@ const FilterForm = (props) => {
             }}
             mode="multiple"
             placeholder="Select status"
-            disabled={currentStatus !== 'ALL'}
+            disabled={activeTab.id !== ONBOARDING_TABLE_TYPE.ALL}
             allowClear
           >
             {arrStatus.map((option) => {
               return (
-                <Option key={option.value} value={option.value}>
-                  {option.label}
+                <Option key={option} value={option}>
+                  {NEW_PROCESS_STATUS_TABLE_NAME[option]}
                 </Option>
               );
             })}

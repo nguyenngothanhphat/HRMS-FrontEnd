@@ -33,7 +33,7 @@ const processCSVData = (array = []) => {
 
     // Add the rows
     capsPopulations.forEach((obj) => {
-      const value = `${keys.map((k) => obj[k]).join('_')}`.split('_');
+      const value = `${keys.map((k) => obj[k]).join('__')}`.split('__');
       dataExport.push(value);
     });
     return dataExport;
