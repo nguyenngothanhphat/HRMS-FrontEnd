@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
-import { Table, Dropdown, Menu, Divider } from 'antd';
-import { connect } from 'umi';
-import moment from 'moment';
+import { Divider, Dropdown, Menu, Table } from 'antd';
 import { isEmpty } from 'lodash';
+import moment from 'moment';
+import React, { Component } from 'react';
+import { connect } from 'umi';
 
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import DeletePolicyModal from '../DeletePolicyModal';
 import EditPolicyModal from '../EditPolicyModal';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
 
 import MoreIcon from '@/assets/policiesRegulations/more.svg';
 import PdfIcon from '@/assets/policiesRegulations/pdf-2.svg';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 @connect(
@@ -127,10 +128,10 @@ class TablePolicy extends Component {
         },
         render: (attachment) => {
           const attachmentSlice = () => {
-            if (!isEmpty(attachment) && attachment.name?.length > 20) {
-              return `${attachment.name.substr(0, 8)}...${attachment.name.substr(
-                attachment.name.length - 10,
-                attachment.name.length,
+            if (!isEmpty(attachment) && attachment?.name?.length > 20) {
+              return `${attachment?.name.substr(0, 8)}...${attachment?.name.substr(
+                attachment?.name.length - 10,
+                attachment?.name.length,
               )}`;
             }
             return attachment?.name;
@@ -138,7 +139,9 @@ class TablePolicy extends Component {
           return (
             <div className={styles.policy}>
               <img src={PdfIcon} alt="PdfIcon" />
-              <span style={{ color: '#2c6df9' }}> {attachmentSlice()}</span>
+              <span style={{ color: '#2c6df9' }}>
+                {!isEmpty(attachment) ? attachmentSlice() : ''}
+              </span>
             </div>
           );
         },
@@ -167,7 +170,7 @@ class TablePolicy extends Component {
           compare: (a, b) => moment(a.updatedAt).unix() - moment(b.updatedAt).unix(),
         },
         render: (updatedAt) => {
-          const date = updatedAt ? moment(updatedAt).format('DD/MM/YYYY') : ' _ ';
+          const date = updatedAt ? moment(updatedAt).format(DATE_FORMAT_MDY) : ' _ ';
           return <span>{date}</span>;
         },
       },

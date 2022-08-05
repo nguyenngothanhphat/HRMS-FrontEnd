@@ -1,6 +1,7 @@
 import { Checkbox, Col, DatePicker, Form, Input, Row } from 'antd';
 import moment from 'moment';
 import React from 'react';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const EmployerDetails = (props) => {
@@ -48,13 +49,13 @@ const EmployerDetails = (props) => {
         <Row gutter={[16, 16]}>
           <Col span={12}>
             <Form.Item label="Start Date" name="startDate" labelCol={{ span: 24 }}>
-              <DatePicker placeholder="Start date" format="MM/DD/YYYY" disabled />
+              <DatePicker placeholder="Start date" format={DATE_FORMAT_MDY} disabled />
             </Form.Item>
           </Col>
           {!currentlyWorking && (
             <Col span={12}>
               <Form.Item label="End Date" name="endDate" labelCol={{ span: 24 }}>
-                <DatePicker placeholder="End date" disabled format="MM/DD/YYYY" />
+                <DatePicker placeholder="End date" disabled format={DATE_FORMAT_MDY} />
               </Form.Item>
             </Col>
           )}

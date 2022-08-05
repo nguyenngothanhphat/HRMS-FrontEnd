@@ -44,7 +44,7 @@ class RaiseTermination extends Component {
     });
   };
 
-  handleCandelModal = () => {
+  handleCancelModal = () => {
     this.setState({
       visible: false,
     });
@@ -52,7 +52,7 @@ class RaiseTermination extends Component {
 
   handleOkay = () => {
     const { cancel = () => {} } = this.props;
-    this.handleCandelModal();
+    this.handleCancelModal();
     cancel();
   };
 
@@ -275,8 +275,7 @@ class RaiseTermination extends Component {
                           suffixIcon={<SearchOutlined />}
                           tagRender={this.tagRender}
                           filterOption={(input, option) =>
-                            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                          }
+                            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                         >
                           <Option value="manager">Manager</Option>
                           <Option value="manager1">Manager1</Option>
@@ -299,8 +298,8 @@ class RaiseTermination extends Component {
         <Modal
           visible={visible}
           title={false}
-          onCancel={this.handleCandelModal}
-          destroyOnClose={this.handleCandelModal}
+          onCancel={this.handleCancelModal}
+          destroyOnClose={this.handleCancelModal}
           footer={false}
           className={styles.modalPopup}
         >

@@ -1,19 +1,24 @@
-import { Layout, Skeleton, Tabs, Tag } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import React, { useEffect, useState, Suspense } from 'react';
+import { Layout, Skeleton, Tabs, Tag } from 'antd';
+import React, { Suspense, useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
 import iconDownload from '@/assets/download-icon-yellow.svg';
-import DirectoryTable from './components/DirectoryTable';
-import AddEmployeeModal from './components/AddEmployeeModal';
-import ImportEmployeeModal from './components/ImportEmployeeModal';
-import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
-import exportToCsv from '@/utils/exportToCsv';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterPopover from '@/components/FilterPopover';
-import FilterButton from '@/components/FilterButton';
+import {
+  getCurrentCompany,
+  getCurrentLocation,
+  getCurrentTenant,
+  isOwner,
+} from '@/utils/authority';
+import { exportArrayDataToCsv, exportRawDataToCSV } from '@/utils/exportToCsv';
+import AddEmployeeModal from './components/AddEmployeeModal';
+import DirectoryTable from './components/DirectoryTable';
+import ImportEmployeeModal from './components/ImportEmployeeModal';
 // import FilterContent from '../FilterContent';
 
 import styles from './index.less';
-import { exportRawDataToCSV } from '@/utils/utils';
+import FilterCountTag from '@/components/FilterCountTag';
 
 const FilterContent = React.lazy(() => import('./components/FilterContent'));
 
@@ -51,7 +56,6 @@ const DirectoryComponent = (props) => {
     inActive: 'inActive',
   });
   const [tabId, setTabId] = useState('active');
-  const [applied, setApplied] = useState(0);
   const [pageSelected, setPageSelected] = useState(1);
   const [size, setSize] = useState(10);
   const [visible, setVisible] = useState(false);
@@ -81,7 +85,6 @@ const DirectoryComponent = (props) => {
     dispatch({
       type: 'employee/clearFilter',
     });
-    setApplied(0);
   };
 
   // USE EFFECT
@@ -116,14 +119,12 @@ const DirectoryComponent = (props) => {
 
   const renderData = (params = {}) => {
     const { active, myTeam, inActive } = tabList;
-
-    const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
-
+    const currentLocation = getCurrentLocation();
     const {
       // country = [], state = [],
-      company = [],
       page = 1,
+      company = [],
     } = params;
 
     // if there are location & company, call API
@@ -137,7 +138,6 @@ const DirectoryComponent = (props) => {
         (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
       );
       const isOwnerCheck = isOwner();
-
       // OWNER
       if (!currentLocation && isOwnerCheck) {
         if (company.length !== 0) {
@@ -146,12 +146,11 @@ const DirectoryComponent = (props) => {
           companyPayload = [...companyList];
         }
       } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
-
       const payload = {
         ...params,
-        company: companyPayload,
+        company: isOwnerCheck ? getCurrentCompany() : companyPayload,
+        tenantId: getCurrentTenant(),
       };
-
       setPageSelected(page || 1);
 
       // permissions to view tab
@@ -163,6 +162,10 @@ const DirectoryComponent = (props) => {
         dispatch({
           type: 'employee/fetchListEmployeeActive',
           payload,
+          params: {
+            page: payload.page,
+            limit: payload.limit,
+          },
         });
       }
 
@@ -176,6 +179,10 @@ const DirectoryComponent = (props) => {
             // department: [departmentName],
             roles: currentUser?.roles || [],
             employee,
+            params: {
+              page: payload.page,
+              limit: payload.limit,
+            },
           },
         });
       }
@@ -183,6 +190,7 @@ const DirectoryComponent = (props) => {
         dispatch({
           type: 'employee/fetchListEmployeeInActive',
           payload,
+          params,
         });
       }
     }
@@ -245,7 +253,7 @@ const DirectoryComponent = (props) => {
     });
 
     const getListExport = getData.data || '';
-    exportRawDataToCSV(getListExport, 'listEmployee.csv');
+    exportRawDataToCSV(getListExport, 'listEmployee');
   };
 
   const openFormImportEmployees = () => {
@@ -262,13 +270,6 @@ const DirectoryComponent = (props) => {
   const addEmployee = () => {
     openFormAddEmployee();
   };
-  const handleFilterCounts = (values) => {
-    const filteredObj = Object.entries(values).filter(
-      ([, value]) => (value !== undefined && value?.length > 0) || typeof value === 'number',
-    );
-    const newObj = Object.fromEntries(filteredObj);
-    setApplied(Object.keys(newObj).length);
-  };
 
   const processData = (array) => {
     // Uppercase first letter
@@ -284,7 +285,8 @@ const DirectoryComponent = (props) => {
         'Joined Date': item.joinDate,
         Location: item.location,
         Department: item.department,
-        'Employment Type': item.employeeType,
+        'Employee Type': item.employeeType,
+        'Employment Type': item.employmentType,
         Title: item.title,
         'Work Email': item.workEmail,
         'Personal Email': item.personalEmail,
@@ -320,7 +322,8 @@ const DirectoryComponent = (props) => {
         joinDate: '11/30/2020',
         location: 'Vietnam',
         department: 'Engineering',
-        employeeType: 'Full Time',
+        employeeType: 'Regular',
+        employmentType: 'Full Time',
         title: 'Junior Frontend',
         workEmail: 'template@mailinator.com',
         personalEmail: 'template@mailinator.com',
@@ -328,72 +331,52 @@ const DirectoryComponent = (props) => {
         personalNumber: '0123456789',
       },
     ];
-    exportToCsv('Template_Import_Employees.csv', processData(exportData));
+    exportArrayDataToCsv('Template_Import_Employees', processData(exportData));
   };
 
   const rightButton = () => {
     const findIndexImport = permissions.importEmployees !== -1;
     const findIndexAdd = permissions.addEmployee !== -1;
+    const applied = Object.values(filter).filter((v) => v).length;
 
     return (
       <div className={styles.tabBarExtra}>
-        {applied > 0 && (
-          <Tag
-            className={styles.tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined />}
-            onClose={() => {
-              clearFilter();
-            }}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
+        <FilterCountTag
+          count={applied}
+          onClearFilter={() => {
+            clearFilter();
+          }}
+        />
+
         {findIndexImport && (
-          <div className={styles.buttonAddImport} onClick={downloadTemplate}>
-            <img src={iconDownload} alt="Download Template" />
-            <p className={styles.buttonAddImport_text}>
-              {formatMessage({ id: 'pages_admin.employees.table.downloadTemplate' })}
-            </p>
-          </div>
+          <CustomOrangeButton onClick={downloadTemplate} icon={iconDownload}>
+            {formatMessage({ id: 'pages_admin.employees.table.downloadTemplate' })}
+          </CustomOrangeButton>
         )}
 
         {findIndexImport && (
-          <div className={styles.buttonAddImport} onClick={exportEmployees}>
-            <img src={iconDownload} alt="Download Template" />
-            <p className={styles.buttonAddImport_text}>
-              {formatMessage({ id: 'pages_admin.employees.table.exportEmployees' })}
-            </p>
-          </div>
+          <CustomOrangeButton onClick={exportEmployees} icon={iconDownload}>
+            {formatMessage({ id: 'pages_admin.employees.table.exportEmployees' })}
+          </CustomOrangeButton>
         )}
 
         {findIndexImport && (
-          <div className={styles.buttonAddImport} onClick={importEmployees}>
-            <img
-              className={styles.buttonAddImport_imgImport}
-              src="/assets/images/import.svg"
-              alt="Import Employee"
-            />
-            <p className={styles.buttonAddImport_text}>
-              {formatMessage({ id: 'pages_admin.employees.table.importEmployees' })}
-            </p>
-          </div>
+          <CustomOrangeButton onClick={importEmployees} icon="/assets/images/import.svg">
+            {formatMessage({ id: 'pages_admin.employees.table.importEmployees' })}
+          </CustomOrangeButton>
         )}
 
         {findIndexAdd && (
-          <div className={styles.buttonAddImport} onClick={addEmployee}>
-            <img src="/assets/images/addMemberIcon.svg" alt="Add Employee" />
-            <p className={styles.buttonAddImport_text}>
-              {formatMessage({ id: 'pages_admin.employees.table.addEmployee' })}
-            </p>
-          </div>
+          <CustomOrangeButton onClick={addEmployee} icon="/assets/images/addMemberIcon.svg">
+            {formatMessage({ id: 'pages_admin.employees.table.addEmployee' })}
+          </CustomOrangeButton>
         )}
 
         <FilterPopover
           placement="bottomRight"
           content={
             <Suspense fallback={<Skeleton active />}>
-              <FilterContent activeTab={tabId} handleFilterCounts={handleFilterCounts} />
+              <FilterContent activeTab={tabId} filter={filter} />
             </Suspense>
           }
           realTime
@@ -401,7 +384,7 @@ const DirectoryComponent = (props) => {
           closeText="Clear"
           onSecondButton={clearFilter}
         >
-          <FilterButton fontSize={14} showDot={Object.keys(filter).length > 0} />
+          <CustomOrangeButton fontSize={14} showDot={applied > 0} />
         </FilterPopover>
       </div>
     );

@@ -27,15 +27,22 @@ export default defineConfig({
   theme: {
     // ...darkTheme,
     'primary-color': defaultSettings.primaryColor,
+    'padding-lg': '24px',
+    'padding-md': '16px',
+    'margin-lg': '24px',
+    'margin-md': '16px',
     'table-font-size': '13px',
     'pagination-item-link-bg': '#f0f2f6',
     // tabs
     'tabs-title-font-size': '18px',
-    'tabs-active-color': '#2c6df9',
+    'tabs-active-color': defaultSettings.primaryColor,
     // table
-    'table-header-bg': '#2c6df9',
+    'table-header-bg': defaultSettings.primaryColor,
     'table-header-color': '#ffffff',
     'table-padding-vertical-md': '8px',
+    // border-color
+    'border-color-base' : '#d6dce0', // base border outline a component
+    'border-color-split': '#d6dce0'
   },
   // @ts-ignore
   title: false,

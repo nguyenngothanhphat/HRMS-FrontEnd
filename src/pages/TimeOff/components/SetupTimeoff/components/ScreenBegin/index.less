@@ -1,44 +1,44 @@
 .beginScreen {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   height: 80vh;
   .from {
-    padding: 88px 75px;
+    box-sizing: border-box;
     width: 822px;
     height: auto;
+    padding: 88px 75px;
     background-color: #fff;
-    border: 1px solid #ebeff2;
-    box-sizing: border-box;
+    border: 1px solid @border-color-base;
     border-radius: 5px;
   }
   .title {
-    font-style: normal;
+    padding-bottom: 19px;
+    color: #161c29;
     font-weight: 700;
     font-size: 22px;
+    font-style: normal;
     line-height: 30px;
-    color: #161c29;
-    padding-bottom: 19px;
   }
   .subTitle {
-    font-style: normal;
+    padding-bottom: 32px;
+    color: #707177;
     font-weight: normal;
     font-size: 13px;
+    font-style: normal;
     line-height: 20px;
-    color: #707177;
-    padding-bottom: 32px;
   }
   .footer {
     padding: 27px 28px;
   }
   :global {
     .ant-btn {
+      height: 40px;
       margin-top: 15px;
+      padding: 0 28px;
       background-color: #ffa100;
       border: none;
       border-radius: 30px;
-      height: 40px;
-      padding: 0 28px;
       span {
         color: white;
         font-weight: 500;

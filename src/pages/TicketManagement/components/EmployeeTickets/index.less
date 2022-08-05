@@ -1,0 +1,39 @@
+@commonSpace: 24px;
+@blueColor: @primary-color;
+@grayColor: #707177;
+@greenColor: #00c598;
+@import '~antd/es/style/themes/default.less';
+
+.TicketManagement {
+  :global {
+    .ant-tabs-content-holder {
+      padding: @padding-lg;
+    }
+    .ant-card {
+      border: 1px solid @border-color-base;
+      border-radius: 5px;
+      .ant-card-head {
+        display: flex;
+        align-items: center;
+        height: 70px;
+        border-bottom: 1px solid #e2e4e8;
+        .ant-card-head-wrapper {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          .ant-card-head-title {
+            color: #161c29;
+            font-weight: 700;
+            font-size: 16px;
+          }
+        }
+      }
+      .ant-card-body {
+        padding: @padding-lg;
+      }
+    }
+  }
+  .item {
+    padding-right: @commonSpace;
+  }
+}

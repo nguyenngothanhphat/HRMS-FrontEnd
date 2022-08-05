@@ -248,6 +248,7 @@ const customerProfile = {
         response = yield call(getDocument, {
           tenantId: getCurrentTenant(),
           customerId: payload.id,
+          searchKey: payload.searchKey || null,
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
@@ -313,8 +314,9 @@ const customerProfile = {
     },
 
     *addDoc({ payload }, { call }) {
+      let response = {}
       try {
-        const response = yield call(addDocument, {
+        response = yield call(addDocument, {
           tenantId: getCurrentTenant(),
           ...payload,
         });
@@ -324,6 +326,7 @@ const customerProfile = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *filterDoc({ payload }, { call, put }) {

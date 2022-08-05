@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Button, Modal, Input } from 'antd';
-// import { TIMEOFF_STATUS } from '@/utils/timeOff';
+// import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import styles from './index.less';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const { TextArea } = Input;
 export default class RejectCommentModal extends PureComponent {
@@ -54,13 +55,9 @@ export default class RejectCommentModal extends PureComponent {
             </div>
           </div>
           <div className={styles.operationButtons}>
-            <Button
-              loading={loading}
-              className={styles.proceedBtn}
-              onClick={() => onReject(comment)}
-            >
+            <CustomPrimaryButton loading={loading} onClick={() => onReject(comment)}>
               Submit
-            </Button>
+            </CustomPrimaryButton>
             <Button className={styles.cancelBtn} onClick={() => onClose()}>
               Cancel
             </Button>

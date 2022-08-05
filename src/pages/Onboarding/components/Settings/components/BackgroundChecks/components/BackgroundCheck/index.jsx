@@ -4,7 +4,7 @@ import { Form, Radio } from 'antd';
 
 import styles from './index.less';
 
-@connect(({ onboard: { settings: { backgroundChecks } = {} } = {} }) => ({
+@connect(({ onboarding: { settings: { backgroundChecks } = {} } = {} }) => ({
   backgroundChecks,
 }))
 class BackgroundCheck extends Component {
@@ -29,7 +29,7 @@ class BackgroundCheck extends Component {
     backgroundChecks[name] = value;
 
     dispatch({
-      type: 'onboard/save',
+      type: 'onboarding/save',
       payload: {
         backgroundChecks,
       },

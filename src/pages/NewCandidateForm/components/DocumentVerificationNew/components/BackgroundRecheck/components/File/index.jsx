@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import DoneIcon from '@/assets/candidatePortal/doneSign.svg';
 import ResubmitIcon from '@/assets/candidatePortal/resubmitIcon.svg';
 import WarningIcon from '@/assets/candidatePortal/warningIcon.svg';
-import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
+import { DOCUMENT_TYPES } from '@/constants/candidatePortal';
 // import UploadComponent from '../UploadComponent';
 import styles from './index.less';
 

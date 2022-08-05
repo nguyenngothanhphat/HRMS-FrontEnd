@@ -1,9 +1,9 @@
 @darkColour: #161c29;
-@blueColour: #2c6df9;
+@blueColour: @primary-color;
 @lightGrayColor: #707177;
 @commonPadding: 15px;
 @contentPadding: 32px;
-@borderColor: #d6dce0;
+@borderColor: @border-color-base;
 
 .ManageWidgetsModal {
   :global {
@@ -34,26 +34,6 @@
       color: #707177;
       font-size: 12px;
     }
-    .ant-btn-primary {
-      height: 40px;
-      padding: 0 25px;
-      object-fit: contain;
-      color: #ffffff;
-      font-weight: 500;
-      font-size: 14px;
-
-      letter-spacing: 0.13px;
-
-      text-shadow: none;
-      background-color: #ffa100;
-      border: solid 1px #ffa100;
-      border-radius: 25px;
-      box-shadow: none;
-      &:hover {
-        color: #ffffff;
-        background-color: #ffa100;
-      }
-    }
 
     .ant-modal-header {
       padding: 24px;
@@ -72,39 +52,13 @@
       display: none;
     }
   }
-  .btnSubmit {
-    color: #fff;
-    font-weight: 700;
-    font-size: 14px;
-    background-color: #ffa100;
-    border: none;
-    border-radius: 25px;
-  }
-  .btnSubmit:disabled {
-    color: #fff;
-    opacity: 0.5;
-  }
-  .btnCancel {
-    display: inline-block;
-    margin-right: 20px;
-    color: #707177;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 19px;
-    border: none;
-    box-shadow: none;
-    cursor: pointer;
-    &:active {
-      opacity: 0.5;
-    }
-  }
 
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 24px;
-    border-bottom: 1px solid #d6dce0;
+    border-bottom: 1px solid @border-color-base;
     .left {
       p {
         color: #161c29;
@@ -131,7 +85,7 @@
       align-items: center;
       justify-content: flex-end;
       padding: 24px;
-      border-top: 1px solid #d6dce05e;
+      border-top: 1px solid @border-color-base;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
     }
   }
@@ -153,7 +107,7 @@
     display: block;
     width: 0;
     padding-left: 10px;
-    color: #2c6df9;
+    color: @primary-color;
     font-weight: 500;
     white-space: nowrap;
     transition: all 0.2s ease-in-out;

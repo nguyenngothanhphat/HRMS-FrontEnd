@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import CommonModal from '@/components/CommonModal';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import { getCurrentTenant } from '@/utils/authority';
 import edit from './asset/edit.svg';
 import path from './asset/path.svg';
@@ -300,14 +302,20 @@ const EmploymentTab = (props) => {
           )}
           {isChanging ? (
             <div className={styles.footer}>
-              <div>{current + 1}/7 steps</div>
+              <div className={styles.step}>{current + 1}/7 steps</div>
               <div className={styles.buttons}>
-                <Button onClick={previousTab} type="text">
-                  {current > 0 ? 'Back' : null}
-                </Button>
-                <Button onClick={nextTab} type="primary" disabled={!isModified && current === 5}>
+                <CustomSecondaryButton onClick={previousTab}>
+                  <span
+                    style={{
+                      color: '#ffa100',
+                    }}
+                  >
+                    {current > 0 ? 'Back' : null}
+                  </span>
+                </CustomSecondaryButton>
+                <CustomPrimaryButton onClick={nextTab} disabled={!isModified && current === 5}>
                   {current === 6 ? 'Submit' : 'Continue'}
-                </Button>
+                </CustomPrimaryButton>
               </div>
             </div>
           ) : null}

@@ -38,7 +38,14 @@ const EmployeeCard = (props) => {
     <Col xs={12} xl={8} className={styles.EmployeeCard} onClick={onViewProfileClick}>
       <div className={styles.container}>
         <div className={styles.avatar}>
-          <img src={avatar || MockAvatar} className={getColorClassName()} alt="" />
+          <img
+            src={avatar || MockAvatar}
+            className={getColorClassName()}
+            alt=""
+            onError={(e) => {
+              e.target.src = MockAvatar;
+            }}
+          />
         </div>
         <span className={styles.employeeName}>{legalName}</span>
         <span className={styles.employeeInformation}>

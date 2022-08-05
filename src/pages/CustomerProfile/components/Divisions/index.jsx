@@ -1,14 +1,162 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Skeleton } from 'antd';
-import React, { PureComponent } from 'react';
+import { Skeleton, Spin } from 'antd';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import editIcon from '../../../../assets/edit-customField-cm.svg';
+import CommonModal from '@/components/CommonModal';
+import CustomAddButton from '@/components/CustomAddButton';
+import CustomEditButton from '@/components/CustomEditButton';
+import AddDivisionContent from './components/AddDivisionContent';
 import DivisionItem from './components/DivisionItem';
-import ModalAddDivisions from './components/ModalAddDivisions';
-import ModalEditDivision from './components/ModalEditDivision';
+import EditDivisionContent from './components/EditDivisionContent';
 import styles from './index.less';
 
-@connect(
+const Divisions = (props) => {
+  const {
+    dispatch,
+    reId,
+    divisions = [],
+    listTags = [],
+    info = {},
+    country = [],
+    state = [],
+    loadingDivisions = false,
+    loadingAdd = false,
+    loadingUpdate = false,
+  } = props;
+
+  const [addModalVisible, setAddModalVisible] = React.useState(false);
+  const [editModalVisible, setEditModalVisible] = React.useState(false);
+  const [handlingPackage, setHandlingPackage] = React.useState({});
+  const [isCountrySelected, setIsCountrySelected] = React.useState(true);
+
+  useEffect(() => {
+    dispatch({
+      type: 'customerProfile/fetchDivision',
+      payload: {
+        id: reId,
+      },
+    });
+  }, [reId]);
+
+  const showModal = () => {
+    setAddModalVisible(true);
+    dispatch({
+      type: 'customerProfile/generateDivisionId',
+      payload: {
+        id: reId,
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (addModalVisible || editModalVisible) {
+      dispatch({
+        type: 'customerManagement/fetchTagList',
+        payload: {
+          name: 'Engineering',
+        },
+      });
+      dispatch({
+        type: 'customerManagement/fetchCountryList',
+      });
+    }
+  }, [addModalVisible, editModalVisible]);
+
+  const onCloseModal = () => {
+    setAddModalVisible(false);
+    setEditModalVisible(false);
+  };
+
+  const handleSelectCountry = (values) => {
+    dispatch({
+      type: 'customerManagement/fetchStateByCountry',
+      payload: values,
+    });
+    setIsCountrySelected(false);
+  };
+
+  const renderDivisionCard = (division) => {
+    return (
+      <div className={styles.DivisionCard}>
+        {/* Header */}
+        <div className={styles.divisionsHeader}>
+          <span className={styles.contactInfoHeaderTitle}>
+            {division?.divisionName || 'Division'}
+          </span>
+          <CustomEditButton
+            onClick={() => {
+              setHandlingPackage(division);
+              setEditModalVisible(true);
+            }}
+          >
+            Edit
+          </CustomEditButton>
+        </div>
+
+        <div className={styles.divisionsBody}>
+          <DivisionItem item={division} />
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <Spin spinning={loadingDivisions}>
+      <div className={styles.Divisions}>
+        {divisions.map((item, i) => {
+          return renderDivisionCard(item, i);
+        })}
+        <div className={styles.addDivision}>
+          <CustomAddButton onClick={showModal}>Add another Division</CustomAddButton>
+        </div>
+        <CommonModal
+          title="Add Division"
+          visible={addModalVisible}
+          onClose={onCloseModal}
+          loading={loadingAdd}
+          content={
+            <AddDivisionContent
+              visible={addModalVisible}
+              onCloseModal={onCloseModal}
+              listTags={listTags}
+              info={info}
+              isCountrySelected={isCountrySelected}
+              handleSelectCountry={handleSelectCountry}
+              countryList={country}
+              stateList={state}
+              reId={reId}
+            />
+          }
+        />
+
+        <CommonModal
+          title="Edit Division"
+          visible={editModalVisible}
+          onClose={onCloseModal}
+          loading={loadingUpdate}
+          content={
+            <EditDivisionContent
+              data={handlingPackage}
+              visible={editModalVisible}
+              onClose={() => {
+                setEditModalVisible(false);
+                setHandlingPackage({});
+              }}
+              listTags={listTags}
+              info={info}
+              isCountrySelected={isCountrySelected}
+              handleSelectCountry={handleSelectCountry}
+              countryList={country}
+              stateList={state}
+              reId={reId}
+            />
+          }
+        />
+      </div>
+    </Spin>
+  );
+};
+
+export default connect(
   ({
     loading,
     customerManagement: { country = [], state = [], listTags = [] } = {},
@@ -21,149 +169,7 @@ import styles from './index.less';
     listTags,
     divisionId,
     loadingDivisions: loading.effects['customerProfile/fetchDivision'],
+    loadingAdd: loading.effects['customerProfile/addDivision'],
+    loadingUpdate: loading.effects['customerProfile/updateDivision'],
   }),
-)
-class Divisions extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      addModalVisible: false,
-      isCountrySelected: true,
-      editModalVisible: false,
-      handlingPackage: {},
-    };
-  }
-
-  componentDidMount() {
-    const { dispatch, reId } = this.props;
-
-    dispatch({
-      type: 'customerProfile/fetchDivision',
-      payload: {
-        id: reId,
-      },
-    });
-  }
-
-  showModal = () => {
-    const { dispatch, reId } = this.props;
-
-    this.setState({
-      addModalVisible: true,
-    });
-
-    dispatch({
-      type: 'customerManagement/fetchTagList',
-      payload: {
-        name: 'Engineering',
-      },
-    });
-    dispatch({
-      type: 'customerProfile/generateDivisionId',
-      payload: {
-        id: reId,
-      },
-    });
-
-    dispatch({
-      type: 'customerManagement/fetchCountryList',
-    });
-  };
-
-  onCloseModal = () => {
-    this.setState({
-      addModalVisible: false,
-    });
-  };
-
-  handelSelectCountry = (values) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'customerManagement/fetchStateByCountry',
-      payload: values,
-    });
-    this.setState({
-      isCountrySelected: false,
-    });
-  };
-
-  renderDivisionCard = (division) => {
-    return (
-      <div className={styles.DivisionCard}>
-        {/* Header */}
-        <div className={styles.divisionsHeader}>
-          <p className={styles.contactInfoHeaderTitle}>{division?.divisionName || 'Division'}</p>
-          <p
-            className={styles.btnEdit}
-            onClick={() => {
-              this.setState({ editModalVisible: true, handlingPackage: division });
-            }}
-          >
-            <img src={editIcon} alt="edit" />
-            Edit
-          </p>
-        </div>
-
-        <div className={styles.divisionsBody}>
-          <DivisionItem item={division} />
-        </div>
-      </div>
-    );
-  };
-
-  render() {
-    const { addModalVisible, isCountrySelected, editModalVisible, handlingPackage } = this.state;
-    const {
-      divisions = [],
-      listTags = [],
-      info = {},
-      reId = '',
-      country = [],
-      state = [],
-      loadingDivisions = false,
-    } = this.props;
-
-    if (loadingDivisions) return <Skeleton />;
-    return (
-      <div className={styles.Divisions}>
-        {divisions.map((item, i) => {
-          return this.renderDivisionCard(item, i);
-        })}
-
-        <div className={styles.divisionFooter}>
-          <p className={styles.buttonAddImport} onClick={this.showModal}>
-            <PlusOutlined />
-            Add another Division
-          </p>
-          <ModalAddDivisions
-            visible={addModalVisible}
-            onCloseModal={this.onCloseModal}
-            onSubmit={this.onSubmit}
-            listTags={listTags}
-            info={info}
-            // divisionId={divisionId}
-            isCountrySelected={isCountrySelected}
-            handelSelectCountry={this.handelSelectCountry}
-            country={country}
-            state={state}
-            reId={reId}
-          />
-          <ModalEditDivision
-            data={handlingPackage}
-            visible={editModalVisible}
-            onClose={() => this.setState({ editModalVisible: false, handlingPackage: {} })}
-            listTags={listTags}
-            info={info}
-            isCountrySelected={isCountrySelected}
-            handelSelectCountry={this.handelSelectCountry}
-            country={country}
-            state={state}
-            reId={reId}
-          />
-        </div>
-      </div>
-    );
-  }
-}
-
-export default Divisions;
+)(Divisions);

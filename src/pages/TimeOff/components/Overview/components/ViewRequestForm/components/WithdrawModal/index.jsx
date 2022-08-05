@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Button, Modal } from 'antd';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import styles from './index.less';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const { DRAFTS } = TIMEOFF_STATUS;
 export default class WithdrawModal extends PureComponent {
@@ -34,13 +35,13 @@ export default class WithdrawModal extends PureComponent {
           <p className={styles.subtitle1}>{content1}</p>
           {content2 && <p className={styles.subtitle2}>{content2}</p>}
           <div className={styles.operationButtons}>
-            <Button
+            <CustomPrimaryButton
               loading={loading}
               className={styles.proceedBtn}
               onClick={() => onProceed(false)}
             >
               Proceed
-            </Button>
+            </CustomPrimaryButton>
             <Button className={styles.cancelBtn} onClick={() => onClose(false)}>
               Cancel
             </Button>

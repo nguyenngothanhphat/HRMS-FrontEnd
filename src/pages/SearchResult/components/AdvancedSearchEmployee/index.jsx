@@ -1,7 +1,9 @@
 /* eslint-disable react/jsx-curly-newline */
+import { Form, Input, Select } from 'antd';
 import React, { useEffect } from 'react';
-import { Input, Form, Button, Select } from 'antd';
 import { connect, history } from 'umi';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import styles from '../../index.less';
 
 const AdvancedSearchEmployee = (props) => {
@@ -36,7 +38,7 @@ const AdvancedSearchEmployee = (props) => {
       onFinish={onFinish}
       initialValues={employeeAdvance}
     >
-      <div className={styles.resultContent}>
+      <div className={styles.ResultContent}>
         <div className={styles.headerFilter}>
           <div className={styles.headerFilter__title}>Personal Details</div>
           <div className={styles.headerFilter__description}>
@@ -232,17 +234,8 @@ const AdvancedSearchEmployee = (props) => {
         </div>
       </div>
       <div className={styles.filterFooter}>
-        <Button
-          type="link"
-          htmlType="button"
-          className={styles.btnReset}
-          onClick={() => form.resetFields()}
-        >
-          Reset
-        </Button>
-        <Button type="primary" htmlType="submit" className={styles.btnSubmit}>
-          Search
-        </Button>
+        <CustomSecondaryButton onClick={() => form.resetFields()}>Reset</CustomSecondaryButton>
+        <CustomPrimaryButton htmlType="submit">Search</CustomPrimaryButton>
       </div>
     </Form>
   );

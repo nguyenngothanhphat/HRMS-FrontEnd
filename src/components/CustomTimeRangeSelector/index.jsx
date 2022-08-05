@@ -1,7 +1,7 @@
 import { Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { hourFormat, WORKING_HOURS } from '@/utils/timeSheet';
+import { hourFormat, WORKING_HOURS } from '@/constants/timeSheet';
 
 const { Option } = Select;
 

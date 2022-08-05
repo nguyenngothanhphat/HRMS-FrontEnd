@@ -1,11 +1,13 @@
-import { Col, Form, Input, message, Row, Select, Upload } from 'antd';
+import { Col, Form, Input, Row, Select, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
 import { connect } from 'umi';
 import UploadIcon from '@/assets/upload-icon.svg';
+import CustomBlueButton from '@/components/CustomBlueButton';
+import { FILE_TYPE } from '@/constants/upload';
+import { beforeUpload, compressImage } from '@/utils/upload';
 import styles from './index.less';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+// pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const AddContent = (props) => {
   const [form] = Form.useForm();
@@ -24,7 +26,6 @@ const AddContent = (props) => {
 
   const [uploadedPreview, setUploadedPreview] = useState('');
   const [uploadedFile, setUploadedFile] = useState({});
-  const [numPages, setNumPages] = useState({});
 
   const fetchDocumentTypeList = () => {
     dispatch({
@@ -56,40 +57,6 @@ const AddContent = (props) => {
     setUploadedFile(file);
   };
 
-  const identifyImageOrPdf = (name) => {
-    const parts = name.split('.');
-    const ext = parts[parts.length - 1];
-    switch (ext.toLowerCase()) {
-      case 'jpg':
-      case 'jpeg':
-      case 'png':
-        return 0;
-      case 'pdf':
-        return 1;
-      default:
-        return 2;
-    }
-  };
-
-  const beforeUpload = (file) => {
-    const maxFileSize = 25;
-    const checkType = identifyImageOrPdf(file.name) === 0 || identifyImageOrPdf(file.name) === 1;
-
-    if (!checkType) {
-      message.error('You can only upload JPG/PNG/PDF file!');
-    }
-    const isLtMaxFileSize = file.size / 1024 / 1024 < maxFileSize;
-    if (!isLtMaxFileSize) {
-      if (file.type === 'image/jpeg') {
-        message.error(`Image must smaller than ${maxFileSize}MB!`);
-      }
-      if (file.type === 'application/pdf') {
-        message.error(`File must smaller than ${maxFileSize}MB!`);
-      }
-    }
-    return checkType && isLtMaxFileSize;
-  };
-
   // finish
   const addDocument = async (values, attachment) => {
     const res = await dispatch({
@@ -108,9 +75,10 @@ const AddContent = (props) => {
     }
   };
 
-  const handleFinish = (values) => {
+  const handleFinish = async (values) => {
+    const compressedFile = await compressImage(uploadedFile);
     const formData = new FormData();
-    formData.append('uri', uploadedFile);
+    formData.append('blob', compressedFile, uploadedFile.name);
     dispatch({
       type: 'upload/uploadFile',
       payload: formData,
@@ -121,29 +89,29 @@ const AddContent = (props) => {
     });
   };
 
-  const onDocumentLoadSuccess = ({ numPages: n }) => {
-    setNumPages(n);
-  };
-
   const _renderPreview = () => {
     if (uploadedPreview.includes('application/pdf')) {
       return (
         <div className={styles.fileUploadedContainer}>
-          <Document
-            className={styles.pdfFrame}
-            file={uploadedPreview}
-            noData="Document Not Found"
-            onDocumentLoadSuccess={onDocumentLoadSuccess}
-          >
-            {Array.from(new Array(numPages), (el, index) => (
-              <Page
-                loading=""
-                className={styles.pdfPage}
-                key={`page_${index + 1}`}
-                pageNumber={index + 1}
-              />
-            ))}
-          </Document>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', paddingBottom: 16 }}>
+            <CustomBlueButton
+              onClick={(e) => {
+                e.stopPropagation();
+                setUploadedFile({});
+                setUploadedPreview('');
+              }}
+            >
+              Remove
+            </CustomBlueButton>
+          </div>
+          <object width="100%" height="400" data={uploadedPreview} type="application/pdf">
+            <iframe
+              width="100%"
+              height="100%"
+              src={`https://docs.google.com/viewer?url=${uploadedPreview}&embedded=true`}
+              title="pdf-viewer"
+            />
+          </object>
         </div>
       );
     }
@@ -204,7 +172,7 @@ const AddContent = (props) => {
                 multiple={false}
                 showUploadList={false}
                 action={(file) => handleUpload(file)}
-                beforeUpload={beforeUpload}
+                beforeUpload={(file) => beforeUpload(file, [FILE_TYPE.IMAGE, FILE_TYPE.PDF], 25)}
               >
                 {uploadedPreview ? (
                   _renderPreview()

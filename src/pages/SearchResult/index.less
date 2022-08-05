@@ -12,34 +12,47 @@
       color: #707177;
       opacity: 1;
     }
+
+    .ant-card {
+      overflow: hidden;
+      border: 1px solid @border-color-base;
+      border-radius: 5px;
+      .ant-card-head {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid @border-color-base;
+        .ant-card-head-wrapper {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          .ant-card-head-title {
+            color: #161c29;
+            font-weight: 500;
+            font-size: 16px;
+          }
+        }
+      }
+      .ant-card-body {
+        padding: 0px;
+      }
+    }
+    .ant-table-cell {
+      line-height: 20px;
+    }
   }
 
-  .resultContent {
-    margin: 24px;
+  .ResultContent {
+    margin: @margin-lg;
     background: #ffffff;
-    border: 1px solid #d6dce0;
+    border: 1px solid @border-color-base;
     border-radius: 8px;
     // min-height: 600px;
 
-    .filter {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      height: 54px;
-      padding-right: 32px;
-      border-bottom: 1px solid #d6dce0;
-
-      img {
-        width: 50px;
-        cursor: pointer;
-      }
-    }
-
-    .result {
-      margin: 20px 30px;
+    .tableContainer {
+      padding: @padding-lg;
 
       .blueText {
-        color: #2c6df9;
+        color: @primary-color;
         font-weight: 500;
         cursor: pointer;
       }
@@ -51,7 +64,7 @@
 
         .text {
           padding-right: 20px;
-          color: #2c6df9;
+          color: @primary-color;
           font-size: 13px;
           line-height: 15px;
           text-decoration: underline;
@@ -79,7 +92,7 @@
           margin: 0;
           padding-left: 12px;
           overflow: hidden;
-          color: #2c6df9;
+          color: @primary-color;
           font-weight: 500;
           letter-spacing: 0.12px;
           white-space: nowrap;
@@ -101,7 +114,7 @@
 
       .managerName {
         overflow: hidden;
-        color: #2c6df9;
+        color: @primary-color;
         font-weight: 500;
         white-space: nowrap;
         text-align: left;
@@ -117,7 +130,7 @@
     //advance search
     .headerFilter {
       padding: 32px 32px 24px 32px;
-      border-bottom: 1px solid #d6dce0;
+      border-bottom: 1px solid @border-color-base;
 
       &__title {
         color: #161c29;
@@ -135,7 +148,7 @@
 
     .headerFilter2 {
       padding: 32px 32px 24px 32px;
-      border-top: 1px solid #d6dce0;
+      border-top: 1px solid @border-color-base;
 
       &__title {
         color: #161c29;
@@ -181,7 +194,7 @@
 
           .ant-input:focus,
           .ant-picker-focused {
-            border-color: #2c6df9;
+            border-color: @primary-color;
             outline: 0;
             box-shadow: unset;
           }
@@ -190,7 +203,7 @@
           .ant-select-selector:focus,
           .ant-select-selector:active,
           .ant-select-open .ant-select-selector {
-            border-color: #2c6df9;
+            border-color: @primary-color;
             outline: 0;
             box-shadow: unset !important;
           }
@@ -241,7 +254,7 @@
 
           .ant-input:focus,
           .ant-picker-focused {
-            border-color: #2c6df9;
+            border-color: @primary-color;
             outline: 0;
             box-shadow: unset;
           }
@@ -250,7 +263,7 @@
           .ant-select-selector:focus,
           .ant-select-selector:active,
           .ant-select-open .ant-select-selector {
-            border-color: #2c6df9;
+            border-color: @primary-color;
             outline: 0;
             box-shadow: unset !important;
           }
@@ -298,10 +311,10 @@
     align-items: center;
     justify-content: flex-end;
     margin: 24px;
-    padding: 16px 60px;
+    padding: @padding-lg;
     font-size: 14px;
     background: #ffffff;
-    border: 1px solid #d6dce0;
+    border: 1px solid @border-color-base;
     border-radius: 8px;
 
     .btnReset {

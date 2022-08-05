@@ -1,21 +1,21 @@
 .root {
   display: flex;
-  box-sizing: border-box;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
   width: 100%;
   height: 90px;
   margin-bottom: 8px;
   padding: 21px 26px;
   background: #ffffff;
-  border: 1px solid #d6dce0;
+  border: 1px solid @border-color-base;
   border-radius: 6px;
   .leftPart {
     display: flex;
-    box-sizing: border-box;
     flex-direction: row;
     align-items: center;
+    box-sizing: border-box;
   }
   .logoCompany {
     display: flex;
@@ -35,14 +35,14 @@
   .viewInfo {
     padding-left: 13px;
     &__name {
+      max-width: 270px;
       margin-bottom: 4px;
+      overflow: hidden;
       color: #161c29;
       font-weight: 500;
       font-size: 14px;
       line-height: 16px;
-      max-width: 270px;
       white-space: nowrap;
-      overflow: hidden;
       text-overflow: ellipsis;
     }
     &__location {
@@ -57,21 +57,20 @@
     display: flex;
     align-items: center;
 
-    .optionMenu{
-
-      &__btn{
-        border: none;
+    .optionMenu {
+      &__btn {
         margin-left: 8px;
+        border: none;
       }
 
-      .dots{
+      .dots {
         cursor: pointer;
       }
     }
     .btnOutline {
+      height: 40px;
       // width: 138px;
       padding: 0 30px;
-      height: 40px;
       color: #ffa100;
       font-weight: 500;
       font-size: 14px;

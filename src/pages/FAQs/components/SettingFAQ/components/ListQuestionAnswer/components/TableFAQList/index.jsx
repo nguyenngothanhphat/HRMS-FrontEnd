@@ -1,12 +1,13 @@
+import { Divider, Dropdown, Menu, Table } from 'antd';
 import React, { Component } from 'react';
-import { Table, Dropdown, Menu, Divider } from 'antd';
 // import { connect } from 'umi';
 import moment from 'moment';
 // import { isEmpty } from 'lodash';
+import MoreIcon from '@/assets/policiesRegulations/more.svg';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import DeleteQuestionAnswer from '../DeleteQuestionAnswer';
 import EditQuestionAnswer from '../EditQuestionAnswer';
 import ViewQuestionAnswer from '../ViewQuestionAnswer';
-import MoreIcon from '@/assets/policiesRegulations/more.svg';
 import styles from './index.less';
 // import { stubFalse } from 'lodash';
 
@@ -75,7 +76,7 @@ class TableFAQList extends Component {
             answer: obj.answer || '-',
             addBy:
               obj.infoEmployee.length > 0 ? obj.infoEmployee[0].generalInfoInfo.legalName : '-',
-            addOn: obj.createdAt ? moment(obj.createdAt).format('DD/MM/YYYY') : '-',
+            addOn: obj.createdAt ? moment(obj.createdAt).format(DATE_FORMAT_MDY) : '-',
             categoryName: obj.category.length > 0 ? obj.category[0].category : '-',
           };
         })

@@ -3,7 +3,7 @@ import React from 'react';
 import DoneIcon from '@/assets/candidatePortal/doneSign.svg';
 import ResubmitIcon from '@/assets/candidatePortal/ic_resubmit.svg';
 import styles from './index.less';
-import { DOCUMENT_KEYS, DOCUMENT_TYPES } from '@/utils/candidatePortal';
+import { DOCUMENT_KEYS, DOCUMENT_TYPES } from '@/constants/candidatePortal';
 
 const PanelItem = ({ document, actionText, onClickFile, onClickAction }) => {
   const { alias = '', type } = document;

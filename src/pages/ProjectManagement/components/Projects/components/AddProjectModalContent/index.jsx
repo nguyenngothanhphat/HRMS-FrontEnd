@@ -1,11 +1,13 @@
 import { Col, DatePicker, Form, Input, Row, Select, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
 import CreatableSelect from 'react-select/creatable';
+import { connect } from 'umi';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import HelpIcon from '@/assets/projectManagement/help.svg';
 import CalendarIcon from '@/assets/projectManagement/calendar.svg';
 import styles from './index.less';
+import { disabledEndDate } from '@/utils/projectManagement';
 
 const dateFormat = 'MM-DD-YYYY';
 const { Option } = Select;
@@ -14,7 +16,7 @@ const AddProjectModal = (props) => {
   const [form] = Form.useForm();
   const { visible = false, onClose = () => {}, dispatch } = props;
   const [customerId, setCustomerId] = useState('');
-
+  const [startDate, setStartDate] = useState('');
   // redux
   const {
     projectManagement: {
@@ -142,8 +144,8 @@ const AddProjectModal = (props) => {
       type: 'projectManagement/addProjectEffect',
       payload: {
         ...values,
-        startDate: moment(values.startDate).format('YYYY-MM-DD'),
-        tentativeEndDate: moment(values.tentativeEndDate).format('YYYY-MM-DD'),
+        startDate: moment(values.startDate).format(DATE_FORMAT_YMD),
+        tentativeEndDate: moment(values.tentativeEndDate).format(DATE_FORMAT_YMD),
         customerName: customer?.legalName,
         ownerName,
         tags: name,
@@ -175,8 +177,7 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 onClear={() => form.setFieldsValue({ projectId: null, accountOwner: null })}
               >
                 {customerList.map((x) => (
@@ -198,8 +199,7 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {projectTypeList.map((x) => (
                   <Option value={x.id}>{x.type_name}</Option>
@@ -263,8 +263,7 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {projectStatusList.map((x) => (
                   <Option value={x.id}>{x.status}</Option>
@@ -302,6 +301,7 @@ const AddProjectModal = (props) => {
               labelCol={{ span: 24 }}
             >
               <DatePicker
+                onChange={(val) => setStartDate(val)}
                 format={dateFormat}
                 placeholder="Select Start Date"
                 suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
@@ -317,6 +317,7 @@ const AddProjectModal = (props) => {
               labelCol={{ span: 24 }}
             >
               <DatePicker
+                disabledDate={(currentDate) => disabledEndDate(currentDate, startDate)}
                 format={dateFormat}
                 placeholder="Select Tentative End Date"
                 suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
@@ -337,8 +338,7 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {employeeList.map((x) => (
                   <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
@@ -423,8 +423,7 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {employeeList.map((x) => (
                   <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
@@ -445,8 +444,7 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {divisionList.map((x) => (
                   <Option value={x.name}>{x.name}</Option>

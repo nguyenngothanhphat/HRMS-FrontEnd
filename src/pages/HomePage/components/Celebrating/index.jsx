@@ -6,7 +6,7 @@ import BirthdayImage2 from '@/assets/homePage/birthday2.png';
 import BirthdayImage3 from '@/assets/homePage/birthday3.png';
 import BirthdayImage4 from '@/assets/homePage/birthday4.png';
 import NewJoineeImage from '@/assets/homePage/welcomeNewJoinee.png';
-import { CELEBRATE_TYPE, TAB_IDS } from '@/utils/homePage';
+import { CELEBRATE_TYPE, TAB_IDS } from '@/constants/homePage';
 import Card from './components/Card';
 import styles from './index.less';
 

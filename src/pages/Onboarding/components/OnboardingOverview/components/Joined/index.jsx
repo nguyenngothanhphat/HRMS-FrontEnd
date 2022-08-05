@@ -3,11 +3,11 @@ import { connect } from 'umi';
 import { Tabs } from 'antd';
 import { debounce } from 'lodash';
 
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import JoinedTab from './components/JoinedTab';
 
 import styles from '../index.less';
-import SearchOnboarding from '../SearchOnboarding';
+import SearchFilterBar from '../SearchFilterBar';
 
 const { TabPane } = Tabs;
 
@@ -55,7 +55,7 @@ class Joined extends PureComponent {
     if (prepProps.reloadTableData !== reloadTableData && reloadTableData) {
       this.fetchOnboardingJoined(nameSearch);
       dispatch({
-        type: 'onboard/save',
+        type: 'onboarding/save',
         payload: { reloadTableData: false },
       });
     }
@@ -102,7 +102,7 @@ class Joined extends PureComponent {
           <Tabs
             defaultActiveKey={tabId}
             onChange={this.onChangeTab}
-            tabBarExtraContent={<SearchOnboarding onChangeSearch={this.onChangeSearch} />}
+            tabBarExtraContent={<SearchFilterBar onChangeSearch={this.onChangeSearch} />}
           >
             <TabPane key="1">
               <JoinedTab

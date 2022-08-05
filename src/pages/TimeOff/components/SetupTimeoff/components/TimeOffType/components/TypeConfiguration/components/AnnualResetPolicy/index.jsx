@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { connect } from 'umi';
 import datePickerIcon from '@/assets/timeOff/datePicker.svg';
 import styles from './index.less';
-import { FORM_ITEM_NAME, TIMEOFF_DATE_FORMAT } from '@/utils/timeOff';
+import { FORM_ITEM_NAME, TIMEOFF_DATE_FORMAT } from '@/constants/timeOff';
 
 const AnnualResetPolicy = () => {
   const [isOpen, setIsOpen] = useState(false);

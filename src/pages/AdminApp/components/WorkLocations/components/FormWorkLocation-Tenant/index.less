@@ -1,8 +1,8 @@
 .content {
   :global {
     .ant-btn-link {
-      padding: 0 !important;
       margin-left: 20px !important;
+      padding: 0 !important;
     }
     .ant-input-disabled,
     .ant-select-disabled span {
@@ -10,12 +10,12 @@
     }
   }
   .savedBanner {
-    background-color: #00c598;
-    border-radius: 2px;
     display: flex;
     align-items: center;
-    padding: 12px 15px;
     margin-bottom: 10px;
+    padding: 12px 15px;
+    background-color: #00c598;
+    border-radius: 2px;
     .icon {
       margin-right: 15px;
     }
@@ -52,12 +52,12 @@
     color: red;
   }
   .title {
+    max-width: 300px;
+    overflow: hidden;
     font-weight: 700;
     font-size: 16px;
     line-height: 19px;
-    max-width: 300px;
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
   }
   &__viewBottom {
@@ -160,9 +160,9 @@
         }
       }
       &__textLabel {
+        padding-top: 11px;
         // width: 151px;
         font-size: 13px;
-        padding-top: 11px;
       }
       :global {
         .ant-form-item {
@@ -186,7 +186,7 @@
   }
   &__icon {
     margin: 2px 7px 0 0;
-    color: #2c6df9 !important;
+    color: @primary-color !important;
   }
   span {
     color: #707177;

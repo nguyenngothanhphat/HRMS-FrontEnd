@@ -1,0 +1,44 @@
+.WhatSteps {
+  padding: @padding-lg;
+  background: #ffffff;
+  border: 1px solid @border-color-base;
+  border-radius: 5px;
+  .title {
+    margin-bottom: 24px;
+    color: #000000;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 19px;
+  }
+  .container {
+    .step1,
+    .step2 {
+      display: flex;
+    }
+    .stepNumber {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      height: 44px;
+      margin-right: 12px;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 18px;
+      background: @primary-color;
+      border-radius: 50%;
+      span {
+        display: block;
+      }
+    }
+    .step1 {
+      border-right: 2px solid @border-color-base;
+    }
+    .stepContent {
+      color: #464646;
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 19px;
+    }
+  }
+}

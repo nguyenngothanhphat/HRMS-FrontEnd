@@ -1,24 +1,24 @@
 .SelectRoles {
   .titleContainer {
-    margin-bottom: 20px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
     .title {
+      color: @primary-color;
       font-weight: 700;
       font-size: 18px;
       line-height: 21px;
-      color: #2c6df9;
     }
     .cancelBtn {
+      padding: 5px 10px;
       background: #568afa1f;
       border-radius: 5px;
-      padding: 5px 10px;
       cursor: pointer;
       span {
+        color: @primary-color;
         font-weight: 500;
         font-size: 14px;
-        color: #2c6df9;
       }
       &:hover {
         background: #568afa10;
@@ -28,18 +28,18 @@
 
   .mainForm {
     background-color: white;
-    border: 1px solid #d6dce0;
+    border: 1px solid @border-color-base;
     border-radius: 5px;
     .header {
       display: flex;
       align-items: center;
       padding: 24px;
+      border-bottom: 1px solid #e2e4e8;
       span {
+        color: #161c29;
         font-weight: 700;
         font-size: 16px;
-        color: #161c29;
       }
-      border-bottom: 1px solid #e2e4e8;
     }
     .content {
       padding: 24px;
@@ -54,18 +54,18 @@
       }
     }
     .nextBtn {
-      padding: 24px;
       display: flex;
       justify-content: flex-end;
+      padding: 24px;
 
       .goBackBtn {
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
         margin-right: 24px;
         cursor: pointer;
         span {
-          color: #2c6df9;
+          color: @primary-color;
           font-weight: 500;
         }
         &:hover {
@@ -79,11 +79,11 @@
       font-size: 13px;
     }
     .ant-btn {
+      height: 40px;
+      padding: 0 30px;
       background-color: #ffa100;
       border: none;
       border-radius: 30px;
-      height: 40px;
-      padding: 0 30px;
       // width: 108px;
       span {
         color: white;

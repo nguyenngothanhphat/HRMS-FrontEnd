@@ -58,6 +58,7 @@ const PollContent = (props) => {
           <>
             {fields.map((field, index) => (
               <Form.Item
+                key={field.key}
                 label={`Response ${index + 1} ${index === 0 ? '(Add upto 3 responses)' : ''}`}
                 name={[field.name, 'response']}
                 rules={[

@@ -5,6 +5,7 @@ import styles from './index.less';
 import CommonTab from '@/pages/Dashboard/components/ActivityLog/components/CommonTab';
 import CommonModal from '@/components/CommonModal';
 import { singularify } from '@/utils/utils';
+import ActivityLogModalContent from '@/pages/Dashboard/components/ActivityLog/components/ActivityLogModalContent';
 
 const Welcome = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -32,7 +33,13 @@ const Welcome = (props) => {
         hasFooter={false}
         data={activeConversationUnseen}
         // content={<ActivityLogModalContent tabKey="2" data={[]} />}
-        content={<CommonTab type="4" data={activeConversationUnseen} isInModal />}
+        content={
+          <ActivityLogModalContent
+            tabKey="2"
+            data={activeConversationUnseen}
+            setModalVisible={() => setModalVisible(false)}
+          />
+        }
         maskClosable
       />
     </div>

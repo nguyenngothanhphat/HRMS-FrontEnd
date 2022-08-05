@@ -18,13 +18,13 @@ const ModalAdd = (props) => {
     if (mode === 'add') {
       console.log('aaa');
       response = await dispatch({
-        type: 'onboard/addJoiningFormalities',
+        type: 'onboarding/addJoiningFormalities',
         payload: value,
       });
     } else {
       const { _id } = item;
       response = await dispatch({
-        type: 'onboard/updateJoiningFormalities',
+        type: 'onboarding/updateJoiningFormalities',
         payload: {
           _id,
           ...value,
@@ -90,6 +90,6 @@ const ModalAdd = (props) => {
   );
 };
 export default connect(({ loading }) => ({
-  loadingAdd: loading.effects['onboard/addJoiningFormalities'],
-  loadingUpdate: loading.effects['onboard/updateJoiningFormalities'],
+  loadingAdd: loading.effects['onboarding/addJoiningFormalities'],
+  loadingUpdate: loading.effects['onboarding/updateJoiningFormalities'],
 }))(ModalAdd);

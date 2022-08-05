@@ -3,11 +3,11 @@ import { connect } from 'umi';
 import { Tabs } from 'antd';
 import { debounce } from 'lodash';
 
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import SalaryNegotiationTab from './components/SalaryNegotiationTab';
 
 import styles from '../index.less';
-import SearchOnboarding from '../SearchOnboarding';
+import SearchFilterBar from '../SearchFilterBar';
 
 const { TabPane } = Tabs;
 
@@ -90,7 +90,7 @@ class SalaryNegotiation extends PureComponent {
           <Tabs
             defaultActiveKey={tabId}
             onChange={this.onChangeTab}
-            tabBarExtraContent={<SearchOnboarding onChangeSearch={this.onChangeSearch} />}
+            tabBarExtraContent={<SearchFilterBar onChangeSearch={this.onChangeSearch} />}
           >
             <TabPane key="1">
               <SalaryNegotiationTab

@@ -1,10 +1,6 @@
-import { LoadingOutlined } from '@ant-design/icons';
-import { Form, Input, Spin } from 'antd';
+import { Form, Input } from 'antd';
 import React from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
 import styles from './index.less';
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const VerifyDocumentModalContent = (props) => {
   const {
@@ -15,8 +11,6 @@ const VerifyDocumentModalContent = (props) => {
     action = '',
     onResubmit = () => {},
   } = props;
-
-  const [numPages, setNumPages] = React.useState(null);
 
   const identifyImageOrPdf = () => {
     const parts = url.split('.');
@@ -35,19 +29,6 @@ const VerifyDocumentModalContent = (props) => {
     }
   };
 
-  const onDocumentLoadSuccess = ({ numPages: numPagesProp }) => {
-    setNumPages(numPagesProp);
-  };
-
-  const renderLoading = () => {
-    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-    return (
-      <div className={styles.loading}>
-        <Spin indicator={antIcon} />
-      </div>
-    );
-  };
-
   const _renderViewImage = () => {
     return (
       <div className={styles.imageFrame}>
@@ -59,22 +40,14 @@ const VerifyDocumentModalContent = (props) => {
 
   const _renderViewPDF = () => {
     return (
-      <Document
-        className={styles.pdfFrame}
-        onLoadSuccess={onDocumentLoadSuccess}
-        file={url}
-        loading={renderLoading()}
-        noData="Document Not Found"
-      >
-        {Array.from(new Array(numPages), (el, index) => (
-          <Page
-            loading=""
-            className={styles.pdfPage}
-            key={`page_${index + 1}`}
-            pageNumber={index + 1}
-          />
-        ))}
-      </Document>
+      <object width="100%" height="560" data={url} type="application/pdf">
+        <iframe
+          width="100%"
+          height="450"
+          src={`https://docs.google.com/viewer?url=${url}&embedded=true`}
+          title="pdf-viewer"
+        />
+      </object>
     );
   };
 

@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import { Form, Button, Input, Select, DatePicker, Modal } from 'antd';
+import { Button, DatePicker, Form, Input, Modal, Select } from 'antd';
 import moment from 'moment';
+import React, { Component } from 'react';
 
 import { connect } from 'umi';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -176,7 +177,7 @@ class ModalAddDependant extends Component {
         >
           <DatePicker
             className={styles.dateForm}
-            format="DD/MM/YYYY"
+            format={DATE_FORMAT_MDY}
             disabledDate={this.disabledDate}
             placeholder="Select the date of birth"
           />

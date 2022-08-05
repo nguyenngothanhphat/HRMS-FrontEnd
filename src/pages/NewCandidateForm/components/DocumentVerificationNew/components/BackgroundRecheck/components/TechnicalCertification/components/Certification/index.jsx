@@ -1,6 +1,7 @@
 import { Checkbox, Col, DatePicker, Form, Input, Row } from 'antd';
 import moment from 'moment';
 import React from 'react';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const Certification = (props) => {
@@ -35,13 +36,13 @@ const Certification = (props) => {
         <Row gutter={[16, 16]}>
           <Col span={12}>
             <Form.Item label="Issued date" name="issuedDate" labelCol={{ span: 24 }}>
-              <DatePicker placeholder="Issued date" format="MM/DD/YYYY" disabled />
+              <DatePicker placeholder="Issued date" format={DATE_FORMAT_MDY} disabled />
             </Form.Item>
           </Col>
           {!neverExpired && (
             <Col span={12}>
               <Form.Item label="Validity date" name="expiryDate" labelCol={{ span: 24 }}>
-                <DatePicker placeholder="Validity date" disabled format="MM/DD/YYYY" />
+                <DatePicker placeholder="Validity date" disabled format={DATE_FORMAT_MDY} />
               </Form.Item>
             </Col>
           )}

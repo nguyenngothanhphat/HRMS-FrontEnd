@@ -7,7 +7,7 @@ import ModalAddQuestion from '@/components/ModalAddQuestion';
 import ModalListQuestion from '@/components/ModalListQuestion';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import RemoveIcon from '@/assets/remove.svg';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import { Page } from '../../../pages/NewCandidateForm/utils';
 
 import styles from './index.less';

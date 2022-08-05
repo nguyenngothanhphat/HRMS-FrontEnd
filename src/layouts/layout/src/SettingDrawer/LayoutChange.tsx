@@ -20,7 +20,7 @@ const LayoutSetting: React.FC<{
   changeSetting: (key: string, value: any, hideLoading?: boolean) => void;
 }> = ({ settings = {}, changeSetting }) => {
   const formatMessage = getFormatMessage();
-  const { contentWidth, splitMenus, fixedHeader, layout, fixSiderbar } =
+  const { contentWidth, splitMenus, fixedHeader, layout, fixSidebar } =
     settings || defaultSettings;
 
   return (
@@ -82,8 +82,8 @@ const LayoutSetting: React.FC<{
           action: (
             <Switch
               size="small"
-              checked={!!fixSiderbar}
-              onChange={(checked) => changeSetting('fixSiderbar', checked)}
+              checked={!!fixSidebar}
+              onChange={(checked) => changeSetting('fixSidebar', checked)}
             />
           ),
         },

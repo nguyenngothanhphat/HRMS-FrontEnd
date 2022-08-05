@@ -1,12 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable compat/compat */
+import { InboxOutlined } from '@ant-design/icons';
+import { Button, message, Modal, Upload } from 'antd';
 import React, { Component } from 'react';
-import { Modal, Button, Upload, message } from 'antd';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { connect } from 'umi';
-import { InboxOutlined } from '@ant-design/icons';
-import { Document, Page } from 'react-pdf';
 import styles from './index.less';
 
 const { Dragger } = Upload;
@@ -113,7 +112,7 @@ class ModalUpload extends Component {
     dispatch({
       type: 'upload/uploadFile',
       payload: formData,
-      showNotification: false
+      showNotification: false,
     }).then((resp) => {
       this.setState({ imageUrl: '' });
       getResponse(resp);
@@ -213,9 +212,14 @@ class ModalUpload extends Component {
           {imageUrl ? (
             <>
               {fileType === PDF_TYPE ? (
-                <Document file={imageUrl}>
-                  <Page pageNumber={1} />
-                </Document>
+                <object width="100%" height="560" data={imageUrl} type="application/pdf">
+                  <iframe
+                    width="100%"
+                    height="560"
+                    src={`https://docs.google.com/viewer?url=${imageUrl}&embedded=true`}
+                    title="pdf-viewer"
+                  />
+                </object>
               ) : (
                 <ReactCrop
                   className={styles.viewImg__img}

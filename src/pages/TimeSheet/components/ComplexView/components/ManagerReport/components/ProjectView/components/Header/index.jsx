@@ -2,10 +2,10 @@ import { Select } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import FilterButton from '@/components/FilterButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
-import { projectColor, VIEW_TYPE } from '@/utils/timeSheet';
+import { projectColor, VIEW_TYPE } from '@/constants/timeSheet';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -128,7 +128,7 @@ const Header = (props) => {
             }}
           >
             {projectList.map((v, index) => (
-              <Option value={v.id}>
+              <Option value={v.id} key={v.id}>
                 <div
                   className={styles.projectName}
                   style={{
@@ -168,7 +168,7 @@ const Header = (props) => {
       </div>
       <div className={styles.Header__middle}>{viewChangeComponent()}</div>
       <div className={styles.Header__right}>
-        <FilterButton />
+        <CustomOrangeButton />
         <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>
     </div>

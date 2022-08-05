@@ -1,6 +1,6 @@
 import { Radio } from 'antd';
 import React from 'react';
-import { VIEW_TYPE } from '@/utils/timeSheet';
+import { VIEW_TYPE } from '@/constants/timeSheet';
 
 const ViewChange = (props) => {
   const { selectedView = '', setSelectedView = () => {} } = props;

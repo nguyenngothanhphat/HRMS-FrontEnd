@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { Tooltip } from 'antd';
 import EditBtn from '@/assets/edit.svg';
 import Edit from './components/Edit';
 import View from './components/View';
@@ -61,6 +62,10 @@ class PassportDetails extends PureComponent {
     });
   };
 
+  tooltipTitle = () => {
+    return 'Temporarily Disabled - will be enabled shortly.';
+  };
+
   render() {
     const { openPassport, isProfileOwner = false, permissions = {} } = this.props;
     const renderComponent = openPassport ? (
@@ -77,9 +82,11 @@ class PassportDetails extends PureComponent {
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Passport Details</p>
           {!openPassport && (!isProfileOwner || editPassportPermission) && (
-            <div className={styles.flexEdit} onClick={disabledFields ? null : this.handleEdit}>
-              <img src={EditBtn} alt="" className={styles.IconEdit} />
-              <p className={styles.Edit}>Edit</p>
+            <div onClick={disabledFields ? null : this.handleEdit}>
+              <Tooltip className={styles.flexEdit} placement="topLeft" title={this.tooltipTitle()}>
+                <img src={EditBtn} alt="" className={styles.IconEdit} />
+                <p className={styles.Edit}>Edit</p>
+              </Tooltip>
             </div>
           )}
         </div>

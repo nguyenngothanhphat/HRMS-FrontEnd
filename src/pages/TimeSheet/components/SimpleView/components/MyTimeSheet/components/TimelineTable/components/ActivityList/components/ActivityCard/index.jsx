@@ -7,14 +7,14 @@ import EditIcon from '@/assets/timeSheet/edit.svg';
 import { getCurrentCompany } from '@/utils/authority';
 import {
   activityColor,
-  convertMsToTime,
   dateFormatAPI,
   hourFormat,
   hourFormatAPI,
   MT_SECONDARY_COL_SPAN,
-} from '@/utils/timeSheet';
+} from '@/constants/timeSheet';
 import EditCard from '../EditCard';
 import styles from './index.less';
+import { convertMsToTime } from '@/utils/timeSheet';
 
 const { ACTIVITY, START_TIME, END_TIME, NIGHT_SHIFT, TOTAL_HOURS, NOTES, ACTIONS } =
   MT_SECONDARY_COL_SPAN;

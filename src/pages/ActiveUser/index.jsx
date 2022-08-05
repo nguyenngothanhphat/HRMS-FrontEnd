@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react';
+import { CheckCircleOutlined, InfoCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
-import { LoadingOutlined, InfoCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
 import styles from './index.less';
 

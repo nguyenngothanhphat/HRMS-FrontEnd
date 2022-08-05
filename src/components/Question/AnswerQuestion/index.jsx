@@ -2,7 +2,7 @@ import { connect } from 'umi';
 import { Col } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { MODE } from '@/components/Question/utils';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import QuestionItemView from '../QuestionItemView/index';
 import { Page } from '../../../pages/NewCandidateForm/utils';
 

@@ -5,33 +5,42 @@ import DirectoryIcon from '@/assets/dashboard/directory.svg';
 import LeftArrow from '@/assets/dashboard/leftArrow.svg';
 import TimeoffIcon from '@/assets/dashboard/timeoff.svg';
 import TimesheetIcon from '@/assets/dashboard/timesheet.svg';
+import ApprovalIcon from '@/assets/dashboard/approvalIcon.svg';
 import CommonModal from '@/components/CommonModal';
 import AppCard from './components/AppCard';
 import ShowAllAppModalContent from './components/ShowAllAppModalContent';
-// import ExpensoIcon from '@/assets/dashboard/expenso.svg';
-// import ReportIcon from '@/assets/dashboard/reports.svg';
-// import TicketIcon from '@/assets/ticketManagement-assign.svg';
 import styles from './index.less';
 
-const myApps = [
-  {
-    icon: TimesheetIcon,
-    name: 'Timesheets',
-  },
-  {
-    icon: TimeoffIcon,
-    name: 'Timeoff',
-  },
-  {
-    icon: DirectoryIcon,
-    name: 'Directory',
-  },
-];
-
-const listMyApps = myApps.slice(0, 6);
-
-const MyApps = () => {
+const MyApps = (props) => {
+  const {
+    user: { permissions: { viewApprovalPage = -1 } = {} },
+  } = props;
   const [modalVisible, setModalVisible] = useState(false);
+  const myApps = [
+    {
+      icon: TimesheetIcon,
+      name: 'Timesheets',
+      link: '/time-sheet',
+    },
+    {
+      icon: TimeoffIcon,
+      name: 'Timeoff',
+      link: '/time-off/overview',
+    },
+    {
+      icon: DirectoryIcon,
+      name: 'Directory',
+      link: '/directory/org-chart',
+    },
+    {
+      icon: ApprovalIcon,
+      name: 'Approval',
+      link: '/dashboard/approvals',
+      isHide: viewApprovalPage !== 1,
+    },
+  ];
+
+  const listMyApps = myApps.slice(0, 6);
   return (
     <div className={styles.MyApps}>
       <div>
@@ -41,7 +50,7 @@ const MyApps = () => {
         <div className={styles.content}>
           <Row gutter={[24, 24]}>
             {listMyApps.map((app) => (
-              <AppCard app={app} />
+              <AppCard app={app} key={app.name} />
             ))}
           </Row>
         </div>
@@ -63,4 +72,6 @@ const MyApps = () => {
   );
 };
 
-export default connect(() => ({}))(MyApps);
+export default connect(({ user = {} }) => ({
+  user,
+}))(MyApps);

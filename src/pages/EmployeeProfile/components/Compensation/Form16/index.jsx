@@ -1,21 +1,10 @@
+import { Button, Card, Dropdown, Menu } from 'antd';
 import React, { useState } from 'react';
-import { Card, Dropdown, Menu, Button } from 'antd';
-import { Document, Page, pdfjs } from 'react-pdf';
 import SmallDownArrow from '@/assets/smallDropdownGray.svg';
-
 import styles from './index.less';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-
-const documentWarning = (msg) => (
-  <div className={styles.documentWarning} style={{ padding: '24px' }}>
-    <p>{msg}</p>
-  </div>
-);
-
-const Form16 = (props) => {
+const Form16 = ({ url }) => {
   const [filterMode, setFilterMode] = useState('2021');
-  const [currentPage] = useState(1);
 
   const renderFilterMode = () => {
     if (filterMode === '2021') return '2021';
@@ -25,7 +14,6 @@ const Form16 = (props) => {
     setFilterMode(key);
   };
 
-  const { url = '' } = props;
   const menu = (
     <Menu onClick={onClick}>
       <Menu.Item key="2021">2021</Menu.Item>
@@ -48,15 +36,14 @@ const Form16 = (props) => {
     <div className={styles.Form16}>
       <Card title="Form 16" extra={renderOption()}>
         <div className={styles.viewFile}>
-          <Document
-            file="https://stghrms.paxanimi.ai/api/attachments/61b04c149d426500a9953b75/Resume.pdf"
-            // file={url}
-            // onLoadSuccess={onLoadSuccess}
-            loading={documentWarning('Loading document. Please wait...')}
-            noData={documentWarning('URL is not available.')}
-          >
-            <Page pageNumber={currentPage} />
-          </Document>
+          <object width="100%" height="560" data={url} type="application/pdf">
+            <iframe
+              width="100%"
+              height="560"
+              src={`https://docs.google.com/viewer?url=${url}&embedded=true`}
+              title="pdf-viewer"
+            />
+          </object>
         </div>
       </Card>
       <div className={styles.btnDownLoad}>

@@ -204,3 +204,22 @@ export async function getListSkill() {
     method: 'POST',
   });
 }
+
+export async function getLocationsOfCountries(params) {
+  return request('/api/locationtenant/group-country', {
+    method: 'GET',
+    params,
+  });
+}
+
+export async function updateManagerResource(payload) {
+  return request(
+    '/api-project/resourcetenant/update-manager',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}

@@ -1,7 +1,7 @@
 .ViewDocument {
   width: 100%;
   background-color: white;
-  border: solid 1px #d6dce0;
+  border: solid 1px @border-color-base;
   border-radius: 5px;
   .tableTitle {
     display: flex;
@@ -9,7 +9,7 @@
     justify-content: space-between;
     height: 67px;
     padding: 0 24px;
-    border-bottom: solid 1px #d6dce0;
+    border-bottom: solid 1px @border-color-base;
     span {
       font-weight: 700;
       font-size: 16px;
@@ -21,7 +21,7 @@
       }
       span {
         margin-left: 15px;
-        color: #2c6df9;
+        color: @primary-color;
       }
       &:hover {
         opacity: 0.8;
@@ -31,7 +31,7 @@
 
   .tableContent {
     padding: 24px 24px 0 24px;
-    border-bottom: solid 1px #d6dce0;
+    border-bottom: solid 1px @border-color-base;
     .example {
       margin: 20px 0;
       margin-bottom: 20px;
@@ -46,7 +46,7 @@
       margin-bottom: 0;
       overflow-x: hidden;
       background-color: #f3f7ff;
-      border: 1px solid #2c6df9;
+      border: 1px solid @primary-color;
       border-radius: 5px;
       .pdfFrame {
         .documentWarning {
@@ -139,7 +139,7 @@
             padding: 7px;
             object-fit: contain;
             background-color: #ffffff;
-            border: solid 1px #2c6df9;
+            border: solid 1px @primary-color;
             border-radius: 5px;
             .ant-select-selection-item {
               // remove icon

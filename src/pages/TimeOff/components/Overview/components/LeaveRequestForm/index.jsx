@@ -8,7 +8,7 @@ import { connect } from 'umi';
 import Icon1 from '@/assets/timeOff/icon1.svg';
 import NoteComponent from '@/components/NoteComponent';
 import { PageContainer } from '@/layouts/layout/src';
-import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/constants/timeOff';
 import RequestInformation from './components/RequestInformation';
 import styles from './index.less';
 
@@ -143,7 +143,7 @@ const LeaveRequestForm = (props) => {
   const Note = {
     title: 'Note',
     icon: Icon1,
-    borderColor: '#ebeff2',
+    borderColor: '#d6dce0',
     data: (
       <Typography.Text>
         Timeoff requests requires approvals.
@@ -158,7 +158,7 @@ const LeaveRequestForm = (props) => {
       <div className={styles.leaveRequest}>
         <Affix offsetTop={42}>
           <div className={styles.titlePage}>
-            {action === NEW_LEAVE_REQUEST && (
+            {(action === NEW_LEAVE_REQUEST || action === NEW_BEHALF_OF) && (
               <>
                 <p className={styles.titlePage__text}>Apply for Timeoff</p>
               </>

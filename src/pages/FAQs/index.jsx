@@ -58,9 +58,7 @@ class FAQs extends PureComponent {
               <div className={styles.header__right}>
                 {checkRoleHrAndManager && (
                   <Button>
-                    <Link
-                      to={pathname === '/faqpage' ? '/faqpage/settings' : '/help-center/settings'}
-                    >
+                    <Link to={pathname === '/faq' ? '/faq/settings' : '/help-center/settings'}>
                       <span className={styles.buttonSetting__text}>Settings</span>
                     </Link>
                   </Button>

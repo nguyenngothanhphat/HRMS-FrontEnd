@@ -55,7 +55,7 @@ import {
   getAdditionalQuestion,
   verifyAllDocuments,
 } from '@/services/formCandidate';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/constants/onboarding';
 
 const defaultState = {
   rookieId: '',

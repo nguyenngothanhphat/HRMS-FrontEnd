@@ -1,25 +1,22 @@
-import {
-  Button,
-  Checkbox,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  Modal,
-  notification,
-  Row,
-  Select,
-} from 'antd';
+import { Checkbox, Col, DatePicker, Form, Input, Modal, notification, Row, Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/utils/timeSheet';
-import { getCurrentCompany } from '@/utils/authority';
-import styles from './index.less';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomTimePicker from '@/components/CustomTimePicker';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import {
+  dateFormatAPI,
+  hourFormat,
+  hourFormatAPI
+} from '@/constants/timeSheet';
+import { sortAlphabet } from '@/utils/utils';
+import { getCurrentCompany } from '@/utils/authority';
+import { getAllProjectsWithoutAssigned } from '@/utils/timeSheet';
+import styles from './index.less';
 
-const { Option } = Select;
-const dateFormat = 'MM/DD/YYYY';
+const { Option, OptGroup } = Select;
 const countryIdUS = 'US';
 
 const TASKS = [];
@@ -45,9 +42,10 @@ const EditTaskModal = (props) => {
       clientLocation = false,
       breakTime = 0,
       overTime = 0,
+      projectName = '',
     } = {},
     task = {},
-    timeSheet: { projectList = [] } = {},
+    timeSheet: { projectList = [], myProjects = [] } = {},
   } = props;
 
   const {
@@ -77,6 +75,8 @@ const EditTaskModal = (props) => {
     });
   };
 
+  const findProject = (pId = projectId) => projectList.find((project) => project?.id === pId);
+
   useEffect(() => {
     if (visible) {
       if (projectList.length === 0) {
@@ -92,7 +92,7 @@ const EditTaskModal = (props) => {
       form.setFieldsValue({
         date: date ? moment(date) : '',
         taskName,
-        projectId,
+        projectId: findProject() ? projectId : undefined,
         startTime: startTime ? moment(startTime, hourFormatAPI).format(hourFormat) : '',
         endTime: endTime ? moment(endTime, hourFormatAPI).format(hourFormat) : '',
         notes,
@@ -122,7 +122,7 @@ const EditTaskModal = (props) => {
 
   // main function
   const updateActivityEffect = (values) => {
-    const findPrj = projectList.find((x) => x.id === values.projectId);
+    const findPrj = findProject(values.projectId);
     if (!findPrj) {
       notification.error({
         message: 'Invalid project name',
@@ -190,7 +190,7 @@ const EditTaskModal = (props) => {
                 fieldKey="date"
                 labelCol={{ span: 24 }}
               >
-                <DatePicker format={dateFormat} />
+                <DatePicker format={DATE_FORMAT_MDY} />
               </Form.Item>
             </Col>
             <Col xs={24} md={12} />
@@ -198,6 +198,7 @@ const EditTaskModal = (props) => {
           <Row gutter={[24, 0]} className={styles.belowPart}>
             <Col xs={24} md={12}>
               <Form.Item
+                initialValue={findProject() ? undefined : projectName}
                 label="Project"
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Select the project' }]}
@@ -208,17 +209,33 @@ const EditTaskModal = (props) => {
                   placeholder="Select the project"
                   loading={loadingFetchProject}
                   disabled={loadingFetchProject}
-                  filterOption={
-                    (input, option) =>
-                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    // eslint-disable-next-line react/jsx-curly-newline
-                  }
+                  filterOption={(input, option) =>
+                    option.children?.toLowerCase()?.indexOf(input.toLowerCase()) >= 0}
                 >
-                  {projectList.map((val) => (
-                    <Option value={val.id} key={val.id}>
-                      {val.projectName}
-                    </Option>
-                  ))}
+                  <OptGroup label="My Projects">
+                    {sortAlphabet(myProjects, 'project', 'projectName').map((project) => {
+                      const {
+                        id: myProjectId = '',
+                        projectName: name = '',
+                        customerName = '',
+                      } = project.project;
+                      return (
+                        <Option key={myProjectId} value={myProjectId}>
+                          {name} - {customerName}
+                        </Option>
+                      );
+                    })}
+                  </OptGroup>
+                  <OptGroup label="All Projects">
+                    {sortAlphabet(
+                      getAllProjectsWithoutAssigned(projectList, myProjects),
+                      'projectName',
+                    ).map((val) => (
+                      <Option key={val.id} value={val.id}>
+                        {val.projectName} - {val.customerName}
+                      </Option>
+                    ))}
+                  </OptGroup>
                 </Select>
               </Form.Item>
             </Col>
@@ -343,19 +360,15 @@ const EditTaskModal = (props) => {
       maskClosable={false}
       footer={
         <>
-          <Button className={styles.btnCancel} onClick={handleCancel}>
-            Cancel
-          </Button>
-          <Button
-            className={styles.btnSubmit}
-            type="primary"
+          <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+          <CustomPrimaryButton
             form="myForm"
             key="submit"
             htmlType="submit"
             loading={loadingUpdateTask}
           >
             Update
-          </Button>
+          </CustomPrimaryButton>
         </>
       }
       title={renderModalHeader()}

@@ -1,8 +1,9 @@
 import { Card, Col, Form, Input, Radio, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { convertDaysToHours, convertHoursToDays, FORM_ITEM_NAME, TIME_TEXT } from '@/utils/timeOff';
+import { convertDaysToHours, convertHoursToDays } from '@/utils/timeOff';
 import styles from './index.less';
+import { FORM_ITEM_NAME, TIME_TEXT } from '@/constants/timeOff';
 
 const {
   NEGATIVE_LEAVE_BALANCE,

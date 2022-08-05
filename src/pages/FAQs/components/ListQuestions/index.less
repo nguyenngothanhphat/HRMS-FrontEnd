@@ -5,38 +5,38 @@
       border: none;
     }
     .ant-collapse > .ant-collapse-item > .ant-collapse-header {
-      height: 57px;
-      align-items: center;
       display: flex;
+      align-items: center;
+      height: 57px;
     }
   }
   .itemMenuAcive {
-    width: 100%;
-    height: 50px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    height: 50px;
     padding: 0 18px;
     color: #707177;
-    cursor: pointer;
-    font-size: 14px;
+    color: @primary-color;
     font-weight: bold;
-    color: #2c6df9;
+    font-size: 14px;
+    background-color: rgba(44, 109, 249, 0.12);
     border-bottom: none;
     border-top-left-radius: 100px;
     border-bottom-left-radius: 100px;
-    background-color: rgba(44, 109, 249, 0.12);
+    cursor: pointer;
   }
   .itemMenu {
-    width: 100%;
-    height: 50px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    height: 50px;
     padding: 0 18px;
-    border-bottom: 1px solid rgba(191, 194, 211, 0.5);
     color: #707177;
     font-size: 14px;
+    border-bottom: 1px solid rgba(191, 194, 211, 0.5);
     cursor: pointer;
   }
   .leftMenu {
@@ -49,27 +49,27 @@
 
   .timeoffRuleFrom {
     .titleText {
+      color: #000000;
       font-weight: bold;
       font-size: 16px;
       line-height: 19px;
-      color: #000000;
     }
     .childrenFrom {
       padding: 12px 0;
     }
     .collapse {
-      border: 1px solid #e5e9ec;
       box-sizing: border-box;
-      border-radius: 10px;
       margin: 12px 0;
+      border: 1px solid #e5e9ec;
+      border-radius: 10px;
       .minusBoder {
-        width: 30px;
-        justify-content: center;
         display: flex;
         align-items: center;
+        justify-content: center;
+        width: 30px;
         height: 30px;
-        border-radius: 50%;
         background-color: #ffa100;
+        border-radius: 50%;
         svg {
           width: 20px;
           height: 20px;
@@ -77,40 +77,40 @@
         }
       }
       .plusBoder {
-        width: 30px;
-        height: 30px;
-        justify-content: center;
         display: flex;
         align-items: center;
-        border-radius: 50%;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
         background-color: #f4f5f6;
+        border-radius: 50%;
         svg {
+          z-index: 1;
           width: 20px;
           height: 20px;
           color: #707177;
-          z-index: 1;
         }
       }
     }
     .header {
-      font-style: normal;
+      color: #707177;
       font-weight: 500;
       font-size: 14px;
+      font-style: normal;
       line-height: 16px;
-      color: #707177;
     }
     .activeHeader {
+      color: #161c29;
       font-weight: bold;
       font-size: 14px;
       line-height: 16px;
-      color: #161c29;
     }
     .content {
-      font-style: normal;
+      color: #707177;
       font-weight: normal;
       font-size: 14px;
+      font-style: normal;
       line-height: 20px;
-      color: #707177;
     }
   }
 }

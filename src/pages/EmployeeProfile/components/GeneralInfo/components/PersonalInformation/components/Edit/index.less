@@ -23,14 +23,14 @@
   }
 
   .inputForm {
-    border: solid 1px #d6dce0;
+    border: solid 1px @border-color-base;
     border-radius: 5px;
   }
   .areaForm {
     border-radius: 5px;
   }
   .selectForm {
-    border-color: #d6dce0;
+    border-color: @border-color-base;
     border-radius: 5px;
     box-shadow: none;
 
@@ -50,7 +50,7 @@
         box-shadow: none;
       }
       .ant-select-focused {
-        border-color: #2c6df9;
+        border-color: @primary-color;
         box-shadow: none;
       }
 
@@ -74,7 +74,7 @@
     .ant-select-selector:focus,
     .ant-select-selector:active,
     .ant-select-open .ant-select-selector {
-      border-color: #2c6df9 !important;
+      border-color: @primary-color !important;
       box-shadow: none !important;
     }
   }
@@ -85,30 +85,6 @@
     justify-content: flex-end;
     width: 100%;
     padding: 16px 24px;
-    border-top: solid 1px #d6dce0;
-  }
-  .cancelFooter {
-    margin-right: 40px;
-    color: #ffa100;
-    font-weight: 500;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  .cancelFooter:hover {
-    color: #b1740c;
-  }
-  .buttonFooter {
-    height: 40px;
-    color: #ffffff;
-    font-weight: 500;
-    font-size: 14px;
-    background-color: #ffa100;
-    border: solid 1px #ffa100;
-    border-radius: 25px;
-    padding-inline: 25px;
-  }
-  .buttonFooter:hover {
-    background-color: #b1740c;
-    border: solid 1px #b1740c;
+    border-top: solid 1px @border-color-base;
   }
 }

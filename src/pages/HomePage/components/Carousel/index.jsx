@@ -5,7 +5,7 @@ import Banner1 from '@/assets/homePage/banner1.png';
 import NextIcon from '@/assets/homePage/next.svg';
 import PrevIcon from '@/assets/homePage/prev.svg';
 import EmptyComponent from '@/components/Empty';
-import { TAB_IDS } from '@/utils/homePage';
+import { TAB_IDS } from '@/constants/homePage';
 import styles from './index.less';
 
 const NextArrow = (props) => {
@@ -94,8 +94,8 @@ const Carousel = (props) => {
           prevArrow={<PrevArrow />}
         >
           {!previewing &&
-            bannerState.map((x) => (
-              <div className={styles.image}>
+            bannerState.map((x, i) => (
+              <div className={styles.image} key={`${i + 1}`}>
                 <img src={x.url} alt="" />
               </div>
             ))}
@@ -103,8 +103,8 @@ const Carousel = (props) => {
           {/* FOR PREVIEWING IN SETTINGS PAGE  */}
           {previewing &&
             contentPreview.length > 0 &&
-            contentPreview.map((x) => (
-              <div className={styles.image}>
+            contentPreview.map((x, i) => (
+              <div className={styles.image} key={`${i + 1}`}>
                 <img src={x} alt="" />
               </div>
             ))}

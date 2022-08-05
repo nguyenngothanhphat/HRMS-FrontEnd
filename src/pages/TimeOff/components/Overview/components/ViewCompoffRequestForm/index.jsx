@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Affix, Row, Col } from 'antd';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import styles from './index.less';

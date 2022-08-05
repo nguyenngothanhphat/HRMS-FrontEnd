@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect } from 'umi';
-import { generateAllWeeks, dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
+import { dateFormatAPI, VIEW_TYPE } from '@/constants/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 import ViewTypeSelector from '@/pages/TimeSheet/components/ComplexView/components/ViewTypeSelector';
 import DailyHeader from './components/DailyHeader';
@@ -13,6 +13,7 @@ import MonthlyTable from './components/MonthlyTable';
 import DailyFooter from './components/DailyFooter';
 
 import styles from './index.less';
+import { generateAllWeeks } from '@/utils/timeSheet';
 
 const MyTimeSheet = (props) => {
   // daily
@@ -50,6 +51,15 @@ const MyTimeSheet = (props) => {
         fromDate: moment(startDate).format(dateFormatAPI),
         toDate: moment(endDate).format(dateFormatAPI),
         viewType: selectedView,
+      },
+    });
+  };
+
+  const fetchMyProjectList = () => {
+    dispatch({
+      type: 'timeSheet/fetchMyProjects',
+      payload: {
+        employee: employeeId,
       },
     });
   };
@@ -100,6 +110,10 @@ const MyTimeSheet = (props) => {
     const weeks = generateAllWeeks(startDateMonth, endDateMonth);
     setWeeksOfMonth(weeks);
   }, [startDateMonth]);
+
+  useEffect(() => {
+    fetchMyProjectList();
+  }, []);
 
   // RENDER UI
   const viewChangeComponent = () => (
