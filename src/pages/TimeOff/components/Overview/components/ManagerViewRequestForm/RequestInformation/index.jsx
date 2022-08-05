@@ -155,6 +155,7 @@ class RequestInformation extends PureComponent {
       this.setState({
         isReject: false,
       });
+      this.refreshGetById();
     }
   };
 
@@ -187,6 +188,7 @@ class RequestInformation extends PureComponent {
     const { statusCode = 0 } = res;
     if (statusCode === 200) {
       this.setShowModal(true);
+      this.refreshGetById();
     }
   };
 

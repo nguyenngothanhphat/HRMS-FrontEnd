@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
 import { Tabs } from 'antd';
-import { connect } from 'umi';
 import { debounce } from 'lodash';
-
-import AllTab from './components/AllTab';
+import React, { Component } from 'react';
+import { connect } from 'umi';
 import styles from '../index.less';
 import SearchFilterBar from '../SearchFilterBar';
+import AllTab from './components/AllTab';
 
 const { TabPane } = Tabs;
 
