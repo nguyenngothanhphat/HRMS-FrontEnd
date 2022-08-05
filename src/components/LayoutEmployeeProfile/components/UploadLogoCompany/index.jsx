@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import logoDefault from '@/assets/companyDefault.png';
 import { Button, Image } from 'antd';
 import { connect } from 'umi';
-import logoDefault from '@/assets/companyDefault.png';
 import ModalUpload from '@/components/ModalUpload';
 import s from './index.less';
 
@@ -40,21 +40,22 @@ class UploadLogoCompany extends Component {
   };
 
   getResponse = (resp) => {
-    const { statusCode, data = {} } = resp;
+    const { statusCode, data = [] } = resp;
     const { dispatch, companyDetails: { company: { _id: id = '', tenant = '' } = {} } = {} } =
       this.props;
     if (statusCode === 200) {
+      const [first] = data;
       if (id) {
         dispatch({
           type: 'companiesManagement/updateCompany',
-          payload: { id, tenantId: tenant, logoUrl: data?.url },
+          payload: { id, tenantId: tenant, logoUrl: first?.url },
           dataTempKept: {},
           isAccountSetup: true,
         }).then(({ statusCode: check }) => {
           if (check === 200) {
             dispatch({
               type: 'companiesManagement/saveCompanyDetails',
-              payload: { logoUrl: data?.url },
+              payload: { logoUrl: first?.url },
             });
             this.handleCancel();
           }
@@ -62,7 +63,7 @@ class UploadLogoCompany extends Component {
       } else {
         dispatch({
           type: 'companiesManagement/saveCompanyDetails',
-          payload: { logoUrl: data?.url },
+          payload: { logoUrl: first?.url },
           // dataTempKept: {},
           // isAccountSetup: true,
         });
