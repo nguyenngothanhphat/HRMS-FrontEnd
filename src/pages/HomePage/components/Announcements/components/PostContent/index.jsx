@@ -211,15 +211,18 @@ const PostContent = (props) => {
   return (
     <div className={styles.PostContent}>
       <div className={styles.content}>{description ? Parser(renderContent(description)) : ''}</div>
-      <img
-        src={attachments[0].url}
-        onLoad={getMode}
-        alt=""
-        style={{
-          visibility: 'hidden',
-          position: 'absolute',
-        }}
-      />
+      {attachments && attachments?.length > 0 && (
+        <img
+          src={attachments[0].url}
+          onLoad={getMode}
+          alt=""
+          style={{
+            visibility: 'hidden',
+            position: 'absolute',
+          }}
+        />
+      )}
+
       {renderPreviewImage()}
       {renderImageCountTag()}
       {renderPreviewLink()}

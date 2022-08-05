@@ -457,7 +457,8 @@ const AddTaskModal = (props) => {
                             return option.children?.toLowerCase().includes(input.toLowerCase());
                           }
                           return (
-                            ((option.options || []).map((x) => x.children) || [])
+                            (option.options || [])
+                              .map((x) => x.children)
                               .map((x) => x.toLowerCase())
                               .indexOf(input.toLowerCase()) >= 0
                           );
