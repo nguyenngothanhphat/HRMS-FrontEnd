@@ -77,17 +77,8 @@ class OnboardingAll extends Component {
   };
 
   render() {
-    const { dataAll = [], loadingAll, loadingFilter } = this.props;
+    const { dataAll = [], total = 0, loadingAll, loadingFilter } = this.props;
     const { pageSelected, size, loadingSearch } = this.state;
-
-    const listDataInProgress = dataAll.filter(
-      (x) =>
-        ![
-          NEW_PROCESS_STATUS.JOINED,
-          NEW_PROCESS_STATUS.OFFER_REJECTED,
-          NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
-        ].includes(x.processStatus),
-    );
 
     return (
       <div className={styles.onboardingTab}>
@@ -98,13 +89,13 @@ class OnboardingAll extends Component {
           >
             <TabPane key="1">
               <AllTab
-                list={listDataInProgress}
+                list={dataAll}
                 loading={loadingAll || loadingFilter}
                 loadingSearch={loadingSearch}
                 pageSelected={pageSelected}
                 size={size}
                 getPageAndSize={this.getPageAndSize}
-                total={listDataInProgress.length}
+                total={total}
               />
             </TabPane>
           </Tabs>
