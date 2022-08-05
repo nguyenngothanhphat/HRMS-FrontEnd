@@ -1,8 +1,8 @@
 import { ref, getDownloadURL, uploadBytesResumable, getStorage } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { initializeApp } from 'firebase/app';
-import firebaseConfig from '@/utils/firebase';
-import { UPLOAD } from '@/utils/upload';
+import firebaseConfig from '@/constants/firebase';
+import { UPLOAD } from '@/constants/upload';
 
 const app = initializeApp(firebaseConfig);
 

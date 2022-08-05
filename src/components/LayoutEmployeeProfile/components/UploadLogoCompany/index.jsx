@@ -40,22 +40,21 @@ class UploadLogoCompany extends Component {
   };
 
   getResponse = (resp) => {
-    const { statusCode, data = [] } = resp;
+    const { statusCode, data = {} } = resp;
     const { dispatch, companyDetails: { company: { _id: id = '', tenant = '' } = {} } = {} } =
       this.props;
     if (statusCode === 200) {
-      const first = data;
       if (id) {
         dispatch({
           type: 'companiesManagement/updateCompany',
-          payload: { id, tenantId: tenant, logoUrl: first?.url },
+          payload: { id, tenantId: tenant, logoUrl: data?.url },
           dataTempKept: {},
           isAccountSetup: true,
         }).then(({ statusCode: check }) => {
           if (check === 200) {
             dispatch({
               type: 'companiesManagement/saveCompanyDetails',
-              payload: { logoUrl: first?.url },
+              payload: { logoUrl: data?.url },
             });
             this.handleCancel();
           }
@@ -63,7 +62,7 @@ class UploadLogoCompany extends Component {
       } else {
         dispatch({
           type: 'companiesManagement/saveCompanyDetails',
-          payload: { logoUrl: first?.url },
+          payload: { logoUrl: data?.url },
           // dataTempKept: {},
           // isAccountSetup: true,
         });

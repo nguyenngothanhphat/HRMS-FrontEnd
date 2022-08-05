@@ -109,8 +109,7 @@
     "umi-request": "^1.0.8",
     "use-merge-value": "^1.0.1",
     "yarn": "^1.22.19",
-    "uuid": "^8.3.2",
-    "xlsx": "^0.16.9"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^1.0.18",
