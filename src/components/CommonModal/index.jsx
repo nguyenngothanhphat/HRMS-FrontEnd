@@ -17,6 +17,7 @@ const CommonModal = ({
   content = '',
   width = 700,
   loading = false,
+  loadingSecond = false,
   hasFooter = true,
   onFinish = () => {},
   hasHeader = true,
@@ -74,7 +75,11 @@ const CommonModal = ({
                 </CustomSecondaryButton>
               )}
               {hasSecondButton && (
-                <CustomSecondaryButton onClick={onSecondButtonClick} paddingInline={0}>
+                <CustomSecondaryButton
+                  onClick={onSecondButtonClick}
+                  paddingInline={0}
+                  loading={loadingSecond}
+                >
                   {secondText}
                 </CustomSecondaryButton>
               )}

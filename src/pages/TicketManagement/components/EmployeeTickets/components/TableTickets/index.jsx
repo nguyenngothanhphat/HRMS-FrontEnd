@@ -11,7 +11,7 @@ import EmptyComponent from '@/components/Empty';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { PRIORITY_COLOR } from '@/constants/ticketManagement';
-import { getEmployeeUrl } from '@/utils/directory';
+import { getEmployeeUrl } from '@/utils/utils';
 import TicketItem from './components/TicketItem';
 import styles from './index.less';
 

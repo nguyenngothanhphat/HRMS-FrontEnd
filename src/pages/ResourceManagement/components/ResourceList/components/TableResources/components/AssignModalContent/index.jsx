@@ -14,7 +14,7 @@ import styles from './index.less';
 const { TextArea } = Input;
 const { Option } = Select;
 
-const AddModalContent = (props) => {
+const AssignModalContent = (props) => {
   const [form] = Form.useForm();
   const {
     dispatch,
@@ -48,21 +48,6 @@ const AddModalContent = (props) => {
   const handleSubmitAssign = async (values) => {
     const { project, status, utilization, startDate, endDate, comment, revisedEndDate } = values;
 
-    if (
-      new Date(endDate).getTime() <= new Date(startDate).getTime() ||
-      new Date(revisedEndDate).getTime() <= new Date(startDate).getTime()
-    ) {
-      notification.error({
-        message: 'End date or revised end date cannot less than start date',
-      });
-      return;
-    }
-    if (new Date(revisedEndDate).getTime() <= new Date(endDate).getTime()) {
-      notification.error({
-        message: 'Revised date cannot less than end date',
-      });
-      return;
-    }
     await dispatch({
       type: 'resourceManagement/assignResourceToProject',
       payload: {
@@ -79,11 +64,9 @@ const AddModalContent = (props) => {
     }).then((response) => {
       if (response.statusCode === 200) {
         setSuccessVisible();
+        refreshData();
       }
-      refreshData();
     });
-
-    setSuccessVisible();
   };
 
   const handleChangeStartDate = (value) => {
@@ -115,7 +98,7 @@ const AddModalContent = (props) => {
   ];
 
   return (
-    <div className={styles.AddModalContent}>
+    <div className={styles.AssignModalContent}>
       <Form
         layout="vertical"
         className={styles.formAdd}
@@ -287,4 +270,4 @@ export default connect(
     resourceList,
     statusList,
   }),
-)(AddModalContent);
+)(AssignModalContent);

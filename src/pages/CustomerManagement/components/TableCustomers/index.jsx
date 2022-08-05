@@ -6,7 +6,7 @@ import DeleteIcon from '@/assets/customerManagement/delete.svg';
 import CommonModal from '@/components/CommonModal';
 import CommonTable from '@/components/CommonTable';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { getEmployeeUrl } from '@/utils/directory';
+import { getEmployeeUrl } from '@/utils/utils';
 import DeleteCustomerModalContent from './components/DeleteCustomerModalContent';
 import styles from './index.less';
 

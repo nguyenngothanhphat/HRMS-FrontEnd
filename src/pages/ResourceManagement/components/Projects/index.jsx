@@ -21,7 +21,6 @@ const ProjectList = (props) => {
   const [projectStatus, setProjectStatus] = useState('All');
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState({});
-  console.log('🚀  ~ filter', filter);
 
   const fetchProjectList = async () => {
     let tempPayload = {

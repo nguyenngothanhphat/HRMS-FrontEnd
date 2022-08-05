@@ -1,38 +1,36 @@
-import { Form, Input, Select } from 'antd';
-import React, { useEffect } from 'react';
+import { Form, Input } from 'antd';
+import React from 'react';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
-import DefaultAvatar from '@/assets/avtDefault.jpg';
+import DebounceSelect from '@/components/DebounceSelect';
 import styles from './index.less';
 
-const { Option } = Select;
-
 const ReassignModal = (props) => {
-  const {
-    dispatch,
-    type = '',
-    page = '',
-    limit = '',
-    onClose = () => {},
-    employeeList = [],
-    visible = false,
-    loadingFetchEmployeeList = false,
-    item = {},
-  } = props;
+  const { dispatch, type = '', page = '', limit = '', onClose = () => {}, item = {} } = props;
 
   const { ticketID = '', assignTo = {}, processStatus = '' } = item || {};
-
-  const fetchListEmployee = () => {
-    dispatch({
+  const onEmployeeSearch = (val) => {
+    if (!val) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+    return dispatch({
       type: 'onboarding/fetchEmployeeList',
+      payload: {
+        name: val,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data
+        .filter((hr) => hr._id !== assignTo?._id)
+        .map((user) => ({
+          label: user.generalInfoInfo?.legalName,
+          value: user._id,
+        }));
     });
   };
-
-  useEffect(() => {
-    if (employeeList.length === 0 && visible) {
-      fetchListEmployee();
-    }
-  }, []);
 
   const onFinish = async (values) => {
     const { to = '' } = values;
@@ -53,46 +51,6 @@ const ReassignModal = (props) => {
         onClose();
       }
     }
-  };
-
-  const renderHR = (hr) => {
-    const {
-      generalInfo: {
-        avatar = '',
-        // workEmail = '',
-        legalName = '',
-      } = {},
-    } = hr;
-
-    return (
-      <Option key={hr._id} value={hr._id} style={{ padding: '10px' }}>
-        <div
-          style={{
-            display: 'inline-block',
-            marginRight: '10px',
-            width: 25,
-            height: 25,
-          }}
-        >
-          <img
-            style={{
-              width: 25,
-              height: 25,
-              objectFit: 'cover',
-              borderRadius: '50%',
-            }}
-            src={avatar}
-            alt="user"
-            onError={(e) => {
-              e.target.src = DefaultAvatar;
-            }}
-          />
-        </div>
-        <span style={{ fontSize: '13px', color: '#161C29' }} className={styles.ccEmail}>
-          {legalName}
-        </span>
-      </Option>
-    );
   };
 
   return (
@@ -119,19 +77,13 @@ const ReassignModal = (props) => {
           },
         ]}
       >
-        <Select
-          filterOption={(input, option) => {
-            return (
-              option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            );
-          }}
-          showSearch
+        <DebounceSelect
           allowClear
+          showArrow
           placeholder="Select an employee"
-          loading={loadingFetchEmployeeList}
-        >
-          {employeeList?.filter((hr) => hr._id !== assignTo?._id)?.map((hr) => renderHR(hr))}
-        </Select>
+          fetchOptions={onEmployeeSearch}
+          showSearch
+        />
       </Form.Item>
     </Form>
   );

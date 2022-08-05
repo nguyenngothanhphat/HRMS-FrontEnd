@@ -15,7 +15,7 @@ import UserProfilePopover from '@/components/UserProfilePopover';
 import { TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { getEmployeeUrl } from '@/utils/directory';
+import { getEmployeeUrl } from '@/utils/utils';
 import RejectCommentModal from '../../../ActivityLog/components/PendingApprovalTag/components/RejectCommentModal';
 import DetailTicket from '../DetailTicket';
 import FilterContent from './components/FilterContent';

@@ -8,6 +8,7 @@ import CalendarIcon from '@/assets/calendar_icon.svg';
 import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { removeEmptyFields } from '@/utils/utils';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -91,7 +92,7 @@ const FilterForm = (props) => {
   }, 700);
 
   const onValuesChange = (changedValues, allValues) => {
-    onFinishDebounce(allValues);
+    onFinishDebounce(removeEmptyFields(allValues));
   };
 
   // clear values

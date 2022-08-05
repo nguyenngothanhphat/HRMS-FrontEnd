@@ -53,33 +53,17 @@ const ResourceList = (props) => {
     setResourceListState(array);
   };
 
-  const onFilterChange = (filters) => {
-    setFilter({ ...filters });
-  };
-
-  const convertFilter = () => {
-    const newFilterObj = {};
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of Object.entries(filter)) {
-      if (value) {
-        if (Array.isArray(value) && value.length > 0) {
-          newFilterObj[key] = value;
-        } else if (!Array.isArray(value)) {
-          newFilterObj[key] = value;
-        }
-      }
-    }
-    return newFilterObj;
+  const onFilterChange = (values) => {
+    setFilter(values);
   };
 
   const fetchResourceList = async () => {
-    const filterTemp = convertFilter();
     const payload = {
       page: pageSelected,
       limit: size,
       availableStatus: availableStatusState || availableStatus,
       ...sort,
-      ...filterTemp,
+      ...filter,
       location: selectedLocations,
       division: selectedDivisions,
       employeeId,

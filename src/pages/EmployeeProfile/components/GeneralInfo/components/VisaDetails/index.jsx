@@ -1,38 +1,22 @@
-import React, { PureComponent } from 'react';
+import { Card, Tooltip } from 'antd';
+import React from 'react';
 import { connect } from 'umi';
-import { Tooltip } from 'antd';
-import EditBtn from '@/assets/edit.svg';
+import CustomEditButton from '@/components/CustomEditButton';
 import Edit from './components/Edit';
 import View from './components/View';
 import styles from './index.less';
 
-@connect(
-  ({
-    upload: { visa0URL = '', visa1URL = '' } = {},
-    employeeProfile: {
-      editGeneral: { openVisa = false },
-      originData: { visaData: visaDataOrigin = [] } = {},
-      tempData: { visaData = [] } = {},
-    } = {},
-  }) => ({
-    openVisa,
-    visaDataOrigin,
-    visaData,
-    visa0URL,
-    visa1URL,
-  }),
-)
-class VisaDetails extends PureComponent {
-  handleEdit = () => {
-    const { dispatch } = this.props;
+const VisaDetails = (props) => {
+  const { openVisa, isProfileOwner = false, permissions = {}, visaDataOrigin, dispatch } = props;
+
+  const handleEdit = () => {
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
       payload: { openVisa: true },
     });
   };
 
-  handleCancel = () => {
-    const { visaDataOrigin, dispatch } = this.props;
+  const handleCancel = () => {
     const payloadVisa = [...visaDataOrigin];
     const isModified = JSON.stringify(payloadVisa) !== JSON.stringify(visaDataOrigin);
 
@@ -50,38 +34,43 @@ class VisaDetails extends PureComponent {
     });
   };
 
-  tooltipTitle = () => {
-    return 'Temporarily Disabled - will be enabled shortly.';
+  const renderComponent = openVisa ? <Edit handleCancel={handleCancel} /> : <View />;
+  const editVisaPermission = permissions.editPassportAndVisa !== -1;
+  const disabledFields = true; // temporarily disable fields
+
+  const options = () => {
+    return (
+      !openVisa &&
+      (!isProfileOwner || editVisaPermission) && (
+        <CustomEditButton onClick={disabledFields ? null : handleEdit}>
+          <Tooltip placement="topLeft" title="Temporarily Disabled - will be enabled shortly.">
+            Edit
+          </Tooltip>
+        </CustomEditButton>
+      )
+    );
   };
 
-  render() {
-    const { openVisa, isProfileOwner = false, permissions = {} } = this.props;
-    const renderComponent = openVisa ? (
-      <Edit handleCancel={this.handleCancel} />
-    ) : (
-      <View />
-      // <View dataAPI={passportData} />
-    );
-    const editVisaPermission = permissions.editPassportAndVisa !== -1;
-    const disabledFields = true; // temporarily disable fields
+  return (
+    <Card className={styles.VisaDetails} title="Visa Details" extra={options()}>
+      <div className={styles.container}>{renderComponent}</div>
+    </Card>
+  );
+};
 
-    return (
-      <div className={styles.VisaDetails}>
-        <div className={styles.spaceTitle}>
-          <p className={styles.EmployeeTitle}>Visa Details</p>
-          {!openVisa && (!isProfileOwner || editVisaPermission) && (
-            <div onClick={disabledFields ? null : this.handleEdit}>
-              <Tooltip className={styles.flexEdit} placement="topLeft" title={this.tooltipTitle()}>
-                <img src={EditBtn} alt="" className={styles.IconEdit} />
-                <p className={styles.Edit}>Edit</p>
-              </Tooltip>
-            </div>
-          )}
-        </div>
-        <div className={styles.viewBottom}>{renderComponent}</div>
-      </div>
-    );
-  }
-}
-
-export default VisaDetails;
+export default connect(
+  ({
+    upload: { visa0URL = '', visa1URL = '' } = {},
+    employeeProfile: {
+      editGeneral: { openVisa = false },
+      originData: { visaData: visaDataOrigin = [] } = {},
+      tempData: { visaData = [] } = {},
+    } = {},
+  }) => ({
+    openVisa,
+    visaDataOrigin,
+    visaData,
+    visa0URL,
+    visa1URL,
+  }),
+)(VisaDetails);

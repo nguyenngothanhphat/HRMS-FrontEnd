@@ -1,15 +1,17 @@
-import { Col, DatePicker, Form, Input, message, Row, Select, Spin, Tooltip, Upload } from 'antd';
+import { Col, DatePicker, Form, Input, Row, Select, Spin, Tooltip, Upload } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { getAuthority, getCurrentLocation } from '@/utils/authority';
-import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
-import { PRIORITY } from '@/constants/dashboard';
 import HelpIcon from '@/assets/dashboard/help.svg';
+import DebounceSelect from '@/components/DebounceSelect';
+import { PRIORITY } from '@/constants/dashboard';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { FILE_TYPE } from '@/constants/upload';
+import { getAuthority, getCurrentLocation } from '@/utils/authority';
+import { beforeUpload } from '@/utils/upload';
 import CommonModal from '../CommonModal';
 import CustomAddButton from '../CustomAddButton';
-import DebounceSelect from '../DebounceSelect';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -30,9 +32,9 @@ const RaiseTicketModal = (props) => {
     loadingAddTicket = false,
     supportTeamList = [],
     isFeedback = false,
+    dispatch,
+    loadingUploadAttachment = false,
   } = props;
-  const { loadingUploadAttachment = false } = props;
-  const { maxFileSize = 2, dispatch } = props;
 
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
@@ -91,28 +93,6 @@ const RaiseTicketModal = (props) => {
   const handleReset = () => {
     form.resetFields();
     setUploadedAttachments([]);
-  };
-
-  const beforeUpload = (file) => {
-    const checkType =
-      file.type === 'application/pdf' ||
-      file.type === 'image/jpeg' ||
-      file.type === 'image/png' ||
-      file.type === 'application/pdf';
-
-    if (!checkType) {
-      message.error('You can only upload JPG/PNG/PDF file!');
-    }
-    const isLtMaxFileSize = file.size / 1024 / 1024 < maxFileSize;
-    if (!isLtMaxFileSize) {
-      if (file.type === 'image/jpeg' || file.type === 'image/png') {
-        message.error(`Image must smaller than ${maxFileSize}MB!`);
-      }
-      if (file.type === 'application/pdf') {
-        message.error(`File must smaller than ${maxFileSize}MB!`);
-      }
-    }
-    return checkType && isLtMaxFileSize;
   };
 
   const handleUpload = async (file) => {
@@ -198,7 +178,7 @@ const RaiseTicketModal = (props) => {
         subject: value.subject,
         description: value.description,
         priority: value.priority,
-        ccList: (value.interestList || []).map((x) => x.value),
+        ccList: value.interestList,
         attachments: documents,
         departmentAssign: value.supportTeam,
         location: getCurrentLocation(),
@@ -350,7 +330,7 @@ const RaiseTicketModal = (props) => {
               <Upload
                 maxCount={2}
                 action={(file) => handleUpload(file)}
-                beforeUpload={beforeUpload}
+                beforeUpload={(file) => beforeUpload(file, [FILE_TYPE.IMAGE, FILE_TYPE.PDF], 2)}
                 onRemove={(file) => handleRemove(file)}
                 openFileDialogOnClick={!(uploadedAttachments.length === 2)}
                 showUploadList={uploadedAttachments.length > 0}

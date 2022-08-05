@@ -22,7 +22,7 @@ import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { RESOURCE } from '@/constants/resourceManagement';
 import { projectDateFormat } from '@/utils/resourceManagement';
 import AddCommentModalContent from './components/AddCommentModalContent';
-import AddModalContent from './components/AddModalContent';
+import AssignModalContent from './components/AssignModalContent';
 import ChangeManagerModalContent from './components/ChangeManagerModalContent';
 import DeleteCommentModalContent from './components/DeleteCommentModalContent';
 import EditModalContent from './components/EditModalContent';
@@ -36,7 +36,7 @@ import styles from './index.less';
 const {
   MODAL_TYPE: {
     EDIT,
-    ADD,
+    ASSIGN,
     MANAGER_CHANGE,
     WARN,
     HISTORY,
@@ -60,6 +60,8 @@ const TableResources = (props) => {
     refreshData,
     allowModify = true,
     loadingUpdateComment = false,
+    loadingUpdateProject = false,
+    loadingUpdateManager = false,
   } = props;
 
   const [visible, setVisible] = useState(false);
@@ -67,6 +69,7 @@ const TableResources = (props) => {
   const [selectedProject, setSelectedProject] = useState({});
 
   const onShowModal = (row, type) => {
+    setHandlingRow(row);
     if (type === MANAGER_CHANGE) {
       if (row.projects && row.projects.length > 1) {
         setVisible(WARN);
@@ -75,7 +78,6 @@ const TableResources = (props) => {
       }
     } else {
       setVisible(type);
-      setHandlingRow(row);
     }
   };
 
@@ -253,12 +255,15 @@ const TableResources = (props) => {
                 {value}
               </Link>
               {row.managerChanged && managerChanged !== value ? (
-                <p>
-                  <img src={currentToNewManager} alt="" />{' '}
-                  <a href="#" className={styles.currentToNewManager}>
-                    {managerChanged} <p>{dateEffective}</p>
-                  </a>
-                </p>
+                <div className={styles.newManager}>
+                  <p>
+                    <img src={currentToNewManager} alt="" />{' '}
+                    <a href="#">
+                      {managerChanged}
+                    </a>
+                  </p>
+                  <span>{dateEffective}</span>
+                </div>
               ) : null}
             </span>
           );
@@ -280,6 +285,7 @@ const TableResources = (props) => {
       {
         title: 'Current Project(s)',
         dataIndex: 'projects',
+        width: '10%',
         render: (projects) => {
           const projectLength = projects.length;
           const display = (
@@ -566,7 +572,7 @@ const TableResources = (props) => {
                       src={AssignIcon}
                       alt=""
                       className={styles.buttonAdd}
-                      onClick={() => onShowModal(row, ADD)}
+                      onClick={() => onShowModal(row, ASSIGN)}
                       style={{ cursor: 'pointer' }}
                     />
                   </Tooltip>
@@ -627,6 +633,7 @@ const TableResources = (props) => {
         visible={visible === EDIT}
         onClose={onClose}
         formName="editForm"
+        loading={loadingUpdateProject}
         content={
           <EditModalContent
             visible={visible === EDIT}
@@ -639,12 +646,12 @@ const TableResources = (props) => {
       />
 
       <CommonModal
-        visible={visible === ADD}
+        visible={visible === ASSIGN}
         onClose={onClose}
         title="Assign to project"
         content={
-          <AddModalContent
-            visible={visible === ADD}
+          <AssignModalContent
+            visible={visible === ASSIGN}
             refreshData={refreshData}
             dataPassRow={handlingRow}
             setSuccessVisible={() => setVisible(ASSIGN_SUCCESS)}
@@ -680,6 +687,7 @@ const TableResources = (props) => {
         cancelText="Skip"
         width={440}
         firstText="Update"
+        loading={loadingUpdateManager}
         content={
           <ChangeManagerModalContent
             visible={visible === MANAGER_CHANGE}
@@ -787,6 +795,8 @@ export default connect(
   }) => ({
     loadingTerminateReason: loading.effects['offboarding/terminateReason'],
     loadingUpdateComment: loading.effects['resourceManagement/updateComment'],
+    loadingUpdateProject: loading.effects['resourceManagement/updateProject'],
+    loadingUpdateManager: loading.effects['resourceManagement/updateManagerResource'],
     permissions,
     companyLocationList,
     resourceList,

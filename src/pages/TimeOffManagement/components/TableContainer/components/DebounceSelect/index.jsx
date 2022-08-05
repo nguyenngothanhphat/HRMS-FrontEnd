@@ -32,9 +32,27 @@ const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
       // labelInValue
       filterOption={false}
       onSearch={debounceFetcher}
+      dropdownRender={(menu) => (
+        <>
+          {options.length > 0 && (
+            <p
+              style={{
+                fontSize: 12,
+                fontStyle: 'italic',
+                color: '#8c8c8c',
+                marginBlock: 6,
+                paddingLeft: 12,
+              }}
+            >
+              Type to search
+            </p>
+          )}
+          {menu}
+        </>
+      )}
       notFoundContent={
         <Spin size="small" spinning={fetching}>
-          <Empty description="No data, type to search" />
+          <Empty description={<span style={{ fontSize: 12 }}>No data, type to search</span>} />
         </Spin>
       }
       // eslint-disable-next-line react/jsx-props-no-spreading

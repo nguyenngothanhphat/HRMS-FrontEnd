@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { connect, Link } from 'umi';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import CloseX from '@/assets/dashboard/closeX.svg';
-import { getEmployeeUrl } from '@/utils/directory';
+import { getEmployeeUrl } from '@/utils/utils';
 import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
 import styles from './index.less';
 

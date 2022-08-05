@@ -295,8 +295,8 @@ const AddTaskModal = (props) => {
           department: employee.departmentInfo,
           generalInfo: employee.generalInfo,
           manager: {
-            _id: employee.managerInfo._id,
-            generalInfo: employee.managerInfo.generalInfo,
+            _id: employee.managerInfo?._id,
+            generalInfo: employee.managerInfo?.generalInfo,
           },
         },
       };

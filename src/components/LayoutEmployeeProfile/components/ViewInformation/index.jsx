@@ -1,13 +1,13 @@
-import { Button, Checkbox, Divider, Dropdown, Input, Menu, Tag, Tooltip } from 'antd';
+import { Checkbox, Divider, Dropdown, Input, Menu, Tag, Tooltip } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import avtDefault from '@/assets/avtDefault.jpg';
 import bioSvg from '@/assets/bioActions.svg';
-import CustomModal from '@/components/CustomModal';
-import s from './index.less';
+import CommonModal from '@/components/CommonModal';
 import ModalUpload from '@/components/ModalUpload';
-import { getCurrentTenant } from '@/utils/authority';
 import ROLES from '@/constants/roles';
+import { getCurrentTenant } from '@/utils/authority';
+import s from './index.less';
 
 const { TextArea } = Input;
 const { SubMenu } = Menu;
@@ -204,12 +204,10 @@ class ViewInformation extends Component {
   };
 
   _renderFormEditBio = () => {
-    const { loading } = this.props;
     const { bio } = this.state;
     const check = 170 - bio.length;
     return (
       <div className={s.formEditBio}>
-        <div className={s.formEditBio__title}>Edit Bio</div>
         <div className={s.formEditBio__description1}>Only 170 character allowed!</div>
         <TextArea
           autoSize={{
@@ -220,23 +218,12 @@ class ViewInformation extends Component {
           onChange={this.onChangeInput}
         />
         <div className={s.formEditBio__description2}>
-          <span style={{ opacity: 0.5 }}> Remaining characters: </span>
+          <span style={{ opacity: 0.5 }}>Remaining characters: </span>
           {check >= 0 ? (
             <span style={{ opacity: 0.5 }}>{check}</span>
           ) : (
             <span style={{ color: '#ff6c6c' }}>{check} (Limit exceeded)</span>
           )}
-        </div>
-        <div className={s.viewBtnSave}>
-          <Button
-            onClick={this.handleSaveBio}
-            className={s.btnSave}
-            type="primary"
-            disabled={check < 0}
-            loading={loading}
-          >
-            Save
-          </Button>
         </div>
       </div>
     );
@@ -376,28 +363,26 @@ class ViewInformation extends Component {
       // joinDate = '',
       title,
       loadingFetchEmployee = false,
+      loading = false,
     } = this.props;
-
-    // const checkVisible = isProfileOwner || permissions.viewOtherInformation !== -1;
 
     const {
       legalName = '',
       avatar = '',
       linkedIn = '',
       workEmail = '',
-      // workNumber = '',
       certification = [],
       userId = '',
       skills = [],
-      // otherSkills = [],
     } = generalData;
 
-    // const { tittle: { name: title = '' } = {} } = compensationData;
     const { visible, openEditBio } = this.state;
-    // const joiningDate = joinDate ? moment(joinDate).format('MM.DD.YY') : '-';
     const { generalInfo: { legalName: managerName = '', userId: managerUserId = '' } = {} } =
       manager;
-    // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
+
+    const { bio } = this.state;
+    const check = 170 - bio.length;
+
     const listColors = [
       {
         bg: '#E0F4F0',
@@ -507,14 +492,6 @@ class ViewInformation extends Component {
               {this._renderListCertification(certification)}
             </div>
             <Divider />
-            {/* {checkVisible ? (
-            <div className={s.infoEmployee__viewBottom__row}>
-              <p className={s.titleTag}>Joining Date</p>
-              <p className={s.infoEmployee__textNameAndTitle__title}>{joiningDate}</p>
-            </div>
-          ) : (
-            ''
-          )} */}
 
             <div className={s.infoEmployee__viewBottom__row}>
               <p className={s.titleTag}>Location</p>
@@ -532,23 +509,6 @@ class ViewInformation extends Component {
               <p className={s.titleTag}>Department</p>
               <p className={s.infoEmployee__textNameAndTitle__title}>{departmentName}</p>
             </div>
-            {/* <Divider />
-          <div className={s.infoEmployee__viewBottom__row}>
-            <p className={s.titleTag1}>Email</p>
-            <p className={s.infoEmployee__textNameAndTitle__title}>{workEmail}</p>
-          </div>
-          <div className={s.infoEmployee__viewBottom__row}>
-            <p className={s.titleTag1}>Contact number</p>
-            <p className={s.infoEmployee__textNameAndTitle__title}>{workNumber}</p>
-          </div> */}
-            {/* <div className={s.infoEmployee__viewBottom__row}>
-            <p className={s.titleTag1}>Joining department</p>
-            <p className={s.infoEmployee__textNameAndTitle__title}>Not implemented</p>
-          </div> */}
-            {/* <div className={s.infoEmployee__viewBottom__row}>
-            <p className={s.titleTag1}>Current department</p>
-            <p className={s.infoEmployee__textNameAndTitle__title}>{departmentName}</p>
-          </div> */}
 
             <Divider />
             <div className={s.infoEmployee__socialMedia}>
@@ -580,11 +540,17 @@ class ViewInformation extends Component {
             widthImage="40%"
             getResponse={this.getResponse}
           />
-          <CustomModal
-            open={openEditBio}
-            closeModal={this.handleEditBio}
+          <CommonModal
+            visible={openEditBio}
+            onClose={this.handleEditBio}
             content={this._renderFormEditBio()}
-            type={2}
+            hasCancelButton={false}
+            title="Edit Bio"
+            firstText="Save"
+            width={500}
+            loading={loading}
+            onFinish={this.handleSaveBio}
+            disabledButton={check < 0}
           />
         </div>
       </div>

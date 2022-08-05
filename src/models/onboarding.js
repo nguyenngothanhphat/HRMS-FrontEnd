@@ -734,8 +734,9 @@ const onboarding = {
       }
     },
     *fetchEmployeeList({ payload = {} }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getListEmployee, {
+         response = yield call(getListEmployee, {
           ...payload,
           status: ['ACTIVE'],
           company: getCurrentCompany(),
@@ -744,11 +745,10 @@ const onboarding = {
         const { statusCode, data: employeeList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { employeeList } });
-        return employeeList;
       } catch (errors) {
         dialog(errors);
-        return [];
       }
+      return response;
     },
     *fetchHRManagerList(
       { payload: { company = [], department = [], location = [], roles = [] } = {} },

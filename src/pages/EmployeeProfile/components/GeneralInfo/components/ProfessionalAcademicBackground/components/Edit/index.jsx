@@ -1,8 +1,10 @@
 /* eslint-disable react/jsx-curly-newline */
+import { Form, Input } from 'antd';
 import React, { PureComponent } from 'react';
-import { Button, Form, Input } from 'antd';
 import CreatableSelect from 'react-select/creatable';
 import { connect } from 'umi';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import FormCertification from './components/FormCertification';
 import s from './index.less';
 
@@ -300,43 +302,13 @@ class Edit extends PureComponent {
                     };
                   })}
               />
-              {/* <Select
-                placeholder="Select skills"
-                mode="tags"
-                showArrow
-                // onSelect={this.handleNewSkill}
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                  option.props.children ? option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 : null
-                }
-              >
-                {listSkill.sort((a, b) => a.name.localeCompare(b.name)).map((item) => (
-                  <Option key={item._id}>{item.name}</Option>
-                ))}
-                <Option key="Other">Other</Option>
-              </Select> */}
             </Form.Item>
-            {/* {verifySkillOther.length > 0 || otherSkills.length > 0 ? (
-              <Form.Item label="OtherSkill" name="otherSkills">
-                <Input maxLength={50} />
-              </Form.Item>
-            ) : (
-              ''
-            )} */}
           </div>
           <div className={s.viewFooter}>
-            <div className={s.viewFooter__cancel} onClick={handleCancel}>
-              Cancel
-            </div>
-            <Button
-              className={s.viewFooter__submit}
-              type="primary"
-              htmlType="submit"
-              loading={loading}
-              // disabled={notValid}
-            >
+            <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+            <CustomPrimaryButton type="primary" htmlType="submit" loading={loading}>
               Save
-            </Button>
+            </CustomPrimaryButton>
           </div>
         </Form>
       </div>

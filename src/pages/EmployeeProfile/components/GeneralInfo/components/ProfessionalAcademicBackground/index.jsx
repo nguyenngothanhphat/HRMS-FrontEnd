@@ -1,34 +1,23 @@
-import React, { PureComponent } from 'react';
+import { Card } from 'antd';
+import React from 'react';
 import { connect } from 'umi';
-import View from './components/View';
+import CustomEditButton from '@/components/CustomEditButton';
 import Edit from './components/Edit';
+import View from './components/View';
 import styles from './index.less';
-import EditBtn from '@/assets/edit.svg';
 
-@connect(
-  ({
-    employeeProfile: {
-      editGeneral: { openAcademic = false },
-      originData: { generalData: generalDataOrigin = {} } = {},
-      tempData: { generalData = {} } = {},
-    } = {},
-  }) => ({
-    generalDataOrigin,
-    generalData,
-    openAcademic,
-  }),
-)
-class ProfessionalAcademicBackground extends PureComponent {
-  handleEdit = () => {
-    const { dispatch } = this.props;
+const ProfessionalAcademicBackground = (props) => {
+  const { openAcademic, permissions = {}, isProfileOwner = false } = props;
+  const { generalDataOrigin, generalData, dispatch } = props;
+
+  const handleEdit = () => {
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
       payload: { openAcademic: true },
     });
   };
 
-  handleCancel = () => {
-    const { generalDataOrigin, generalData, dispatch } = this.props;
+  const handleCancel = () => {
     const {
       preJobTitle = '',
       skills = [],
@@ -65,30 +54,41 @@ class ProfessionalAcademicBackground extends PureComponent {
     });
   };
 
-  render() {
-    const { openAcademic, permissions = {}, isProfileOwner = false } = this.props;
-    const renderComponent = openAcademic ? (
-      <Edit isProfileOwner={isProfileOwner} handleCancel={this.handleCancel} />
-    ) : (
-      <View />
-    );
+  const options = () => {
     return (
-      <div className={styles.root}>
-        <div className={styles.viewTitle}>
-          <p className={styles.viewTitle__text}>Professional &amp; Academic Background</p>
-          {!openAcademic && (permissions.editProfessionalAcademic !== -1 || isProfileOwner) && (
-            <div className={styles.viewTitle__edit} onClick={this.handleEdit}>
-              <img src={EditBtn} alt="" className={styles.viewTitle__edit__icon} />
-              <p className={styles.viewTitle__edit__text}>Edit</p>
-            </div>
-          )}
-        </div>
-        <div className={styles.viewBottom} style={openAcademic ? { padding: 0 } : {}}>
-          {renderComponent}
-        </div>
-      </div>
+      !openAcademic &&
+      (permissions.editProfessionalAcademic !== -1 || isProfileOwner) && (
+        <CustomEditButton onClick={handleEdit}>Edit</CustomEditButton>
+      )
     );
-  }
-}
+  };
 
-export default ProfessionalAcademicBackground;
+  const renderComponent = openAcademic ? (
+    <Edit isProfileOwner={isProfileOwner} handleCancel={handleCancel} />
+  ) : (
+    <View />
+  );
+  return (
+    <Card
+      className={styles.ProfessionalAcademicBackground}
+      title="Professional &amp; Academic Background"
+      extra={options()}
+    >
+      <div className={styles.container}>{renderComponent}</div>
+    </Card>
+  );
+};
+
+export default connect(
+  ({
+    employeeProfile: {
+      editGeneral: { openAcademic = false },
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    generalDataOrigin,
+    generalData,
+    openAcademic,
+  }),
+)(ProfessionalAcademicBackground);
