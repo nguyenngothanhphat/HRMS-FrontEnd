@@ -95,6 +95,7 @@ const AssignTeamModal = (props) => {
         departmentAssign: newTeamId,
         employee: employeeId,
         role,
+        permissions: ['M_ADMIN_VIEW_TICKETS'],
       },
     }).then((res) => {
       const { statusCode = '' } = res;

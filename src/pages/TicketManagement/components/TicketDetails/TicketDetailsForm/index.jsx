@@ -159,6 +159,7 @@ const TicketDetailsForm = (props) => {
   const role = findRole(roles);
   const checkRole = ['MANAGER', 'HR-MANAGER'].includes(role);
   const checkPermission = permissions.viewTicketByAdmin === 1;
+  const isAppendTicket = permissions.appendTicket === 1;
 
   const avatarTicket = () => {
     return ccList.map((val) => {
@@ -220,7 +221,7 @@ const TicketDetailsForm = (props) => {
         title="Ticket Details"
         extra={
           <>
-            {(checkRole || checkPermission) && (
+            {(checkRole || checkPermission || isAppendTicket) && (
               <CustomBlueButton onClick={() => setModalVisible(true)} disabled={loadingAddChat}>
                 Move To
               </CustomBlueButton>
