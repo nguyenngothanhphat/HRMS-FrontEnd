@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import { Col, DatePicker, Form, Row, Select } from 'antd';
 import { debounce } from 'lodash';
-import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -61,12 +60,12 @@ const FilterContent = (props) => {
 
   const disabledFromDate = (current) => {
     if (!toDate) return false;
-    return current && current >= moment(toDate);
+    return current && current >= toDate;
   };
 
   const disabledToDate = (current) => {
     if (!fromDate) return false;
-    return current && current <= moment(fromDate);
+    return current && current <= fromDate;
   };
 
   const onFinishDebounce = debounce((values) => {

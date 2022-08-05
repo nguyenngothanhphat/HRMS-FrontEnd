@@ -1,10 +1,8 @@
 import { Divider, Dropdown, Menu, Table } from 'antd';
 import React, { Component } from 'react';
 // import { connect } from 'umi';
-import moment from 'moment';
 // import { isEmpty } from 'lodash';
 import MoreIcon from '@/assets/policiesRegulations/more.svg';
-import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import DeleteQuestionAnswer from '../DeleteQuestionAnswer';
 import EditQuestionAnswer from '../EditQuestionAnswer';
 import ViewQuestionAnswer from '../ViewQuestionAnswer';
@@ -87,13 +85,11 @@ class TableFAQList extends Component {
             id: obj._id,
             question: obj.question || '-',
             answer: obj.answer || '-',
-            addBy:
-              obj.infoEmployee.length > 0 ? obj.infoEmployee[0].generalInfoInfo.legalName : '-',
-            addOn: obj.createdAt ? moment(obj.createdAt).format(DATE_FORMAT_MDY) : '-',
-            categoryName: obj.category.length > 0 ? obj.category[0].category : '-',
-            categoryId: obj.category.length > 0 ? obj.category[0]._id : '-',
+            addBy: obj.employeeId ? obj.employeeId?.generalInfoInfo?.legalName : '-',
+            addOn: obj.createdAt ? obj.createdAt.substring(0, 10) : '-',
+            categoryName: obj.categoryId ? obj.categoryId?.category : '-',
+            categoryId: obj.categoryId > 0 ? obj.categoryId?._id : '-',
             attachment: obj?.attachment && fileListTemp([obj.attachment]),
-            url: obj?.url,
           };
         })
       : [];
@@ -123,7 +119,7 @@ class TableFAQList extends Component {
         title: 'Added On',
         dataIndex: 'addOn',
         sorter: {
-          compare: (a, b) => moment(a.addOn).unix() - moment(b.addOn).unix(),
+          compare: (a, b) => new Date(a.addOn).getTime() - new Date(b.addOn).getTime(),
         },
       },
       {
