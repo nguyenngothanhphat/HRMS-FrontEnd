@@ -9,6 +9,7 @@ import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import History from '../../../History';
 import TimeOffHistory from '../../../TimeOffHistory';
+import { goToTop } from '@/utils/utils';
 
 const ManagerViewRequestForm = (props) => {
   const {
@@ -32,7 +33,7 @@ const ManagerViewRequestForm = (props) => {
       id,
     });
 
-    window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+    goToTop();
 
     return () => {
       dispatch({
