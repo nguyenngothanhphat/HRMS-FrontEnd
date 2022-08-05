@@ -46,14 +46,6 @@ const arrStatus = [
     value: NEW_PROCESS_STATUS.OFFER_ACCEPTED,
   },
   {
-    label: 'Offer Rejected',
-    value: NEW_PROCESS_STATUS.OFFER_REJECTED,
-  },
-  {
-    label: 'Offer Withdraw',
-    value: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
-  },
-  {
     label: 'Reference Verification',
     value: NEW_PROCESS_STATUS.REFERENCE_VERIFICATION,
   },

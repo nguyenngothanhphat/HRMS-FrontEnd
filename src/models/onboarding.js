@@ -1207,10 +1207,7 @@ const onboarding = {
           newTotalNumber.needsChanges +
           newTotalNumber.offerReleased +
           newTotalNumber.offerAccepted +
-          newTotalNumber.rejectedOffers +
-          newTotalNumber.withdrawnOffers +
           newTotalNumber.referenceVerification +
-          newTotalNumber.joined +
           newTotalNumber.checkListVerification;
       });
 

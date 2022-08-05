@@ -69,7 +69,7 @@ const TableTickets = (props) => {
     setTicket(result);
   };
 
-  const handleSelectChange = (value, supportTeam) => {
+  const handleSelectChange = (value, newName) => {
     const {
       id = '',
       employee_raise: employeeRaise = '',
@@ -101,7 +101,7 @@ const TableTickets = (props) => {
           departmentAssign,
           employee: employeeId,
           oldName,
-          supportTeam,
+          newName,
           role,
         },
       }).then((res) => {
