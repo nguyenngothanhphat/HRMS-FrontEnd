@@ -190,7 +190,7 @@ class ModalUpload extends Component {
     }
   };
 
-  getCroppedImg = (image, crop) => {
+  getCroppedImg = (image) => {
     const { fileUploaded: { name = '', type = '' } = {} } = this.state;
     const canvas = document.createElement('canvas');
     canvas.width = image.naturalWidth;
@@ -209,7 +209,7 @@ class ModalUpload extends Component {
   };
 
   render() {
-    const { visible = false, widthImage = '', loading } = this.props;
+    const { visible = false, widthImage = '' } = this.props;
     const width = widthImage || 'auto';
     const { imageUrl, crop, fileType, percent, isUpload } = this.state;
     return (
@@ -227,8 +227,8 @@ class ModalUpload extends Component {
           <Button
             key="submit"
             type="primary"
-            disabled={!imageUrl}
-            loading={loading}
+            disabled={!imageUrl || isUpload}
+            loading={isUpload}
             className={styles.btnSubmit}
             onClick={this.handleUploadToServer}
           >
