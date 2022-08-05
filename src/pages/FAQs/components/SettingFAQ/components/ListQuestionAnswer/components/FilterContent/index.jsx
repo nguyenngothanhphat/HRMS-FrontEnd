@@ -128,7 +128,7 @@ const FilterContent = (props) => {
         >
           {listCreator.map((x) => (
             <Select.Option value={x._id} key={x._id}>
-              {x?.employee?.generalInfoInfo?.legalName}
+              {x?.generalInfoInfo?.legalName}
             </Select.Option>
           ))}
         </Select>

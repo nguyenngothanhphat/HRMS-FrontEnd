@@ -1,17 +1,17 @@
 // import { debounce } from 'lodash';
-import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Skeleton, Tag } from 'antd';
+import { Button, Skeleton } from 'antd';
+import { debounce } from 'lodash';
 import React, { Component, Suspense } from 'react';
 import { connect } from 'umi';
-import { debounce } from 'lodash';
-import FilterIcon from '@/assets/policiesRegulations/filter.svg';
 import AddIcon from '@/assets/policiesRegulations/add.svg';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
+import FilterPopover from '@/components/FilterPopover';
 import AddQuestionAnswer from './components/AddQuestionAnswer';
+import FilterContent from './components/FilterContent';
 import TableFAQList from './components/TableFAQList';
 import styles from './index.less';
-import FilterPopover from '@/components/FilterPopover';
-import FilterButton from '@/components/FilterButton';
-import FilterContent from './components/FilterContent';
 
 @connect(({ loading, faqs: { selectedCountry, listFAQ = [], totalListFAQ = 0 } = {} }) => ({
   selectedCountry,
@@ -104,15 +104,7 @@ class ListQuestionAnswer extends Component {
         <div className={styles.headerPolicy}>
           <div className={styles.headerPolicy__text}>Frequently Asked Questions</div>
           <div className={styles.headerPolicy__btnAdd}>
-            {applied > 0 && (
-              <Tag
-                className={styles.headerPolicy__tagCountFilter}
-                closable
-                closeIcon={<CloseOutlined onClick={this.handleClearFilter} />}
-              >
-                {applied} filters applied
-              </Tag>
-            )}
+            <FilterCountTag count={applied} onClearFilter={this.handleClearFilter} />
             <Button
               icon={<img src={AddIcon} alt="AddIcon" />}
               onClick={() => this.setState({ visibleModal: true })}
@@ -132,18 +124,13 @@ class ListQuestionAnswer extends Component {
                 }
                 realTime
               >
-                <FilterButton />
+                <CustomOrangeButton showDot={applied > 0} />
               </FilterPopover>
             </div>
-            <Form ref={this.refForm}>
-              <Form.Item name="searchQA" className={styles.searchInp}>
-                <Input
-                  placeholder="Search by question or answer"
-                  prefix={<SearchOutlined />}
-                  onChange={(e) => this.onSearch(e)}
-                />
-              </Form.Item>
-            </Form>
+            <CustomSearchBox
+              placeholder="Search by question or answer"
+              onSearch={(e) => this.onSearch(e)}
+            />
           </div>
           <AddQuestionAnswer
             visible={visibleModal}

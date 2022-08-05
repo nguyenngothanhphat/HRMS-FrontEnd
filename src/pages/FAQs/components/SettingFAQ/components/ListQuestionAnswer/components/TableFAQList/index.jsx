@@ -68,6 +68,19 @@ class TableFAQList extends Component {
       listFAQ = [],
       totalListFAQ,
     } = this.props;
+    const fileListTemp = (att) => {
+      return att.map((x, i) => {
+        return {
+          ...x,
+          uid: i,
+          name: x.name,
+          status: 'done',
+          url: x.url,
+          thumbUrl: x.url,
+          id: x.id || x._id,
+        };
+      });
+    };
     const listQuestion = listFAQ
       ? listFAQ.map((obj) => {
           return {
@@ -78,6 +91,9 @@ class TableFAQList extends Component {
               obj.infoEmployee.length > 0 ? obj.infoEmployee[0].generalInfoInfo.legalName : '-',
             addOn: obj.createdAt ? moment(obj.createdAt).format(DATE_FORMAT_MDY) : '-',
             categoryName: obj.category.length > 0 ? obj.category[0].category : '-',
+            categoryId: obj.category.length > 0 ? obj.category[0]._id : '-',
+            attachment: obj?.attachment && fileListTemp([obj.attachment]),
+            url: obj?.url,
           };
         })
       : [];

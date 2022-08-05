@@ -1,17 +1,17 @@
-import React, { Component, Suspense } from 'react';
-import { Button, Row, Col, Input, Form, Tag, Skeleton } from 'antd';
-import { connect } from 'umi';
+import { Button, Col, Row, Skeleton } from 'antd';
 import { debounce } from 'lodash';
-import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
+import React, { Component, Suspense } from 'react';
+import { connect } from 'umi';
 import AddIcon from '@/assets/policiesRegulations/add.svg';
-import FilterIcon from '@/assets/policiesRegulations/filter.svg';
-import styles from './index.less';
-import AddPolicyModal from './components/AddPolicyModal';
-import TablePolicy from './components/TablePolicy';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
-import FilterContent from './components/FilterContent';
-import FilterButton from '@/components/FilterButton';
 import { getCurrentTenant } from '@/utils/authority';
+import AddPolicyModal from './components/AddPolicyModal';
+import FilterContent from './components/FilterContent';
+import TablePolicy from './components/TablePolicy';
+import styles from './index.less';
 
 @connect(
   ({ policiesRegulations: { countryList = [], originData: { selectedCountry = '' } } = {} }) => ({
@@ -103,15 +103,7 @@ class Regulations extends Component {
           </div>
 
           <div className={styles.headerPolicy__btnAdd}>
-            {applied > 0 && (
-              <Tag
-                className={styles.headerPolicy__tagCountFilter}
-                closable
-                closeIcon={<CloseOutlined onClick={this.handleClearFilter} />}
-              >
-                {applied} filters applied
-              </Tag>
-            )}
+            <FilterCountTag count={applied} onClearFilter={this.handleClearFilter} />
             <Button
               icon={<img src={AddIcon} alt="AddIcon" />}
               onClick={() => this.setState({ addPolicy: true })}
@@ -131,18 +123,13 @@ class Regulations extends Component {
                 }
                 realTime
               >
-                <FilterButton />
+                <CustomOrangeButton showDot={applied > 0} />
               </FilterPopover>
             </div>
-            <Form ref={this.refForm}>
-              <Form.Item name="searchPolicy" className={styles.searchInp}>
-                <Input
-                  placeholder="Search by Policy name"
-                  prefix={<SearchOutlined />}
-                  onChange={(e) => this.onSearch(e)}
-                />
-              </Form.Item>
-            </Form>
+            <CustomSearchBox
+              onSearch={(e) => this.onSearch(e)}
+              placeholder="Search by Policy name"
+            />
           </div>
           <AddPolicyModal
             onRefresh={this.fetchPolicyRegulationList}
