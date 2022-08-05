@@ -16,7 +16,7 @@ const TimeOffHistory = (props) => {
       <div className={styles.title}>Timeoff History</div>
       <div className={styles.container__table}>
         <Row className={styles.header}>
-          <Col span={9}> Leave type</Col>
+          <Col span={9}>Leave type</Col>
           <Col className={styles.center} span={5}>
             30 days
           </Col>
