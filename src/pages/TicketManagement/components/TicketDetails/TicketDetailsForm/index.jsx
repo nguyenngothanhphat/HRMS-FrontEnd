@@ -18,6 +18,8 @@ import { getEmployeeUrl } from '@/utils/utils';
 import { beforeUpload, compressImage, identifyFile } from '@/utils/upload';
 import AssignTeamModal from '../../AssignTeamModal';
 import styles from './index.less';
+import CustomEditButton from '@/components/CustomEditButton';
+import EditTicketModal from '../../EditTicketModal';
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
@@ -50,6 +52,7 @@ const TicketDetailsForm = (props) => {
   const [fileNameList, setFileNameList] = React.useState([]);
   const [arrayChats, setArrayChats] = React.useState([]);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [editVisible, setEditVisible] = React.useState(false);
 
   useEffect(() => {
     setArrayChats(chats.reverse());
@@ -220,13 +223,22 @@ const TicketDetailsForm = (props) => {
       <Card
         title="Ticket Details"
         extra={
-          <>
+          <div style={{ display: 'flex' }}>
+            <CustomEditButton
+              onClick={() => setEditVisible(true)}
+              disabled={loadingAddChat}
+              style={{ border: '1px solid #2c6df9', borderRadius: 15 }}
+            />
             {(checkRole || checkPermission || isAppendTicket) && (
-              <CustomBlueButton onClick={() => setModalVisible(true)} disabled={loadingAddChat}>
+              <CustomBlueButton
+                style={{ marginLeft: 12, borderRadius: 15 }}
+                onClick={() => setModalVisible(true)}
+                disabled={loadingAddChat}
+              >
                 Move To
               </CustomBlueButton>
             )}
-          </>
+          </div>
         }
       >
         <div className={styles.formContent}>
@@ -453,6 +465,12 @@ const TicketDetailsForm = (props) => {
         </div>
       </Card>
       <AssignTeamModal visible={modalVisible} role={role} onClose={() => setModalVisible(false)} />
+      <EditTicketModal
+        ticket={ticketDetail}
+        visible={editVisible}
+        role={role}
+        onClose={() => setEditVisible(false)}
+      />
     </div>
   );
 };
