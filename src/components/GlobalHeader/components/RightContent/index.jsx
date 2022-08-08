@@ -1,8 +1,7 @@
-import { BuildOutlined } from '@ant-design/icons';
+import { BellOutlined, BuildOutlined } from '@ant-design/icons';
 import { Badge, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import BellIcon from '@/assets/homePage/Bell-icon.svg';
 import { CHAT_EVENT } from '@/constants/socket';
 import ActivityLogModalContent from '@/pages/Dashboard/components/ActivityLog/components/ActivityLogModalContent';
 import { isOwner } from '@/utils/authority';
@@ -71,7 +70,7 @@ const RightContent = (props) => {
         color="green"
         count={Number(notification)}
       >
-        <img src={BellIcon} alt="notification-icon" />
+        <BellOutlined />
       </Badge>
       {!(!checkIsOwner && companiesOfUser.length === 1) && (
         <>
