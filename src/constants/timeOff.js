@@ -34,6 +34,12 @@ export const TIMEOFF_HISTORY_STATUS = {
   WITHDRAW_ACCEPTED: 'WITHDRAW_ACCEPTED',
 };
 
+export const LEAVE_QUERY_TYPE = {
+  COMPANY: 'COMPANY',
+  TEAM: 'TEAM',
+  SELF: 'SELF',
+};
+
 export const TIMEOFF_LINK_ACTION = {
   EDIT_LEAVE_REQUEST: 'edit',
   NEW_LEAVE_REQUEST: 'new',
