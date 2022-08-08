@@ -377,6 +377,13 @@ const routes = [
             hideInMenu: true,
           },
           {
+            path: '/time-off/:tabName(history)',
+            name: 'timeoff-history',
+            component: './TimeOff',
+            authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
+            hideInMenu: true,
+          },
+          {
             path: '/time-off/:tabName(setup)',
             name: 'timeoff-setup',
             component: './TimeOff',
@@ -759,24 +766,21 @@ const routes = [
             path: '/offboarding/settings/:type/form-detail/:id/view',
             name: 'offboarding.setting.form.view-form',
             hideInMenu: true,
-            component:
-              './Offboarding/components/Settings/components/Forms/components/ViewForm',
+            component: './Offboarding/components/Settings/components/Forms/components/ViewForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/settings/:type/form-detail/add',
             name: 'offboarding.setting.form.add-form',
             hideInMenu: true,
-            component:
-              './Offboarding/components/Settings/components/Forms/components/HandleForm',
+            component: './Offboarding/components/Settings/components/Forms/components/HandleForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/settings/:type/form-detail/:id/edit',
             name: 'offboarding.setting.form.edit-form',
             hideInMenu: true,
-            component:
-              './Offboarding/components/Settings/components/Forms/components/HandleForm',
+            component: './Offboarding/components/Settings/components/Forms/components/HandleForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {

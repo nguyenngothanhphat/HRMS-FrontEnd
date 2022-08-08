@@ -63,6 +63,8 @@ import {
   getLeaveTypeByTimeOffType,
   getEmployeeTypeList,
   getTotalByStatus,
+  getHistoryTimeoffByEmployee,
+  getLeaveTypeByEmployee,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -78,6 +80,9 @@ const timeOff = {
     holidaysListByCountry: [],
     leaveHistory: [],
     leavingList: [],
+    leaveRequests: [],
+    historyTimeoff: [],
+    historyTypeList: [],
     compoffRequests: [],
     timeOffTypes: [],
     yourTimeOffTypes: {},
@@ -377,6 +382,49 @@ const timeOff = {
         yield put({
           type: 'save',
           payload: { viewingLeaveRequest },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *fetchHistoryTimeoffByEmployee({ payload }, { call, put }) {
+      let response = {};
+      try {
+        const tenantId = getCurrentTenant();
+
+        response = yield call(getHistoryTimeoffByEmployee, {
+          ...payload,
+          tenantId,
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { historyTimeoff: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchLeaveTypeByEmployee({ payload }, { call, put }) {
+      let response = {};
+      try {
+        const tenantId = getCurrentTenant();
+
+        response = yield call(getLeaveTypeByEmployee, {
+          ...payload,
+          tenantId,
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { historyTypeList: data },
         });
       } catch (errors) {
         dialog(errors);

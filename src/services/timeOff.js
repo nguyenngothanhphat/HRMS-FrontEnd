@@ -415,3 +415,15 @@ export async function getLeaveRequestOfEmployee(payload) {
     data: payload,
   });
 }
+export async function getLeaveTypeByEmployee(params) {
+  return request('/api/leaverequesttenant/group-type-employee', {
+    method: 'GET',
+    params,
+  });
+}
+export async function getHistoryTimeoffByEmployee(params) {
+  return request('/api/leavebalancetenant/history-by-employee', {
+    method: 'GET',
+    params,
+  });
+}
