@@ -145,7 +145,7 @@ const TableContainer = (props) => {
 
   const applied = Object.values(filter).filter((v) => v).length;
   const menu = (
-    <div className={styles.tabExtraContent}>
+    <div className={styles.options}>
       <FilterCountTag
         count={applied}
         onClearFilter={() => {

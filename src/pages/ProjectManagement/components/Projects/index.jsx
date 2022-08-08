@@ -12,6 +12,7 @@ import DeleteProjectModalContent from '../DeleteProjectModalContent';
 import EditProjectStatusModalContent from '../EditProjectStatusModalContent';
 import Header from './components/Header';
 import styles from './index.less';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 
 const Projects = (props) => {
   const {
@@ -207,13 +208,22 @@ const Projects = (props) => {
         render: (numberOfResource, row) => {
           if ((!numberOfResource || numberOfResource === 0) && modifyProjectPermission) {
             return (
-              <Button
-                className={styles.addResourceBtn}
-                icon={<img src={OrangeAddIcon} alt="" />}
-                onClick={() => addResource(row?.projectId)}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
-                Add
-              </Button>
+                <CustomOrangeButton
+                  icon={OrangeAddIcon}
+                  onClick={() => addResource(row?.projectId)}
+                  marginInline={0}
+                  fontSize={13}
+                >
+                  Add
+                </CustomOrangeButton>
+              </div>
             );
           }
           return (

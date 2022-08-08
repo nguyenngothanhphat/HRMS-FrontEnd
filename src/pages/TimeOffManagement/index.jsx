@@ -25,7 +25,7 @@ const TimeOffManagement = (props) => {
     companyLocationList = [],
   } = props;
 
-  const [selectedLocations, setSelectedLocation] = useState([]);
+  const [selectedLocations, setSelectedLocations] = useState([]);
   const [payload, setPayload] = useState({});
   const [data, setData] = useState([]);
 
@@ -138,7 +138,7 @@ const TimeOffManagement = (props) => {
   }, []);
 
   useEffect(() => {
-    setSelectedLocation(selectedLocationsProp);
+    setSelectedLocations(selectedLocationsProp);
   }, [JSON.stringify(selectedLocationsProp)]);
 
   const renderFilterBar = () => {

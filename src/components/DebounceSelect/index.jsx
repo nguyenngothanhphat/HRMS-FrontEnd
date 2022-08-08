@@ -1,12 +1,19 @@
 import { Empty, Select, Spin } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import React, { useMemo, useRef, useState } from 'react';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 
-const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
+const DebounceSelect = ({
+  fetchOptions,
+  debounceTimeout = 800,
+  labelInValue = false,
+  defaultValue = {},
+  ...props
+}) => {
   const [fetching, setFetching] = useState(false);
   const [options, setOptions] = useState([]);
   const fetchRef = useRef(0);
+  const didMount = useRef(true);
   const debounceFetcher = useMemo(() => {
     const loadOptions = (value) => {
       fetchRef.current += 1;
@@ -28,14 +35,42 @@ const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
 
   const { optionType = '' } = props;
 
+  // for select has default value, no need to call all employee list
+  if (!isEmpty(defaultValue) && options.length === 0 && didMount.current) {
+    options.push({
+      label: defaultValue?.label,
+      value: defaultValue.value,
+    });
+    didMount.current = false;
+  }
+
   return (
     <Select
-      labelInValue
+      labelInValue={labelInValue}
       filterOption={false}
       onSearch={debounceFetcher}
+      showSearch
+      dropdownRender={(menu) => (
+        <>
+          {options.length > 0 && (
+            <p
+              style={{
+                fontSize: 12,
+                fontStyle: 'italic',
+                color: '#8c8c8c',
+                marginBlock: 6,
+                paddingLeft: 12,
+              }}
+            >
+              Type to search
+            </p>
+          )}
+          {menu}
+        </>
+      )}
       notFoundContent={
         <Spin size="small" spinning={fetching}>
-          <Empty description="No data, type to search" />
+          <Empty description={<span style={{ fontSize: 12 }}>No data, type to search</span>} />
         </Spin>
       }
       // eslint-disable-next-line react/jsx-props-no-spreading

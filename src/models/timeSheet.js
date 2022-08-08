@@ -38,6 +38,7 @@ import {
   getMyRequest,
   resubmitMyRequest,
   getHolidaysByDate,
+  getProjectsByEmployee,
   getLocationsOfCountries,
 } from '@/services/timeSheet';
 import { getCountry, getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -100,6 +101,7 @@ const initialState = {
   isLocationLoaded: false,
   isIncompleteTimesheet: false,
   employeeSchedule: {},
+  myProjects: [],
   locationsOfCountries: [],
 };
 
@@ -808,6 +810,23 @@ const TimeSheet = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchMyProjects({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getProjectsByEmployee, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data: projectsList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { myProjects: projectsList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
     *getLocationsOfCountriesEffect({ payload }, { call, put }) {
       let response = {};

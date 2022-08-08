@@ -8,6 +8,7 @@ import CalendarIcon from '@/assets/calendar_icon.svg';
 import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { removeEmptyFields } from '@/utils/utils';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -43,14 +44,6 @@ const arrStatus = [
   {
     label: 'Offer Accepted',
     value: NEW_PROCESS_STATUS.OFFER_ACCEPTED,
-  },
-  {
-    label: 'Offer Rejected',
-    value: NEW_PROCESS_STATUS.OFFER_REJECTED,
-  },
-  {
-    label: 'Offer Withdraw',
-    value: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
   },
   {
     label: 'Reference Verification',
@@ -91,7 +84,7 @@ const FilterForm = (props) => {
   }, 700);
 
   const onValuesChange = (changedValues, allValues) => {
-    onFinishDebounce(allValues);
+    onFinishDebounce(removeEmptyFields(allValues));
   };
 
   // clear values

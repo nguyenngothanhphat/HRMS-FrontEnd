@@ -1,17 +1,17 @@
 import { Card } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { connect, history, Link } from 'umi';
+import { connect, history } from 'umi';
 import CommonTable from '@/components/CommonTable';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterPopover from '@/components/FilterPopover';
+import UserProfilePopover from '@/components/UserProfilePopover';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { removeEmptyFields } from '@/utils/utils';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
-import UserProfilePopover from '@/components/UserProfilePopover';
 
 const NewJoinees = (props) => {
   const { loadingTable, listNewComer, dispatch } = props;
@@ -39,9 +39,6 @@ const NewJoinees = (props) => {
     dispatch({
       type: 'onboarding/fetchJobTitleList',
       payload: {},
-    });
-    dispatch({
-      type: 'onboarding/fetchEmployeeList',
     });
   }, []);
 

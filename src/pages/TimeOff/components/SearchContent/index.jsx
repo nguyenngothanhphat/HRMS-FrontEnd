@@ -7,6 +7,7 @@ import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
+import { DATE_FORMAT_STR } from '@/constants/dateFormat';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { splitArrayItem } from '@/utils/utils';
 import styles from './index.less';
@@ -138,7 +139,7 @@ const TimeOffFilter = (props) => {
           <Row>
             <Col span={11}>
               <Form.Item name="fromDate">
-                <DatePicker format="MMM DD, YYYY" disabledDate={disabledFromDate} allowClear />
+                <DatePicker format={DATE_FORMAT_STR} disabledDate={disabledFromDate} allowClear />
               </Form.Item>
             </Col>
             <Col span={2} className={styles.separator}>
@@ -146,7 +147,7 @@ const TimeOffFilter = (props) => {
             </Col>
             <Col span={11}>
               <Form.Item name="toDate">
-                <DatePicker format="MMM DD, YYYY" disabledDate={disabledToDate} allowClear />
+                <DatePicker format={DATE_FORMAT_STR} disabledDate={disabledToDate} allowClear />
               </Form.Item>
             </Col>
           </Row>

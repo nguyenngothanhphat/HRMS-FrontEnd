@@ -181,11 +181,9 @@ const DetailEmployeeChart = (props) => {
         <DebounceSelect
           placeholder="Search by Employee Name or ID"
           fetchOptions={onEmployeeSearch}
-          showSearch
           value={value}
-          suffixIcon={<img alt="search" src={SearchIcon} />}
           onChange={(val) => {
-            setSelectedId(val?.value || null);
+            setSelectedId(val || null);
             setValue(null);
           }}
           optionType={1}

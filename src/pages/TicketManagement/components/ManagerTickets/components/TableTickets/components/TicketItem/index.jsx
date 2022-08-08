@@ -5,7 +5,7 @@ import TeamIcon from '@/assets/assignTeam.svg';
 import EditIcon from '@/assets/customerManagement/edit2.svg';
 import CloseIcon from '@/assets/ticketManagement-trashIcon.svg';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { getEmployeeUrl } from '@/utils/directory';
+import { getEmployeeUrl } from '@/utils/utils';
 import styles from './index.less';
 
 const TicketItem = (props) => {

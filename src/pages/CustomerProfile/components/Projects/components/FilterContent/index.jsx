@@ -2,21 +2,45 @@ import { Col, DatePicker, Form, Row, Select } from 'antd';
 import { isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
+import DebounceSelect from '@/components/DebounceSelect';
 import styles from './index.less';
+import { DATE_FORMAT_STR } from '@/constants/dateFormat';
 
 const FilterContent = (props) => {
   const [form] = Form.useForm();
   const {
+    dispatch,
     customerProfile: {
       projectTypeList = [],
       projectStatusList = [],
       divisionList = [],
-      employeeList = [],
       projectNameList = [],
     } = {},
     filter = {},
     onFilter = () => {},
   } = props;
+
+  const onEmployeeSearch = (value) => {
+    if (!value) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+
+    return dispatch({
+      type: 'customerManagement/fetchEmployeeList',
+      payload: {
+        name: value,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfo?.legalName,
+        value: user._id,
+      }));
+    });
+  };
 
   const onValuesChange = (changedValues, allValues) => {
     const newValues = { ...allValues };
@@ -88,16 +112,13 @@ const FilterContent = (props) => {
       </Form.Item>
 
       <Form.Item label="By PROJECT manager" name="projectManager">
-        <Select
-          mode="multiple"
-          style={{ width: '100%' }}
-          // loading={loadingFetchEmployeeList}
+        <DebounceSelect
           placeholder="Select Project Manager"
-        >
-          {employeeList.map((x) => (
-            <Select.Option value={x._id}>{x?.generalInfo?.legalName}</Select.Option>
-          ))}
-        </Select>
+          fetchOptions={onEmployeeSearch}
+          showSearch
+          allowClear
+          mode="multiple"
+        />
       </Form.Item>
 
       <Form.Item label="By status" name="projectStatus">
@@ -112,7 +133,7 @@ const FilterContent = (props) => {
         <Row>
           <Col span={11}>
             <Form.Item name="s_fromDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker format={DATE_FORMAT_STR} />
             </Form.Item>
           </Col>
           <Col span={2} className={styles.separator}>
@@ -120,7 +141,7 @@ const FilterContent = (props) => {
           </Col>
           <Col span={11}>
             <Form.Item name="s_toDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker format={DATE_FORMAT_STR} />
             </Form.Item>
           </Col>
         </Row>
@@ -130,7 +151,7 @@ const FilterContent = (props) => {
         <Row>
           <Col span={11}>
             <Form.Item name="e_fromDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker format={DATE_FORMAT_STR} />
             </Form.Item>
           </Col>
           <Col span={2} className={styles.separator}>
@@ -138,7 +159,7 @@ const FilterContent = (props) => {
           </Col>
           <Col span={11}>
             <Form.Item name="e_toDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker format={DATE_FORMAT_STR} />
             </Form.Item>
           </Col>
         </Row>

@@ -1,6 +1,7 @@
 import { Col, Form, Input, Popover, Row, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import DebounceSelect from '@/components/DebounceSelect';
 import warnIcon from '@/assets/warnIcon.svg';
 import styles from './index.less';
 
@@ -14,13 +15,12 @@ const AddModalContent = (props) => {
     listStatus,
     listTags,
     state,
-    accountOwnerId = '',
     loadingTagList,
     loadingStateList,
-    employeeList = [],
     listCustomer = [],
     country = '',
     handleAddNew = () => {},
+    user: { currentUser: { employee: { _id: accountOwnerId = '' } = {}, employee = {} } = {} },
   } = props;
   const [isCountryChosen, setIsCountryChosen] = useState(true);
 
@@ -33,6 +33,27 @@ const AddModalContent = (props) => {
     setIsCountryChosen(false);
   };
 
+  const onEmployeeSearch = (val) => {
+    if (!val) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+    return dispatch({
+      type: 'customerManagement/fetchEmployeeList',
+      payload: {
+        name: val,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfoInfo?.legalName,
+        value: user._id,
+      }));
+    });
+  };
+
   useEffect(() => {
     dispatch({
       type: 'customerManagement/fetchTagList',
@@ -42,9 +63,6 @@ const AddModalContent = (props) => {
     });
     dispatch({
       type: 'customerManagement/fetchCountryList',
-    });
-    dispatch({
-      type: 'customerManagement/fetchEmployeeList',
     });
   }, []);
 
@@ -165,7 +183,7 @@ const AddModalContent = (props) => {
             <Input placeholder="Enter Company legal name" />
           </Form.Item>
           <Form.Item
-            label="Doing Business As(DBA)"
+            label="Doing Business As (DBA)"
             name="dba"
             rules={[
               { required: true, message: 'Required field!' },
@@ -315,21 +333,17 @@ const AddModalContent = (props) => {
                 name="accountOwner"
                 rules={[{ required: true, message: 'Required field!' }]}
               >
-                <Select
+                <DebounceSelect
+                  allowClear
+                  showArrow
                   placeholder="Enter Account Owner"
+                  fetchOptions={onEmployeeSearch}
                   showSearch
-                  optionFilterProp="children"
-                  filterOption={(input, option) =>
-                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                  {employeeList.map((employee) => {
-                    return (
-                      <Select.Option key={employee._id} value={employee._id}>
-                        {employee?.generalInfo?.legalName}
-                      </Select.Option>
-                    );
-                  })}
-                </Select>
+                  defaultValue={{
+                    value: employee?._id,
+                    label: employee?.generalInfo?.legalName,
+                  }}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -346,7 +360,14 @@ const AddModalContent = (props) => {
             </Select>
           </Form.Item>
           <Form.Item label="Comments (Optional)" name="comments">
-            <Input.TextArea rows={4} placeholder="Enter Comments" />
+            <Input.TextArea
+              autoSize={{
+                minRows: 4,
+                maxRows: 7,
+              }}
+              maxLength={500}
+              placeholder="Enter Comments"
+            />
           </Form.Item>
         </div>
       </Form>
@@ -364,28 +385,16 @@ export default connect(
       temp: { customerID = '' } = {},
       employeeList = [],
     } = {},
-    user: {
-      currentUser: {
-        employee: {
-          _id: accountOwnerId = '',
-          generalInfo: { _id = '', firstName = '', middleName = '', lastName = '' } = {},
-        } = {},
-      } = {},
-    } = {},
+    user,
   }) => ({
     customerID,
     listTags,
     country,
     state,
-    _id,
-    firstName,
-    middleName,
-    lastName,
     employeeList,
-    accountOwnerId,
+    user,
     loadingCustomerID: loading.effects['customerManagement/getCustomerID'],
     loadingTagList: loading.effects['customerManagement/fetchTagList'],
     loadingStateList: loading.effects['customerManagement/fetchStateByCountry'],
-    loadingEmployeeList: loading.effects['customerManagement/fetchEmployeeList'],
   }),
 )(AddModalContent);

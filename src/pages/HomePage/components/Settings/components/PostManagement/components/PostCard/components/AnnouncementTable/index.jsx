@@ -95,11 +95,16 @@ const AnnouncementTable = (props) => {
         width: '10%',
         render: (attachments = []) => {
           return (
-            <Image.PreviewGroup>
-              {attachments.map((x) => {
-                return <Image width={32} height={32} src={x.url} key={x._id || x.id} />;
-              })}
-            </Image.PreviewGroup>
+            <div className={styles.media}>
+              <Image.PreviewGroup>
+                {attachments.slice(0, 3).map((x) => {
+                  return <Image width={32} height={32} src={x.url} key={x._id || x.id} />;
+                })}
+              </Image.PreviewGroup>
+              {attachments.length > 3 && (
+                <span style={{ fontWeight: 500 }}>+{attachments.length - 3} more</span>
+              )}
+            </div>
           );
         },
       },

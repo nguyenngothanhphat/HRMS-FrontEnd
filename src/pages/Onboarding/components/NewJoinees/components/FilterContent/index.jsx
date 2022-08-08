@@ -1,21 +1,42 @@
-import { Col, DatePicker, Form, InputNumber, Row, Select, Tag } from 'antd';
+import { DatePicker, Form, InputNumber, Select, Tag } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
+import { DATE_FORMAT_STR, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import styles from './index.less';
+import DebounceSelect from '@/components/DebounceSelect';
 
 const { Option } = Select;
 
 const Filter = (props) => {
-  const { hrList, hrManagerList, jobTitleList, onApply = () => {} } = props;
-  const dateFormat = 'MMM DD, YYYY';
+  const { dispatch, hrList, hrManagerList, jobTitleList, onApply = () => {} } = props;
   const [durationFrom, setDurationFrom] = useState(''); // validate date
   const [durationTo, setDurationTo] = useState(''); // validate date
 
   const [form] = Form.useForm();
+
+  const onEmployeeSearch = (val) => {
+    if (!val) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+    return dispatch({
+      type: 'onboarding/fetchEmployeeList',
+      payload: {
+        name: val,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfoInfo?.legalName,
+        value: user._id,
+      }));
+    });
+  };
 
   const disabledDate = (currentDate, type) => {
     if (type === 'fromDate') {
@@ -95,7 +116,7 @@ const Filter = (props) => {
           <Form.Item name="fromDate" style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}>
             <DatePicker
               disabledDate={(currentDate) => disabledDate(currentDate, 'fromDate')}
-              format={dateFormat}
+              format={DATE_FORMAT_STR}
               placeholder="From Date"
               onChange={(value) => {
                 onChangeDate(value, 'fromDate');
@@ -112,7 +133,7 @@ const Filter = (props) => {
           >
             <DatePicker
               disabledDate={(currentDate) => disabledDate(currentDate, 'toDate')}
-              format={dateFormat}
+              format={DATE_FORMAT_STR}
               placeholder="To Date"
               onChange={(value) => {
                 onChangeDate(value, 'toDate');
@@ -148,65 +169,37 @@ const Filter = (props) => {
           </Select>
         </Form.Item>
         <Form.Item key="hiringManager" label="By hiring manager" name="hiringManager">
-          <Select
+          <DebounceSelect
             allowClear
             showArrow
+            placeholder="Select an employee"
+            fetchOptions={onEmployeeSearch}
             showSearch
-            filterOption={(input, option) => {
-              const arrChild = option.props.children[1];
-              return arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-            }}
             mode="multiple"
-            tagRender={tagRender}
-            placeholder="Select HR Manager"
-            dropdownClassName={styles.dropdown}
-          >
-            {hrManagerList.map((option) => {
-              const { generalInfo: { legalName = '' } = '' } = option;
-              return (
-                <Option key={option._id} value={option._id}>
-                  <span>{legalName}</span>
-                </Option>
-              );
-            })}
-          </Select>
+          />
         </Form.Item>
         <Form.Item key="hrEmployee" label="By HR POC" name="hrEmployee">
-          <Select
+          <DebounceSelect
             allowClear
             showArrow
+            placeholder="Select an employee"
+            fetchOptions={onEmployeeSearch}
             showSearch
-            filterOption={(input, option) => {
-              const arrChild = option.props.children[1];
-              return arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-            }}
             mode="multiple"
-            tagRender={tagRender}
-            placeholder="Select HR"
-            dropdownClassName={styles.dropdown}
-          >
-            {hrList.map((option) => {
-              const { _id, generalInfo: { legalName = '' } = '' } = option;
-              return (
-                <Option key={option._id} value={_id}>
-                  <span>{legalName}</span>
-                </Option>
-              );
-            })}
-          </Select>
+          />
         </Form.Item>
         <Form.Item label="By yrs of experience" name="yearOfExp" style={{ marginBottom: '0' }}>
           <Form.Item
             name="fromYearOfExp"
             style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
           >
-            <InputNumber min={0} />
+            <InputNumber min={0} placeholder="From" />
           </Form.Item>
           <Form.Item
             name="toYearOfExp"
             style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginLeft: '8px' }}
           >
-            <InputNumber min={0} />
+            <InputNumber min={0} placeholder="To" />
           </Form.Item>
         </Form.Item>
       </Form>

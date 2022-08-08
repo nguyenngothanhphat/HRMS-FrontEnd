@@ -29,8 +29,8 @@ import {
 } from '@/services/resourceManagement';
 
 import {
-  getSelectedDivisions,
-  getSelectedLocations,
+  getResourceSelectedDivisions,
+  getResourceSelectedLocations,
   handlingResourceAvailableStatus,
 } from '@/utils/resourceManagement';
 
@@ -50,8 +50,8 @@ const initialState = {
   utilizationOverviewList: [],
   resourceUtilizationList: {},
   newJoineeList: [],
-  selectedDivisions: getSelectedDivisions() || [],
-  selectedLocations: getSelectedLocations() || [getCurrentLocation()], // empty for all
+  selectedDivisions: getResourceSelectedDivisions() || [],
+  selectedLocations: getResourceSelectedLocations() || [getCurrentLocation()],
   currentPayload: {},
   filter: {},
   locationsOfCountries: [],
@@ -115,8 +115,9 @@ const resourceManagement = {
       return response;
     },
     *updateProject({ payload }, { call }) {
+      let response = {};
       try {
-        const response = yield call(updateProjectDetail, {
+        response = yield call(updateProjectDetail, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -129,6 +130,7 @@ const resourceManagement = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *updateComment({ payload }, { call, put }) {
       let response = {};
@@ -170,13 +172,14 @@ const resourceManagement = {
       }
     },
     *getListEmployee({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getListEmployee, {
+        response = yield call(getListEmployee, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -185,6 +188,7 @@ const resourceManagement = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *fetchDivisions({ payload }, { call, put }) {
       try {
@@ -442,7 +446,6 @@ const resourceManagement = {
           type: 'save',
           payload: {
             locationsOfCountries: data,
-            selectedLocations: getSelectedLocations() || [getCurrentLocation()],
           },
         });
       } catch (error) {

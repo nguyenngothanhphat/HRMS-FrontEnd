@@ -24,7 +24,7 @@ const DropdownSearch = (props) => {
                 <Col span={24}>
                   <div
                     className={styles.employee}
-                    onClick={() => handleSelectChange(x._id, x.generalInfo.legalName)}
+                    onClick={() => handleSelectChange(x._id, x.generalInfo.legalName, x.status)}
                   >
                     <span>{x.generalInfo?.legalName}</span>
                   </div>

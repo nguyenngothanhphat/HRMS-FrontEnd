@@ -104,18 +104,22 @@ export function handlingResourceAvailableStatus(data) {
   return statusData;
 }
 
-export const setSelectedLocations = (data) => {
+export const setResourceSelectedLocations = (data) => {
   localStorage.setItem('resourceSelectedLocations', JSON.stringify(data));
 };
 
-export const getSelectedLocations = () => {
+export const getResourceSelectedLocations = () => {
   return JSON.parse(localStorage.getItem('resourceSelectedLocations'));
 };
 
-export const setSelectedDivisions = (data) => {
+export const setResourceSelectedDivisions = (data) => {
   localStorage.setItem('resourceSelectedDivision', JSON.stringify(data));
 };
 
-export const getSelectedDivisions = () => {
+export const getResourceSelectedDivisions = () => {
   return JSON.parse(localStorage.getItem('resourceSelectedDivision'));
+};
+
+export const disabledEndDate = (currentDate, startDate) => {
+  return currentDate && currentDate < moment(startDate).add(1, 'days');
 };

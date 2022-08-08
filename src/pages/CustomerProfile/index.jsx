@@ -33,9 +33,6 @@ const CustomerProfile = (props) => {
         id: reId,
       },
     });
-    dispatch({
-      type: 'customerManagement/fetchEmployeeList',
-    });
   }, []);
 
   const listMenu = [

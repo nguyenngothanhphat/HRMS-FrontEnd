@@ -1,27 +1,46 @@
 import { Col, DatePicker, Form, Row, Select } from 'antd';
 import { debounce, isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
+import { connect } from 'umi';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import style from './index.less';
+import DebounceSelect from '@/components/DebounceSelect';
+import { removeEmptyFields } from '@/utils/utils';
 
 const FilterContent = (props) => {
-  const {
-    onFilter = () => {},
-    handleFilterCounts = () => {},
-    documentType,
-    uploadByList = [],
-    filter = {},
-  } = props;
+  const { onFilter = () => {}, documentType, filter = {}, dispatch } = props;
 
   const [form] = Form.useForm();
 
+  const onEmployeeSearch = (value) => {
+    if (!value) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+
+    return dispatch({
+      type: 'customerManagement/fetchEmployeeList',
+      payload: {
+        name: value,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfo?.legalName,
+        value: user.generalInfo?.legalName,
+      }));
+    });
+  };
+
   const onFinishDebounce = debounce((values) => {
-    handleFilterCounts(values);
     onFilter(values);
   }, 800);
 
   const onValuesChange = (changedValues, allValues) => {
-    onFinishDebounce(allValues);
+    const valueTemp = removeEmptyFields(allValues);
+    onFinishDebounce(valueTemp);
   };
 
   useEffect(() => {
@@ -46,11 +65,13 @@ const FilterContent = (props) => {
           </Select>
         </Form.Item>
         <Form.Item label="By uploaded by" name="byUpload">
-          <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
-            {uploadByList.map((item) => {
-              return <Select.Option key={item}>{item}</Select.Option>;
-            })}
-          </Select>
+          <DebounceSelect
+            placeholder="Please select"
+            fetchOptions={onEmployeeSearch}
+            showSearch
+            allowClear
+            mode="multiple"
+          />
         </Form.Item>
         <Form.Item label="By Uploaded On">
           <Row gutter={24}>
@@ -81,4 +102,4 @@ const FilterContent = (props) => {
   );
 };
 
-export default FilterContent;
+export default connect(() => ({}))(FilterContent);

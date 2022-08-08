@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 import { Table, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -12,21 +11,28 @@ import { checkHolidayInWeek, convertMsToTime, holidayFormatDate } from '@/utils/
 import TaskPopover from './components/TaskPopover';
 import TimeoffPopover from './components/TimeoffPopover';
 import styles from './index.less';
+import AddTaskModal from '../../../AddTaskModal';
 
 const MonthlyTable = (props) => {
   const {
     loadingFetchMyTimesheetByType = false,
-    // weeksOfMonth = [],
     timeoffList = [],
     timeSheet: { holidays = [] },
     data: { weeks: weeksProp = [], summary: summaryProp = [] } = {},
   } = props;
 
   const [formattedData, setFormattedData] = useState([]);
+  const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
+  const [initialModal, setInitialModal] = useState({ date: '' });
 
   // FUNCTIONS
   const getColorByIndex = (index) => {
     return projectColor[index % projectColor.length];
+  };
+
+  const handleAddTaskModal = ({ date }) => {
+    setAddTaskModalVisible(true);
+    setInitialModal({ date });
   };
 
   const formatData = () => {
@@ -85,51 +91,63 @@ const MonthlyTable = (props) => {
   const columns = () => {
     const columnLength = summaryProp.length + 1;
     const dateColumns = summaryProp.map((weekItem) => {
+      const {
+        week: weekSummary = '',
+        startDate: startDateSummary = '',
+        endDate: endDateSummary = '',
+      } = weekItem;
       return {
         title: renderTitle(weekItem, 2),
-        dataIndex: weekItem.week,
-        key: weekItem.week,
+        dataIndex: weekSummary,
+        key: weekSummary,
         align: 'center',
         width: `${100 / columnLength}}%`,
         render: (value, row) => {
           const { weeks = [], projectName = '' } = row;
-          const find = weeks.find((w) => w.week === weekItem.week) || {};
-          const findTimeoff = timeoffList.find((w) => w.week === weekItem.week) || {};
+          const find = weeks.find((w) => w.week === weekSummary) || {};
+          const { week = '', dailies = [], weekProjectTime = 0 } = find;
+
+          const findTimeoff = timeoffList.find((w) => w.week === weekSummary) || {};
+          const { days = [], startDate = '', endDate = '', totalTimeOffTime = 0 } = findTimeoff;
+
           if (projectName === 'Timeoff' && findTimeoff) {
             return (
               <TimeoffPopover
                 projectName={projectName}
-                date={weekItem.week}
-                timeoff={findTimeoff?.days}
-                startDate={findTimeoff?.startDate}
-                endDate={findTimeoff?.endDate}
+                date={weekSummary}
+                timeoff={days}
+                startDate={startDate}
+                endDate={endDate}
                 holidays={holidays}
                 placement="bottomLeft"
               >
-                {!findTimeoff || findTimeoff?.totalTimeOffTime === 0 ? (
+                {!findTimeoff || totalTimeOffTime === 0 ? (
                   <span className={styles.hourValue}>
                     <img src={EmptyLine} alt="" />
                   </span>
                 ) : (
-                  <span className={styles.hourValue}>
-                    {convertMsToTime(findTimeoff?.totalTimeOffTime || 0)}
-                  </span>
+                  <span className={styles.hourValue}>{convertMsToTime(totalTimeOffTime)}</span>
                 )}
               </TimeoffPopover>
             );
           }
           return (
-            <div>
-              {!find || find?.weekProjectTime === 0 ? (
+            <TaskPopover
+              week={week}
+              startDate={startDateSummary}
+              endDate={endDateSummary}
+              tasks={dailies}
+              placement="bottomLeft"
+              onAddTaskModal={() => handleAddTaskModal({ date: startDateSummary })}
+            >
+              {!find || !weekProjectTime ? (
                 <span className={styles.hourValue}>
                   <img src={EmptyLine} alt="" />
                 </span>
               ) : (
-                <span className={styles.hourValue}>
-                  {convertMsToTime(find?.weekProjectTime || 0)}
-                </span>
+                <span className={styles.hourValue}>{convertMsToTime(weekProjectTime)}</span>
               )}
-            </div>
+            </TaskPopover>
           );
         },
       };
@@ -147,13 +165,9 @@ const MonthlyTable = (props) => {
             <div className={styles.projectName}>
               <div className={styles.icon} style={{ backgroundColor: getColorByIndex(index) }}>
                 <span>
-                  {projectName === 'Timeoff' ? (
-                    <img src={AirPlanIcon} alt="" />
-                  ) : projectName ? (
-                    projectName.toString()?.charAt(0)
-                  ) : (
-                    'P'
-                  )}
+                  {(projectName === 'Timeoff' && <img src={AirPlanIcon} alt="" />) || projectName
+                    ? projectName.toString()?.charAt(0)
+                    : 'P'}
                 </span>
               </div>
               <span className={styles.name}>{projectName}</span>
@@ -175,17 +189,24 @@ const MonthlyTable = (props) => {
           <span className={styles.text}>Total</span>
         </div>
         {summaryProp.map((weekItem) => {
-          const { week = '', dailies = [], weekTotalTime = '' } = weekItem;
+          const {
+            week = '',
+            dailies = [],
+            weekTotalTime = '',
+            startDate = '',
+            endDate = '',
+          } = weekItem;
           return (
             <TaskPopover
-              key={weekItem.week}
+              key={week}
               week={week}
-              startDate={weekItem.startDate}
-              endDate={weekItem.endDate}
+              startDate={startDate}
+              endDate={endDate}
               tasks={dailies}
               holidays={holidays}
+              onAddTaskModal={() => handleAddTaskModal({ date: startDate })}
             >
-              {weekTotalTime && weekTotalTime !== 0 ? (
+              {weekTotalTime ? (
                 <div className={styles.item}>
                   <span className={styles.value}>{convertMsToTime(weekTotalTime)}</span>
                 </div>
@@ -209,7 +230,6 @@ const MonthlyTable = (props) => {
           dataSource={formattedData}
           bordered
           pagination={false}
-          // scroll={{ y: 440 }}
           footer={renderFooter}
           loading={loadingFetchMyTimesheetByType}
           locale={{
@@ -217,6 +237,12 @@ const MonthlyTable = (props) => {
           }}
         />
       </div>
+      <AddTaskModal
+        visible={addTaskModalVisible}
+        onClose={() => setAddTaskModalVisible(false)}
+        mode="multiple"
+        date={initialModal.date}
+      />
     </div>
   );
 };

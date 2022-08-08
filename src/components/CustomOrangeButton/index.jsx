@@ -9,9 +9,16 @@ const CustomOrangeButton = ({
   showDot = false,
   icon = '',
   children,
+  marginInline = 16,
 }) => {
   return (
-    <div className={styles.CustomOrangeButton} onClick={onClick}>
+    <div
+      className={styles.CustomOrangeButton}
+      onClick={onClick}
+      style={{
+        marginInline,
+      }}
+    >
       <img src={icon || FilterIcon} alt="" />
       <span style={{ fontSize }}>{children || 'Filter'}</span>
       {showDot && (

@@ -13,7 +13,6 @@ const Edit = (props) => {
     generalData = {},
     generalDataOrigin,
     countryList = [],
-
     loading,
     handleCancel = () => {},
     // profileOwner = false,

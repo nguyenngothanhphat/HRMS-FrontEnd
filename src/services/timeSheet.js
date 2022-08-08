@@ -360,6 +360,18 @@ export async function sendMailInCompleteTimeSheet(payload) {
   );
 }
 
+export async function getProjectsByEmployee(payload) {
+  return request(
+    `api-project/resourcetenant/get-by-employee`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}
+
 export async function getLocationsOfCountries(params) {
   return request('/api/locationtenant/group-country', {
     method: 'GET',

@@ -3,7 +3,7 @@ import Moment from 'moment';
 import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'umi';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import ConformIcondata from '../../../confirmIcon';
+import ConfirmIconData from '../../../ConfirmIconData';
 import styles from './index.less';
 
 @connect(
@@ -76,7 +76,7 @@ class View extends PureComponent {
                 <p onClick={() => this.handleOpenModalReview(url)} className={styles.urlData}>
                   {name}
                 </p>
-                <ConformIcondata data={name} />
+                <ConfirmIconData data={name} />
               </div>
             )}
           </Col>
