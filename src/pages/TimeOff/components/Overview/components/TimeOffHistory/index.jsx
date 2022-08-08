@@ -29,7 +29,7 @@ const TimeOffHistory = (props) => {
         </Row>
         {historyEmployee.map((parentType) => (
           <div className={styles.body}>
-            {parentType.childTypes.map((type) => (
+            {(parentType.childTypes || []).map((type) => (
               <Row className={styles.row} key={type._id}>
                 <Col span={9}>{type.name}</Col>
                 <Col className={styles.center} span={5}>

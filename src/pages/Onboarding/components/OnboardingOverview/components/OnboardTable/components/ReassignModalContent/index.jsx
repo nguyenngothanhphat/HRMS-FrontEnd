@@ -6,9 +6,9 @@ import DebounceSelect from '@/components/DebounceSelect';
 import styles from './index.less';
 
 const ReassignModal = (props) => {
-  const { dispatch, type = '', page = '', limit = '', onClose = () => {}, item = {} } = props;
+  const { dispatch, refreshData = () => {}, onClose = () => {}, item = {} } = props;
 
-  const { ticketID = '', assignTo = {}, processStatus = '' } = item || {};
+  const { ticketID = '', assignTo = {} } = item || {};
   const onEmployeeSearch = (val) => {
     if (!val) {
       return new Promise((resolve) => {
@@ -41,14 +41,11 @@ const ReassignModal = (props) => {
           id: ticketID,
           tenantId: getCurrentTenant(),
           newAssignee: to,
-          processStatus,
-          isAll: type === 'ALL',
-          page,
-          limit,
         },
       });
       if (res?.statusCode === 200) {
         onClose();
+        refreshData();
       }
     }
   };

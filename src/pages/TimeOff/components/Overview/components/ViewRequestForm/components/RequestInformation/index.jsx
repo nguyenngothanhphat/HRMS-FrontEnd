@@ -238,7 +238,7 @@ class RequestInformation extends PureComponent {
         <div className={styles.formTitle}>
           <span className={styles.title}>
             <span className={styles.ticketID}>
-              {loadingFetchLeaveRequestById ? '' : `[Ticket ID: ${ticketID}]: ${subject}`}
+              {`[Ticket ID: ${ticketID}]: ${subject}`}
             </span>
             {isUpdated && <Tag color="#2C6DF9">Updated</Tag>}
             {isNew && !isUpdated && <Tag color="#2C6DF9">New</Tag>}
