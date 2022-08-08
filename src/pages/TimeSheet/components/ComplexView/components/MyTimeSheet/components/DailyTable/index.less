@@ -46,10 +46,13 @@
       align-items: center;
       justify-content: flex-start;
       padding: @cell-padding;
+      overflow: hidden;
       color: #ffffff;
       font-weight: 500;
       font-size: 13px;
       line-height: 20px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
       box-shadow: 1px 0px 6px rgba(0, 0, 0, 0.15);
     }
     &__remainColumn {
@@ -58,10 +61,13 @@
         display: flex;
         align-items: center;
         justify-content: flex-start;
+        overflow: hidden;
         color: #ffffff;
         font-weight: 500;
         font-size: 13px;
         line-height: 20px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
     }
   }

@@ -1,9 +1,9 @@
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import React from 'react';
 import { connect, history } from 'umi';
 import FAQIcon from '@/assets/dashboard/faq.svg';
 import PoliciesIcon from '@/assets/dashboard/policies.svg';
-import QuestionIcon from '@/assets/dashboard/question.svg';
 import QuickLinkIcon from '@/assets/dashboard/quickLink.svg';
 import RaiseTicketIcon from '@/assets/dashboard/raiseTicket.svg';
 import CommonModal from '@/components/CommonModal';
@@ -102,7 +102,7 @@ class MenuDropdown extends React.Component {
       <>
         <HeaderDropdown overlay={menuHeaderDropdown}>
           <div className={`${styles.action} ${styles.notify}`}>
-            <img src={QuestionIcon} alt="" />
+            <QuestionCircleOutlined />
           </div>
         </HeaderDropdown>
         <CommonModal

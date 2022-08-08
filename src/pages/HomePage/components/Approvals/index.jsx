@@ -1,13 +1,18 @@
 import React from 'react';
-import { Button } from 'antd';
 import { history } from 'umi';
 import ApprovalIcon from '@/assets/homePage/noteIcon.svg';
-import styles from './index.less';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 export default function Approvals() {
   return (
-    <Button className={styles.Approval} onClick={() => history.push('/dashboard/approvals')}>
-      <img style={{ paddingRight: 13 }} src={ApprovalIcon} alt="approval-icon" /> Approval Page
-    </Button>
+    <div style={{ width: '100%' }}>
+      <CustomPrimaryButton
+        icon={<img src={ApprovalIcon} alt="approval-icon" />}
+        onClick={() => history.push('/dashboard/approvals')}
+        width="100%"
+      >
+        Approval Page
+      </CustomPrimaryButton>
+    </div>
   );
 }
