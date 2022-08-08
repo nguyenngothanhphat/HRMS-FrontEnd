@@ -70,8 +70,7 @@ function EmployeePostManagement(props) {
     dispatch({
       type: 'homePage/deletePostEffect',
       payload: {
-        postType: POST_TYPE.SOCIAL,
-        id: record?._id,
+        postId: record?._id,
       },
     }).then((res) => {
       const { statusCode } = res;

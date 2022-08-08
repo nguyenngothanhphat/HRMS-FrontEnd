@@ -1,10 +1,12 @@
 import { Form, Input, message, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { v4 as uuidv4 } from 'uuid';
 import AttachmentIcon from '@/assets/attachment.svg';
 import UploadFileURLIcon from '@/assets/homePage/uploadURLIcon.svg';
 import styles from './index.less';
 import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
+import uploadFirebase, { uploadFirebaseMultiple } from '@/services/firebase';
 
 const { Dragger } = Upload;
 
@@ -18,6 +20,7 @@ const AddPostContent = (props) => {
     limit = 5,
     record = {},
     isEdit = false,
+    setIsEdit = () => {},
   } = props;
   const [form] = Form.useForm();
 
@@ -27,15 +30,14 @@ const AddPostContent = (props) => {
 
   useEffect(() => {
     setForm(form);
+    return () => {
+      form.resetFields();
+    };
   }, []);
 
   useEffect(() => {
     if (isEdit) {
       const { description = '', attachments = [] } = record;
-
-      if (attachments && attachments.length) {
-        setIsUpload(true);
-      }
 
       const fileListTemp = () => {
         return attachments.map((x, i) => {
@@ -50,82 +52,117 @@ const AddPostContent = (props) => {
           };
         });
       };
-      form.setFieldsValue({
-        description,
-        uploadFiles: { fileList: [...fileListTemp()] },
-      });
-      setFileList([...fileListTemp()]);
+      if (attachments && attachments.length && attachments[0].category === 'URL') {
+        setIsURL(true);
+        form.setFieldsValue({
+          description,
+          urlFile: attachments[0].url,
+        });
+      } else if (!attachments.length) {
+        setIsUpload(false);
+        setIsURL(false);
+        form.setFieldsValue({
+          description,
+        });
+      } else {
+        setIsUpload(true);
+        form.setFieldsValue({
+          description,
+          uploadFiles: { fileList: [...fileListTemp()] },
+        });
+        setFileList([...fileListTemp()]);
+      }
     }
-    return () => {
-      form.resetFields();
-    };
   }, [isEdit]);
 
-  const onUploadFiles = async (files) => {
-    if (Array.isArray(files)) {
-      return files.map((x) => x.id || x._id);
-    }
-    const list = [];
-    if (Array.isArray(files?.fileList)) {
-      if (files?.fileList.length > 0) {
-        // eslint-disable-next-line compat/compat
-        await Promise.all(
-          files.fileList.map(async (x) => {
-            if (x.url) {
-              list.push({ id: x.id || x._id });
-            } else {
-              const formData = new FormData();
-              formData.append('uri', x.originFileObj);
-              const upload = await dispatch({
-                type: 'upload/uploadFile',
-                payload: formData,
-              });
-              if (upload.statusCode === 200) {
-                list.push(upload.data[0]);
-              }
-            }
-            return x;
-          }),
-        );
-      }
-    }
-    return list.map((x) => x.id);
-  };
+  const onAddNew = async (values, data = {}) => {
+    const payload = {
+      postType: POST_TYPE.SOCIAL,
+      description: values.description,
+      createdBy: employee?._id,
+    };
 
-  const onAddNew = async (values) => {
-    const attachments = await onUploadFiles(values.uploadFiles);
+    if (Object.keys(data)?.length) {
+      payload.attachments = data.map((x) => x.id);
+    }
+
     dispatch({
       type: 'homePage/addPostEffect',
-      payload: {
-        attachments,
-        postType: POST_TYPE.SOCIAL,
-        description: values.description,
-        createdBy: employee?._id,
-      },
+      payload,
     }).then((x) => {
       if (x.statusCode === 200) {
+        form.resetFields();
         setIsVisible(false);
         fetchData(POST_TYPE.SOCIAL, limit, '', STATUS_POST.ACTIVE);
       }
     });
   };
 
-  const onEditPost = async (values) => {
-    const attachments = await onUploadFiles(values.uploadFiles);
+  const onEditPost = async (values, data = {}) => {
+    const payload = {
+      id: record?._id,
+      postType: POST_TYPE.SOCIAL,
+      description: values.description,
+    };
+
+    if (Object.keys(data)?.length) {
+      payload.attachments = data.map((x) => x.id);
+    }
+
     dispatch({
       type: 'homePage/updatePostEffect',
-      payload: {
-        id: record?._id,
-        attachments,
-        postType: POST_TYPE.SOCIAL,
-        description: values.description,
-      },
+      payload,
     }).then((x) => {
       if (x.statusCode === 200) {
+        form.resetFields();
+        setIsEdit(false);
         setIsVisible(false);
         fetchData(POST_TYPE.SOCIAL, limit, '', STATUS_POST.ACTIVE);
       }
     });
+  };
+
+  const onUploadFiles = async (values) => {
+    const data = [];
+    console.log(fileList);
+    if (values.urlFile) {
+      data.push({
+        fileName: uuidv4(),
+        category: 'URL',
+        url: values.urlFile,
+      });
+    } else if (values.uploadFiles?.fileList?.length) {
+      const uploads = fileList.map((file) => {
+        return {
+          file,
+          typeFile: 'ATTACHMENT',
+        };
+      });
+      const attachment = await uploadFirebaseMultiple(uploads);
+      data.push(...attachment);
+    }
+    if (data.length > 0) {
+      dispatch({
+        type: 'upload/addAttachment',
+        payload: {
+          data,
+        },
+        showNotification: false,
+      }).then((resp) => {
+        const { statusCode, data: listAttachments = {} } = resp;
+        if (statusCode === 200) {
+          if (!isEdit) {
+            onAddNew(values, listAttachments);
+          } else {
+            onEditPost(values, listAttachments);
+          }
+        }
+      });
+    } else if (isEdit) {
+      onEditPost(values);
+    } else {
+      onAddNew(values);
+    }
   };
 
   const beforeUpload = (file) => {
@@ -185,7 +222,7 @@ const AddPostContent = (props) => {
         id="myForm"
         className={styles.form}
         onValuesChange={onValuesChange}
-        onFinish={isEdit ? onEditPost : onAddNew}
+        onFinish={onUploadFiles}
       >
         <Form.Item
           label="Description"

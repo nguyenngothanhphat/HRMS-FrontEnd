@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 import { ref, getDownloadURL, uploadBytesResumable, getStorage } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { initializeApp } from 'firebase/app';
@@ -8,8 +9,7 @@ const app = initializeApp(firebaseConfig);
 
 const storage = getStorage(app);
 
-const uploadFirebase = ({ file = {}, typeFile = 'IMAGE' }, callback) => {
-  // eslint-disable-next-line compat/compat
+const uploadFirebase = ({ file = {}, typeFile = 'IMAGE', callback }) => {
   return new Promise((resolve) => {
     const fileName = [uuidv4(), file.name.split('.').pop()].join('.');
     const path = `${UPLOAD.PATH[typeFile]}${fileName}`;
@@ -40,6 +40,16 @@ const uploadFirebase = ({ file = {}, typeFile = 'IMAGE' }, callback) => {
         });
       },
     );
+  });
+};
+
+export const uploadFirebaseMultiple = (uploads) => {
+  return new Promise((resolve) => {
+    return Promise.all(
+      uploads.map((upload) => {
+        return uploadFirebase(upload);
+      }),
+    ).then((payloads) => resolve(payloads));
   });
 };
 

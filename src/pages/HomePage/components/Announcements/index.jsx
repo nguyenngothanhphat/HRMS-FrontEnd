@@ -314,6 +314,7 @@ const Announcements = (props) => {
             setIsVisible={setIsVisible}
             isEdit={isEdit}
             record={record}
+            setIsEdit={setIsEdit}
           />
         }
         secondText="Reset"
