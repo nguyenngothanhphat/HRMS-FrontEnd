@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { Popconfirm } from 'antd';
-import { debounce, uniq } from 'lodash';
+import { debounce } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -176,14 +176,6 @@ const Documents = (props) => {
     }));
   };
 
-  const uploadByList =
-    documents && documents.length > 0
-      ? documents.map((d) => {
-          return d.ownerName;
-        })
-      : [];
-  const uniqUploadByList = uniq(uploadByList);
-
   const onSearchDebounce = debounce((value) => {
     setSearchValue(value);
   }, 1000);
@@ -233,12 +225,7 @@ const Documents = (props) => {
           <div className={styles.filterPopover}>
             <FilterPopover
               content={
-                <FilterContent
-                  documentType={documentType}
-                  onFilter={onFilter}
-                  uploadByList={uniqUploadByList}
-                  filter={filter}
-                />
+                <FilterContent documentType={documentType} onFilter={onFilter} filter={filter} />
               }
             >
               <CustomOrangeButton showDot={applied > 0}>Filter</CustomOrangeButton>

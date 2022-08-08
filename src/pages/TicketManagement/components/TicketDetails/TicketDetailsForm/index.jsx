@@ -14,7 +14,7 @@ import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { PRIORITY_COLOR } from '@/constants/ticketManagement';
 import { FILE_TYPE } from '@/constants/upload';
-import { getEmployeeUrl } from '@/utils/directory';
+import { getEmployeeUrl } from '@/utils/utils';
 import { beforeUpload, compressImage, identifyFile } from '@/utils/upload';
 import AssignTeamModal from '../../AssignTeamModal';
 import styles from './index.less';
@@ -159,6 +159,7 @@ const TicketDetailsForm = (props) => {
   const role = findRole(roles);
   const checkRole = ['MANAGER', 'HR-MANAGER'].includes(role);
   const checkPermission = permissions.viewTicketByAdmin === 1;
+  const isAppendTicket = permissions.appendTicket === 1;
 
   const avatarTicket = () => {
     return ccList.map((val) => {
@@ -220,7 +221,7 @@ const TicketDetailsForm = (props) => {
         title="Ticket Details"
         extra={
           <>
-            {(checkRole || checkPermission) && (
+            {(checkRole || checkPermission || isAppendTicket) && (
               <CustomBlueButton onClick={() => setModalVisible(true)} disabled={loadingAddChat}>
                 Move To
               </CustomBlueButton>

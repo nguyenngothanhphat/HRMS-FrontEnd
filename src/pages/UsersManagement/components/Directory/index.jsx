@@ -132,7 +132,6 @@ const DirectoryComponent = (props) => {
     return (
       <div className={styles.tabBarExtra}>
         <FilterCountTag count={applied} onClearFilter={clearFilter} />
-
         <FilterPopover
           placement="bottomRight"
           content={

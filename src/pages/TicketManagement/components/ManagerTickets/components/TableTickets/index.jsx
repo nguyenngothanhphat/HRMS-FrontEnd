@@ -13,7 +13,7 @@ import UserProfilePopover from '@/components/UserProfilePopover';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { PRIORITY_COLOR } from '@/constants/ticketManagement';
 import AssignTeamModal from '@/pages/TicketManagement/components/AssignTeamModal';
-import { getEmployeeUrl } from '@/utils/directory';
+import { getEmployeeUrl } from '@/utils/utils';
 import TicketItem from './components/TicketItem';
 import styles from './index.less';
 
@@ -69,7 +69,7 @@ const TableTickets = (props) => {
     setTicket(result);
   };
 
-  const handleSelectChange = (value, supportTeam) => {
+  const handleSelectChange = (value, newName) => {
     const {
       id = '',
       employee_raise: employeeRaise = '',
@@ -101,7 +101,7 @@ const TableTickets = (props) => {
           departmentAssign,
           employee: employeeId,
           oldName,
-          supportTeam,
+          newName,
           role,
         },
       }).then((res) => {

@@ -295,8 +295,8 @@ const AddTaskModal = (props) => {
           department: employee.departmentInfo,
           generalInfo: employee.generalInfo,
           manager: {
-            _id: employee.managerInfo._id,
-            generalInfo: employee.managerInfo.generalInfo,
+            _id: employee.managerInfo?._id,
+            generalInfo: employee.managerInfo?.generalInfo,
           },
         },
       };
@@ -452,8 +452,17 @@ const AddTaskModal = (props) => {
                         placeholder="Select the project"
                         loading={loadingFetchProject}
                         disabled={loadingFetchProject}
-                        filterOption={(input, option) =>
-                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        filterOption={(input, option) => {
+                          if (option.children) {
+                            return option.children?.toLowerCase().includes(input.toLowerCase());
+                          }
+                          return (
+                            (option.options || [])
+                              .map((x) => x.children)
+                              .map((x) => x.toLowerCase())
+                              .indexOf(input.toLowerCase()) >= 0
+                          );
+                        }}
                       >
                         <OptGroup label="My Projects">
                           {sortAlphabet(myProjects, 'project', 'projectName').map((project) => {
@@ -464,7 +473,7 @@ const AddTaskModal = (props) => {
                             } = project.project;
                             return (
                               <Option key={id} value={id}>
-                                {projectName} - {customerName}
+                                {`${projectName} - ${customerName}`}
                               </Option>
                             );
                           })}
@@ -475,7 +484,7 @@ const AddTaskModal = (props) => {
                             'projectName',
                           ).map((val) => (
                             <Option key={val.id} value={val.id}>
-                              {val.projectName} - {val.customerName}
+                              {`${val.projectName} - ${val.customerName}`}
                             </Option>
                           ))}
                         </OptGroup>

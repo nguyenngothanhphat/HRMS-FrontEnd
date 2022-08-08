@@ -39,16 +39,15 @@ const ViewInformation = (props) => {
   };
 
   const getResponse = (resp) => {
-    const { statusCode, data = [] } = resp;
+    const { statusCode, data = {} } = resp;
     //  const check = employee === myEmployeeID;
     if (statusCode === 200) {
-      const [first] = data;
       handleCancel();
       dispatch({
         type: 'customerProfile/updateCustomerEffect',
         payload: {
           customerId,
-          avatar: first.url,
+          avatar: data?.url,
           tenantId: getCurrentTenant(),
         },
       });
@@ -94,36 +93,36 @@ const ViewInformation = (props) => {
         <div className={s.infoEmployee__viewBottom}>
           <div className={s.infoEmployee__viewBottom__row}>
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Company alias (DBA):</p>
               </Col>
-              <Col span={6}>
+              <Col span={12}>
                 <p className={s.value}>{dba}</p>
               </Col>
             </Row>
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Customer ID:</p>
               </Col>
-              <Col span={6}>
+              <Col span={12}>
                 <p className={s.value}>{customerId}</p>
               </Col>
             </Row>
 
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Status:</p>
               </Col>
-              <Col span={6}>
+              <Col span={12}>
                 <p className={s.value}>{status}</p>
               </Col>
             </Row>
 
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Account Owner:</p>
               </Col>
-              <Col span={6}>
+              <Col span={12}>
                 <Link className={s.value}>{nameLegal}</Link>
               </Col>
             </Row>
@@ -133,28 +132,28 @@ const ViewInformation = (props) => {
           <Divider />
           <div className={s.infoEmployee__viewBottom__row}>
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Open Leads:</p>
               </Col>
-              <Col span={6}>
+              <Col span={12}>
                 <p className={s.value}>{openLeads}</p>
               </Col>
             </Row>
 
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Active Projects:</p>
               </Col>
-              <Col span={6}>
+              <Col span={12}>
                 <Link className={s.value}>{activeProject}</Link>
               </Col>
             </Row>
 
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Open Tickets:</p>
               </Col>
-              <Col span={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Col span={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <p className={s.value}>{pendingTickets}</p>
                 <img
                   style={{ display: 'inline-block', paddingBottom: '13px', paddingLeft: '8px' }}
@@ -165,10 +164,10 @@ const ViewInformation = (props) => {
             </Row>
 
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Open Tasks:</p>
               </Col>
-              <Col span={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Col span={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <p className={s.value}>{pendingTasks}</p>
                 <img
                   style={{ display: 'inline-block', paddingBottom: '13px', paddingLeft: '8px' }}
@@ -216,7 +215,7 @@ const ViewInformation = (props) => {
             <EditCustomerModalContent
               visible={isEditCustomer}
               onClose={() => setIsEditCustomer(false)}
-              selectedProject={info}
+              selectedCustomer={info}
             />
           }
           width={700}

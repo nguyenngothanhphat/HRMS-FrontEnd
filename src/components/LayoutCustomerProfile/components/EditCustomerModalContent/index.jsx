@@ -1,9 +1,10 @@
-import { Col, Form, Row, Input, Select, Divider, Popover } from 'antd';
+import { Col, Divider, Form, Input, Popover, Row, Select } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import styles from './index.less';
 import warnIcon from '@/assets/warning-filled.svg';
+import DebounceSelect from '@/components/DebounceSelect';
 import { getCurrentTenant } from '@/utils/authority';
+import styles from './index.less';
 
 @connect(
   ({
@@ -15,25 +16,14 @@ import { getCurrentTenant } from '@/utils/authority';
       temp: { customerID = '' } = {},
       employeeList = [],
     } = {},
-    user: {
-      currentUser: {
-        employee: {
-          _id: accountOwnerId = '',
-          generalInfo: { _id = '', firstName = '', middleName = '', lastName = '' } = {},
-        } = {},
-      } = {},
-    } = {},
+    user = {},
   }) => ({
     customerID,
     listTags,
     country,
     state,
-    _id,
-    firstName,
-    middleName,
-    lastName,
+    user,
     employeeList,
-    accountOwnerId,
     loadingCustomerID: loading.effects['customerManagement/getCustomerID'],
     loadingTagList: loading.effects['customerManagement/fetchTagList'],
     loadingStateList: loading.effects['customerManagement/fetchStateByCountry'],
@@ -56,9 +46,6 @@ class EditCustomerModalContent extends PureComponent {
         name: 'Engineering',
       },
     });
-    dispatch({
-      type: 'customerManagement/fetchEmployeeList',
-    });
   }
 
   componentDidUpdate(props) {
@@ -76,6 +63,28 @@ class EditCustomerModalContent extends PureComponent {
       this.refForm?.current?.setFieldsValue({ customerID });
     }
   }
+
+  onEmployeeSearch = (val) => {
+    const { dispatch } = this.props;
+    if (!val) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+    return dispatch({
+      type: 'customerManagement/fetchEmployeeList',
+      payload: {
+        name: val,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfoInfo?.legalName,
+        value: user._id,
+      }));
+    });
+  };
 
   handleSubmit = async (values) => {
     const { customerID, status, legalName, dba, tags, comments, accountOwner } = values;
@@ -118,9 +127,8 @@ class EditCustomerModalContent extends PureComponent {
       listStatus,
       listTags,
       loadingTagList,
-      employeeList = [],
       listCustomer = [],
-      selectedProject: {
+      selectedCustomer: {
         legalName = '',
         customerId = '',
         status: statusProps = '',
@@ -137,6 +145,7 @@ class EditCustomerModalContent extends PureComponent {
         website = ' ',
         tags = [],
         comment = '',
+        accountOwner = {},
       } = {},
     } = this.props;
 
@@ -171,7 +180,7 @@ class EditCustomerModalContent extends PureComponent {
             <div className={styles.basicInfoTitle}>
               <p>Basic Customer Detail</p>
             </div>
-            <Row gutter={48}>
+            <Row gutter={24}>
               <Col span={12}>
                 <Form.Item
                   label={
@@ -232,7 +241,7 @@ class EditCustomerModalContent extends PureComponent {
             <Row>
               <Col span={24}>
                 <Form.Item
-                  label="Doing Bussiness As(DBA)"
+                  label="Doing Business As (DBA)"
                   name="dba"
                   rules={[
                     { required: true, message: 'Required field!' },
@@ -266,28 +275,24 @@ class EditCustomerModalContent extends PureComponent {
             <div className={styles.otherDetailTitle}>
               <p>Other Detail</p>
             </div>
-            <Row gutter={48}>
+            <Row gutter={24}>
               <Col span={12}>
                 <Form.Item
                   label="Account Owner"
                   name="accountOwner"
                   rules={[{ required: true, message: 'Required field!' }]}
                 >
-                  <Select
+                  <DebounceSelect
+                    allowClear
+                    showArrow
                     placeholder="Enter Account Owner"
+                    fetchOptions={this.onEmployeeSearch}
                     showSearch
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  >
-                    {employeeList.map((employee) => {
-                      return (
-                        <Select.Option key={employee._id} value={employee._id}>
-                          {employee?.generalInfo?.legalName}
-                        </Select.Option>
-                      );
-                    })}
-                  </Select>
+                    defaultValue={{
+                      value: accountOwner?._id,
+                      label: accountOwner?.generalInfo?.legalName,
+                    }}
+                  />
                 </Form.Item>
               </Col>
               <Col span={12}>

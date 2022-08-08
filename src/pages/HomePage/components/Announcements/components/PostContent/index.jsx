@@ -9,6 +9,77 @@ import styles from './index.less';
 const PostContent = (props) => {
   const { post: { attachments = [], description = '' } = {} } = props;
 
+  const [mode, setMode] = React.useState(false);
+
+  const getMode = ({ target: img }) => {
+    setMode(img?.offsetHeight > img?.offsetWidth);
+    // eslint-disable-next-line no-param-reassign
+    img.src = null;
+  };
+
+  const renderMoreThan3 = (arr = []) => {
+    // horizontal
+    if (mode) {
+      return (
+        <Row gutter={[8, 8]}>
+          <Col span={14}>
+            <Image
+              src={arr[0]}
+              onError={(e) => {
+                e.target.src = PreviewImage;
+              }}
+            />
+          </Col>
+          <Col span={10}>
+            <Row gutter={[8, 8]}>
+              {arr.slice(1, arr.length).map((x, i) => {
+                return (
+                  <Col span={i < 3 ? 24 : 0} key={`${i + 1}`}>
+                    <Image
+                      src={x}
+                      onError={(e) => {
+                        e.target.src = PreviewImage;
+                      }}
+                    />
+                  </Col>
+                );
+              })}
+            </Row>
+          </Col>
+        </Row>
+      );
+    }
+
+    const secondRowSpan = arr.length < 4 ? 24 / (arr.length - 1) : 8;
+    return (
+      <Row gutter={[8, 0]}>
+        <Col span={24}>
+          <Image
+            src={arr[0]}
+            onError={(e) => {
+              e.target.src = PreviewImage;
+            }}
+            height={380}
+          />
+        </Col>
+
+        {arr.slice(1, arr.length).map((x, i) => {
+          return (
+            <Col span={i < 3 ? secondRowSpan : 0} key={`${i + 1}`}>
+              <Image
+                src={x}
+                onError={(e) => {
+                  e.target.src = PreviewImage;
+                }}
+                height={200}
+              />
+            </Col>
+          );
+        })}
+      </Row>
+    );
+  };
+
   const renderImageLayout = (images) => {
     const number = images.length;
 
@@ -17,18 +88,43 @@ const PostContent = (props) => {
         return null;
       case 1:
         return (
-          <Row gutter={[4, 4]}>
+          <Row gutter={0}>
             <Col span={24}>
               <Image
                 src={images[0]}
                 onError={(e) => {
                   e.target.src = PreviewImage;
                 }}
+                height={500}
               />
             </Col>
           </Row>
         );
       case 2:
+        if (mode) {
+          return (
+            <Row gutter={[4, 0]}>
+              <Col span={24}>
+                <Image
+                  src={images[0]}
+                  onError={(e) => {
+                    e.target.src = PreviewImage;
+                  }}
+                  height={250}
+                />
+              </Col>
+              <Col span={24}>
+                <Image
+                  src={images[1]}
+                  onError={(e) => {
+                    e.target.src = PreviewImage;
+                  }}
+                  height={250}
+                />
+              </Col>
+            </Row>
+          );
+        }
         return (
           <Row gutter={[4, 4]}>
             <Col span={12}>
@@ -37,6 +133,7 @@ const PostContent = (props) => {
                 onError={(e) => {
                   e.target.src = PreviewImage;
                 }}
+                height={500}
               />
             </Col>
             <Col span={12}>
@@ -45,39 +142,13 @@ const PostContent = (props) => {
                 onError={(e) => {
                   e.target.src = PreviewImage;
                 }}
+                height={500}
               />
             </Col>
           </Row>
         );
       default:
-        return (
-          <Row gutter={[4, 4]}>
-            <Col span={14}>
-              <Image
-                src={images[0]}
-                onError={(e) => {
-                  e.target.src = PreviewImage;
-                }}
-              />
-            </Col>
-            <Col span={10}>
-              <Row gutter={[4, 4]}>
-                {images.slice(1, images.length).map((x, i) => {
-                  return (
-                    <Col span={i < 3 ? 24 : 0} key={`${i + 1}`}>
-                      <Image
-                        src={x}
-                        onError={(e) => {
-                          e.target.src = PreviewImage;
-                        }}
-                      />
-                    </Col>
-                  );
-                })}
-              </Row>
-            </Col>
-          </Row>
-        );
+        return renderMoreThan3(images);
     }
   };
 
@@ -97,7 +168,12 @@ const PostContent = (props) => {
     const count = attachments.length - 4;
     return (
       attachments.length > 4 && (
-        <div className={styles.countTag}>
+        <div
+          className={styles.countTag}
+          style={{
+            bottom: mode ? 0 : 8,
+          }}
+        >
           <span>
             +{count} {count < 2 ? 'image' : 'images'}
           </span>
@@ -135,6 +211,18 @@ const PostContent = (props) => {
   return (
     <div className={styles.PostContent}>
       <div className={styles.content}>{description ? Parser(renderContent(description)) : ''}</div>
+      {attachments && attachments?.length > 0 && (
+        <img
+          src={attachments[0].url}
+          onLoad={getMode}
+          alt=""
+          style={{
+            visibility: 'hidden',
+            position: 'absolute',
+          }}
+        />
+      )}
+
       {renderPreviewImage()}
       {renderImageCountTag()}
       {renderPreviewLink()}

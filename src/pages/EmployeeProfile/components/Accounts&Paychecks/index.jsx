@@ -216,7 +216,7 @@ class AccountsPaychecks extends PureComponent {
           hasHeader={false}
           content={
             <>
-              <div style={{ textAlign: 'center' }}>
+              <div style={{ textAlign: 'center', paddingTop: 24 }}>
                 <img src={imageAddSuccess} alt="update success" />
               </div>
               <br />

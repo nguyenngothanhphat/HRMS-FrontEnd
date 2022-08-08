@@ -214,6 +214,7 @@ const Assignee = (props) => {
                 onChange={(value) => {
                   setSecondaryManager(value);
                 }}
+                labelInValue
               />
             </div>
           )}

@@ -2,7 +2,7 @@ import { DatePicker, Form } from 'antd';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import DebounceSelect from '@/components/DebounceSelect';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
 import styles from './index.less';
@@ -34,7 +34,7 @@ const ChangeManagerModalContent = (props) => {
       return data
         .filter((x) => x._id !== employee?._id)
         .map((user) => ({
-          label: user.generalInfo?.legalName,
+          label: user.generalInfoInfo?.legalName,
           value: user._id,
         }));
     });
@@ -42,10 +42,10 @@ const ChangeManagerModalContent = (props) => {
 
   const onFinish = async (values) => {
     const { effectiveDay, manager = {} } = values;
-    const effectiveDate = effectiveDay && moment(effectiveDay).format('YYYY-MM-DD');
+    const effectiveDate = effectiveDay && moment(effectiveDay).format(DATE_FORMAT_YMD);
     const payload = {
       effectiveDate,
-      managerId: manager?.value,
+      managerId: manager,
       employeeId: dataPassRow.employeeId,
       updateBy: employee._id,
     };
@@ -112,7 +112,6 @@ export default connect(
     },
   }) => ({
     loading: loading.effects['resourceManagement/getListEmployee'],
-    loadingUpdateManager: loading.effects['resourceManagement/updateManagerResource'],
     employeeList,
     employee,
   }),

@@ -8,6 +8,8 @@ import CalendarIcon from '@/assets/calendar_icon.svg';
 // import SearchIcon from '@/assets/directory/search.svg';
 import { dateFormatAPI } from '@/constants/timeSheet';
 import styles from './index.less';
+import DebounceSelect from '@/components/DebounceSelect';
+import { removeEmptyFields } from '@/utils/utils';
 
 const { Option } = Select;
 
@@ -21,11 +23,31 @@ const FilterContent = (props) => {
     onFilterChange = () => {},
     statusList = [],
     projectList = [],
-    employeeList = [],
     divisions = [],
     titleList = [],
     listSkill = [],
   } = props;
+
+  const onEmployeeSearch = (val) => {
+    if (!val) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+    return dispatch({
+      type: 'resourceManagement/getListEmployee',
+      payload: {
+        name: val,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfoInfo?.legalName,
+        value: user.generalInfoInfo?.legalName,
+      }));
+    });
+  };
 
   useEffect(() => {
     if (Object.keys(filter).length === 0) {
@@ -34,20 +56,7 @@ const FilterContent = (props) => {
   }, [JSON.stringify(filter)]);
 
   const onFinish = (values) => {
-    const newValues = { ...values };
-
-    // remove empty fields
-    // eslint-disable-next-line no-return-assign
-    const result = Object.entries(newValues).reduce(
-      // eslint-disable-next-line no-return-assign
-      (a, [k, v]) =>
-        v == null || v.length === 0
-          ? a
-          : // eslint-disable-next-line no-param-reassign
-            ((a[k] = v), a),
-      {},
-    );
-
+    const result = { ...values };
     if (result.startFromDate) {
       result.startFromDate = moment(result.startFromDate).format(dateFormatAPI);
     }
@@ -61,7 +70,7 @@ const FilterContent = (props) => {
       result.tentativeEndDateEnd = moment(result.tentativeEndDateEnd).format(dateFormatAPI);
     }
 
-    onFilterChange({ ...filter, ...result });
+    onFilterChange(result);
   };
 
   const onFinishDebounce = debounce((values) => {
@@ -69,7 +78,7 @@ const FilterContent = (props) => {
   }, 1000);
 
   const onValuesChange = (changeValues, allValues) => {
-    onFinishDebounce(allValues);
+    onFinishDebounce(removeEmptyFields(allValues));
   };
 
   const division = divisions.map((x) => {
@@ -142,32 +151,14 @@ const FilterContent = (props) => {
       >
         <div className={styles.form__top}>
           <Form.Item label="BY NAME/USER ID" name="userName">
-            <Select
+            <DebounceSelect
               allowClear
               showArrow
-              showSearch
-              filterOption={(input, option) => {
-                return (
-                  input &&
-                  ((option.key && option.key.toLowerCase().indexOf(input.toLowerCase()) >= 0) ||
-                    (option.value && option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0))
-                );
-              }}
-              mode="multiple"
               placeholder="Select employee"
-              dropdownClassName={styles.dropdown}
-            >
-              {employeeList.map((option) => {
-                return (
-                  <Option
-                    key={option?.generalInfoInfo?.userId}
-                    value={option?.generalInfoInfo?.legalName}
-                  >
-                    <span>{option?.generalInfoInfo?.legalName}</span>
-                  </Option>
-                );
-              })}
-            </Select>
+              mode="multiple"
+              fetchOptions={onEmployeeSearch}
+              showSearch
+            />
           </Form.Item>
           {fieldsArray.map((field) => (
             <Form.Item key={field.name} label={field.label} name={field.name}>

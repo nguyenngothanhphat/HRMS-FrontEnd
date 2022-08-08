@@ -1,4 +1,4 @@
-import { Button } from 'antd';
+import { Button, Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CommonModal from '@/components/CommonModal';
@@ -69,22 +69,50 @@ const GeneralInfo = (props) => {
     }
   }, [employee]);
 
+  const items = [
+    {
+      id: 1,
+      component: <EmployeeInformation permissions={permissions} />,
+      permission: true,
+    },
+    {
+      id: 2,
+      component: <PersonalInformation permissions={permissions} isProfileOwner={isProfileOwner} />,
+      permission: permissions.viewPassportAndVisa !== -1 || isProfileOwner,
+    },
+    {
+      id: 3,
+      component: <PassportDetails isProfileOwner={isProfileOwner} permissions={permissions} />,
+      permission: permissions.viewPassportAndVisa !== -1 || isProfileOwner,
+    },
+    {
+      id: 4,
+      component: <VisaDetails isProfileOwner={isProfileOwner} permissions={permissions} />,
+      permission: permissions.viewPassportAndVisa !== -1 || isProfileOwner,
+    },
+    {
+      id: 5,
+      component: <EmergencyContact permissions={permissions} isProfileOwner={isProfileOwner} />,
+      permission: checkEmergencyContactVisible,
+    },
+    {
+      id: 6,
+      component: (
+        <ProfessionalAcademicBackground permissions={permissions} isProfileOwner={isProfileOwner} />
+      ),
+      permission: checkProfessionalAcademicVisible,
+    },
+  ];
+
   return (
     <div className={styles.GeneralInfo}>
-      <EmployeeInformation permissions={permissions} />
-      <PersonalInformation permissions={permissions} isProfileOwner={isProfileOwner} />
-      {(permissions.viewPassportAndVisa !== -1 || isProfileOwner) && (
-        <>
-          <PassportDetails isProfileOwner={isProfileOwner} permissions={permissions} />
-          <VisaDetails isProfileOwner={isProfileOwner} permissions={permissions} />
-        </>
-      )}
-      {checkEmergencyContactVisible && (
-        <EmergencyContact permissions={permissions} isProfileOwner={isProfileOwner} />
-      )}
-      {checkProfessionalAcademicVisible && (
-        <ProfessionalAcademicBackground permissions={permissions} isProfileOwner={isProfileOwner} />
-      )}
+      <Row gutter={[24, 24]}>
+        {items.map((item) => {
+          if (item.permission) return <Col span={24}>{item.component}</Col>;
+          return null;
+        })}
+      </Row>
+
       <ModalAddInfo visible={newComerModalVisible} />
       <CommonModal
         width={550}
@@ -94,7 +122,7 @@ const GeneralInfo = (props) => {
         hasHeader={false}
         content={
           <>
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: 'center', paddingTop: 24 }}>
               <img src={imageAddSuccess} alt="update success" />
             </div>
             <br />

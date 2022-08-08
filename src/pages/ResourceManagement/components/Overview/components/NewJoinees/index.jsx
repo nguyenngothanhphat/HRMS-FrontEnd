@@ -1,13 +1,13 @@
-import { CloseOutlined } from '@ant-design/icons';
-import { Card, Tag } from 'antd';
+import { Card } from 'antd';
 import { debounce } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
-import FilterPopover from '@/components/FilterPopover';
-import CustomSearchBox from '@/components/CustomSearchBox';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
+import FilterPopover from '@/components/FilterPopover';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import CommonTable from '../CommonTable';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
@@ -22,12 +22,12 @@ const NewJoinees = (props) => {
   const [searchValue, setSearchValue] = useState('');
   const [applied, setApplied] = useState(0);
   const [form, setForm] = useState(null);
+
   const fetchData = (payloadParams) => {
     const payload = { ...payloadParams, selectedDivisions, selectedLocations };
     if (searchValue) {
       payload.searchValue = searchValue;
     }
-
     dispatch({
       type: 'resourceManagement/fetchNewJoineeList',
       payload: {
@@ -96,18 +96,8 @@ const NewJoinees = (props) => {
   const renderOption = () => {
     return (
       <div className={styles.optionContainer}>
-        <div>
-          {applied > 0 && (
-            <Tag
-              className={styles.tagCountFilter}
-              closable
-              onClose={clearTagFilter}
-              closeIcon={<CloseOutlined />}
-            >
-              {applied} filters applied
-            </Tag>
-          )}
-        </div>
+        <FilterCountTag count={applied} onClearFilter={clearTagFilter} />
+
         <div className={styles.options}>
           <FilterPopover
             realTime

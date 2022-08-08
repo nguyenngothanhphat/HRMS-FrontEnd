@@ -3,8 +3,9 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Col, DatePicker, Form, Input, notification, Row, Select } from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { isEmpty } from 'lodash';
 import { disabledEndDate } from '@/utils/resourceManagement';
 import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import datePickerIcon from '@/assets/resource-management-datepicker.svg';
@@ -21,8 +22,18 @@ const EditModalContent = (props) => {
     onClose = () => {},
     dispatch,
     dataPassRow = {},
-    refreshData,
+    refreshData = () => {},
+    visible = false,
+    loadingFetchProjectList = false,
   } = props;
+
+  useEffect(() => {
+    if (visible && isEmpty(projectList)) {
+      dispatch({
+        type: 'resourceManagement/getProjectList',
+      });
+    }
+  }, [visible]);
 
   const parseDate = (date, formatDate) => {
     if (!date || date === '') {
@@ -42,21 +53,7 @@ const EditModalContent = (props) => {
 
   const handleSubmitAssign = async (values) => {
     const { project, status, utilization, startDate, endDate, revisedEndDate } = values;
-    if (
-      new Date(endDate).getTime() <= new Date(startDate).getTime() ||
-      (revisedEndDate && new Date(revisedEndDate).getTime() <= new Date(startDate).getTime())
-    ) {
-      notification.error({
-        message: 'End date or revised end date cannot less than start date',
-      });
-      return;
-    }
-    if (revisedEndDate && new Date(revisedEndDate).getTime() <= new Date(endDate).getTime()) {
-      notification.error({
-        message: 'Revised date cannot less than end date',
-      });
-      return;
-    }
+   
     dispatch({
       type: 'resourceManagement/updateProject',
       payload: {
@@ -110,7 +107,7 @@ const EditModalContent = (props) => {
               name="project"
               rules={[{ required: true, message: 'Please select the project!' }]}
             >
-              <Select>
+              <Select loading={loadingFetchProjectList}>
                 {projectList.map((project) => (
                   <Option value={project.id}>{project.projectName}</Option>
                 ))}
@@ -208,7 +205,7 @@ export default connect(
     loading = {},
     resourceManagement: { resourceList = [], projectList = [], statusList = [] },
   }) => ({
-    loading: loading.effects['resourceManagement/updateProject'],
+    loadingFetchProjectList: loading.effects['resourceManagement/getProjectList'],
     resourceList,
     projectList,
     statusList,

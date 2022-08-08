@@ -1,17 +1,40 @@
-import { Form, Select, Row, Col, DatePicker } from 'antd';
-import React, { useEffect } from 'react';
+import { Col, DatePicker, Form, Row, Select } from 'antd';
 import { debounce, isEmpty } from 'lodash';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
+import { DATE_FORMAT_STR } from '@/constants/dateFormat';
+import DebounceSelect from '@/components/DebounceSelect';
 import styles from './index.less';
 
 const FilterContent = (props) => {
   const [form] = Form.useForm();
   const {
-    projectDetails: { documentTypeList = [], employeeList = [] } = {},
+    dispatch,
+    projectDetails: { documentTypeList = [] } = {},
     onFilter = () => {},
     filter = {},
-    loadingFetchEmployeeList = false,
   } = props;
+
+  const onEmployeeSearch = (val) => {
+    if (!val) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+    return dispatch({
+      type: 'projectDetails/fetchEmployeeListEffect',
+      payload: {
+        name: val,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfo?.legalName,
+        value: user.generalInfo?.userId,
+      }));
+    });
+  };
 
   const onFinish = (values) => {
     const newValues = { ...values };
@@ -66,29 +89,19 @@ const FilterContent = (props) => {
       </Form.Item>
 
       <Form.Item label="By employee" name="uploadedBy">
-        <Select
-          allowClear
+        <DebounceSelect
+          placeholder="Search by Employee Name or ID"
           mode="multiple"
-          style={{ width: '100%' }}
-          placeholder="Please select"
-          loading={loadingFetchEmployeeList}
-          disabled={loadingFetchEmployeeList}
-        >
-          {employeeList.map((item) => {
-            return (
-              <Select.Option value={item?.generalInfo?.userId} key={item._id}>
-                {item.generalInfo?.legalName}
-              </Select.Option>
-            );
-          })}
-        </Select>
+          fetchOptions={onEmployeeSearch}
+          allowClear
+        />
       </Form.Item>
 
       <Form.Item label="By Uploaded Date">
         <Row>
           <Col span={11}>
             <Form.Item name="fromDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker format={DATE_FORMAT_STR} />
             </Form.Item>
           </Col>
           <Col span={2} className={styles.separator}>
@@ -96,7 +109,7 @@ const FilterContent = (props) => {
           </Col>
           <Col span={11}>
             <Form.Item name="toDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker format={DATE_FORMAT_STR} />
             </Form.Item>
           </Col>
         </Row>

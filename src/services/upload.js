@@ -14,3 +14,10 @@ export async function uploadFile(data) {
     data,
   });
 }
+
+export async function addAttachment(data) {
+  return request('/api/attachments/add', {
+    method: 'POST',
+    data,
+  });
+}
