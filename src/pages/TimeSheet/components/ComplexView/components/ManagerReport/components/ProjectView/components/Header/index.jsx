@@ -26,6 +26,7 @@ const Header = (props) => {
     activeView = '',
   } = props;
   const [focus, setFocus] = useState(false);
+
   // HEADER AREA FOR MONTH
   const onPrevClick = () => {
     if (type === VIEW_TYPE.M) {

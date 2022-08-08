@@ -605,7 +605,7 @@ const OnboardTable = (props) => {
           loading={loading || loadingFetch || loadingSearch}
           scrollable
           width="90vw"
-          height={500}
+          height={700}
           page={page}
           limit={limit}
           total={total}

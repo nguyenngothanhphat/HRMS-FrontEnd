@@ -109,10 +109,9 @@ const FilterForm = (props) => {
               allowClear
               showArrow
               showSearch
-              filterOption={(input, option) => {
-                const arrChild = option.props.children[1];
-                return arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-              }}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
               mode="multiple"
               placeholder={field.placeholder}
             >

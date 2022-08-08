@@ -5,6 +5,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import Overview from './components/Overview';
 import SetupTimeoff from './components/SetupTimeoff';
 import styles from './index.less';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 const { TabPane } = Tabs;
 const TimeOff = (props) => {
@@ -25,6 +26,13 @@ const TimeOff = (props) => {
         type: 'timeOff/fetchTimeOffTypeByEmployeeEffect',
         payload: {
           employee: employee._id,
+        },
+      });
+      dispatch({
+        type: 'timeOffManagement/getTimeOffTypeListEffect',
+        payload: {
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
         },
       });
     }

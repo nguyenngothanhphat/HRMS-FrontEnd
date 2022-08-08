@@ -85,16 +85,18 @@ const onboarding = {
           ...payload,
         };
         response = yield call(getOnboardingList, req);
-        const { statusCode, data = [] } = response;
-        if (statusCode !== 200) throw response;
-        // const data = formatData(response.data)
-        yield put({
-          type: 'saveOnboardingOverview',
-          payload: {
-            total: response.total,
-            onboardingData: data,
-          },
-        });
+        if (response) {
+          const { statusCode, data = [] } = response;
+          if (statusCode !== 200) throw response;
+          // const data = formatData(response.data)
+          yield put({
+            type: 'saveOnboardingOverview',
+            payload: {
+              total: response.total,
+              onboardingData: data,
+            },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }
@@ -204,21 +206,24 @@ const onboarding = {
     },
 
     // eslint-disable-next-line no-shadow
-    *fetchTotalNumberOfOnboardingListEffect(_, { call, put }) {
+    *fetchTotalNumberOfOnboardingListEffect({ payload }, { call, put }) {
       let response;
       try {
-        const payload = {
+        const payloadTemp = {
+          ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         };
-        response = yield call(getTotalNumberOnboardingList, payload);
-        const { statusCode, data: totalNumber = [] } = response;
-        if (statusCode !== 200) throw response;
-        // Update menu
-        yield put({
-          type: 'updateMenuQuantity',
-          payload: { totalNumber },
-        });
+        response = yield call(getTotalNumberOnboardingList, payloadTemp);
+        if (response) {
+          const { statusCode, data: totalNumber = [] } = response;
+          if (statusCode !== 200) throw response;
+          // Update menu
+          yield put({
+            type: 'updateMenuQuantity',
+            payload: { totalNumber },
+          });
+        }
       } catch (error) {
         dialog(error);
       }

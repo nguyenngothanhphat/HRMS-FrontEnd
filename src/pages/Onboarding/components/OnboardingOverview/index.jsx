@@ -2,8 +2,10 @@ import { Tabs } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { MENU_DATA } from '@/constants/onboarding';
 import OnboardingLayout from '@/components/OnboardingLayout';
+import { MENU_DATA } from '@/constants/onboarding';
+import useCancelToken from '@/utils/hooks';
+import { debounceFetchData } from '@/utils/utils';
 import OnboardTable from './components/OnboardTable';
 import SearchFilterBar from './components/SearchFilterBar';
 import styles from './index.less';
@@ -22,23 +24,34 @@ const OnboardingOverview = (props) => {
   const [limit, setLimit] = useState(10);
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState({});
+  const { cancelToken, cancelRequest } = useCancelToken();
+  const { cancelToken: cancelToken2, cancelRequest: cancelRequest2 } = useCancelToken();
 
   const fetchData = () => {
-    dispatch({
-      type: 'onboarding/fetchTotalNumberOfOnboardingListEffect',
-    });
     dispatch({
       type: 'onboarding/fetchOnboardList',
       payload: {
         name: searchValue,
         processStatus: activeTab.processStatus,
+        cancelToken: cancelToken(),
         ...filter,
+      },
+    });
+
+    dispatch({
+      type: 'onboarding/fetchTotalNumberOfOnboardingListEffect',
+      payload: {
+        cancelToken: cancelToken2(),
       },
     });
   };
 
   useEffect(() => {
-    fetchData();
+    debounceFetchData(fetchData);
+    return () => {
+      cancelRequest();
+      cancelRequest2();
+    };
   }, [searchValue, JSON.stringify(activeTab), JSON.stringify(filter)]);
 
   const onChangePage = (p, l) => {
@@ -79,7 +92,12 @@ const OnboardingOverview = (props) => {
             <Tabs
               defaultActiveKey="all"
               tabBarExtraContent={
-                <SearchFilterBar onChangeSearch={onSearch} filter={filter} setFilter={setFilter} activeTab={activeTab} />
+                <SearchFilterBar
+                  onChangeSearch={onSearch}
+                  filter={filter}
+                  setFilter={setFilter}
+                  activeTab={activeTab}
+                />
               }
             >
               <Tabs.TabPane key="1">

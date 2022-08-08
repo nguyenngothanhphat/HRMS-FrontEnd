@@ -23,6 +23,7 @@ const HomePage = (props) => {
     user: { permissions: { viewSettingHomePage = -1, viewApprovalPage = -1 } = {} } = {},
     // loadingMain = false
   } = props;
+
   useEffect(() => {
     goToTop();
     return () => {
