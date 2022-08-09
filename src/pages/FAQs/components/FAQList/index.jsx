@@ -1,4 +1,4 @@
-import { Col, Collapse, Image as ImageTag, Menu, Row } from 'antd';
+import { Button, Col, Collapse, Image as ImageTag, Menu, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 // import { SettingOutlined } from '@ant-design/icons';
 import Parser from 'html-react-parser';
@@ -7,8 +7,10 @@ import { connect } from 'umi';
 import closeViewAnswer from '@/assets/faqPage/closeViewAnswer.svg';
 import viewQuestionContent from '@/assets/faqPage/viewQuestionContent.svg';
 import { hashtagify, urlify } from '@/utils/homePage';
+import ShowMoreIcon from '@/assets/homePage/downArrow.svg';
 import ContactPage from '../ContactPage';
 import styles from './index.less';
+import MediaContent from './components/MediaContent';
 
 const { Panel } = Collapse;
 
@@ -17,11 +19,12 @@ const FAQList = (props) => {
     dispatch,
     location: { headQuarterAddress: { country = '' } } = {},
     listCategoryMainPage = [],
+    totalListFAQ = '',
   } = props;
   const defaultSelect = !isEmpty(listCategoryMainPage) ? listCategoryMainPage[0]._id : '';
   const [key, setKey] = useState('');
   const [changeImg, setChangeImg] = useState('');
-  const [isImg, setIsImg] = useState(false);
+  const [limit, setLimit] = useState(10);
 
   useEffect(() => {
     dispatch({
@@ -48,8 +51,20 @@ const FAQList = (props) => {
   //   }));
   // };
 
+  const fetchListFAQs = () => {
+    return dispatch({
+      type: 'faqs/fetchListFAQ',
+      payload: {
+        country,
+        page: 1,
+        limit,
+      },
+    });
+  };
+
   const handleChange = (value) => {
     setKey(value);
+    fetchListFAQs();
   };
 
   const handleChangePanel = (k) => {
@@ -73,30 +88,27 @@ const FAQList = (props) => {
       categoryName = getListFAQ[0].category;
     }
 
-    const renderMedia = (media) => {
-      React.useCallback(() => {
-        const { attachment: file, url: link } = media;
-        const src = link || (file.length > 0 && file[0].url);
-        const isImageLink = (imgLink) => {
-          const img = new Image();
-          img.src = imgLink;
-          img.onload = () => setIsImg(true);
-          img.onerror = () => setIsImg(false);
-        };
-        isImageLink(src);
-        return (
-          <div className={styles.media}>
-            {isImg ? (
-              <ImageTag.PreviewGroup>
-                <ImageTag className={styles.media__image} src={src} alt="img" />
-              </ImageTag.PreviewGroup>
-            ) : (
-              // eslint-disable-next-line jsx-a11y/media-has-caption
-              <video className={styles.media__video} src={src} alt="video" controls />
-            )}
+    useEffect(() => {
+      fetchListFAQs();
+    }, [limit]);
+
+    const renderShowMoreBtn = () => {
+      const showMore = listFAQ.length < totalListFAQ;
+      if (!showMore) return null;
+      return (
+        <Col span={24}>
+          <div className={styles.loadMore}>
+            <Button
+              onClick={() => {
+                setLimit(limit + 5);
+              }}
+            >
+              Show more
+              <img src={ShowMoreIcon} alt="" />
+            </Button>
           </div>
-        );
-      }, [media]);
+        </Col>
+      );
     };
 
     return (
@@ -138,14 +150,14 @@ const FAQList = (props) => {
                 >
                   <Panel header={obj.question} key={obj._id}>
                     {obj.answer ? Parser(renderContent(obj.answer)) : ''}
-                    {(obj?.attachment?.length > 0 || obj?.url) &&
-                      renderMedia({ attachment: obj?.attachment, url: obj?.url })}
+                    {obj?.attachment?.length > 0 && <MediaContent attachment={obj?.attachment} />}
                   </Panel>
                 </Collapse>
                 <br />
               </span>
             );
           })}
+          {renderShowMoreBtn()}
         </div>
       </div>
     );
@@ -179,9 +191,10 @@ const FAQList = (props) => {
 
 export default connect(
   ({
-    faqs: { listCategoryMainPage = [] } = {},
+    faqs: { listCategoryMainPage = [], totalListFAQ = '' } = {},
     user: { currentUser: { employee: { location } = {} } = {} },
   }) => ({
+    totalListFAQ,
     listCategoryMainPage,
     location,
   }),

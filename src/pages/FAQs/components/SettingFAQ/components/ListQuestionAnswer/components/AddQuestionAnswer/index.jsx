@@ -1,9 +1,11 @@
 import { Button, Form, Input, message, Modal, Select, Upload } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'umi';
+import { v4 as uuidv4 } from 'uuid';
 import styles from './index.less';
 import UploadIcon from '@/assets/faqPage/upload.svg';
 import UrlIcon from '@/assets/faqPage/urlIcon.svg';
+import uploadFirebase from '@/services/firebase';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -16,6 +18,7 @@ const { Dragger } = Upload;
   }) => ({
     loadingGetList: loading.effects['faqs/fetchListCategory'],
     loadingAddQuestion: loading.effects['faqs/addQuestion'],
+    loadingUpload: loading.effects['upload/addAttachment'],
     listCategory,
     employeeId,
     listFAQ,
@@ -27,7 +30,7 @@ class AddQuestionAnswer extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { isImg: false, showLink: true, showUpload: true, uploadFile: {} };
+    this.state = { showLink: true, showUpload: true, uploadFile: {} };
   }
 
   handleCancel = () => {
@@ -49,10 +52,10 @@ class AddQuestionAnswer extends Component {
   };
 
   beforeUpload = (file) => {
-    const fileRegex = /image[/](jpg|jpeg|png)|video[/]|application[/]pdf/gim;
+    const fileRegex = /image[/](gif|jpg|jpeg|png)|video[/]/gim;
     const checkType = fileRegex.test(file.type);
     if (!checkType) {
-      message.error('You can only upload png, jpg, jpeg, video and pdf files!');
+      message.error('You can only upload png, jpg, jpeg and video files!');
     }
     const isLt5M = file.size / 1024 / 1024 < 5;
     if (!isLt5M) {
@@ -61,18 +64,9 @@ class AddQuestionAnswer extends Component {
     return (checkType && isLt5M) || Upload.LIST_IGNORE;
   };
 
-  // isImageLink = (url) =>
-  //   new Promise((resolve) => {
-  //     const img = new Image();
-  //     img.src = url;
-  //     img.onload = () => resolve(true);
-  //     img.onerror = () => resolve(false);
-  //   }).then((x) => this.setState({ isImg: x }));
-
-  // onChange = (e) => this.isImageLink(e.target.value);
-
-  onFinish = async ({ FaqCategory, question, answer, upLink }, first = {}) => {
+  onFinish = async ({ FaqCategory, question, answer, upLink }, data = []) => {
     const { dispatch, employeeId = '', onClose = () => {}, selectedCountry = '' } = this.props;
+    const [first] = data;
     dispatch({
       type: 'faqs/addQuestion',
       payload: {
@@ -92,6 +86,8 @@ class AddQuestionAnswer extends Component {
           type: 'faqs/fetchListFAQ',
           payload: {
             country: [selectedCountry],
+            page: 1,
+            limit: 10,
           },
         });
         this.setState({ showLink: true, showUpload: true });
@@ -99,28 +95,45 @@ class AddQuestionAnswer extends Component {
     });
   };
 
-  onUpload = (...rest) => {
+  onUpload = async (...rest) => {
     const { dispatch } = this.props;
-    const { uploadFile, showLink } = this.state;
-    const formData = new FormData();
-    formData.append('uri', showLink ? null : uploadFile);
-    if (!showLink)
+    const { uploadFile, showLink, showUpload } = this.state;
+    const [first] = rest;
+    let file = {};
+
+    if (!showLink) {
+      file = await uploadFirebase({ file: uploadFile, typeFile: 'ATTACHMENT' });
+    } else if (!showUpload) {
+      file = {
+        fileName: uuidv4(),
+        category: 'URL',
+        url: first.upLink,
+      };
+    }
+    if (Object.keys(file)?.length) {
       dispatch({
-        type: 'upload/uploadFile',
-        payload: formData,
+        type: 'upload/addAttachment',
+        payload: { data: [file] },
         showNotification: false,
       }).then((resp) => {
-        const { statusCode: status, data = [] } = resp;
+        const { statusCode: status, data = {} } = resp;
         if (status === 200) {
-          const [first] = data;
-          this.onFinish(...rest, first);
+          this.onFinish(...rest, data);
         }
       });
-    else this.onFinish(...rest);
+    } else {
+      this.onFinish(...rest);
+    }
   };
 
   render() {
-    const { visible, loadingAdd, listCategory = [], listFAQ = [] } = this.props;
+    const {
+      visible,
+      loadingAddQuestion,
+      loadingUpload,
+      listCategory = [],
+      listFAQ = [],
+    } = this.props;
     const { showLink, showUpload } = this.state;
     const renderModalHeader = () => {
       return (
@@ -212,7 +225,7 @@ class AddQuestionAnswer extends Component {
                 className={styles.urlInput}
                 placeholder="Type your media link here"
                 prefix={<img src={UrlIcon} alt="url Icon" />}
-                // onChange={this.onChange}
+                allowClear
               />
             </Form.Item>
           </Form>
@@ -238,7 +251,7 @@ class AddQuestionAnswer extends Component {
                 form="addForm"
                 key="submit"
                 htmlType="submit"
-                loading={loadingAdd}
+                loading={loadingAddQuestion || loadingUpload}
               >
                 Add Question
               </Button>

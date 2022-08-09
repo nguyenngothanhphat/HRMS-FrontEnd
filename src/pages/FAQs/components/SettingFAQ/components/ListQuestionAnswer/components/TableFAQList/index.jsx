@@ -88,7 +88,7 @@ class TableFAQList extends Component {
             addBy: obj.employeeId ? obj.employeeId?.generalInfoInfo?.legalName : '-',
             addOn: obj.createdAt ? obj.createdAt.substring(0, 10) : '-',
             categoryName: obj.categoryId ? obj.categoryId?.category : '-',
-            categoryId: obj.categoryId > 0 ? obj.categoryId?._id : '-',
+            categoryId: obj.categoryId ? obj.categoryId?._id : '-',
             attachment: obj?.attachment && fileListTemp([obj.attachment]),
           };
         })

@@ -79,6 +79,8 @@ class ListQuestionAnswer extends Component {
       payload: {
         nameSearch: value,
         country: [selectedCountry],
+        page: 1,
+        limit: 10,
       },
     });
   };
@@ -90,6 +92,8 @@ class ListQuestionAnswer extends Component {
       type: 'faqs/fetchListFAQ',
       payload: {
         country: selectedCountry,
+        page: 1,
+        limit: 10,
       },
     });
     this.setState({ applied: 0 });

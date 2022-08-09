@@ -1,9 +1,11 @@
 import { Button, Form, Input, message, Modal, Select, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { v4 as uuidv4 } from 'uuid';
 import styles from './index.less';
 import UploadIcon from '@/assets/faqPage/upload.svg';
 import UrlIcon from '@/assets/faqPage/urlIcon.svg';
+import uploadFirebase from '@/services/firebase';
 
 const EditQuestionAnswer = (props) => {
   const { Option } = Select;
@@ -17,13 +19,13 @@ const EditQuestionAnswer = (props) => {
     onClose = () => {},
     selectedCountry = '',
     loadingUpdate = false,
+    loadingUpload = false,
     visible = false,
     listCategory = [],
   } = props;
   const [showLink, setShowLink] = useState(true);
   const [showUpload, setShowUpload] = useState(true);
   const [uploadFile, setUploadFile] = useState({});
-  // const [isImg, setIsImg] = useState(false);
   const [fileList, setFileList] = useState([]);
 
   useEffect(() => {
@@ -32,11 +34,17 @@ const EditQuestionAnswer = (props) => {
         faqCategory: categoryId,
         question,
         answer,
-        upLink: url || '',
       });
-      setFileList([...attachment]);
-      url && setShowUpload(false);
-      attachment?.length && setShowLink(false);
+      if (attachment?.length) {
+        if (attachment[0].category === 'URL') {
+          form.setFieldsValue({ upLink: attachment[0].url });
+          setShowUpload(false);
+        }
+        if (attachment[0].category === 'ATTACHMENT') {
+          setFileList(attachment);
+          setShowLink(false);
+        }
+      }
     }
     return () => {
       form.resetFields();
@@ -50,10 +58,10 @@ const EditQuestionAnswer = (props) => {
   };
 
   const beforeUpload = (file) => {
-    const fileRegex = /image[/](jpg|jpeg|png)|video[/]|application[/]pdf/gim;
+    const fileRegex = /image[/](gif|jpg|jpeg|png)|video[/]/gim;
     const checkType = fileRegex.test(file.type);
     if (!checkType) {
-      message.error('You can only upload png, jpg, jpeg, video and pdf files!');
+      message.error('You can only upload png, jpg, jpeg and video files!');
     }
     const isLt5M = file.size / 1024 / 1024 < 5;
     if (!isLt5M) {
@@ -88,8 +96,9 @@ const EditQuestionAnswer = (props) => {
 
   const handleFinish = (
     { question: quest = '', faqCategory = '', answer: newAnswer = '', upLink = '' },
-    first = {},
+    data = [],
   ) => {
+    const [first] = data;
     dispatch({
       type: 'faqs/updateQuestion',
       payload: {
@@ -109,6 +118,8 @@ const EditQuestionAnswer = (props) => {
           type: 'faqs/fetchListFAQ',
           payload: {
             country: [selectedCountry],
+            page: 1,
+            limit: 10,
           },
         });
         setShowLink(true);
@@ -117,22 +128,32 @@ const EditQuestionAnswer = (props) => {
     });
   };
 
-  const onUpload = (...rest) => {
-    const formData = new FormData();
-    formData.append('uri', showLink ? null : uploadFile);
-    if (!showLink)
+  const onUpload = async (...rest) => {
+    const [first] = rest;
+    let file = {};
+    if (!showLink) {
+      file = await uploadFirebase({ file: uploadFile, typeFile: 'ATTACHMENT' });
+    } else if (!showUpload) {
+      file = {
+        fileName: uuidv4(),
+        category: 'URL',
+        url: first.upLink,
+      };
+    }
+    if (Object.keys(file)?.length) {
       dispatch({
-        type: 'upload/uploadFile',
-        payload: formData,
+        type: 'upload/addAttachment',
+        payload: { data: [file] },
         showNotification: false,
       }).then((resp) => {
-        const { statusCode: status, data = [] } = resp;
+        const { statusCode: status, data = {} } = resp;
         if (status === 200) {
-          const [first] = data;
-          handleFinish(...rest, first);
+          handleFinish(...rest, data);
         }
       });
-    else handleFinish(...rest);
+    } else {
+      handleFinish(...rest);
+    }
   };
 
   const renderModalHeader = () => {
@@ -188,7 +209,7 @@ const EditQuestionAnswer = (props) => {
               maxCount={1}
               disabled={!showUpload}
               beforeUpload={beforeUpload}
-              fileList={[...fileList]}
+              fileList={fileList}
               action={(file) => setUploadFile(file)}
             >
               <div className={styles.drapperBlock}>
@@ -207,7 +228,7 @@ const EditQuestionAnswer = (props) => {
               className={styles.urlInput}
               placeholder="Type your media link here"
               prefix={<img src={UrlIcon} alt="url Icon" />}
-              // onChange={onChange}
+              allowClear
             />
           </Form.Item>
         </Form>
@@ -233,7 +254,7 @@ const EditQuestionAnswer = (props) => {
               form="editForm"
               key="submit"
               htmlType="submit"
-              loading={loadingUpdate}
+              loading={loadingUpdate || loadingUpload}
             >
               Save Change
             </Button>
@@ -257,6 +278,7 @@ export default connect(
   }) => ({
     loadingGetList: loading.effects['faqs/fetchListCategory'],
     loadingUpdate: loading.effects['faqs/updateQuestion'],
+    loadingUpload: loading.effects['upload/addAttachment'],
     listCategory,
     employeeId,
     selectedCountry,

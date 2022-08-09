@@ -8,7 +8,7 @@ const ViewQuestionAnswer = (props) => {
   const {
     onClose = () => {},
     visible,
-    item: { attachment = {}, url = '', question = '', answer = '' } = {},
+    item: { attachment = {}, question = '', answer = '' } = {},
   } = props;
 
   const [isImg, setIsImg] = useState(false);
@@ -22,12 +22,6 @@ const ViewQuestionAnswer = (props) => {
     img.onload = () => setIsImg(true);
     img.onerror = () => setIsImg(false);
   };
-  // new Promise((resolve) => {
-  //   const img = new Image();
-  //   img.src = url;
-  //   img.onload = () => resolve(true);
-  //   img.onerror = () => resolve(false);
-  // }).then((x) => this.setState({ isImg: x }));
 
   const renderModalHeader = () => {
     return (
@@ -41,8 +35,7 @@ const ViewQuestionAnswer = (props) => {
     return hashtagify(temp);
   };
   const renderMedia = (media) => {
-    const { attachment: file, url: link } = media;
-    const src = link || (attachment.length > 0 && file[0].url);
+    const src = media[0].url;
     isImageLink(src);
     return (
       <div className={styles.media}>
@@ -66,7 +59,7 @@ const ViewQuestionAnswer = (props) => {
         <p>
           <b>Answer:</b> {answer ? Parser(renderContent(answer)) : ''}
         </p>
-        {(attachment?.length > 0 || url) && renderMedia({ attachment, url })}
+        {attachment?.length && renderMedia(attachment)}
       </div>
     );
   };

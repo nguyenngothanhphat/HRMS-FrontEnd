@@ -36,7 +36,7 @@ class FAQs extends PureComponent {
     //     payload: { company: idCompany },
     //   });
     // }
-    if (pathname === '/faqpage') {
+    if (pathname === '/faq') {
       this.setState({ title: 'FAQs' });
     }
     if (pathname === '/help-center') {
