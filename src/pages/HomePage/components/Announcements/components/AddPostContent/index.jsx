@@ -4,9 +4,9 @@ import { connect } from 'umi';
 import { v4 as uuidv4 } from 'uuid';
 import AttachmentIcon from '@/assets/attachment.svg';
 import UploadFileURLIcon from '@/assets/homePage/uploadURLIcon.svg';
+import { CATEGORY_NAME, POST_TYPE, STATUS_POST } from '@/constants/homePage';
+import { uploadFirebaseMultiple } from '@/services/firebase';
 import styles from './index.less';
-import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
-import uploadFirebase, { uploadFirebaseMultiple } from '@/services/firebase';
 
 const { Dragger } = Upload;
 
@@ -21,6 +21,7 @@ const AddPostContent = (props) => {
     record = {},
     isEdit = false,
     setIsEdit = () => {},
+    setIsUploadFile = () => {},
   } = props;
   const [form] = Form.useForm();
 
@@ -52,7 +53,7 @@ const AddPostContent = (props) => {
           };
         });
       };
-      if (attachments && attachments.length && attachments[0].category === 'URL') {
+      if (attachments && attachments.length && attachments[0].category === CATEGORY_NAME.URL) {
         setIsURL(true);
         form.setFieldsValue({
           description,
@@ -92,6 +93,7 @@ const AddPostContent = (props) => {
     }).then((x) => {
       if (x.statusCode === 200) {
         form.resetFields();
+        setIsUploadFile(false);
         setIsVisible(false);
         fetchData(POST_TYPE.SOCIAL, limit, '', STATUS_POST.ACTIVE);
       }
@@ -103,10 +105,19 @@ const AddPostContent = (props) => {
       id: record?._id,
       postType: POST_TYPE.SOCIAL,
       description: values.description,
+      attachments: values.uploadFiles?.fileList?.map((x) => x._id) || [],
     };
 
     if (Object.keys(data)?.length) {
-      payload.attachments = data.map((x) => x.id);
+      const newAttachments = data.map((x) => x._id);
+      if (data[0]?.category === CATEGORY_NAME.URL) {
+        payload.attachments = [...newAttachments];
+      } else {
+        const oldAttachments = values.uploadFiles?.fileList
+          ?.filter((x) => x.category !== CATEGORY_NAME.URL)
+          ?.map((x) => x._id);
+        payload.attachments = [...newAttachments, ...oldAttachments];
+      }
     }
 
     dispatch({
@@ -116,6 +127,7 @@ const AddPostContent = (props) => {
       if (x.statusCode === 200) {
         form.resetFields();
         setIsEdit(false);
+        setIsUploadFile(false);
         setIsVisible(false);
         fetchData(POST_TYPE.SOCIAL, limit, '', STATUS_POST.ACTIVE);
       }
@@ -124,14 +136,21 @@ const AddPostContent = (props) => {
 
   const onUploadFiles = async (values) => {
     const data = [];
+    const newList = [];
+    setIsUploadFile(true);
+    fileList.forEach((x) => {
+      if (x?.originFileObj) {
+        newList.push(x);
+      }
+    });
     if (values.urlFile) {
       data.push({
         fileName: uuidv4(),
-        category: 'URL',
+        category: CATEGORY_NAME.URL,
         url: values.urlFile,
       });
     } else if (values.uploadFiles?.fileList?.length) {
-      const uploads = fileList.map((file) => {
+      const uploads = newList.map((file) => {
         return {
           file: file?.originFileObj,
           typeFile: 'ATTACHMENT',
@@ -268,7 +287,16 @@ const AddPostContent = (props) => {
           </Dragger>
         </Form.Item>
         <div className={styles.separator}>OR</div>
-        <Form.Item label="Upload File by URL" name="urlFile">
+        <Form.Item
+          label="Upload File by URL"
+          name="urlFile"
+          rules={[
+            {
+              pattern: /(http(s?):\/\/[^\s]+)/g,
+              message: 'URL is invalid!',
+            },
+          ]}
+        >
           <Input
             placeholder="Type your media link here"
             allowClear

@@ -12,6 +12,7 @@ import FilterPopover from '@/components/FilterPopover';
 import AnnouncementsCard from '@/pages/HomePage/components/Announcements/components/AnnouncementsCard';
 import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
 import FilterForm from './components/FilterForm';
+import ViewPostIcon from '@/assets/projectManagement/view.svg';
 import styles from './index.less';
 
 function EmployeePostManagement(props) {
@@ -29,6 +30,7 @@ function EmployeePostManagement(props) {
   const [detailPost, setDetailPost] = useState({});
   const [activePostID, setActivePostID] = useState('');
   const [applied, setApplied] = useState(0);
+  const [statusPost, setStatusPost] = useState(STATUS_POST.ACTIVE);
   const [form, setForm] = useState(null);
 
   const fetchData = (filter) => {
@@ -63,6 +65,22 @@ function EmployeePostManagement(props) {
     }).then((res) => {
       const { statusCode } = res;
       if (statusCode === 200) fetchData();
+      setStatusPost(STATUS_POST.HIDDEN);
+    });
+  };
+
+  const onActivePost = (record) => {
+    dispatch({
+      type: 'homePage/updatePostEffect',
+      payload: {
+        postType: POST_TYPE.SOCIAL,
+        status: STATUS_POST.ACTIVE,
+        id: record?._id,
+      },
+    }).then((res) => {
+      const { statusCode } = res;
+      if (statusCode === 200) fetchData();
+      setStatusPost(STATUS_POST.ACTIVE);
     });
   };
 
@@ -169,7 +187,29 @@ function EmployeePostManagement(props) {
         render: (_, record) => {
           return (
             <div className={styles.actions}>
-              <img src={HideIcon} alt="hideIcon" onClick={() => onHidePost(record)} />
+              {record?.status === STATUS_POST.ACTIVE ? (
+                <Popconfirm
+                  placement="left"
+                  title="Are you sure?"
+                  onConfirm={() => onHidePost(record)}
+                >
+                  <img src={HideIcon} alt="viewPostIcon" />
+                </Popconfirm>
+              ) : (
+                <Popconfirm
+                  placement="left"
+                  title="Are you sure?"
+                  onConfirm={() => onActivePost(record)}
+                  disabled={record?.flag.length >= 5}
+                >
+                  <img
+                    src={ViewPostIcon}
+                    alt="hideIcon"
+                    style={{ cursor: record?.flag.length >= 5 ? 'not-allowed' : 'pointer' }}
+                  />
+                </Popconfirm>
+              )}
+
               <Popconfirm
                 placement="left"
                 title="Are you sure?"

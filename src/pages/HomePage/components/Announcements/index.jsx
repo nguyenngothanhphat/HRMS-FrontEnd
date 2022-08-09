@@ -24,6 +24,7 @@ const Announcements = (props) => {
     loadingAddPost = false,
     loadingEditPost = false,
     loadingUploadFile = false,
+    loadingDeletePost = false,
   } = props;
 
   // redux
@@ -44,6 +45,7 @@ const Announcements = (props) => {
   const [isEdit, setIsEdit] = useState(false);
   const [record, setRecord] = useState(null);
   const [form, setForm] = useState(null);
+  const [isUploadFile, setIsUploadFile] = useState(false);
 
   const fetchData = (postType, limit = 5, location = '', status = '') => {
     const payload = {
@@ -315,14 +317,18 @@ const Announcements = (props) => {
             isEdit={isEdit}
             record={record}
             setIsEdit={setIsEdit}
+            setIsUploadFile={setIsUploadFile}
           />
         }
         secondText="Reset"
         firstText={isEdit ? 'Update' : 'Post'}
         hasCancelButton={false}
         hasSecondButton
-        disabledButton={(isEdit ? loadingEditPost : loadingAddPost) || loadingUploadFile}
+        disabledButton={
+          (isEdit ? loadingEditPost : loadingAddPost) || loadingUploadFile || isUploadFile
+        }
         onSecondButtonClick={() => form.resetFields()}
+        loading={(isEdit ? loadingEditPost : loadingAddPost) || loadingUploadFile || isUploadFile}
       />
       <CommonModal
         visible={isDelete}
@@ -337,6 +343,7 @@ const Announcements = (props) => {
         firstText="Yes"
         onFinish={() => deletePost(record?._id)}
         width={400}
+        disabledButton={loadingDeletePost}
       />
     </div>
   );
@@ -348,5 +355,6 @@ export default connect(({ homePage, loading, user }) => ({
   loadingFetchAnnouncementList: loading.effects['homePage/fetchAnnouncementsEffect'],
   loadingAddPost: loading.effects['homePage/addPostEffect'],
   loadingEditPost: loading.effects['homePage/updatePostEffect'],
-  loadingUploadFile: loading.effects['upload/uploadFile'],
+  loadingDeletePost: loading.effects['homePage/deletePostEffect'],
+  loadingUploadFile: loading.effects['upload/addAttachment'],
 }))(Announcements);

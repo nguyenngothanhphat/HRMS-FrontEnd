@@ -39,4 +39,8 @@ export const STATUS_POST = {
   HIDDEN: 'HIDDEN',
 };
 
+export const CATEGORY_NAME = {
+  URL: 'URL',
+};
+
 export const DATE_FORMAT = 'MMMM DD YYYY, HH:mm A';

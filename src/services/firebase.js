@@ -11,7 +11,7 @@ const storage = getStorage(app);
 
 const uploadFirebase = ({ file = {}, typeFile = 'IMAGE' }, callback) => {
   return new Promise((resolve) => {
-    if (!file) resolve({});
+    if (!file.name) resolve({});
     const fileName = [uuidv4(), file.name.split('.').pop()].join('.');
     const path = `${UPLOAD.PATH[typeFile]}${fileName}`;
     const category = UPLOAD.TYPE_FILE[typeFile];
