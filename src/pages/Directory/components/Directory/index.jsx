@@ -15,10 +15,9 @@ import { exportArrayDataToCsv, exportRawDataToCSV } from '@/utils/exportToCsv';
 import AddEmployeeModal from './components/AddEmployeeModal';
 import DirectoryTable from './components/DirectoryTable';
 import ImportEmployeeModal from './components/ImportEmployeeModal';
-// import FilterContent from '../FilterContent';
+import FilterCountTag from '@/components/FilterCountTag';
 
 import styles from './index.less';
-import FilterCountTag from '@/components/FilterCountTag';
 
 const FilterContent = React.lazy(() => import('./components/FilterContent'));
 
@@ -97,15 +96,7 @@ const DirectoryComponent = (props) => {
       setTabId('active');
       setPageSelected(1);
       setSize(10);
-
       clearFilter();
-
-      dispatch({
-        type: 'employee/save',
-        payload: {
-          filterList: {},
-        },
-      });
     };
   }, []);
 
@@ -119,6 +110,7 @@ const DirectoryComponent = (props) => {
 
   const renderData = (params = {}) => {
     const { active, myTeam, inActive } = tabList;
+
     const currentCompany = getCurrentCompany();
     const currentLocation = getCurrentLocation();
     const {
@@ -393,24 +385,20 @@ const DirectoryComponent = (props) => {
   const renderTab = (tabName, key, loading) => {
     return (
       <TabPane tab={tabName} key={key}>
-        <Layout className={styles.directoryLayout_inner}>
-          <Content className="site-layout-background">
-            <DirectoryTable
-              loading={loading}
-              list={renderListEmployee(key)}
-              keyTab={key}
-              getPageSelected={getPageSelected}
-              getSize={getSize}
-              pageSelected={pageSelected}
-              rowSize={size}
-              tabName={tabName}
-              totalActiveEmployee={totalActiveEmployee}
-              totalInactiveEmployee={totalInactiveEmployee}
-              totalMyTeam={totalMyTeam}
-              refreshData={refreshData}
-            />
-          </Content>
-        </Layout>
+        <DirectoryTable
+          loading={loading}
+          list={renderListEmployee(key)}
+          keyTab={key}
+          getPageSelected={getPageSelected}
+          getSize={getSize}
+          pageSelected={pageSelected}
+          rowSize={size}
+          tabName={tabName}
+          totalActiveEmployee={totalActiveEmployee}
+          totalInactiveEmployee={totalInactiveEmployee}
+          totalMyTeam={totalMyTeam}
+          refreshData={refreshData}
+        />
       </TabPane>
     );
   };
