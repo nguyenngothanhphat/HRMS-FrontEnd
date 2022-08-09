@@ -1,28 +1,22 @@
+import { Col, Row, Skeleton } from 'antd';
 import React, { useState } from 'react';
-import { Row, Col, Skeleton, Button } from 'antd';
 
 import { connect } from 'umi';
+import plusIcon from '@/assets/add-adminstrator.svg';
 import EditBtn from '@/assets/edit.svg';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
-import ModalAddBank from './component/ModalAddBank';
-import plusIcon from '@/assets/add-adminstrator.svg';
 import CommonModal from '@/components/CommonModal';
 import EditBank from './component/EditBank';
+import ModalAddBank from './component/ModalAddBank';
 import ViewBank from './component/ViewBank';
 
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import styles from './index.less';
 
 const BankAccount = (props) => {
   const [visible, setVisible] = useState(false);
 
-  const {
-    openBank,
-    loadingBank,
-    visibleSuccess,
-    bankDataOrigin,
-    dispatch,
-    profileOwner = false,
-  } = props;
+  const { openBank, loadingBank, visibleSuccess, bankDataOrigin, dispatch } = props;
 
   const handleEdit = () => {
     dispatch({
@@ -133,9 +127,7 @@ const BankAccount = (props) => {
               Update information successfully
             </p>
             <div className={styles.spaceFooterModalSuccess}>
-              <Button onClick={handleCancelModelSuccess} className={styles.btnOkModalSuccess}>
-                Okay
-              </Button>
+              <CustomPrimaryButton onClick={handleCancelModelSuccess}>Okay</CustomPrimaryButton>
             </div>
           </>
         }
