@@ -24,11 +24,10 @@ const Documents = (props) => {
     dispatch,
     reId,
     loadingDocument = false,
-    loadingFilterDocument = false,
     loadingSearchDocument = false,
     loadingAddDocument = false,
     permissions = {},
-    customerProfile: { documents = [], documentType = [], info: { customerId = '' } = {} } = {},
+    customerProfile: { documents = [], documentType = [], totalDocuments = 0 } = {},
   } = props;
 
   const viewAddCustomerDocument = permissions.viewAddCustomerDocument !== -1;
@@ -40,29 +39,29 @@ const Documents = (props) => {
   const [url, setUrl] = useState('');
   const [filter, setFilter] = useState({});
   const [searchValue, setSearchValue] = useState('');
+  const [pageSelected, setPageSelected] = useState(1);
+  const [size, setSize] = useState(10);
 
   const fetchData = () => {
+    const { byType, fromDate, toDate, byUpload } = filter;
     dispatch({
       type: 'customerProfile/fetchDocuments',
       payload: {
-        id: reId,
-        searchKey: searchValue,
-      },
-    });
-  };
-
-  const filterData = () => {
-    const { byType, fromDate, toDate, byUpload } = filter;
-    dispatch({
-      type: 'customerProfile/filterDoc',
-      payload: {
-        customerId,
+        page: pageSelected,
+        limit: size,
+        customerId: reId,
+        searchKey: searchValue || '',
         type: parseInt(byType, 10) || '',
         uploadedBy: byUpload || '',
         fromDate: fromDate ? moment(fromDate).format(DATE_FORMAT_YMD) : '',
         toDate: toDate ? moment(toDate).format(DATE_FORMAT_YMD) : '',
       },
     });
+  };
+
+  const onChangePage = (page, limit) => {
+    setPageSelected(page);
+    setSize(limit);
   };
 
   const fetchDocumentTypeList = () => {
@@ -77,11 +76,7 @@ const Documents = (props) => {
 
   useEffect(() => {
     fetchData();
-  }, [searchValue]);
-
-  useEffect(() => {
-    filterData();
-  }, [JSON.stringify(filter)]);
+  }, [searchValue, JSON.stringify(filter), size, pageSelected]);
 
   const showModal = () => {
     setVisible(true);
@@ -181,7 +176,7 @@ const Documents = (props) => {
   }, 1000);
 
   const onSearch = (e) => {
-    const { value = '' } = e.target;
+    const { value = '' } = e?.target;
     onSearchDebounce(value);
   };
 
@@ -232,14 +227,19 @@ const Documents = (props) => {
             </FilterPopover>
           </div>
 
-          <CustomSearchBox onSearch={onSearch} placeholder="Search by Document Type" />
+          <CustomSearchBox onSearch={onSearch} placeholder="Search by Document Name, Uploaded By" />
         </div>
       </div>
       <div className={styles.documentBody}>
         <CommonTable
           columns={generateColumns()}
           list={documents}
-          loading={loadingDocument || loadingSearchDocument || loadingFilterDocument}
+          isBackendPaging
+          onChangePage={onChangePage}
+          page={pageSelected}
+          limit={size}
+          total={totalDocuments}
+          loading={loadingDocument || loadingSearchDocument}
         />
         <ViewDocumentModal
           url={url}
@@ -256,7 +256,6 @@ export default connect(
     loadingDocument: loading.effects['customerProfile/fetchDocuments'],
     loadingDocumentType: loading.effects['customerProfile/fetchDocumentsTypes'],
     loadingSearchDocument: loading.effects['customerProfile/searchDocuments'],
-    loadingFilterDocument: loading.effects['customerProfile/filterDoc'],
     loadingAddDocument: loading.effects['customerProfile/addDoc'],
     customerProfile,
     permissions,
