@@ -47,10 +47,11 @@ class ViewInformation extends Component {
     const tenantId = getCurrentTenant();
 
     if (statusCode === 200) {
+      const [first] = data;
       if (id) {
         const payload = {
           id,
-          logoUrl: data?.url,
+          logoUrl: first?.url,
           tenantId,
         };
         delete payload._id;
@@ -65,7 +66,7 @@ class ViewInformation extends Component {
       } else {
         dispatch({
           type: 'companiesManagement/saveCompanyDetails',
-          payload: { ...originCompanyDetails?.company, logoUrl: data?.url },
+          payload: { ...originCompanyDetails?.company, logoUrl: first?.url },
           // dataTempKept: {},
           // isAccountSetup: true,
         });

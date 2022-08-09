@@ -39,15 +39,16 @@ const ViewInformation = (props) => {
   };
 
   const getResponse = (resp) => {
-    const { statusCode, data = {} } = resp;
+    const { statusCode, data = [] } = resp;
     //  const check = employee === myEmployeeID;
+    const [first] = data;
     if (statusCode === 200) {
       handleCancel();
       dispatch({
         type: 'customerProfile/updateCustomerEffect',
         payload: {
           customerId,
-          avatar: data?.url,
+          avatar: first?.url,
           tenantId: getCurrentTenant(),
         },
       });

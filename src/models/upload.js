@@ -58,7 +58,7 @@ export default {
         }
         yield put({
           type: 'save',
-          payload: { urlImage: data.url },
+          payload: { urlImage: data[0].url },
         });
       } catch (errors) {
         dialog(errors);
