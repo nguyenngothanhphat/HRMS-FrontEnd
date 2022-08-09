@@ -78,8 +78,10 @@ const Header = (props) => {
     setEndDate(dates[1]);
   };
 
-  const processData = (array = []) => {
-    return array.map((item) => {
+  const processData = (array) => {
+    // Uppercase first letter
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
       const {
         legalName = '',
         leaveTaken = '',
@@ -95,6 +97,7 @@ const Header = (props) => {
         breakTime = '',
         department: { name = '' } = {},
       } = item;
+
       let projectName = '';
       projects.forEach((el, index) => {
         projectName += el;
@@ -106,22 +109,37 @@ const Header = (props) => {
         incompleteTimeSheetDates += date;
         if (index + 1 < incompleteDates.length) incompleteTimeSheetDates += ', ';
       });
-      const dataExport = {
+
+      const payload = {
         Employee: legalName,
         'Employee ID': employeeCode,
         Department: name,
         Project: projectName,
         'Working Days': `${userSpentInDay} hours)`,
-        'Leave Taken ': leaveTaken,
+        'Leave Taken': leaveTaken,
         'Total Hours': `${userSpentInHours} hours`,
         'Incomplete TimeSheet Dates': incompleteTimeSheetDates,
       };
       if (locationUser) {
-        dataExport['Break Time'] = breakTime;
-        dataExport['Over Time'] = overTime;
+        payload['Break Time'] = breakTime;
+        payload['Over Time'] = overTime;
       }
-      return dataExport;
+
+      return payload;
     });
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('__')}`.split('__');
+      dataExport.push(value);
+    });
+
+    return dataExport;
   };
 
   const downloadTemplate = () => {

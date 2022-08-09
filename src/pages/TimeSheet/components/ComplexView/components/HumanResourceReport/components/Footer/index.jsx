@@ -1,12 +1,11 @@
-import { Button } from 'antd';
+import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
-import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 import DownloadIcon from '@/assets/timeSheet/solidDownload.svg';
-import styles from './index.less';
-import { dateFormatAPI } from '@/constants/timeSheet';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import { dateFormatAPI } from '@/constants/timeSheet';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
+import styles from './index.less';
 
 const Footer = (props) => {
   const {
@@ -36,7 +35,9 @@ const Footer = (props) => {
   };
 
   const processData = (array = []) => {
-    return array.map((item) => {
+    // Uppercase first letter
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
       const {
         legalName = '',
         leaveTaken = '',
@@ -77,6 +78,19 @@ const Footer = (props) => {
       }
       return dataExport;
     });
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('__')}`.split('__');
+      dataExport.push(value);
+    });
+
+    return dataExport;
   };
 
   const downloadTemplate = () => {

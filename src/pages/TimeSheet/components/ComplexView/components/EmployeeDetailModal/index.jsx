@@ -52,7 +52,9 @@ const EmployeeDetailModal = (props) => {
   };
 
   const processData = (array = []) => {
-    return array.map((item) => {
+    // Uppercase first letter
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
       const {
         date = '',
         inTime = '',
@@ -63,7 +65,7 @@ const EmployeeDetailModal = (props) => {
         overTime = '',
       } = item;
 
-      const dataExport = {
+      const payload = {
         Date: date || '-',
         'In Time': inTime || '-',
         'Out Time': outTime || '-',
@@ -71,11 +73,24 @@ const EmployeeDetailModal = (props) => {
         Notes: notes || '-',
       };
       if (locationUser) {
-        dataExport['Break Time'] = breakTime;
-        dataExport['Over Time'] = overTime;
+        payload['Break Time'] = breakTime;
+        payload['Over Time'] = overTime;
       }
-      return dataExport;
+      return payload;
     });
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('__')}`.split('__');
+      dataExport.push(value);
+    });
+
+    return dataExport;
   };
 
   const downloadTemplate = () => {
