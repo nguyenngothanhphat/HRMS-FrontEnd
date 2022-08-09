@@ -27,7 +27,8 @@ const Footer = (props) => {
   };
 
   const processData = (array = []) => {
-    return array.map((item) => {
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
       const {
         projectName = '',
         engagementType = '',
@@ -43,7 +44,7 @@ const Footer = (props) => {
         resourceNames += val.employee.legalName;
         if (index + 1 < resource.length) resourceNames += ', ';
       });
-      const dataExport = {
+      const payload = {
         'Project Name': projectName || '-',
         Type: engagementType || '-',
         Resources: resourceNames || '-',
@@ -51,15 +52,30 @@ const Footer = (props) => {
         'Total Hours ': `${projectSpentInHours} Hours` || '-',
       };
       if (locationUser) {
-        dataExport['Break Time'] = breakTime;
-        dataExport['Over Time'] = overTime;
+        payload['Break Time'] = breakTime;
+        payload['Over Time'] = overTime;
       }
-      return dataExport;
+      return payload;
     });
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('__')}`.split('__');
+      dataExport.push(value);
+    });
+
+    return dataExport;
   };
 
   const processDataMonthly = (array = []) => {
-    return array.map((item) => {
+    // Uppercase first letter
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
       const { weeks = [], projectName = '' } = item;
       const week1 = weeks.find((val) => val.week === 1);
       const week2 = weeks.find((val) => val.week === 2);
@@ -113,6 +129,18 @@ const Footer = (props) => {
 
       return dataExport;
     });
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('__')}`.split('__');
+      dataExport.push(value);
+    });
+
+    return dataExport;
   };
 
   const downloadTemplate = () => {
