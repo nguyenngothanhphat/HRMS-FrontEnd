@@ -124,7 +124,6 @@ const AddPostContent = (props) => {
 
   const onUploadFiles = async (values) => {
     const data = [];
-    console.log(fileList);
     if (values.urlFile) {
       data.push({
         fileName: uuidv4(),
@@ -134,7 +133,7 @@ const AddPostContent = (props) => {
     } else if (values.uploadFiles?.fileList?.length) {
       const uploads = fileList.map((file) => {
         return {
-          file,
+          file: file?.originFileObj,
           typeFile: 'ATTACHMENT',
         };
       });

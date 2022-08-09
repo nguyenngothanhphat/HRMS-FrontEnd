@@ -28,7 +28,6 @@ const uploadFirebase = ({ file = {}, typeFile = 'IMAGE' }, callback) => {
       () => {},
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log(downloadURL);
           resolve({
             name: file.name,
             fileName,
@@ -45,14 +44,11 @@ const uploadFirebase = ({ file = {}, typeFile = 'IMAGE' }, callback) => {
 };
 
 export const uploadFirebaseMultiple = async (uploads) => {
-  const result = [];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const upload of uploads) {
-    // eslint-disable-next-line no-await-in-loop
-    const payload = await uploadFirebase(upload);
-    result.push(payload);
-  }
-  return result;
+  return Promise.all(
+    uploads.map((upload) => {
+      return uploadFirebase(upload);
+    }),
+  );
 };
 
 export default uploadFirebase;
