@@ -1,4 +1,4 @@
-import { Button, Card, Col, Row, Spin } from 'antd';
+import { Card, Col, Row, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
@@ -20,7 +20,6 @@ const EmploymentTab = (props) => {
     listEmployeeActive,
     permissions = {},
     employeeProfile = {},
-    dataOrgChart: { employees: reportees = [], manager = {} },
     loadingReportees = false,
   } = props;
 
@@ -31,7 +30,14 @@ const EmploymentTab = (props) => {
     isProfileOwner = false,
   } = employeeProfile;
 
-  const { title = {}, location = {}, department = {}, employeeType = {} } = employmentData || {};
+  const {
+    title = {},
+    location = {},
+    department = {},
+    employeeType = {},
+    manager = {},
+    reportees = [],
+  } = employmentData || {};
 
   const { firstName = '', legalName = '' } = generalData || {};
   const { compensationType = '', currentAnnualCTC = '' } = compensationData || {};
@@ -57,10 +63,6 @@ const EmploymentTab = (props) => {
     dispatch({
       type: 'employeeProfile/fetchDepartments',
     });
-    dispatch({
-      type: 'employee/fetchDataOrgChart',
-      payload: { employee },
-    });
   };
 
   const fetchChangeHistories = (payload) => {
@@ -85,7 +87,6 @@ const EmploymentTab = (props) => {
 
   useEffect(() => {
     if (employee) {
-      const listIdEmployees = reportees.map((emp) => emp._id);
       setCurrentData({
         name: legalName || firstName || null,
         title: title?._id || null,
@@ -93,7 +94,7 @@ const EmploymentTab = (props) => {
         location: location?._id || null,
         department: department?._id || null,
         manager: manager?._id || null,
-        reportees: listIdEmployees || [],
+        reportees: reportees.map((emp) => emp._id) || [],
         employeeType: employeeType?._id || null,
         currentAnnualCTC: currentAnnualCTC || null,
       });
@@ -117,7 +118,7 @@ const EmploymentTab = (props) => {
       employeeType: employeeType.name,
       currentAnnualCTC,
       compensationType,
-      manager: manager.generalInfo?.legalName,
+      manager: manager?.generalInfoInfo?.legalName,
       reportees: currentData.reportees.length,
     };
 
@@ -331,9 +332,7 @@ const EmploymentTab = (props) => {
               Update information successfully
             </p>
             <div className={styles.spaceFooterModalSuccess}>
-              <Button onClick={handleCancelModelSuccess} className={styles.btnOkModalSuccess}>
-                Okay
-              </Button>
+              <CustomPrimaryButton onClick={handleCancelModelSuccess}>Okay</CustomPrimaryButton>
             </div>
           </>
         }
@@ -342,17 +341,8 @@ const EmploymentTab = (props) => {
   );
 };
 
-export default connect(
-  ({
-    employeeProfile,
-    employee: { dataOrgChart = {} },
-    user: { permissions, currentUser = {} },
-    loading,
-  }) => ({
-    employeeProfile,
-    currentUser,
-    permissions,
-    dataOrgChart,
-    loadingReportees: loading.effects['employee/fetchDataOrgChart'],
-  }),
-)(EmploymentTab);
+export default connect(({ employeeProfile, user: { permissions, currentUser = {} } }) => ({
+  employeeProfile,
+  currentUser,
+  permissions,
+}))(EmploymentTab);
