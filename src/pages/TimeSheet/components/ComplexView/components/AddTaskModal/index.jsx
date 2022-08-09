@@ -350,7 +350,7 @@ const AddTaskModal = (props) => {
         dates: datesTemp,
         tasks: [
           {
-            projectId: projectId || myProjects.length === 1 ? myProjects[0].project.id : null,
+            projectId: projectId || myProjects?.length === 1 ? myProjects[0]?.project?.id : null,
             startTime: endTime
               ? moment(endTime, hourFormatAPI).format(hourFormat)
               : getDefaultValueStartTime(),
