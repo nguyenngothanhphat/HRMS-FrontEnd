@@ -24,7 +24,7 @@ const DailyHeader = (props) => {
         <CustomDatePicker
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
-          disableBtn={loadingFetch}
+          // disableBtn={loadingFetch}
         />
       </div>
       <div className={styles.DailyHeader__middle}>{viewChangeComponent()}</div>

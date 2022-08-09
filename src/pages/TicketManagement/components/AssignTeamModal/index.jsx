@@ -50,7 +50,7 @@ const AssignTeamModal = (props) => {
     }
 
     return () => {
-      form.setFieldsValue({ newTeam: '', ccList: [], queryType: '' });
+      form.setFieldsValue({ newTeam: null, ccList: [], queryType: null });
       setQueryTypeList([]);
     };
   }, [visible]);

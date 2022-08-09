@@ -318,7 +318,7 @@ const RaiseTicketModal = (props) => {
                 labelCol={{ span: 24 }}
               >
                 <DebounceSelect
-                  placeholder="Search to assign"
+                  placeholder="Select the interest list"
                   fetchOptions={onEmployeeSearch}
                   showSearch
                   mode="multiple"

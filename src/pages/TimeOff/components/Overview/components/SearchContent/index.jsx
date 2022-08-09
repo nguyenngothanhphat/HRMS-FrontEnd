@@ -95,16 +95,6 @@ const TimeOffFilter = (props) => {
     form.resetFields();
   };
 
-  useEffect(() => {
-    dispatch({
-      type: 'timeOffManagement/getTimeOffTypeListEffect',
-      payload: {
-        company: getCurrentCompany(),
-        tenantId: getCurrentTenant(),
-      },
-    });
-  }, []);
-
   const FilterContent = () => {
     return (
       <Form

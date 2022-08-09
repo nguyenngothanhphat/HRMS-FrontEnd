@@ -14,7 +14,7 @@ const ManagerRequestTable = (props) => {
     timeOff: {
       currentLeaveTypeTab = '',
       currentScopeTab = '',
-      yourTimeOffTypes = {},
+      // yourTimeOffTypes = {},
       totalByType = {
         A: 0,
         B: 0,
@@ -51,7 +51,7 @@ const ManagerRequestTable = (props) => {
 
   useEffect(() => {
     saveCurrentTypeTab('1');
-  }, [JSON.stringify(yourTimeOffTypes), currentScopeTab]);
+  }, [JSON.stringify(typeList), currentScopeTab]);
 
   const renderTableTitle = {
     left: (
@@ -126,5 +126,7 @@ export default connect(({ timeOff, user, loading, timeOffManagement: { typeList 
   timeOff,
   user,
   typeList,
-  loadingTimeOffType: loading.effects['timeOff/fetchTimeOffTypeByEmployeeEffect'],
+  loadingTimeOffType:
+    loading.effects['timeOff/fetchTimeOffTypeByEmployeeEffect'] ||
+    loading.effects['timeOffManagement/getTimeOffTypeListEffect'],
 }))(ManagerRequestTable);

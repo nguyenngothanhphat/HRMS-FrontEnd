@@ -276,7 +276,7 @@ const AddResourcesModal = (props) => {
                 className={styles.btnSubmit}
                 type="primary"
                 onClick={onPrimaryButtonClick}
-                disabled={selectedResources.length === 0}
+                disabled={selectedResources.length === 0 || step === 2}
               >
                 {renderPrimaryButtonText()}
               </Button>

@@ -6,11 +6,7 @@ import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomTimePicker from '@/components/CustomTimePicker';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
-import {
-  dateFormatAPI,
-  hourFormat,
-  hourFormatAPI
-} from '@/constants/timeSheet';
+import { dateFormatAPI, hourFormat, hourFormatAPI } from '@/constants/timeSheet';
 import { sortAlphabet } from '@/utils/utils';
 import { getCurrentCompany } from '@/utils/authority';
 import { getAllProjectsWithoutAssigned } from '@/utils/timeSheet';
@@ -209,23 +205,34 @@ const EditTaskModal = (props) => {
                   placeholder="Select the project"
                   loading={loadingFetchProject}
                   disabled={loadingFetchProject}
-                  filterOption={(input, option) =>
-                    option.children?.toLowerCase()?.indexOf(input.toLowerCase()) >= 0}
+                  filterOption={(input, option) => {
+                    if (option.children) {
+                      return option.children?.toLowerCase().includes(input.toLowerCase());
+                    }
+                    return (
+                      (option.options || [])
+                        .map((x) => x.children)
+                        .map((x) => x.toLowerCase())
+                        .indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
                 >
-                  <OptGroup label="My Projects">
-                    {sortAlphabet(myProjects, 'project', 'projectName').map((project) => {
-                      const {
-                        id: myProjectId = '',
-                        projectName: name = '',
-                        customerName = '',
-                      } = project.project;
-                      return (
-                        <Option key={myProjectId} value={myProjectId}>
-                          {name} - {customerName}
-                        </Option>
-                      );
-                    })}
-                  </OptGroup>
+                  {myProjects.length > 0 && (
+                    <OptGroup label="My Projects">
+                      {sortAlphabet(myProjects, 'project', 'projectName').map((project) => {
+                        const {
+                          id: myProjectId = '',
+                          projectName: name = '',
+                          customerName = '',
+                        } = project.project;
+                        return (
+                          <Option key={myProjectId} value={myProjectId}>
+                            {name} - {customerName}
+                          </Option>
+                        );
+                      })}
+                    </OptGroup>
+                  )}
                   <OptGroup label="All Projects">
                     {sortAlphabet(
                       getAllProjectsWithoutAssigned(projectList, myProjects),

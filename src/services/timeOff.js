@@ -215,9 +215,10 @@ export async function getAllLeaveRequests(payload) {
   });
 }
 
-export async function getTotalByType(params) {
+export async function getTotalByType(payload, params) {
   return request('/api/leaverequesttenant/group-type', {
     method: 'GET',
+    data: payload,
     params,
   });
 }

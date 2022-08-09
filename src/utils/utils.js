@@ -1,6 +1,7 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-undef */
 import { List, notification } from 'antd';
+import { debounce } from 'lodash';
 import moment from 'moment';
 import pathRegexp from 'path-to-regexp';
 import { parse } from 'querystring';
@@ -208,3 +209,5 @@ export const splitArrayItem = (arr = []) => (arr.length ? arr.toString().split('
 export const getEmployeeUrl = (userId) => {
   return `/directory/employee-profile/${userId}`;
 };
+
+export const debounceFetchData = debounce((callback) => callback(), 500);
