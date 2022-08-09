@@ -1,0 +1,21 @@
+.OnboardingOverview {
+  .tableContainer {
+    object-fit: contain;
+    overflow: auto;
+    background-color: #ffffff;
+    border: solid 1px @border-color-base;
+    border-radius: 8px;
+
+    .title {
+      color: #000000;
+      font-weight: 500;
+
+      font-size: 16px;
+    }
+    :global {
+      .ant-tabs-extra-content {
+        padding-right: @padding-lg;
+      }
+    }
+  }
+}

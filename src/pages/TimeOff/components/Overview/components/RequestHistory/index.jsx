@@ -11,7 +11,7 @@ import { TIMEOFF_HISTORY_STATUS, TIMEOFF_STATUS } from '@/constants/timeOff';
 
 const { Step } = Steps;
 
-const History = (props) => {
+const RequestHistory = (props) => {
   const { status = '', data, data: { history = [] } = {} } = props;
   const [indexWithdraw, setIndexWithdraw] = useState(0);
 
@@ -171,7 +171,7 @@ const History = (props) => {
   if (status === TIMEOFF_STATUS.DRAFTS) return null;
 
   return (
-    <Card title={null} className={styles.History}>
+    <Card title={null} className={styles.RequestHistory}>
       <div className={styles.container}>
         <div className={styles.note}>
           <div className={styles.titleNote}>
@@ -194,4 +194,4 @@ const History = (props) => {
   );
 };
 
-export default History;
+export default RequestHistory;

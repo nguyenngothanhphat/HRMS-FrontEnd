@@ -1,4 +1,4 @@
-const BASE_API = 'https://stghrms.paxanimi.ai';
+const BASE_API = 'https://devhrms.paxanimi.ai';
 
 export const API_KEYS = {
   BASE_API: 'BASE_API',

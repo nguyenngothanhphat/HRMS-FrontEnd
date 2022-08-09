@@ -3,7 +3,6 @@
 @darkBlue: #253c6b;
 @expired-background: #cddcfc;
 @new-background: #fff4f1;
-@border-color: @border-color-base;
 @checkbox-background: #e7eaee;
 @checkbox-border: #707177;
 @gray: #707177;
@@ -13,14 +12,8 @@
 @yellow: #ffa100;
 
 .OnboardTable {
-  padding: 24px;
+  padding: @padding-lg;
   background-color: @white;
-  border: solid 1px @border-color;
-  border-radius: 8px;
-
-  &.inTab {
-    border: none;
-  }
 
   :global {
     .ant-dropdown-menu-title-content {
@@ -147,7 +140,7 @@
     }
 
     .ant-table-tbody > tr > td {
-      border-bottom: solid 1px @border-color;
+      border-bottom: solid 1px @border-color-base;
     }
 
     th.ant-table-selection-column {

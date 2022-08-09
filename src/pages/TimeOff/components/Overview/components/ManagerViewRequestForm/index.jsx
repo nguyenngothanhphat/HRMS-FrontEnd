@@ -1,15 +1,15 @@
 import { Affix, Col, Row, Spin } from 'antd';
+import { isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { isEmpty } from 'lodash';
-import { TIMEOFF_COLOR, TIMEOFF_STATUS_NAME } from '@/constants/timeOff';
+import { goToTop } from '@/utils/utils';
 import { PageContainer } from '@/layouts/layout/src';
+import { TIMEOFF_COLOR, TIMEOFF_STATUS_NAME } from '@/constants/timeOff';
+import RequestHistory from '../RequestHistory';
+import TimeOffHistory from '../TimeOffHistory';
 import styles from './index.less';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
-import History from '../../../History';
-import TimeOffHistory from '../../../TimeOffHistory';
-import { goToTop } from '@/utils/utils';
 
 const ManagerViewRequestForm = (props) => {
   const {
@@ -71,25 +71,29 @@ const ManagerViewRequestForm = (props) => {
           </div>
         </Affix>
 
-        <Spin spinning={loadingFetchLeaveRequestById}>
-          <Row className={styles.container} gutter={[20, 20]}>
-            <Col xs={24} lg={16}>
+        <Row className={styles.container} gutter={[20, 20]}>
+          <Col xs={24} lg={16}>
+            <Spin spinning={loadingFetchLeaveRequestById}>
               <RequestInformation employeeId={employeeId} reId={id} />
-            </Col>
-            <Col xs={24} lg={8}>
-              {!isEmpty(history) ? (
-                <>
-                  <History data={viewingLeaveRequest} status={status} />
-                </>
-              ) : (
-                <>
-                  <RightContent data={viewingLeaveRequest} status={status} />
-                </>
-              )}
-              <TimeOffHistory data={viewingLeaveRequest} />
-            </Col>
-          </Row>
-        </Spin>
+            </Spin>
+          </Col>
+          <Col xs={24} lg={8}>
+            {!loadingFetchLeaveRequestById && (
+              <>
+                {!isEmpty(history) ? (
+                  <>
+                    <RequestHistory data={viewingLeaveRequest} status={status} />
+                  </>
+                ) : (
+                  <>
+                    <RightContent data={viewingLeaveRequest} status={status} />
+                  </>
+                )}
+              </>
+            )}
+            {!isEmpty(viewingLeaveRequest) && <TimeOffHistory data={viewingLeaveRequest} />}
+          </Col>
+        </Row>
       </div>
     </PageContainer>
   );

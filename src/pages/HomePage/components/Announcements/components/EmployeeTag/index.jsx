@@ -30,7 +30,7 @@ const EmployeeTag = (props) => {
   };
 
   return (
-    <div className={styles.EmployeeTag} onClick={onViewProfileClick}>
+    <div className={styles.EmployeeTag} onClick={!postAsCompany ? onViewProfileClick : () => {}}>
       <div className={styles.container}>
         <div className={styles.avatar}>
           <img

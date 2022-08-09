@@ -94,11 +94,12 @@ export async function getMyTimesheetByType(payload, params) {
   );
 }
 
-export async function getHolidaysByDate(params) {
+export async function getHolidaysByDate(payload, params) {
   return request(
     `/api/holidays`,
     {
       method: 'GET',
+      data: payload,
       params,
     },
     false,

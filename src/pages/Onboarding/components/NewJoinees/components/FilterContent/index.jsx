@@ -162,7 +162,7 @@ const Filter = (props) => {
             {jobTitleList.map((option) => {
               return (
                 <Option key={option._id} value={option._id}>
-                  <span>{option.name}</span>
+                  {option.name}
                 </Option>
               );
             })}
