@@ -43,14 +43,6 @@ class Regulations extends Component {
     });
   };
 
-  componentDidUpdate = (prevProps) => {
-    const { selectedCountry = '' } = this.props;
-    if (prevProps.selectedCountry !== selectedCountry) {
-      this.refForm?.current?.resetFields();
-      this.fetchPolicyRegulationList(selectedCountry);
-    }
-  };
-
   onSearch = (e = {}) => {
     const { value = '' } = e.target;
     this.onSearchDebounce(value);
@@ -64,7 +56,7 @@ class Regulations extends Component {
   };
 
   onSearchDebounce = (value) => {
-    const { dispatch, selectedCountry = '' } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'policiesRegulations/searchNamePolicy',
       payload: {
@@ -100,13 +92,13 @@ class Regulations extends Component {
                 onChange={(e) => this.onSearch(e)}
               />
             </div>
-            <AddPolicyModal
-              onRefresh={this.fetchPolicyRegulationList}
-              visible={addPolicy}
-              onClose={() => this.setState({ addPolicy: false })}
-              mode="multiple"
-            />
           </div>
+          <AddPolicyModal
+            onRefresh={this.fetchPolicyRegulationList}
+            visible={addPolicy}
+            onClose={() => this.setState({ addPolicy: false })}
+            mode="multiple"
+          />
         </div>
         <Row>
           <Col span={24}>
