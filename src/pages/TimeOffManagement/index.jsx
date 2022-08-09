@@ -9,7 +9,6 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import LocationDropdownSelector from '@/components/LocationDropdownSelector';
 import TableContainer from './components/TableContainer';
 import styles from './index.less';
-import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 
 const { TabPane } = Tabs;
 
@@ -81,8 +80,8 @@ const TimeOffManagement = (props) => {
   }, [JSON.stringify(selectedLocations)]);
 
   const getFullPayload = () => {
-    const from = fromDate ? moment(fromDate).format(DATE_FORMAT_YMD) : null;
-    const to = toDate ? moment(toDate).format(DATE_FORMAT_YMD) : null;
+    const from = fromDate ? moment(fromDate).format('YYYY-MM-DD') : null;
+    const to = toDate ? moment(toDate).format('YYYY-MM-DD') : null;
     return {
       ...payload,
       from,
