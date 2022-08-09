@@ -1,15 +1,11 @@
-import { Button, Col, Row, Skeleton } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button, Col, Input, Row } from 'antd';
 import { debounce } from 'lodash';
-import React, { Component, Suspense } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'umi';
+import FilterIcon from '@/assets/policiesRegulations/filter.svg';
 import AddIcon from '@/assets/policiesRegulations/add.svg';
-import CustomOrangeButton from '@/components/CustomOrangeButton';
-import CustomSearchBox from '@/components/CustomSearchBox';
-import FilterCountTag from '@/components/FilterCountTag';
-import FilterPopover from '@/components/FilterPopover';
-import { getCurrentTenant } from '@/utils/authority';
 import AddPolicyModal from './components/AddPolicyModal';
-import FilterContent from './components/FilterContent';
 import TablePolicy from './components/TablePolicy';
 import styles from './index.less';
 
@@ -27,8 +23,6 @@ class Regulations extends Component {
       addPolicy: false,
       pageSelected: 1,
       size: 10,
-      form: null,
-      applied: 0,
     };
     this.refForm = React.createRef();
     this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
@@ -74,26 +68,13 @@ class Regulations extends Component {
     dispatch({
       type: 'policiesRegulations/searchNamePolicy',
       payload: {
-        country: [selectedCountry],
         namePolicy: value,
       },
     });
   };
 
-  handleClearFilter = () => {
-    const { dispatch, selectedCountry = '' } = this.props;
-    const { form } = this.state;
-    dispatch({
-      type: 'policiesRegulations/fetchListPolicy',
-      payload: { country: [selectedCountry], tenantId: getCurrentTenant() },
-    });
-
-    this.setState({ applied: 0 });
-    form?.resetFields();
-  };
-
   render() {
-    const { addPolicy, pageSelected, size, applied } = this.state;
+    const { addPolicy, pageSelected, size } = this.state;
     return (
       <div className={styles.containerPolicy}>
         <div className={styles.headerPolicy}>
@@ -103,7 +84,6 @@ class Regulations extends Component {
           </div>
 
           <div className={styles.headerPolicy__btnAdd}>
-            <FilterCountTag count={applied} onClearFilter={this.handleClearFilter} />
             <Button
               icon={<img src={AddIcon} alt="AddIcon" />}
               onClick={() => this.setState({ addPolicy: true })}
@@ -111,32 +91,22 @@ class Regulations extends Component {
               Add Policy
             </Button>
             <div className={styles.filterButton}>
-              <FilterPopover
-                placement="bottomRight"
-                content={
-                  <Suspense fallback={<Skeleton active />}>
-                    <FilterContent
-                      setForm={(val) => this.setState({ form: val })}
-                      setApplied={(val) => this.setState({ applied: val })}
-                    />
-                  </Suspense>
-                }
-                realTime
-              >
-                <CustomOrangeButton showDot={applied > 0} />
-              </FilterPopover>
+              <img src={FilterIcon} alt="FilterIcon" />
             </div>
-            <CustomSearchBox
-              onSearch={(e) => this.onSearch(e)}
-              placeholder="Search by Policy name"
+            <div className={styles.searchInp}>
+              <Input
+                placeholder="Search by Policy name"
+                prefix={<SearchOutlined />}
+                onChange={(e) => this.onSearch(e)}
+              />
+            </div>
+            <AddPolicyModal
+              onRefresh={this.fetchPolicyRegulationList}
+              visible={addPolicy}
+              onClose={() => this.setState({ addPolicy: false })}
+              mode="multiple"
             />
           </div>
-          <AddPolicyModal
-            onRefresh={this.fetchPolicyRegulationList}
-            visible={addPolicy}
-            onClose={() => this.setState({ addPolicy: false })}
-            mode="multiple"
-          />
         </div>
         <Row>
           <Col span={24}>
