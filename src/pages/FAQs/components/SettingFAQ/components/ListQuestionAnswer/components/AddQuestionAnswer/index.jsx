@@ -219,7 +219,17 @@ class AddQuestionAnswer extends Component {
               </Dragger>
             </Form.Item>
             <div className={styles.separator}>OR</div>
-            <Form.Item label="Upload File by URL" name="upLink" labelCol={{ span: 24 }}>
+            <Form.Item
+              label="Upload File by URL"
+              name="upLink"
+              labelCol={{ span: 24 }}
+              rules={[
+                {
+                  pattern: /(http(s?):\/\/[^\s]+)/g,
+                  message: 'URL is invalid',
+                },
+              ]}
+            >
               <Input
                 disabled={!showLink}
                 className={styles.urlInput}
