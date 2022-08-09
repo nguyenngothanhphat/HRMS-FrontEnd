@@ -182,6 +182,7 @@ const ViewInformation = (props) => {
         cancelText="Cancel"
         title="Edit Project"
         loading={loadingUpdateProject}
+        formName="editProjectForm"
         content={
           <EditProjectModalContent
             visible={isEditProject}
