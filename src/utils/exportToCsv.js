@@ -1,4 +1,4 @@
-export function exportArrayDataToCsv(filename, rows) {
+export const exportArrayDataToCsv = (filename, rows) => {
   const processRow = (row) => {
     let finalVal = '';
     for (let j = 0; j < row.length; j += 1) {
@@ -37,7 +37,7 @@ export function exportArrayDataToCsv(filename, rows) {
       document.body.removeChild(link);
     }
   }
-}
+};
 
 export const exportRawDataToCSV = (data, fileName) => {
   const downloadLink = document.createElement('a');

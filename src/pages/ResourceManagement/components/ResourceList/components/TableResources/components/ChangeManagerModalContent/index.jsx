@@ -31,12 +31,10 @@ const ChangeManagerModalContent = (props) => {
       },
     }).then((res = {}) => {
       const { data = [] } = res;
-      return data
-        .filter((x) => x._id !== employee?._id)
-        .map((user) => ({
-          label: user.generalInfoInfo?.legalName,
-          value: user._id,
-        }));
+      return data.map((user) => ({
+        label: user.generalInfoInfo?.legalName,
+        value: user._id,
+      }));
     });
   };
 

@@ -91,13 +91,14 @@ export const sortedDate = (days = []) => days.sort((a, b) => moment(a.date).diff
 export const holidayFormatDate = (date) => moment(date).locale('en').format('MMM DD');
 
 export const pushSuccess = (errorList = [], text, msg) => {
-  if (errorList.length > 0) {
+  const newErrorList = [...new Set(errorList)];
+  if (newErrorList.length > 0) {
     let datesErr = '';
-    for (let i = 0; i < errorList.length; i += 1) {
-      datesErr += errorList[i]?.error?.item?.date
-        ? moment(errorList[i]?.error.item.date).format(commonDateFormat)
-        : moment(errorList[i]?.date).format(commonDateFormat);
-      if (i + 1 < errorList.length) datesErr += ', ';
+    for (let i = 0; i < newErrorList.length; i += 1) {
+      datesErr += newErrorList[i]?.error?.item?.date
+        ? moment(newErrorList[i]?.error.item.date).format(commonDateFormat)
+        : moment(newErrorList[i]?.date).format(commonDateFormat);
+      if (i + 1 < newErrorList.length) datesErr += ', ';
     }
 
     notification.warning({

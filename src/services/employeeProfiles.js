@@ -302,12 +302,12 @@ export async function updateTax(payload) {
   });
 }
 
-export async function getLocationsByCompany(payload) {
-  return request('/api/locationtenant/get-by-company', {
-    method: 'POST',
-    data: payload,
-  });
-}
+// export async function getLocationsByCompany(payload) {
+//   return request('/api/locationtenant/get-by-company', {
+//     method: 'POST',
+//     data: payload,
+//   });
+// }
 
 export async function updateEmployment(payload) {
   return request('/api/employeetenant/update', {

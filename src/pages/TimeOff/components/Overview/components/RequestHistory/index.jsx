@@ -8,6 +8,7 @@ import DotIcon from '@/assets/timeOff/dot.svg';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import styles from './index.less';
 import { TIMEOFF_HISTORY_STATUS, TIMEOFF_STATUS } from '@/constants/timeOff';
+import { getEmployeeUrl } from '@/utils/utils';
 
 const { Step } = Steps;
 
@@ -18,13 +19,14 @@ const RequestHistory = (props) => {
   const getFlow = () => {
     const array = history.map((item) => {
       const {
-        employee: { generalInfoInfo: { legalName = '', avatar = '' } = {} } = {},
+        employee: { generalInfoInfo: { legalName = '', avatar = '', userId = '' } = {} } = {},
         status: statusHistory = '',
         updatedAt = '',
       } = item;
       return {
         name: legalName,
         avatar: avatar || DefaultAvatar,
+        userId,
         statusHistory,
         updatedAt,
       };
@@ -94,7 +96,12 @@ const RequestHistory = (props) => {
     }
   };
 
-  const renderImg = (name, avatar, updatedAt, statusProp) => {
+  const onViewProfile = (id) => {
+    const url = getEmployeeUrl(id);
+    window.open(url, '_blank');
+  };
+
+  const renderImg = (name, avatar, userId, updatedAt, statusProp) => {
     return (
       <>
         <img
@@ -104,9 +111,12 @@ const RequestHistory = (props) => {
           }}
           src={avatar || DefaultAvatar}
           alt="avatar"
+          onClick={() => onViewProfile(userId)}
         />
         <div>
-          <div className={styles.nameStep}>{name}</div>
+          <div className={styles.nameStep} onClick={() => onViewProfile(userId)}>
+            {name}
+          </div>
           <div className={styles.containerStatus}>
             <span className={styles.status} style={renderColorStatus(statusProp)}>
               {renderStatusName(statusProp)}
@@ -145,7 +155,7 @@ const RequestHistory = (props) => {
   const renderSteps = () => {
     const people = getFlow();
     return people.map((item, index) => {
-      const { name = '', avatar = '', statusHistory = '', updatedAt = '' } = item;
+      const { name = '', avatar = '', userId = '', statusHistory = '', updatedAt = '' } = item;
       return (
         <Step
           className={`${
@@ -162,7 +172,7 @@ const RequestHistory = (props) => {
                   : ''
               }`}
           icon={renderIcon(statusHistory)}
-          description={renderImg(name, avatar, updatedAt, statusHistory)}
+          description={renderImg(name, avatar, userId, updatedAt, statusHistory)}
         />
       );
     });

@@ -1,10 +1,8 @@
 import { Divider, Dropdown, Menu, Table } from 'antd';
 import React, { Component } from 'react';
 // import { connect } from 'umi';
-import moment from 'moment';
 // import { isEmpty } from 'lodash';
 import MoreIcon from '@/assets/policiesRegulations/more.svg';
-import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import DeleteQuestionAnswer from '../DeleteQuestionAnswer';
 import EditQuestionAnswer from '../EditQuestionAnswer';
 import ViewQuestionAnswer from '../ViewQuestionAnswer';
@@ -42,16 +40,16 @@ class TableFAQList extends Component {
   actionMenu = (record) => {
     return (
       <Menu>
-        <Menu.Item>
-          <span onClick={() => this.handleViewQuestion(record)}>View Question</span>
+        <Menu.Item onClick={() => this.handleViewQuestion(record)}>
+          <span>View Question</span>
         </Menu.Item>
         <Divider />
-        <Menu.Item>
-          <span onClick={() => this.handleUpdateQuestion(record)}>Update Question</span>
+        <Menu.Item onClick={() => this.handleUpdateQuestion(record)}>
+          <span>Update Question</span>
         </Menu.Item>
         <Divider />
-        <Menu.Item>
-          <span onClick={() => this.handleDeleteQuestion(record)}>Delete</span>
+        <Menu.Item onClick={() => this.handleDeleteQuestion(record)}>
+          <span>Delete</span>
         </Menu.Item>
       </Menu>
     );
@@ -68,16 +66,30 @@ class TableFAQList extends Component {
       listFAQ = [],
       totalListFAQ,
     } = this.props;
+    const fileListTemp = (att) => {
+      return att.map((x, i) => {
+        return {
+          ...x,
+          uid: i,
+          name: x.name,
+          status: 'done',
+          url: x.url,
+          thumbUrl: x.url,
+          id: x.id || x._id,
+        };
+      });
+    };
     const listQuestion = listFAQ
       ? listFAQ.map((obj) => {
           return {
             id: obj._id,
             question: obj.question || '-',
             answer: obj.answer || '-',
-            addBy:
-              obj.infoEmployee.length > 0 ? obj.infoEmployee[0].generalInfoInfo.legalName : '-',
-            addOn: obj.createdAt ? moment(obj.createdAt).format(DATE_FORMAT_MDY) : '-',
-            categoryName: obj.category.length > 0 ? obj.category[0].category : '-',
+            addBy: obj.employeeId ? obj.employeeId?.generalInfoInfo?.legalName : '-',
+            addOn: obj.createdAt ? obj.createdAt.substring(0, 10) : '-',
+            categoryName: obj.categoryId ? obj.categoryId?.category : '-',
+            categoryId: obj.categoryId ? obj.categoryId?._id : '-',
+            attachment: obj?.attachment && fileListTemp([obj.attachment]),
           };
         })
       : [];
@@ -107,7 +119,7 @@ class TableFAQList extends Component {
         title: 'Added On',
         dataIndex: 'addOn',
         sorter: {
-          compare: (a, b) => moment(a.addOn).unix() - moment(b.addOn).unix(),
+          compare: (a, b) => new Date(a.addOn).getTime() - new Date(b.addOn).getTime(),
         },
       },
       {

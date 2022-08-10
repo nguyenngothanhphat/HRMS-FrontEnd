@@ -7,6 +7,7 @@ import pathRegexp from 'path-to-regexp';
 import { parse } from 'querystring';
 import React from 'react';
 import { formatMessage } from 'umi';
+import { UPLOAD } from '@/constants/upload';
 import { getCompanyOfUser, getCurrentCompany } from './authority';
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
@@ -210,4 +211,13 @@ export const getEmployeeUrl = (userId) => {
   return `/directory/employee-profile/${userId}`;
 };
 
+export const checkTypeURL = (attachments) => {
+  if (
+    attachments[0]?.category === UPLOAD.CATEGORY_NAME.URL &&
+    attachments[0]?.type?.split('/')[0] === 'video'
+  ) {
+    return false;
+  }
+  return true;
+};
 export const debounceFetchData = debounce((callback) => callback(), 500);

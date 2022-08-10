@@ -1,6 +1,7 @@
 import { Col, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import EmptyComponent from '@/components/Empty';
 import TaskCard from '../TaskCard';
 import styles from './index.less';
 
@@ -29,7 +30,7 @@ const TaskTable = (props) => {
 
   const renderTable = () => {
     if (list.length === 0) {
-      return <div className={styles.emptyContent}>No data</div>;
+      return <EmptyComponent />;
     }
     return (
       <div className={styles.content}>

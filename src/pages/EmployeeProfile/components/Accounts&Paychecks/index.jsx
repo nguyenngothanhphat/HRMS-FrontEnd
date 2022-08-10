@@ -1,15 +1,16 @@
+import { EditFilled, MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { Col, Collapse, Row, Skeleton } from 'antd';
 import React, { PureComponent } from 'react';
-import { Row, Col, Collapse, Skeleton, Button, Modal } from 'antd';
 import { connect } from 'umi';
-import { PlusOutlined, MinusOutlined, EditFilled } from '@ant-design/icons';
-import ViewBank from './components/View/ViewBank';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CommonModal from '@/components/CommonModal';
+import imageAddSuccess from '@/assets/resource-management-success.svg';
 import EditBank from './components/Edit/EditBank';
-import ViewTax from './components/View/ViewTax';
 import EditTax from './components/Edit/EditTax';
 import PaySlipMonth from './components/PayslipMonth';
-import imageAddSuccess from '@/assets/resource-management-success.svg';
+import ViewBank from './components/View/ViewBank';
+import ViewTax from './components/View/ViewTax';
 import styles from './index.less';
-import CommonModal from '@/components/CommonModal';
 
 @connect(
   ({
@@ -225,12 +226,9 @@ class AccountsPaychecks extends PureComponent {
                 Update information successfully
               </p>
               <div className={styles.spaceFooterModalSuccess}>
-                <Button
-                  onClick={this.handleCancelModelSuccess}
-                  className={styles.btnOkModalSuccess}
-                >
+                <CustomPrimaryButton onClick={this.handleCancelModelSuccess}>
                   Okay
-                </Button>
+                </CustomPrimaryButton>
               </div>
             </>
           }

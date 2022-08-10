@@ -2,6 +2,7 @@ import { Col, DatePicker, Form, Row, Select } from 'antd';
 import { isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import DebounceSelect from '@/components/DebounceSelect';
 import styles from './index.less';
 import { DATE_FORMAT_STR } from '@/constants/dateFormat';
@@ -57,6 +58,18 @@ const FilterContent = (props) => {
       {},
     );
     onFilter(result);
+  };
+
+  const disableFromDate = (value, compareVar) => {
+    const t = form.getFieldValue(compareVar);
+    if (!t) return false;
+    return value > moment(t);
+  };
+
+  const disableToDate = (value, compareVar) => {
+    const t = form.getFieldValue(compareVar);
+    if (!t) return false;
+    return value < moment(t);
   };
 
   useEffect(() => {
@@ -133,7 +146,10 @@ const FilterContent = (props) => {
         <Row>
           <Col span={11}>
             <Form.Item name="s_fromDate">
-              <DatePicker format={DATE_FORMAT_STR} />
+              <DatePicker
+                format={DATE_FORMAT_STR}
+                disabledDate={(val) => disableFromDate(val, 's_toDate')}
+              />
             </Form.Item>
           </Col>
           <Col span={2} className={styles.separator}>
@@ -141,7 +157,10 @@ const FilterContent = (props) => {
           </Col>
           <Col span={11}>
             <Form.Item name="s_toDate">
-              <DatePicker format={DATE_FORMAT_STR} />
+              <DatePicker
+                format={DATE_FORMAT_STR}
+                disabledDate={(val) => disableToDate(val, 's_fromDate')}
+              />
             </Form.Item>
           </Col>
         </Row>
@@ -151,7 +170,10 @@ const FilterContent = (props) => {
         <Row>
           <Col span={11}>
             <Form.Item name="e_fromDate">
-              <DatePicker format={DATE_FORMAT_STR} />
+              <DatePicker
+                format={DATE_FORMAT_STR}
+                disabledDate={(val) => disableFromDate(val, 'e_toDate')}
+              />
             </Form.Item>
           </Col>
           <Col span={2} className={styles.separator}>
@@ -159,7 +181,10 @@ const FilterContent = (props) => {
           </Col>
           <Col span={11}>
             <Form.Item name="e_toDate">
-              <DatePicker format={DATE_FORMAT_STR} />
+              <DatePicker
+                format={DATE_FORMAT_STR}
+                disabledDate={(val) => disableToDate(val, 'e_fromDate')}
+              />
             </Form.Item>
           </Col>
         </Row>

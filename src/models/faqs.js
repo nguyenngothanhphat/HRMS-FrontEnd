@@ -10,7 +10,7 @@ import {
   getListFAQ,
   updateQuestion,
   deleteQuestion,
-  searchFAQs,
+  getListCreator,
 } from '../services/faqs';
 
 const faqs = {
@@ -24,6 +24,7 @@ const faqs = {
     totalCategory: 0,
     listCategoryMainPage: [],
     totalCategoryMainPage: 0,
+    listCreator: [],
   },
   effects: {
     *addFAQCategory({ payload }, { call }) {
@@ -188,12 +189,10 @@ const faqs = {
       }
       return response;
     },
-
-    *searchFAQs({ payload }, { call, put }) {
+    *fetchListCreator(_, { call, put }) {
       let response;
       try {
-        response = yield call(searchFAQs, {
-          ...payload,
+        response = yield call(getListCreator, {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
@@ -201,7 +200,7 @@ const faqs = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { listFAQ: data },
+          payload: { listCreator: data },
         });
       } catch (error) {
         dialog(error);

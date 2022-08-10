@@ -6,6 +6,7 @@ import FAQIcon from '@/assets/dashboard/faq.svg';
 import PoliciesIcon from '@/assets/dashboard/policies.svg';
 import QuickLinkIcon from '@/assets/dashboard/quickLink.svg';
 import RaiseTicketIcon from '@/assets/dashboard/raiseTicket.svg';
+import HelpCenterIcon from '@/assets/dashboard/helpCenter.svg';
 import CommonModal from '@/components/CommonModal';
 import QuickLinks from '@/components/QuickLinks';
 import RaiseTicketModal from '@/components/RaiseTicketModal';
@@ -22,6 +23,7 @@ class MenuDropdown extends React.Component {
       FAQ: 'FAQ',
       RAISE_TICKET: 'RAISE_TICKET',
       POLICIES_REGULATION: 'POLICIES_REGULATION',
+      HELP_CENTER: 'HELP_CENTER',
       quickLinkModalVisible: false,
       raiseTicketModalVisible: false,
     };
@@ -41,18 +43,25 @@ class MenuDropdown extends React.Component {
 
   onMenuClick = async (event) => {
     const { key } = event;
-    const { QUICK_LINKS, FAQ, RAISE_TICKET, POLICIES_REGULATION } = this.state;
-    if (key === QUICK_LINKS) {
-      this.onToggleQuickLinkModal();
-    }
-    if (key === FAQ) {
-      history.push('/faq');
-    }
-    if (key === RAISE_TICKET) {
-      this.onToggleRaiseTicketModal();
-    }
-    if (key === POLICIES_REGULATION) {
-      history.push('/policies-regulations');
+    const { QUICK_LINKS, FAQ, RAISE_TICKET, POLICIES_REGULATION, HELP_CENTER } = this.state;
+    switch (key) {
+      case QUICK_LINKS:
+        this.onToggleQuickLinkModal();
+        break;
+      case FAQ:
+        history.push('/faq');
+        break;
+      case RAISE_TICKET:
+        this.onToggleRaiseTicketModal();
+        break;
+      case POLICIES_REGULATION:
+        history.push('/policies-regulations');
+        break;
+      case HELP_CENTER:
+        history.push('/help-center');
+        break;
+      default:
+        break;
     }
   };
 
@@ -62,6 +71,7 @@ class MenuDropdown extends React.Component {
       FAQ,
       RAISE_TICKET,
       POLICIES_REGULATION,
+      HELP_CENTER,
       quickLinkModalVisible,
       raiseTicketModalVisible,
     } = this.state;
@@ -93,6 +103,12 @@ class MenuDropdown extends React.Component {
           <div className={styles.menuItemLink__withIcon}>
             <img src={PoliciesIcon} alt="PoliciesIcon" />
             <span>Policies & Regulations</span>
+          </div>
+        </Menu.Item>
+        <Menu.Item key={HELP_CENTER} className={styles.menuItemLink}>
+          <div className={styles.menuItemLink__withIcon}>
+            <img src={HelpCenterIcon} alt="HelpCenterIcon" />
+            <span>HRMS Help Center</span>
           </div>
         </Menu.Item>
         {/* <Menu.Divider className={styles.secondDivider} /> */}
