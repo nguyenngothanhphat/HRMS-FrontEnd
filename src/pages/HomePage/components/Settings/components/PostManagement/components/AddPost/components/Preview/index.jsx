@@ -9,6 +9,10 @@ import CelebratingCard from '@/pages/HomePage/components/Celebrating/components/
 import GalleryCard from '@/pages/HomePage/components/Gallery/components/Card';
 import Carousel from '@/pages/HomePage/components/Carousel';
 import Options from '@/pages/HomePage/components/Voting/components/Options';
+import { connect } from 'umi';
+import { UPLOAD } from '@/constants/upload';
+
+const { CATEGORY_NAME } = UPLOAD;
 
 const Preview = (props) => {
   const {
@@ -28,14 +32,17 @@ const Preview = (props) => {
       startDateP = '',
       endDateP = '',
       postAsCompany = false,
+      urlFile = '',
     },
     owner = {},
     company = {},
+    dispatch,
   } = props;
 
   const [announcementContent, setAnnouncementContent] = useState({
     imageUrls: [],
   });
+
   const [birthdayContent, setBirthdayContent] = useState({
     imageUrls: [],
   });
@@ -45,6 +52,8 @@ const Preview = (props) => {
   const [bannerContent, setBannerContent] = useState({
     imageUrls: [],
   });
+
+  const [urlContent, setURLContent] = useState({});
 
   const toBase64 = (file) =>
     // eslint-disable-next-line compat/compat
@@ -66,6 +75,26 @@ const Preview = (props) => {
       func({ imageUrls: data });
     });
   };
+
+  useEffect(() => {
+    if (urlFile) {
+      dispatch({
+        type: 'upload/addAttachment',
+        payload: {
+          attachments: [
+            {
+              category: CATEGORY_NAME.URL,
+              url: urlFile,
+            },
+          ],
+        },
+        showNotification: false,
+      }).then((res) => {
+        const { statusCode, data = {} } = res;
+        if (statusCode === 200) setURLContent(data);
+      });
+    }
+  }, [urlFile]);
 
   useEffect(() => {
     if (editing && Array.isArray(uploadFilesA)) {
@@ -132,6 +161,8 @@ const Preview = (props) => {
           ? announcementContent.imageUrls.map((x) => {
               return { url: x };
             })
+          : urlFile
+          ? urlContent
           : [
               {
                 url: PreviewImage,
@@ -211,4 +242,4 @@ const Preview = (props) => {
   return <div className={styles.Preview}>{renderPreview()}</div>;
 };
 
-export default Preview;
+export default connect()(Preview);

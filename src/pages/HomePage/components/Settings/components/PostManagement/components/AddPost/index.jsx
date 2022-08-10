@@ -16,6 +16,8 @@ import ImagesContent from './components/ImagesContent';
 import PollContent from './components/PollContent';
 import Preview from './components/Preview';
 import styles from './index.less';
+import { UPLOAD } from '@/constants/upload';
+import { uploadFirebaseMultiple } from '@/services/firebase';
 
 // A: ANNOUNCEMENT
 // B: BIRTHDAY/ANNIVERSARY
@@ -46,6 +48,8 @@ const TABS = [
   },
 ];
 
+const { CATEGORY_NAME } = UPLOAD;
+
 const AddPost = (props) => {
   const [form] = Form.useForm();
   const { selectedTab = '', onBack = () => {} } = props;
@@ -66,6 +70,9 @@ const AddPost = (props) => {
   const [location, setLocation] = useState([locationId]);
   const [formValues, setFormValues] = useState({});
   const [fileList, setFileList] = useState([]);
+  const [isURL, setIsURL] = useState(false);
+  const [isUpload, setIsUpload] = useState(false);
+  const [isUploadFile, setIsUploadFile] = useState(false);
 
   // FUNCTIONS
   const onModeChange = (val) => {
@@ -86,6 +93,7 @@ const AddPost = (props) => {
     form.resetFields();
     setFormValues({});
     setLocation([locationId]);
+    setIsUploadFile(false);
   };
 
   useEffect(() => {
@@ -116,12 +124,32 @@ const AddPost = (props) => {
 
       switch (mode) {
         case TAB_IDS.ANNOUNCEMENTS: {
-          tempFormValues = {
-            postType: TAB_IDS.ANNOUNCEMENTS,
-            descriptionA: record.description,
-            uploadFilesA: { fileList: [...fileListTemp()] },
-            postAsCompany,
-          };
+          if (attachments && attachments.length && attachments[0].category === CATEGORY_NAME.URL) {
+            setIsURL(true);
+            tempFormValues = {
+              postType: TAB_IDS.ANNOUNCEMENTS,
+              descriptionA: record.description,
+              urlFile: attachments[0].url,
+              postAsCompany,
+            };
+          } else if (!attachments.length) {
+            setIsUpload(false);
+            setIsURL(false);
+            tempFormValues = {
+              postType: TAB_IDS.ANNOUNCEMENTS,
+              descriptionA: record.description,
+              postAsCompany,
+            };
+          } else {
+            setIsUpload(true);
+            tempFormValues = {
+              postType: TAB_IDS.ANNOUNCEMENTS,
+              descriptionA: record.description,
+              uploadFilesA: { fileList: [...fileListTemp()] },
+              postAsCompany,
+            };
+            setFileList(fileListTemp());
+          }
           break;
         }
         case TAB_IDS.ANNIVERSARY: {
@@ -175,7 +203,9 @@ const AddPost = (props) => {
       tempFormValues.location = locationProps.map((x) => x._id);
 
       form.setFieldsValue(tempFormValues);
-      setFileList(fileListTemp());
+      if (mode !== TAB_IDS.ANNOUNCEMENTS) {
+        setFileList(fileListTemp());
+      }
       setFormValues(tempFormValues);
     }
   }, [editing]);
@@ -185,7 +215,38 @@ const AddPost = (props) => {
     setFormValues(values);
   }, 1000);
 
+  const checkFileByMode = (values) => {
+    switch (mode) {
+      case TAB_IDS.ANNOUNCEMENTS: {
+        return values.uploadFilesA?.fileList?.length > 0;
+      }
+      case TAB_IDS.ANNIVERSARY: {
+        return values.uploadFilesB?.fileList?.length > 0;
+      }
+      case TAB_IDS.IMAGES: {
+        return values.uploadFilesI?.fileList?.length > 0;
+      }
+      case TAB_IDS.BANNER: {
+        return values.uploadFilesBN?.fileList?.length > 0;
+      }
+      default:
+        return false;
+    }
+  };
+
   const checkUploadFiles = (allValues) => {
+    if (allValues.urlFile) {
+      setIsURL(true);
+    } else {
+      setIsURL(false);
+    }
+
+    if (checkFileByMode(allValues)) {
+      setIsUpload(true);
+    } else {
+      setIsUpload(false);
+    }
+
     const tempAllValues = { ...allValues };
 
     const commonFunc = (name) => {
@@ -222,45 +283,15 @@ const AddPost = (props) => {
     setFormValuesDebounce(newValues);
   };
 
-  const onUploadFiles = async (files) => {
-    if (Array.isArray(files)) {
-      return files.map((x) => x.id || x._id);
-    }
-    const list = [];
-    if (Array.isArray(files?.fileList)) {
-      if (files?.fileList.length > 0) {
-        // eslint-disable-next-line compat/compat
-        await Promise.all(
-          files.fileList.map(async (x) => {
-            if (x.url) {
-              list.push({ id: x.id || x._id });
-            } else {
-              const compressedFile = await compressImage(x.originFileObj);
-              const formData = new FormData();
-              formData.append('blob', compressedFile, x.originFileObj?.name);
-              const upload = await dispatch({
-                type: 'upload/uploadFile',
-                payload: formData,
-                showNotification: false,
-              });
-              if (upload.statusCode === 200) {
-                list.push(upload.data[0]);
-              }
-            }
-            return x;
-          }),
-        );
-      }
-    }
-    return list.map((x) => x.id);
-  };
-
-  const onPost = async (values) => {
+  const onPost = async (values, data = {}) => {
     let payload = {};
 
     switch (mode) {
       case TAB_IDS.ANNOUNCEMENTS: {
-        const attachments = await onUploadFiles(values.uploadFilesA);
+        let attachments = [];
+        if (Object.keys(data)?.length) {
+          attachments = data?.map((x) => x?._id);
+        }
         payload = {
           attachments,
           postType: TAB_IDS.ANNOUNCEMENTS,
@@ -272,7 +303,10 @@ const AddPost = (props) => {
         break;
       }
       case TAB_IDS.ANNIVERSARY: {
-        const attachments = await onUploadFiles(values.uploadFilesB);
+        let attachments = [];
+        if (Object.keys(data)?.length) {
+          attachments = data?.map((x) => x?._id);
+        }
         payload = {
           attachments,
           postType: TAB_IDS.ANNIVERSARY,
@@ -283,7 +317,10 @@ const AddPost = (props) => {
         break;
       }
       case TAB_IDS.IMAGES: {
-        const attachments = await onUploadFiles(values.uploadFilesI);
+        let attachments = [];
+        if (Object.keys(data)?.length) {
+          attachments = data?.map((x) => x?._id);
+        }
         payload = {
           attachments,
           postType: TAB_IDS.IMAGES,
@@ -295,7 +332,10 @@ const AddPost = (props) => {
         break;
       }
       case TAB_IDS.BANNER: {
-        const attachments = await onUploadFiles(values.uploadFilesBN);
+        let attachments = [];
+        if (Object.keys(data)?.length) {
+          attachments = data?.map((x) => x?._id);
+        }
         payload = {
           attachments,
           postType: TAB_IDS.BANNER,
@@ -332,48 +372,70 @@ const AddPost = (props) => {
     }
   };
 
-  const onEdit = async (values) => {
+  const onEdit = async (values, data = {}) => {
     let payload = {};
 
     switch (mode) {
       case TAB_IDS.ANNOUNCEMENTS: {
-        const attachments = await onUploadFiles(values.uploadFilesA);
         payload = {
-          attachments,
+          attachments: values.uploadFilesA?.fileList?.map((x) => x._id) || [],
           postType: TAB_IDS.ANNOUNCEMENTS,
           description: values.descriptionA,
           location: values.location,
           postAsCompany: values.postAsCompany,
         };
+        if (Object.keys(data)?.length) {
+          const newAttachments = data?.map((x) => x?._id);
+          if (data[0]?.category === CATEGORY_NAME.URL) {
+            payload.attachments = [...newAttachments];
+          } else {
+            const oldAttachments = values.uploadFilesA?.fileList
+              ?.filter((x) => x.category !== CATEGORY_NAME.URL)
+              ?.map((x) => x._id);
+            payload.attachments = [...newAttachments, ...oldAttachments];
+          }
+        }
         break;
       }
       case TAB_IDS.ANNIVERSARY: {
-        const attachments = await onUploadFiles(values.uploadFilesB);
         payload = {
-          attachments,
+          attachments: values.uploadFilesB?.fileList?.map((x) => x._id) || [],
           postType: TAB_IDS.ANNIVERSARY,
           description: values.descriptionB,
           location: values.location,
         };
+        if (Object.keys(data)?.length) {
+          const newAttachments = data?.map((x) => x?._id);
+          const oldAttachments = values.uploadFilesB?.fileList?.map((x) => x._id);
+          payload.attachments = [...newAttachments, ...oldAttachments];
+        }
         break;
       }
       case TAB_IDS.IMAGES: {
-        const attachments = await onUploadFiles(values.uploadFilesI);
         payload = {
-          attachments,
+          attachments: values.uploadFilesI?.fileList?.map((x) => x._id) || [],
           postType: TAB_IDS.IMAGES,
           title: values.titleI,
           description: values.descriptionI,
           location: values.location,
         };
+        if (Object.keys(data)?.length) {
+          const newAttachments = data?.map((x) => x?._id);
+          const oldAttachments = values.uploadFilesI?.fileList?.map((x) => x._id);
+          payload.attachments = [...newAttachments, ...oldAttachments];
+        }
         break;
       }
       case TAB_IDS.BANNER: {
-        const attachments = await onUploadFiles(values.uploadFilesBN);
         payload = {
-          attachments,
+          attachments: values.uploadFilesBN?.fileList?.map((x) => x._id) || [],
           postType: TAB_IDS.BANNER,
         };
+        if (Object.keys(data)?.length) {
+          const newAttachments = data?.map((x) => x?._id);
+          const oldAttachments = values.uploadFilesBN?.fileList?.map((x) => x._id);
+          payload.attachments = [...newAttachments, ...oldAttachments];
+        }
         break;
       }
       case TAB_IDS.POLL:
@@ -403,6 +465,58 @@ const AddPost = (props) => {
     });
     if (res?.statusCode === 200) {
       onBack();
+      setIsUploadFile(false);
+    }
+  };
+
+  const onUploadFiles = async (values) => {
+    const data = [];
+    const newList = [];
+    setIsUploadFile(true);
+    fileList.forEach((x) => {
+      if (x?.originFileObj) {
+        newList.push(x);
+      }
+    });
+    if (values.urlFile) {
+      data.push({
+        category: CATEGORY_NAME.URL,
+        url: values.urlFile,
+      });
+    } else if (checkFileByMode(values)) {
+      const uploads = newList.map((file) => {
+        return {
+          file: file?.originFileObj,
+          typeFile: 'ATTACHMENT',
+        };
+      });
+      const attachment = await uploadFirebaseMultiple(uploads);
+      data.push(...attachment);
+    }
+    if (data.length > 0) {
+      dispatch({
+        type: 'upload/addAttachment',
+        payload: {
+          attachments: data,
+        },
+        showNotification: false,
+      }).then((resp) => {
+        const { statusCode, data: listAttachments = {} } = resp;
+        if (statusCode === 200) {
+          if (listAttachments[0]?.defaultMessage) {
+            setIsUploadFile(false);
+          }
+          if (!editing) {
+            onPost(values, listAttachments);
+          } else {
+            onEdit(values, listAttachments);
+          }
+        }
+      });
+    } else if (editing) {
+      onEdit(values);
+    } else {
+      onPost(values);
     }
   };
 
@@ -415,6 +529,8 @@ const AddPost = (props) => {
             defaultFileList={fileList}
             company={getCurrentCompanyObj()}
             employee={employee}
+            isURL={isURL}
+            isUpload={isUpload}
           />
         );
       case TAB_IDS.ANNIVERSARY:
@@ -446,7 +562,7 @@ const AddPost = (props) => {
             createBy: employee?.generalInfo?.legalName,
             postAsCompany: false,
           }}
-          onFinish={editing ? onEdit : onPost}
+          onFinish={onUploadFiles}
         >
           <Form.Item label="Post Type" name="postType">
             <Select disabled showArrow style={{ width: '100%' }} onChange={onModeChange}>
@@ -497,7 +613,7 @@ const AddPost = (props) => {
             form="myForm"
             key="submit"
             htmlType="submit"
-            loading={loadingAddPost || loadingEditPost}
+            loading={loadingAddPost || loadingEditPost || isUploadFile}
           >
             {editing ? 'Update' : 'Post'}
           </CustomPrimaryButton>
