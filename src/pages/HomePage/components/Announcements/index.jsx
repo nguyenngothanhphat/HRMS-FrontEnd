@@ -3,11 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import ErrorFile from '@/assets/adminSetting/errorFile.svg';
 import EditIcon from '@/assets/edit-customField.svg';
-import UpdateIcon from '@/assets/editMailExit.svg';
 import ShowMoreIcon from '@/assets/homePage/downArrow.svg';
-import FlagIcon from '@/assets/homePage/flagIcon.svg';
-import HideIcon from '@/assets/homePage/hideIcon.svg';
-import DeleteIcon from '@/assets/relievingDel.svg';
+
 import CommonModal from '@/components/CommonModal';
 import EmptyComponent from '@/components/Empty';
 import { getCurrentLocation } from '@/utils/authority';
@@ -30,10 +27,7 @@ const Announcements = (props) => {
   // redux
   const {
     homePage: { announcements = [], announcementTotal = 0 } = {},
-    user: {
-      currentUser: { name = '', employee: { _id: employeeId = '' } = {} } = {},
-      permissions: { viewSettingHomePage = -1 } = {},
-    } = {},
+    user: { currentUser: { name = '' } = {} } = {},
   } = props;
 
   const [activePostID, setActivePostID] = useState('');
@@ -62,37 +56,6 @@ const Announcements = (props) => {
     return dispatch({
       type: 'homePage/fetchAnnouncementsEffect',
       payload,
-    });
-  };
-
-  const flagPost = (postId = '') => {
-    return dispatch({
-      type: 'homePage/flagPostEffect',
-      payload: {
-        post: postId,
-        postType: POST_TYPE.SOCIAL,
-      },
-    }).then((res) => {
-      const { statusCode } = res;
-      if (statusCode === 200) {
-        fetchData(POST_TYPE.SOCIAL, limitSocial, '', STATUS_POST.ACTIVE);
-      }
-    });
-  };
-
-  const hiddenPost = (postId = '') => {
-    return dispatch({
-      type: 'homePage/updatePostEffect',
-      payload: {
-        id: postId,
-        postType: POST_TYPE.SOCIAL,
-        status: STATUS_POST.HIDDEN,
-      },
-    }).then((res) => {
-      const { statusCode } = res;
-      if (statusCode === 200) {
-        fetchData(POST_TYPE.SOCIAL, limitSocial, '', STATUS_POST.ACTIVE);
-      }
     });
   };
 
@@ -154,59 +117,6 @@ const Announcements = (props) => {
     );
   };
 
-  const actionMenu = (data) => {
-    let menu = '';
-    if (data?.createdBy?._id === employeeId) {
-      menu = (
-        <Menu>
-          <Menu.Item
-            onClick={() => {
-              setIsVisible(true);
-              setIsEdit(true);
-              setRecord(data);
-            }}
-          >
-            <img className={styles.actionIcon} src={UpdateIcon} alt="updateIcon" />
-            <span>Edit your post</span>
-          </Menu.Item>
-          <Menu.Item
-            onClick={() => {
-              setIsDelete(true);
-              setRecord(data);
-            }}
-          >
-            <img className={styles.actionIcon} src={DeleteIcon} alt="deleteIcon" />
-            <span>Delete your post</span>
-          </Menu.Item>
-        </Menu>
-      );
-    } else if (viewSettingHomePage === 1) {
-      menu = (
-        <Menu>
-          <Menu.Item
-            onClick={() => {
-              hiddenPost(data._id);
-            }}
-          >
-            <img className={styles.actionIcon} src={HideIcon} alt="hideIcon" />
-            <span>Hide this post</span>
-          </Menu.Item>
-        </Menu>
-      );
-    } else if (!data?.flag?.includes(employeeId)) {
-      menu = (
-        <Menu>
-          <Menu.Item onClick={() => flagPost(data?._id)}>
-            <img className={styles.actionIcon} src={FlagIcon} alt="flagIcon" />
-            <span>Flag as inappropriate</span>
-          </Menu.Item>
-        </Menu>
-      );
-    }
-
-    return menu;
-  };
-
   const renderData = () => {
     return (
       <Row gutter={[24, 24]} style={{ minHeight: 300 }}>
@@ -214,9 +124,14 @@ const Announcements = (props) => {
           <AnnouncementsCard
             item={x}
             isSocial={isSocial}
-            actionMenu={actionMenu}
             activePostID={activePostID}
             setActivePostID={setActivePostID}
+            fetchData={fetchData}
+            setRecord={setRecord}
+            limitSocial={limitSocial}
+            setIsVisible={setIsVisible}
+            setIsEdit={setIsEdit}
+            setIsDelete={setIsDelete}
           />
         ))}
         {renderShowMoreBtn()}
