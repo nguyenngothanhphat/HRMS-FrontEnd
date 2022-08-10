@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import BackIcon from '@/assets/projectManagement/back.svg';
 import ModalImage from '@/assets/projectManagement/modalImage1.png';
+import WarningAddResource from '@/assets/resourceManagement/WarningAddResource.svg';
 import CommonModal from '@/components/CommonModal';
 import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -283,6 +284,21 @@ const AssignResourcesModal = (props) => {
                   <span className={styles.raiseRequest}>Raise Request</span>
                 </>
               )}
+              {step === 2 && (
+                <>
+                  <span>
+                    <div className={styles.warningAddResource}>
+                      <p className={styles.warningImage}>
+                        <img src={WarningAddResource} alt="warning add resource" />
+                      </p>
+                      <p className={styles.descTextWarning}>
+                        If a change of manager is needed - you need to assign via the Resource
+                        Management page
+                      </p>
+                    </div>
+                  </span>
+                </>
+              )}
             </div>
             <div className={styles.mainButtons}>
               <Button className={styles.btnCancel} onClick={onSecondaryButtonClick}>
@@ -292,7 +308,7 @@ const AssignResourcesModal = (props) => {
                 className={styles.btnSubmit}
                 type="primary"
                 onClick={onPrimaryButtonClick}
-                disabled={selectedResources.length === 0}
+                disabled={selectedResources.length === 0 || step === 2}
                 loading={loadingAssign}
               >
                 {renderPrimaryButtonText()}

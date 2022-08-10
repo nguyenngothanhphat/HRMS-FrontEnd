@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { SwapRightOutlined } from '@ant-design/icons';
 import CommonTable from '@/components/CommonTable';
 import styles from './index.less';
 
@@ -20,6 +21,20 @@ const EmploymentHistory = (props) => {
   const [expandData, setExpandData] = useState([]);
   const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(1);
+
+  const replaceArrow = (str = '') => {
+    const parts = str.split('=>');
+    if (parts.length > 1) {
+      return (
+        <>
+          <span>{parts[0]}</span>
+          <SwapRightOutlined />
+          <span>{parts[1]}</span>
+        </>
+      );
+    }
+    return str;
+  };
 
   const formatData = (data) => {
     const newData = data.map((item, index) => ({
@@ -61,7 +76,7 @@ const EmploymentHistory = (props) => {
           return (
             <div className={styles.changeType}>
               <span className={styles.type}>{changed.type}</span>
-              <span className={styles.value}>{changed.detail}</span>
+              <span className={styles.value}>{replaceArrow(changed.detail)}</span>
             </div>
           );
         },

@@ -79,7 +79,7 @@ const DirectoryTable = (props) => {
     };
 
     return (
-      <div className={styles.directoryTableName}>
+      <div className={styles.employeeName}>
         <Popover placement="rightTop" content={popupImg} trigger="hover">
           {avatarUrl ? (
             <Avatar size="medium" className={styles.avatar} src={avatarUrl} alt="avatar" />
@@ -87,7 +87,7 @@ const DirectoryTable = (props) => {
             <Avatar className={styles.avatar_emptySrc} alt="avatar" />
           )}
         </Popover>
-        <Link className={styles.directoryTableName__name} to={() => handleProfileEmployee(userId)}>
+        <Link className={styles.name} to={() => handleProfileEmployee(userId)}>
           {legalName}
         </Link>
       </div>
@@ -115,7 +115,7 @@ const DirectoryTable = (props) => {
     } = manager || {};
     return {
       legalName: generalInfo?.legalName,
-      userId: generalInfo?.legalNauserIdme,
+      userId: generalInfo?.userId,
       department,
       workEmail: generalInfo?.workEmail,
       workNumber: generalInfo?.workNumber,
@@ -138,12 +138,7 @@ const DirectoryTable = (props) => {
   const generateColumns = () => {
     const columns = [
       {
-        title: (
-          <div className={styles.directoryTable_fullName}>
-            {formatMessage({ id: 'component.directory.table.fullName' })}
-            {/* {isSort ? null : <CaretDownOutlined className={styles.directoryTable_iconSort} />} */}
-          </div>
-        ),
+        title: formatMessage({ id: 'component.directory.table.fullName' }),
         dataIndex: 'generalInfo',
         key: 'legalName',
         render: (generalInfo = {}) => (generalInfo ? renderUser(generalInfo) : ''),
@@ -389,7 +384,7 @@ const DirectoryTable = (props) => {
 
   return (
     <>
-      <div className={styles.directoryTable}>
+      <div className={styles.DirectoryTable}>
         <CommonTable
           // size="small"
           columns={generateColumns()}

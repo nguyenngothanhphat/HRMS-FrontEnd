@@ -8,6 +8,7 @@ import Settings from './components/Settings';
 import TableContainer from './components/TableContainer';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 @connect(
   ({ customerManagement: { customerListPayload = {}, customerFilterListPayload = {} } = {} }) => ({
@@ -16,6 +17,10 @@ import styles from './index.less';
   }),
 )
 class CustomerManagement extends PureComponent {
+  componentDidMount = () => {
+    goToTop();
+  };
+
   exportCustomers = async () => {
     const { dispatch, customerListPayload = {}, customerFilterListPayload = {} } = this.props;
 

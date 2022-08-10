@@ -1,6 +1,7 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-undef */
 import { List, notification } from 'antd';
+import { debounce } from 'lodash';
 import moment from 'moment';
 import pathRegexp from 'path-to-regexp';
 import { parse } from 'querystring';
@@ -219,3 +220,4 @@ export const checkTypeURL = (attachments) => {
   }
   return true;
 };
+export const debounceFetchData = debounce((callback) => callback(), 500);

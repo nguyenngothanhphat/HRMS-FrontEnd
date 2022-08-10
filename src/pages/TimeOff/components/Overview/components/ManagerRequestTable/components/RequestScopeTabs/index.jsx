@@ -2,7 +2,7 @@ import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { getShortType } from '@/utils/timeOff';
-import SearchContent from '../../../../../SearchContent';
+import SearchContent from '../../../SearchContent';
 import TimeOffRequestTab from '../TimeOffRequestTab';
 import styles from './index.less';
 

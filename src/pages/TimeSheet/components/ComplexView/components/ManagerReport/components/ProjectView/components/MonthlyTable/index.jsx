@@ -1,52 +1,26 @@
 import { Table, Tooltip } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import EmptyComponent from '@/components/Empty';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { dateFormatAPI, projectColor } from '@/constants/timeSheet';
-import { getCurrentCompany } from '@/utils/authority';
+import { projectColor } from '@/constants/timeSheet';
 import { checkHolidayInWeek, convertMsToTime, holidayFormatDate } from '@/utils/timeSheet';
 import TaskPopover from './components/TaskPopover';
 import styles from './index.less';
 
 const MonthlyTable = (props) => {
-  const {
-    dispatch,
-    startDate,
-    endDate,
-    loadingFetch = false,
-    weeksOfMonth = [],
-    data = [],
-  } = props;
+  const { holidays = [], loadingFetch = false, weeksOfMonth = [], data = [] } = props;
 
-  const [holidays, setHolidays] = useState([]);
   const [pageSize, setPageSize] = useState(5);
   const [pageSelected, setPageSelected] = useState(1);
   // FUNCTIONS
   const getColorByIndex = (index) => {
     return projectColor[index % projectColor.length];
   };
-
-  const fetchHolidaysByDate = async () => {
-    const holidaysResponse = await dispatch({
-      type: 'timeSheet/fetchHolidaysByDate',
-      payload: {
-        companyId: getCurrentCompany(),
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-      },
-    });
-    setHolidays(holidaysResponse);
-  };
-
-  // USE EFFECT
-  useEffect(() => {
-    if (startDate && endDate) fetchHolidaysByDate();
-  }, [startDate, endDate]);
 
   // RENDER UI
   const renderHeaderItem = (weekItem) => {

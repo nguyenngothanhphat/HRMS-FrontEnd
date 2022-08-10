@@ -45,26 +45,35 @@ const ProjectDetailModal = (props) => {
   };
 
   const processData = (array = []) => {
-    const result = [];
+    const capsPopulations = [];
     array.forEach((item) => {
-      const { task = '', description = '', department = '', projectMembers = [] } = item;
+      const { department = '', projectMembers = [] } = item;
       projectMembers.forEach((pro) => {
         const dataExport = {
           Department: department || '-',
-          Task: task || '-',
-          Description: description || '-',
           'Resources ': pro.legalName || '-',
           'Time taken': pro.userSpentTimeInHours || '-',
-          'Total time (task)': pro.totaltime || '-',
         };
         if (locationUser) {
           dataExport['Break Time'] = pro.breakTime;
           dataExport['Over Time'] = pro.overTime;
         }
-        result.push(dataExport);
+        capsPopulations.push(dataExport);
       });
     });
-    return result;
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('__')}`.split('__');
+      dataExport.push(value);
+    });
+
+    return dataExport;
   };
 
   const downloadTemplate = () => {

@@ -1,8 +1,9 @@
-import { Button, Col, Row } from 'antd';
+import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import CommonModal from '@/components/CommonModal';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
+import CommonModal from '@/components/CommonModal';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import ModalAddInfo from '../ModalAddInfo/index';
 import EmergencyContact from './components/EmergencyContactDetails';
 import EmployeeInformation from './components/EmployeeInformation';
@@ -131,9 +132,7 @@ const GeneralInfo = (props) => {
               Update information successfully
             </p>
             <div className={styles.spaceFooterModalSuccess}>
-              <Button onClick={handleCancelModelSuccess} className={styles.btnOkModalSuccess}>
-                Okay
-              </Button>
+              <CustomPrimaryButton onClick={handleCancelModelSuccess}>Okay</CustomPrimaryButton>
             </div>
           </>
         }

@@ -1,6 +1,6 @@
 import { Checkbox, Skeleton, Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { connect, history } from 'umi';
+import { connect, history, Redirect } from 'umi';
 import ModalImage from '@/assets/timeSheet/modalImage1.png';
 import CommonModal from '@/components/CommonModal';
 import CustomBlueButton from '@/components/CustomBlueButton';
@@ -217,79 +217,45 @@ const ComplexView = (props) => {
     return tabName;
   };
 
-  useEffect(() => {
-    // clear filter state in HR & Project view
-    dispatch({
-      type: 'timeSheet/save',
-      payload: {
-        employeeNameList: [],
-      },
-    });
-
-    if (!tabName) {
-      if (showMyTimeSheet) {
-        history.replace(`/time-sheet/${TAB_NAME.MY}`);
-      } else {
-        const temp = getActiveKey();
-        history.replace(`/time-sheet/${temp}`);
-      }
-      return;
+  if (!tabName) {
+    if (showMyTimeSheet) {
+      return <Redirect to={`/time-sheet/${TAB_NAME.MY}`} />;
     }
+    const temp = getActiveKey();
+    return <Redirect to={`/time-sheet/${temp}`} />;
+  }
 
-    if (
-      divisionList.length === 0 &&
-      [TAB_NAME.HR_REPORTS, TAB_NAME.FINANCE_REPORTS].includes(tabName)
-    ) {
+  useEffect(() => {
+    if (tabName) {
+      // clear filter state in HR & Project view
       dispatch({
-        type: 'timeSheet/fetchDivisionListEffect',
+        type: 'timeSheet/save',
         payload: {
-          name: 'Engineering',
+          employeeNameList: [],
         },
       });
+
+      if (
+        divisionList.length === 0 &&
+        [TAB_NAME.HR_REPORTS, TAB_NAME.FINANCE_REPORTS].includes(tabName)
+      ) {
+        dispatch({
+          type: 'timeSheet/fetchDivisionListEffect',
+          payload: {
+            name: 'Engineering',
+          },
+        });
+        dispatch({
+          type: 'timeSheet/getLocationsOfCountriesEffect',
+        });
+      }
       dispatch({
-        type: 'timeSheet/getLocationsOfCountriesEffect',
+        type: 'timeSheet/getEmployeeScheduleByLocation',
+        payload: { location: getCurrentLocation() },
       });
     }
-    dispatch({
-      type: 'timeSheet/getEmployeeScheduleByLocation',
-      payload: { location: getCurrentLocation() },
-    });
   }, [tabName]);
 
-  const renderOtherTabs = () => {
-    return (
-      <>
-        {viewHRReport && (
-          <TabPane tab="HR Reports" key={TAB_NAME.HR_REPORTS}>
-            <HumanResourceReport />
-          </TabPane>
-        )}
-        {viewFinanceReport && (
-          <TabPane tab="Finance Reports" key={TAB_NAME.FINANCE_REPORTS}>
-            <FinanceReport />
-          </TabPane>
-        )}
-        {(viewPeopleManagerReport || viewPMReport) && (
-          <TabPane tab="My Projects" key={TAB_NAME.PM_REPORTS}>
-            <ManagerReport />
-          </TabPane>
-        )}
-        {viewMyRequest && (
-          <TabPane tab="My Weekly Reports" key={TAB_NAME.MY_REQUESTS}>
-            <MyRequest />
-          </TabPane>
-        )}
-
-        {viewSettingTimesheet && (
-          <TabPane tab="Settings" key={TAB_NAME.SETTINGS}>
-            <Settings />
-          </TabPane>
-        )}
-      </>
-    );
-  };
-
-  if (!tabName) return '';
   return (
     <div className={styles.ComplexView}>
       <PageContainer>
@@ -308,7 +274,31 @@ const ComplexView = (props) => {
                   <MyTimeSheet currentDateProp={currentDateProp} />
                 </TabPane>
               )}
-              {renderOtherTabs()}
+              {viewHRReport && (
+                <TabPane tab="HR Reports" key={TAB_NAME.HR_REPORTS}>
+                  <HumanResourceReport />
+                </TabPane>
+              )}
+              {viewFinanceReport && (
+                <TabPane tab="Finance Reports" key={TAB_NAME.FINANCE_REPORTS}>
+                  <FinanceReport />
+                </TabPane>
+              )}
+              {(viewPeopleManagerReport || viewPMReport) && (
+                <TabPane tab="My Projects" key={TAB_NAME.PM_REPORTS}>
+                  <ManagerReport />
+                </TabPane>
+              )}
+              {viewMyRequest && (
+                <TabPane tab="My Weekly Reports" key={TAB_NAME.MY_REQUESTS}>
+                  <MyRequest />
+                </TabPane>
+              )}
+              {viewSettingTimesheet && (
+                <TabPane tab="Settings" key={TAB_NAME.SETTINGS}>
+                  <Settings />
+                </TabPane>
+              )}
             </>
           ) : (
             <div style={{ padding: 24 }}>

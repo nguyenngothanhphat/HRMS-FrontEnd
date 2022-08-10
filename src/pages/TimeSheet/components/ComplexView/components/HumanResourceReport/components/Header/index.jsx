@@ -1,16 +1,15 @@
 import { Skeleton, Tooltip } from 'antd';
 import moment from 'moment';
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { connect } from 'umi';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
-import { dateFormatAPI, VIEW_TYPE } from '@/constants/timeSheet';
+import { VIEW_TYPE } from '@/constants/timeSheet';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
-import { getCurrentCompany } from '@/utils/authority';
 import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
 import FilterContent from './components/FilterContent';
@@ -37,8 +36,8 @@ const Header = (props) => {
       } = {},
     } = {},
     timeSheet: { filterHrView = {} },
+    holidays = [],
   } = props;
-  const [holidays, setHolidays] = useState([]);
   const [form, setForm] = useState(null);
 
   const locationUser = countryID === 'US';
@@ -79,8 +78,10 @@ const Header = (props) => {
     setEndDate(dates[1]);
   };
 
-  const processData = (array = []) => {
-    return array.map((item) => {
+  const processData = (array) => {
+    // Uppercase first letter
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
       const {
         legalName = '',
         leaveTaken = '',
@@ -96,6 +97,7 @@ const Header = (props) => {
         breakTime = '',
         department: { name = '' } = {},
       } = item;
+
       let projectName = '';
       projects.forEach((el, index) => {
         projectName += el;
@@ -107,22 +109,37 @@ const Header = (props) => {
         incompleteTimeSheetDates += date;
         if (index + 1 < incompleteDates.length) incompleteTimeSheetDates += ', ';
       });
-      const dataExport = {
+
+      const payload = {
         Employee: legalName,
         'Employee ID': employeeCode,
         Department: name,
         Project: projectName,
         'Working Days': `${userSpentInDay} hours)`,
-        'Leave Taken ': leaveTaken,
+        'Leave Taken': leaveTaken,
         'Total Hours': `${userSpentInHours} hours`,
         'Incomplete TimeSheet Dates': incompleteTimeSheetDates,
       };
       if (locationUser) {
-        dataExport['Break Time'] = breakTime;
-        dataExport['Over Time'] = overTime;
+        payload['Break Time'] = breakTime;
+        payload['Over Time'] = overTime;
       }
-      return dataExport;
+
+      return payload;
     });
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('__')}`.split('__');
+      dataExport.push(value);
+    });
+
+    return dataExport;
   };
 
   const downloadTemplate = () => {
@@ -135,23 +152,6 @@ const Header = (props) => {
     });
     form?.resetFields();
   };
-
-  const fetchHolidaysByDate = async () => {
-    const holidaysResponse = await dispatch({
-      type: 'timeSheet/fetchHolidaysByDate',
-      payload: {
-        companyId: getCurrentCompany(),
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-      },
-    });
-    setHolidays(holidaysResponse);
-  };
-
-  // USE EFFECT AREA
-  useEffect(() => {
-    if (startDate && endDate) fetchHolidaysByDate();
-  }, [startDate, endDate]);
 
   const isHoliday = checkHolidayInWeek(startDate, endDate, holidays);
   const applied = Object.values(filterHrView).filter((v) => v).length;

@@ -1,15 +1,13 @@
 import { Skeleton, Tooltip } from 'antd';
 import moment from 'moment';
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense } from 'react';
 import { connect } from 'umi';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
-import { dateFormatAPI } from '@/constants/timeSheet';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
-import { getCurrentCompany } from '@/utils/authority';
 import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
@@ -24,9 +22,8 @@ const Header = (props) => {
     onChangeSearch = () => {},
     activeView = '',
     timeSheet: { filterManagerReport = {} } = {},
+    holidays = [],
   } = props;
-
-  const [holidays, setHolidays] = useState([]);
 
   const isHoliday = checkHolidayInWeek(startDate, endDate, holidays);
 
@@ -55,22 +52,6 @@ const Header = (props) => {
       type: 'timeSheet/clearFilter',
     });
   };
-
-  const fetchHolidaysByDate = async () => {
-    const holidaysResponse = await dispatch({
-      type: 'timeSheet/fetchHolidaysByDate',
-      payload: {
-        companyId: getCurrentCompany(),
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-      },
-    });
-    setHolidays(holidaysResponse);
-  };
-
-  useEffect(() => {
-    if (startDate && endDate) fetchHolidaysByDate();
-  }, [startDate, endDate]);
 
   const applied = Object.values(filterManagerReport).filter((v) => v).length;
 

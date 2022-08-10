@@ -350,7 +350,7 @@ const AddTaskModal = (props) => {
         dates: datesTemp,
         tasks: [
           {
-            projectId: projectId || myProjects.length === 1 ? myProjects[0].project.id : null,
+            projectId: projectId || myProjects?.length === 1 ? myProjects[0]?.project?.id : null,
             startTime: endTime
               ? moment(endTime, hourFormatAPI).format(hourFormat)
               : getDefaultValueStartTime(),
@@ -464,20 +464,22 @@ const AddTaskModal = (props) => {
                           );
                         }}
                       >
-                        <OptGroup label="My Projects">
-                          {sortAlphabet(myProjects, 'project', 'projectName').map((project) => {
-                            const {
-                              id = '',
-                              projectName = '',
-                              customerName = '',
-                            } = project.project;
-                            return (
-                              <Option key={id} value={id}>
-                                {`${projectName} - ${customerName}`}
-                              </Option>
-                            );
-                          })}
-                        </OptGroup>
+                        {myProjects.length > 0 && (
+                          <OptGroup label="My Projects">
+                            {sortAlphabet(myProjects, 'project', 'projectName').map((project) => {
+                              const {
+                                id = '',
+                                projectName = '',
+                                customerName = '',
+                              } = project.project;
+                              return (
+                                <Option key={id} value={id}>
+                                  {`${projectName} - ${customerName}`}
+                                </Option>
+                              );
+                            })}
+                          </OptGroup>
+                        )}
                         <OptGroup label="All Projects">
                           {sortAlphabet(
                             getAllProjectsWithoutAssigned(projectList, myProjects),
@@ -658,7 +660,10 @@ const AddTaskModal = (props) => {
                   format={DATE_FORMAT_MDY}
                   ranges={{
                     Today: [moment(), moment()],
-                    'This Week': [moment().startOf('week'), moment().endOf('week')],
+                    'This Week': [
+                      moment().startOf('week').add(1, 'days'),
+                      moment().endOf('week').add(-1, 'days'),
+                    ],
                   }}
                   disabledDate={disabledDate}
                   onCalendarChange={(val) => handleChangeDate(val)}

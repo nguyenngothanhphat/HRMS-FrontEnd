@@ -57,10 +57,14 @@ const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) =>
     'Access-Control-Allow-Origin': '*',
     Authorization: !noAuth ? `Bearer ${token}` : '',
   };
+
+  const paramsTemp = { ...params };
+  delete paramsTemp.cancelToken;
+
   const instance = axios.create({
     baseURL: PROXY[apiKey],
     headers,
-    params,
+    params: paramsTemp,
     cancelToken,
   });
 

@@ -38,16 +38,9 @@ class RenewModal extends PureComponent {
   };
 
   onFinish = async (values) => {
-    const {
-      handleRenewModal = () => {},
-      dispatch,
-      type = '',
-      page = '',
-      limit = '',
-      item = {},
-    } = this.props;
+    const { handleRenewModal = () => {}, dispatch, item = {} } = this.props;
 
-    const { processStatus = '', ticketID = '' } = item;
+    const { ticketID = '' } = item;
 
     const { expiryDate = '' } = values;
     if (expiryDate) {
@@ -58,10 +51,6 @@ class RenewModal extends PureComponent {
           tenantId: getCurrentTenant(),
           expiryDate,
           type: 1, // renew
-          isAll: type === 'ALL',
-          processStatus,
-          page,
-          limit,
         },
       });
       if (res?.statusCode === 200) {
