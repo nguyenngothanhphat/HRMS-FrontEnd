@@ -72,14 +72,9 @@ const ViewQuestionAnswer = (props) => {
         destroyOnClose
         width={696}
         footer={
-          <>
-            <Button className={styles.btnCancel} onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button className={styles.btnSubmit} onClick={handleCancel}>
-              Close
-            </Button>
-          </>
+          <Button className={styles.btnSubmit} onClick={handleCancel}>
+            Close
+          </Button>
         }
         title={renderModalHeader()}
         centered

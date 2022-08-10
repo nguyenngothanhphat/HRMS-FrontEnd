@@ -1,11 +1,10 @@
 import { Button, Form, Input, message, Modal, Select, Upload } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'umi';
-import { v4 as uuidv4 } from 'uuid';
-import styles from './index.less';
 import UploadIcon from '@/assets/faqPage/upload.svg';
 import UrlIcon from '@/assets/faqPage/urlIcon.svg';
 import uploadFirebase from '@/services/firebase';
+import styles from './index.less';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -105,7 +104,6 @@ class AddQuestionAnswer extends Component {
       file = await uploadFirebase({ file: uploadFile, typeFile: 'ATTACHMENT' });
     } else if (!showUpload) {
       file = {
-        fileName: uuidv4(),
         category: 'URL',
         url: first.upLink,
       };

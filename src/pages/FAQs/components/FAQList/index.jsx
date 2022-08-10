@@ -35,22 +35,6 @@ const FAQList = (props) => {
     });
   }, []);
 
-  // genExtra = () => (
-  //   <img
-  //     src={viewQuestionContent}
-  //     onClick={(event) => {
-  //       event.stopPropagation();
-  //     }}
-  //     alt=""
-  //   />
-  // );
-
-  // onChange = () => {
-  //   this.setState((prevState) => ({
-  //     open: !prevState.open,
-  //   }));
-  // };
-
   const fetchListFAQs = () => {
     return dispatch({
       type: 'faqs/fetchListFAQ',
@@ -88,13 +72,9 @@ const FAQList = (props) => {
       categoryName = getListFAQ[0].category;
     }
 
-    useEffect(() => {
-      fetchListFAQs();
-    }, [limit]);
-
     const renderShowMoreBtn = () => {
       const showMore = listFAQ.length < totalListFAQ;
-      if (!showMore) return null;
+      if (showMore) return null;
       return (
         <Col span={24}>
           <div className={styles.loadMore}>
@@ -140,7 +120,6 @@ const FAQList = (props) => {
               <span>
                 <Collapse
                   //   defaultActiveKey={['1']}
-                  // onChange={(contentQuestion = obj) => this.onChange(contentQuestion)}
                   onChange={handleChangePanel}
                   expandIconPosition={expandIconPosition}
                   bordered={false}
@@ -162,6 +141,11 @@ const FAQList = (props) => {
       </div>
     );
   };
+
+  useEffect(() => {
+    fetchListFAQs();
+  }, [limit]);
+
   return (
     <div className={styles.FAQList}>
       <Row>

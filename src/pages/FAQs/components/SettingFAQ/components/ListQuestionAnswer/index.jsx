@@ -1,9 +1,9 @@
 // import { debounce } from 'lodash';
-import { Button, Skeleton } from 'antd';
+import { Skeleton } from 'antd';
 import { debounce } from 'lodash';
 import React, { Component, Suspense } from 'react';
 import { connect } from 'umi';
-import AddIcon from '@/assets/policiesRegulations/add.svg';
+import CustomAddButton from '@/components/CustomAddButton';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterCountTag from '@/components/FilterCountTag';
@@ -109,12 +109,9 @@ class ListQuestionAnswer extends Component {
           <div className={styles.headerPolicy__text}>Frequently Asked Questions</div>
           <div className={styles.headerPolicy__btnAdd}>
             <FilterCountTag count={applied} onClearFilter={this.handleClearFilter} />
-            <Button
-              icon={<img src={AddIcon} alt="AddIcon" />}
-              onClick={() => this.setState({ visibleModal: true })}
-            >
+            <CustomAddButton onClick={() => this.setState({ visibleModal: true })}>
               Add Questions
-            </Button>
+            </CustomAddButton>
             <div className={styles.filterButton}>
               <FilterPopover
                 placement="bottomRight"

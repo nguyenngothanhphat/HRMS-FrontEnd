@@ -6,8 +6,8 @@ import styles from './index.less';
 const MediaContent = (props) => {
   const { attachment: fileId, listFAQ = [] } = props;
   const [isImg, setIsImg] = useState(false);
-  const tempData = listFAQ.find((x) => x?.attachment[0]?._id === fileId);
-  const src = tempData?.attachment[0]?.url;
+  const tempData = listFAQ.find((x) => x?.attachment?._id === fileId);
+  const src = tempData?.attachment?.url;
 
   const isImageLink = (imgLink) => {
     const img = new Image();

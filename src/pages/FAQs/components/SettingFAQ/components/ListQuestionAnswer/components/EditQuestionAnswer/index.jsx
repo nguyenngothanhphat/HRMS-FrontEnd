@@ -1,11 +1,10 @@
 import { Button, Form, Input, message, Modal, Select, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { v4 as uuidv4 } from 'uuid';
-import styles from './index.less';
 import UploadIcon from '@/assets/faqPage/upload.svg';
 import UrlIcon from '@/assets/faqPage/urlIcon.svg';
 import uploadFirebase from '@/services/firebase';
+import styles from './index.less';
 
 const EditQuestionAnswer = (props) => {
   const { Option } = Select;
@@ -84,16 +83,6 @@ const EditQuestionAnswer = (props) => {
     return e && e.fileList;
   };
 
-  // const isImageLink = (url) =>
-  //   new Promise((resolve) => {
-  //     const img = new Image();
-  //     img.src = url;
-  //     img.onload = () => resolve(true);
-  //     img.onerror = () => resolve(false);
-  //   }).then((x) => setIsImg(x));
-
-  // const onChange = (e) => isImageLink(e.target.value);
-
   const handleFinish = (
     { question: quest = '', faqCategory = '', answer: newAnswer = '', upLink = '' },
     data = [],
@@ -135,7 +124,6 @@ const EditQuestionAnswer = (props) => {
       file = await uploadFirebase({ file: uploadFile, typeFile: 'ATTACHMENT' });
     } else if (!showUpload) {
       file = {
-        fileName: uuidv4(),
         category: 'URL',
         url: first.upLink,
       };
