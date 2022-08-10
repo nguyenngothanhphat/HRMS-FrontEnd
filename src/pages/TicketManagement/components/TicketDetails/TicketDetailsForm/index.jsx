@@ -438,7 +438,9 @@ const TicketDetailsForm = (props) => {
                           }
                         >
                           {item.title && <div className={styles.titleChat}>{item.title}</div>}
-                          <div className={styles.chatMessage}>{item.message}</div>
+                          {typeof item.message === 'string' && (
+                            <div className={styles.chatMessage}>{item.message}</div>
+                          )}
                           <>
                             {item.attachments ? (
                               <div>{getAttachmentChat(item.attachments)}</div>
@@ -449,6 +451,28 @@ const TicketDetailsForm = (props) => {
                           <div className={styles.timeChat}>
                             {moment(item.createdAt).format('DD-MM-YYYY, hh:mm a')}
                           </div>
+                          {typeof item.message === 'object' &&
+                            item.message.map((x) => (
+                              <div className={styles.chatMessage}>
+                                {x.name === 'attachments' ? (
+                                  <>
+                                    <div className={styles.chatMessage__title}>{x.name}:</div>
+                                    {`${x.oldValue[0]?.attachmentName || ''} ⇾ `}
+                                    <span className={styles.chatMessage__changed}>
+                                      {x.newValue[0].attachmentName}
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div className={styles.chatMessage__title}>{x.name}:</div>
+                                    {`${x.oldValue || ''} ⇾ `}
+                                    <span className={styles.chatMessage__changed}>
+                                      {x.newValue}
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+                            ))}
                         </Timeline.Item>
                       );
                     })}

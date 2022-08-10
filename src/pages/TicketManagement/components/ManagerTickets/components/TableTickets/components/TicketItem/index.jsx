@@ -118,15 +118,17 @@ const TicketItem = (props) => {
         visible={isEdit}
       >
         {!isEdit ? (
-          <img
-            width={32}
-            height={32}
-            src={EditIcon}
-            alt="edit"
-            onClick={() => {
+          <Tooltip title='Assign to'>
+            <img
+              width={32}
+              height={32}
+              src={EditIcon}
+              alt="edit"
+              onClick={() => {
               handleEdit(row.id, legalNameProps);
             }}
-          />
+            />
+          </Tooltip>         
         ) : (
           <img
             width={32}

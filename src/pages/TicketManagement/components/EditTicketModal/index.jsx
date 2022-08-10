@@ -16,7 +16,7 @@ import CommonModal from '@/components/CommonModal';
 
 const { Option } = Select;
 
-const RaiseTicketModal = (props) => {
+const EditTicketModal = (props) => {
   const [form] = Form.useForm();
   const formRef = React.createRef();
   const {
@@ -29,35 +29,49 @@ const RaiseTicketModal = (props) => {
       } = {} || {},
     } = {} || {},
     loadingFetchSupportTeam = false,
-    loadingAddTicket = false,
+    loadingUpdateTicket = false,
     supportTeamList = [],
-    isFeedback = false,
     dispatch,
     loadingUploadAttachment = false,
+    role = '',
     ticket = {},
+    refreshFetchTicketList = () => {},
   } = props;
+  console.log('🚀 ~ ticket', ticket);
 
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
-  const support = supportTeamList.find((x) => x.name === 'H.R.M.S Support');
+  const listCC = [];
+  const support = supportTeamList.find((x) => x.name === ticket.support_team);
+  const reqDate = new Date(ticket.created_at)
+    .toLocaleDateString()
+    .split(/\D/)
+    .slice(0, 3)
+    .map((num) => num.padStart(2, '0'))
+    .join('/');
+
+  const formatData = (values) => {
+    const {
+      description = '',
+      interestList = [],
+      cc_list: ccList = [],
+      priority = '',
+      query_type_id: queryTypeId = '',
+      queryType = '',
+      subject = '',
+    } = values;
+    return {
+      description,
+      ccList: ccList || interestList,
+      priority,
+      queryTypeId: queryType || queryTypeId,
+      subject,
+    };
+  };
 
   const handleCancel = () => {
     onClose();
   };
-
-  useEffect(() => {
-    if (visible) {
-      const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
-      dispatch({
-        type: 'ticketManagement/fetchSupportTeamList',
-        payload: {
-          permissions,
-          country,
-        },
-      });
-      form;
-    }
-  }, [visible]);
 
   const onEmployeeSearch = (value) => {
     if (!value) {
@@ -84,9 +98,30 @@ const RaiseTicketModal = (props) => {
   };
 
   useEffect(() => {
-    if (isFeedback && visible) {
+    if (visible) {
+      const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
+      dispatch({
+        type: 'ticketManagement/fetchSupportTeamList',
+        payload: {
+          permissions,
+          country,
+        },
+      });
+    }
+    return setQueryTypeList([]);
+  }, [visible]);
+
+  useEffect(() => {
+    if (visible) {
       form.setFieldsValue({
-        supportTeam: support?._id,
+        supportTeam: ticket?.department_assign,
+        queryType: ticket.query_type_id,
+        interestList: ticket.cc_list,
+        description: ticket.description,
+        priority: ticket.priority,
+        subject: ticket.subject,
+        requestDate: moment(reqDate),
+        status: ticket.status,
       });
       setQueryTypeList(support?.queryType || []);
     }
@@ -117,39 +152,29 @@ const RaiseTicketModal = (props) => {
     setUploadedAttachments(uploadedAttachmentsTemp);
   };
 
-  const onSupportTeamChange = (value) => {
-    const find = supportTeamList.find((x) => x._id === value);
-    if (find) {
-      setQueryTypeList(find?.queryType || []);
-      formRef.current.setFieldsValue({
-        queryType: null,
-      });
-    }
-  };
+  // const onSupportTeamChange = (value) => {
+  //   const find = supportTeamList.find((x) => x._id === value);
+  //   if (find) {
+  //     setQueryTypeList(find?.queryType || []);
+  //     formRef.current.setFieldsValue({
+  //       queryType: null,
+  //     });
+  //   }
+  // };
 
   const refreshData = () => {
-    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
-    let payload = {
-      status: ['New'],
-    };
-    if (permissions && permissions.length > 0) {
-      payload = {
-        ...payload,
-        country,
-        permissions,
-      };
-    }
+    refreshFetchTicketList();
+
     dispatch({
-      type: 'ticketManagement/fetchListAllTicket',
-      payload,
-    });
-    dispatch({
-      type: 'ticketManagement/fetchToTalList',
-      payload,
+      type: 'ticketManagement/fetchTicketByID',
+      payload: {
+        id: ticket.id,
+      },
     });
   };
 
   const handleFinish = (value = {}) => {
+    console.log('🚀 ~ value', value);
     const documents = uploadedAttachments?.map((item) => {
       const { id = '', url = '', name = '' } = item;
       return {
@@ -159,66 +184,62 @@ const RaiseTicketModal = (props) => {
       };
     });
 
-    const supportTeam = supportTeamList.find((val) => val._id === value.supportTeam).name;
+    // const supportTeam = supportTeamList.find((val) => val._id === value.supportTeam).name;
     let queryType;
     supportTeamList.find((val) => {
       return (queryType = val.queryType.find((y) => y._id === value.queryType));
     });
 
-    // dispatch({
-    //   type: 'ticketManagement/updateTicket',
-    //   payload: {
-    //     id,
-    //     employeeRaise,
-    //     employeeAssignee: '',
-    //     action: 'ASSIGN_TEAM',
-    //     oldEmployeeAssignee,
-    //     status: value.status,
-    //     queryTypeId: value.queryType,
-    //     oldTeam,
-    //     subject: value.subject,
-    //     description: value.description,
-    //     priority: value.priority,
-    //     ccList: value.interestList,
-    //     attachments: documents,
-    //     departmentAssign: value.supportTeam,
-    //     // location: getCurrentLocation(),
-    //     supportTeam,
-    //     queryType: queryType.name,
-    //     employee: employeeId,
-    //     role,
-    //     permissions: ['M_ADMIN_VIEW_TICKETS'],
-    //   },
-    // }).then((response) => {
-    //   const { statusCode } = response;
-    //   if (statusCode === 200) {
-    //     onClose();
-    //     form.resetFields();
-    //     setUploadedAttachments([]);
-    //     refreshData();
-    //   }
-    // });
+    let payload = Object.keys(formatData(value)).reduce((diff, key) => {
+      if (formatData(ticket)[key] === formatData(value)[key]) return diff;
+      return {
+        ...diff,
+        [key]: formatData(value)[key],
+      };
+    }, {});
+    if (payload.queryTypeId) payload = { ...payload, queryType: queryType.name };
+    console.log('🚀 ~ diff', payload);
+
+    dispatch({
+      type: 'ticketManagement/updateTicket',
+      payload: {
+        id: ticket.id,
+        employeeRaise: ticket.employee_raise,
+        employeeAssignee: ticket.employee_assignee || '',
+        action: 'EDIT_TICKET',
+        status: ticket.status,
+        //     oldEmployeeAssignee,
+        //     queryTypeId: value.queryType,
+        //     subject: value.subject,
+        //     description: value.description,
+        //     priority: value.priority,
+        //     ccList: value.interestList,
+        attachments: documents || undefined,
+        //     queryType: queryType.name,
+        employee: myEmployeeID,
+        role,
+        ...payload,
+      },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        onClose();
+        form.resetFields();
+        setUploadedAttachments([]);
+        refreshData();
+      }
+    });
   };
 
   const renderModalContent = () => {
     return (
-      <div className={styles.RaiseTicketModal}>
+      <div className={styles.EditTicketModal}>
         <Form
           form={form}
           name="editTicketForm"
           ref={formRef}
           id="editTicketForm"
           onFinish={handleFinish}
-          initialValues={{
-            status: 'New',
-            requestDate: moment(),
-            description: ticket.description,
-            supportTeam: ticket.department_assign,
-            priority: ticket.priority,
-            queryType: ticket.query_type_id,
-            subject: ticket.subject,
-            interestList: ticket.cc_list,
-          }}
         >
           <Row gutter={[24, 0]}>
             <Col xs={24} md={12}>
@@ -230,9 +251,9 @@ const RaiseTicketModal = (props) => {
               >
                 <Select
                   loading={loadingFetchSupportTeam}
-                  disabled={loadingFetchSupportTeam}
+                  disabled
                   showSearch
-                  onChange={onSupportTeamChange}
+                  // onChange={onSupportTeamChange}
                   placeholder="Select the support team"
                 >
                   {supportTeamList.map((val) => (
@@ -332,6 +353,8 @@ const RaiseTicketModal = (props) => {
                   fetchOptions={onEmployeeSearch}
                   showSearch
                   mode="multiple"
+                  allowClear
+                  defaultValue={ticket.cc_list?.length ? 'hihi' : null}
                 />
               </Form.Item>
             </Col>
@@ -390,12 +413,12 @@ const RaiseTicketModal = (props) => {
     <CommonModal
       onClose={handleCancel}
       width={650}
-      loading={loadingAddTicket}
+      loading={loadingUpdateTicket}
       hasCancelButton={false}
       content={renderModalContent()}
       visible={visible}
       firstText="Update"
-      title="Edit Ticket"
+      title={`Edit Ticket ${ticket.id}`}
       formName="editTicketForm"
     />
   );
@@ -413,6 +436,6 @@ export default connect(
     loadingUploadAttachment: loading.effects['ticketManagement/uploadFileAttachments'],
     loadingFetchListEmployee: loading.effects['ticketManagement/fetchListEmployee'],
     loadingFetchSupportTeam: loading.effects['ticketManagement/fetchSupportTeamList'],
-    loadingAddTicket: loading.effects['ticketManagement/addTicket'],
+    loadingUpdateTicket: loading.effects['ticketManagement/updateTicket'],
   }),
-)(RaiseTicketModal);
+)(EditTicketModal);
