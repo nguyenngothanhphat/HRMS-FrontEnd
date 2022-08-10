@@ -17,6 +17,7 @@ import {
   certifyDocument,
   signaturePolicies,
   exportPoliciesCertification,
+  getListCreator,
 } from '../services/policiesRegulations';
 
 const policiesRegulations = {
@@ -32,6 +33,7 @@ const policiesRegulations = {
     tempData: {
       listPolicy: [],
     },
+    listCreator: [],
   },
   effects: {
     *addCategory({ payload }, { call }) {
@@ -207,7 +209,7 @@ const policiesRegulations = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'save',
+          type: 'saveTemp',
           payload: { listPolicy: data },
         });
       } catch (error) {
@@ -276,6 +278,24 @@ const policiesRegulations = {
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchListCreator(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getListCreator, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { listCreator: data },
+        });
       } catch (error) {
         dialog(error);
       }

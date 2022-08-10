@@ -96,3 +96,10 @@ export async function exportPoliciesCertification(payload) {
     data: payload,
   });
 }
+
+export async function getListCreator(payload) {
+  return request('/api/policiesregulationtenant/list-employees', {
+    method: 'GET',
+    params: payload,
+  });
+}
