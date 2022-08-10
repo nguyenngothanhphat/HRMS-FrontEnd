@@ -1,8 +1,7 @@
-import { Button, Col, Row, Skeleton } from 'antd';
+import { Col, Row, Skeleton } from 'antd';
 import { debounce } from 'lodash';
 import React, { Component, Suspense } from 'react';
 import { connect } from 'umi';
-import AddIcon from '@/assets/policiesRegulations/add.svg';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterCountTag from '@/components/FilterCountTag';
@@ -105,7 +104,7 @@ class Regulations extends Component {
 
           <div className={styles.headerPolicy__btnAdd}>
             <FilterCountTag count={applied} onClearFilter={this.handleClearFilter} />
-            <CustomAddButton onClick={() => this.setState({ addPolicy: true })} >
+            <CustomAddButton onClick={() => this.setState({ addPolicy: true })}>
               Add Policy
             </CustomAddButton>
             <div className={styles.filterButton}>

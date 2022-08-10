@@ -913,7 +913,19 @@ const routes = [
             component: './FAQs',
           },
           {
+            path: '/help-center',
+            name: 'HRMS Help Center',
+            hideInMenu: true,
+            component: './FAQs',
+          },
+          {
             path: '/faq/settings',
+            name: 'settings',
+            hideInMenu: true,
+            component: './FAQs/components/SettingFAQ',
+          },
+          {
+            path: '/help-center/settings',
             name: 'settings',
             hideInMenu: true,
             component: './FAQs/components/SettingFAQ',
