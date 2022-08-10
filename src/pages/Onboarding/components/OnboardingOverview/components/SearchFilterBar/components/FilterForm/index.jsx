@@ -1,16 +1,16 @@
 /* eslint-disable react/jsx-curly-newline */
 import { Col, DatePicker, Form, Row, Select } from 'antd';
+import { debounce, isEmpty } from 'lodash';
+import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { debounce, isEmpty } from 'lodash';
-import CalendarIcon from '@/assets/calendar_icon.svg';
+import { removeEmptyFields } from '@/utils/utils';
 import {
   NEW_PROCESS_STATUS,
   NEW_PROCESS_STATUS_TABLE_NAME,
   ONBOARDING_TABLE_TYPE,
 } from '@/constants/onboarding';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
-import { removeEmptyFields } from '@/utils/utils';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -45,6 +45,18 @@ const FilterForm = (props) => {
 
   const onValuesChange = (changedValues, allValues) => {
     onFinishDebounce(removeEmptyFields(allValues));
+  };
+
+  const disableFromDate = (value, compareVar) => {
+    const t = form.getFieldValue(compareVar);
+    if (!t) return false;
+    return value > moment(t);
+  };
+
+  const disableToDate = (value, compareVar) => {
+    const t = form.getFieldValue(compareVar);
+    if (!t) return false;
+    return value < moment(t);
   };
 
   // clear values
@@ -133,9 +145,7 @@ const FilterForm = (props) => {
                 <DatePicker
                   format={DATE_FORMAT_MDY}
                   placeholder="From Date"
-                  suffixIcon={
-                    <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
-                  }
+                  disabledDate={(val) => disableFromDate(val, 'toDate')}
                 />
               </Form.Item>
             </Col>
@@ -147,9 +157,7 @@ const FilterForm = (props) => {
                 <DatePicker
                   format={DATE_FORMAT_MDY}
                   placeholder="To Date"
-                  suffixIcon={
-                    <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
-                  }
+                  disabledDate={(val) => disableToDate(val, 'fromDate')}
                 />
               </Form.Item>
             </Col>

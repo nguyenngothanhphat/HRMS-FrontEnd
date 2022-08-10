@@ -10,6 +10,7 @@ import FilterPopover from '@/components/FilterPopover';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
 
 const Notes = (props) => {
   const messagesEndRef = useRef(null);
@@ -75,6 +76,9 @@ const Notes = (props) => {
   }, [JSON.stringify(filter)]);
 
   const renderNotes = () => {
+    if (!notes || notes.length === 0) {
+      return <EmptyComponent />;
+    }
     return (
       <div className={styles.documentBody} ref={containerRef}>
         {notes.map((note, i) => {

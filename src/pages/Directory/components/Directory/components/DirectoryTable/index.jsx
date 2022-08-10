@@ -12,6 +12,7 @@ import UserProfilePopover from '@/components/UserProfilePopover';
 import { isOwner } from '@/utils/authority';
 import TerminateModalContent from '../TerminateModalContent';
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
 
 const departmentTag = [
   { name: 'IT support', color: 'magenta' },
@@ -386,7 +387,9 @@ const DirectoryTable = (props) => {
     <>
       <div className={styles.DirectoryTable}>
         <CommonTable
-          // size="small"
+          locale={{
+            emptyText: <EmptyComponent height={460} />,
+          }}
           columns={generateColumns()}
           list={list}
           rowKey="_id"
