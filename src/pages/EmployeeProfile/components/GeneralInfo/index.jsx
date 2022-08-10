@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import CommonModal from '@/components/CommonModal';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
-import ModalAddInfo from '../ModalAddInfo/index';
+import ModalAddInfo from '../ModalAddInfo';
 import EmergencyContact from './components/EmergencyContactDetails';
 import EmployeeInformation from './components/EmployeeInformation';
 import PassportDetails from './components/PassportDetails';
@@ -114,7 +114,7 @@ const GeneralInfo = (props) => {
         })}
       </Row>
 
-      <ModalAddInfo visible={newComerModalVisible} />
+      {/* <ModalAddInfo visible={newComerModalVisible} /> */}
       <CommonModal
         width={550}
         visible={visibleSuccess}

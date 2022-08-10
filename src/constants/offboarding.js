@@ -44,9 +44,10 @@ export const OFFBOARDING = {
 };
 
 export const OFFBOARDING_TABS = {
-  MY: 'my',
+  MY: 'my-request',
   TEAM: 'team',
   COMPANY_WIDE: 'company-wide',
+  SETTINGS: 'settings',
 };
 
 export const PROGRESS_NAME = {

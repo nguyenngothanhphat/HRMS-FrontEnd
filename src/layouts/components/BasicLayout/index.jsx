@@ -11,13 +11,14 @@ import { connect, Link, Redirect, useIntl } from 'umi';
 import AppFooter from '@/components/AppFooter';
 import Feedback from '@/components/Feedback';
 import RightContent from '@/components/GlobalHeader/components/RightContent';
+import GoToTop from '@/components/GoToTop';
 import { getCurrentCompany } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
+import { getHideOffboarding } from '@/utils/offboarding';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../../../assets/logo.svg';
 import ProLayout from '../../layout/src';
 import styles from './index.less';
-import GoToTop from '@/components/GoToTop';
 
 const noMatch = (
   <Result
@@ -32,15 +33,12 @@ const noMatch = (
   />
 );
 
-const HR_MANAGER = 'HR-MANAGER';
-const HR_EMPLOYEE = 'HR';
-const MANAGER = 'MANAGER';
-
 const menuDataRender = (menuList) =>
   menuList.map((item) => {
     const localItem = {
       ...item,
       children: item.children ? menuDataRender(item.children) : undefined,
+      hideInMenu: item.path === '/offboarding' ? getHideOffboarding() : item.hideInMenu,
     };
     return Authorized.check(item.authority, localItem, null);
   });
@@ -115,11 +113,9 @@ const BasicLayout = (props) => {
   };
 
   function rightContent() {
-    // const { pathname } = window.location;
     return (
       <div className={styles.rightContent}>
         <RightContent />
-        {/* {pathname === '/dashboard' ? null : buttonSwitch()} */}
       </div>
     );
   }
@@ -135,16 +131,6 @@ const BasicLayout = (props) => {
   if (currentUser?.firstCreated) {
     return <Redirect to="/control-panel" />;
   }
-
-  const handleClickMenu = (path) => {
-    const { roles = [] } = currentUser;
-    const checkRoleHrAndManager =
-      roles.includes(HR_MANAGER) || roles.includes(HR_EMPLOYEE) || roles.includes(MANAGER);
-
-    if (path === '/offboarding' && checkRoleHrAndManager) {
-      localStorage.setItem('initViewOffboarding', false);
-    }
-  };
 
   return (
     <>
@@ -162,11 +148,7 @@ const BasicLayout = (props) => {
               return defaultDom;
             }
 
-            return (
-              <Link onClick={() => handleClickMenu(menuItemProps.path)} to={menuItemProps.path}>
-                {defaultDom}
-              </Link>
-            );
+            return <Link to={menuItemProps.path}>{defaultDom}</Link>;
           }}
           breadcrumbLayoutRender={(routers = []) => {
             let listPath = routers;

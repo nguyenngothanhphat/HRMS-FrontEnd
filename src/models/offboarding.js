@@ -1,4 +1,5 @@
 import { notification } from 'antd';
+import { isEmpty } from 'lodash';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
@@ -16,6 +17,7 @@ import {
   // terminate
   terminateReason,
 } from '../services/offboarding';
+import { getOffboardingEmpMode, setHideOffboarding } from '@/utils/offboarding';
 
 const offboarding = {
   namespace: 'offboarding',
@@ -99,8 +101,8 @@ const offboarding = {
       }
       return response;
     },
-    *getMyRequestEffect({ payload }, { call, put }) {
-      let response;
+    *getMyRequestEffect({ payload, userModelProp = '' }, { call, put }) {
+      let response = {};
       try {
         response = yield call(getMyRequest, {
           ...payload,
@@ -115,6 +117,13 @@ const offboarding = {
             myRequest: data || {},
           },
         });
+        if (userModelProp) {
+          if (isEmpty(data) && userModelProp.hideMenu && !getOffboardingEmpMode()) {
+            setHideOffboarding(true);
+          } else {
+            setHideOffboarding(false);
+          }
+        }
       } catch (errors) {
         dialog(errors);
       }
