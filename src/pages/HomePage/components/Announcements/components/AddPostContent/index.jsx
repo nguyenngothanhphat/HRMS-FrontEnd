@@ -164,7 +164,7 @@ const AddPostContent = (props) => {
       dispatch({
         type: 'upload/addAttachment',
         payload: {
-          data,
+          attachments: data,
         },
         showNotification: false,
       }).then((resp) => {

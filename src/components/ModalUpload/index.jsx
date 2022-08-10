@@ -128,7 +128,7 @@ class ModalUpload extends Component {
     dispatch({
       type: 'upload/addAttachment',
       payload: {
-        data: [payload],
+        attachments: [payload],
       },
       showNotification: true,
     }).then((resp) => {
