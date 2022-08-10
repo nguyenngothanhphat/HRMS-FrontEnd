@@ -111,7 +111,7 @@ class AddQuestionAnswer extends Component {
     if (Object.keys(file)?.length) {
       dispatch({
         type: 'upload/addAttachment',
-        payload: { data: [file] },
+        payload: { attachments: [file] },
         showNotification: false,
       }).then((resp) => {
         const { statusCode: status, data = {} } = resp;

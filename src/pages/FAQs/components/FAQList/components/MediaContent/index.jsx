@@ -5,30 +5,22 @@ import styles from './index.less';
 
 const MediaContent = (props) => {
   const { attachment: fileId, listFAQ = [] } = props;
-  const [isImg, setIsImg] = useState(false);
   const tempData = listFAQ.find((x) => x?.attachment?._id === fileId);
   const src = tempData?.attachment?.url;
-
-  const isImageLink = (imgLink) => {
-    const img = new Image();
-    img.src = imgLink;
-    img.onload = () => setIsImg(true);
-    img.onerror = () => setIsImg(false);
-  };
-  useEffect(() => {
-    isImageLink(src);
-  }, []);
+  const fileRegex = /image[/]|video[/]/gim;
+  const checkType = fileRegex.test(tempData?.attachment?.type);
 
   return (
     <div className={styles.MediaContent}>
-      {isImg ? (
-        <ImageTag.PreviewGroup>
-          <ImageTag className={styles.MediaContent__image} src={src} alt="img" />
-        </ImageTag.PreviewGroup>
-      ) : (
-        // eslint-disable-next-line jsx-a11y/media-has-caption
-        <video className={styles.MediaContent__video} src={src} alt="video" controls />
-      )}
+      {checkType &&
+        (tempData?.attachment?.type.match(/image[/]/gim) ? (
+          <ImageTag.PreviewGroup>
+            <ImageTag className={styles.media__image} src={src} alt="img" />
+          </ImageTag.PreviewGroup>
+        ) : (
+          // eslint-disable-next-line jsx-a11y/media-has-caption
+          <video className={styles.media__video} src={src} alt="video" controls autoPlay />
+        ))}
     </div>
   );
 };
