@@ -31,9 +31,10 @@ function EmployeePostManagement(props) {
   const [activePostID, setActivePostID] = useState('');
   const [applied, setApplied] = useState(0);
   const [statusPost, setStatusPost] = useState(STATUS_POST.ACTIVE);
+  const [filterForm, setFilterForm] = useState({});
   const [form, setForm] = useState(null);
 
-  const fetchData = (filter) => {
+  const fetchData = (filter = {}) => {
     dispatch({
       type: 'homePage/fetchAnnouncementsEffect',
       payload: {
@@ -51,8 +52,8 @@ function EmployeePostManagement(props) {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [limit, page]);
+    fetchData(filterForm);
+  }, [limit, page, JSON.stringify(filterForm)]);
 
   const onHidePost = (record) => {
     dispatch({
@@ -129,11 +130,18 @@ function EmployeePostManagement(props) {
         key: 'attachments',
         width: '10%',
         render: (attachments = []) => {
-          return attachments.map((x) => (
-            <Image.PreviewGroup>
-              <Image width={32} height={32} src={x.url} />
-            </Image.PreviewGroup>
-          ));
+          return (
+            <div className={styles.media}>
+              <Image.PreviewGroup>
+                {attachments.slice(0, 3).map((x) => {
+                  return <Image width={32} height={32} src={x.url} key={x._id || x.id} />;
+                })}
+              </Image.PreviewGroup>
+              {attachments.length > 3 && (
+                <span style={{ fontWeight: 500 }}>+{attachments.length - 3} more</span>
+              )}
+            </div>
+          );
         },
       },
       {
@@ -200,12 +208,12 @@ function EmployeePostManagement(props) {
                   placement="left"
                   title="Are you sure?"
                   onConfirm={() => onActivePost(record)}
-                  disabled={record?.flag.length >= 5}
+                  disabled={record?.flag?.length >= 5}
                 >
                   <img
                     src={ViewPostIcon}
                     alt="hideIcon"
-                    style={{ cursor: record?.flag.length >= 5 ? 'not-allowed' : 'pointer' }}
+                    style={{ cursor: record?.flag?.length >= 5 ? 'not-allowed' : 'pointer' }}
                   />
                 </Popconfirm>
               )}
@@ -245,7 +253,14 @@ function EmployeePostManagement(props) {
             </Tag>
           )}
           <FilterPopover
-            content={<FilterForm setForm={setForm} setApplied={setApplied} fetchData={fetchData} />}
+            content={
+              <FilterForm
+                setForm={setForm}
+                setApplied={setApplied}
+                setFilterForm={setFilterForm}
+                setPage={setPage}
+              />
+            }
             trigger="click"
             placement="bottomRight"
             visible={visible}

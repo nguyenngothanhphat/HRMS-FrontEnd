@@ -2,6 +2,7 @@ import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { Col, Image, Row } from 'antd';
 import Parser from 'html-react-parser';
 import React, { useState } from 'react';
+import { checkTypeURL } from '@/utils/utils';
 import { getUrlFromString, hashtagify, urlify } from '@/utils/homePage';
 import PreviewImage from '@/assets/homePage/previewImage.png';
 import styles from './index.less';
@@ -16,11 +17,6 @@ const PostContent = (props) => {
     setMode(img?.offsetHeight > img?.offsetWidth);
     // eslint-disable-next-line no-param-reassign
     img.src = null;
-  };
-
-  const checkURL = (url) => {
-    if (typeof url !== 'string') return false;
-    return url.match(/\.(jpg|jpeg|gif|png)$/) != null;
   };
 
   const renderMoreThan3 = (arr = []) => {
@@ -162,26 +158,22 @@ const PostContent = (props) => {
     let isImg = true;
     let content = '';
 
-    if (attachments && attachments.length <= 1 && attachments[0]?.category === 'URL') {
-      isImg = checkURL(attachments[0]?.url);
-    }
+    isImg = checkTypeURL(attachments);
 
     if (attachments.length) {
       if (isImg) {
         content = (
-          <div className={styles.previewImage}>
-            <Image.PreviewGroup>
-              {renderImageLayout(attachments.map((x) => x.url))}
-            </Image.PreviewGroup>
-          </div>
+          <Image.PreviewGroup>
+            {renderImageLayout(attachments.map((x) => x.url))}
+          </Image.PreviewGroup>
         );
       } else {
         // eslint-disable-next-line jsx-a11y/media-has-caption
-        content = <video src={attachments[0]?.url} alt="video" width="100%" controls autoPlay />;
+        content = <video src={attachments[0]?.url} alt="video" width="100%" controls />;
       }
     }
 
-    return content;
+    return <div className={styles.previewImage}>{content}</div>;
   };
 
   const renderImageCountTag = () => {

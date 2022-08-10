@@ -1,14 +1,15 @@
 import { Form, Input, message, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { v4 as uuidv4 } from 'uuid';
 import AttachmentIcon from '@/assets/attachment.svg';
 import UploadFileURLIcon from '@/assets/homePage/uploadURLIcon.svg';
-import { CATEGORY_NAME, POST_TYPE, STATUS_POST } from '@/constants/homePage';
+import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
 import { uploadFirebaseMultiple } from '@/services/firebase';
 import styles from './index.less';
+import { UPLOAD } from '@/constants/upload';
 
 const { Dragger } = Upload;
+const { CATEGORY_NAME } = UPLOAD;
 
 const AddPostContent = (props) => {
   const {
@@ -33,6 +34,7 @@ const AddPostContent = (props) => {
     setForm(form);
     return () => {
       form.resetFields();
+      setIsUploadFile(false);
     };
   }, []);
 
@@ -84,7 +86,7 @@ const AddPostContent = (props) => {
     };
 
     if (Object.keys(data)?.length) {
-      payload.attachments = data.map((x) => x.id);
+      payload.attachments = data?.map((x) => x?._id);
     }
 
     dispatch({
@@ -109,7 +111,7 @@ const AddPostContent = (props) => {
     };
 
     if (Object.keys(data)?.length) {
-      const newAttachments = data.map((x) => x._id);
+      const newAttachments = data?.map((x) => x?._id);
       if (data[0]?.category === CATEGORY_NAME.URL) {
         payload.attachments = [...newAttachments];
       } else {
@@ -145,7 +147,6 @@ const AddPostContent = (props) => {
     });
     if (values.urlFile) {
       data.push({
-        fileName: uuidv4(),
         category: CATEGORY_NAME.URL,
         url: values.urlFile,
       });
@@ -169,6 +170,9 @@ const AddPostContent = (props) => {
       }).then((resp) => {
         const { statusCode, data: listAttachments = {} } = resp;
         if (statusCode === 200) {
+          if (listAttachments[0]?.defaultMessage) {
+            setIsUploadFile(false);
+          }
           if (!isEdit) {
             onAddNew(values, listAttachments);
           } else {

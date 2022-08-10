@@ -25,4 +25,7 @@ export const UPLOAD = {
     ROOT: 'root',
     PAYROLL: 'payroll',
   },
+  CATEGORY_NAME: {
+    URL: 'URL',
+  },
 };

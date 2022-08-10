@@ -13,9 +13,10 @@ const FilterContent = (props) => {
     dispatch,
     listEmployeeName = [],
     loadingFetchListEmployeeCreated = false,
-    fetchData = () => {},
     setForm = () => {},
     setApplied = () => {},
+    setFilterForm = () => {},
+    setPage = () => {},
   } = props;
 
   const [fromDate, setFromDate] = useState('');
@@ -40,9 +41,8 @@ const FilterContent = (props) => {
 
   const onFinish = (values) => {
     const filterTemp = removeEmptyFields(values);
-
-    // dispatch action
-    fetchData(filterTemp);
+    setFilterForm(filterTemp);
+    setPage(1);
   };
 
   const onFinishDebounce = debounce((values) => {
