@@ -5,13 +5,12 @@ import avtDefault from '@/assets/avtDefault.jpg';
 import bioSvg from '@/assets/bioActions.svg';
 import CommonModal from '@/components/CommonModal';
 import ModalUpload from '@/components/ModalUpload';
-import ROLES from '@/constants/roles';
 import { getCurrentTenant } from '@/utils/authority';
+import { setHideOffboarding, setOffboardingEmpMode } from '@/utils/offboarding';
 import s from './index.less';
 
 const { TextArea } = Input;
 const { SubMenu } = Menu;
-const { HR, HR_MANAGER, MANAGER } = ROLES;
 
 @connect(
   ({
@@ -255,21 +254,11 @@ class ViewInformation extends Component {
   };
 
   redirectOffboarding = () => {
-    const { roles = [] } = this.props;
-    const checkRoleHrAndManager =
-      roles.includes(HR_MANAGER) || roles.includes(HR) || roles.includes(MANAGER);
-    if (checkRoleHrAndManager) {
-      localStorage.setItem('initViewOffboarding', true);
-      history.push({
-        pathname: '/offboarding',
-        state: { isEmployeeMode: true },
-      });
-    } else {
-      history.push({
-        pathname: '/offboarding',
-        state: { isEmployeeMode: false },
-      });
-    }
+    setHideOffboarding(false);
+    setOffboardingEmpMode(true);
+    history.push({
+      pathname: '/offboarding/my-request',
+    });
   };
 
   btnAction = (permissions, isProfileOwner) => {
