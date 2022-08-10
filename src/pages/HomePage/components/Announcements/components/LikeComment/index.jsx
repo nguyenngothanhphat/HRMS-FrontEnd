@@ -40,6 +40,7 @@ const LikeComment = ({
   loadingReactPost = false,
   activePostID = '',
   setActivePostID = () => {},
+  isView = false,
 }) => {
   const [activeKey, setActiveKey] = useState('');
   const [commentValue, setCommentValue] = useState('');
@@ -171,12 +172,14 @@ const LikeComment = ({
   // function
   // likes
   const onLikePost = async (type) => {
-    setIsReactPostOrCmt(POST_OR_CMT.POST);
-    setActivePostID(post?._id);
-    const res = await reactPostEffect(post?._id, type);
-    if (res.statusCode === 200) {
-      await refreshThisPost();
-      setIsReactPostOrCmt('');
+    if (!isView) {
+      setIsReactPostOrCmt(POST_OR_CMT.POST);
+      setActivePostID(post?._id);
+      const res = await reactPostEffect(post?._id, type);
+      if (res.statusCode === 200) {
+        await refreshThisPost();
+        setIsReactPostOrCmt('');
+      }
     }
   };
 
@@ -352,7 +355,7 @@ const LikeComment = ({
             onChange={action === ACTION.ADD ? setCommentValue : () => {}}
             value={action === ACTION.ADD ? commentValue : null}
             onSubmit={onComment}
-            disabled={action === ACTION.EDIT}
+            disabled={action === ACTION.EDIT || isView}
           />
           <Spin
             spinning={

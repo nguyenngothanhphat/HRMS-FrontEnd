@@ -1,7 +1,8 @@
 import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { Col, Image, Row } from 'antd';
 import Parser from 'html-react-parser';
-import React from 'react';
+import React, { useState } from 'react';
+import { checkTypeURL } from '@/utils/utils';
 import { getUrlFromString, hashtagify, urlify } from '@/utils/homePage';
 import PreviewImage from '@/assets/homePage/previewImage.png';
 import styles from './index.less';
@@ -9,7 +10,8 @@ import styles from './index.less';
 const PostContent = (props) => {
   const { post: { attachments = [], description = '' } = {} } = props;
 
-  const [mode, setMode] = React.useState(false);
+  const [mode, setMode] = useState(false);
+  // const [isImg, setIsImg] = useState(false);
 
   const getMode = ({ target: img }) => {
     setMode(img?.offsetHeight > img?.offsetWidth);
@@ -153,15 +155,25 @@ const PostContent = (props) => {
   };
 
   const renderPreviewImage = () => {
-    return (
-      attachments.length > 0 && (
-        <div className={styles.previewImage}>
+    let isImg = true;
+    let content = '';
+
+    isImg = checkTypeURL(attachments);
+
+    if (attachments.length) {
+      if (isImg) {
+        content = (
           <Image.PreviewGroup>
             {renderImageLayout(attachments.map((x) => x.url))}
           </Image.PreviewGroup>
-        </div>
-      )
-    );
+        );
+      } else {
+        // eslint-disable-next-line jsx-a11y/media-has-caption
+        content = <video src={attachments[0]?.url} alt="video" width="100%" controls />;
+      }
+    }
+
+    return <div className={styles.previewImage}>{content}</div>;
   };
 
   const renderImageCountTag = () => {

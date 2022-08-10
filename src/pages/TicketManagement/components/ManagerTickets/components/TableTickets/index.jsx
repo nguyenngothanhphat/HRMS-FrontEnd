@@ -438,7 +438,7 @@ const TableTickets = (props) => {
         page={pageSelected}
         limit={size}
         total={total}
-        onChangPage={getPageAndSize}
+        onChangePage={getPageAndSize}
       />
       <AssignTeamModal
         visible={modalVisible}

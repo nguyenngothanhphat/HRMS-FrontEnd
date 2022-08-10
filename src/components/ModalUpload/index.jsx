@@ -123,7 +123,9 @@ class ModalUpload extends Component {
 
     dispatch({
       type: 'upload/addAttachment',
-      payload,
+      payload: {
+        attachments: [payload],
+      },
       showNotification: true,
     }).then((resp) => {
       this.setState({ percent: 100 });
