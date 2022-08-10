@@ -13,7 +13,6 @@
     }
 
     .ant-table-placeholder {
-
       // display: none;
       td.ant-table-cell {
         padding-right: 0 !important;
@@ -28,15 +27,15 @@
 
     .ant-input {
       box-sizing: border-box;
-      font-size: 14px;
-      padding: 13px 20px;
       height: 42px;
-      border: 1px solid #D6DCE4;
+      padding: 13px 20px;
+      font-size: 14px;
+      border: 1px solid #d6dce4;
       border-radius: 5px;
     }
 
     .ant-input:disabled {
-      color: #161C29;
+      color: #161c29;
     }
 
     .ant-input-number {
@@ -49,7 +48,7 @@
     }
 
     .blue-text {
-      color: #2c6df9;
+      color: @primary-color;
     }
 
     .big-text {
@@ -119,8 +118,8 @@
         td:nth-child(2) {
           font-weight: bold;
           text-align: center;
-          border-right: 1px solid #d6dce0;
-          border-left: 1px solid #d6dce0;
+          border-right: 1px solid @border-color-base;
+          border-left: 1px solid @border-color-base;
         }
 
         td:last-child {
@@ -131,18 +130,18 @@
       tr:last-child {
         box-sizing: border-box;
         height: 80px;
-        border-top: 1px solid #d6dce0;
-        border-bottom: 1px solid #d6dce0;
+        border-top: 1px solid @border-color-base;
+        border-bottom: 1px solid @border-color-base;
         border-collapse: collapse;
 
         td:first-child {
-          color: #2c6df9;
+          color: @primary-color;
           font-weight: bold;
         }
       }
     }
 
-    .ant-form-item-label>label {
+    .ant-form-item-label > label {
       color: #464646;
       font-weight: normal;
       font-size: 13px;

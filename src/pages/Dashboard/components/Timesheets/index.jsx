@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import { Spin } from 'antd';
 import { getCurrentCompany } from '@/utils/authority';
-import { dateFormatAPI } from '@/utils/timeSheet';
+import { dateFormatAPI } from '@/constants/timeSheet';
 import LeftArrow from '@/assets/dashboard/leftArrow.svg';
 import SmallLeftArrow from '@/assets/dashboard/smallLeftArrow.svg';
 import SmallRightArrow from '@/assets/dashboard/smallRightArrow.svg';

@@ -1,0 +1,48 @@
+.InformationUploadForm {
+  background-color: white;
+  border: 1px solid @border-color-base;
+  border-radius: 8px;
+  // padding: 20px;
+  .formTitle {
+    padding: 20px;
+    border-bottom: 1px solid @border-color-base;
+    span {
+      font-weight: 700;
+      font-size: 16px;
+    }
+  }
+  :global {
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+    .ant-picker {
+      width: 100%;
+    }
+    .ant-form-item-explain {
+      margin-top: 5px;
+    }
+    // form
+    .ant-form {
+      padding: 20px;
+    }
+    // upload button
+    .ant-btn-primary {
+      margin: 10px 0;
+      padding: 0 30px;
+      text-shadow: none;
+      box-shadow: none;
+    }
+  }
+  .inputLabel {
+    display: block;
+    margin-bottom: 10px;
+    color: #464646;
+    font-size: 14px;
+  }
+  .employeeExists {
+    border: 1px solid #d9d9d9;
+  }
+  .employeeNotExists {
+    border: 1px solid red;
+  }
+}

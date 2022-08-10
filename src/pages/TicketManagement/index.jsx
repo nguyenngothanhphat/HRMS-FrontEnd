@@ -1,45 +1,43 @@
-import React, { PureComponent } from 'react';
-import EmployeeTicket from './EmployeeTickets';
-import ManagerTicket from './ManagerTickets';
-import { goToTop } from '@/utils/utils';
+import React, { useEffect } from 'react';
 import { getAuthority } from '@/utils/authority';
+import { goToTop } from '@/utils/utils';
+import EmployeeTicket from './components/EmployeeTickets';
+import ManagerTicket from './components/ManagerTickets';
 
-class TicketsManagement extends PureComponent {
-  findRole = (roles) => {
+const TicketsManagement = (props) => {
+  const {
+    match: { params: { tabName = '' } = {} },
+  } = props;
+
+  const findRole = (roles) => {
     const manager = roles.find((item) => item === 'manager');
     const hrManager = roles.find((item) => item === 'hr-manager');
-    // const employee = roles.find((item) => item === 'employee');
     const role = hrManager || manager || 'employee';
     return role;
   };
 
-  componentDidMount = () => {
+  const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
+  const listRole = localStorage.getItem('antd-pro-authority');
+  const role = findRole(JSON.parse(listRole));
+
+  useEffect(() => {
     goToTop();
+    return () => {};
+  }, []);
+
+  const renderComponent = {
+    manager: (
+      <ManagerTicket role={role.toUpperCase()} permissions={permissions} tabName={tabName} />
+    ),
+    'hr-manager': (
+      <ManagerTicket role={role.toUpperCase()} permissions={permissions} tabName={tabName} />
+    ),
+    employee: (
+      <EmployeeTicket role={role.toUpperCase()} permissions={permissions} tabName={tabName} />
+    ),
   };
 
-  render() {
-    const {
-      match: { params: { tabName = '' } = {} },
-    } = this.props;
-    const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
-
-    const listRole = localStorage.getItem('antd-pro-authority');
-    const role = this.findRole(JSON.parse(listRole));
-
-    const renderComponent = {
-      manager: (
-        <ManagerTicket role={role.toUpperCase()} permissions={permissions} tabName={tabName} />
-      ),
-      'hr-manager': (
-        <ManagerTicket role={role.toUpperCase()} permissions={permissions} tabName={tabName} />
-      ),
-      employee: (
-        <EmployeeTicket role={role.toUpperCase()} permissions={permissions} tabName={tabName} />
-      ),
-    };
-
-    return renderComponent[role];
-  }
-}
+  return renderComponent[role];
+};
 
 export default TicketsManagement;

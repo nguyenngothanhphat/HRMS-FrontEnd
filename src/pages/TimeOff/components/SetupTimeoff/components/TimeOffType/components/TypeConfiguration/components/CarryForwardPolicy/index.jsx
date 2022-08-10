@@ -1,7 +1,7 @@
 import { Button, Card, Col, Form, Row } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
-import { FORM_ITEM_NAME } from '@/utils/timeOff';
+import { FORM_ITEM_NAME } from '@/constants/timeOff';
 import CarryForwardItem from './components/CarryForwardItem';
 import styles from './index.less';
 

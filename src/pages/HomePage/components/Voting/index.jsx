@@ -6,7 +6,7 @@ import BarGraph from './components/BarGraph';
 import styles from './index.less';
 import Options from './components/Options';
 import EmptyComponent from '@/components/Empty';
-import { TAB_IDS } from '@/utils/homePage';
+import { TAB_IDS } from '@/constants/homePage';
 import { getCurrentLocation } from '@/utils/authority';
 
 const Voting = (props) => {

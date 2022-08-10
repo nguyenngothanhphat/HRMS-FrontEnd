@@ -3,7 +3,7 @@ import Moment from 'moment';
 import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'umi';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import ConformIcondata from '../../../confirmIcon';
+import ConfirmIconData from '../../../ConfirmIconData';
 import styles from './index.less';
 
 @connect(
@@ -66,7 +66,7 @@ class View extends PureComponent {
               >
                 {item.document.attachment ? item.document.attachment.name : ''}
               </p>
-              <ConformIcondata
+              <ConfirmIconData
                 data={item.document.attachment ? item.document.attachment.name : ''}
               />
             </div>

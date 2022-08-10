@@ -1,14 +1,15 @@
 import { Col, Row } from 'antd';
+import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
-import { checkHoliday, EMP_MT_MAIN_COL_SPAN, EMP_ROW_HEIGHT, hourList } from '@/utils/timeSheet';
-import ActivityCard from './components/ActivityCard';
-import TimeOffCard from './components/TimeOffCard';
+import { checkHoliday } from '@/utils/timeSheet';
+import { EMP_MT_MAIN_COL_SPAN, EMP_ROW_HEIGHT, hourList } from '@/constants/timeSheet';
 import IconHoliday from '@/assets/timeSheet/ic_holiday.svg';
-import styles from './index.less';
 import AddTaskModal from '../../../../../AddTaskModal';
+import ActivityCard from './components/ActivityCard';
 import CardOverlay from './components/CardOverlay';
+import TimeOffCard from './components/TimeOffCard';
+import styles from './index.less';
 
 const { DATE_OF_HOURS, REMAINING } = EMP_MT_MAIN_COL_SPAN;
 

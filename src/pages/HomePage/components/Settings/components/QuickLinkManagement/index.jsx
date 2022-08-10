@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import QuickLinkCard from './components/QuickLinkCard';
 import AddNewQuickLink from './components/AddNewQuickLink';
-import { TAB_IDS_QUICK_LINK } from '@/utils/homePage';
+import { TAB_IDS_QUICK_LINK } from '@/constants/homePage';
 import { goToTop } from '@/utils/utils';
 // import styles from './index.less';
 

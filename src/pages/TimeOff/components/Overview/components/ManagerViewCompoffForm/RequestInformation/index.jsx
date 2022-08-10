@@ -1,11 +1,14 @@
-import React, { PureComponent } from 'react';
-import { Button, Row, Col, Spin, Progress, Input } from 'antd';
-import { connect, history } from 'umi';
+import { Col, Input, Progress, Row, Spin } from 'antd';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect, history } from 'umi';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import TimeOffModal from '@/components/TimeOffModal';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import ROLES from '@/constants/roles';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import styles from './index.less';
-import ROLES from '@/utils/roles';
 
 const { REGION_HEAD } = ROLES;
 const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, REJECTED } = TIMEOFF_STATUS;
@@ -58,10 +61,10 @@ class RequestInformation extends PureComponent {
 
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment.utc(fromDate).locale('en').format('MM/DD/YYYY')} - ${moment
+      leaveTimes = `${moment.utc(fromDate).locale('en').format(DATE_FORMAT_MDY)} - ${moment
         .utc(toDate)
         .locale('en')
-        .format('MM/DD/YYYY')}`;
+        .format(DATE_FORMAT_MDY)}`;
     }
     return leaveTimes;
   };
@@ -295,7 +298,7 @@ class RequestInformation extends PureComponent {
                               className={styles.rowContainer}
                             >
                               <Col span={7}>
-                                {moment.utc(date).locale('en').format('MM/DD/YYYY')}
+                                {moment.utc(date).locale('en').format(DATE_FORMAT_MDY)}
                               </Col>
                               <Col span={7}>{moment.utc(date).locale('en').format('dddd')}</Col>
                               <Col span={7}>
@@ -377,12 +380,15 @@ class RequestInformation extends PureComponent {
                 your department head.
               </span>
               <div className={styles.formButtons}>
-                <Button type="link" onClick={() => this.onRejectClicked()}>
+                <CustomSecondaryButton onClick={() => this.onRejectClicked()}>
                   Reject
-                </Button>
-                <Button loading={loadingApproveRequest} onClick={() => this.onApproveClicked(_id)}>
+                </CustomSecondaryButton>
+                <CustomPrimaryButton
+                  loading={loadingApproveRequest}
+                  onClick={() => this.onApproveClicked(_id)}
+                >
                   Approve
-                </Button>
+                </CustomPrimaryButton>
               </div>
             </div>
           )}
@@ -398,12 +404,12 @@ class RequestInformation extends PureComponent {
                 your department head.
               </span>
               <div className={styles.formButtons}>
-                <Button type="link" disabled>
+                <CustomSecondaryButton disabled>
                   {(status === ACCEPTED ||
                     (currentUserRole !== REGION_HEAD && status === IN_PROGRESS_NEXT)) &&
                     'Approved'}
                   {status === REJECTED && 'Rejected'}
-                </Button>
+                </CustomSecondaryButton>
               </div>
             </div>
           )}
@@ -416,12 +422,13 @@ class RequestInformation extends PureComponent {
               department head.
             </span>
             <div className={styles.formButtons}>
-              <Button type="link" onClick={this.onCancel}>
-                Cancel
-              </Button>
-              <Button loading={loadingRejectRequest} onClick={() => this.onRejectSubmit(_id)}>
+              <CustomSecondaryButton onClick={this.onCancel}>Cancel</CustomSecondaryButton>
+              <CustomPrimaryButton
+                loading={loadingRejectRequest}
+                onClick={() => this.onRejectSubmit(_id)}
+              >
                 Submit
-              </Button>
+              </CustomPrimaryButton>
             </div>
           </div>
         )}

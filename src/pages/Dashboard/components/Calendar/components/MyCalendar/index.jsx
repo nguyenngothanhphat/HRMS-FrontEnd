@@ -2,7 +2,7 @@ import { Spin } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
-import { EMP_ROW_HEIGHT, CALENDAR_COLORS } from '@/utils/dashboard';
+import { EMP_ROW_HEIGHT, CALENDAR_COLORS } from '@/constants/dashboard';
 import MeetingTag from '../MeetingTag';
 import styles from './index.less';
 
@@ -196,7 +196,7 @@ const MyCalendar = (props) => {
           <div span={4} className={`${styles.mainContainer__firstColumn} ${styles.alignCenter}`}>
             {hourList.map((hour, index) => {
               return (
-                <div className={styles.hourBlock}>
+                <div className={styles.hourBlock} key={`${index + 1}`}>
                   <span
                     style={{
                       color: index > 23 && hour >= 0 ? CALENDAR_COLORS.RED.color : '#000',
@@ -211,7 +211,7 @@ const MyCalendar = (props) => {
           <div span={20} className={styles.mainContainer__remainColumn}>
             {hourList.map((x, index) => {
               return (
-                <div className={styles.row}>
+                <div className={styles.row} key={`${index + 1}`}>
                   {index > 23 && x === 0 && <div className={styles.divider} />}
                 </div>
               );

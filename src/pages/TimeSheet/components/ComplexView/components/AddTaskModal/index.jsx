@@ -1,6 +1,5 @@
 import {
   Alert,
-  Button,
   Checkbox,
   Col,
   DatePicker,
@@ -16,22 +15,28 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import AddIcon from '@/assets/timeSheet/add.svg';
 import RemoveIcon from '@/assets/timeSheet/recycleBin.svg';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomTimePicker from '@/components/CustomTimePicker';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import {
-  checkHolidayInWeek,
   dateFormatAPI,
-  holidayFormatDate,
   hourFormat,
   hourFormatAPI,
   TIMESHEET_ADD_TASK_ALERT,
   TIME_DEFAULT,
   VIEW_TYPE,
+} from '@/constants/timeSheet';
+import { sortAlphabet } from '@/utils/utils';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import {
+  checkHolidayInWeek,
+  getAllProjectsWithoutAssigned,
+  holidayFormatDate,
 } from '@/utils/timeSheet';
 import styles from './index.less';
 
-const { Option } = Select;
-const dateFormat = 'MM/DD/YYYY';
+const { Option, OptGroup } = Select;
 const countryIdUS = 'US';
 const TASKS = [];
 const { RangePicker } = DatePicker;
@@ -48,6 +53,7 @@ const AddTaskModal = (props) => {
       myTimesheetByDay = [],
       myTimesheetByWeek = [],
       myTimesheetByMonth = [],
+      myProjects = [],
     } = {},
     date = '',
     taskDetail: {
@@ -289,8 +295,8 @@ const AddTaskModal = (props) => {
           department: employee.departmentInfo,
           generalInfo: employee.generalInfo,
           manager: {
-            _id: employee.managerInfo._id,
-            generalInfo: employee.managerInfo.generalInfo,
+            _id: employee.managerInfo?._id,
+            generalInfo: employee.managerInfo?.generalInfo,
           },
         },
       };
@@ -336,14 +342,15 @@ const AddTaskModal = (props) => {
       if (projectList.length === 0) {
         fetchProjectList();
       }
+      const datesTemp = (moment(forDate).isValid() && [moment(forDate), moment(forDate)]) ||
+        (moment(date).isValid() && [moment(date), moment(date)]) || ['', ''];
 
-      const datesTemp = forDate ? [moment(forDate), moment(forDate)] : [moment(date), moment(date)];
       setDates(datesTemp);
       form.setFieldsValue({
         dates: datesTemp,
         tasks: [
           {
-            projectId: projectId || null,
+            projectId: projectId || myProjects?.length === 1 ? myProjects[0]?.project?.id : null,
             startTime: endTime
               ? moment(endTime, hourFormatAPI).format(hourFormat)
               : getDefaultValueStartTime(),
@@ -383,7 +390,9 @@ const AddTaskModal = (props) => {
       if (dates) {
         if (dates.length < 2) {
           check = false;
-        } else if (moment(dates[0]).format(dateFormat) !== moment(dates[1]).format(dateFormat)) {
+        } else if (
+          moment(dates[0]).format(DATE_FORMAT_MDY) !== moment(dates[1]).format(DATE_FORMAT_MDY)
+        ) {
           check = false;
         }
       }
@@ -443,14 +452,44 @@ const AddTaskModal = (props) => {
                         placeholder="Select the project"
                         loading={loadingFetchProject}
                         disabled={loadingFetchProject}
-                        filterOption={(input, option) =>
-                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        filterOption={(input, option) => {
+                          if (option.children) {
+                            return option.children?.toLowerCase().includes(input.toLowerCase());
+                          }
+                          return (
+                            (option.options || [])
+                              .map((x) => x.children)
+                              .map((x) => x.toLowerCase())
+                              .indexOf(input.toLowerCase()) >= 0
+                          );
+                        }}
                       >
-                        {projectList.map((val) => (
-                          <Option key={val.id} value={val.id}>
-                            {`${val.projectName} - ${val.customerName}`}
-                          </Option>
-                        ))}
+                        {myProjects.length > 0 && (
+                          <OptGroup label="My Projects">
+                            {sortAlphabet(myProjects, 'project', 'projectName').map((project) => {
+                              const {
+                                id = '',
+                                projectName = '',
+                                customerName = '',
+                              } = project.project;
+                              return (
+                                <Option key={id} value={id}>
+                                  {`${projectName} - ${customerName}`}
+                                </Option>
+                              );
+                            })}
+                          </OptGroup>
+                        )}
+                        <OptGroup label="All Projects">
+                          {sortAlphabet(
+                            getAllProjectsWithoutAssigned(projectList, myProjects),
+                            'projectName',
+                          ).map((val) => (
+                            <Option key={val.id} value={val.id}>
+                              {`${val.projectName} - ${val.customerName}`}
+                            </Option>
+                          ))}
+                        </OptGroup>
                       </Select>
                     </Form.Item>
                   </Col>
@@ -618,10 +657,13 @@ const AddTaskModal = (props) => {
                 labelCol={{ span: 24 }}
               >
                 <RangePicker
-                  format={dateFormat}
+                  format={DATE_FORMAT_MDY}
                   ranges={{
                     Today: [moment(), moment()],
-                    'This Week': [moment().startOf('week'), moment().endOf('week')],
+                    'This Week': [
+                      moment().startOf('week').add(1, 'days'),
+                      moment().endOf('week').add(-1, 'days'),
+                    ],
                   }}
                   disabledDate={disabledDate}
                   onCalendarChange={(val) => handleChangeDate(val)}
@@ -667,19 +709,15 @@ const AddTaskModal = (props) => {
         maskClosable={false}
         footer={
           <>
-            <Button className={styles.btnCancel} onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button
-              className={styles.btnSubmit}
-              type="primary"
+            <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+            <CustomPrimaryButton
               form="myForm"
               key="submit"
               htmlType="submit"
               loading={loadingAddTask}
             >
               Submit
-            </Button>
+            </CustomPrimaryButton>
           </>
         }
         title={renderModalHeader()}

@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { NEW_PROCESS_STATUS, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_STEPS } from '@/constants/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import NoteComponent from '@/pages/NewCandidateForm/components/NoteComponent';
 import FileContent from '../FileContent';
@@ -13,6 +13,7 @@ import SignatureModal from '@/components/SignatureModal';
 import RejectOfferModal from './components/RejectOfferModal';
 import styles from './index.less';
 import NotificationModal from './components/NotificationModal';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 
 const OfferLetter = (props) => {
   const {
@@ -293,7 +294,7 @@ const OfferLetter = (props) => {
           <span className={styles.title}>Offer Letter</span>
           <span className={styles.expiryDate}>
             {expiryDateProp
-              ? `Offer will Expires on ${moment(expiryDateProp).format('MM/DD/YYYY')}`
+              ? `Offer will Expires on ${moment(expiryDateProp).format(DATE_FORMAT_MDY)}`
               : ''}
           </span>
         </div>

@@ -1,10 +1,9 @@
-import { Avatar, Col, Popover, Row, Tooltip } from 'antd';
+import CloseX from '@/assets/dashboard/closeX.svg';
+import { convertMsToTime } from '@/utils/timeSheet';
+import { Col, Popover, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import CloseX from '@/assets/dashboard/closeX.svg';
-
-import { convertMsToTime } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const TaskPopover = (props) => {

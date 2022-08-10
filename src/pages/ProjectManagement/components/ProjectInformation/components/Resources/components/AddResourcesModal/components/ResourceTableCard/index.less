@@ -1,4 +1,4 @@
-@blueColor: #2c6df9;
+@blueColor: @primary-color;
 @orangeColor: #ffa100;
 .ResourceTableCard {
   width: 100%;
@@ -11,7 +11,7 @@
       padding: 0 !important;
     }
     .ant-table-tbody > tr > td {
-      border-bottom: 1px solid #d6dce0;
+      border-bottom: 1px solid @border-color-base;
     }
   }
   .options {
@@ -19,10 +19,7 @@
     align-items: center;
     justify-content: flex-end;
   }
-  .tagCountFilter {
-    padding: 5px;
-    border-radius: 15px;
-  }
+
   :global {
     // disalbe  row hover
     .ant-table-tbody > tr.ant-table-row-level-0:hover > td {
@@ -92,8 +89,8 @@
       padding: 16px 8px;
     }
     .hasBorder {
-      border-right: 1px solid #d6dce0;
-      border-left: 1px solid #d6dce0;
+      border-right: 1px solid @border-color-base;
+      border-left: 1px solid @border-color-base;
     }
   }
 }

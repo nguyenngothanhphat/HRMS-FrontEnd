@@ -17,6 +17,7 @@ const CommonModal = ({
   content = '',
   width = 700,
   loading = false,
+  loadingSecond = false,
   hasFooter = true,
   onFinish = () => {},
   hasHeader = true,
@@ -26,6 +27,7 @@ const CommonModal = ({
   onSecondButtonClick = () => {},
   maskClosable = false,
   disabledButton = false,
+  formName = 'myForm',
 }) => {
   const renderModalHeader = () => {
     return (
@@ -64,18 +66,26 @@ const CommonModal = ({
           hasFooter ? (
             <div className={styles.footer}>
               {hasCancelButton && (
-                <CustomSecondaryButton type={cancelButtonType} onClick={handleCancel}>
+                <CustomSecondaryButton
+                  type={cancelButtonType}
+                  onClick={handleCancel}
+                  paddingInline={0}
+                >
                   {cancelText}
                 </CustomSecondaryButton>
               )}
               {hasSecondButton && (
-                <CustomSecondaryButton onClick={onSecondButtonClick}>
+                <CustomSecondaryButton
+                  onClick={onSecondButtonClick}
+                  paddingInline={0}
+                  loading={loadingSecond}
+                >
                   {secondText}
                 </CustomSecondaryButton>
               )}
               <CustomPrimaryButton
                 disabled={disabledButton}
-                form="myForm"
+                form={formName}
                 key="submit"
                 htmlType="submit"
                 loading={loading}

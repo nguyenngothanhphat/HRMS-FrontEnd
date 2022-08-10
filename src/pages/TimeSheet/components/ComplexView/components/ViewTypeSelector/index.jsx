@@ -1,7 +1,7 @@
 import { Radio } from 'antd';
 import React from 'react';
-import { VIEW_TYPE } from '@/utils/timeSheet';
-import styles from './index.less'
+import { VIEW_TYPE } from '@/constants/timeSheet';
+import styles from './index.less';
 
 const ViewTypeSelector = (props) => {
   const {

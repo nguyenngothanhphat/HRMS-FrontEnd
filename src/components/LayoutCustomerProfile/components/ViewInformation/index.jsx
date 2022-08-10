@@ -15,7 +15,7 @@ const ViewInformation = (props) => {
   const [isEditCustomer, setIsEditCustomer] = useState(false);
   const [visible, setVisible] = useState(false);
 
-  const { info = {}, loadingInfo = false, dispatch } = props;
+  const { info = {}, loadingInfo = false, dispatch, loadingUpdateCustomer = false } = props;
   const {
     accountOwner: { generalInfo: { legalName: nameLegal = '' } = {} } = {} || {},
     tags = [],
@@ -30,12 +30,6 @@ const ViewInformation = (props) => {
     openLeads = '',
   } = info || {};
 
-  // const getAvatarUrl = (avatar, isShowAvatar) => {
-  //   if (isShowAvatar || permissions.viewAvatarEmployee !== -1 || profileOwner)
-  //     return avatar || avtDefault;
-  //   return avtDefault;
-  // };
-
   const openModalUpload = () => {
     setVisible(true);
   };
@@ -47,14 +41,14 @@ const ViewInformation = (props) => {
   const getResponse = (resp) => {
     const { statusCode, data = [] } = resp;
     //  const check = employee === myEmployeeID;
+    const [first] = data;
     if (statusCode === 200) {
-      const [first] = data;
       handleCancel();
       dispatch({
         type: 'customerProfile/updateCustomerEffect',
         payload: {
           customerId,
-          avatar: first.url,
+          avatar: first?.url,
           tenantId: getCurrentTenant(),
         },
       });
@@ -69,7 +63,7 @@ const ViewInformation = (props) => {
   };
 
   return (
-    <Spin spinning={loadingInfo}>
+    <Spin spinning={loadingInfo} indicator={null}>
       <div className={s.viewRight__infoEmployee} style={{ position: 'relative' }}>
         <Button className={s.btnEdit} onClick={() => setIsEditCustomer(true)}>
           Edit
@@ -79,7 +73,14 @@ const ViewInformation = (props) => {
           alt="img-cover"
           className={s.infoEmployee__imgCover}
         />
-        <img src={avatar || MockCustomerLogo} alt="img-avt" className={s.infoEmployee__imgAvt} />
+        <img
+          src={avatar || MockCustomerLogo}
+          alt="img-avt"
+          className={s.infoEmployee__imgAvt}
+          onError={(e) => {
+            e.target.src = MockCustomerLogo;
+          }}
+        />
         {/* {(permissions.updateAvatarEmployee !== -1 || profileOwner) && ( */}
         <img
           src="/assets/images/iconUploadImage.svg"
@@ -93,36 +94,36 @@ const ViewInformation = (props) => {
         <div className={s.infoEmployee__viewBottom}>
           <div className={s.infoEmployee__viewBottom__row}>
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Company alias (DBA):</p>
               </Col>
-              <Col span={6}>
+              <Col span={12}>
                 <p className={s.value}>{dba}</p>
               </Col>
             </Row>
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Customer ID:</p>
               </Col>
-              <Col span={6}>
+              <Col span={12}>
                 <p className={s.value}>{customerId}</p>
               </Col>
             </Row>
 
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Status:</p>
               </Col>
-              <Col span={6}>
+              <Col span={12}>
                 <p className={s.value}>{status}</p>
               </Col>
             </Row>
 
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Account Owner:</p>
               </Col>
-              <Col span={6}>
+              <Col span={12}>
                 <Link className={s.value}>{nameLegal}</Link>
               </Col>
             </Row>
@@ -132,28 +133,28 @@ const ViewInformation = (props) => {
           <Divider />
           <div className={s.infoEmployee__viewBottom__row}>
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Open Leads:</p>
               </Col>
-              <Col span={6}>
+              <Col span={12}>
                 <p className={s.value}>{openLeads}</p>
               </Col>
             </Row>
 
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Active Projects:</p>
               </Col>
-              <Col span={6}>
+              <Col span={12}>
                 <Link className={s.value}>{activeProject}</Link>
               </Col>
             </Row>
 
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Open Tickets:</p>
               </Col>
-              <Col span={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Col span={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <p className={s.value}>{pendingTickets}</p>
                 <img
                   style={{ display: 'inline-block', paddingBottom: '13px', paddingLeft: '8px' }}
@@ -164,10 +165,10 @@ const ViewInformation = (props) => {
             </Row>
 
             <Row>
-              <Col span={18}>
+              <Col span={12}>
                 <p className={s.label}>Open Tasks:</p>
               </Col>
-              <Col span={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Col span={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <p className={s.value}>{pendingTasks}</p>
                 <img
                   style={{ display: 'inline-block', paddingBottom: '13px', paddingLeft: '8px' }}
@@ -210,12 +211,12 @@ const ViewInformation = (props) => {
           firstText="Edit Customer"
           cancelText="Cancel"
           title="Edit Customer"
-          // loading={loadingUpdateProject}
+          loading={loadingUpdateCustomer}
           content={
             <EditCustomerModalContent
               visible={isEditCustomer}
               onClose={() => setIsEditCustomer(false)}
-              selectedProject={info}
+              selectedCustomer={info}
             />
           }
           width={700}
@@ -228,4 +229,5 @@ const ViewInformation = (props) => {
 export default connect(({ loading, customerProfile: { info = {} } = {} }) => ({
   info,
   loadingInfo: loading.effects['customerProfile/fetchCustomerInfo'],
+  loadingUpdateCustomer: loading.effects['customerProfile/updateCustomerEffect'],
 }))(ViewInformation);

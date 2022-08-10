@@ -1,40 +1,19 @@
-import React, { useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
+import React from 'react';
 import s from './index.less';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-
-const documentWarning = (msg) => (
-  <div className={s.documentWarning} style={{ padding: '24px' }}>
-    <p>{msg}</p>
-  </div>
-);
-
 const FileContent = (props) => {
-  // const [currentPage] = useState(2);
-  const [numPages, setNumPages] = useState(1);
-
-  // eslint-disable-next-line no-shadow
-  const onLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
-  };
-
   const { url = '' } = props;
 
   return (
     <div className={s.viewFile}>
-      <Document
-        // file="http://api-stghrms.paxanimi.ai/api/attachments/5f7d4f3825b10e8b115d3e27/PR_report1_Jenny%20Wong.pdff"
-        file={url}
-        onLoadSuccess={onLoadSuccess}
-        loading={documentWarning('Loading document. Please wait...')}
-        noData={documentWarning('URL is not available.')}
-      >
-        {/* <Page pageNumber={currentPage} /> */}
-        {Array.from(new Array(numPages), (_, index) => (
-          <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-        ))}
-      </Document>
+      <object width="100%" height="560" data={url} type="application/pdf">
+        <iframe
+          width="100%"
+          height="560"
+          src={`https://docs.google.com/viewer?url=${url}&embedded=true`}
+          title="pdf-viewer"
+        />
+      </object>
     </div>
   );
 };

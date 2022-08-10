@@ -205,6 +205,13 @@ export async function getListSkill() {
   });
 }
 
+export async function getLocationsOfCountries(params) {
+  return request('/api/locationtenant/group-country', {
+    method: 'GET',
+    params,
+  });
+}
+
 export async function updateManagerResource(payload) {
   return request(
     '/api-project/resourcetenant/update-manager',

@@ -1,10 +1,13 @@
+import { debounce } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { debounce } from 'lodash';
+import { dateFormatAPI, VIEW_TYPE } from '@/constants/timeSheet';
 import ViewTypeSelector from '@/pages/TimeSheet/components/ComplexView/components/ViewTypeSelector';
 import { getCurrentCompany } from '@/utils/authority';
-import { dateFormatAPI, VIEW_TYPE, generateAllWeeks } from '@/utils/timeSheet';
+import useCancelToken from '@/utils/hooks';
+import { generateAllWeeks } from '@/utils/timeSheet';
+import { debounceFetchData } from '@/utils/utils';
 import Header from './components/Header';
 import MonthlyTable from './components/MonthlyTable';
 import WeeklyTable from './components/WeeklyTable';
@@ -25,9 +28,12 @@ const ProjectView = (props) => {
 
   // others
   const [selectedView, setSelectedView] = useState(VIEW_TYPE.W); // W: weekly, M: monthly
+  const { cancelToken, cancelRequest } = useCancelToken();
+  const { cancelToken: cancelToken2, cancelRequest: cancelRequest2 } = useCancelToken();
   const [currentProject, setCurrentProject] = useState();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
+  const [holidays, setHolidays] = useState([]);
 
   const {
     dispatch,
@@ -43,7 +49,7 @@ const ProjectView = (props) => {
   } = props;
 
   // FUNCTION AREA
-  const fetchManagerTimesheetOfProjectView = (startDate, endDate) => {
+  const fetchManagerTimesheetOfProjectView = async (startDate, endDate) => {
     let payload = {};
     payload = {
       companyId: getCurrentCompany(),
@@ -54,6 +60,7 @@ const ProjectView = (props) => {
       projectId: currentProject,
       page,
       limit,
+      cancelToken: cancelToken(),
     };
     if (nameSearch) {
       payload.search = nameSearch;
@@ -70,6 +77,17 @@ const ProjectView = (props) => {
           payloadExport: payload,
         },
       });
+
+      const holidaysResponse = await dispatch({
+        type: 'timeSheet/fetchHolidaysByDate',
+        payload: {
+          companyId: getCurrentCompany(),
+          fromDate: moment(startDate).format(dateFormatAPI),
+          toDate: moment(endDate).format(dateFormatAPI),
+          cancelToken: cancelToken2(),
+        },
+      });
+      setHolidays(holidaysResponse);
     }
   };
   // set permissions
@@ -121,14 +139,24 @@ const ProjectView = (props) => {
 
   useEffect(() => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
-      fetchManagerTimesheetOfProjectView(startDateWeek, endDateWeek);
+      debounceFetchData(() => fetchManagerTimesheetOfProjectView(startDateWeek, endDateWeek));
+      return () => {
+        cancelRequest();
+        cancelRequest2();
+      };
     }
+    return () => {};
   }, [startDateWeek, selectedView, currentProject, page, nameSearch]);
 
   useEffect(() => {
     if (startDateMonth && selectedView === VIEW_TYPE.M) {
-      fetchManagerTimesheetOfProjectView(startDateMonth, endDateMonth);
+      debounceFetchData(() => fetchManagerTimesheetOfProjectView(startDateMonth, endDateMonth));
+      return () => {
+        cancelRequest();
+        cancelRequest2();
+      };
     }
+    return () => {};
   }, [startDateMonth, selectedView, currentProject, page, nameSearch]);
 
   // generate dates for week
@@ -223,6 +251,7 @@ const ProjectView = (props) => {
             data={managerProjectViewList}
             tablePagination={managerProjectViewPagination}
             onChangePage={onChangePage}
+            holidays={holidays}
           />
         );
       case VIEW_TYPE.M:
@@ -234,6 +263,7 @@ const ProjectView = (props) => {
             data={managerProjectViewList}
             tablePagination={managerProjectViewPagination}
             onChangePage={onChangePage}
+            holidays={holidays}
           />
         );
       default:

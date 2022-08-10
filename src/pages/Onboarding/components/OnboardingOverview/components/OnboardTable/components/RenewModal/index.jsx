@@ -10,9 +10,9 @@ import styles from './index.less';
     loading,
     location: { companyLocationList = [] } = {},
     user: { currentUser = {}, companiesOfUser = [] },
-    onboard: { hrList = [], filterList = {} } = {},
+    onboarding: { hrList = [], filterList = {} } = {},
   }) => ({
-    loadingHandleExpiryTicket: loading.effects['onboard/handleExpiryTicket'],
+    loadingHandleExpiryTicket: loading.effects['onboarding/handleExpiryTicket'],
     currentUser,
     companyLocationList,
     companiesOfUser,
@@ -38,28 +38,19 @@ class RenewModal extends PureComponent {
   };
 
   onFinish = async (values) => {
-    const {
-      handleRenewModal = () => {},
-      ticketId = '',
-      dispatch,
-      processStatus = '',
-      type = '',
-      page = '',
-      limit = '',
-    } = this.props;
+    const { handleRenewModal = () => {}, dispatch, item = {} } = this.props;
+
+    const { ticketID = '' } = item;
+
     const { expiryDate = '' } = values;
     if (expiryDate) {
       const res = await dispatch({
         type: 'onboarding/handleExpiryTicket',
         payload: {
-          id: ticketId,
+          id: ticketID,
           tenantId: getCurrentTenant(),
           expiryDate,
           type: 1, // renew
-          isAll: type === 'ALL',
-          processStatus,
-          page,
-          limit,
         },
       });
       if (res?.statusCode === 200) {

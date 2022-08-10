@@ -9,7 +9,7 @@ import styles from './index.less';
 
 @connect(
   ({
-    user: { currentUser = {}, permissions = {}, } = {},
+    user: { currentUser = {}, permissions = {} } = {},
     frequentlyAskedQuestions: { list = [], listDefault = {}, getListByCompany = {} } = {},
   }) => ({
     list,
@@ -20,35 +20,49 @@ import styles from './index.less';
   }),
 )
 class FAQs extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: '',
+    };
+  }
+
   componentDidMount() {
     const { dispatch, currentUser: { company: { _id: idCompany = '' } = {} } = {} } = this.props;
-    if (dispatch) {
-      dispatch({
-        type: 'frequentlyAskedQuestions/getListByCompany',
-        payload: { company: idCompany },
-      });
+    const { pathname } = window.location;
+    // if (dispatch) {
+    //   dispatch({
+    //     type: 'frequentlyAskedQuestions/getListByCompany',
+    //     payload: { company: idCompany },
+    //   });
+    // }
+    if (pathname === '/faq') {
+      this.setState({ title: 'FAQs' });
+    }
+    if (pathname === '/help-center') {
+      this.setState({ title: 'HRMS Help Center' });
     }
   }
 
   render() {
-    const {
-      permissions
-    } = this.props;
+    const { permissions } = this.props;
+    const { pathname } = window.location;
+    const { title } = this.state;
     const checkRoleHrAndManager = permissions.viewFAQSetting !== -1;
     return (
       <PageContainer>
         <Row className={styles.FAQs}>
           <Col span={24}>
             <div className={styles.header}>
-              <div className={styles.header__left}>FAQs</div>
+              <div className={styles.header__left}>{title}</div>
               <div className={styles.header__right}>
-                {checkRoleHrAndManager ? (
+                {checkRoleHrAndManager && (
                   <Button>
-                    <Link to="/faqpage/settings">
+                    <Link to={pathname === '/faq' ? '/faq/settings' : '/help-center/settings'}>
                       <span className={styles.buttonSetting__text}>Settings</span>
                     </Link>
                   </Button>
-                ) : null}
+                )}
               </div>
             </div>
           </Col>

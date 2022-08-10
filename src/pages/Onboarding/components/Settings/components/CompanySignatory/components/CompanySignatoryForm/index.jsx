@@ -1,14 +1,15 @@
 /* eslint-disable no-console */
-import React, { PureComponent } from 'react';
-import { Table, Empty, message, Image, notification } from 'antd';
+import { Image, message, notification } from 'antd';
 import axios from 'axios';
+import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
-import EditIcon from './images/edit.svg';
-import DownloadIcon from './images/download.svg';
-import DeleteIcon from './images/delete.svg';
 import EditSignatoryModal from '../EditSignatoryModal';
+import DeleteIcon from './images/delete.svg';
+import DownloadIcon from './images/download.svg';
+import EditIcon from './images/edit.svg';
 
+import CommonTable from '@/components/CommonTable';
 import styles from './index.less';
 
 @connect(
@@ -218,46 +219,21 @@ class CompanySignatoryForm extends PureComponent {
   };
 
   render() {
-    const { pageSelected, editModalVisible, editPack } = this.state;
+    const { editModalVisible, editPack } = this.state;
     const {
-      companySignature = [],
       showAddSignatoryModal = () => {},
       addModalVisible = false,
       companyId = '',
       loadingSignatoryList,
     } = this.props;
-    const rowSize = 10;
-
-    const pagination = {
-      position: ['bottomLeft'],
-      total: companySignature.length,
-      showTotal: (total, range) => (
-        <span>
-          Showing{' '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          of {total}{' '}
-        </span>
-      ),
-      pageSize: rowSize,
-      current: pageSelected,
-      onChange: this.onChangePagination,
-    };
 
     return (
       <div className={styles.CompanySignatoryForm}>
         <div className={styles.CompanySignatoryForm_form}>
-          <Table
-            size="large"
-            locale={{
-              emptyText: <Empty description="No signatory" />,
-            }}
+          <CommonTable
             loading={loadingSignatoryList}
             columns={this.generateColumns()}
-            dataSource={this.parseList()}
-            // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-            pagination={{ ...pagination, total: companySignature.length }}
+            list={this.parseList()}
           />
           {Object.keys(editPack).length !== 0 && (
             <EditSignatoryModal

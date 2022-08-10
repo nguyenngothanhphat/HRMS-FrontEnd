@@ -1,74 +1,51 @@
 .approvalPage {
   margin: 24px;
   :global {
-    .ant-card-extra {
-      padding: 0 !important;
+    .ant-card {
+      overflow: hidden;
+      border: 1px solid @border-color-base;
+      border-radius: 5px;
+      .ant-card-head {
+        display: flex;
+        align-items: center;
+        height: 75px;
+        border-bottom: 1px solid @border-color-base;
+        .ant-card-head-wrapper {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          .ant-card-head-title {
+            color: #161c29;
+            font-weight: 500;
+            font-size: 16px;
+          }
+        }
+      }
+      .ant-card-body {
+        padding: 0px;
+      }
+    }
+    .ant-table-cell {
+      line-height: 20px;
     }
   }
   &__table {
     background: #ffffff;
-    border: 1px solid #d6dce0;
+    border: 1px solid @border-color-base;
     border-radius: 8px;
 
+    .searchFilter {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+    }
     .tableApproval {
-      margin: 0 12px;
+      margin: @margin-lg;
     }
     .employeeName {
       cursor: pointer;
     }
-    .tagCountFilter {
-      padding: 5px;
-      border-radius: 15px;
-    }
-    .searchFilter {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      margin: 24px;
-
-      :global {
-        .ant-input-prefix {
-          margin-right: 16px;
-        }
-
-        .ant-input .nt-input-lg {
-          color: #707177;
-          font-weight: normal;
-          font-size: 14px;
-          font-style: normal;
-          line-height: 16px;
-          opacity: 0.5;
-
-          mix-blend-mode: normal;
-        }
-
-        .ant-input-affix-wrapper-focused {
-          box-shadow: none;
-        }
-      }
-
-      &__icon {
-        margin-right: 14px;
-        // cursor: pointer;
-      }
-
-      &__input {
-        width: 240px;
-        height: 37px;
-        background: #fffefe;
-        border: 1px solid #d6dce0;
-        border-radius: 33px;
-      }
-    }
-
-    // .btnDetail {
-    //   color: #ffa100;
-    //   font-weight: 500;
-    //   font-size: 12px;
-    //   span {
-    //     text-decoration: underline;
-    //   }
-    // }
     .containerBtn {
       display: flex;
       align-items: center;
@@ -80,7 +57,7 @@
     }
 
     .blueText {
-      color: #2c6df9;
+      color: @primary-color;
       font-weight: 500;
       font-size: 13px;
     }
@@ -88,6 +65,10 @@
       color: #ffa100;
       font-weight: 500;
       font-size: 13px;
+    }
+
+    a {
+      font-weight: 500;
     }
   }
 }

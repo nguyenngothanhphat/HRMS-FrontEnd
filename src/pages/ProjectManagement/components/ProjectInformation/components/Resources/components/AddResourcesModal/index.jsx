@@ -1,11 +1,12 @@
 import { Button, Col, Modal, Row } from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import BackIcon from '@/assets/projectManagement/back.svg';
 import ModalImage from '@/assets/projectManagement/modalImage1.png';
 import WarningAddResource from '@/assets/resourceManagement/WarningAddResource.svg';
 import CommonModal from '@/components/CommonModal';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import ResourceTableCard from './components/ResourceTableCard';
 import ReviewResourceTable from './components/ReviewResourceTable';
@@ -44,6 +45,11 @@ const AddResourcesModal = (props) => {
   const [step, setStep] = useState(1);
   const [selectedResources, setSelectedResources] = useState([]);
 
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [searchValue, setSearchValue] = useState('');
+  const [filter, setFilter] = useState({});
+
   // functions
   const onBack = () => {
     if (step > 1) setStep(step - 1);
@@ -55,14 +61,14 @@ const AddResourcesModal = (props) => {
     setSelectedResources(result);
   };
 
-  const fetchResourceList = (name = '', page = 1, limit = 5, filter) => {
+  const fetchResourceList = () => {
     dispatch({
       type: 'projectDetails/fetchResourceListEffect',
       payload: {
         notInProject: projectNumberId,
         page,
         limit,
-        name,
+        name: searchValue,
         ...filter,
         employeeId,
         adminMode,
@@ -70,6 +76,12 @@ const AddResourcesModal = (props) => {
       },
     });
   };
+
+  useEffect(() => {
+    if (visible) {
+      fetchResourceList();
+    }
+  }, [visible, searchValue, limit, page, JSON.stringify(filter)]);
 
   const assignResources = () => {
     const payload = selectedResources.map((x) => {
@@ -79,8 +91,8 @@ const AddResourcesModal = (props) => {
         project: projectNumberId,
         // status: 'Billable',
         // utilization: '',
-        startDate: startDate ? moment(startDate).format('YYYY-MM-DD') : '',
-        endDate: endDate ? moment(endDate).format('YYYY-MM-DD') : '',
+        startDate: startDate ? moment(startDate).format(DATE_FORMAT_YMD) : '',
+        endDate: endDate ? moment(endDate).format(DATE_FORMAT_YMD) : '',
         employee: x._id,
       };
     });
@@ -118,11 +130,11 @@ const AddResourcesModal = (props) => {
       },
       {
         label: 'Start Date',
-        value: startDate ? moment(startDate).locale('en').format('MM/DD/YYYY') : '',
+        value: startDate ? moment(startDate).locale('en').format(DATE_FORMAT_MDY) : '',
       },
       {
         label: 'End Date',
-        value: endDate ? moment(endDate).locale('en').format('MM/DD/YYYY') : '',
+        value: endDate ? moment(endDate).locale('en').format(DATE_FORMAT_MDY) : '',
       },
     ];
     return (
@@ -146,6 +158,13 @@ const AddResourcesModal = (props) => {
             total={resourceListTotal}
             selectedResources={selectedResources}
             setSelectedResources={setSelectedResources}
+            setSearchValue={setSearchValue}
+            filter={filter}
+            setFilter={setFilter}
+            page={page}
+            limit={limit}
+            setPage={setPage}
+            setLimit={setLimit}
           />
         </Row>
       </div>
@@ -236,9 +255,11 @@ const AddResourcesModal = (props) => {
               {step === 2 && (
                 <>
                   <span>
-                    <div className={styles.warnningAddResource}>
-                      <p className={styles.warnningImage}><img src={WarningAddResource} alt="warnning add resource" /></p>
-                      <p className={styles.descTextWarnning}>
+                    <div className={styles.warningAddResource}>
+                      <p className={styles.warningImage}>
+                        <img src={WarningAddResource} alt="warning add resource" />
+                      </p>
+                      <p className={styles.descTextWarning}>
                         If a change of manager is needed - you need to assign via the Resource
                         Management page
                       </p>
@@ -255,7 +276,7 @@ const AddResourcesModal = (props) => {
                 className={styles.btnSubmit}
                 type="primary"
                 onClick={onPrimaryButtonClick}
-                disabled={selectedResources.length === 0}
+                disabled={selectedResources.length === 0 || step === 2}
               >
                 {renderPrimaryButtonText()}
               </Button>

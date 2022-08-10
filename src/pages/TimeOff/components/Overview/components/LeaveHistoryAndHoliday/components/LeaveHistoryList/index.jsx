@@ -3,7 +3,7 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { history } from 'umi';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import EmptyComponent from '@/components/Empty';
 import styles from './index.less';
 

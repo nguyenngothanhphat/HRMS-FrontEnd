@@ -1,14 +1,15 @@
+import { debounce } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { debounce } from 'lodash';
-import { dateFormatAPI, VIEW_TYPE, TAB_NAME, generateAllWeeks } from '@/utils/timeSheet';
-import { getCurrentCompany } from '@/utils/authority';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import { dateFormatAPI, TAB_NAME, VIEW_TYPE } from '@/constants/timeSheet';
 import ViewTypeSelector from '@/pages/TimeSheet/components/ComplexView/components/ViewTypeSelector';
-import WeeklyTable from './components/WeeklyTable';
+import { getCurrentCompany } from '@/utils/authority';
+import { generateAllWeeks } from '@/utils/timeSheet';
+import Footer from './components/Footer';
+import Header from './components/Header';
 import MonthlyTable from './components/MonthlyTable';
+import WeeklyTable from './components/WeeklyTable';
 import styles from './index.less';
 
 const FinanceReport = (props) => {

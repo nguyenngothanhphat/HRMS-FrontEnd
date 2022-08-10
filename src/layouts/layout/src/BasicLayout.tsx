@@ -199,7 +199,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
     children,
     onCollapse: propsOnCollapse,
     location = { pathname: '/' },
-    fixSiderbar,
+    fixSidebar,
     navTheme,
     contentStyle,
     route = {
@@ -215,6 +215,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
     loading,
     ...rest
   } = props;
+
   const propsLayout = compatibleLayout(defaultPropsLayout);
   const { prefixCls } = rest;
   const formatMessage = ({
@@ -358,7 +359,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
     [`screen-${colSize}`]: colSize,
     [`${baseClassName}-top-menu`]: propsLayout === 'top',
     [`${baseClassName}-is-children`]: isChildrenLayout,
-    [`${baseClassName}-fix-siderbar`]: fixSiderbar,
+    [`${baseClassName}-fix-siderbar`]: fixSidebar,
     [`${baseClassName}-mobile`]: isMobile,
   });
 

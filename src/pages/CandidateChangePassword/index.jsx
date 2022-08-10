@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
 import ChangePasswordBox from '@/components/ChangePasswordBox';
 import { getCurrentTenant } from '@/utils/authority';
-import { PORTAL_TAB_NAME } from '@/utils/candidatePortal';
+import { PORTAL_TAB_NAME } from '@/constants/candidatePortal';
 import styles from './index.less';
 
 const { TabPane } = Tabs;

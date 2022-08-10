@@ -5,7 +5,7 @@ import AddButton from './components/AddButton';
 import QuickLinkTable from './components/QuickLinkTable';
 import TimeOffTable from './components/TimeOffTable';
 import styles from './index.less';
-import { TAB_IDS_QUICK_LINK } from '@/utils/homePage';
+import { TAB_IDS_QUICK_LINK } from '@/constants/homePage';
 
 const QuickLinkCard = (props) => {
   const {

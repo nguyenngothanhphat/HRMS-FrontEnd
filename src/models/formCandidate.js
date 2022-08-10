@@ -11,7 +11,7 @@ import {
   updateByHR,
 } from '@/services/newCandidateForm';
 import { dialog } from '@/utils/utils';
-import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { ONBOARDING_FORM_LINK } from '@/constants/onboarding';
 
 const info = {
   namespace: 'info',

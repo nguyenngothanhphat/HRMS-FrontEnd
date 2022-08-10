@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { EMP_ROW_HEIGHT } from '@/utils/timeSheet';
+import { EMP_ROW_HEIGHT } from '@/constants/timeSheet';
 import { diffTime } from '@/utils/utils';
 import styles from './index.less';
 

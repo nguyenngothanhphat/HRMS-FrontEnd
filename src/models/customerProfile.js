@@ -40,6 +40,7 @@ const customerProfile = {
     originNotes: [],
     listTags: [],
     documents: [],
+    totalDocuments: [],
     documentType: [],
     fileURL: '',
     divisionId: '',
@@ -247,12 +248,11 @@ const customerProfile = {
       try {
         response = yield call(getDocument, {
           tenantId: getCurrentTenant(),
-          customerId: payload.id,
-          searchKey: payload.searchKey || null,
+          ...payload,
         });
-        const { statusCode, data } = response;
+        const { statusCode, data, total = 0 } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { documents: data } });
+        yield put({ type: 'save', payload: { documents: data, totalDocuments: total } });
       } catch (error) {
         dialog(error);
       }
@@ -314,8 +314,9 @@ const customerProfile = {
     },
 
     *addDoc({ payload }, { call }) {
+      let response = {};
       try {
-        const response = yield call(addDocument, {
+        response = yield call(addDocument, {
           tenantId: getCurrentTenant(),
           ...payload,
         });
@@ -325,6 +326,7 @@ const customerProfile = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *filterDoc({ payload }, { call, put }) {

@@ -3,7 +3,7 @@ import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { Col, Collapse, Spin } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
-import { mapType } from '@/utils/newCandidateForm';
+import { MAP_TYPE } from '@/constants/newCandidateForm';
 import EmployerComponent from './components/EmployerComponent';
 import styles from './index.less';
 
@@ -33,7 +33,7 @@ const CollapseFieldsTypeE = (props) => {
     dispatch({
       type: 'newCandidateForm/saveTemp',
       payload: {
-        [mapType[type]]: result,
+        [MAP_TYPE[type]]: result,
       },
     });
   };

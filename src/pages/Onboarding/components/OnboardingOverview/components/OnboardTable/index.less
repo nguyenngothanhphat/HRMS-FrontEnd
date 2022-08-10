@@ -1,44 +1,24 @@
-@border-color: #d6dce0;
+@border-color: @border-color-base;
 @orange: #fe5d27;
 @darkBlue: #253c6b;
 @expired-background: #cddcfc;
 @new-background: #fff4f1;
-@border-color: #d6dce0;
 @checkbox-background: #e7eaee;
 @checkbox-border: #707177;
 @gray: #707177;
 @red: #ff5252;
-@blue: #2c6df9;
+@blue: @primary-color;
 @white: #ffffff;
-@yelow: #ffa100;
-
-.mixin-border-bottom-row {
-  border-bottom: solid 1px @border-color;
-}
+@yellow: #ffa100;
 
 .OnboardTable {
-  padding: 24px;
-  padding-bottom: 0;
+  padding: @padding-lg;
   background-color: @white;
-  border: solid 1px @border-color;
-  border-radius: 8px;
-
-  &.inTab {
-    border: none;
-  }
 
   :global {
-    .ant-table-body {
-      border-bottom: 1px solid @border-color;
-    }
-
     .ant-dropdown-menu-title-content {
       font-size: 13px !important;
     }
-  }
-
-  table {
-    // border-bottom: 1px solid @border-color;
   }
 
   .tableActions {
@@ -153,18 +133,6 @@
       }
     }
 
-    td.ant-table-cell {
-      width: 84px;
-      height: 15px;
-      color: #464646;
-      font-weight: normal;
-      font-size: 13px;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: normal;
-      letter-spacing: 0.12px;
-    }
-
     .ant-table-tbody {
       tr:last-child td {
         border-bottom: solid 1px white;
@@ -172,7 +140,7 @@
     }
 
     .ant-table-tbody > tr > td {
-      .mixin-border-bottom-row();
+      border-bottom: solid 1px @border-color-base;
     }
 
     th.ant-table-selection-column {
@@ -185,30 +153,6 @@
       &:after {
         border-color: @blue;
       }
-    }
-
-    .ant-checkbox-wrapper {
-      border-color: @checkbox-border;
-    }
-
-    .ant-table-selection,
-    .ant-table-selection-column {
-      height: fit-content;
-      // width: fit-content;
-    }
-
-    thead {
-      tr {
-        height: 35px;
-      }
-
-      .ant-table-selection {
-        height: 18px;
-      }
-    }
-
-    .ant-tabs-nav {
-      height: 56px;
     }
 
     .ant-dropdown-button {
@@ -229,16 +173,6 @@
       color: @blue;
       font-weight: 500;
       letter-spacing: 0.12px;
-    }
-
-    .ant-table-thead > tr > th {
-      color: @white;
-      font-weight: 500;
-      font-size: 13px;
-
-      font-style: normal;
-      line-height: 15px;
-      letter-spacing: 0.121875px;
     }
   }
 
@@ -274,7 +208,7 @@
   }
 
   .blueTag {
-    color: #2c6df9;
+    color: @primary-color;
   }
   .greenTag {
     color: #00c598;
@@ -330,16 +264,6 @@
   }
 }
 
-.popupContentHr {
-  width: fit-content;
-
-  :global {
-    .ant-popover-inner-content {
-      padding: 24px;
-    }
-  }
-}
-
 //modal
 .joiningFormalitiesModal {
   width: 600px !important;
@@ -355,14 +279,14 @@
       letter-spacing: 0.13px;
       // display: none;
       text-shadow: none;
-      background-color: @yelow;
-      border: solid 1px @yelow;
+      background-color: @yellow;
+      border: solid 1px @yellow;
       border-radius: 25px;
       box-shadow: none;
 
       &:hover {
         color: @white;
-        background-color: @yelow;
+        background-color: @yellow;
       }
     }
 
@@ -371,7 +295,7 @@
       height: 40px;
       padding-right: 41px;
       object-fit: contain;
-      color: @yelow;
+      color: @yellow;
       font-weight: 500;
       font-size: 14px;
 
@@ -486,8 +410,8 @@
         font-size: 13px;
         line-height: unset !important;
         background: #ffffff;
-        border: 1px solid #d6dce0;
-        border-left: 4px solid #2c6df9;
+        border: 1px solid @border-color-base;
+        border-left: 4px solid @primary-color;
         border-radius: 5px;
       }
       .ant-select-selection-item-remove {
@@ -553,7 +477,7 @@
     // height: 40px;
     font-weight: 600;
     font-size: 14px;
-    background-color: @yelow;
+    background-color: @yellow;
     border: none;
     border-radius: 25px;
   }
@@ -566,7 +490,7 @@
   .btnCancel {
     display: inline-block;
     margin-right: 20px;
-    color: @yelow;
+    color: @yellow;
     font-weight: 500;
     font-size: 14px;
     border: none;
@@ -680,7 +604,7 @@
     margin-top: 24px;
     padding: 24px 24px 0 24px;
     background: #fafcff;
-    border: 1px solid #d6dce0;
+    border: 1px solid @border-color-base;
     border-radius: 5px;
 
     .check {
@@ -700,7 +624,7 @@
     // margin-top: 24px;
     padding: 24px 24px 12px 24px;
     background: #fafcff;
-    border: 1px solid #d6dce0;
+    border: 1px solid @border-color-base;
     border-radius: 5px;
 
     &__text {
@@ -727,7 +651,7 @@
 
     .showBtn {
       padding: 4px 8px;
-      color: #2c6df9;
+      color: @primary-color;
     }
     .content {
       margin-bottom: 24px;
@@ -749,7 +673,7 @@
     }
     .comment {
       padding: 12px 16px;
-      color: #2c6df9;
+      color: @primary-color;
       font-weight: 400;
       font-size: 14px;
       font-style: normal;
@@ -811,7 +735,7 @@
     color: #ff4949;
   }
   .link {
-    color: #2c6df9;
+    color: @primary-color;
   }
 }
 
@@ -839,7 +763,7 @@
 .primaryTag {
   float: right;
   margin-left: auto;
-  color: #2c6df9;
+  color: @primary-color;
   background: #e6eeff;
   border-radius: 12px;
 }

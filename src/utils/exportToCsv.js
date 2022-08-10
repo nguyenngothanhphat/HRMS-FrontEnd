@@ -1,8 +1,7 @@
-/* eslint-disable no-plusplus */
-export default function exportToCsv(filename, rows) {
+export const exportArrayDataToCsv = (filename, rows) => {
   const processRow = (row) => {
     let finalVal = '';
-    for (let j = 0; j < row.length; j++) {
+    for (let j = 0; j < row.length; j += 1) {
       let innerValue = row[j] === null ? '' : row[j].toString();
       if (row[j] instanceof Date) {
         innerValue = row[j].toLocaleString();
@@ -16,7 +15,7 @@ export default function exportToCsv(filename, rows) {
   };
 
   let csvFile = '';
-  for (let i = 0; i < rows.length; i++) {
+  for (let i = 0; i < rows.length; i += 1) {
     csvFile += processRow(rows[i]);
   }
 
@@ -31,11 +30,21 @@ export default function exportToCsv(filename, rows) {
       // Browsers that support HTML5 download attribute
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
-      link.setAttribute('download', filename);
+      link.setAttribute('download', `${filename}.csv`);
       link.style.visibility = 'hidden';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     }
   }
-}
+};
+
+export const exportRawDataToCSV = (data, fileName) => {
+  const downloadLink = document.createElement('a');
+  const universalBOM = '\uFEFF';
+  downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(universalBOM + data)}`;
+  downloadLink.download = `${fileName}.csv`;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+};

@@ -50,7 +50,7 @@ const AssignTeamModal = (props) => {
     }
 
     return () => {
-      form.setFieldsValue({ newTeam: '', ccList: [], queryType: '' });
+      form.setFieldsValue({ newTeam: null, ccList: [], queryType: null });
       setQueryTypeList([]);
     };
   }, [visible]);
@@ -95,6 +95,7 @@ const AssignTeamModal = (props) => {
         departmentAssign: newTeamId,
         employee: employeeId,
         role,
+        permissions: ['M_ADMIN_VIEW_TICKETS'],
       },
     }).then((res) => {
       const { statusCode = '' } = res;

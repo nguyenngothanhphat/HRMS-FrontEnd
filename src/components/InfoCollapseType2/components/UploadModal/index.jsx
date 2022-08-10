@@ -1,11 +1,13 @@
 /* eslint-disable compat/compat */
+import { Button, Form, Input, Modal, notification, Spin, Upload } from 'antd';
 import React, { Component } from 'react';
-import { Upload, message, Button, Spin, Modal, Input, Form, notification } from 'antd';
 import { connect } from 'umi';
-import FileUploadIcon from '@/assets/uploadFile_icon.svg';
-import PDFIcon from '@/assets/pdf_icon.png';
 import ImageIcon from '@/assets/image_icon.png';
+import PDFIcon from '@/assets/pdf_icon.png';
+import FileUploadIcon from '@/assets/uploadFile_icon.svg';
 // import { LogoutOutlined } from '@ant-design/icons';
+import { FILE_TYPE } from '@/constants/upload';
+import { beforeUpload, compressImage, identifyFile } from '@/utils/upload';
 import styles from './index.less';
 
 const { Dragger } = Upload;
@@ -38,54 +40,17 @@ class UploadModal extends Component {
     }
   };
 
-  identifyImageOrPdf = (fileName) => {
-    const parts = fileName.split('.');
-    const ext = parts[parts.length - 1];
-    switch (ext.toLowerCase()) {
-      case 'jpg':
-      case 'jpeg':
-      case 'gif':
-      case 'bmp':
-      case 'png':
-        return 0;
-      case 'pdf':
-        return 1;
-      default:
-        return 0;
-    }
-  };
-
   handlePreview = (fileName) => {
     this.setState({
       uploadedFileName: fileName,
     });
   };
 
-  beforeUpload = (file) => {
-    const { setSizeImageMatch = () => {} } = this.props;
-    const checkType =
-      file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf';
-    if (!checkType) {
-      message.error('You can only upload JPG/PNG/PDF file!');
-    }
-    const isLt5M = file.size / 1024 / 1024 < 5;
-    if (!isLt5M) {
-      message.error('Image must smaller than 5MB!');
-      setSizeImageMatch(isLt5M);
-      // this.setState({ check: isLt5M });
-    }
-    setTimeout(() => {
-      setSizeImageMatch(isLt5M);
-      // this.setState({ check: isLt5M });
-    }, 2000);
-    return checkType && isLt5M;
-  };
-
-  handleUpload = (file) => {
-    const { dispatch } = this.props;
-
+  handleUpload = async (file) => {
+    const compressedFile = await compressImage(file);
     const formData = new FormData();
-    formData.append('uri', file);
+    formData.append('blob', compressedFile, file.name);
+    const { dispatch } = this.props;
     dispatch({
       type: 'upload/uploadFile',
       payload: formData,
@@ -267,14 +232,14 @@ class UploadModal extends Component {
           <div>
             <div className={styles.FileUploadForm}>
               <Dragger
-                beforeUpload={this.beforeUpload}
+                beforeUpload={(file) => beforeUpload(file, [FILE_TYPE.IMAGE, FILE_TYPE.PDF])}
                 showUploadList={false}
                 action={(file) => this.handleUpload(file)}
               >
                 {uploadedFileName !== '' ? (
                   <div className={styles.fileUploadedContainer}>
                     <p className={styles.previewIcon}>
-                      {this.identifyImageOrPdf(uploadedFileName) === 1 ? (
+                      {identifyFile(uploadedFileName) === FILE_TYPE.PDF ? (
                         <img src={PDFIcon} alt="pdf" />
                       ) : (
                         <img src={ImageIcon} alt="img" />

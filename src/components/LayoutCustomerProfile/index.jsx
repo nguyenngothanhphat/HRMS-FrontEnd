@@ -1,11 +1,7 @@
-/* eslint-disable react/jsx-curly-newline */
-import { Col, Row, Skeleton } from 'antd';
-// import _ from 'lodash';
+import { Col, Row, Spin } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
-// import { isOwner } from '@/utils/authority';
 import ItemMenu from './components/ItemMenu';
-// import UploadLogoCompany from './components/UploadLogoCompany';
 import ViewInformation from './components/ViewInformation';
 import s from './index.less';
 
@@ -54,7 +50,7 @@ class CommonLayout extends PureComponent {
     });
     const { reId } = this.props;
 
-    history.push(`/customer-management/customers/customer-profile/${reId}/${item.link}`);
+    history.push(`/customer-management/list/customer-profile/${reId}/${item.link}`);
   };
 
   render() {
@@ -80,7 +76,7 @@ class CommonLayout extends PureComponent {
         <Col xs={24} md={18} xl={20} className={s.viewRight}>
           <Row gutter={[24, 24]}>
             <Col xs={24} xl={18}>
-              {loading ? <Skeleton /> : displayComponentActions || displayComponent}
+              <Spin spinning={loading}>{displayComponentActions || displayComponent}</Spin>
             </Col>
             <Col xs={24} xl={6}>
               <ViewInformation />

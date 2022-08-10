@@ -7,7 +7,7 @@ import ProjectTag from '../ProjectTag';
 import styles from './index.less';
 
 const MyProjects = (props) => {
-  const { isInModal = false, projectList = [], resoucreList = [], myId = '' } = props;
+  const { isInModal = false, projectList = [], resourceList = [], myId = '' } = props;
   const result = projectList.filter((val) => val.projectManager !== null);
   const newProjectList = result.filter((val) => val.projectManager.generalInfo._id === myId);
 
@@ -16,7 +16,7 @@ const MyProjects = (props) => {
     <div className={styles.MyProjects} style={isInModal ? { maxHeight: '600px' } : {}}>
       <Row gutter={[16, 16]}>
         {newProjectList.map((project) => {
-          return <ProjectTag project={project} resourceProject={resoucreList} />;
+          return <ProjectTag project={project} resourceProject={resourceList} />;
         })}
       </Row>
     </div>
@@ -25,7 +25,7 @@ const MyProjects = (props) => {
 
 export default connect(
   ({
-    dashboard: { projectList = [], resoucreList = [] } = {},
+    dashboard: { projectList = [], resourceList = [] } = {},
     user: { currentUser: { employee: { generalInfo: { _id: myId = '' } = {} } = {} } = {} } = {},
-  }) => ({ projectList, resoucreList, myId }),
+  }) => ({ projectList, resourceList, myId }),
 )(MyProjects);

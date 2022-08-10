@@ -1,22 +1,25 @@
 /* eslint-disable react/jsx-curly-newline */
 import { Form, Select } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { VIEW_TYPE } from '@/utils/timeSheet';
+import { VIEW_TYPE } from '@/constants/timeSheet';
 import styles from './index.less';
 
 const FilterContent = (props) => {
   const [form] = Form.useForm();
   const {
     dispatch,
-    timeSheet: { projectTypeList = [], projectList = [], employeeNameList = [] } = {},
+    timeSheet: {
+      filterFinance = {},
+      projectTypeList = [],
+      projectList = [],
+      employeeNameList = [],
+    } = {},
     type: viewType = '',
     loadingFetchEmployeeNameList = false,
     loadingFetchProjectTypeList = false,
     loadingFetchProjectList = false,
-    setApplied,
-    setForm,
   } = props;
 
   useEffect(() => {
@@ -29,7 +32,6 @@ const FilterContent = (props) => {
     dispatch({
       type: 'timeSheet/fetchEmployeeNameListEffect',
     });
-    setForm(form);
   }, []);
 
   // FUNCTIONALITY
@@ -59,15 +61,16 @@ const FilterContent = (props) => {
     onFinish(values);
   }, 700);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    const filteredObj = Object.entries(values).filter(
-      ([, value]) => value !== undefined && value.length > 0,
-    );
-    const newObj = Object.fromEntries(filteredObj);
-    setApplied(Object.keys(newObj).length);
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
+
+  // clear values
+  useEffect(() => {
+    if (isEmpty(filterFinance)) {
+      form.resetFields();
+    }
+  }, [JSON.stringify(filterFinance)]);
 
   return (
     <Form

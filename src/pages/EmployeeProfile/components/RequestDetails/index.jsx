@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Form, Row, Col, Select, Divider, Button, Modal, Tag } from 'antd';
 import { CloseCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 import path from '@/assets/path.svg';
 import modalSuccess from '@/assets/modal_img_1.png';
 
-import Checkbox from 'antd/lib/checkbox/Checkbox';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -40,7 +40,7 @@ class RequestDetails extends Component {
     });
   };
 
-  handleCandelModal = () => {
+  handleCancelModal = () => {
     this.setState({
       visible: false,
     });
@@ -107,8 +107,7 @@ class RequestDetails extends Component {
                         onChange={this.onChangeSelect}
                         tagRender={this.tagRender}
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
                         <Option value="1">Eligibility Documents</Option>
                         <Option value="2">Bank Details</Option>
@@ -155,8 +154,8 @@ class RequestDetails extends Component {
         <Modal
           visible={visible}
           title={false}
-          onCancel={this.handleCandelModal}
-          destroyOnClose={this.handleCandelModal}
+          onCancel={this.handleCancelModal}
+          destroyOnClose={this.handleCancelModal}
           footer={false}
           className={styles.modalPopup}
         >

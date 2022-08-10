@@ -1,10 +1,11 @@
-import React, { PureComponent } from 'react';
-import { Input, Spin } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import { Input, Spin } from 'antd';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
-import HRIcon2 from '@/assets/candidatePortal/HRViolet.svg';
 import HRIcon3 from '@/assets/candidatePortal/HRRed.svg';
+import HRIcon2 from '@/assets/candidatePortal/HRViolet.svg';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const avatars = [HRIcon1, HRIcon2, HRIcon3];
@@ -21,8 +22,8 @@ class MessageList extends PureComponent {
 
   getTime = (dateTime) => {
     const compare = (dateTimeA, dateTimeB) => {
-      const momentA = moment(dateTimeA).format('DD/MM/YYYY');
-      const momentB = moment(dateTimeB).format('DD/MM/YYYY');
+      const momentA = moment(dateTimeA).format(DATE_FORMAT_MDY);
+      const momentB = moment(dateTimeB).format(DATE_FORMAT_MDY);
       if (momentA === momentB) return 1;
       return 0;
     };
@@ -111,12 +112,12 @@ class MessageList extends PureComponent {
     const { loading = false, activeConversationUnseen = [] } = this.props;
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < data.length; i++) {
-      const findNewMess = activeConversationUnseen.find((x) => x._id === data[i]._id)
+      const findNewMess = activeConversationUnseen.find((x) => x._id === data[i]._id);
       // swap list message
-      const temp = data[i]
+      const temp = data[i];
       if (findNewMess && i > 0) {
-        data[i] = data[i-1]
-        data[i-1] = temp
+        data[i] = data[i - 1];
+        data[i - 1] = temp;
       }
     }
     return (

@@ -1,7 +1,9 @@
 /* eslint-disable camelcase */
-import { Button, Checkbox, Form, Input, Row, Select } from 'antd';
+import { Checkbox, Form, Input, Row, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import styles from './index.less';
 
 const Edit = (props) => {
@@ -11,7 +13,6 @@ const Edit = (props) => {
     generalData = {},
     generalDataOrigin,
     countryList = [],
-
     loading,
     handleCancel = () => {},
     // profileOwner = false,
@@ -324,8 +325,7 @@ const Edit = (props) => {
               showArrow
               showSearch
               filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               onChange={(value) => {
                 onSelectCountry(value, 'resident');
                 form.setFieldsValue({
@@ -351,8 +351,7 @@ const Edit = (props) => {
               showSearch
               loading={loadingStates}
               filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {reListStates.map((item, index) => {
                 return (
@@ -401,8 +400,7 @@ const Edit = (props) => {
               showSearch
               disabled={isSameAddress}
               filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               onChange={(value) => {
                 onSelectCountry(value, 'current');
                 form.setFieldsValue({
@@ -429,8 +427,7 @@ const Edit = (props) => {
               disabled={isSameAddress}
               loading={loadingStates}
               filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {curListStates.map((item, index) => {
                 return (
@@ -451,17 +448,10 @@ const Edit = (props) => {
           </Form.Item>
         </div>
         <div className={styles.spaceFooter}>
-          <div className={styles.cancelFooter} onClick={handleCancel}>
-            Cancel
-          </div>
-          <Button
-            type="primary"
-            htmlType="submit"
-            className={styles.buttonFooter}
-            loading={loading}
-          >
+          <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+          <CustomPrimaryButton htmlType="submit" loading={loading}>
             Save
-          </Button>
+          </CustomPrimaryButton>
         </div>
       </Form>
     </Row>

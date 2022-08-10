@@ -3,6 +3,9 @@
   flex-direction: row;
   min-height: 90vh;
   background-color: #f6f7f9;
+  a {
+    font-weight: 500;
+  }
   .viewLeft {
     width: 250px;
     height: auto;
@@ -45,7 +48,7 @@
       height: auto;
       overflow: hidden;
       background-color: #fff;
-      border: solid 1px #d6dce0;
+      border: solid 1px @border-color-base;
       border-radius: 5px;
       .btnEdit {
         position: absolute;
@@ -107,6 +110,7 @@
             color: #161c29;
             font-weight: 500;
             font-size: 16px;
+            text-align: center;
           }
           &__title {
             // margin: 5px 0;
@@ -156,7 +160,7 @@
               }
             }
             .blueText {
-              color: #2c6df9;
+              color: @primary-color;
               font-weight: 500;
             }
             .clickable {

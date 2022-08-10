@@ -1,22 +1,23 @@
-import { Button, Col, Row, Tag, Tooltip } from 'antd';
+import { Col, Row, Tag } from 'antd';
+import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
-import { isEmpty } from 'lodash';
-import {
-  roundNumber,
-  TIMEOFF_STATUS,
-  TIMEOFF_TYPE,
-  checkNormalTypeTimeoff,
-  isUpdatedRequest,
-  isNewRequest,
-} from '@/utils/timeOff';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
+import ArrowDownIcon from '@/assets/arrowDownCollapseIcon.svg';
 import EditIcon from '@/assets/editBtnBlue.svg';
+import PDFIcon from '@/assets/pdf_icon.png';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
+import { TIMEOFF_STATUS, TIMEOFF_TYPE } from '@/constants/timeOff';
+import {
+  checkNormalTypeTimeoff,
+  isNewRequest,
+  isUpdatedRequest,
+  roundNumber
+} from '@/utils/timeOff';
 import Withdraw2Modal from '../Withdraw2Modal';
 import WithdrawModal from '../WithdrawModal';
-import PDFIcon from '@/assets/pdf_icon.png';
-import ArrowDownIcon from '@/assets/arrowDownCollapseIcon.svg';
 import styles from './index.less';
 
 const { IN_PROGRESS, ACCEPTED, REJECTED, DRAFTS } = TIMEOFF_STATUS;
@@ -81,9 +82,9 @@ class RequestInformation extends PureComponent {
   formatDurationTime = (fromDate, toDate) => {
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment(fromDate).locale('en').format('MM/DD/YYYY')} - ${moment(toDate)
+      leaveTimes = `${moment(fromDate).locale('en').format(DATE_FORMAT_MDY)} - ${moment(toDate)
         .locale('en')
-        .format('MM/DD/YYYY')}`;
+        .format(DATE_FORMAT_MDY)}`;
     }
     return leaveTimes;
   };
@@ -155,8 +156,8 @@ class RequestInformation extends PureComponent {
   };
 
   checkWithdrawValid = (fromDate) => {
-    const now = moment().format('YYYY-MM-DD');
-    const from = moment(fromDate).format('YYYY-MM-DD');
+    const now = moment().format(DATE_FORMAT_YMD);
+    const from = moment(fromDate).format(DATE_FORMAT_YMD);
     return from > now;
   };
 
@@ -221,12 +222,12 @@ class RequestInformation extends PureComponent {
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
-    const listTime = leaveDates.map((x) => moment(x.date).format('MM/DD/YYYY'));
+    const listTime = leaveDates.map((x) => moment(x.date).format(DATE_FORMAT_MDY));
 
     const checkWithdrawValid =
       status === IN_PROGRESS ||
       (status === ACCEPTED &&
-        this.checkWithdrawValid(fromDate || moment(leaveDates[0]?.date, 'YYYY-MM-DD')));
+        this.checkWithdrawValid(fromDate || moment(leaveDates[0]?.date, DATE_FORMAT_YMD)));
 
     const duration = roundNumber(durationProp);
     const isUpdated = isUpdatedRequest(status, updated);
@@ -237,7 +238,7 @@ class RequestInformation extends PureComponent {
         <div className={styles.formTitle}>
           <span className={styles.title}>
             <span className={styles.ticketID}>
-              {loadingFetchLeaveRequestById ? '' : `[Ticket ID: ${ticketID}]: ${subject}`}
+              {`[Ticket ID: ${ticketID}]: ${subject}`}
             </span>
             {isUpdated && <Tag color="#2C6DF9">Updated</Tag>}
             {isNew && !isUpdated && <Tag color="#2C6DF9">New</Tag>}
@@ -354,9 +355,9 @@ class RequestInformation extends PureComponent {
               department head.
             </span>
             <div className={styles.formButtons}>
-              <Button onClick={() => this.withDraw(status)}>
+              <CustomPrimaryButton onClick={() => this.withDraw(status)}>
                 {status === DRAFTS ? 'Discard' : 'Withdraw'}
-              </Button>
+              </CustomPrimaryButton>
             </div>
           </div>
         )}

@@ -1,16 +1,26 @@
-@blueColor: #2c6df9;
+@blueColor: @primary-color;
 .AnnouncementTable {
   // padding: 24px;
   span {
     line-height: 20px;
   }
   .blueText {
-    color: #2c6df9;
+    color: @primary-color;
     font-weight: 500;
   }
   .actions {
     img {
       cursor: pointer;
+    }
+  }
+  .media {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    span {
+      padding-left: 4px;
+      color: #7e7d7d;
+      font-size: 11px;
     }
   }
 }

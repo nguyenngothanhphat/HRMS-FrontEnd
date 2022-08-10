@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 24px;
-  border-bottom: 1px solid #d6dce0;
+  border-bottom: 1px solid @border-color-base;
   .nextIcon,
   .prevIcon {
     cursor: pointer;
@@ -24,11 +24,11 @@
     .currentDate {
       transition: 0.3s;
       .dateName {
-        color: #2c6df9 !important;
+        color: @primary-color !important;
       }
       .icon {
-        background-color: #2c6df9 !important;
-        border-color: #2c6df9 !important;
+        background-color: @primary-color !important;
+        border-color: @primary-color !important;
         span {
           color: #fff !important;
         }
@@ -84,7 +84,7 @@
         min-width: 16px;
         height: 16px;
         margin-top: 5px;
-        background: #2c6df9;
+        background: @primary-color;
         border: 2px solid #fff;
         border-radius: 50%;
         outline: none;

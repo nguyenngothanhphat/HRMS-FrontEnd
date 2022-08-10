@@ -4,14 +4,14 @@
     height: auto;
     object-fit: contain;
     background-color: #ffffff;
-    border: solid 1px #d6dce0;
+    border: solid 1px @border-color-base;
     border-radius: 5px;
   }
   .spaceTitle {
     margin-bottom: 0;
     padding: 24px;
     object-fit: contain;
-    border-bottom: solid 1px #d6dce0;
+    border-bottom: solid 1px @border-color-base;
   }
   .TitleDetails {
     height: 19px;
@@ -27,7 +27,7 @@
   .TitleDetailsEdit {
     height: 19px;
     margin-bottom: 0;
-    color: #2c6df9;
+    color: @primary-color;
     font-weight: 500;
     font-size: 14px;
     font-style: normal;
@@ -43,7 +43,7 @@
   }
   .IconEdit {
     margin-right: 18px;
-    color: #2c6df9;
+    color: @primary-color;
     font-size: 14px;
   }
   .viewLoading {
@@ -67,7 +67,7 @@
     width: 100%;
     margin: 0 24px;
     padding: 20px 0;
-    border-top: 1px solid #d6dce0;
+    border-top: 1px solid @border-color-base;
     .containerAddbank {
       width: fit-content;
     }
@@ -78,7 +78,7 @@
       }
     }
     .textAdd {
-      color: #2c6df9;
+      color: @primary-color;
       font-weight: 500;
       font-size: 14px;
       line-height: 16px;
@@ -95,24 +95,7 @@
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   padding: 24px;
   text-align: center;
-}
-.btnOkModalSuccess {
-  align-items: center;
-  width: 120px;
-  height: 40px;
-  margin: auto;
-  color: #fff;
-  font-weight: 600;
-  font-size: 14px;
-  background-color: #ffa100;
-  border: none;
-  border-radius: 25px;
-
-  &:hover {
-    color: #fff;
-    background-color: #ffa100;
-  }
 }

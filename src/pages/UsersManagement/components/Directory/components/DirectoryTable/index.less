@@ -1,0 +1,186 @@
+.mixin-border-bottom-row {
+  border-bottom: solid 1px @border-color-base;
+}
+
+.directoryTable {
+  padding: 24px;
+
+  .employeeId {
+    padding-left: 16px !important;
+  }
+
+  :global {
+    .ant-table-body {
+      overflow-x: auto !important;
+    }
+
+    .ant-table-body {
+      height: 570px;
+      color: #000000;
+    }
+
+    .ant-table-tbody {
+      height: 100%;
+      overflow: scroll;
+    }
+
+    .ant-table-tbody > tr:last-child > td {
+      border-bottom: none;
+    }
+
+    .ant-table-tbody > tr > td {
+      .mixin-border-bottom-row();
+    }
+
+    .ant-table-column-sorter-down {
+      margin-left: -1em;
+    }
+
+    .ant-table-column-sorter-inner {
+      display: inline;
+    }
+
+    .ant-table-column-sorter-up.active,
+    .ant-table-column-sorter-down.active {
+      color: #ffffff;
+      opacity: 1;
+    }
+
+    .ant-table-column-sorter-up,
+    .ant-table-column-sorter-down {
+      font-size: 14px;
+      opacity: 0;
+    }
+
+    .ant-table-thead th.ant-table-column-has-sorters:hover {
+      opacity: 0.8;
+    }
+
+    td.ant-table-cell.ant-table-cell-fix-left.ant-table-cell-fix-left-last {
+      box-shadow: 4px 0 5px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .ant-table-column-sorters-with-tooltip {
+      box-shadow: 4px 0 5px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .ant-table.ant-table-small .ant-table-thead,
+    .ant-table.ant-table-small .ant-table-thead .ant-table-column-sorters {
+      padding-block: 8px !important;
+    }
+
+    .ant-table-cell-scrollbar {
+      box-shadow: none;
+    }
+  }
+
+  .directoryTable_fullName {
+    .directoryTable_iconSort {
+      margin-left: 0.5em;
+      font-size: 14px;
+    }
+  }
+
+  .directoryTableName {
+    display: flex;
+    align-items: center;
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+    }
+
+    .avatar_emptySrc {
+      width: 36px;
+      height: 36px;
+      background-color: #ffffff;
+      border: solid 1px #707070;
+    }
+
+    &__name {
+      width: 70%;
+      margin: 0;
+      padding-left: 12px;
+      overflow: hidden;
+      color: @primary-color;
+      font-weight: 500;
+      letter-spacing: 0.12px;
+      white-space: nowrap;
+      text-align: left;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .userPasswordReset {
+    .userPassword {
+      margin-right: 15px;
+      color: black !important;
+      font-weight: 700;
+    }
+    div {
+      display: inline-block;
+      padding: 0 10px;
+      background-color: #c4c4c4;
+      border-radius: 1px;
+      cursor: pointer;
+      span {
+        color: #565656;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .userAction {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      padding: 4px;
+      cursor: pointer;
+      &:hover {
+        background-color: #c3d6ff;
+        border-radius: 5px;
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .managerName {
+    overflow: hidden;
+    color: @primary-color;
+    // font-weight: 500;
+    white-space: nowrap;
+    text-align: left;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .title,
+  .department {
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+  .title {
+    &:hover {
+      color: @primary-color;
+    }
+  }
+}
+
+.popupImg {
+  img {
+    width: 300px;
+    height: fit-content;
+  }
+}

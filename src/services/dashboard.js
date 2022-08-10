@@ -197,7 +197,7 @@ export async function getProjectList(payload) {
   );
 }
 
-export async function getMyResoucreList(payload) {
+export async function getMyResourceList(payload) {
   return request(
     '/api-project/resourcetenant/list',
     {

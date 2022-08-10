@@ -173,7 +173,7 @@ class BenefitSection extends Component {
           activeKeyTab={activeKey}
           visible={visible}
           countryId={countryIdProps}
-          handleCandelModal={closeModal}
+          handleCancelModal={closeModal}
         />
       </div>
     );

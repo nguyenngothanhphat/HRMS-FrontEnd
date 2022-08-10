@@ -1,9 +1,10 @@
+import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
-import { isTheSameDay } from '@/utils/timeSheet';
 import NextIcon from '@/assets/timeSheet/next02.svg';
 import PrevIcon from '@/assets/timeSheet/prev02.svg';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { isTheSameDay } from '@/utils/timeSheet';
 import styles from './index.less';
 
 const DateSwitcher = (props) => {
@@ -27,10 +28,10 @@ const DateSwitcher = (props) => {
       <img className={styles.prevIcon} src={PrevIcon} alt="" onClick={onPrevWeekClick} />
       <div className={styles.dates}>
         {dates.map((d) => {
-          const dateName = moment(d, 'MM/DD/YYYY').locale('en').format('ddd');
-          const dateNumber = moment(d, 'MM/DD/YYYY').locale('en').format('DD');
+          const dateName = moment(d, DATE_FORMAT_MDY).locale('en').format('ddd');
+          const dateNumber = moment(d, DATE_FORMAT_MDY).locale('en').format('DD');
           const isSelected =
-            moment(selectedDate).format('MM/DD/YYYY') === moment(d).format('MM/DD/YYYY');
+            moment(selectedDate).format(DATE_FORMAT_MDY) === moment(d).format(DATE_FORMAT_MDY);
           const count = getSelectedNumber(d);
           return (
             <div

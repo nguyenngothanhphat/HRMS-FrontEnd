@@ -1,23 +1,14 @@
-import {
-  Button,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  message,
-  Row,
-  Select,
-  Spin,
-  Tag,
-  Tooltip,
-} from 'antd';
+import { Col, DatePicker, Form, Input, message, Row, Select, Spin, Tag, Tooltip } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, history } from 'umi';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import TimeOffModal from '@/components/TimeOffModal';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import {
-  convert24To12,
-  getHours,
   MAX_NO_OF_DAYS_TO_SHOW,
   TIMEOFF_12H_FORMAT,
   TIMEOFF_24H_FORMAT,
@@ -33,10 +24,9 @@ import {
   TIMEOFF_TYPE,
   TIMEOFF_WORK_DAYS,
   WORKING_HOURS,
-} from '@/utils/timeOff';
+} from '@/constants/timeOff';
 import { getCurrentTenant } from '@/utils/authority';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
-import TimeOffModal from '@/components/TimeOffModal';
+import { convert24To12, getHours } from '@/utils/timeOff';
 import AddAttachments from './components/AddAttachments';
 import DebounceSelect from './components/DebounceSelect';
 import LeaveTimeRow from './components/LeaveTimeRow';
@@ -309,7 +299,7 @@ const RequestInformation = (props) => {
 
       result = (!isNormalType ? continuousDateList : choosableDateList).map((value, index) => {
         return {
-          date: moment(value).format('YYYY-MM-DD'),
+          date: moment(value).format(DATE_FORMAT_YMD),
           timeOfDay: HOUR,
           startTime: getTime(showAllDateList ? leaveTimeLists[index].startTime : startTimeDefault),
           endTime: getTime(showAllDateList ? leaveTimeLists[index].endTime : endTimeDefault),
@@ -321,14 +311,14 @@ const RequestInformation = (props) => {
         // type C,D
         result = continuousDateList.map((value) => {
           return {
-            date: moment(value).format('YYYY-MM-DD'),
+            date: moment(value).format(DATE_FORMAT_YMD),
             timeOfDay: WHOLE_DAY,
           };
         });
       } else {
         result = (!isNormalType ? continuousDateList : choosableDateList).map((value, index) => {
           return {
-            date: moment(value).format('YYYY-MM-DD'),
+            date: moment(value).format(DATE_FORMAT_YMD),
             timeOfDay: leaveTimeLists[index].period,
           };
         });
@@ -363,7 +353,7 @@ const RequestInformation = (props) => {
             subject,
             listDate: choosableDateList,
             leaveDates: leaveDatesPayload,
-            onDate: moment().format('YYYY-MM-DD'),
+            onDate: moment().format(DATE_FORMAT_YMD),
             description,
             cc: personCC.map((item) => item?.value[0]) || [],
             tenantId: getCurrentTenant(),
@@ -377,10 +367,10 @@ const RequestInformation = (props) => {
             type: timeOffType,
             status: IN_PROGRESS,
             subject,
-            fromDate: moment(durationFrom).format('YYYY-MM-DD'),
-            toDate: moment(durationTo).format('YYYY-MM-DD'),
+            fromDate: moment(durationFrom).format(DATE_FORMAT_YMD),
+            toDate: moment(durationTo).format(DATE_FORMAT_YMD),
             leaveDates: leaveDatesPayload,
-            onDate: moment().format('YYYY-MM-DD'),
+            onDate: moment().format(DATE_FORMAT_YMD),
             description,
             cc: personCC.map((item) => item?.value[0]) || [],
             tenantId: getCurrentTenant(),
@@ -441,7 +431,7 @@ const RequestInformation = (props) => {
             subject,
             listDate: choosableDateList,
             leaveDates: leaveDatesPayload,
-            onDate: moment().format('YYYY-MM-DD'),
+            onDate: moment().format(DATE_FORMAT_YMD),
             description,
             cc:
               action === EDIT_LEAVE_REQUEST
@@ -456,10 +446,10 @@ const RequestInformation = (props) => {
             type: timeOffType,
             status: IN_PROGRESS,
             subject,
-            fromDate: moment(durationFrom).format('YYYY-MM-DD'),
-            toDate: moment(durationTo).format('YYYY-MM-DD'),
+            fromDate: moment(durationFrom).format(DATE_FORMAT_YMD),
+            toDate: moment(durationTo).format(DATE_FORMAT_YMD),
             leaveDates: leaveDatesPayload,
-            onDate: moment().format('YYYY-MM-DD'),
+            onDate: moment().format(DATE_FORMAT_YMD),
             description,
             cc: EDIT_LEAVE_REQUEST ? personCC : personCC.map((item) => item?.value[0]) || [],
             tenantId: getCurrentTenant(),
@@ -616,7 +606,7 @@ const RequestInformation = (props) => {
       !workingDays.includes(moment(current).day()) ||
       !checkIfWholeDayAvailable(current) ||
       !checkIfHalfDayAvailable(current) ||
-      value?.listDate?.find((x) => x === moment(current).format('YYYY-MM-DD'))
+      value?.listDate?.find((x) => x === moment(current).format(DATE_FORMAT_YMD))
     );
   };
 
@@ -1461,46 +1451,44 @@ const RequestInformation = (props) => {
           </span>
           <div className={styles.formButtons}>
             {(action === NEW_LEAVE_REQUEST || action === NEW_BEHALF_OF) && (
-              <Button
-                className={styles.cancelButton}
-                type="link"
+              <CustomSecondaryButton
+                paddingInline={0}
                 htmlType="button"
                 onClick={onCancelLeaveRequest}
               >
                 <span>Cancel</span>
-              </Button>
+              </CustomSecondaryButton>
             )}
             {action === EDIT_LEAVE_REQUEST && (
-              <Button
-                className={styles.cancelButton}
-                type="link"
-                htmlType="button"
-                onClick={onCancelEdit}
-              >
+              <CustomSecondaryButton paddingInline={0} htmlType="button" onClick={onCancelEdit}>
                 <span>Cancel</span>
-              </Button>
+              </CustomSecondaryButton>
             )}
             {(action === NEW_LEAVE_REQUEST ||
               (action === EDIT_LEAVE_REQUEST && isEditingDrafts)) && (
-              <Button
+              <CustomSecondaryButton
                 disabled={disabledBtn()}
+                paddingInline={0}
                 loading={loadingSaveDraft || loadingUpdateDraft}
-                type="link"
                 form="myForm"
-                className={styles.saveDraftButton}
                 htmlType="submit"
                 onClick={() => {
                   setButtonState(1);
                 }}
               >
-                Save to Draft
-              </Button>
+                <span
+                  style={{
+                    color: '#ffa100',
+                  }}
+                >
+                  Save to Draft
+                </span>
+              </CustomSecondaryButton>
             )}
 
-            <Button
+            <CustomPrimaryButton
               loading={loadingAddLeaveRequest || loadingUpdatingLeaveRequest}
               key="submit"
-              type="primary"
               form="myForm"
               disabled={disabledBtn()}
               htmlType="submit"
@@ -1509,7 +1497,7 @@ const RequestInformation = (props) => {
               }}
             >
               Submit
-            </Button>
+            </CustomPrimaryButton>
           </div>
         </div>
 

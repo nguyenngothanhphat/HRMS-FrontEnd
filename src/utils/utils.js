@@ -1,11 +1,13 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-undef */
-import React from 'react';
-import { parse } from 'querystring';
-import pathRegexp from 'path-to-regexp';
 import { List, notification } from 'antd';
+import { debounce } from 'lodash';
 import moment from 'moment';
+import pathRegexp from 'path-to-regexp';
+import { parse } from 'querystring';
+import React from 'react';
 import { formatMessage } from 'umi';
+import { UPLOAD } from '@/constants/upload';
 import { getCompanyOfUser, getCurrentCompany } from './authority';
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
@@ -125,35 +127,9 @@ export const formatAdditionalQuestion = (questionArr) => {
   return finalArr;
 };
 
-const formatHour = {
-  '8:00(am) - 9:00(am)': 900,
-  '9:00(am) - 10:00(am)': 1000,
-  '10:00(am) - 11:00(am)': 1100,
-  '11:00(am) - 12:00(am)': 1200,
-  '1:00(pm) - 2:00(pm)': 1400,
-  '2:00(pm) - 3:00(pm)': 1500,
-  '3:00(pm) - 4:00(pm)': 1600,
-  '4:00(pm) - 5:00(pm)': 1700,
-};
-
-export const checkTime = (date, time) => {
-  const now = `${moment().format('YYYY-MM-DD')}T00:00:00.000Z`;
-  const formatNow = moment(now);
-  const dateTime = moment(date);
-  const hourNow = moment().format('Hmm');
-  const timeMeeting = formatHour[time];
-  let check = false;
-  if (date !== now && formatNow > dateTime) {
-    check = true;
-  } else if (date === now) {
-    check = parseInt(hourNow, 10) > timeMeeting;
-  }
-  return check;
-};
-
 export const diffTime = (start, end, type) =>
   moment(start, 'HH:mm').diff(moment(end, 'HH:mm'), type);
-  
+
 export const goToTop = () => {
   window.scrollTo({
     top: 0,
@@ -191,16 +167,6 @@ export const getCountryId = (locationObj) => {
   }
 };
 
-export const exportRawDataToCSV = (data, fileName) => {
-  const downloadLink = document.createElement('a');
-  const universalBOM = '\uFEFF';
-  downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(universalBOM + data)}`;
-  downloadLink.download = `${fileName}.csv`;
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
-  document.body.removeChild(downloadLink);
-};
-
 export const getCurrentCompanyObj = () => {
   const companyOfUser = getCompanyOfUser() || [];
   const currentCompanyId = getCurrentCompany();
@@ -216,4 +182,42 @@ export const singularify = (str, count) => {
   return str;
 };
 
+export const sortAlphabet = (array, ...sortKeys) => {
+  return array.sort((a, b) => {
+    let valA = a;
+    let valB = b;
+
+    sortKeys.forEach((item) => {
+      valA = (valA[item] || valA).toString();
+      valB = (valB[item] || valB).toString();
+    });
+
+    valA = valA.toString().toLowerCase();
+    valB = valB.toString().toLowerCase();
+
+    if (valA < valB) {
+      return -1;
+    }
+    if (valA > valB) {
+      return 1;
+    }
+    return 0;
+  });
+};
+
 export const splitArrayItem = (arr = []) => (arr.length ? arr.toString().split(',') : []);
+
+export const getEmployeeUrl = (userId) => {
+  return `/directory/employee-profile/${userId}`;
+};
+
+export const checkTypeURL = (attachments) => {
+  if (
+    attachments[0]?.category === UPLOAD.CATEGORY_NAME.URL &&
+    attachments[0]?.type?.split('/')[0] === 'video'
+  ) {
+    return false;
+  }
+  return true;
+};
+export const debounceFetchData = debounce((callback) => callback(), 500);

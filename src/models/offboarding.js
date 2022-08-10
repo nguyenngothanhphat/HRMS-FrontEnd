@@ -1,4 +1,5 @@
 import { notification } from 'antd';
+import { isEmpty } from 'lodash';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
@@ -12,9 +13,11 @@ import {
   getTimeInDate,
   updateRequest,
   withdrawRequest,
+  getLocationsOfCountries,
   // terminate
   terminateReason,
 } from '../services/offboarding';
+import { getOffboardingEmpMode, setHideOffboarding } from '@/utils/offboarding';
 
 const offboarding = {
   namespace: 'offboarding',
@@ -30,6 +33,7 @@ const offboarding = {
     employeeProjects: [],
     employeeList: [],
     hourList: [],
+    locationsOfCountries: [],
   },
   effects: {
     *fetchListEffect({ payload }, { call, put }) {
@@ -97,8 +101,8 @@ const offboarding = {
       }
       return response;
     },
-    *getMyRequestEffect({ payload }, { call, put }) {
-      let response;
+    *getMyRequestEffect({ payload, userModelProp = '' }, { call, put }) {
+      let response = {};
       try {
         response = yield call(getMyRequest, {
           ...payload,
@@ -113,6 +117,13 @@ const offboarding = {
             myRequest: data || {},
           },
         });
+        if (userModelProp) {
+          if (isEmpty(data) && userModelProp.hideMenu && !getOffboardingEmpMode()) {
+            setHideOffboarding(true);
+          } else {
+            setHideOffboarding(false);
+          }
+        }
       } catch (errors) {
         dialog(errors);
       }
@@ -221,7 +232,26 @@ const offboarding = {
       }
       return response;
     },
-    // TERMINATE
+    *getLocationsOfCountriesEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getLocationsOfCountries, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'save',
+          payload: { locationsOfCountries: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
     *terminateReason({ payload }, { call, put }) {
       let response = {};
       try {

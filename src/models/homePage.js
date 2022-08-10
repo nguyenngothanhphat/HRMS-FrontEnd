@@ -5,6 +5,7 @@ import {
   // setting page
   addPost,
   addQuickLink,
+  flagPost,
   deletePost,
   deleteQuickLink,
   editComment,
@@ -28,10 +29,11 @@ import {
   upsertCelebrationConversation,
   votePoll,
   getListPolicy,
+  getListEmployeeCreated,
 } from '../services/homePage';
 import { getCurrentCompany, getCurrentTenant } from '../utils/authority';
-import { TAB_IDS } from '@/utils/homePage';
-// import { TAB_IDS } from '@/utils/homePage';
+import { TAB_IDS } from '@/constants/homePage';
+// import { TAB_IDS } from '@/constants/homePage';
 
 const getVarStateName = (type) => {
   switch (type) {
@@ -60,7 +62,7 @@ const defaultState = {
   totalPostsOfType: [],
   selectedPollOption: {},
   announcementTotal: 0,
-
+  listEmployeeName: [],
   // social activities
   postComments: [],
   reactionList: [],
@@ -182,7 +184,22 @@ const homePage = {
       }
       return response;
     },
-
+    *flagPostEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(flagPost, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
     *updateBannerPositionEffect({ payload }, { call }) {
       let response = {};
       try {
@@ -730,6 +747,25 @@ const homePage = {
           type: 'save',
           payload: {
             listPolicy: data,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchListEmployeeCreated(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getListEmployeeCreated, {
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            listEmployeeName: data,
           },
         });
       } catch (error) {

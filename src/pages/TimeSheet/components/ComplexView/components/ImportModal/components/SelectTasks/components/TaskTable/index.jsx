@@ -1,9 +1,9 @@
-import { Empty, Table } from 'antd';
+import { Table } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import EmptyImage from '@/assets/timeSheet/emptyImage.png';
 import { isTheSameDay } from '@/utils/timeSheet';
+import EmptyComponent from '@/components/Empty';
 import styles from './index.less';
 
 const TaskTable = (props) => {
@@ -68,11 +68,11 @@ const TaskTable = (props) => {
           size="small"
           locale={{
             emptyText: (
-              <Empty
+              <EmptyComponent
+                height={227}
                 description={`The sheet for ${moment(selectedDate)
                   .locale('en')
                   .format('ddd, MMMM Do')} is empty!`}
-                image={EmptyImage}
               />
             ),
           }}

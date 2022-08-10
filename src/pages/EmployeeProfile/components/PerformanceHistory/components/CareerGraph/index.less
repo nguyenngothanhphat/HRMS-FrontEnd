@@ -2,24 +2,24 @@
   margin-bottom: 24px;
   :global {
     .ant-card-bordered {
-      border: 1px solid #d6dce0;
+      border: 1px solid @border-color-base;
     }
     .ant-card-head {
-      border-color: #d6dce0;
+      border-color: @border-color-base;
     }
     .ant-card-head-title {
       height: 67px;
-      line-height: 67px;
       padding: 0 !important;
       font-weight: 700;
+      line-height: 67px;
     }
     .ant-card-extra {
       padding-right: 8px;
     }
   }
   .careerPath_card {
-    border-radius: 5px;
     font-size: 13px;
+    border-radius: 5px;
     .careerPath_chart {
       .chart {
         margin-left: -24px;
@@ -28,14 +28,14 @@
     .careerPath_score {
       width: 360px;
       height: 90px;
-      border-radius: 5px;
-      background-color: #fff7fa;
       color: #ff6ca1;
       text-align: center;
+      background-color: #fff7fa;
+      border-radius: 5px;
       // margin: 0 2px;
       span:first-child {
-        font-size: 32px;
         font-weight: 700;
+        font-size: 32px;
         letter-spacing: 0.3px;
       }
       p {
@@ -43,9 +43,9 @@
       }
     }
     .btn_download {
-      color: #2c6df9;
-      font-size: 14px;
+      color: @primary-color;
       font-weight: 500;
+      font-size: 14px;
       border: none;
       box-shadow: none;
       img {

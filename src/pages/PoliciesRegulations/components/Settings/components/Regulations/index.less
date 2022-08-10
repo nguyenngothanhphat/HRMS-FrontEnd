@@ -3,7 +3,7 @@
   margin: 24px;
   padding: 24px;
   background: #ffffff;
-  border: 1px solid #d6dce0;
+  border: 1px solid @border-color-base;
   border-radius: 5px;
   .headerPolicy {
     display: flex;
@@ -12,7 +12,7 @@
     width: 100%;
     margin-bottom: 16px;
     padding-bottom: 23px;
-    border-bottom: 1px solid #d6dce0;
+    border-bottom: 1px solid @border-color-base;
     &__left {
       display: flex;
       align-items: center;
@@ -27,11 +27,11 @@
 
         :global {
           .ant-select .ant-select-arrow {
-            color: #2c6df9;
+            color: @primary-color;
             transition: transform 0.2s ease-in;
           }
           .ant-select-open .ant-select-arrow {
-            color: #2c6df9;
+            color: @primary-color;
             transform: rotate(180deg);
           }
 
@@ -41,7 +41,7 @@
 
           .ant-select-selector {
             background-color: rgb(255, 255, 255) !important;
-            border: 1px solid #d6dce0;
+            border: 1px solid @border-color-base;
             border-radius: 4px;
           }
           .ant-select-item {
@@ -61,7 +61,7 @@
             display: flex;
             align-items: center;
             span {
-              color: #2c6df9;
+              color: @primary-color;
               font-weight: 500;
               font-size: 12px;
             }
@@ -90,7 +90,7 @@
           }
 
           span {
-            color: #2c6df9;
+            color: @primary-color;
             font-weight: 500;
             font-size: 14px;
             font-style: normal;
@@ -100,12 +100,9 @@
         .ant-input-affix-wrapper {
           box-sizing: border-box;
           background: #fffefe;
-          border: 1px solid #d6dce0;
+          border: 1px solid @border-color-base;
           border-radius: 33px;
         }
-      }
-      img {
-        margin: 0 32px;
       }
     }
   }
