@@ -109,6 +109,7 @@ const OnboardingOverview = (props) => {
                   loading={loadingFetch}
                   total={total}
                   onChangePage={onChangePage}
+                  refreshData={fetchData}
                 />
               </Tabs.TabPane>
             </Tabs>
