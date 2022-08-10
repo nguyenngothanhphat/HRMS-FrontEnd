@@ -14,10 +14,16 @@ import Settings from './components/Settings';
 import styles from './index.less';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 
-@connect(({ user: { permissions = [] } = {}, onboarding: { onboardingOverview = {} } = {} }) => ({
-  permissions,
-  onboardingOverview,
-}))
+@connect(
+  ({
+    user: { permissions = [] } = {},
+    onboarding: { onboardingOverview = {}, joiningFormalities = {} } = {},
+  }) => ({
+    permissions,
+    onboardingOverview,
+    joiningFormalities,
+  }),
+)
 class Onboarding extends PureComponent {
   componentDidMount = () => {
     const {
@@ -37,9 +43,14 @@ class Onboarding extends PureComponent {
     });
   };
 
-  downloadTemplate = () => {
-    const { onboardingOverview: { onboardingData = [] } = {} } = this.props;
-    exportArrayDataToCsv('OnboardingData', this.processData(onboardingData));
+  downloadTemplate = (tabName) => {
+    if (tabName === ONBOARDING_TABS.OVERVIEW) {
+      const { onboardingOverview: { onboardingData = [] } = {} } = this.props;
+      exportArrayDataToCsv('OnboardingData', this.processData(onboardingData));
+    } else {
+      const { onboardingOverview: { listNewComer = [] } = {} } = this.props;
+      exportArrayDataToCsv('NewJoineesData', this.processData(listNewComer));
+    }
   };
 
   processData = (array = []) => {
@@ -113,7 +124,7 @@ class Onboarding extends PureComponent {
                 icon={<DownloadOutlined />}
                 className={styles.generate}
                 type="text"
-                onClick={this.downloadTemplate}
+                onClick={() => this.downloadTemplate(tabName)}
               >
                 {formatMessage({ id: 'component.employeeOnboarding.generate' })}
               </Button>
