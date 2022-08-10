@@ -105,7 +105,9 @@ class Regulations extends Component {
 
           <div className={styles.headerPolicy__btnAdd}>
             <FilterCountTag count={applied} onClearFilter={this.handleClearFilter} />
-            <CustomAddButton onClick={() => this.setState({ addPolicy: true })} />            
+            <CustomAddButton onClick={() => this.setState({ addPolicy: true })} >
+              Add Policy
+            </CustomAddButton>
             <div className={styles.filterButton}>
               <FilterPopover
                 placement="bottomRight"
