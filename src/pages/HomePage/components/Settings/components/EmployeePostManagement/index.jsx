@@ -1,4 +1,4 @@
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined, VideoCameraAddOutlined } from '@ant-design/icons';
 import { Image, Popconfirm, Tag } from 'antd';
 import Parser from 'html-react-parser';
 import React, { useEffect, useState } from 'react';
@@ -14,6 +14,7 @@ import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
 import FilterForm from './components/FilterForm';
 import ViewPostIcon from '@/assets/projectManagement/view.svg';
 import styles from './index.less';
+import { checkTypeURL } from '@/utils/utils';
 
 function EmployeePostManagement(props) {
   const {
@@ -130,16 +131,23 @@ function EmployeePostManagement(props) {
         key: 'attachments',
         width: '10%',
         render: (attachments = []) => {
+          if (checkTypeURL(attachments)) {
+            return (
+              <div className={styles.media}>
+                <Image.PreviewGroup>
+                  {attachments.slice(0, 3).map((x) => {
+                    return <Image width={32} height={32} src={x.url} key={x._id || x.id} />;
+                  })}
+                </Image.PreviewGroup>
+                {attachments.length > 3 && (
+                  <span style={{ fontWeight: 500 }}>+{attachments.length - 3} more</span>
+                )}
+              </div>
+            );
+          }
           return (
-            <div className={styles.media}>
-              <Image.PreviewGroup>
-                {attachments.slice(0, 3).map((x) => {
-                  return <Image width={32} height={32} src={x.url} key={x._id || x.id} />;
-                })}
-              </Image.PreviewGroup>
-              {attachments.length > 3 && (
-                <span style={{ fontWeight: 500 }}>+{attachments.length - 3} more</span>
-              )}
+            <div className={styles.iconVideo}>
+              <VideoCameraAddOutlined />
             </div>
           );
         },
