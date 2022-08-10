@@ -39,7 +39,7 @@ const EditQuestionAnswer = (props) => {
           form.setFieldsValue({ upLink: attachment[0].url });
           setShowUpload(false);
         }
-        if (attachment[0].category === 'ATTACHMENT') {
+        if (attachment[0].category === 'attachment') {
           setFileList(attachment);
           setShowLink(false);
         }
@@ -47,6 +47,7 @@ const EditQuestionAnswer = (props) => {
     }
     return () => {
       form.resetFields();
+      setFileList([]);
       setShowLink(true);
       setShowUpload(true);
     };
