@@ -50,17 +50,9 @@ const TableTickets = (props) => {
   const isAppendTicket = appendTicket === 1;
   const isViewTicketByAdmin = viewTicketByAdmin === 1;
 
-  const openViewTicket = (ticketID) => {
-    let id = '';
-
-    data.forEach((item) => {
-      if (item.id === ticketID) {
-        id = item.id;
-      }
-    });
-
-    if (id) {
-      history.push(`/ticket-management/detail/${id}`);
+  const openViewTicket = (row) => {
+    if (row.id) {
+      history.push(`/ticket-management/detail/${row.id}`);
     }
   };
 
@@ -184,9 +176,9 @@ const TableTickets = (props) => {
         dataIndex: 'id',
         key: 'id',
         width: '7%',
-        render: (id) => {
+        render: (id, row) => {
           return (
-            <span className={styles.ticketID} onClick={() => openViewTicket(id)}>
+            <span className={styles.ticketID} onClick={() => openViewTicket(row)}>
               {id}
             </span>
           );

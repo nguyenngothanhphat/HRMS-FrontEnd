@@ -13,6 +13,7 @@ import FilterContent from './components/FilterContent';
 import ResourceStatus from './components/ResourceStatus';
 import TableResources from './components/TableResources';
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 const ResourceList = (props) => {
   const {
@@ -87,6 +88,7 @@ const ResourceList = (props) => {
   };
 
   const getPageAndSize = (page, pageSize) => {
+    goToTop();
     setPageSelected(page);
     setSize(pageSize);
   };
