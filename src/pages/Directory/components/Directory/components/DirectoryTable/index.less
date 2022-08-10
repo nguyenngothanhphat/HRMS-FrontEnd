@@ -1,87 +1,22 @@
-.mixin-border-bottom-row {
-  border-bottom: solid 1px @border-color-base;
-}
-
-.directoryTable {
+.DirectoryTable {
   padding: 24px;
+  background-color: #fff;
 
   .employeeId {
     padding-left: 16px !important;
   }
 
+  a {
+    font-weight: 500;
+  }
+
   :global {
     .ant-table-body {
-      overflow-x: auto !important;
-    }
-
-    .ant-table-body {
-      height: 570px;
-      color: #000000;
-    }
-
-    .ant-table-tbody {
-      height: 100%;
-      overflow: scroll;
-    }
-
-    .ant-table-tbody > tr:last-child > td {
-      border-bottom: none;
-    }
-
-    .ant-table-tbody > tr > td {
-      .mixin-border-bottom-row();
-    }
-
-    .ant-table-column-sorter-down {
-      margin-left: -1em;
-    }
-
-    .ant-table-column-sorter-inner {
-      display: inline;
-    }
-
-    .ant-table-column-sorter-up.active,
-    .ant-table-column-sorter-down.active {
-      color: #ffffff;
-      opacity: 1;
-    }
-
-    .ant-table-column-sorter-up,
-    .ant-table-column-sorter-down {
-      font-size: 14px;
-      opacity: 0;
-    }
-
-    .ant-table-thead th.ant-table-column-has-sorters:hover {
-      opacity: 0.8;
-    }
-
-    td.ant-table-cell.ant-table-cell-fix-left.ant-table-cell-fix-left-last {
-      box-shadow: 4px 0 5px 0 rgba(0, 0, 0, 0.05);
-    }
-
-    .ant-table-column-sorters-with-tooltip {
-      box-shadow: 4px 0 5px 0 rgba(0, 0, 0, 0.05);
-    }
-
-    .ant-table.ant-table-small .ant-table-thead,
-    .ant-table.ant-table-small .ant-table-thead .ant-table-column-sorters {
-      padding-block: 8px !important;
-    }
-
-    .ant-table-cell-scrollbar {
-      box-shadow: none;
+      height: 500px;
     }
   }
 
-  .directoryTable_fullName {
-    .directoryTable_iconSort {
-      margin-left: 0.5em;
-      font-size: 14px;
-    }
-  }
-
-  .directoryTableName {
+  .employeeName {
     display: flex;
     align-items: center;
 
@@ -97,7 +32,7 @@
       border: solid 1px #707070;
     }
 
-    &__name {
+    .name {
       width: 70%;
       margin: 0;
       padding-left: 12px;

@@ -28,6 +28,15 @@ const Card = (props) => {
 
   const renderCard = (card) => {
     const { attachments = [], description = '', title = '' } = card;
+    if (attachments.length === 0) {
+      return (
+        <div className={styles.cardContainer} key={card?._id}>
+          <div className={styles.content}>
+            <p className={styles.caption}>No data</p>
+          </div>
+        </div>
+      );
+    }
     const [firstImage] = attachments;
     return (
       <div className={styles.cardContainer} key={card?._id}>

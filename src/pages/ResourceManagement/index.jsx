@@ -8,8 +8,9 @@ import { PageContainer } from '@/layouts/layout/src';
 import Overview from '@/pages/ResourceManagement/components/Overview';
 import {
   setResourceSelectedDivisions,
-  setResourceSelectedLocations,
+  setResourceSelectedLocations
 } from '@/utils/resourceManagement';
+import { goToTop } from '@/utils/utils';
 import ProjectList from './components/Projects';
 import ResourceList from './components/ResourceList';
 import styles from './index.less';
@@ -84,6 +85,7 @@ const ResourcesManagement = (props) => {
 
   useEffect(() => {
     if (tabName) {
+      goToTop()
       dispatch({
         type: 'resourceManagement/fetchDivisions',
         payload: {

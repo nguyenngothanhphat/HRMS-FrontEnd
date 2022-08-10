@@ -19,7 +19,7 @@ const DuplicateTaskModal = (props) => {
     visible = false,
     onClose = () => {},
     refreshTable = () => {},
-    task: { projectName = '', taskName = '' } = {},
+    task: { projectName = '', taskName = '', startTime = '', endTime = '' } = {},
     label = 'Duplicate Task',
     id = '',
     dispatch,
@@ -29,6 +29,8 @@ const DuplicateTaskModal = (props) => {
 
   const [dates, setDates] = useState(null);
   const [disabledHourBefore, setDisabledHourBefore] = useState([]);
+
+  const formatTime = (time) => moment(time, hourFormatAPI).format(hourFormat);
 
   const getDateLists = (startDate, endDate) => {
     let dateList = [];
@@ -46,8 +48,8 @@ const DuplicateTaskModal = (props) => {
       return {
         day: moment(item).locale('en').format('dddd'),
         date: item,
-        startTime: null,
-        endTime: null,
+        startTime: startTime ? formatTime(startTime) : null,
+        endTime: endTime ? formatTime(endTime) : null,
       };
     });
     return arr;

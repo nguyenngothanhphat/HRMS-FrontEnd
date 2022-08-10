@@ -1,7 +1,8 @@
 import { Col, DatePicker, Form, Row, Select } from 'antd';
 import { debounce, isEmpty } from 'lodash';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import style from './index.less';
 import DebounceSelect from '@/components/DebounceSelect';
@@ -9,7 +10,8 @@ import { removeEmptyFields } from '@/utils/utils';
 
 const FilterContent = (props) => {
   const { onFilter = () => {}, documentType, filter = {}, dispatch } = props;
-
+  const [startDateState, setStartDateState] = useState('');
+  const [endDateState, setEndDateState] = useState('');
   const [form] = Form.useForm();
 
   const onEmployeeSearch = (value) => {
@@ -18,7 +20,6 @@ const FilterContent = (props) => {
         resolve([]);
       });
     }
-
     return dispatch({
       type: 'customerManagement/fetchEmployeeList',
       payload: {
@@ -32,6 +33,21 @@ const FilterContent = (props) => {
         value: user.generalInfo?.legalName,
       }));
     });
+  };
+
+  const disabledDate = (currentDate, date, type) => {
+    if (type === 'toDate') {
+      return currentDate && currentDate < moment(date).add(1, 'days');
+    }
+    return currentDate && currentDate > moment(date);
+  };
+
+  const onChangeDate = (value, type) => {
+    if (type === 'fromDate') {
+      setStartDateState(value);
+    } else {
+      setEndDateState(value);
+    }
   };
 
   const onFinishDebounce = debounce((values) => {
@@ -77,7 +93,12 @@ const FilterContent = (props) => {
           <Row gutter={24}>
             <Col span={11}>
               <Form.Item name="fromDate">
-                <DatePicker format={DATE_FORMAT_MDY} />
+                <DatePicker
+                  onChange={(val) => onChangeDate(val, 'fromDate')}
+                  disabledDate={(currentDate) =>
+                    disabledDate(currentDate, endDateState, 'fromDate')}
+                  format={DATE_FORMAT_MDY}
+                />
               </Form.Item>
             </Col>
             <Col span={2}>
@@ -92,7 +113,12 @@ const FilterContent = (props) => {
             </Col>
             <Col span={11}>
               <Form.Item name="toDate">
-                <DatePicker format={DATE_FORMAT_MDY} />
+                <DatePicker
+                  onChange={(val) => onChangeDate(val, 'toDate')}
+                  disabledDate={(currentDate) =>
+                    disabledDate(currentDate, startDateState, 'toDate')}
+                  format={DATE_FORMAT_MDY}
+                />
               </Form.Item>
             </Col>
           </Row>
