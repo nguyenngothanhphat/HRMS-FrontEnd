@@ -6,6 +6,7 @@ import { connect } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 import { getCurrentTenant } from '@/utils/authority';
+import { DATE_FORMAT_STR } from '@/constants/dateFormat';
 
 const FilterContent = (props) => {
   const [form] = Form.useForm();
@@ -113,13 +114,13 @@ const FilterContent = (props) => {
           })}
         </Select>
       </Form.Item>
-      <Form.Item label="By Add" name="employees">
+      <Form.Item label="By Creator" name="employees">
         <Select
           allowClear
           showSearch
           mode="multiple"
           style={{ width: '100%' }}
-          placeholder="Search by Creater"
+          placeholder="Search by Creator"
           filterOption={(input, option) =>
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
@@ -138,7 +139,7 @@ const FilterContent = (props) => {
           <Col span={11}>
             <Form.Item name="fromDate">
               <DatePicker
-                format="MMM DD, YYYY"
+                format={DATE_FORMAT_STR}
                 disabledDate={disabledFromDate}
                 allowClear
                 onChange={setFromDate}
@@ -151,7 +152,7 @@ const FilterContent = (props) => {
           <Col span={11}>
             <Form.Item name="toDate">
               <DatePicker
-                format="MMM DD, YYYY"
+                format={DATE_FORMAT_STR}
                 disabledDate={disabledToDate}
                 allowClear
                 onChange={setToDate}
