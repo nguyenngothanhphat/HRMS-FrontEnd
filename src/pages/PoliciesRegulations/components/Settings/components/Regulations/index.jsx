@@ -12,6 +12,7 @@ import AddPolicyModal from './components/AddPolicyModal';
 import FilterContent from './components/FilterContent';
 import TablePolicy from './components/TablePolicy';
 import styles from './index.less';
+import CustomAddButton from '@/components/CustomAddButton';
 
 @connect(
   ({ policiesRegulations: { countryList = [], originData: { selectedCountry = '' } } = {} }) => ({
@@ -104,12 +105,7 @@ class Regulations extends Component {
 
           <div className={styles.headerPolicy__btnAdd}>
             <FilterCountTag count={applied} onClearFilter={this.handleClearFilter} />
-            <Button
-              icon={<img src={AddIcon} alt="AddIcon" />}
-              onClick={() => this.setState({ addPolicy: true })}
-            >
-              Add Policy
-            </Button>
+            <CustomAddButton onClick={() => this.setState({ addPolicy: true })} />            
             <div className={styles.filterButton}>
               <FilterPopover
                 placement="bottomRight"
