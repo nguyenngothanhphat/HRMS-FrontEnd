@@ -3,6 +3,7 @@ import { Button, Col, Row, Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 import CustomBlueButton from '@/components/CustomBlueButton';
 import { ONBOARDING_TABS } from '@/constants/onboarding';
 import { PageContainer } from '@/layouts/layout/src';
@@ -91,7 +92,7 @@ class Onboarding extends PureComponent {
     });
 
     // Get keys, header csv
-    const keys = Object.keys(capsPopulations[0]);
+    const keys = Object.keys(!isEmpty(capsPopulations) ? capsPopulations[0] : []);
     const dataExport = [];
     dataExport.push(keys);
 
