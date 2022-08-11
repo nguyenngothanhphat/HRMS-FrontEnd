@@ -75,7 +75,7 @@ const NewJoinees = (props) => {
               type: 'onboarding/saveJoiningFormalities',
               payload: { itemNewComer: record },
             });
-            history.push(`/onboarding/new-joinees/view-detail/${record?._id}`);
+            history.push(`/onboarding/new-joinees/view-detail/${record?.candidate?._id}`);
           }}
         >
           #{ticketID}
