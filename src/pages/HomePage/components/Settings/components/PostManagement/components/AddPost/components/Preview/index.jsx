@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Parser from 'html-react-parser';
+import { connect } from 'umi';
 import styles from './index.less';
-import { TAB_IDS } from '@/constants/homePage';
+import { TAB_IDS, URL_REGEX } from '@/constants/homePage';
 import EmployeeTag from '@/pages/HomePage/components/Announcements/components/EmployeeTag';
 import PostContent from '@/pages/HomePage/components/Announcements/components/PostContent';
 import PreviewImage from '@/assets/homePage/previewImage.png';
@@ -9,7 +10,6 @@ import CelebratingCard from '@/pages/HomePage/components/Celebrating/components/
 import GalleryCard from '@/pages/HomePage/components/Gallery/components/Card';
 import Carousel from '@/pages/HomePage/components/Carousel';
 import Options from '@/pages/HomePage/components/Voting/components/Options';
-import { connect } from 'umi';
 import { UPLOAD } from '@/constants/upload';
 
 const { CATEGORY_NAME } = UPLOAD;
@@ -77,7 +77,7 @@ const Preview = (props) => {
   };
 
   useEffect(() => {
-    if (urlFile) {
+    if (urlFile && urlFile.match(URL_REGEX)) {
       dispatch({
         type: 'upload/addAttachment',
         payload: {
@@ -157,11 +157,12 @@ const Preview = (props) => {
         },
       },
       attachments:
+        // eslint-disable-next-line no-nested-ternary
         announcementContent.imageUrls.length > 0
           ? announcementContent.imageUrls.map((x) => {
               return { url: x };
             })
-          : urlFile
+          : urlFile && urlFile.match(URL_REGEX)
           ? urlContent
           : [
               {
