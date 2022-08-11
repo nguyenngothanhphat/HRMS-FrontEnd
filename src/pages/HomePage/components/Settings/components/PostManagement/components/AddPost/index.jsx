@@ -314,7 +314,7 @@ const AddPost = (props) => {
             response2: values.responsesP[1]?.response,
             response3: values.responsesP[2]?.response,
             startDate: moment(values.startDateP).utc(0),
-            endDate: moment.utc(values.endDateP).utc(0),
+            endDate: moment(values.endDateP).utc(0),
           },
           location: values.location,
         };
