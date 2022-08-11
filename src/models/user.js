@@ -1,5 +1,5 @@
 import { history } from 'umi';
-import { isEmpty } from 'lodash';
+import ROLES from '@/constants/roles';
 import { fetchCompanyOfUser, query as queryUsers, queryCurrent } from '@/services/user';
 import {
   getCurrentCompany,
@@ -16,8 +16,6 @@ import {
   setTenantId,
 } from '@/utils/authority';
 import { checkPermissions } from '@/utils/permissions';
-import { setHideOffboarding } from '@/utils/offboarding';
-import ROLES from '@/constants/roles';
 
 const UserModel = {
   namespace: 'user',
@@ -200,18 +198,20 @@ const UserModel = {
             },
           });
 
-          // if is employee, hide offboarding module if there is no offboarding request
-          const lowerCaseRoles = formatArrRoles.map((role) => role.toLowerCase());
+          if (!isOwnerRole) {
+            // if is employee, hide offboarding module if there is no offboarding request
+            const lowerCaseRoles = formatArrRoles.map((role) => role.toLowerCase());
 
-          yield put({
-            type: 'offboarding/getMyRequestEffect',
-            userModelProp: {
-              hideMenu:
-                !lowerCaseRoles.includes(ROLES.MANAGER) &&
-                !lowerCaseRoles.includes(ROLES.HR_MANAGER) &&
-                !lowerCaseRoles.includes(ROLES.HR),
-            },
-          });
+            yield put({
+              type: 'offboarding/getMyRequestEffect',
+              userModelProp: {
+                hideMenu:
+                  !lowerCaseRoles.includes(ROLES.MANAGER) &&
+                  !lowerCaseRoles.includes(ROLES.HR_MANAGER) &&
+                  !lowerCaseRoles.includes(ROLES.HR),
+              },
+            });
+          }
         }
 
         yield put({
