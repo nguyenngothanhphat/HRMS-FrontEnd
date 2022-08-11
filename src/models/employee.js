@@ -261,7 +261,6 @@ const employee = {
           company: getCurrentCompany(),
           ...payload,
           tenantId: getCurrentTenant(),
-          status: ['ACTIVE', 'INACTIVE'],
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
@@ -284,7 +283,6 @@ const employee = {
           company: getCurrentCompany(),
           ...payload,
           tenantId: getCurrentTenant(),
-          status: ['ACTIVE', 'INACTIVE'],
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
@@ -307,7 +305,6 @@ const employee = {
           company: getCurrentCompany(),
           ...payload,
           tenantId: getCurrentTenant(),
-          status: ['ACTIVE', 'INACTIVE'],
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;

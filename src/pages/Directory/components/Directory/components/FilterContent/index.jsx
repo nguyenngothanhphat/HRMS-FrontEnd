@@ -174,6 +174,7 @@ const FilterContent = (props) => {
 
   const onSearchEmployeeDebounce = debounce((type, value) => {
     let typeTemp = '';
+    const payload = {};
     switch (type) {
       case 'id':
         typeTemp = 'employee/fetchEmployeeIDListEffect';
@@ -187,10 +188,23 @@ const FilterContent = (props) => {
       default:
         break;
     }
+    switch (activeTab) {
+      case 'myTeam':
+      case 'active':
+        payload.status = ['ACTIVE'];
+        break;
+      case 'inActive':
+        payload.status = ['INACTIVE'];
+        break;
+
+      default:
+        break;
+    }
     if (typeTemp && value) {
       dispatch({
         type: typeTemp,
         payload: {
+          ...payload,
           name: value,
         },
       });
