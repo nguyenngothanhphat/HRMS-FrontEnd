@@ -6,7 +6,7 @@ import { connect } from 'umi';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import { TAB_IDS } from '@/constants/homePage';
-import { FILE_TYPE } from '@/constants/upload';
+import { FILE_TYPE, UPLOAD } from '@/constants/upload';
 import { beforeUpload, compressImage } from '@/utils/upload';
 import { getCurrentCompanyObj } from '@/utils/utils';
 import AnnouncementContent from './components/AnnouncementContent';
@@ -16,7 +16,6 @@ import ImagesContent from './components/ImagesContent';
 import PollContent from './components/PollContent';
 import Preview from './components/Preview';
 import styles from './index.less';
-import { UPLOAD } from '@/constants/upload';
 import { uploadFirebaseMultiple } from '@/services/firebase';
 
 // A: ANNOUNCEMENT
@@ -369,6 +368,8 @@ const AddPost = (props) => {
     });
     if (res?.statusCode === 200) {
       onBack();
+    } else {
+      setIsUploadFile(false);
     }
   };
 
@@ -465,6 +466,7 @@ const AddPost = (props) => {
     });
     if (res?.statusCode === 200) {
       onBack();
+    } else {
       setIsUploadFile(false);
     }
   };

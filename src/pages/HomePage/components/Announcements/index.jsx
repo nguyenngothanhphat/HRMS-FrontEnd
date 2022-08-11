@@ -1,9 +1,9 @@
-import ErrorFile from '@/assets/adminSetting/errorFile.svg';
-import EditIcon from '@/assets/edit-customField.svg';
-import ShowMoreIcon from '@/assets/homePage/downArrow.svg';
 import { Button, Col, Row, Skeleton, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import ErrorFile from '@/assets/adminSetting/errorFile.svg';
+import EditIcon from '@/assets/edit-customField.svg';
+import ShowMoreIcon from '@/assets/homePage/downArrow.svg';
 
 import CommonModal from '@/components/CommonModal';
 import EmptyComponent from '@/components/Empty';
@@ -172,6 +172,7 @@ const Announcements = (props) => {
               className={`${styles.spanTabs} ${!isSocial && styles.buttonTabs}`}
               onClick={handleCompanyClick}
               disabled={!isSocial}
+              type="button"
             >
               {getCompanyName()}
             </button>
@@ -182,6 +183,7 @@ const Announcements = (props) => {
               className={`${styles.spanTabs} ${isSocial && styles.buttonTabs}`}
               onClick={handleSocialClick}
               disabled={isSocial}
+              type="button"
             >
               Social
             </button>
