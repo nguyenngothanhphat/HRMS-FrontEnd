@@ -513,6 +513,8 @@ const AddPost = (props) => {
           } else {
             onEdit(values, listAttachments);
           }
+        } else {
+          setIsUploadFile(false);
         }
       });
     } else if (editing) {
