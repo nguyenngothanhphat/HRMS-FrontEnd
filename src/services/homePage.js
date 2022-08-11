@@ -42,6 +42,13 @@ export async function getTotalPostsOfType(payload) {
   });
 }
 
+export async function flagPost(params) {
+  return request('/api/posttenant/flag', {
+    method: 'GET',
+    params,
+  });
+}
+
 export async function votePoll(payload) {
   return request('/api/polltenant/vote', {
     method: 'POST',
@@ -167,5 +174,12 @@ export async function getListPolicy(payload) {
   return request('api/policiesregulationtenant/list ', {
     method: 'POST',
     data: payload,
+  });
+}
+
+export async function getListEmployeeCreated(params) {
+  return request('/api/posttenant/list-employees', {
+    method: 'GET',
+    params,
   });
 }

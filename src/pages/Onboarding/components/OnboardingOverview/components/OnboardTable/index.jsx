@@ -60,10 +60,6 @@ const OnboardTable = (props) => {
   };
 
   const handleActionDelete = async (id) => {
-    if (!dispatch) {
-      return;
-    }
-
     const res = await dispatch({
       type: 'onboarding/deleteTicketDraft',
       payload: {
@@ -228,6 +224,10 @@ const OnboardTable = (props) => {
         tenantId: getCurrentTenant(),
         type: 2, // discard
       },
+    }).then((res) => {
+      if (res?.statusCode === 200) {
+        refreshData();
+      }
     });
   };
 
@@ -320,7 +320,7 @@ const OnboardTable = (props) => {
         menuItem = isExpired ? (
           <>
             <Menu.Item>
-              <Link to={`/onboarding/list/view/${_id}`}>
+              <Link to={`/onboarding/list/view/${ticketID}`}>
                 <span>{actionText}</span>
               </Link>
             </Menu.Item>
@@ -333,7 +333,7 @@ const OnboardTable = (props) => {
           </>
         ) : (
           <Menu.Item>
-            <Link to={`/onboarding/list/view/${_id}`}>
+            <Link to={`/onboarding/list/view/${ticketID}`}>
               <span>{actionText}</span>
             </Link>
           </Menu.Item>
@@ -347,14 +347,17 @@ const OnboardTable = (props) => {
             <Menu.Item>
               <Link
                 className={styles.actionText}
-                onClick={() => handleSendPreJoining(ticketID, _id, processStatus)}
+                onClick={() => handleSendPreJoining(ticketID, _id)}
                 to="#"
               >
                 <span>Send Pre-Joining Documents</span>
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <Link className={styles.actionText} to={`/onboarding/list/view/${_id}/${find.link}`}>
+              <Link
+                className={styles.actionText}
+                to={`/onboarding/list/view/${ticketID}/${find.link}`}
+              >
                 <span>{actionText}</span>
               </Link>
             </Menu.Item>
@@ -366,7 +369,10 @@ const OnboardTable = (props) => {
         menuItem = (
           <>
             <Menu.Item>
-              <Link className={styles.actionText} to={`/onboarding/list/view/${_id}/${find.link}`}>
+              <Link
+                className={styles.actionText}
+                to={`/onboarding/list/view/${ticketID}/${find.link}`}
+              >
                 <span>{actionText}</span>
               </Link>
             </Menu.Item>
@@ -379,7 +385,10 @@ const OnboardTable = (props) => {
       default:
         menuItem = (
           <Menu.Item>
-            <Link className={styles.actionText} to={`/onboarding/list/view/${_id}/${find.link}`}>
+            <Link
+              className={styles.actionText}
+              to={`/onboarding/list/view/${ticketID}/${find.link}`}
+            >
               <span>{actionText}</span>
             </Link>
           </Menu.Item>
@@ -404,7 +413,7 @@ const OnboardTable = (props) => {
           <Menu.Item disabled={!isRemovable}>
             <div
               className={styles.actionText}
-              onClick={isRemovable ? () => handleActionDelete(_id, processStatus) : () => {}}
+              onClick={isRemovable ? () => handleActionDelete(ticketID) : () => {}}
             >
               Delete
             </div>

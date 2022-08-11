@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 import { ref, getDownloadURL, uploadBytesResumable, getStorage } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { initializeApp } from 'firebase/app';
@@ -9,12 +10,11 @@ const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
 const uploadFirebase = ({ file = {}, typeFile = 'IMAGE' }, callback) => {
-  // eslint-disable-next-line compat/compat
   return new Promise((resolve) => {
+    if (!file.name) resolve({});
     const fileName = [uuidv4(), file.name.split('.').pop()].join('.');
     const path = `${UPLOAD.PATH[typeFile]}${fileName}`;
     const category = UPLOAD.TYPE_FILE[typeFile];
-    if (!file) resolve({});
     const storageRef = ref(storage, path);
     const uploadTask = uploadBytesResumable(storageRef, file);
     uploadTask.on(
@@ -41,6 +41,14 @@ const uploadFirebase = ({ file = {}, typeFile = 'IMAGE' }, callback) => {
       },
     );
   });
+};
+
+export const uploadFirebaseMultiple = async (uploads) => {
+  return Promise.all(
+    uploads.map((upload) => {
+      return uploadFirebase(upload);
+    }),
+  );
 };
 
 export default uploadFirebase;

@@ -29,4 +29,14 @@ export const POST_OR_CMT = {
   COMMENT: 'COMMENT',
 };
 
+export const POST_TYPE = {
+  SOCIAL: 'SOCIAL',
+  COMPANY: 'ANNOUNCEMENTS',
+};
+
+export const STATUS_POST = {
+  ACTIVE: 'ACTIVE',
+  HIDDEN: 'HIDDEN',
+};
+
 export const DATE_FORMAT = 'MMMM DD YYYY, HH:mm A';

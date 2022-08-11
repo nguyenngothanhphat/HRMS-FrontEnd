@@ -71,8 +71,6 @@ const CommonTable = ({
     <>
       <div className={styles.CommonTable}>
         <Table
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...props}
           components={components}
           size="middle"
           locale={{
@@ -85,6 +83,8 @@ const CommonTable = ({
           pagination={showPagination ? pagination : { position: ['none', 'none'] }}
           scroll={scrollable ? { x: width, y: height } : {}}
           rowKey={rowKey ? (record) => record[rowKey] : null}
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...props}
         />
       </div>
     </>

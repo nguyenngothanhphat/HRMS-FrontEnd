@@ -50,19 +50,20 @@ class UploadLogoCompany extends Component {
   };
 
   getResponse = (resp) => {
-    const { statusCode, data = {} } = resp;
+    const { statusCode, data = [] } = resp;
     const {
       dispatch,
       companyDetails = {},
       companyDetails: { company: { _id: id = '' } = {} } = {},
     } = this.props;
     const tenantId = getCurrentTenant();
+    const [first] = data;
 
     if (statusCode === 200) {
       if (id) {
         dispatch({
           type: 'companiesManagement/updateCompany',
-          payload: { id, logoUrl: data?.url, tenantId },
+          payload: { id, logoUrl: first?.url, tenantId },
           // dataTempKept: {},
           // isAccountSetup: true,
         }).then(({ statusCode: check }) => {

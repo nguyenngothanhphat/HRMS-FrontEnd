@@ -2,6 +2,7 @@ import { Col, DatePicker, Form, Row, Select } from 'antd';
 import { debounce, isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import { DATE_FORMAT_STR } from '@/constants/dateFormat';
 import DebounceSelect from '@/components/DebounceSelect';
 import styles from './index.less';
@@ -14,6 +15,18 @@ const FilterContent = (props) => {
     onFilter = () => {},
     filter = {},
   } = props;
+
+  const disableFromDate = (value, compareVar) => {
+    const t = form.getFieldValue(compareVar);
+    if (!t) return false;
+    return value > moment(t);
+  };
+
+  const disableToDate = (value, compareVar) => {
+    const t = form.getFieldValue(compareVar);
+    if (!t) return false;
+    return value < moment(t);
+  };
 
   const onEmployeeSearch = (val) => {
     if (!val) {
@@ -101,7 +114,10 @@ const FilterContent = (props) => {
         <Row>
           <Col span={11}>
             <Form.Item name="fromDate">
-              <DatePicker format={DATE_FORMAT_STR} />
+              <DatePicker
+                format={DATE_FORMAT_STR}
+                disabledDate={(val) => disableFromDate(val, 'toDate')}
+              />
             </Form.Item>
           </Col>
           <Col span={2} className={styles.separator}>
@@ -109,7 +125,10 @@ const FilterContent = (props) => {
           </Col>
           <Col span={11}>
             <Form.Item name="toDate">
-              <DatePicker format={DATE_FORMAT_STR} />
+              <DatePicker
+                format={DATE_FORMAT_STR}
+                disabledDate={(val) => disableToDate(val, 'fromDate')}
+              />
             </Form.Item>
           </Col>
         </Row>

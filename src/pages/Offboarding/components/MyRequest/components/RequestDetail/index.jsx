@@ -27,15 +27,16 @@ const RequestDetail = (props) => {
       hrStatus = '',
       _id = '',
       meeting: { status: meetingStatus = '' },
-      assigned: {
-        hr: { generalInfoInfo: { avatar: avatarHr = '', legalName: hrName = '' } = {} } = {},
-        manager: {
-          generalInfoInfo: { avatar: avatarManager = '', legalName: managerName = '' } = {},
-        } = {},
-      } = {},
+      assigned: { hr = {}, manager = {} } = {},
     } = {},
     getMyRequest = () => {},
   } = props;
+
+  const { generalInfoInfo: { avatar: avatarHr = '', legalName: hrName = '' } = {} || {} } =
+    hr || {};
+  const {
+    generalInfoInfo: { avatar: avatarManager = '', legalName: managerName = '' } = {} || {},
+  } = manager || {};
 
   const [visible, setVisible] = useState(false);
 

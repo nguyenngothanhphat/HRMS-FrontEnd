@@ -117,20 +117,17 @@ class ModalUpload extends Component {
     const { croppedImage, fileType, fileData } = this.state;
     const dataUri = fileType === PDF_TYPE ? fileData : croppedImage;
     this.setState({ isUpload: true });
-    const info = {
-      percent: 0,
-      status: '',
-    };
     const payload = await uploadFirebase({ file: dataUri, typeFile: 'IMAGE' }, (val) => {
       this.setPercent(val);
     });
 
     dispatch({
       type: 'upload/addAttachment',
-      payload,
+      payload: {
+        attachments: [payload],
+      },
       showNotification: true,
     }).then((resp) => {
-      info.percent = 100;
       this.setState({ percent: 100 });
       this.setState({ imageUrl: '' });
       getResponse(resp);

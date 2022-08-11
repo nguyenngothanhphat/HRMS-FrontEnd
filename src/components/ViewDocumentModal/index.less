@@ -1,6 +1,9 @@
 .ViewDocumentModal {
   position: relative;
   :global {
+    .ant-modal {
+      margin-top: 40px;
+    }
     .ant-modal-body {
       padding: 0;
     }
@@ -10,6 +13,12 @@
     .ant-modal-close {
       display: none;
     }
+  }
+
+  object,
+  iframe {
+    width: 100%;
+    height: 60vh;
   }
   .handleButtons {
     position: absolute;

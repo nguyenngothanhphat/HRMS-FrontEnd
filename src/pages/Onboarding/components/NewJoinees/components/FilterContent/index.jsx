@@ -1,19 +1,16 @@
 import { DatePicker, Form, InputNumber, Select, Tag } from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'umi';
 import { DATE_FORMAT_STR, DATE_FORMAT_YMD } from '@/constants/dateFormat';
-import CloseTagIcon from '@/assets/closeTagIcon.svg';
-import CalendarIcon from '@/assets/calendar_icon.svg';
-import styles from './index.less';
 import DebounceSelect from '@/components/DebounceSelect';
+import CloseTagIcon from '@/assets/closeTagIcon.svg';
+import styles from './index.less';
 
 const { Option } = Select;
 
 const Filter = (props) => {
-  const { dispatch, hrList, hrManagerList, jobTitleList, onApply = () => {} } = props;
-  const [durationFrom, setDurationFrom] = useState(''); // validate date
-  const [durationTo, setDurationTo] = useState(''); // validate date
+  const { dispatch, jobTitleList, onApply = () => {} } = props;
 
   const [form] = Form.useForm();
 
@@ -38,43 +35,16 @@ const Filter = (props) => {
     });
   };
 
-  const disabledDate = (currentDate, type) => {
-    if (type === 'fromDate') {
-      return (
-        (currentDate && currentDate > moment(durationTo)) ||
-        moment(currentDate).day() === 0 ||
-        moment(currentDate).day() === 6
-      );
-    }
-
-    return (
-      (currentDate && currentDate < moment(durationFrom)) ||
-      moment(currentDate).day() === 0 ||
-      moment(currentDate).day() === 6
-    );
+  const disableFromDate = (value, compareVar) => {
+    const t = form.getFieldValue(compareVar);
+    if (!t) return false;
+    return value > moment(t);
   };
 
-  const onChangeDate = (currentDate, type) => {
-    switch (type) {
-      case 'fromDate':
-        if (currentDate === null) {
-          setDurationFrom('');
-        } else {
-          setDurationFrom(currentDate);
-        }
-        break;
-
-      case 'toDate':
-        if (currentDate === null) {
-          setDurationTo('');
-        } else {
-          setDurationTo(currentDate);
-        }
-        break;
-
-      default:
-        break;
-    }
+  const disableToDate = (value, compareVar) => {
+    const t = form.getFieldValue(compareVar);
+    if (!t) return false;
+    return value < moment(t);
   };
 
   const tagRender = (prop) => {
@@ -115,15 +85,9 @@ const Filter = (props) => {
         <Form.Item label="By joining date" name="yearOfExp" style={{ marginBottom: '0' }}>
           <Form.Item name="fromDate" style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}>
             <DatePicker
-              disabledDate={(currentDate) => disabledDate(currentDate, 'fromDate')}
+              disabledDate={(currentDate) => disableFromDate(currentDate, 'toDate')}
               format={DATE_FORMAT_STR}
               placeholder="From Date"
-              onChange={(value) => {
-                onChangeDate(value, 'fromDate');
-              }}
-              suffixIcon={
-                <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
-              }
             />
           </Form.Item>
 
@@ -132,15 +96,9 @@ const Filter = (props) => {
             style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginLeft: '8px' }}
           >
             <DatePicker
-              disabledDate={(currentDate) => disabledDate(currentDate, 'toDate')}
+              disabledDate={(currentDate) => disableToDate(currentDate, 'fromDate')}
               format={DATE_FORMAT_STR}
               placeholder="To Date"
-              onChange={(value) => {
-                onChangeDate(value, 'toDate');
-              }}
-              suffixIcon={
-                <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
-              }
             />
           </Form.Item>
         </Form.Item>
