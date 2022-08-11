@@ -139,10 +139,6 @@ const DirectoryComponent = (props) => {
               <FilterContent activeTab={tabId} />
             </Suspense>
           }
-          realTime
-          submitText="Apply"
-          closeText="Clear"
-          onSecondButton={clearFilter}
         >
           <CustomOrangeButton fontSize={14} showDot={applied > 0} />
         </FilterPopover>
