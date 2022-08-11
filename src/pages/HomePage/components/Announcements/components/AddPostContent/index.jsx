@@ -98,6 +98,8 @@ const AddPostContent = (props) => {
         setIsUploadFile(false);
         setIsVisible(false);
         fetchData(POST_TYPE.SOCIAL, limit, '', STATUS_POST.ACTIVE);
+      } else {
+        setIsUploadFile(false);
       }
     });
   };
@@ -132,6 +134,8 @@ const AddPostContent = (props) => {
         setIsUploadFile(false);
         setIsVisible(false);
         fetchData(POST_TYPE.SOCIAL, limit, '', STATUS_POST.ACTIVE);
+      } else {
+        setIsUploadFile(false);
       }
     });
   };
@@ -170,14 +174,13 @@ const AddPostContent = (props) => {
       }).then((resp) => {
         const { statusCode, data: listAttachments = {} } = resp;
         if (statusCode === 200) {
-          if (listAttachments[0]?.defaultMessage) {
-            setIsUploadFile(false);
-          }
           if (!isEdit) {
             onAddNew(values, listAttachments);
           } else {
             onEditPost(values, listAttachments);
           }
+        } else {
+          setIsUploadFile(false);
         }
       });
     } else if (isEdit) {
