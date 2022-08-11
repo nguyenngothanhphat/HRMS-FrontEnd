@@ -164,8 +164,8 @@ const AddPost = (props) => {
                 response: record.pollDetail?.response3,
               },
             ],
-            startDateP: moment.utc(record.pollDetail?.startDate).startOf('day'),
-            endDateP: moment.utc(record.pollDetail?.endDate).startOf('day'),
+            startDateP: moment(record.pollDetail?.startDate).utc(0),
+            endDateP: moment(record.pollDetail?.endDate).utc(0),
           };
           break;
         default:
@@ -313,8 +313,8 @@ const AddPost = (props) => {
             response1: values.responsesP[0]?.response,
             response2: values.responsesP[1]?.response,
             response3: values.responsesP[2]?.response,
-            startDate: moment.utc(values.startDateP).startOf('day'),
-            endDate: moment.utc(values.endDateP).startOf('day'),
+            startDate: moment(values.startDateP).utc(0),
+            endDate: moment.utc(values.endDateP).utc(0),
           },
           location: values.location,
         };
@@ -385,8 +385,8 @@ const AddPost = (props) => {
             response1: values.responsesP[0]?.response,
             response2: values.responsesP[1]?.response,
             response3: values.responsesP[2]?.response,
-            startDate: moment.utc(values.startDateP).startOf('day'),
-            endDate: moment.utc(values.endDateP).startOf('day'),
+            startDate: moment(values.startDateP).utc(0),
+            endDate: moment(values.endDateP).utc(0),
           },
         };
         break;

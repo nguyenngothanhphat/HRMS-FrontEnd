@@ -6,25 +6,26 @@ import styles from './index.less';
 
 const PollContent = (props) => {
   const { form } = props;
-
+  const dateFormat = 'YYYY-MM-DD'
   const disabledStartDate = (current) => {
     const endDate = form.getFieldValue('endDateP');
+    const currentDate = current ? moment(current).format(dateFormat) : moment().format(dateFormat)
     if (endDate) {
       return (
-        current &&
-        (moment(current).isBefore(moment(), 'day') ||
-          moment(current).isAfter(moment(endDate), 'day'))
+        moment(currentDate).isBefore(moment().format(dateFormat), 'day') ||
+        moment(currentDate).isAfter(moment(endDate).format(dateFormat), 'day')
       );
     }
-    return current && moment(current).isBefore(moment(), 'day');
+    return moment(currentDate).isBefore(moment().format(dateFormat), 'day');
   };
 
   const disabledEndDate = (current) => {
     const startDate = form.getFieldValue('startDateP');
+    const currentDate = current ? moment(current).format(dateFormat) : moment().format(dateFormat)
     if (startDate) {
-      return current && moment(current).isBefore(moment(startDate), 'day');
+      return moment(currentDate).isBefore(moment(startDate).format(dateFormat), 'day');
     }
-    return current && moment(current).isBefore(moment(), 'day');
+    return moment(currentDate).isBefore(moment().format(dateFormat), 'day');
   };
 
   return (
