@@ -1,0 +1,59 @@
+import { Affix } from 'antd';
+import React, { useEffect } from 'react';
+import { connect, history } from 'umi';
+import CustomBlueButton from '@/components/CustomBlueButton';
+import { PageContainer } from '@/layouts/layout/src';
+import { getSettingPageUrl, HELP_NAME, HELP_TYPE } from '@/utils/helpPage';
+import HelpList from './components/HelpList';
+import styles from './index.less';
+
+const HelpPage = (props) => {
+  const { pathname } = window.location;
+  const {
+    dispatch,
+    permissions,
+    helpPage: { helpType: helpTypeProp = '' },
+  } = props;
+  const viewFAQSetting = permissions.viewFAQSetting !== -1;
+
+  const onSettingClick = () => {
+    history.push(getSettingPageUrl(pathname));
+  };
+
+  useEffect(() => {
+    let helpType = HELP_TYPE.FAQ;
+    if (pathname.includes('help-center')) {
+      helpType = HELP_TYPE.HRMS_HELP_CENTER;
+    }
+    dispatch({
+      type: 'helpPage/save',
+      payload: {
+        helpType,
+      },
+    });
+  }, [pathname]);
+
+  return (
+    <PageContainer>
+      <div className={styles.HelpPage}>
+        <Affix offsetTop={42}>
+          <div className={styles.titlePage}>
+            <p className={styles.titlePage__text}>{HELP_NAME[helpTypeProp]}</p>
+            <div className={styles.header__right}>
+              {viewFAQSetting && (
+                <CustomBlueButton onClick={() => onSettingClick()}>Settings</CustomBlueButton>
+              )}
+            </div>
+          </div>
+        </Affix>
+        <HelpList />
+      </div>
+    </PageContainer>
+  );
+};
+
+export default connect(({ user: { currentUser = {}, permissions = {} } = {}, helpPage }) => ({
+  helpPage,
+  currentUser,
+  permissions,
+}))(HelpPage);
