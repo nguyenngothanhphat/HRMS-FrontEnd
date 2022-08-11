@@ -1,9 +1,12 @@
-import React, { PureComponent } from 'react';
+import { Layout, Skeleton, Tabs } from 'antd';
+import React, { PureComponent, Suspense } from 'react';
 import { connect } from 'umi';
-import { Tabs, Layout } from 'antd';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
+import FilterCountTag from '@/components/FilterCountTag';
+import FilterPopover from '@/components/FilterPopover';
 import { getCurrentTenant } from '@/utils/authority';
+import FilterContent from '../FilterContent';
 import TableCandidates from '../TableCandidates';
-import TableFilter from '../TableFilter';
 import styles from './index.less';
 
 @connect(({ loading, candidatesManagement }) => ({
@@ -39,6 +42,8 @@ class TableContainer extends PureComponent {
       processStatus: [],
       pageSelected: 1,
       size: 10,
+      filter: [],
+      form: null,
     };
   }
 
@@ -129,19 +134,43 @@ class TableContainer extends PureComponent {
     }
   };
 
-  rightButton = (collapsed) => {
+  onClearFilter = () => {
+    const { form } = this.state;
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidatesManagement/ClearFilter',
+    });
+    form.resetFields();
+    this.setState({ filter: {} });
+    this.initDataTable();
+  };
+
+  setForm = (form) => {
+    this.setState({
+      form,
+    });
+  };
+
+  rightButton = () => {
+    const { tabId, filter } = this.state;
+    const applied = Object.values(filter).filter((v) => v).length;
     return (
       <div className={styles.tabBarExtra}>
-        <div className={styles.filterSider} onClick={this.handleToggle}>
-          <div
-            className={`${styles.filterButton} ${
-              collapsed ? '' : `${styles.filterBackgroundButton}`
-            }`}
-          >
-            <img src="/assets/images/iconFilter.svg" alt="filter" />
-            <p className={styles.textButtonFilter}>Filter</p>
-          </div>
-        </div>
+        <FilterCountTag count={applied} onClearFilter={this.onClearFilter} />
+        <FilterPopover
+          placement="bottomRight"
+          content={
+            <Suspense fallback={<Skeleton active />}>
+              <FilterContent
+                onFilter={(val) => this.setState({ filter: val })}
+                activeTab={tabId}
+                setForm={(val) => this.setForm(val)}
+              />
+            </Suspense>
+          }
+        >
+          <CustomOrangeButton fontSize={14} showDot={applied > 0} />
+        </FilterPopover>
       </div>
     );
   };
@@ -173,12 +202,6 @@ class TableContainer extends PureComponent {
                       getPageAndSize={this.getPageAndSize}
                     />
                   </Content>
-                  <TableFilter
-                    collapsed={collapsed}
-                    onHandleChange={this.handleChange}
-                    FormBox={this.handleFormBox}
-                    // changeTab={changeTab}
-                  />
                 </Layout>
               </TabPane>
             ))}
