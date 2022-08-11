@@ -459,7 +459,7 @@ const TicketDetailsForm = (props) => {
                                     <div className={styles.chatMessage__title}>{x.name}:</div>
                                     {`${x.oldValue[0]?.attachmentName || ''} ⇾ `}
                                     <span className={styles.chatMessage__changed}>
-                                      {x.newValue[0].attachmentName}
+                                      {x.newValue[0]?.attachmentName}
                                     </span>
                                   </>
                                 ) : (

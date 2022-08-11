@@ -15,6 +15,7 @@ import {
   getSupportTeamList,
   getListMyTeam,
   getLocationsOfCountries,
+  getListEmployeeByIds,
 } from '../services/ticketManagement';
 
 const ticketManagement = {
@@ -36,6 +37,7 @@ const ticketManagement = {
     supportTeamList: [],
     employeeFilterList: [],
     locationsOfCountries: [],
+    listEmployeeByIds: [],
   },
   effects: {
     *addTicket({ payload }, { call }) {
@@ -332,6 +334,25 @@ const ticketManagement = {
         yield put({
           type: 'save',
           payload: { locationsOfCountries: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchListEmployeeByIds({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getListEmployeeByIds, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { listEmployeeByIds: data },
         });
       } catch (error) {
         dialog(error);

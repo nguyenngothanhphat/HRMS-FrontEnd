@@ -36,12 +36,17 @@ const EditTicketModal = (props) => {
     role = '',
     ticket = {},
     refreshFetchTicketList = () => {},
+    listEmployeeByIds = [],
   } = props;
   console.log('🚀 ~ ticket', ticket);
+  console.log('🚀 ~ listEmployeeByIds', listEmployeeByIds);
 
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
-  const listCC = [];
+  const listCC = listEmployeeByIds.map((x) => {
+    return { value: x.id, label: x.generalInfo.legalName };
+  });
+  console.log('🚀 ~ listCC', listCC);
   const support = supportTeamList.find((x) => x.name === ticket.support_team);
   const reqDate = new Date(ticket.created_at)
     .toLocaleDateString()
@@ -107,8 +112,18 @@ const EditTicketModal = (props) => {
           country,
         },
       });
+      if (ticket.cc_list?.length)
+        dispatch({
+          type: 'ticketManagement/fetchListEmployeeByIds',
+          payload: {
+            ids: ticket.cc_list,
+          },
+        });
     }
-    return setQueryTypeList([]);
+    return () => {
+      setQueryTypeList([]);
+      setUploadedAttachments([]);
+    };
   }, [visible]);
 
   useEffect(() => {
@@ -128,6 +143,7 @@ const EditTicketModal = (props) => {
   }, [visible, JSON.stringify(support)]);
 
   const handleUpload = async (file) => {
+    console.log('🚀 ~ file', file);
     const formData = new FormData();
     formData.append('uri', file);
     const res = await dispatch({
@@ -354,7 +370,7 @@ const EditTicketModal = (props) => {
                   showSearch
                   mode="multiple"
                   allowClear
-                  defaultValue={ticket.cc_list?.length ? 'hihi' : null}
+                  defaultValue={listCC}
                 />
               </Form.Item>
             </Col>
@@ -427,12 +443,13 @@ const EditTicketModal = (props) => {
 export default connect(
   ({
     loading,
-    ticketManagement: { listEmployee = [], supportTeamList = [] } = {},
+    ticketManagement: { listEmployee = [], supportTeamList = [], listEmployeeByIds = [] } = {},
     user: { currentUser = {} } = {},
   }) => ({
     listEmployee,
     supportTeamList,
     currentUser,
+    listEmployeeByIds,
     loadingUploadAttachment: loading.effects['ticketManagement/uploadFileAttachments'],
     loadingFetchListEmployee: loading.effects['ticketManagement/fetchListEmployee'],
     loadingFetchSupportTeam: loading.effects['ticketManagement/fetchSupportTeamList'],

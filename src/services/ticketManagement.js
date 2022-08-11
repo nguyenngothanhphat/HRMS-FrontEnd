@@ -128,3 +128,10 @@ export async function getLocationsOfCountries(params) {
     params,
   });
 }
+
+export async function getListEmployeeByIds(payload) {
+  return request('/api/employeetenant/list-ids', {
+    method: 'POST',
+    data: payload,
+  });
+}
