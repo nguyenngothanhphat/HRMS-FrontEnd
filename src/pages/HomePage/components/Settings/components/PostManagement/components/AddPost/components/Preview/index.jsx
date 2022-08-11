@@ -54,6 +54,7 @@ const Preview = (props) => {
   });
 
   const [urlContent, setURLContent] = useState({});
+  const [isValidURL, setIsValidURL] = useState(false);
 
   const toBase64 = (file) =>
     // eslint-disable-next-line compat/compat
@@ -91,7 +92,12 @@ const Preview = (props) => {
         showNotification: false,
       }).then((res) => {
         const { statusCode, data = {} } = res;
-        if (statusCode === 200) setURLContent(data);
+        if (statusCode === 200) {
+          setURLContent(data);
+          setIsValidURL(true);
+        } else {
+          setIsValidURL(false);
+        }
       });
     }
   }, [urlFile]);
@@ -162,7 +168,7 @@ const Preview = (props) => {
           ? announcementContent.imageUrls.map((x) => {
               return { url: x };
             })
-          : urlFile && urlFile.match(URL_REGEX)
+          : urlFile && urlFile.match(URL_REGEX) && isValidURL
           ? urlContent
           : [
               {
