@@ -35,7 +35,7 @@ const Welcome = (props) => {
         // content={<ActivityLogModalContent tabKey="2" data={[]} />}
         content={
           <ActivityLogModalContent
-            tabKey="2"
+            tabKey="4"
             data={activeConversationUnseen}
             setModalVisible={() => setModalVisible(false)}
           />
