@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React from 'react';
 import { connect, history } from 'umi';
-import { dateFormat } from '@/utils/homePage';
+import { DATE_FORMAT } from '@/constants/homePage';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import styles from './index.less';
 
@@ -12,6 +12,8 @@ const EmployeeTag = (props) => {
       titleInfo = {} || {},
     } = {} || {},
     createDate,
+    postAsCompany = false,
+    company: { name: companyName = '', logoUrl = '' } = {},
   } = props;
 
   const onViewProfileClick = () => {
@@ -23,16 +25,16 @@ const EmployeeTag = (props) => {
   };
 
   const Timestamp = () => {
-    const date = moment(createDate).locale('en').format(dateFormat);
+    const date = moment(createDate).locale('en').format(DATE_FORMAT);
     return <span className={styles.timestamp}>{date}</span>;
   };
 
   return (
-    <div className={styles.EmployeeTag} onClick={onViewProfileClick}>
+    <div className={styles.EmployeeTag} onClick={!postAsCompany ? onViewProfileClick : () => {}}>
       <div className={styles.container}>
         <div className={styles.avatar}>
           <img
-            src={avatar || DefaultAvatar}
+            src={postAsCompany ? logoUrl : avatar || DefaultAvatar}
             alt=""
             onError={(e) => {
               e.target.src = DefaultAvatar;
@@ -40,8 +42,8 @@ const EmployeeTag = (props) => {
           />
         </div>
         <div className={styles.information}>
-          <span className={styles.name}>{legalName}</span>
-          <span className={styles.title}>{titleInfo?.name}</span>
+          <span className={styles.name}>{postAsCompany ? companyName : legalName}</span>
+          <span className={styles.title}>{postAsCompany ? '' : titleInfo?.name}</span>
           <Timestamp />
         </div>
       </div>

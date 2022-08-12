@@ -2,7 +2,7 @@ import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { Collapse } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
-import { mapType } from '@/utils/newCandidateForm';
+import { MAP_TYPE } from '@/constants/newCandidateForm';
 import File from '../File';
 import Certification from './components/Certification';
 import styles from './index.less';
@@ -21,7 +21,7 @@ const TechnicalCertification = (props) => {
     dispatch({
       type: 'candidatePortal/saveOrigin',
       payload: {
-        [mapType[type]]: result,
+        [MAP_TYPE[type]]: result,
       },
     });
   };
@@ -95,7 +95,9 @@ const TechnicalCertification = (props) => {
 
           <div className={styles.addBtn} onClick={onAdd}>
             <PlusOutlined className={styles.plusIcon} />
-            <span className={styles.title}>Please Add any relevant Certifications Info</span>
+            <span className={styles.title}>
+              Please upload relevant Certifications Info (if any)
+            </span>
           </div>
         </Collapse.Panel>
       </Collapse>

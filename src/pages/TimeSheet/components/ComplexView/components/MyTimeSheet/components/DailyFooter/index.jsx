@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 import { Row, Col } from 'antd';
-import { convertMsToTime, EMP_MT_MAIN_COL_SPAN } from '@/utils/timeSheet';
+import { EMP_MT_MAIN_COL_SPAN } from '@/constants/timeSheet';
 import styles from './index.less';
+import { convertMsToTime } from '@/utils/timeSheet';
 
 const { DATE_OF_HOURS, REMAINING } = EMP_MT_MAIN_COL_SPAN;
 

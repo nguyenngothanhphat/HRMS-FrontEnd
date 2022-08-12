@@ -1,19 +1,23 @@
 // import { debounce } from 'lodash';
-import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input } from 'antd';
-import React, { Component } from 'react';
-import { connect } from 'umi';
+import { Skeleton } from 'antd';
 import { debounce } from 'lodash';
-import FilterIcon from '@/assets/policiesRegulations/filter.svg';
-import AddIcon from '@/assets/policiesRegulations/add.svg';
+import React, { Component, Suspense } from 'react';
+import { connect } from 'umi';
+import CustomAddButton from '@/components/CustomAddButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
+import FilterPopover from '@/components/FilterPopover';
 import AddQuestionAnswer from './components/AddQuestionAnswer';
+import FilterContent from './components/FilterContent';
 import TableFAQList from './components/TableFAQList';
 import styles from './index.less';
 
-@connect(({ loading, faqs: { selectedCountry, listFAQ = [] } = {} }) => ({
+@connect(({ loading, faqs: { selectedCountry, listFAQ = [], totalListFAQ = 0 } = {} }) => ({
   selectedCountry,
   loadingGetList: loading.effects['faqs/fetchListFAQ'],
   listFAQ,
+  totalListFAQ,
 }))
 class ListQuestionAnswer extends Component {
   constructor(props) {
@@ -23,6 +27,8 @@ class ListQuestionAnswer extends Component {
       visibleModal: false,
       pageSelected: 1,
       size: 10,
+      form: null,
+      applied: 0,
     };
     this.refForm = React.createRef();
     this.onSearchDebounce = debounce(this.onSearchDebounce, 500);
@@ -40,55 +46,92 @@ class ListQuestionAnswer extends Component {
   componentDidUpdate = (prevProps) => {
     const { selectedCountry = '' } = this.props;
     if (prevProps.selectedCountry !== selectedCountry) {
+      this.refForm?.current?.resetFields();
       this.fetchData();
     }
   };
 
-  fetchData = () => {
+  fetchData = (page = 1, limit = 10) => {
     const { dispatch, selectedCountry = '' } = this.props;
+    // const { pageSelected, size } = this.state
     dispatch({
       type: 'faqs/fetchListFAQ',
       payload: {
         country: [selectedCountry],
+        page,
+        limit,
       },
     });
+  };
+
+  getPageAndSize = (page, pageSize) => {
+    this.setState({
+      pageSelected: page,
+      size: pageSize,
+    });
+    this.fetchData(page, pageSize);
   };
 
   onSearchDebounce = (value) => {
     const { dispatch, selectedCountry = '' } = this.props;
     dispatch({
-      type: 'faqs/searchFAQs',
+      type: 'faqs/fetchListFAQ',
       payload: {
         nameSearch: value,
         country: [selectedCountry],
+        page: 1,
+        limit: 10,
       },
     });
   };
 
+  handleClearFilter = () => {
+    const { dispatch, selectedCountry = '' } = this.props;
+    const { form } = this.state;
+    dispatch({
+      type: 'faqs/fetchListFAQ',
+      payload: {
+        country: selectedCountry,
+        page: 1,
+        limit: 10,
+      },
+    });
+    this.setState({ applied: 0 });
+    form?.resetFields();
+  };
+
   render() {
-    const { listFAQ = [], loadingGetList = false } = this.props;
-    const { visibleModal, pageSelected, size } = this.state;
+    const { listFAQ = [], loadingGetList = false, totalListFAQ } = this.props;
+    const { visibleModal, size, pageSelected, applied } = this.state;
     return (
       <div className={styles.ListQuestionAnswer}>
         <div className={styles.headerPolicy}>
           <div className={styles.headerPolicy__text}>Frequently Asked Questions</div>
           <div className={styles.headerPolicy__btnAdd}>
-            <Button
-              icon={<img src={AddIcon} alt="AddIcon" />}
-              onClick={() => this.setState({ visibleModal: true })}
-            >
+            <FilterCountTag count={applied} onClearFilter={this.handleClearFilter} />
+            <CustomAddButton onClick={() => this.setState({ visibleModal: true })}>
               Add Questions
-            </Button>
+            </CustomAddButton>
             <div className={styles.filterButton}>
-              <img src={FilterIcon} alt="FilterIcon" />
+              <FilterPopover
+                placement="bottomRight"
+                content={
+                  <Suspense fallback={<Skeleton active />}>
+                    <FilterContent
+                      setForm={(val) => this.setState({ form: val })}
+                      setApplied={(val) => this.setState({ applied: val })}
+                    />
+                  </Suspense>
+                }
+                realTime
+              >
+                <CustomOrangeButton showDot={applied > 0} />
+              </FilterPopover>
             </div>
-            <div className={styles.searchInp}>
-              <Input
-                placeholder="Search by question or answer"
-                prefix={<SearchOutlined />}
-                onChange={(e) => this.onSearch(e)}
-              />
-            </div>
+            <CustomSearchBox
+              placeholder="Search by question or answer"
+              onSearch={(e) => this.onSearch(e)}
+            />
           </div>
           <AddQuestionAnswer
             visible={visibleModal}
@@ -100,6 +143,7 @@ class ListQuestionAnswer extends Component {
           <TableFAQList
             pageSelected={pageSelected}
             size={size}
+            totalListFAQ={totalListFAQ}
             getPageAndSize={this.getPageAndSize}
             listFAQ={listFAQ}
             loadingGetList={loadingGetList}

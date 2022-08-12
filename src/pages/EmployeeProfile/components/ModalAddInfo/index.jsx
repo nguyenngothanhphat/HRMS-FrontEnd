@@ -9,6 +9,8 @@ import styles from './index.less';
 // import UploadCertification from './components/Upload/index';
 import { getCurrentTenant } from '../../../../utils/authority';
 import UploadCertification from './components/UploadCertification/index';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 // import { removeEmptyFields } from '@/utils/utils';
 
 const { Step } = Steps;
@@ -375,7 +377,7 @@ const ModalAddInfo = (props) => {
                           // pattern: /^[+0-9-]{10,15}$/,
                           pattern:
                             // eslint-disable-next-line no-useless-escape
-                            /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?$/gm,
+                            /^(?=.{0,25}$)((?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?)$/gm,
                           message: 'Invalid format, please try again',
                         },
                       ]}
@@ -1309,73 +1311,36 @@ const ModalAddInfo = (props) => {
     switch (currentStep) {
       case 0:
         return [
-          <Button
-            className={styles.btnSubmit}
-            type="primary"
-            key="submit"
-            htmlType="submit"
-            form="ContactDetails"
-          >
+          <CustomPrimaryButton key="submit" htmlType="submit" form="ContactDetails">
             Continue
-          </Button>,
+          </CustomPrimaryButton>,
         ];
       case 1:
         return [
-          <Button
-            type="link"
-            onClick={() => setCurrentStep(currentStep - 1)}
-            className={styles.btnCancel}
-          >
-            Previous
-          </Button>,
-          <Button
-            className={styles.btnSubmit}
-            type="primary"
-            key="submit"
-            htmlType="submit"
-            form="Certification"
-          >
+          <CustomSecondaryButton onClick={() => setCurrentStep(currentStep - 1)}>
+            <span style={{ color: '#ffa100' }}>Previous</span>
+          </CustomSecondaryButton>,
+          <CustomPrimaryButton key="submit" htmlType="submit" form="Certification">
             Continue
-          </Button>,
+          </CustomPrimaryButton>,
         ];
       case 2:
         return [
-          <Button
-            type="link"
-            onClick={() => setCurrentStep(currentStep - 1)}
-            className={styles.btnCancel}
-          >
-            Previous
-          </Button>,
-          <Button
-            className={styles.btnSubmit}
-            type="primary"
-            key="submit"
-            htmlType="submit"
-            form="BankAccount"
-          >
+          <CustomSecondaryButton onClick={() => setCurrentStep(currentStep - 1)}>
+            <span style={{ color: '#ffa100' }}>Previous</span>
+          </CustomSecondaryButton>,
+          <CustomPrimaryButton key="submit" htmlType="submit" form="BankAccount">
             Continue
-          </Button>,
+          </CustomPrimaryButton>,
         ];
       case 3:
         return [
-          <Button
-            type="link"
-            onClick={() => setCurrentStep(currentStep - 1)}
-            className={styles.btnCancel}
-          >
-            Previous
-          </Button>,
-          <Button
-            className={styles.btnSubmit}
-            type="primary"
-            key="submit"
-            htmlType="submit"
-            form="TaxDetail"
-            loading={loading}
-          >
+          <CustomSecondaryButton onClick={() => setCurrentStep(currentStep - 1)}>
+            <span style={{ color: '#ffa100' }}>Previous</span>
+          </CustomSecondaryButton>,
+          <CustomPrimaryButton key="submit" htmlType="submit" form="TaxDetail" loading={loading}>
             Submit
-          </Button>,
+          </CustomPrimaryButton>,
         ];
 
       default:
@@ -1391,8 +1356,8 @@ const ModalAddInfo = (props) => {
       closable={false}
       footer={renderFooter()}
       title="Employee Details"
-      style={{ top: 40 }}
       visible={visible}
+      centered
     >
       <div className={styles.main}>
         <div className={styles.mainTop}>

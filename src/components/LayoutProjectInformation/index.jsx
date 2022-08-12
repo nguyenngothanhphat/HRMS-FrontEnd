@@ -63,10 +63,10 @@ class LayoutProjectInformation extends Component {
         </Col>
         <Col xs={24} md={18} xl={20} className={s.viewRight}>
           <Row gutter={[24, 24]}>
-            <Col xs={24} xl={18}>
-              {loading? <Skeleton /> : displayComponent}
+            <Col xs={24} lg={16} xl={18}>
+              {loading ? <Skeleton /> : displayComponent}
             </Col>
-            <Col xs={24} xl={6}>
+            <Col xs={24} lg={8} xl={6}>
               <ViewInformation />
             </Col>
           </Row>

@@ -20,7 +20,7 @@ const WrapContent: React.FC<{
     <ConfigProviderWarp>
       <Layout.Content
         className={`${className} ${classNames}`}
-        style={{...style}}
+        style={{ ...style }}
       >
         {children}
       </Layout.Content>

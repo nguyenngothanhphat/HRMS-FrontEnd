@@ -2,7 +2,8 @@ import { CloseOutlined, DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant
 import { Button, Checkbox, Col, Collapse, Form, Input, Popconfirm } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { camelize, mapType } from '@/utils/newCandidateForm';
+import { camelize } from '@/utils/newCandidateForm';
+import { MAP_TYPE } from '@/constants/newCandidateForm';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -29,7 +30,7 @@ const CollapseFieldsTypeABC = (props) => {
     dispatch({
       type: 'newCandidateForm/saveTemp',
       payload: {
-        [mapType[type]]: result,
+        [MAP_TYPE[type]]: result,
       },
     });
   };
@@ -166,7 +167,7 @@ const CollapseFieldsTypeABC = (props) => {
               >
                 <div className={styles.addBtn__text}>
                   <PlusOutlined className={styles.plusIcon} />
-                  <span className={styles.title}>Add New Field</span>
+                  <span className={styles.title}>Add a new Document</span>
                 </div>
               </div>
             )}

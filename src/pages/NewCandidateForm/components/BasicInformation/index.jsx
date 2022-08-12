@@ -2,7 +2,7 @@ import { Button, Card, Col, Form, Row } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';
@@ -80,7 +80,7 @@ const BasicInformation = (props) => {
     let check = false;
     const phoneRegExp = RegExp(
       // eslint-disable-next-line no-useless-escape
-      /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?$/gm,
+      /^(?=.{0,25}$)((?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?)$/gm,
     );
     if (
       firstName &&

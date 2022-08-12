@@ -47,7 +47,7 @@ ProLayout 会根据 `location.pathname` 来自动选中菜单，并且自动生�
 > 所有以 `Render` 后缀的方法都可以通过传入 `false` 来使其不渲染。
 
 | 参数 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
+| --- | --- | --- | --- | --- |
 | title | layout 的左上角 的 title | ReactNode | `'Ant Design Pro'` |
 | logo | layout 的左上角 logo 的 url | ReactNode \| ()=>ReactNode | - |
 | pure | 是否删除掉所有的自带界面 | boolean | - |
@@ -62,7 +62,7 @@ ProLayout 会根据 `location.pathname` 来自动选中菜单，并且自动生�
 | contentWidth | layout 的内容模式,Fluid：定宽 1200px，Fixed：自适应 | 'Fluid' \| 'Fixed' | `'Fluid'` |
 | navTheme | 导航的主题 | 'light' \| 'dark' | `'dark'` |
 | fixedHeader | 是否固定 header 到顶部 | boolean | `false` |
-| fixSiderbar | 是否固定导航 | boolean | `false` |
+| fixSidebar | 是否固定导航 | boolean | `false` |
 | breakpoint | 触发响应式布局的[断点](https://ant.design/components/grid-cn/#Col) | `Enum { 'xs', 'sm', 'md', 'lg', 'xl', 'xxl' }` | `lg` |
 | menu | 关于 menu 的配置，暂时只有 locale,locale 可以关闭 menu 的自带的全球化 | { locale: boolean, defaultOpenAll: boolean } | `{ locale: true }` |
 | iconfontUrl | 使用 [IconFont](https://ant.design/components/icon-cn/#components-icon-demo-iconfont) 的图标配置 | string | - |
@@ -97,7 +97,7 @@ ProLayout 会根据 `location.pathname` 来自动选中菜单，并且自动生�
 > SettingDrawer 提供了一个图形界面来设置 layout 的配置。不建议在正式环境中使用。
 
 | 参数 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
+| --- | --- | --- | --- | --- |
 | settings | layout 的设置 | [`Settings`](#Settings) | [`Settings`](#Settings) | - |
 | onSettingChange | [`Settings`](#Settings) 发生更改事件 | (settings: [`Settings`](#Settings) ) => void | - |
 | hideHintAlert | 删除下方的提示信息 | boolean | - |
@@ -221,7 +221,7 @@ export interface Settings {
   /**
    * sticky siderbar
    */
-  fixSiderbar: boolean;
+  fixSidebar: boolean;
   menu: { locale: boolean };
   title: string;
   pwa: boolean;

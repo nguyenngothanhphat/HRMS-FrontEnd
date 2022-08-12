@@ -16,14 +16,14 @@
     justify-content: center;
     padding: 32px;
     .title {
+      color: #161c29;
       font-weight: 700;
       font-size: 18px;
-      color: #161c29;
     }
     .subtitle1 {
       margin-top: 10px;
-      font-size: 14px;
       color: #161c29;
+      font-size: 14px;
     }
     .subtitle2 {
       color: #707177;
@@ -31,37 +31,30 @@
     }
     .operationButtons {
       display: flex;
+      align-items: center;
       justify-content: flex-start;
-      .proceedBtn {
-      }
+      margin-top: 15px;
       .cancelBtn {
+        height: 40px;
         margin-left: 20px;
+        padding: 0 30px;
+        background-color: #ffa1001a;
+        border: none;
+        border-radius: 30px;
+        // width: 108px;
         span {
-          color: #161c29 !important;
+          color: #161c29;
+          font-weight: 700;
         }
-        background-color: #ffa1001a !important;
+        &:hover {
+          background-color: #ffa1001a; // hex with alpha 0.8
+        }
       }
     }
 
     :global {
       .ant-modal-body {
         border-radius: 10px;
-      }
-      .ant-btn {
-        margin-top: 15px;
-        background-color: #ffa100;
-        border: none;
-        border-radius: 30px;
-        height: 40px;
-        padding: 0 30px;
-        // width: 108px;
-        span {
-          color: white;
-          font-weight: 700;
-        }
-        &:hover {
-          background-color: #ffa100cc; // hex with alpha 0.8
-        }
       }
     }
   }

@@ -136,7 +136,7 @@ const FormLogin = (props) => {
             onChange={() =>
               form.setFieldsValue({ userEmail: (form.getFieldValue('userEmail') || '').trim() })
             }
-            spellcheck="false"
+            spellCheck="false"
           />
         </Form.Item>
         <Form.Item
@@ -158,7 +158,7 @@ const FormLogin = (props) => {
             }
             className={styles.inputPassword}
             placeholder="Enter your password"
-            spellcheck="false"
+            spellCheck="false"
           />
         </Form.Item>
         <div className={styles.keepSignIn}>

@@ -43,7 +43,6 @@ import {
   getTax,
   getAddTax,
   updateTax,
-  getLocationsByCompany,
   updateEmployment,
   updatePrivate,
   getListRelation,
@@ -1303,23 +1302,7 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchLocationsByCompany({ payload }, { call, put }) {
-      try {
-        const res = yield call(getLocationsByCompany, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data } = res;
-        if (statusCode !== 200) throw res;
-        yield put({
-          type: 'save',
-          payload: { companyLocationList: data },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
+
     *fetchCompensationList(_, { call, put }) {
       try {
         const res = yield call(getCompensationList, { tenantId: getCurrentTenant() });
@@ -1580,10 +1563,10 @@ const employeeProfile = {
       let response = {};
       try {
         response = yield call(getListEmployeeSingleCompany, {
-          ...payload,
           status: ['ACTIVE'],
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
+          ...payload,
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;

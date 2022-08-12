@@ -8,12 +8,10 @@ import {
   isNewRequest,
   isUpdatedRequest,
   roundNumber,
-  TIMEOFF_DATE_FORMAT,
-  TIMEOFF_STATUS,
 } from '@/utils/timeOff';
+import { TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/constants/timeOff';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
-
 import styles from './index.less';
 
 const { ON_HOLD } = TIMEOFF_STATUS;
@@ -21,7 +19,7 @@ const { ON_HOLD } = TIMEOFF_STATUS;
 @connect(({ loading, dispatch, timeOff: { paging } }) => ({
   paging,
   dispatch,
-  loadingFetchLeaveRequests: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+  loadingFetchLeaveRequests: loading.effects['timeOff/fetchMyLeaveRequest'],
 }))
 class MyLeaveTable extends PureComponent {
   columns = [

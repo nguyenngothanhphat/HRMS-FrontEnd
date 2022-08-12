@@ -1,18 +1,19 @@
 // this component is used for creating a new timeoff request
 // and for editing (updating) a exist one
 
-import { Affix, Col, Row, Typography } from 'antd';
+import { Affix, Col, Row, Spin, Typography } from 'antd';
+import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { PageContainer } from '@/layouts/layout/src';
-import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/utils/timeOff';
-import RequestInformation from './components/RequestInformation';
-import NoteComponent from '@/components/NoteComponent';
 import Icon1 from '@/assets/timeOff/icon1.svg';
+import NoteComponent from '@/components/NoteComponent';
+import { PageContainer } from '@/layouts/layout/src';
+import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/constants/timeOff';
+import RequestInformation from './components/RequestInformation';
 import styles from './index.less';
 
 const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DRAFTS, WITHDRAWN } = TIMEOFF_STATUS;
-const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST } = TIMEOFF_LINK_ACTION;
+const { EDIT_LEAVE_REQUEST, NEW_LEAVE_REQUEST, NEW_BEHALF_OF } = TIMEOFF_LINK_ACTION;
 
 const LeaveRequestForm = (props) => {
   const {
@@ -21,6 +22,7 @@ const LeaveRequestForm = (props) => {
       viewingLeaveRequest = {},
       viewingLeaveRequest: { status = '', ticketID = '' } = {},
       yourTimeOffTypes = {},
+      employeeBehalfOf = '',
     } = {},
     match: { params: { action = '', reId = '' } = {} },
     user: { currentUser: { employee = {} } = {} } = {},
@@ -34,7 +36,7 @@ const LeaveRequestForm = (props) => {
       dispatch({
         type: 'timeOff/fetchTimeOffTypeByEmployeeEffect',
         payload: {
-          employee: employee._id,
+          employee: action === NEW_BEHALF_OF ? employeeBehalfOf : employee._id,
         },
       });
     }
@@ -78,40 +80,62 @@ const LeaveRequestForm = (props) => {
     }
   };
 
+  const getInvalidDate = (data) => {
+    let invalidDatesTemp = [];
+    data.forEach((x) => {
+      const temp = x.leaveDates.map((y) => {
+        return {
+          date: y.date,
+          timeOfDay: y.timeOfDay,
+        };
+      });
+      invalidDatesTemp = [...invalidDatesTemp, ...temp];
+    });
+    setInvalidDates(invalidDatesTemp);
+  };
+
   useEffect(() => {
-    if (Object.keys(yourTimeOffTypes).length === 0) {
+    if (action === NEW_BEHALF_OF && !isEmpty(employeeBehalfOf)) {
+      fetchTimeOffTypes();
+
+      dispatch({
+        type: 'timeOff/fetchLeaveRequestOfEmployee',
+        payload: {
+          employee: employeeBehalfOf,
+          status: [IN_PROGRESS, ACCEPTED],
+        },
+      }).then((res) => {
+        if (res.statusCode === 200) {
+          const { data = [] } = res;
+          getInvalidDate(data);
+        }
+      });
+    }
+    if (Object.keys(yourTimeOffTypes).length === 0 && action !== NEW_BEHALF_OF) {
       fetchTimeOffTypes();
     }
+  }, [employeeBehalfOf]);
 
+  useEffect(() => {
     if (action === EDIT_LEAVE_REQUEST) {
       dispatch({
         type: 'timeOff/fetchLeaveRequestById',
         id: reId,
       });
     }
-
-    dispatch({
-      type: 'timeOff/fetchLeaveRequestOfEmployee',
-      payload: {
-        status: [IN_PROGRESS, ACCEPTED],
-      },
-    }).then((res) => {
-      if (res.statusCode === 200) {
-        let invalidDatesTemp = [];
-        const { items: leaveRequests = [] } = res?.data;
-        leaveRequests.forEach((x) => {
-          const temp = x.leaveDates.map((y) => {
-            return {
-              date: y.date,
-              timeOfDay: y.timeOfDay,
-            };
-          });
-          invalidDatesTemp = [...invalidDatesTemp, ...temp];
-        });
-
-        setInvalidDates(invalidDatesTemp);
-      }
-    });
+    if (action !== NEW_BEHALF_OF) {
+      dispatch({
+        type: 'timeOff/fetchMyLeaveRequest',
+        payload: {
+          status: [IN_PROGRESS, ACCEPTED],
+        },
+      }).then((res) => {
+        if (res.statusCode === 200) {
+          const { items: leaveRequests = [] } = res?.data;
+          getInvalidDate(leaveRequests);
+        }
+      });
+    }
 
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   }, []);
@@ -119,7 +143,7 @@ const LeaveRequestForm = (props) => {
   const Note = {
     title: 'Note',
     icon: Icon1,
-    borderColor: '#ebeff2',
+    borderColor: '#d6dce0',
     data: (
       <Typography.Text>
         Timeoff requests requires approvals.
@@ -134,7 +158,7 @@ const LeaveRequestForm = (props) => {
       <div className={styles.leaveRequest}>
         <Affix offsetTop={42}>
           <div className={styles.titlePage}>
-            {action === NEW_LEAVE_REQUEST && (
+            {(action === NEW_LEAVE_REQUEST || action === NEW_BEHALF_OF) && (
               <>
                 <p className={styles.titlePage__text}>Apply for Timeoff</p>
               </>
@@ -151,6 +175,20 @@ const LeaveRequestForm = (props) => {
             )}
           </div>
         </Affix>
+
+        {loadingFetchLeaveRequestById && (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: 400,
+              padding: 24,
+            }}
+          >
+            <Spin />
+          </div>
+        )}
         {!loadingFetchLeaveRequestById &&
           action === EDIT_LEAVE_REQUEST &&
           status !== DRAFTS &&
@@ -167,25 +205,26 @@ const LeaveRequestForm = (props) => {
           )}
 
         {(action === NEW_LEAVE_REQUEST ||
+          action === NEW_BEHALF_OF ||
           (action === EDIT_LEAVE_REQUEST &&
             !loadingFetchLeaveRequestById &&
             (status === DRAFTS || status === IN_PROGRESS))) && (
-          <>
-            <Row className={styles.container} gutter={[20, 20]}>
-              <Col xs={24} xl={18}>
-                <RequestInformation
-                  action={action}
-                  status={status}
-                  ticketID={ticketID}
-                  invalidDates={invalidDates}
-                  viewingLeaveRequest={viewingLeaveRequest}
-                />
-              </Col>
-              <Col xs={24} xl={6}>
-                <NoteComponent note={Note} />
-              </Col>
-            </Row>
-          </>
+            <>
+              <Row className={styles.container} gutter={[20, 20]}>
+                <Col xs={24} xl={18}>
+                  <RequestInformation
+                    action={action}
+                    status={status}
+                    ticketID={ticketID}
+                    invalidDates={invalidDates}
+                    viewingLeaveRequest={viewingLeaveRequest}
+                  />
+                </Col>
+                <Col xs={24} xl={6}>
+                  <NoteComponent note={Note} />
+                </Col>
+              </Row>
+            </>
         )}
       </div>
     </PageContainer>

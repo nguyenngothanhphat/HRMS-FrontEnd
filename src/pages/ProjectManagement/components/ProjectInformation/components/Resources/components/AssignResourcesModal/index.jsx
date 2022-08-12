@@ -1,10 +1,12 @@
 import { Button, Col, Modal, Row } from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import BackIcon from '@/assets/projectManagement/back.svg';
 import ModalImage from '@/assets/projectManagement/modalImage1.png';
+import WarningAddResource from '@/assets/resourceManagement/WarningAddResource.svg';
 import CommonModal from '@/components/CommonModal';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import ResourceTableCard from './components/ResourceTableCard';
 import ReviewResourceTable from './components/ReviewResourceTable';
@@ -49,6 +51,11 @@ const AssignResourcesModal = (props) => {
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [step, setStep] = useState(1);
   const [selectedResources, setSelectedResources] = useState([]);
+
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [searchValue, setSearchValue] = useState('');
+  const [filter, setFilter] = useState({});
   const adminMode = permissions.viewResourceAdminMode !== -1;
   const countryMode = permissions.viewResourceCountryMode !== -1;
 
@@ -63,14 +70,14 @@ const AssignResourcesModal = (props) => {
     setSelectedResources(result);
   };
 
-  const fetchResourceList = (name = '', page = 1, limit = 5, filter) => {
+  const fetchResourceList = () => {
     dispatch({
       type: 'projectDetails/fetchResourceListEffect',
       payload: {
         notInProject: projectNumberId,
         page,
         limit,
-        name,
+        name: searchValue,
         // department: [department],
         title: [titleId],
         ...filter,
@@ -81,6 +88,12 @@ const AssignResourcesModal = (props) => {
     });
   };
 
+  useEffect(() => {
+    if (visible) {
+      fetchResourceList();
+    }
+  }, [visible, searchValue, limit, page, JSON.stringify(filter)]);
+
   const assignResources = () => {
     const payload = selectedResources.map((x) => {
       return {
@@ -89,8 +102,8 @@ const AssignResourcesModal = (props) => {
         project: projectNumberId,
         status: billingStatus,
         // utilization: '',
-        startDate: startDate ? moment(startDate).format('YYYY-MM-DD') : '',
-        endDate: endDate ? moment(endDate).format('YYYY-MM-DD') : '',
+        startDate: startDate ? moment(startDate).format(DATE_FORMAT_YMD) : '',
+        endDate: endDate ? moment(endDate).format(DATE_FORMAT_YMD) : '',
         employee: x._id,
       };
     });
@@ -149,7 +162,7 @@ const AssignResourcesModal = (props) => {
                 <div className={styles.item}>
                   <span className={styles.label}>Start Date:</span>
                   <span className={styles.value}>
-                    {startDate ? moment(startDate).locale('en').format('MM/DD/YYYY') : ''}
+                    {startDate ? moment(startDate).locale('en').format(DATE_FORMAT_MDY) : ''}
                   </span>
                 </div>
               </Col>
@@ -157,7 +170,7 @@ const AssignResourcesModal = (props) => {
                 <div className={styles.item}>
                   <span className={styles.label}>End Date:</span>
                   <span className={styles.value}>
-                    {endDate ? moment(endDate).locale('en').format('MM/DD/YYYY') : ''}
+                    {endDate ? moment(endDate).locale('en').format(DATE_FORMAT_MDY) : ''}
                   </span>
                 </div>
               </Col>
@@ -182,6 +195,13 @@ const AssignResourcesModal = (props) => {
             setSelectedResources={setSelectedResources}
             resourceTypeName={resourceTypeName}
             noOfResources={noOfResources}
+            setSearchValue={setSearchValue}
+            filter={filter}
+            setFilter={setFilter}
+            page={page}
+            limit={limit}
+            setPage={setPage}
+            setLimit={setLimit}
           />
         </Row>
       </div>
@@ -264,6 +284,21 @@ const AssignResourcesModal = (props) => {
                   <span className={styles.raiseRequest}>Raise Request</span>
                 </>
               )}
+              {step === 2 && (
+                <>
+                  <span>
+                    <div className={styles.warningAddResource}>
+                      <p className={styles.warningImage}>
+                        <img src={WarningAddResource} alt="warning add resource" />
+                      </p>
+                      <p className={styles.descTextWarning}>
+                        If a change of manager is needed - you need to assign via the Resource
+                        Management page
+                      </p>
+                    </div>
+                  </span>
+                </>
+              )}
             </div>
             <div className={styles.mainButtons}>
               <Button className={styles.btnCancel} onClick={onSecondaryButtonClick}>
@@ -273,7 +308,7 @@ const AssignResourcesModal = (props) => {
                 className={styles.btnSubmit}
                 type="primary"
                 onClick={onPrimaryButtonClick}
-                disabled={selectedResources.length === 0}
+                disabled={selectedResources.length === 0 || step === 2}
                 loading={loadingAssign}
               >
                 {renderPrimaryButtonText()}

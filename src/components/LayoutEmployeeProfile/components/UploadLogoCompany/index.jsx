@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import logoDefault from '@/assets/companyDefault.png';
 import { Button, Image } from 'antd';
 import { connect } from 'umi';
+import logoDefault from '@/assets/companyDefault.png';
 import ModalUpload from '@/components/ModalUpload';
 import s from './index.less';
 

@@ -1,15 +1,15 @@
-import { Tag, Button, Select, Skeleton } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
+import { Select, Skeleton } from 'antd';
 import { debounce } from 'lodash';
 import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
-import AddIcon from '@/assets/projectManagement/add.svg';
 import ArrowDown from '@/assets/projectManagement/arrowDown.svg';
 import CommonModal from '@/components/CommonModal';
+import CustomAddButton from '@/components/CustomAddButton';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
-import FilterButton from '@/components/FilterButton';
-import AddProjectModalContent from '../AddProjectModalContent';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
+import AddProjectModalContent from '../AddProjectModalContent';
 import FilterContent from '../FilterContent';
 import styles from './index.less';
 
@@ -21,12 +21,14 @@ const Header = (props) => {
     statusSummary = [],
     projectStatus = 'All',
     setProjectStatus = () => {},
-    fetchProjectList = () => {},
+
     permissions = {},
     loadingAddProject = false,
+    filter = {},
+    setFilter = () => {},
+    setSearchValue = () => {},
   } = props;
   const [addProjectModalVisible, setAddProjectModalVisible] = useState(false);
-  const [applied, setApplied] = useState(0);
 
   // permissions
   const addProjectPermission = permissions.addProject !== -1;
@@ -34,13 +36,8 @@ const Header = (props) => {
   // redux
   const { projectManagement: { projectStatusList = [] } = {} } = props;
 
-  // if reselect project status or search, clear filter form
-  const [needResetFilterForm, setNeedResetFilterForm] = useState(false);
-  const [isFiltering, setIsFiltering] = useState(false);
-
   const onSearchDebounce = debounce((value) => {
-    fetchProjectList({ searchKey: value });
-    setNeedResetFilterForm(true);
+    setSearchValue(value);
   }, 1000);
 
   const onSearch = (e = {}) => {
@@ -48,24 +45,12 @@ const Header = (props) => {
     onSearchDebounce(value);
   };
 
-  const onFilter = (payload) => {
-    fetchProjectList(payload);
-    if (Object.keys(payload).length > 0) {
-      setIsFiltering(true);
-      setApplied(Object.keys(payload).length);
-    } else {
-      setIsFiltering(false);
-      setApplied(0);
-    }
-  };
-
-  const clearFilter = () => {
-    onFilter({});
-    setNeedResetFilterForm(true);
+  const onFilter = (values) => {
+    setFilter(values);
   };
 
   useEffect(() => {
-    setNeedResetFilterForm(true);
+    onFilter({});
   }, [projectStatus]);
 
   useEffect(() => {
@@ -75,6 +60,7 @@ const Header = (props) => {
   }, []);
 
   const allCount = statusSummary.find((x) => x.statusName === 'All Projects');
+  const applied = Object.values(filter).filter((v) => v).length;
 
   // MAIN AREA
   return (
@@ -99,43 +85,28 @@ const Header = (props) => {
         </div>
       </div>
       <div className={styles.Header__right}>
-        {applied > 0 && (
-          <Tag
-            className={styles.tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined />}
-            onClose={() => {
-              clearFilter();
-            }}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
+        <FilterCountTag
+          count={applied}
+          onClearFilter={() => {
+            onFilter({});
+          }}
+        />
         {addProjectPermission && (
-          <Button
-            onClick={() => setAddProjectModalVisible(true)}
-            icon={<img src={AddIcon} alt="" />}
-          >
+          <CustomAddButton onClick={() => setAddProjectModalVisible(true)}>
             Add new Project
-          </Button>
+          </CustomAddButton>
         )}
 
         <FilterPopover
           placement="bottomRight"
           content={
             <Suspense fallback={<Skeleton active />}>
-              <FilterContent
-                needResetFilterForm={needResetFilterForm}
-                setNeedResetFilterForm={setNeedResetFilterForm}
-                setIsFiltering={setIsFiltering}
-                setApplied={setApplied}
-                onFilter={onFilter}
-              />
+              <FilterContent filter={filter} onFilter={onFilter} />
             </Suspense>
           }
           realTime
         >
-          <FilterButton showDot={isFiltering} />
+          <CustomOrangeButton showDot={applied > 0} />
         </FilterPopover>
         <CustomSearchBox onSearch={onSearch} placeholder="Search by Project ID, customer name" />
       </div>

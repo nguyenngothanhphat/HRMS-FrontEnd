@@ -1,10 +1,12 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { isEmpty } from 'lodash';
+import ROLES from '@/constants/roles';
+import { TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/constants/timeOff';
 import MyLeaveTable from '@/pages/TimeOff/components/Overview/components/EmployeeRequestTable/components/MyLeaveTable';
-import ROLES from '@/utils/roles';
-import { getShortType, TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/utils/timeOff';
+import useCancelToken from '@/utils/hooks';
+import { getShortType } from '@/utils/timeOff';
+import { debounceFetchData } from '@/utils/utils';
 import FilterBar from '../FilterBar';
 import TeamLeaveTable from '../TeamLeaveTable';
 import styles from './index.less';
@@ -42,6 +44,8 @@ const TimeOffRequestTab = (props) => {
   const [selectedTabNumber, setSelectedTabNumber] = useState('1');
   const [handlePackage, setHandlePackage] = useState({});
   const [selectedTab, setSelectedTab] = useState(IN_PROGRESS);
+  const { cancelToken, cancelRequest } = useCancelToken();
+  const { cancelToken: cancelToken2, cancelRequest: cancelRequest2 } = useCancelToken();
 
   const setSelectedFilterTab = (id) => {
     dispatch({
@@ -141,6 +145,7 @@ const TimeOffRequestTab = (props) => {
     const payload = {
       type: getShortType(currentLeaveTypeTab),
       status: [IN_PROGRESS, ON_HOLD],
+      cancelToken: cancelToken2(),
     };
     if (category !== 'MY') {
       payload.isTeam = category === 'TEAM' ? true : null;
@@ -176,7 +181,7 @@ const TimeOffRequestTab = (props) => {
 
     let typeAPI = '';
 
-    if (category === 'MY') typeAPI = 'timeOff/fetchLeaveRequestOfEmployee';
+    if (category === 'MY') typeAPI = 'timeOff/fetchMyLeaveRequest';
     else if (category === 'ALL') typeAPI = 'timeOff/fetchAllLeaveRequests';
     else typeAPI = 'timeOff/fetchTeamLeaveRequests';
 
@@ -190,9 +195,10 @@ const TimeOffRequestTab = (props) => {
         toDate: toDate ? moment(toDate).format(TIMEOFF_DATE_FORMAT_API) : null,
         page,
         limit,
+        cancelToken: cancelToken(),
       },
-    }).then((res) => {
-      const { data: { total = [] } = {}, statusCode } = res;
+    }).then((res = {}) => {
+      const { data: { total = [] } = {}, statusCode } = res || {};
       if (statusCode === 200) {
         countTotal(total);
       }
@@ -202,9 +208,14 @@ const TimeOffRequestTab = (props) => {
   };
 
   useEffect(() => {
-    if (timeOffTypes.length > 0 || (currentPayloadTypes.length > 0 && isEmpty(filter))) {
-      fetchData();
+    if (currentPayloadTypes.length > 0) {
+      debounceFetchData(fetchData);
+      return () => {
+        cancelRequest();
+        cancelRequest2();
+      };
     }
+    return () => {};
   }, [selectedTabNumber, page, limit, JSON.stringify(filter), JSON.stringify(currentPayloadTypes)]);
 
   const onApproveRejectHandle = (obj) => {
@@ -263,7 +274,7 @@ const TimeOffRequestTab = (props) => {
 export default connect(({ timeOff, loading, user }) => ({
   timeOff,
   user,
-  loading1: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+  loading1: loading.effects['timeOff/fetchMyLeaveRequest'],
   loading2: loading.effects['timeOff/fetchTeamLeaveRequests'],
   loading3: loading.effects['timeOff/fetchMyCompoffRequests'],
   loading4: loading.effects['timeOff/fetchTeamCompoffRequests'],

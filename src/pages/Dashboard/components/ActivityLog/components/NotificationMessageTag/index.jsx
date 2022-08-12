@@ -7,7 +7,7 @@ import openTR from '@/assets/openTR.svg';
 
 const NotificationTag = (props) => {
   const {
-    item: { messages = [], newMessages = 0, sendFrom = '', candidateId = '' } = {},
+    item: { _id = '', messages = [], newMessages = 0, sendFrom = '', candidateId = '' } = {},
     setModalVisible = () => {},
     employee = {},
     dispatch,
@@ -21,8 +21,8 @@ const NotificationTag = (props) => {
       payload: {
         userId,
         conversationId,
-      }
-    })
+      },
+    });
     dispatch({
       type: 'conversation/getConversationUnSeenEffect',
       payload: {
@@ -37,7 +37,7 @@ const NotificationTag = (props) => {
     const dateTemp = moment(date).date();
     const monthTemp = moment(date).locale('en').format('MMM');
     return (
-      <Col span={24}>
+      <Col span={24} key={_id}>
         <div className={styles.NotificationTag}>
           <Row align="middle" justify="space-between">
             <Col span={20} className={styles.leftPart}>

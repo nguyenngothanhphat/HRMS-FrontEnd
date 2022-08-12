@@ -55,7 +55,7 @@ import {
   getAdditionalQuestion,
   verifyAllDocuments,
 } from '@/services/formCandidate';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/constants/onboarding';
 
 const defaultState = {
   rookieId: '',
@@ -438,8 +438,9 @@ const newCandidateForm = {
     },
 
     *fetchManagerList({ payload = {} }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getManagerList, {
+        response = yield call(getManagerList, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -453,6 +454,7 @@ const newCandidateForm = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
 
     *fetchReporteesList({ payload = {} }, { call, put }) {

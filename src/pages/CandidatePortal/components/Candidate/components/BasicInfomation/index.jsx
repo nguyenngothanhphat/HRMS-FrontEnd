@@ -9,7 +9,7 @@ import NoteComponent from '../NoteComponent';
 import Address from './components/Address';
 import BasicInfo from './components/BasicInfo';
 import styles from './index.less';
-import { ADDRESS_VARIABLES } from '@/utils/candidatePortal';
+import { ADDRESS_VARIABLES } from '@/constants/candidatePortal';
 import { goToTop } from '@/utils/utils';
 
 const BasicInformation = (props) => {

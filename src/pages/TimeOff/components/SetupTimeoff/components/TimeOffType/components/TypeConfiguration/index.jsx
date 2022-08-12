@@ -20,7 +20,7 @@ import LOP from './components/LOP';
 import MaximumBalanceAllowed from './components/MaximumBalanceAllowed';
 import NoticePeriodLeaveAccrualPolicy from './components/NoticePeriodLeaveAccrualPolicy';
 
-import { FORM_ITEM_NAME } from '@/utils/timeOff';
+import { FORM_ITEM_NAME } from '@/constants/timeOff';
 import { goToTop } from '@/utils/utils';
 import { getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 

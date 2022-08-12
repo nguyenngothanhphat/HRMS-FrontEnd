@@ -22,6 +22,8 @@ export default {
   'addEmployee.placeholder.workEmail': 'Enter Work Email',
   'addEmployee.employeeType': 'Employee Type',
   'addEmployee.placeholder.employeeType': 'Select Employee Type',
+  'addEmployee.employmentType': 'Employment Type',
+  'addEmployee.placeholder.employmentType': 'Select Employment Type',
   'addEmployee.company': 'Company',
   'addEmployee.placeholder.company': 'Select Company',
   'addEmployee.location': 'Location',

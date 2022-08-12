@@ -9,8 +9,8 @@ export async function addCategory(payload) {
 
 export async function getListCategory(payload) {
   return request('/api/faqstenant/get-list-category', {
-    method: 'POST',
-    data: payload,
+    method: 'GET',
+    params: payload,
   });
 }
 
@@ -37,8 +37,8 @@ export async function addQuestion(payload) {
 
 export async function getListFAQ(payload) {
   return request('/api/faqstenant/list', {
-    method: 'POST',
-    data: payload,
+    method: 'GET',
+    params: payload,
   });
 }
 
@@ -56,9 +56,9 @@ export async function deleteQuestion(payload) {
   });
 }
 
-export async function searchFAQs(payload) {
-  return request('/api/faqstenant/search-faqs', {
-    method: 'POST',
-    data: payload,
+export async function getListCreator(payload) {
+  return request('api/faqstenant/get-list-users', {
+    method: 'GET',
+    params: payload,
   });
 }

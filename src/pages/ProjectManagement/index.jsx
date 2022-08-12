@@ -1,12 +1,14 @@
 import { Tabs } from 'antd';
 import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
-import { DownloadOutlined } from '@ant-design/icons';
+import DownloadIcon from '@/assets/timeSheet/download.svg';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
+import WorkInProgress from '@/components/WorkInProgress';
 import { PageContainer } from '@/layouts/layout/src';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
+import { goToTop } from '@/utils/utils';
 import Projects from './components/Projects';
 import styles from './index.less';
-import WorkInProgress from '@/components/WorkInProgress';
-import { exportRawDataToCSV, goToTop } from '@/utils/utils';
 
 const { TabPane } = Tabs;
 
@@ -24,9 +26,6 @@ const ProjectManagement = (props) => {
   const viewProjectSettingPermission = permissions.viewProjectSettingTab !== -1;
 
   useEffect(() => {
-    if (!tabName) {
-      history.replace(`/project-management/list`);
-    }
     goToTop();
   }, []);
 
@@ -42,7 +41,7 @@ const ProjectManagement = (props) => {
     if (getListDataExport.statusCode === 200) {
       data = getListDataExport.data;
     }
-    exportRawDataToCSV(data, 'projects.csv');
+    exportRawDataToCSV(data, 'projects');
   };
 
   if (!tabName) return '';
@@ -56,20 +55,15 @@ const ProjectManagement = (props) => {
           }}
           destroyInactiveTabPane
           tabBarExtraContent={
-            <>
-              <p
-                style={{
-                  marginBottom: '0',
-                  marginRight: '32px',
-                  color: '#ffa100',
-                  fontWeight: '700',
-                  cursor: 'pointer',
-                }}
-                onClick={() => exportProjects()}
-              >
-                <DownloadOutlined /> Export
-              </p>
-            </>
+            <div
+              style={{
+                marginRight: 24,
+              }}
+            >
+              <CustomOrangeButton onClick={exportProjects} icon={DownloadIcon}>
+                Export
+              </CustomOrangeButton>
+            </div>
           }
         >
           {viewProjectListPermission && (

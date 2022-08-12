@@ -17,7 +17,7 @@ const UserNameContent = (props) => {
 
   useEffect(() => {
     dispatch({
-      type: 'onboard/fetchListDomain',
+      type: 'onboarding/fetchListDomain',
     });
   }, []);
 
@@ -27,7 +27,7 @@ const UserNameContent = (props) => {
 
   const onSaveRedux = (result) => {
     dispatch({
-      type: 'onboard/saveJoiningFormalities',
+      type: 'onboarding/saveJoiningFormalities',
       payload: result,
     });
   };
@@ -36,7 +36,7 @@ const UserNameContent = (props) => {
     const { userName: name = '', domain: domainName } = value;
     if (name) {
       const isExistingUserName = await dispatch({
-        type: 'onboard/checkExistedUserName',
+        type: 'onboarding/checkExistedUserName',
         payload: { userName: name },
       });
       if (isExistingUserName === false) {
@@ -88,11 +88,11 @@ const UserNameContent = (props) => {
 export default connect(
   ({
     loading,
-    onboard: { joiningFormalities: { listDomain = [], userName = '', domain = '' } } = {},
+    onboarding: { joiningFormalities: { listDomain = [], userName = '', domain = '' } } = {},
   }) => ({
     listDomain,
     userName,
     domain,
-    loadingGetListDomain: loading.effects['onboard/fetchListDomain'],
+    loadingGetListDomain: loading.effects['onboarding/fetchListDomain'],
   }),
 )(UserNameContent);

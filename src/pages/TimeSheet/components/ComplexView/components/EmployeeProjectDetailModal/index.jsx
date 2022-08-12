@@ -1,13 +1,13 @@
 import { Modal } from 'antd';
+import { debounce } from 'lodash';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
-import { debounce } from 'lodash';
-import styles from './index.less';
+import { getCurrentCompany } from '@/utils/authority';
+import { dateFormatAPI } from '@/constants/timeSheet';
 import Header from './components/Header';
 import ProjectTable from './components/ProjectTable';
-import { getCurrentCompany } from '@/utils/authority';
-import { dateFormatAPI } from '@/utils/timeSheet';
+import styles from './index.less';
 
 const EmployeeProjectDetailModal = (props) => {
   const {

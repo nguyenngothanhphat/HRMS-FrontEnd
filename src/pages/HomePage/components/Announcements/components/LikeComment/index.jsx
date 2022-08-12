@@ -12,7 +12,7 @@ import CommentBox from '@/components/CommentBox';
 import CommonModal from '@/components/CommonModal';
 import PostLikedModalContent from '@/components/PostLikedModalContent';
 import UserComment from '@/components/UserComment';
-import { LIKE_ACTION, POST_OR_CMT } from '@/utils/homePage';
+import { LIKE_ACTION, POST_OR_CMT } from '@/constants/homePage';
 import styles from './index.less';
 import { singularify } from '@/utils/utils';
 
@@ -40,6 +40,7 @@ const LikeComment = ({
   loadingReactPost = false,
   activePostID = '',
   setActivePostID = () => {},
+  isView = false,
 }) => {
   const [activeKey, setActiveKey] = useState('');
   const [commentValue, setCommentValue] = useState('');
@@ -48,7 +49,10 @@ const LikeComment = ({
   const [comments, setComments] = useState([]);
   const [limit, setLimit] = useState(DEFAULT_COMMENT_LIMIT);
 
-  const [viewingPostOrCommentLiked, setViewingPostOrCommentLiked] = useState();
+  const [viewingPostOrCommentLiked, setViewingPostOrCommentLiked] = useState({
+    type: '',
+    id: '',
+  });
   const [isLikeOrDislike, setIsLikeOrDislike] = useState('');
   const [isReactPostOrCmt, setIsReactPostOrCmt] = useState('');
 
@@ -68,6 +72,7 @@ const LikeComment = ({
       type: 'homePage/fetchPostCommentsEffect',
       payload: {
         post: postIdProp,
+        page: 1,
         limit: loadType ? newLimit : limit,
       },
     });
@@ -167,12 +172,14 @@ const LikeComment = ({
   // function
   // likes
   const onLikePost = async (type) => {
-    setIsReactPostOrCmt(POST_OR_CMT.POST);
-    setActivePostID(post?._id);
-    const res = await reactPostEffect(post?._id, type);
-    if (res.statusCode === 200) {
-      await refreshThisPost();
-      setIsReactPostOrCmt('');
+    if (!isView) {
+      setIsReactPostOrCmt(POST_OR_CMT.POST);
+      setActivePostID(post?._id);
+      const res = await reactPostEffect(post?._id, type);
+      if (res.statusCode === 200) {
+        await refreshThisPost();
+        setIsReactPostOrCmt('');
+      }
     }
   };
 
@@ -226,11 +233,17 @@ const LikeComment = ({
   const onViewWhoLiked = (type) => {
     setIsLikeOrDislike(type);
     getPostReactionListEffect(type);
-    setViewingPostOrCommentLiked(POST_OR_CMT.POST);
+    setViewingPostOrCommentLiked({
+      id: post?._id,
+      type: POST_OR_CMT.POST,
+    });
   };
 
   const onCloseLikedModal = () => {
-    setViewingPostOrCommentLiked('');
+    setViewingPostOrCommentLiked({
+      type: '',
+      id: '',
+    });
     setIsLikeOrDislike('');
     dispatch({
       type: 'homePage/save',
@@ -342,7 +355,7 @@ const LikeComment = ({
             onChange={action === ACTION.ADD ? setCommentValue : () => {}}
             value={action === ACTION.ADD ? commentValue : null}
             onSubmit={onComment}
-            disabled={action === ACTION.EDIT}
+            disabled={action === ACTION.EDIT || isView}
           />
           <Spin
             spinning={
@@ -408,7 +421,7 @@ const LikeComment = ({
       </Collapse>
 
       <CommonModal
-        visible={viewingPostOrCommentLiked}
+        visible={viewingPostOrCommentLiked.id}
         onClose={onCloseLikedModal}
         title={isLikeOrDislike === LIKE_ACTION.LIKE ? 'Likes' : 'Dislikes'}
         content={
@@ -416,7 +429,11 @@ const LikeComment = ({
             list={reactionList.map((x) => x.employee)}
             loading={loadingFetchReactList}
             total={reactionTotal}
-            loadMore={getPostReactionListEffect}
+            loadMore={
+              viewingPostOrCommentLiked.type === POST_OR_CMT.POST
+                ? getPostReactionListEffect
+                : () => getCommentReactionListEffect(viewingPostOrCommentLiked.id)
+            }
           />
         }
         width={500}

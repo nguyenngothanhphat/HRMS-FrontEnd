@@ -1,0 +1,32 @@
+@blueColour: @primary-color;
+.People {
+  height: 100%;
+  :global {
+    .ant-table-content,
+    .ant-table-container {
+      padding: 24px;
+    }
+    .ant-table-body {
+      min-height: 380px;
+    }
+  }
+  .optionContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    .filterMode {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-right: 16px;
+      cursor: pointer;
+      span {
+        color: @blueColour;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 19px;
+        margin-inline: 12px;
+      }
+    }
+  }
+}

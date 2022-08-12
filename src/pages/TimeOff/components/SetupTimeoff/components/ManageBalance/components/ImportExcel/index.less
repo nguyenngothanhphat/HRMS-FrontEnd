@@ -2,44 +2,44 @@
   .form {
     padding: 34px;
     font-weight: 400;
-    font-style: normal;
     font-size: 14px;
+    font-style: normal;
   }
   .import {
+    align-items: center;
+    justify-content: center;
     // width: 100%;
     height: 340px;
-    justify-content: center;
-    align-items: center;
     margin-bottom: 37px;
     // &:hover {
-    //   border: 1px dashed #2c6df9;
+    //   border: 1px dashed @primary-color;
     // }
 
-    :global{
-      .ant-upload.ant-upload-drag{
-        border: 1px dashed #2C6DF9;
-        background: #FAFCFF;
+    :global {
+      .ant-upload.ant-upload-drag {
+        background: #fafcff;
+        border: 1px dashed @primary-color;
         border-radius: 6px;
       }
     }
   }
 
-  .textBottom{
+  .textBottom {
     width: 210px;
-    text-align: left;
-    color:#161C29;
+    color: #161c29;
     line-height: 20px;
+    text-align: left;
   }
 
   .save {
     display: flex;
-    padding: 24px;
     justify-content: flex-end;
+    padding: 24px;
     .btnSave {
       width: 108px;
       height: 40px;
-      background: #ffa100;
       color: #fff;
+      background: #ffa100;
       border-radius: 25px;
     }
   }
@@ -51,23 +51,22 @@
   .datePicker {
     width: 225px;
     height: 42px;
-    border-radius: 5px;
     color: #707177;
+    border-radius: 5px;
   }
   .choosefile {
-    font-weight: 500;
     padding: 0 10px;
+    color: @primary-color;
+    font-weight: 500;
     font-size: 13px;
     line-height: 15px;
     text-decoration-line: underline;
-    color: #2c6df9;
   }
   .choosefileText {
-    font-style: normal;
+    color: #000000;
     font-weight: 500;
     font-size: 13px;
+    font-style: normal;
     line-height: 15px;
-
-    color: #000000;
   }
 }

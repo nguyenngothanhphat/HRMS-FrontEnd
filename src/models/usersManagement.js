@@ -18,11 +18,10 @@ import {
 const usersManagement = {
   namespace: 'usersManagement',
   state: {
-    activeEmployeesList: [],
-    inActiveEmployeesList: [],
+    employeeList: [],
     company: [],
     location: [],
-    roles: [],
+    roleList: [],
     jobTitleList: [],
     reportingManagerList: [],
     employeeDetail: [],
@@ -33,38 +32,29 @@ const usersManagement = {
     filterList: {},
     selectedUserId: '',
     selectedUserTenant: '',
-    totalActiveEmployee: '',
-    totalInactiveEmploiyee: '',
+    total: 0,
   },
   effects: {
-    *fetchEmployeesList({ payload = {} }, { call, put }) {
+    *fetchEmployeesList({ payload = {}, params }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getEmployeesList, payload);
-        const { statusCode, data: listEmployee = [] } = response;
+        response = yield call(getEmployeesList, payload, params);
+        const { statusCode, data: employeeList = [] } = response;
         if (statusCode !== 200) throw response;
 
-        const { status = [] } = payload;
-        if (status.includes('ACTIVE')) {
-          yield put({
-            type: 'save',
-            payload: { activeEmployeesList: listEmployee, totalActiveEmployee: response.total },
-          });
-        }
-        if (status.includes('INACTIVE')) {
-          yield put({
-            type: 'save',
-            payload: { inActiveEmployeesList: listEmployee, totalInactiveEmployee: response.total },
-          });
-        }
+        yield put({
+          type: 'save',
+          payload: { employeeList, total: response.total },
+        });
+
         yield put({
           type: 'save',
           payload: { currentPayload: payload },
         });
-        return listEmployee;
       } catch (errors) {
         dialog(errors);
-        return [];
       }
+      return response;
     },
     *fetchFilterList({ payload }, { call, put }) {
       try {
@@ -105,9 +95,9 @@ const usersManagement = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data: roles = [] } = response;
+        const { statusCode, data: roleList = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { roles } });
+        yield put({ type: 'save', payload: { roleList } });
       } catch (errors) {
         dialog(errors);
       }
@@ -208,42 +198,11 @@ const usersManagement = {
         ...action.payload,
       };
     },
-    saveFilter(state, action) {
-      const data = [...state.filter];
-      const actionFilter = action.payload;
-      const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
-      if (findIndex < 0) {
-        const item = {
-          actionFilter: {
-            name: actionFilter?.name,
-          },
-        };
-        item.checkedList = actionFilter?.checkedList;
-        data.push(item);
-      } else {
-        data[findIndex] = {
-          ...data[findIndex],
-          checkedList: actionFilter.checkedList,
-        };
-      }
+
+    clearFilter(state) {
       return {
         ...state,
-        clearFilter: false,
-        filter: [...data],
-      };
-    },
-    ClearFilter(state) {
-      return {
-        ...state,
-        clearFilter: true,
-        clearName: true,
-        filter: [],
-      };
-    },
-    offClearName(state) {
-      return {
-        ...state,
-        clearName: false,
+        filter: {},
       };
     },
   },

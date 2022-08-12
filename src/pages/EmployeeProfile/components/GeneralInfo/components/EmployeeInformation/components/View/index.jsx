@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import Icon from '@ant-design/icons';
 import Moment from 'moment';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import ConformIcondata from '../../../confirmIcon';
+import ConfirmIconData from '../../../ConfirmIconData';
 import iconQuestTion from '../../../Icon/icon';
 import styles from './index.less';
 
@@ -141,7 +141,7 @@ class View extends PureComponent {
                   >
                     {splitUrl}
                   </p>
-                  <ConformIcondata data={splitUrl} />
+                  <ConfirmIconData data={splitUrl} />
                 </div>
               ) : (
                 ''

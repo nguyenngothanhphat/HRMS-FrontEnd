@@ -18,7 +18,6 @@ class ManagerNode extends Component {
       propsState: { isCollapsed, itemSelected = '' } = {},
       renderCardInfo = () => {},
       handleCollapse = () => {},
-      managerRef,
       idCurrentUser = '',
     } = this.props;
     const isActive = itemSelected === idManager;
@@ -28,11 +27,7 @@ class ManagerNode extends Component {
     const className2 = isCurrentUser ? styles.currentUserNode : styles.parentNode;
 
     return (
-      <div
-        id={idManager || ''}
-        className={`${className2} ${styles.node} ${className}`}
-        ref={managerRef}
-      >
+      <div id={idManager || ''} className={`${className2} ${styles.node} ${className}`}>
         {renderCardInfo(manager, 'manager')}
         <div className={styles.node__bottom}>
           <div

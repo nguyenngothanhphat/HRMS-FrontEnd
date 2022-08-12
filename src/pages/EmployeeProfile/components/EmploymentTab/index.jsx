@@ -1,10 +1,12 @@
-import { Button, Spin } from 'antd';
+import { Card, Col, Row, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import imageAddSuccess from '@/assets/resource-management-success.svg';
 import CommonModal from '@/components/CommonModal';
+import CustomEditButton from '@/components/CustomEditButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import { getCurrentTenant } from '@/utils/authority';
-import edit from './asset/edit.svg';
 import path from './asset/path.svg';
 import CurrentInfo from './components/CurrentInfo';
 import EditCurrentInfo from './components/EditCurrentInfo';
@@ -232,88 +234,86 @@ const EmploymentTab = (props) => {
     setIsEdit(false);
   };
 
+  const options = () => {
+    return isEdit ? (
+      <div style={{ display: 'flex', alignItems: 'center' }} />
+    ) : (
+      permissions.editEmployment !== -1 && (
+        <CustomEditButton onClick={handleEditCurrentInfo}>Edit</CustomEditButton>
+      )
+    );
+  };
+
+  const makeChanges = () => {
+    return isChanging ? (
+      <CustomEditButton onClick={handleMakeChanges} image={path}>
+        Cancel & Return
+      </CustomEditButton>
+    ) : (
+      permissions.makeChangesHistory !== -1 && (
+        <CustomEditButton onClick={handleMakeChanges}>Make changes</CustomEditButton>
+      )
+    );
+  };
+
   return (
-    <div>
-      <div className={styles.employmentTab}>
-        <div className={styles.employmentTab__title}>
-          <span className={styles.title}>Employment Details</span>
-          {isEdit ? (
-            <div style={{ display: 'flex', alignItems: 'center' }} />
-          ) : (
-            permissions.editEmployment !== -1 && (
-              <div
-                className={styles.employmentTab__action}
-                onClick={handleEditCurrentInfo}
-                style={{ display: 'flex', alignItems: 'center' }}
-              >
-                <img alt="" src={edit} />
-                <span className={styles.editBtn}>Edit</span>
-              </div>
-            )
-          )}
-        </div>
-        {isEdit ? (
-          <EditCurrentInfo
-            handleCancel={handleEditCurrentInfo}
-            listEmployeeActive={listEmployeeActive}
-            isProfileOwner={isProfileOwner}
-          />
-        ) : (
-          <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />
-        )}
-      </div>
-      <Spin spinning={loadingReportees}>
-        <div className={styles.employmentTab}>
-          <div className={styles.employmentTab__title} align="middle">
-            <span className={styles.title}>
-              {isChanging ? `Edit Employment` : 'Employment History'}
-            </span>
-            {isChanging ? (
-              <div onClick={handleMakeChanges} className={styles.cancelButton}>
-                <img alt="" src={path} />
-                <span className={styles.editBtn}>Cancel & Return</span>
-              </div>
-            ) : (
-              permissions.makeChangesHistory !== -1 && (
-                <div
-                  className={styles.employmentTab__action}
-                  onClick={handleMakeChanges}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                >
-                  <img alt="" src={edit} />
-                  <span className={styles.editBtn}>Make changes</span>
-                </div>
-              )
-            )}
-          </div>
-          {isChanging ? (
-            <HandleChanges
-              nextTab={nextTab}
-              isChanging={isChanging}
-              data={currentData}
-              current={current}
-              setChangedData={setChangedData}
-              isModified={isModified}
-              setIsModified={setIsModified}
-            />
-          ) : (
-            <EmploymentHistoryTable fetchChangeHistories={fetchChangeHistories} />
-          )}
-          {isChanging ? (
-            <div className={styles.footer}>
-              <div>{current + 1}/7 steps</div>
-              <div className={styles.buttons}>
-                <Button onClick={previousTab} type="text">
-                  {current > 0 ? 'Back' : null}
-                </Button>
-                <Button onClick={nextTab} type="primary" disabled={!isModified && current === 5}>
-                  {current === 6 ? 'Submit' : 'Continue'}
-                </Button>
-              </div>
+    <div className={styles.PersonalInformation}>
+      <Row gutter={[24, 24]}>
+        <Col span={24}>
+          <Card title="Employment Details" extra={options()}>
+            <div className={styles.container}>
+              {isEdit ? (
+                <EditCurrentInfo
+                  handleCancel={handleEditCurrentInfo}
+                  listEmployeeActive={listEmployeeActive}
+                  isProfileOwner={isProfileOwner}
+                />
+              ) : (
+                <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />
+              )}
             </div>
-          ) : null}
-        </div>
-      </Spin>
+          </Card>
+        </Col>
+        <Col span={24}>
+          <Card title={isChanging ? `Edit Employment` : 'Employment History'} extra={makeChanges()}>
+            <Spin spinning={loadingReportees}>
+              {isChanging ? (
+                <HandleChanges
+                  nextTab={nextTab}
+                  isChanging={isChanging}
+                  data={currentData}
+                  current={current}
+                  setChangedData={setChangedData}
+                  isModified={isModified}
+                  setIsModified={setIsModified}
+                />
+              ) : (
+                <EmploymentHistoryTable fetchChangeHistories={fetchChangeHistories} />
+              )}
+              {isChanging ? (
+                <div className={styles.footer}>
+                  <div className={styles.step}>{current + 1}/7 steps</div>
+                  <div className={styles.buttons}>
+                    <CustomSecondaryButton onClick={previousTab}>
+                      <span
+                        style={{
+                          color: '#ffa100',
+                        }}
+                      >
+                        {current > 0 ? 'Back' : null}
+                      </span>
+                    </CustomSecondaryButton>
+                    <CustomPrimaryButton onClick={nextTab} disabled={!isModified && current === 5}>
+                      {current === 6 ? 'Submit' : 'Continue'}
+                    </CustomPrimaryButton>
+                  </div>
+                </div>
+              ) : null}
+            </Spin>
+          </Card>
+        </Col>
+      </Row>
+
       <CommonModal
         width={550}
         visible={visibleSuccess}
@@ -323,7 +323,7 @@ const EmploymentTab = (props) => {
         hasHeader={false}
         content={
           <>
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: 'center', paddingTop: 24 }}>
               <img src={imageAddSuccess} alt="update success" />
             </div>
             <br />
@@ -332,9 +332,7 @@ const EmploymentTab = (props) => {
               Update information successfully
             </p>
             <div className={styles.spaceFooterModalSuccess}>
-              <Button onClick={handleCancelModelSuccess} className={styles.btnOkModalSuccess}>
-                Okay
-              </Button>
+              <CustomPrimaryButton onClick={handleCancelModelSuccess}>Okay</CustomPrimaryButton>
             </div>
           </>
         }

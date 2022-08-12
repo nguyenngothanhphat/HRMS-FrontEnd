@@ -8,13 +8,15 @@ import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
 import LeaveInformation from './components/LeaveInformation';
 import ManagerRequestTable from './components/ManagerRequestTable';
 import QuickLinks from './components/QuickLinks';
-import TimeOffTypesInfo from './components/TimeOffTypesInfo';
 import styles from './index.less';
 
-// import FeedbackBar from './components/FeedbackBar';
-
 const Overview = (props) => {
-  const { eligibleForCompOff = false, viewHRTimeoff = false, viewManagerTimeoff = false } = props;
+  const {
+    eligibleForCompOff = false,
+    viewHRTimeoff = false,
+    viewManagerTimeoff = false,
+    viewRequestOnBehalfOf = false,
+  } = props;
 
   const [isViewingInformation, setIsViewingInformation] = useState(false);
 
@@ -31,6 +33,11 @@ const Overview = (props) => {
   const buttonOnClickLeave = () => {
     history.push({
       pathname: `/time-off/overview/personal-timeoff/new`,
+    });
+  };
+  const buttonOnClickBehalfOf = () => {
+    history.push({
+      pathname: `/time-off/overview/personal-timeoff/new-behalf-of`,
     });
   };
 
@@ -67,7 +74,9 @@ const Overview = (props) => {
                   title="Apply for Timeoff from Office"
                   buttonText="Request Time Off"
                   onClick={buttonOnClickLeave}
+                  onBehalfOf={buttonOnClickBehalfOf}
                   type={1}
+                  viewRequestOnBehalfOf={viewRequestOnBehalfOf}
                 />
               </Col>
               {eligibleForCompOff && (
@@ -97,7 +106,6 @@ const Overview = (props) => {
                   </Col>
                 </Row>
               )} */}
-            <TimeOffTypesInfo onClose={onInformationClick} visible={isViewingInformation} />
           </Col>
         </Row>
       </div>

@@ -1,15 +1,6 @@
 @import '~antd/es/style/themes/default.less';
 
-@pro-header-hover-bg: rgba(0, 0, 0, 0.025);
-
 .menu {
-  position: relative;
-  min-width: 240px;
-  margin-top: -8px;
-  text-align: center;
-  border-radius: 4%;
-  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.5), 0 9px 28px 0 rgba(0, 0, 0, 0.05),
-    0 12px 48px 16px rgba(0, 0, 0, 0.03);
   :global(.anticon) {
     margin-right: 8px;
   }
@@ -20,7 +11,7 @@
 
   :global {
     .ant-dropdown-menu-item-divider {
-      background-color: #d6dce0;
+      background-color: @border-color-base;
     }
   }
 
@@ -60,16 +51,15 @@
 
     .buttonLink {
       width: 100%;
-      color: #2c6df9;
+      color: @primary-color;
       font-weight: 500;
       font-size: 13px;
       text-decoration: none;
-      border: 1px solid #2c6df9;
+      border: 1px solid @primary-color;
       border-radius: 50px;
 
       &:hover {
-        color: #fff;
-        background-color: #2c6df9;
+        opacity: 0.8;
       }
     }
   }
@@ -87,20 +77,11 @@
       display: flex;
       align-items: center;
       justify-content: flex-start;
+
       img {
         width: 16px;
-        margin-right: 9px;
-      }
-      span {
-        color: #161c29;
-        font-size: 14px;
-        line-height: 21px;
-      }
-    }
-    &__withIconPolici {
-      img {
-        width: 12px;
-        margin-right: 13px;
+        height: 16px;
+        margin-right: 12px;
       }
       span {
         color: #161c29;
@@ -112,7 +93,7 @@
 
   .menuItemLink2 {
     .menuItemLink();
-    color: #2c6df9;
+    color: @primary-color;
     pointer-events: none;
   }
 
@@ -125,11 +106,7 @@
     display: flex;
     align-items: center;
     width: 100%;
-    margin-bottom: 12px;
-    padding-top: 18px;
-    padding-right: 24px;
-    padding-left: 24px;
-    // padding-left: @padding-xs + 2px;
+    padding: 18px 24px 6px 24px;
     text-align: left;
 
     .viewProfileAvatar {
@@ -205,14 +182,6 @@
     > span {
       vertical-align: middle;
     }
-
-    // &:hover {
-    //   background: @pro-header-hover-bg;
-    // }
-
-    // &:global(.opened) {
-    //   background: @pro-header-hover-bg;
-    // }
   }
 
   .search {
@@ -252,40 +221,14 @@
     margin: 0 12px;
     // padding-left: 13px;
     color: #161c29;
-    font-size: 17px;
+    font-size: 20px;
     background-color: #f3f6fc;
     border: 1px solid rgba(255, 255, 255, 0);
     border-radius: 50%;
     cursor: pointer;
 
     &:hover {
-      background: transparent;
-      border: 1px solid #00c598;
-    }
-  }
-
-  .switchRole {
-    display: flex;
-    justify-content: center;
-
-    min-width: 100px;
-    height: 44px;
-    margin: 0 12px;
-    padding: 0 10px;
-    background-color: #f3f6fc;
-    // border: 1px solid rgba(255, 255, 255, 0);
-    border: 1px solid #f3f6fc;
-    border-radius: 5px;
-    cursor: pointer;
-
-    &:hover {
-      background: transparent;
-      border: 1px solid #00c597;
-    }
-
-    .roleTitle {
-      font-weight: 500;
-      font-size: 13px;
+      opacity: 0.8;
     }
   }
 

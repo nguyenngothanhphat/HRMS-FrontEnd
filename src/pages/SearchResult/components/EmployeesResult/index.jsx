@@ -1,16 +1,15 @@
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/destructuring-assignment */
-import React, { useEffect, useState } from 'react';
-import { Table, Popover, Avatar } from 'antd';
-import { formatMessage, connect, history, Link } from 'umi';
+import { Avatar, Card, Popover, Table } from 'antd';
 import { isEmpty } from 'lodash';
-import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { connect, formatMessage, history, Link } from 'umi';
 import { isOwner } from '@/utils/authority';
-import avtDefault from '@/assets/avtDefault.jpg';
 import filterIcon from '@/assets/offboarding-filter.svg';
-import { getTimezoneViaCity } from '@/utils/times';
-import PopoverInfo from '@/pages/Directory/components/Directory/components/DirectoryTable/components/ModalTerminate/PopoverInfo';
+import avtDefault from '@/assets/avtDefault.jpg';
 import styles from '../../index.less';
+import CommonTable from '@/components/CommonTable';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 
 const EmployeeResult = React.memo((props) => {
   const {
@@ -25,36 +24,10 @@ const EmployeeResult = React.memo((props) => {
     loadTableData2,
     tabName,
     permissions = {},
-    companyLocationList,
     profileOwner = false,
   } = props;
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [timezoneList, setTimezoneList] = useState([]);
-  const [currentTime] = useState(moment());
-
-  const fetchTimezone = () => {
-    const timezoneListTemp = [];
-    companyLocationList.forEach((location) => {
-      const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
-        _id = '',
-      } = location;
-      timezoneListTemp.push({
-        locationId: _id,
-        timezone:
-          getTimezoneViaCity(city) ||
-          getTimezoneViaCity(state) ||
-          getTimezoneViaCity(addressLine1) ||
-          getTimezoneViaCity(addressLine2),
-      });
-    });
-    setTimezoneList(timezoneListTemp);
-  };
-
-  useEffect(() => {
-    fetchTimezone();
-  }, []);
 
   useEffect(() => {
     if (isSearch && tabName === 'employees') {
@@ -214,94 +187,40 @@ const EmployeeResult = React.memo((props) => {
       dataIndex: 'manager',
       key: 'manager',
       width: 200,
-      render: (manager) => {
-        const {
-          _id,
-          department,
-          departmentInfo,
-          title,
-          titleInfo,
-          employeeType,
-          employeeTypeInfo,
-          location,
-          locationInfo,
-          employeeId,
-          generalInfo,
-          generalInfoInfo,
-        } = manager;
-        const managerTemp = {
-          _id,
-          employeeId,
-          generalInfo: generalInfoInfo || generalInfo,
-          title: titleInfo || title,
-          department: departmentInfo || department,
-          location: locationInfo || location,
-          employeeType: employeeTypeInfo || employeeType,
-        };
+      render: (manager = {}) => {
         return (
-          <Popover
-            content={
-              <PopoverInfo
-                companyLocationList={companyLocationList}
-                propsState={{ currentTime, timezoneList }}
-                data={managerTemp}
-              />
+          <Link
+            className={styles.managerName}
+            to={() =>
+              handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
             }
-            placement="bottomRight"
-            trigger="hover"
           >
-            <Link
-              className={styles.managerName}
-              to={() =>
-                handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
-              }
-            >
-              {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
-            </Link>
-          </Popover>
+            {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
+          </Link>
         );
       },
     },
   ];
 
-  const pagination = {
-    position: ['bottomLeft'],
-    total: totalEmployees,
-    showTotal: (total, range) => (
-      <span>
-        {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-        <b>
-          {range[0]} - {range[1]}
-        </b>{' '}
-        {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-      </span>
-    ),
-    defaultPageSize: 10,
-    showSizeChanger: true,
-    pageSizeOptions: ['10', '25', '50', '100'],
-    pageSize: limit,
-    current: page,
-    onChange: (nextPage, pageSize) => {
-      setPage(nextPage);
-      setLimit(pageSize);
-    },
+  const renderOption = () => {
+    return (
+      <div className={styles.options}>
+        <CustomOrangeButton onClick={clickFilter}>Filter</CustomOrangeButton>
+      </div>
+    );
   };
   return (
-    <div className={styles.resultContent}>
-      <div className={styles.filter}>
-        <img src={filterIcon} alt="filter icon" onClick={clickFilter} />
-      </div>
-      <div className={styles.result}>
-        <Table
+    <Card className={styles.ResultContent} extra={renderOption()}>
+      <div className={styles.tableContainer}>
+        <CommonTable
           columns={columns}
-          dataSource={employeeList}
-          size="middle"
-          pagination={pagination}
+          list={employeeList}
           loading={loadTableData || loadTableData2}
-          scroll={{ x: '100vw' }}
+          scrollable
+          width="100vw"
         />
       </div>
-    </div>
+    </Card>
   );
 });
 export default connect(

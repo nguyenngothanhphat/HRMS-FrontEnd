@@ -1,11 +1,14 @@
-import { Button, Col, Input, Row } from 'antd';
+import { Col, Input, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
+import PDFIcon from '@/assets/pdf_icon.png';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import TimeOffModal from '@/components/TimeOffModal';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import {
-  checkNormalTypeTimeoff,
-  getHours,
   MAX_NO_OF_DAYS_TO_SHOW,
   TIMEOFF_12H_FORMAT,
   TIMEOFF_24H_FORMAT,
@@ -16,10 +19,9 @@ import {
   TIMEOFF_INPUT_TYPE_BY_LOCATION,
   TIMEOFF_STATUS,
   TIMEOFF_TYPE,
-} from '@/utils/timeOff';
-import TimeOffModal from '@/components/TimeOffModal';
+} from '@/constants/timeOff';
+import { checkNormalTypeTimeoff, getHours } from '@/utils/timeOff';
 import Project from './components/Project';
-import PDFIcon from '@/assets/pdf_icon.png';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -122,6 +124,15 @@ class RequestInformation extends PureComponent {
     });
   };
 
+  // REFRESH PAGE
+  refreshGetById = () => {
+    const { dispatch, reId = '' } = this.props;
+    dispatch({
+      type: 'timeOff/fetchLeaveRequestById',
+      id: reId,
+    });
+  };
+
   // REJECT CLICKED
   onRejectClicked = () => {
     this.setState({
@@ -144,6 +155,7 @@ class RequestInformation extends PureComponent {
       this.setState({
         isReject: false,
       });
+      this.refreshGetById();
     }
   };
 
@@ -176,6 +188,7 @@ class RequestInformation extends PureComponent {
     const { statusCode = 0 } = res;
     if (statusCode === 200) {
       this.setShowModal(true);
+      this.refreshGetById();
     }
   };
 
@@ -194,6 +207,7 @@ class RequestInformation extends PureComponent {
       this.setState({
         acceptWithdraw: true,
       });
+      this.refreshGetById();
     }
   };
 
@@ -211,6 +225,7 @@ class RequestInformation extends PureComponent {
       this.setState({
         acceptWithdraw: false,
       });
+      this.refreshGetById();
     }
   };
 
@@ -241,7 +256,7 @@ class RequestInformation extends PureComponent {
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate, type);
-    const listTime = leaveDates.map((x) => moment(x.date).format('MM/DD/YYYY'));
+    const listTime = leaveDates.map((x) => moment(x.date).format(DATE_FORMAT_MDY));
     const showAllDateList = duration <= MAX_NO_OF_DAYS_TO_SHOW;
 
     const BY_HOUR =
@@ -639,12 +654,15 @@ class RequestInformation extends PureComponent {
               department head.
             </span>
             <div className={styles.formButtons}>
-              <Button type="link" onClick={() => this.onRejectClicked()}>
+              <CustomSecondaryButton onClick={() => this.onRejectClicked()}>
                 Reject
-              </Button>
-              <Button loading={loadingApproveRequest} onClick={() => this.onApproveClicked(_id)}>
+              </CustomSecondaryButton>
+              <CustomPrimaryButton
+                loading={loadingApproveRequest}
+                onClick={() => this.onApproveClicked(_id)}
+              >
                 Approve
-              </Button>
+              </CustomPrimaryButton>
             </div>
           </div>
         )}
@@ -657,10 +675,10 @@ class RequestInformation extends PureComponent {
               department head.
             </span>
             <div className={styles.formButtons}>
-              <Button type="link" disabled>
+              <CustomSecondaryButton disabled>
                 {status === ACCEPTED && 'Approved'}
                 {status === REJECTED && 'Rejected'}
-              </Button>
+              </CustomSecondaryButton>
             </div>
           </div>
         )}
@@ -670,19 +688,18 @@ class RequestInformation extends PureComponent {
           <div className={styles.footer}>
             <span className={styles.note}>Withdrawing an approved request</span>
             <div className={styles.formButtons}>
-              <Button
+              <CustomSecondaryButton
                 loading={loadingRejectRequest}
-                type="link"
                 onClick={() => this.onRejectWithdrawClicked(_id)}
               >
                 Reject withdrawal
-              </Button>
-              <Button
+              </CustomSecondaryButton>
+              <CustomPrimaryButton
                 loading={loadingApproveRequest}
                 onClick={() => this.onApproveWithdrawClicked(_id)}
               >
                 Accept withdrawal
-              </Button>
+              </CustomPrimaryButton>
             </div>
           </div>
         )}
@@ -695,12 +712,13 @@ class RequestInformation extends PureComponent {
               department head.
             </span>
             <div className={styles.formButtons}>
-              <Button type="link" onClick={this.onCancel}>
-                Cancel
-              </Button>
-              <Button loading={loadingRejectRequest} onClick={() => this.onRejectSubmit(_id)}>
+              <CustomSecondaryButton onClick={this.onCancel}>Cancel</CustomSecondaryButton>
+              <CustomPrimaryButton
+                loading={loadingRejectRequest}
+                onClick={() => this.onRejectSubmit(_id)}
+              >
                 Submit
-              </Button>
+              </CustomPrimaryButton>
             </div>
           </div>
         )}

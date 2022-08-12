@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Button, Row, Col, Form, Input, DatePicker } from 'antd';
-import { connect } from 'umi';
+import { Button, Card, Col, DatePicker, Form, Input, Row } from 'antd';
 import moment from 'moment';
-import EditIcon from '@/assets/projectManagement/edit.svg';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'umi';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
-import CommonTable from '@/components/CommonTable';
 import CommonModal from '@/components/CommonModal';
-import EditEndDateContent from './components/EditEndDateContent';
+import CommonTable from '@/components/CommonTable';
+import CustomEditButton from '@/components/CustomEditButton';
+import { DATE_FORMAT_2 } from '@/constants/projectManagement';
 import EditBillableHeadCountContent from './components/EditBillableHeadCountContent';
 import EditBufferHeadCountContent from './components/EditBufferHeadCountContent';
-import { DATE_FORMAT_2 } from '@/utils/projectManagement';
+import EditEndDateContent from './components/EditEndDateContent';
 import styles from './index.less';
 
 const Summary = (props) => {
@@ -167,13 +167,11 @@ const Summary = (props) => {
   const renderOption = () => {
     if (isEditing || !allowModify) return null;
     return (
-      <Button
+      <CustomEditButton
         onClick={() => setIsEditing(true)}
-        icon={<img src={EditIcon} alt="" />}
-        className={styles.editButton}
       >
         Edit
-      </Button>
+      </CustomEditButton>
     );
   };
 
@@ -380,6 +378,7 @@ const Summary = (props) => {
             title="Reason for Editing the End Date"
             content={
               <EditEndDateContent
+                startDate={startDate}
                 initialValue={originEndDate}
                 newValues={newEndDate}
                 onClose={() => setEditEndDateModalVisible(false)}

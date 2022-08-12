@@ -1,7 +1,8 @@
 import { Col, DatePicker, Form, Row, Select } from 'antd';
+import { debounce, isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
-import { debounce } from 'lodash';
 import { connect } from 'umi';
+import { DATE_FORMAT_STR } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -12,10 +13,7 @@ const FilterResourcesContent = (props) => {
     dispatch,
     projectDetails: { billingStatusList = [], titleList = [] } = {},
     onFilter = () => {},
-    needResetFilterForm = false,
-    setNeedResetFilterForm = () => {},
-    setIsFiltering = () => {},
-    setApplied = () => {},
+    filter = {},
   } = props;
 
   const fetchDataList = () => {
@@ -49,9 +47,8 @@ const FilterResourcesContent = (props) => {
     onFinish(values);
   }, 700);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
 
   useEffect(() => {
@@ -60,13 +57,10 @@ const FilterResourcesContent = (props) => {
 
   // clear values
   useEffect(() => {
-    if (needResetFilterForm) {
+    if (isEmpty(filter)) {
       form.resetFields();
-      setNeedResetFilterForm(false);
-      setIsFiltering(false);
-      setApplied(0);
     }
-  }, [needResetFilterForm]);
+  }, [JSON.stringify(filter)]);
 
   return (
     <Form
@@ -91,7 +85,7 @@ const FilterResourcesContent = (props) => {
         </Select>
       </Form.Item>
 
-      <Form.Item label="By billing status" name="status">
+      <Form.Item label="By billing status" name="statuses">
         <Select
           mode="multiple"
           allowClear
@@ -110,7 +104,7 @@ const FilterResourcesContent = (props) => {
         <Row>
           <Col span={11}>
             <Form.Item name="startFromDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker format={DATE_FORMAT_STR} />
             </Form.Item>
           </Col>
           <Col span={2} className={styles.separator}>
@@ -118,7 +112,7 @@ const FilterResourcesContent = (props) => {
           </Col>
           <Col span={11}>
             <Form.Item name="startToDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker format={DATE_FORMAT_STR} />
             </Form.Item>
           </Col>
         </Row>
@@ -128,7 +122,7 @@ const FilterResourcesContent = (props) => {
         <Row style={{ width: '100%' }}>
           <Col span={11}>
             <Form.Item name="endFromDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker format={DATE_FORMAT_STR} />
             </Form.Item>
           </Col>
           <Col span={2} className={styles.separator}>
@@ -136,7 +130,7 @@ const FilterResourcesContent = (props) => {
           </Col>
           <Col span={11}>
             <Form.Item name="endToDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker format={DATE_FORMAT_STR} />
             </Form.Item>
           </Col>
         </Row>
@@ -146,7 +140,7 @@ const FilterResourcesContent = (props) => {
         <Row>
           <Col span={11}>
             <Form.Item name="revisedFromDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker format={DATE_FORMAT_STR} />
             </Form.Item>
           </Col>
           <Col span={2} className={styles.separator}>
@@ -154,7 +148,7 @@ const FilterResourcesContent = (props) => {
           </Col>
           <Col span={11}>
             <Form.Item name="revisedToDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker format={DATE_FORMAT_STR} />
             </Form.Item>
           </Col>
         </Row>

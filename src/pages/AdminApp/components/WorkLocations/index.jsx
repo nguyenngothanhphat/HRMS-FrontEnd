@@ -72,6 +72,7 @@ class WorkLocations extends PureComponent {
         country = '',
         state = '',
         zipCode = '',
+        timezone = ''
       } = location;
       return {
         name,
@@ -92,6 +93,7 @@ class WorkLocations extends PureComponent {
           zipCode,
         },
         isHeadQuarter: false,
+        timezone
       };
     });
 
@@ -165,11 +167,12 @@ class WorkLocations extends PureComponent {
           addressLine1 = '',
           addressLine2 = '',
           city = '',
-          country = {},
+          country: { _id: countryId = '' },
           state = '',
           zipCode = '',
         } = {},
         isHeadQuarter = false,
+        timezone = '',
       } = location;
       return {
         _id,
@@ -177,10 +180,11 @@ class WorkLocations extends PureComponent {
         addressLine1,
         addressLine2,
         city,
-        country: country?._id || '',
+        country: countryId,
         state,
         zipCode,
         isHeadQuarter,
+        timezone,
       };
     });
 

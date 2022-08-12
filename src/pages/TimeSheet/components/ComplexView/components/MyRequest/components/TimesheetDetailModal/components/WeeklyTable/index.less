@@ -1,23 +1,23 @@
-@border-color: #d6dce0;
+@border-color: @border-color-base;
 @orange: #fe5d27;
 @new-background: #fff4f1;
-@border-color: #d6dce0;
+@border-color: @border-color-base;
 @checkbox-background: #e7eaee;
 @checkbox-border: #707177;
 @gray: #707177;
 @red: #ff5252;
-@blue: #2c6df9;
+@blue: @primary-color;
 @cell-padding: 8px 16px;
 
 .mixin-border-bottom-row {
-  border-bottom: solid 1px #d6dce0;
+  border-bottom: solid 1px @border-color-base;
 }
 
 .WeeklyTable {
   width: 100%;
   overflow-x: auto;
   background-color: #ffffff;
-  border: solid 1px #d6dce0;
+  border: solid 1px @border-color-base;
   border-radius: 8px;
 
   .tableContainer {
@@ -119,14 +119,14 @@
   }
   .hourValue {
     &:hover {
-      color: #2c6df9;
+      color: @primary-color;
       background-color: #fafeff;
       cursor: pointer;
     }
   }
   .totalValue {
     &:hover {
-      color: #2c6df9;
+      color: @primary-color;
     }
   }
 
@@ -233,7 +233,7 @@
       font-weight: 500;
       font-size: 13px;
       &:hover {
-        color: #2c6df9;
+        color: @primary-color;
         cursor: pointer;
       }
     }
@@ -433,7 +433,7 @@
       > tfoot
       > tr
       > td {
-      border-color: #d6dce0;
+      border-color: @border-color-base;
     }
   }
 }

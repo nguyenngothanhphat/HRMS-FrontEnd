@@ -6,7 +6,7 @@ import {
   MNG_MT_SECONDARY_COL_SPAN,
   MNG_MT_THIRD_COL_SPAN,
   projectColor,
-} from '@/utils/timeSheet';
+} from '@/constants/timeSheet';
 import MockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import MemberCard from './components/MemberCard';
 import UserProfilePopover from '@/components/UserProfilePopover';

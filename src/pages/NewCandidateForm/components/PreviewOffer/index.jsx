@@ -8,7 +8,7 @@ import ModalDrawSignature from '@/components/ModalDrawSignature';
 import ModalGenerateSignature from '@/components/ModalGenerateSignature';
 import TextSignature from '@/components/TextSignature';
 import { getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
 // import { SendOutlined } from '@ant-design/icons';
 import ModalUpload from '../../../../components/ModalUpload';
 import NoteComponent from '../NoteComponent';
@@ -98,6 +98,8 @@ const PreviewOffer = (props) => {
   };
 
   const [offerLetter, setOfferLetter] = useState(getOfferLetterProp());
+  const [oldHrManagerReSignature, setOldHrManagerReSignature] = useState('');
+  const [oldHrReSignature, setOldHrReSignature] = useState('');
 
   // const processStatus = NEW_PROCESS_STATUS.AWAITING_APPROVALS;
   // const processStatus = NEW_PROCESS_STATUS.SALARY_NEGOTIATION;
@@ -117,6 +119,7 @@ const PreviewOffer = (props) => {
   const isWithdrawnOffer = processStatus === NEW_PROCESS_STATUS.OFFER_WITHDRAWN;
   const isSentOffer = processStatus === NEW_PROCESS_STATUS.OFFER_RELEASED;
   const isDocumentCheckList = processStatus === NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION;
+  const isJoined = processStatus === NEW_PROCESS_STATUS.JOINED;
 
   // MODALS
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
@@ -302,6 +305,11 @@ const PreviewOffer = (props) => {
   useEffect(() => {
     setHrSignature(hrSignatureProp);
   }, [hrSignatureProp]);
+
+  useEffect(() => {
+    setOldHrManagerReSignature(hrManagerSignatureProp);
+    setOldHrReSignature(hrSignatureProp);
+  }, []);
 
   useEffect(() => {
     // Save changes to store whenever input fields change
@@ -552,7 +560,12 @@ const PreviewOffer = (props) => {
                   <button type="submit" onClick={openModalUploadSignature}>
                     {optionSignature === 'draw' ? 'Click here to draw' : 'Upload new'}
                   </button>
-                  <CancelIcon resetImg={() => resetImg('hr')} />
+                  <CancelIcon
+                    resetImg={() => {
+                      resetImg('hr');
+                      setHrSignatureSubmit(false);
+                    }}
+                  />
                 </>
               )}
           </>
@@ -730,7 +743,12 @@ const PreviewOffer = (props) => {
               {optionSignatureHRManager === 'draw' ? 'Click here to draw' : 'Upload new'}
             </button>
 
-            <CancelIcon resetImg={() => resetImg('hrManager')} />
+            <CancelIcon
+              resetImg={() => {
+                resetImg('hrManager');
+                setHrManagerSignatureSubmit(false);
+              }}
+            />
           </>
         )}
       </div>
@@ -803,13 +821,16 @@ const PreviewOffer = (props) => {
         // if (isRejectedOffer) {
         //   return 'Offer Rejected';
         // }
-
         return 'Previous';
       };
 
       const managerPrimaryButtonText = () => {
-        if (isSentOffer || isAcceptedOffer || isNeedsChanges || isDocumentCheckList) {
+        if (isSentOffer || isAcceptedOffer || isDocumentCheckList || isJoined) {
           return 'Next';
+        }
+
+        if (isNeedsChanges) {
+          return 'Re-submit';
         }
 
         return 'Approve';
@@ -1070,24 +1091,26 @@ const PreviewOffer = (props) => {
             {(isTicketAssignee || isTicketManager) &&
               (isNewOffer || isAwaitingOffer || isNeedsChanges) && (
                 <div className={styles.submitContainer}>
-                  <Button
-                    type="primary"
-                    onClick={handleHrSignatureSubmit}
-                    disabled={
-                      !hrSignature.url &&
-                      !(isTicketAssignee || isTicketManager) &&
-                      optionSignature !== 'digital'
-                    }
-                    className={`${
-                      (hrSignature.url && (isTicketAssignee || isTicketManager)) ||
-                      optionSignature === 'digital'
-                        ? styles.active
-                        : styles.disable
-                    }`}
-                    loading={loading3}
-                  >
-                    Submit
-                  </Button>
+                  {(!hrSignature || hrSignature !== oldHrReSignature) && (
+                    <Button
+                      type="primary"
+                      onClick={handleHrSignatureSubmit}
+                      disabled={
+                        !hrSignature.url &&
+                        !(isTicketAssignee || isTicketManager) &&
+                        optionSignature !== 'digital'
+                      }
+                      className={`${
+                        (hrSignature.url && (isTicketAssignee || isTicketManager)) ||
+                        optionSignature === 'digital'
+                          ? styles.active
+                          : styles.disable
+                      }`}
+                      loading={loading3}
+                    >
+                      Submit
+                    </Button>
+                  )}
 
                   <span className={styles.submitMessage}>
                     {hrSignatureSubmit ? 'Signature submitted' : ''}
@@ -1191,23 +1214,25 @@ const PreviewOffer = (props) => {
 
             {isTicketManager && (isNewOffer || isAwaitingOffer || isNeedsChanges) && (
               <div className={styles.submitContainer}>
-                <Button
-                  type="primary"
-                  disabled={
-                    !hrManagerSignature.url &&
-                    !isTicketManager &&
-                    optionSignatureHRManager !== 'digital'
-                  }
-                  onClick={handleHrManagerSignatureSubmit}
-                  className={`${
-                    (hrManagerSignature.url && isTicketManager) ||
-                    optionSignatureHRManager === 'digital'
-                      ? styles.active
-                      : styles.disable
-                  }`}
-                >
-                  Submit
-                </Button>
+                {(!hrManagerSignature || hrManagerSignature !== oldHrManagerReSignature) && (
+                  <Button
+                    type="primary"
+                    disabled={
+                      !hrManagerSignature.url &&
+                      !isTicketManager &&
+                      optionSignatureHRManager !== 'digital'
+                    }
+                    onClick={handleHrManagerSignatureSubmit}
+                    className={`${
+                      (hrManagerSignature.url && isTicketManager) ||
+                      optionSignatureHRManager === 'digital'
+                        ? styles.active
+                        : styles.disable
+                    }`}
+                  >
+                    Submit
+                  </Button>
+                )}
 
                 <span className={styles.submitMessage}>
                   {hrManagerSignatureSubmit ? 'Signature submitted' : ''}

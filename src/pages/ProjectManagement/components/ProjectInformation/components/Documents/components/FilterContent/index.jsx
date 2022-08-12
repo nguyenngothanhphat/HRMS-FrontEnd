@@ -1,27 +1,51 @@
-import { Form, Select, Row, Col, DatePicker } from 'antd';
+import { Col, DatePicker, Form, Row, Select } from 'antd';
+import { debounce, isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
-import { debounce } from 'lodash';
 import { connect } from 'umi';
+import moment from 'moment';
+import { DATE_FORMAT_STR } from '@/constants/dateFormat';
+import DebounceSelect from '@/components/DebounceSelect';
 import styles from './index.less';
 
 const FilterContent = (props) => {
   const [form] = Form.useForm();
   const {
     dispatch,
-    projectDetails: { documentTypeList = [], employeeList = [] } = {},
+    projectDetails: { documentTypeList = [] } = {},
     onFilter = () => {},
-    needResetFilterForm = false,
-    setNeedResetFilterForm = () => {},
-    setIsFiltering = () => {},
-    setApplied = () => {}
+    filter = {},
   } = props;
 
-  const fetchDocumentTypeList = () => {
-    dispatch({
-      type: 'projectDetails/fetchDocumentTypeListEffect',
-    });
-    dispatch({
+  const disableFromDate = (value, compareVar) => {
+    const t = form.getFieldValue(compareVar);
+    if (!t) return false;
+    return value > moment(t);
+  };
+
+  const disableToDate = (value, compareVar) => {
+    const t = form.getFieldValue(compareVar);
+    if (!t) return false;
+    return value < moment(t);
+  };
+
+  const onEmployeeSearch = (val) => {
+    if (!val) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+    return dispatch({
       type: 'projectDetails/fetchEmployeeListEffect',
+      payload: {
+        name: val,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfo?.legalName,
+        value: user.generalInfo?.userId,
+      }));
     });
   };
 
@@ -46,27 +70,25 @@ const FilterContent = (props) => {
     onFinish(values);
   }, 700);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
 
+  // clear values
   useEffect(() => {
-    fetchDocumentTypeList();
-  }, []);
-
-   // clear values
-  useEffect(() => {
-    if (needResetFilterForm) {
+    if (isEmpty(filter)) {
       form.resetFields();
-      setNeedResetFilterForm(false);
-      setIsFiltering(false);
-      setApplied(0);
     }
-  }, [needResetFilterForm]);
+  }, [JSON.stringify(filter)]);
 
   return (
-    <Form form={form} layout="vertical" name="filter" onValuesChange={onValuesChange} className={styles.FilterContent}>
+    <Form
+      form={form}
+      layout="vertical"
+      name="filter"
+      onValuesChange={onValuesChange}
+      className={styles.FilterContent}
+    >
       <Form.Item label="By document type" name="type">
         <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
           {documentTypeList.map((item) => {
@@ -80,22 +102,22 @@ const FilterContent = (props) => {
       </Form.Item>
 
       <Form.Item label="By employee" name="uploadedBy">
-        <Select allowClear mode="multiple" style={{ width: '100%' }} placeholder="Please select">
-          {employeeList.map((item) => {
-            return (
-              <Select.Option value={item._id} key={item}>
-                {item.generalInfo?.legalName}
-              </Select.Option>
-            );
-          })}
-        </Select>
+        <DebounceSelect
+          placeholder="Search by Employee Name or ID"
+          mode="multiple"
+          fetchOptions={onEmployeeSearch}
+          allowClear
+        />
       </Form.Item>
 
       <Form.Item label="By Uploaded Date">
         <Row>
           <Col span={11}>
             <Form.Item name="fromDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker
+                format={DATE_FORMAT_STR}
+                disabledDate={(val) => disableFromDate(val, 'toDate')}
+              />
             </Form.Item>
           </Col>
           <Col span={2} className={styles.separator}>
@@ -103,7 +125,10 @@ const FilterContent = (props) => {
           </Col>
           <Col span={11}>
             <Form.Item name="toDate">
-              <DatePicker format="MMM DD, YYYY" />
+              <DatePicker
+                format={DATE_FORMAT_STR}
+                disabledDate={(val) => disableToDate(val, 'fromDate')}
+              />
             </Form.Item>
           </Col>
         </Row>
@@ -112,7 +137,10 @@ const FilterContent = (props) => {
   );
 };
 
-export default connect(({ projectDetails, user: { currentUser: { employee = {} } = {} } }) => ({
-  employee,
-  projectDetails,
-}))(FilterContent);
+export default connect(
+  ({ projectDetails, loading, user: { currentUser: { employee = {} } = {} } }) => ({
+    employee,
+    projectDetails,
+    loadingFetchEmployeeList: loading.effects['projectDetails/fetchEmployeeListEffect'],
+  }),
+)(FilterContent);

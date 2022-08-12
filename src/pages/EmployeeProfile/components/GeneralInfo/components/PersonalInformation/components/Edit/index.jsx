@@ -1,7 +1,9 @@
 /* eslint-disable camelcase */
-import { Button, Checkbox, Form, Input, Row, Select } from 'antd';
+import { Checkbox, Form, Input, Row, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import styles from './index.less';
 
 const Edit = (props) => {
@@ -11,7 +13,6 @@ const Edit = (props) => {
     generalData = {},
     generalDataOrigin,
     countryList = [],
-
     loading,
     handleCancel = () => {},
     // profileOwner = false,
@@ -249,7 +250,7 @@ const Edit = (props) => {
               {
                 pattern:
                   // eslint-disable-next-line no-useless-escape
-                  /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?$/gm,
+                  /^(?=.{0,25}$)((?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?)$/gm,
                 message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
               },
             ]}
@@ -447,17 +448,10 @@ const Edit = (props) => {
           </Form.Item>
         </div>
         <div className={styles.spaceFooter}>
-          <div className={styles.cancelFooter} onClick={handleCancel}>
-            Cancel
-          </div>
-          <Button
-            type="primary"
-            htmlType="submit"
-            className={styles.buttonFooter}
-            loading={loading}
-          >
+          <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+          <CustomPrimaryButton htmlType="submit" loading={loading}>
             Save
-          </Button>
+          </CustomPrimaryButton>
         </div>
       </Form>
     </Row>

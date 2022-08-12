@@ -2,16 +2,17 @@ import { Button } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
-import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
-import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
-import EditIcon from '@/assets/projectManagement/edit2.svg';
 import DeleteIcon from '@/assets/projectManagement/delete.svg';
-import CommonTable from '@/components/CommonTable';
-import Header from './components/Header';
+import EditIcon from '@/assets/projectManagement/edit2.svg';
+import OrangeAddIcon from '@/assets/projectManagement/orangeAdd.svg';
 import CommonModal from '@/components/CommonModal';
-import EditProjectStatusModalContent from '../EditProjectStatusModalContent';
+import CommonTable from '@/components/CommonTable';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import DeleteProjectModalContent from '../DeleteProjectModalContent';
+import EditProjectStatusModalContent from '../EditProjectStatusModalContent';
+import Header from './components/Header';
 import styles from './index.less';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 
 const Projects = (props) => {
   const {
@@ -30,22 +31,20 @@ const Projects = (props) => {
   const [selectedProject, setSelectedProject] = useState('');
   const [size, setSize] = useState(10);
   const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState({});
+  const [searchValue, setSearchValue] = useState('');
 
-  const fetchProjectList = async (payload) => {
-    let tempPayload = { ...payload, limit: size, page };
+  const fetchProjectList = async () => {
+    let tempPayload = { ...filter, searchKey: searchValue, limit: size, page };
     if (projectStatus !== 'All') {
       tempPayload = {
-        ...payload,
+        ...tempPayload,
         projectStatus: [projectStatus],
       };
     }
     dispatch({
       type: 'projectManagement/fetchProjectListEffect',
       payload: tempPayload,
-    });
-    dispatch({
-      type: 'projectManagement/save',
-      payload: { filter: tempPayload },
     });
     dispatch({
       type: 'projectManagement/fetchStatusSummaryEffect',
@@ -72,7 +71,7 @@ const Projects = (props) => {
 
   useEffect(() => {
     fetchProjectList();
-  }, [projectStatus, size, page]);
+  }, [projectStatus, size, page, JSON.stringify(filter), searchValue]);
 
   useEffect(() => {
     dispatch({
@@ -91,7 +90,7 @@ const Projects = (props) => {
     return (
       <span className={styles.timeTitle}>
         <span>{title}</span>
-        <span className={styles.smallText}>(mm/dd/yyyy)</span>
+        <span className={styles.smallText}>({DATE_FORMAT_MDY.toLowerCase()})</span>
       </span>
     );
   };
@@ -153,7 +152,7 @@ const Projects = (props) => {
         align: 'center',
         render: (startDate = '') => {
           return (
-            <span>{startDate ? moment(startDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
+            <span>{startDate ? moment(startDate).locale('en').format(DATE_FORMAT_MDY) : '-'}</span>
           );
         },
       },
@@ -166,7 +165,7 @@ const Projects = (props) => {
           const { tentativeEndDate = '', newEndDate = '' } = row;
           const endDate = newEndDate || tentativeEndDate;
           return (
-            <span>{endDate ? moment(endDate).locale('en').format(DATE_FORMAT_LIST) : '-'}</span>
+            <span>{endDate ? moment(endDate).locale('en').format(DATE_FORMAT_MDY) : '-'}</span>
           );
         },
       },
@@ -209,13 +208,22 @@ const Projects = (props) => {
         render: (numberOfResource, row) => {
           if ((!numberOfResource || numberOfResource === 0) && modifyProjectPermission) {
             return (
-              <Button
-                className={styles.addResourceBtn}
-                icon={<img src={OrangeAddIcon} alt="" />}
-                onClick={() => addResource(row?.projectId)}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
-                Add
-              </Button>
+                <CustomOrangeButton
+                  icon={OrangeAddIcon}
+                  onClick={() => addResource(row?.projectId)}
+                  marginInline={0}
+                  fontSize={13}
+                >
+                  Add
+                </CustomOrangeButton>
+              </div>
             );
           }
           return (
@@ -265,6 +273,10 @@ const Projects = (props) => {
           setProjectStatus={setProjectStatus}
           fetchProjectList={fetchProjectList}
           statusSummary={statusSummary}
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          filter={filter}
+          setFilter={setFilter}
         />
       </div>
       <div className={styles.tableContainer}>

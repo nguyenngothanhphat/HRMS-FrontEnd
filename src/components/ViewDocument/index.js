@@ -1,12 +1,8 @@
+import { Col, Row } from 'antd';
 import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
-import { Document, Page, pdfjs } from 'react-pdf';
 import { formatMessage } from 'umi';
 import GoBackButton from '@/assets/goBack_icon.svg';
-
 import styles from './index.less';
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const identifyImageOrPdf = (fileName) => {
   const parts = fileName.split('.');
@@ -26,22 +22,8 @@ const identifyImageOrPdf = (fileName) => {
 };
 
 class ViewDocument extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      numPages: null,
-    };
-  }
-
-  onDocumentLoadSuccess = ({ numPages }) => {
-    this.setState({
-      numPages,
-    });
-  };
-
   render() {
     const { onBackClick = () => {}, data = {} } = this.props;
-    const { numPages } = this.state;
 
     const { key = '', employeeGroup = '', employee = '', attachment: { url = '' } = {} } = data;
     return (
@@ -65,24 +47,14 @@ class ViewDocument extends PureComponent {
                     <img alt="preview" src={url} />
                   </div>
                 ) : (
-                  <Document
-                    className={styles.pdfFrame}
-                    onLoadSuccess={this.onDocumentLoadSuccess}
-                    // eslint-disable-next-line no-console
-                    onLoadError={console.error}
-                    file={url}
-                    loading=""
-                    noData="Document Not Found"
-                  >
-                    {Array.from(new Array(numPages), (el, index) => (
-                      <Page
-                        loading=""
-                        className={styles.pdfPage}
-                        key={`page_${index + 1}`}
-                        pageNumber={index + 1}
-                      />
-                    ))}
-                  </Document>
+                  <object width="100%" height="560" data={url} type="application/pdf">
+                    <iframe
+                      width="100%"
+                      height="560"
+                      src={`https://docs.google.com/viewer?url=${url}&embedded=true`}
+                      title="pdf-viewer"
+                    />
+                  </object>
                 )}
               </div>
             </Col>

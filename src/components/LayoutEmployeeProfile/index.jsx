@@ -1,16 +1,16 @@
 /* eslint-disable react/jsx-curly-newline */
-import { Affix, Col, Row, Skeleton, Spin } from 'antd';
+import { Col, Row, Skeleton } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
-import RequestDetails from '@/pages/EmployeeProfile/components/RequestDetails';
-import RaiseTermination from '@/pages/EmployeeProfile/components/RaiseTermination';
 import PutOnLeave from '@/pages/EmployeeProfile/components/PutOnLeave';
+import RaiseTermination from '@/pages/EmployeeProfile/components/RaiseTermination';
+import RequestDetails from '@/pages/EmployeeProfile/components/RequestDetails';
 import { isOwner } from '@/utils/authority';
+import { goToTop } from '@/utils/utils';
 import ItemMenu from './components/ItemMenu';
 import UploadLogoCompany from './components/UploadLogoCompany';
 import ViewInformation from './components/ViewInformation';
 import s from './index.less';
-import { goToTop } from '@/utils/utils';
 
 @connect(
   ({
@@ -29,7 +29,7 @@ import { goToTop } from '@/utils/utils';
       loading.effects['employeeProfile/fetchEmploymentInfo'],
   }),
 )
-class CommonLayout extends PureComponent {
+class LayoutEmployeeProfile extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -132,53 +132,47 @@ class CommonLayout extends PureComponent {
     const { displayComponent, selectedItemId, displayComponentActions } = this.state;
 
     return (
-      <div className={s.root}>
-        <Affix
-          // offsetTop={isCompanyProfile ? 0 : 100}
-          offsetTop={isAddingCompany ? 75 : 102}
-          className={s.affix}
-        >
-          <div className={s.viewLeft}>
-            <div
-              className={s.viewLeft__menu}
-              style={isCompanyProfile ? { padding: '24px 0 24px 40px' } : {}}
-            >
-              {listMenu.map((item) => (
-                <ItemMenu
-                  key={item.id}
-                  item={item}
-                  handleClick={this.handleCLickItemMenu}
-                  selectedItemId={selectedItemId}
-                  isAddingCompany={isAddingCompany}
-                />
-              ))}
-            </div>
-          </div>
-        </Affix>
-
-        <Row xs={24} md={18} xl={20} gutter={[24, 24]} className={s.viewRight}>
-          <Col xl={isCompanyProfile ? 16 : 18} xs={24}>
-            <Spin spinning={loadingFetchEmployee}>
-              {displayComponentActions || displayComponent}
-            </Spin>
-          </Col>
-          <Col xl={isCompanyProfile ? 8 : 6} xs={24}>
-            {isCompanyProfile ? (
-              <UploadLogoCompany />
-            ) : (
-              <ViewInformation
-                permissions={permissions}
-                isProfileOwner={isProfileOwner}
-                employeeLocation={employeeLocation}
-                handleClickOnActions={this.handleClickOnActions}
-                loadingFetchEmployee={loadingFetchEmployee}
+      <Row className={s.LayoutEmployeeProfile} gutter={[0, 24]}>
+        <Col xs={24} md={6} xl={4} className={s.viewLeft}>
+          <div className={s.viewLeft__menu}>
+            {listMenu.map((item) => (
+              <ItemMenu
+                key={item.id}
+                item={item}
+                handleClick={this.handleCLickItemMenu}
+                selectedItemId={selectedItemId}
+                isAddingCompany={isAddingCompany}
               />
-            )}
-          </Col>
-        </Row>
-      </div>
+            ))}
+          </div>
+        </Col>
+        <Col xs={24} md={18} xl={20} className={s.viewRight}>
+          <Row gutter={[24, 24]}>
+            <Col xs={24} xl={17}>
+              {loadingFetchEmployee ? (
+                <Skeleton active />
+              ) : (
+                displayComponentActions || displayComponent
+              )}
+            </Col>
+            <Col xs={24} xl={7}>
+              {isCompanyProfile ? (
+                <UploadLogoCompany />
+              ) : (
+                <ViewInformation
+                  permissions={permissions}
+                  isProfileOwner={isProfileOwner}
+                  employeeLocation={employeeLocation}
+                  handleClickOnActions={this.handleClickOnActions}
+                  loadingFetchEmployee={loadingFetchEmployee}
+                />
+              )}
+            </Col>
+          </Row>
+        </Col>
+      </Row>
     );
   }
 }
 
-export default CommonLayout;
+export default LayoutEmployeeProfile;

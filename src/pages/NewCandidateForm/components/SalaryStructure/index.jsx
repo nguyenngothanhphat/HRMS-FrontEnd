@@ -1,7 +1,7 @@
 import { Col, Form, notification, Row, Skeleton } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { NEW_PROCESS_STATUS, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_STEPS } from '@/constants/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';

@@ -13,11 +13,10 @@ import {
   isUpdatedRequest,
   checkNormalTypeTimeoff,
   roundNumber,
-  TIMEOFF_DATE_FORMAT,
-  TIMEOFF_STATUS,
 } from '@/utils/timeOff';
 import RejectCommentModal from '../RejectCommentModal';
 import styles from './index.less';
+import { TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/constants/timeOff';
 
 const { IN_PROGRESS, REJECTED, ON_HOLD } = TIMEOFF_STATUS;
 
@@ -45,7 +44,7 @@ const COLUMN_WIDTH = {
   currentUser,
   paging,
   loading1: loading.effects['timeOff/fetchTeamLeaveRequests'],
-  // loading2: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+  // loading2: loading.effects['timeOff/fetchMyLeaveRequest'],
   loading3: loading.effects['timeOff/approveMultipleRequests'],
   loading4: loading.effects['timeOff/rejectMultipleRequests'],
   loading5: loading.effects['timeOff/approveRequest'],

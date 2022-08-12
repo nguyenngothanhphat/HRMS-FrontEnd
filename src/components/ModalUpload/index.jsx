@@ -1,13 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { Modal, Button, Upload, message } from 'antd';
+import { Modal, Button, Upload, message, Progress } from 'antd';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { connect } from 'umi';
 import { InboxOutlined } from '@ant-design/icons';
-import { Document, Page } from 'react-pdf';
 import styles from './index.less';
+import uploadFirebase from '@/services/firebase';
 
 const { Dragger } = Upload;
 const propsUpload = {
@@ -47,6 +47,8 @@ class ModalUpload extends Component {
         height: 75,
       },
       croppedImage: null,
+      percent: 0,
+      isUpload: false,
     };
   }
 
@@ -99,25 +101,47 @@ class ModalUpload extends Component {
           height: 75,
         },
         croppedImage: null,
+        percent: 0,
+        isUpload: false,
       },
       () => handleCancel(),
     );
   };
 
-  handleUploadToServer = () => {
+  setPercent = (val) => {
+    this.setState({ percent: val });
+  };
+
+  handleUploadToServer = async () => {
     const { dispatch, getResponse = () => {} } = this.props;
     const { croppedImage, fileType, fileData } = this.state;
-    const formData = new FormData();
     const dataUri = fileType === PDF_TYPE ? fileData : croppedImage;
-    formData.append('uri', dataUri);
+    this.setState({ isUpload: true });
+    const payload = await uploadFirebase({ file: dataUri, typeFile: 'IMAGE' }, (val) => {
+      this.setPercent(val);
+    });
+
     dispatch({
-      type: 'upload/uploadFile',
-      payload: formData,
-      showNotification: false
+      type: 'upload/addAttachment',
+      payload: {
+        attachments: [payload],
+      },
+      showNotification: true,
     }).then((resp) => {
+      this.setState({ percent: 100 });
       this.setState({ imageUrl: '' });
       getResponse(resp);
     });
+  };
+
+  componentDidUpdate = (preProps) => {
+    const { visible = false } = this.props;
+    if (preProps.visible !== visible) {
+      this.setState({
+        percent: 0,
+        isUpload: false,
+      });
+    }
   };
 
   renderHeaderModal = () => {
@@ -163,11 +187,11 @@ class ModalUpload extends Component {
     }
   };
 
-  getCroppedImg = (image, crop) => {
+  getCroppedImg = (image) => {
     const { fileUploaded: { name = '', type = '' } = {} } = this.state;
     const canvas = document.createElement('canvas');
-    canvas.width = crop.width;
-    canvas.height = crop.height;
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
     return new Promise((resolve, reject) => {
@@ -182,9 +206,9 @@ class ModalUpload extends Component {
   };
 
   render() {
-    const { visible = false, widthImage = '', loading } = this.props;
+    const { visible = false, widthImage = '' } = this.props;
     const width = widthImage || 'auto';
-    const { imageUrl, crop, fileType } = this.state;
+    const { imageUrl, crop, fileType, percent, isUpload } = this.state;
     return (
       <Modal
         className={styles.modalUpload}
@@ -200,8 +224,8 @@ class ModalUpload extends Component {
           <Button
             key="submit"
             type="primary"
-            disabled={!imageUrl}
-            loading={loading}
+            disabled={!imageUrl || isUpload}
+            loading={isUpload}
             className={styles.btnSubmit}
             onClick={this.handleUploadToServer}
           >
@@ -213,20 +237,27 @@ class ModalUpload extends Component {
           {imageUrl ? (
             <>
               {fileType === PDF_TYPE ? (
-                <Document file={imageUrl}>
-                  <Page pageNumber={1} />
-                </Document>
+                <object width="100%" height="560" data={imageUrl} type="application/pdf">
+                  <iframe
+                    width="100%"
+                    height="560"
+                    src={`https://docs.google.com/viewer?url=${imageUrl}&embedded=true`}
+                    title="pdf-viewer"
+                  />
+                </object>
               ) : (
-                <ReactCrop
-                  className={styles.viewImg__img}
-                  style={{ width }}
-                  src={imageUrl}
-                  crop={crop}
-                  ruleOfThirds
-                  onImageLoaded={this.onImageLoaded}
-                  onComplete={this.onCropComplete}
-                  onChange={this.onCropChange}
-                />
+                <>
+                  <ReactCrop
+                    className={styles.viewImg__img}
+                    style={{ width }}
+                    src={imageUrl}
+                    crop={crop}
+                    ruleOfThirds
+                    onImageLoaded={this.onImageLoaded}
+                    onComplete={this.onCropComplete}
+                    onChange={this.onCropChange}
+                  />
+                </>
               )}
             </>
           ) : (
@@ -245,6 +276,16 @@ class ModalUpload extends Component {
             </Dragger>
           )}
         </div>
+        {isUpload && (
+          <Progress
+            strokeColor={{
+              '0%': '#108ee9',
+              '100%': '#87d068',
+            }}
+            percent={percent}
+            status="active"
+          />
+        )}
       </Modal>
     );
   }

@@ -196,24 +196,24 @@ const getThemeList = (settings: Partial<ProSettings>) => {
     color: string;
     theme: 'dark' | 'light';
   }[] = [
-    {
-      key: 'daybreak',
-      color: '#1890ff',
-      theme: 'dark',
-    },
-  ];
+      {
+        key: 'daybreak',
+        color: '#1890ff',
+        theme: 'dark',
+      },
+    ];
 
   const lightColorList: {
     key: string;
     color: string;
     theme: 'dark' | 'light';
   }[] = [
-    {
-      key: 'daybreak',
-      color: '#1890ff',
-      theme: 'dark',
-    },
-  ];
+      {
+        key: 'daybreak',
+        color: '#1890ff',
+        theme: 'dark',
+      },
+    ];
   if (settings.layout !== 'mix') {
     themeList.push({
       key: 'dark',
@@ -496,10 +496,11 @@ const SettingDrawer: React.FC<SettingDrawerProps> = (props) => {
     });
   }, [JSON.stringify(settingState)]);
   const baseClassName = `${prefixCls}-setting`;
+  console.log("🚀  ~ baseClassName", baseClassName)
 
   return (
     <Drawer
-      visible={show}
+      visible={true}
       width={300}
       onClose={() => setShow(false)}
       placement="right"

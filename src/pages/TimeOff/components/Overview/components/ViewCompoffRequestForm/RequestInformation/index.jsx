@@ -1,11 +1,12 @@
-import React, { PureComponent } from 'react';
-import { Button, Row, Col, Spin, Input } from 'antd';
-import { connect, history } from 'umi';
+import { Button, Col, Input, Row, Spin } from 'antd';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect, history } from 'umi';
+import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/constants/timeOff';
 import EditIcon from '@/assets/editBtnBlue.svg';
-import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
 import WithdrawModal from '../WithdrawModal';
 
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const { IN_PROGRESS, REJECTED, DRAFTS } = TIMEOFF_STATUS;
@@ -49,9 +50,9 @@ class RequestInformation extends PureComponent {
 
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment(fromDate).locale('en').format('MM/DD/YYYY')} - ${moment(toDate)
+      leaveTimes = `${moment(fromDate).locale('en').format(DATE_FORMAT_MDY)} - ${moment(toDate)
         .locale('en')
-        .format('MM/DD/YYYY')}`;
+        .format(DATE_FORMAT_MDY)}`;
     }
     return leaveTimes;
   };
@@ -176,7 +177,7 @@ class RequestInformation extends PureComponent {
                             align="center"
                             className={styles.rowContainer}
                           >
-                            <Col span={7}>{moment(date).locale('en').format('MM/DD/YYYY')}</Col>
+                            <Col span={7}>{moment(date).locale('en').format(DATE_FORMAT_MDY)}</Col>
                             <Col span={7}>{moment(date).locale('en').format('dddd')}</Col>
                             <Col span={7}>
                               <Input

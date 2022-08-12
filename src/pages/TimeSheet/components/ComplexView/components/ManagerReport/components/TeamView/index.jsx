@@ -1,10 +1,12 @@
+import { Spin } from 'antd';
+import { debounce } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { debounce } from 'lodash';
-import { Spin } from 'antd';
-import { dateFormatAPI } from '@/utils/timeSheet';
+import { debounceFetchData } from '@/utils/utils';
+import useCancelToken from '@/utils/hooks';
 import { getCurrentCompany } from '@/utils/authority';
+import { dateFormatAPI } from '@/constants/timeSheet';
 import Header from './components/Header';
 import MemberTable from './components/MemberTable';
 import Pagination from './components/Pagination';
@@ -17,6 +19,9 @@ const TeamView = (props) => {
   const [endDate, setEndDate] = useState('');
   const [page, setPage] = useState(1);
   const [nameSearch, setNameSearch] = useState('');
+  const { cancelToken, cancelRequest } = useCancelToken();
+  const { cancelToken: cancelToken2, cancelRequest: cancelRequest2 } = useCancelToken();
+  const [holidays, setHolidays] = useState([]);
 
   const {
     dispatch,
@@ -32,7 +37,7 @@ const TeamView = (props) => {
   } = props;
 
   // FUNCTION AREA
-  const fetchManagerTimesheetOfTeamView = () => {
+  const fetchManagerTimesheetOfTeamView = async () => {
     let payload = {};
     payload = {
       companyId: getCurrentCompany(),
@@ -41,6 +46,7 @@ const TeamView = (props) => {
       toDate: moment(endDate).format(dateFormatAPI),
       page: nameSearch ? 1 : page,
       limit,
+      cancelToken: cancelToken(),
       ...filterManagerReport,
     };
     if (nameSearch) {
@@ -56,6 +62,16 @@ const TeamView = (props) => {
         payloadExport: { ...payloadExport, payload },
       },
     });
+    const holidaysResponse = await dispatch({
+      type: 'timeSheet/fetchHolidaysByDate',
+      payload: {
+        companyId: getCurrentCompany(),
+        fromDate: moment(startDate).format(dateFormatAPI),
+        toDate: moment(endDate).format(dateFormatAPI),
+        cancelToken: cancelToken2(),
+      },
+    });
+    setHolidays(holidaysResponse);
   };
 
   const onChangePage = (pageNumber) => {
@@ -65,8 +81,13 @@ const TeamView = (props) => {
   // USE EFFECT AREA
   useEffect(() => {
     if (startDate) {
-      fetchManagerTimesheetOfTeamView();
+      debounceFetchData(fetchManagerTimesheetOfTeamView);
+      return () => {
+        cancelRequest();
+        cancelRequest2();
+      };
     }
+    return () => {};
   }, [startDate, endDate, page, nameSearch, JSON.stringify(filterManagerReport)]);
 
   // generate dates for week

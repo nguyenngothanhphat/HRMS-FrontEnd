@@ -7,10 +7,12 @@ import { connect } from 'umi';
 import AirPlanIcon from '@/assets/timeSheet/airplanIcon.svg';
 import EmptyLine from '@/assets/timeSheet/emptyLine.svg';
 import EmptyComponent from '@/components/Empty';
-import { convertMsToTime, projectColor } from '@/utils/timeSheet';
+import { projectColor } from '@/constants/timeSheet';
+import { convertMsToTime } from '@/utils/timeSheet';
 import TaskPopover from './components/TaskPopover';
 import TimeoffPopover from './components/TimeoffPopover';
 import styles from './index.less';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 
 const WeeklyTable = (props) => {
   const {
@@ -32,7 +34,7 @@ const WeeklyTable = (props) => {
     const dates = [];
 
     while (now.isSameOrBefore(endDate1)) {
-      dates.push(now.format('MM/DD/YYYY'));
+      dates.push(now.format(DATE_FORMAT_MDY));
       now.add(1, 'days');
     }
     return dates;
@@ -40,7 +42,7 @@ const WeeklyTable = (props) => {
 
   // check if the same date
   const isTheSameDay = (date1, date2) => {
-    return moment(date1).format('MM/DD/YYYY') === moment(date2).format('MM/DD/YYYY');
+    return moment(date1).format(DATE_FORMAT_MDY) === moment(date2).format(DATE_FORMAT_MDY);
   };
 
   const getColorByIndex = (index) => {
@@ -80,13 +82,13 @@ const WeeklyTable = (props) => {
   const renderDateHeaderItem = (date) => {
     return (
       <div className={styles.timeStamp}>
-        <div className={styles.left}>{moment(date, 'MM/DD/YYYY').locale('en').format('DD')}</div>
+        <div className={styles.left}>{moment(date, DATE_FORMAT_MDY).locale('en').format('DD')}</div>
         <div className={styles.right}>
           <span className={styles.date}>
-            {moment(date, 'MM/DD/YYYY').locale('en').format('dddd')}
+            {moment(date, DATE_FORMAT_MDY).locale('en').format('dddd')}
           </span>
           <span className={styles.month}>
-            {moment(date, 'MM/DD/YYYY').locale('en').format('MMMM')}
+            {moment(date, DATE_FORMAT_MDY).locale('en').format('MMMM')}
           </span>
         </div>
       </div>

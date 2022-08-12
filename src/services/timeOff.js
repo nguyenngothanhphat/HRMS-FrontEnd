@@ -62,7 +62,7 @@ export function getEmployeeTypeList() {
   });
 }
 
-export async function getLeaveRequestOfEmployee(payload) {
+export async function getMyLeaveRequest(payload) {
   return request('/api/leaverequesttenant/get-my-request', {
     method: 'POST',
     data: payload,
@@ -146,10 +146,10 @@ export async function withdrawCompoffRequest(payload) {
   });
 }
 
-export async function getEmailsListByCompany(payload) {
-  return request('/api/employeetenant/admin-list', {
-    method: 'POST',
-    data: payload,
+export async function getEmailsListByCompany(params) {
+  return request('/api/employeetenant', {
+    method: 'GET',
+    params,
   });
 }
 
@@ -215,9 +215,10 @@ export async function getAllLeaveRequests(payload) {
   });
 }
 
-export async function getTotalByType(params) {
+export async function getTotalByType(payload, params) {
   return request('/api/leaverequesttenant/group-type', {
     method: 'GET',
+    data: payload,
     params,
   });
 }
@@ -402,6 +403,12 @@ export async function updateEmployeeSchedule(payload) {
 }
 export async function getLocationById(payload) {
   return request('/api/locationtenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getLeaveRequestOfEmployee(payload) {
+  return request('/api/leaverequesttenant/get-by-employee', {
     method: 'POST',
     data: payload,
   });

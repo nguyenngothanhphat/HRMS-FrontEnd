@@ -11,12 +11,12 @@
       height: 27px;
       font-size: 13px;
       background: #ffffff;
-      border: 1px solid #d6dce0;
+      border: 1px solid @border-color-base;
       border-radius: 5px;
     }
 
     .blue-text {
-      color: #2c6df9;
+      color: @primary-color;
     }
 
     .big-text {
@@ -84,8 +84,8 @@
         td:nth-child(2) {
           font-weight: bold;
           text-align: center;
-          border-right: 1px solid #d6dce0;
-          border-left: 1px solid #d6dce0;
+          border-right: 1px solid @border-color-base;
+          border-left: 1px solid @border-color-base;
         }
 
         td:last-child {
@@ -93,18 +93,15 @@
         }
       }
 
-      tr:first-child {
-      }
-
       tr:last-child {
         box-sizing: border-box;
         height: 80px;
-        border-top: 1px solid #d6dce0;
-        // border-bottom: 1px solid #d6dce0;
+        border-top: 1px solid @border-color-base;
+        // border-bottom: 1px solid @border-color-base;
         border-collapse: collapse;
 
         td:first-child {
-          color: #2c6df9;
+          color: @primary-color;
           font-weight: bold;
         }
       }
@@ -137,7 +134,7 @@
     height: max-content;
     padding: 0;
     background-color: #ffffff;
-    border: solid 1px #d6dce0;
+    border: solid 1px @border-color-base;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 
@@ -157,7 +154,7 @@
         padding: 24px 0 24px 50px;
 
         &__text {
-          color: #2c6df9;
+          color: @primary-color;
           font-weight: bold;
         }
       }
@@ -165,19 +162,18 @@
       &__right {
         padding: 24px 0 24px 120px;
       }
-      border-bottom: solid 1px #d6dce0;
+      border-bottom: solid 1px @border-color-base;
     }
 
     .salary {
-      min-height: 450px;
-      border-bottom: solid 1px #d6dce0;
+      border-bottom: solid 1px @border-color-base;
 
       &__left {
         padding: 32px 0 32px 50px;
-        border-right: solid 1px #d6dce0;
+        border-right: solid 1px @border-color-base;
 
         &__text {
-          margin-bottom: 24px;
+          padding: 12px 0 12px 0;
         }
       }
 
@@ -185,7 +181,7 @@
         padding: 32px 0 32px 120px;
 
         &__text {
-          margin-bottom: 24px;
+          padding: 12px 0 12px 0;
         }
 
         .ofBasic {
@@ -199,7 +195,7 @@
         padding: 24px 0 24px 50px;
 
         &__text {
-          color: #2c6df9;
+          color: @primary-color;
           font-weight: bold;
         }
       }
@@ -218,7 +214,7 @@
     margin-bottom: 8 * @spacing-xxs;
     padding: 12px 62px;
     background-color: #ffffff;
-    border: solid 1px #d6dce0;
+    border: solid 1px @border-color-base;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
 
@@ -250,7 +246,7 @@
     height: 72px;
     padding: 4 * @spacing-xxs;
     background-color: #ffffff;
-    border: solid 1px #d6dce0;
+    border: solid 1px @border-color-base;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
     margin-block: 6 * @spacing-xxs;
@@ -352,7 +348,7 @@
     margin-bottom: 24px;
     padding: 24px;
     background-color: #fff;
-    border: solid 1px #d6dce0;
+    border: solid 1px @border-color-base;
     border-radius: 5px;
 
     :global {

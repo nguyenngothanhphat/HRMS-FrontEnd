@@ -1,7 +1,7 @@
 import { Button, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import exportToCSV from '@/utils/exportAsExcel';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
 import Information from './components/Information';
 import TaskTable from './components/TaskTable';
 import WhiteDownloadIcon from '@/assets/timeSheet/whiteDownload.svg';
@@ -47,12 +47,14 @@ const EmployeeDetailModal = (props) => {
   };
 
   const getSelectedData = () => {
-    const newData = data?.userDetail.filter((el) => selectedRowKeys.includes(el.date));
+    const newData = data?.userDetail.filter((el) => selectedRowKeys.includes(el.date)) || [];
     return newData;
   };
 
-  const processData = (array) => {
-    return array.map((item) => {
+  const processData = (array = []) => {
+    // Uppercase first letter
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
       const {
         date = '',
         inTime = '',
@@ -63,7 +65,7 @@ const EmployeeDetailModal = (props) => {
         overTime = '',
       } = item;
 
-      const dataExport = {
+      const payload = {
         Date: date || '-',
         'In Time': inTime || '-',
         'Out Time': outTime || '-',
@@ -71,16 +73,29 @@ const EmployeeDetailModal = (props) => {
         Notes: notes || '-',
       };
       if (locationUser) {
-        dataExport['Break Time'] = breakTime;
-        dataExport['Over Time'] = overTime;
+        payload['Break Time'] = breakTime;
+        payload['Over Time'] = overTime;
       }
-      return dataExport;
+      return payload;
     });
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('__')}`.split('__');
+      dataExport.push(value);
+    });
+
+    return dataExport;
   };
 
   const downloadTemplate = () => {
     const result = getSelectedData();
-    exportToCSV(processData(result), 'EmployeeDetailslData.xlsx');
+    exportArrayDataToCsv('EmployeeDetailData', processData(result));
   };
 
   const renderModalContent = () => {

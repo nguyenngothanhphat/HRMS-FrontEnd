@@ -34,6 +34,7 @@ const CustomSearchBox = ({
         placeholder={placeholder}
         prefix={searchPrefix()}
         onChange={onSearch}
+        allowClear
       />
     </div>
   );

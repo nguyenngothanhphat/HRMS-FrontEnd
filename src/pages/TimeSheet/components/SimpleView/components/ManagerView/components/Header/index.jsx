@@ -6,7 +6,7 @@ import PrevIcon from '@/assets/timeSheet/prev.svg';
 import NextIcon from '@/assets/timeSheet/next.svg';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
 import CalendarIcon from '@/assets/timeSheet/calendar.svg';
-import { rangePickerFormat } from '@/utils/timeSheet';
+import { rangePickerFormat } from '@/constants/timeSheet';
 
 import styles from './index.less';
 

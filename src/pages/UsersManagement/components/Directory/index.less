@@ -1,0 +1,84 @@
+.DirectoryComponent {
+  :global {
+    .ant-tabs > .ant-tabs-nav,
+    .ant-tabs > div > .ant-tabs-nav {
+      height: 50px;
+    }
+  }
+  min-width: 1150px;
+  // margin: 32px 105px;
+  padding: 24px;
+
+  .TabComponent {
+    :global {
+      .ant-tabs-tab {
+        margin: 0 30px 0 0 !important ;
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .ant-tabs-ink-bar {
+        display: block;
+      }
+      .ant-layout {
+        min-height: 540px;
+        background-color: #fff;
+      }
+
+      .ant-tabs-tab-btn {
+        color: #707177;
+        opacity: 1;
+      }
+      .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+        color: @primary-color;
+      }
+
+      .ant-tabs-nav-list .ant-tabs-tab-btn {
+        color: #707177;
+        opacity: 1;
+      }
+    }
+  }
+  .contentContainer {
+    width: 100%;
+    height: 100%;
+    // margin: 20px 0;
+    overflow-x: auto;
+    border: 1px solid @border-color-base;
+    border-radius: 8px;
+    .directoryLayout {
+      position: relative;
+      :global {
+        .ant-layout-footer {
+          height: 70px;
+          background: #ffffff;
+          border-top: solid 1px @border-color-base;
+        }
+      }
+      .directoryLayout_inner {
+        min-height: unset;
+      }
+    }
+  }
+  .tabBarExtra {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    .filterButton {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 111px;
+      height: 40px;
+      img {
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1366px) {
+  .DirectoryComponent {
+    min-width: 500px;
+    // margin: 32px 24px;
+  }
+}

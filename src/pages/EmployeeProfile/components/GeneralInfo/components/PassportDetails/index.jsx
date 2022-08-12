@@ -1,36 +1,29 @@
-import React, { PureComponent } from 'react';
+import { Card, Tooltip } from 'antd';
+import React from 'react';
 import { connect } from 'umi';
-import EditBtn from '@/assets/edit.svg';
+import CustomEditButton from '@/components/CustomEditButton';
 import Edit from './components/Edit';
 import View from './components/View';
 import styles from './index.less';
 
-@connect(
-  ({
-    upload: { passPortURL = '' } = {},
-    employeeProfile: {
-      editGeneral: { openPassport = false },
-      originData: { passportData: passportDataOrigin = [] } = {},
-      tempData: { passportData = [] } = {},
-    } = {},
-  }) => ({
+const PassportDetails = (props) => {
+  const {
     openPassport,
+    isProfileOwner = false,
+    permissions = {},
     passportDataOrigin,
     passportData,
-    passPortURL,
-  }),
-)
-class PassportDetails extends PureComponent {
-  handleEdit = () => {
-    const { dispatch } = this.props;
+    dispatch,
+  } = props;
+
+  const handleEdit = () => {
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
       payload: { openPassport: true },
     });
   };
 
-  handleCancel = () => {
-    const { passportDataOrigin, passportData, dispatch } = this.props;
+  const handleCancel = () => {
     const {
       urlFile = '',
       passportNumber = '',
@@ -61,32 +54,42 @@ class PassportDetails extends PureComponent {
     });
   };
 
-  render() {
-    const { openPassport, isProfileOwner = false, permissions = {} } = this.props;
-    const renderComponent = openPassport ? (
-      <Edit handleCancel={this.handleCancel} />
-    ) : (
-      <View />
-      // <View dataAPI={passportData} />
-    );
-    const editPassportPermission = permissions.editPassportAndVisa !== -1;
-    const disabledFields = true; // temporarily disable fields
+  const renderComponent = openPassport ? <Edit handleCancel={handleCancel} /> : <View />;
+  const editPassportPermission = permissions.editPassportAndVisa !== -1;
+  const disabledFields = true; // temporarily disable fields
 
+  const options = () => {
     return (
-      <div className={styles.PassportDetails}>
-        <div className={styles.spaceTitle}>
-          <p className={styles.EmployeeTitle}>Passport Details</p>
-          {!openPassport && (!isProfileOwner || editPassportPermission) && (
-            <div className={styles.flexEdit} onClick={disabledFields ? null : this.handleEdit}>
-              <img src={EditBtn} alt="" className={styles.IconEdit} />
-              <p className={styles.Edit}>Edit</p>
-            </div>
-          )}
-        </div>
-        <div className={styles.viewBottom}>{renderComponent}</div>
-      </div>
+      !openPassport &&
+      (!isProfileOwner || editPassportPermission) && (
+        <CustomEditButton onClick={disabledFields ? null : handleEdit}>
+          <Tooltip placement="topLeft" title="Temporarily Disabled - will be enabled shortly.">
+            Edit
+          </Tooltip>
+        </CustomEditButton>
+      )
     );
-  }
-}
+  };
 
-export default PassportDetails;
+  return (
+    <Card className={styles.PassportDetails} title="Passport Details" extra={options()}>
+      <div className={styles.container}>{renderComponent}</div>
+    </Card>
+  );
+};
+
+export default connect(
+  ({
+    upload: { passPortURL = '' } = {},
+    employeeProfile: {
+      editGeneral: { openPassport = false },
+      originData: { passportData: passportDataOrigin = [] } = {},
+      tempData: { passportData = [] } = {},
+    } = {},
+  }) => ({
+    openPassport,
+    passportDataOrigin,
+    passportData,
+    passPortURL,
+  }),
+)(PassportDetails);

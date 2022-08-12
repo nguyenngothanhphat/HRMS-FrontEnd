@@ -1,4 +1,4 @@
-import ROLES from '@/utils/roles';
+import ROLES from '@/constants/roles';
 
 const { HR_MANAGER, HR, MANAGER } = ROLES;
 
@@ -25,15 +25,6 @@ const isAuthorized = (permissionList, arrTextToCheck) => {
       const check = permission.toLowerCase().includes(text.toLowerCase());
       if (check) response = 1;
     });
-  });
-  return response;
-};
-
-const isRole = (permissionList, arrTextToCheck) => {
-  let response = -1;
-  arrTextToCheck.forEach((text) => {
-    const check = permissionList.includes(text.toLowerCase());
-    if (check) response = 1;
   });
   return response;
 };
@@ -235,10 +226,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_ONBOARDING_T_ONBOARDING_OVERVIEW_VIEW',
     'P_ONBOARDING_ALL',
   ]);
-  const indexNewJoinees = isAuthorized(permissionList, [
-    'P_ONBOARDING_T_NEW_JOINEES_VIEW',
-  ]);
-
+  const indexNewJoinees = isAuthorized(permissionList, ['P_ONBOARDING_T_NEW_JOINEES_VIEW']);
 
   // TIME OFF
   const indexMyTimeoff = 1; // everyone has time off employee page
@@ -247,6 +235,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   ]);
   const indexHRTimeoff = isAuthorized(permissionList, ['P_TIMEOFF_T_TEAM_REQUEST_HR_VIEW']);
   const indexSettingTimeoff = isAuthorized(permissionList, ['P_TIMEOFF_T_SETTING_VIEW']);
+  const indexRequestOnBehalfOf = isAuthorized(permissionList, [
+    'P_TIMEOFF_B_CREATE_TIME_OFF_ON_BEHALF_OF_ANOTHER_USER',
+  ]);
 
   // TIMESHEET
   const indexMyTimesheet = 1; // everyone has time sheet
@@ -292,6 +283,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   // DASHBOARD
   const indexPendingApprovalDashboard = isAuthorized(permissionList, [MANAGER, HR_MANAGER]);
+  const indexViewApprovalPage = isAuthorized(permissionList, ['P_APPROVALS_PAGE_VIEW']);
+
   const indexMyTeamDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_TEAM_VIEW']);
   const indexMyAppDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_APPS_VIEW']);
   const indexTimeSheetDashboard = isAuthorized(permissionList, ['P_DASHBOARD_W_MY_TIMESHEET_VIEW']);
@@ -352,6 +345,15 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'P_TICKET_MANAGEMENT_T_OPERATIONS_TICKETS_VIEW',
   ]);
 
+  const indexAdminViewTickets = isAuthorized(permissionList, ['M_ADMIN_VIEW_TICKETS']);
+
+  const indexTicketManagementAssignTicket = isAuthorized(permissionList, [
+    'P_TICKET_MANAGEMENT_ASSIGN_TICKET',
+  ]);
+
+  const indexTicketManagementAppendTicket = isAuthorized(permissionList, [
+    'P_TICKET_MANAGEMENT_APPEND_TICKET',
+  ]);
   // POLICY & REGULATION
   const indexViewAllCountryPolicyAndRegulation = isAuthorized(permissionList, [
     'P_POLICIESREGULATIONS_VIEW_ALL',
@@ -418,6 +420,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewManagerTimeoff: indexManagerTimeoff,
     viewHRTimeoff: indexHRTimeoff,
     viewSettingTimeoff: indexSettingTimeoff,
+    viewRequestOnBehalfOf: indexRequestOnBehalfOf,
 
     // timesheet
     viewMyTimesheet: indexMyTimesheet,
@@ -444,6 +447,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewCalendarDashboard: indexCalendarDashboard,
     viewTaskDashboard: indexTaskDashboard,
     viewMyAppDashboard: indexMyAppDashboard,
+    viewApprovalPage: indexViewApprovalPage,
 
     // home page
     viewSettingHomePage: indexSettingHomePage,
@@ -470,6 +474,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewTicketHR: indexTicketManagementHRTicketsTab,
     viewTicketIT: indexTicketManagementITTicketsTab,
     viewTicketOperations: indexTicketManagementOperationsTicketsTab,
+    viewTicketByAdmin: indexAdminViewTickets,
+    assignTicket: indexTicketManagementAssignTicket,
+    appendTicket: indexTicketManagementAppendTicket,
 
     // policy and regulation
     viewSettingPolicy: indexSettingViewPolicy,

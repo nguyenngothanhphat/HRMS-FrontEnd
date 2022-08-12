@@ -123,7 +123,8 @@ const BasicInfo = (props) => {
         <AnswerQuestion page={Page.Basic_Information} />
         <Col span={24} className={styles.verifyCheckbox}>
           <Checkbox checked={isVerifiedBasicInfo} onChange={onVerifyThisForm}>
-            I have verified that the above details are correct
+            I have verified that the above details are correct{' '}
+            <span style={{ color: 'red', marginLeft: 3 }}>*</span>
           </Checkbox>
         </Col>
       </Row>

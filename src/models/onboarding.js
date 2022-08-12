@@ -1,254 +1,40 @@
-import moment from 'moment';
-import _ from 'lodash';
 import { notification } from 'antd';
-
+import { history } from 'umi';
+import { MENU_DATA, NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import {
+  addJoiningFormalities,
+  checkExistingUserName,
+  createEmployee,
+  createProfile,
+  createUserName,
   deleteDraft,
+  getCandidateById,
+  getDomain,
+  getEmployeeIdFormatByLocation,
+  getFilterList,
+  getListEmployee,
+  getListJoiningFormalities,
+  getListNewComer,
+  getLocationList,
   getOnboardingList,
+  getPosition,
+  getSettingEmployeeId,
   getTotalNumberOnboardingList,
   handleExpiryTicket,
   reassignTicket,
+  removeJoiningFormalities,
+  updateEmployeeFormatByGlobal,
+  updateEmployeeFormatByLocation,
+  updateJoiningFormalities,
+  updateSettingEmployeeId,
   withdrawTicket,
-  getPosition,
-  getLocationList,
-} from '@/services/onboard';
+} from '@/services/onboarding';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import { NEW_PROCESS_STATUS_TABLE_NAME, NEW_PROCESS_STATUS } from '@/utils/onboarding';
-
-const MENU_DATA = [
-  {
-    id: 1,
-    name: 'All',
-    key: 'all',
-    component: 'All',
-    quantity: 0,
-    link: 'all',
-  },
-  {
-    id: 2,
-    name: 'Drafts',
-    key: 'drafts',
-    component: 'Drafts',
-    quantity: 0,
-    link: 'drafts',
-  },
-  {
-    id: 3,
-    name: 'Profile Verification',
-    key: 'profileVerification',
-    component: 'ProfileVerification',
-    quantity: 0,
-    link: 'profile-verification',
-  },
-  {
-    id: 4,
-    name: 'Document Verification',
-    key: 'documentVerification',
-    component: 'DocumentVerification',
-    quantity: 0,
-    link: 'document-verification',
-  },
-  {
-    id: 5,
-    name: 'Reference Verification',
-    key: 'referenceVerification',
-    component: 'ReferenceVerification',
-    quantity: 0,
-    link: 'reference-verification',
-  },
-  {
-    id: 6,
-    name: 'Salary Proposal',
-    key: 'salaryNegotiation',
-    component: 'SalaryNegotiation',
-    quantity: 0,
-    link: 'salary-proposal',
-  },
-  {
-    id: 7,
-    name: 'Awaiting Approvals',
-    key: 'awaitingApprovals',
-    component: 'AwaitingApprovals',
-    quantity: 0,
-    link: 'awaiting-approvals',
-  },
-  {
-    id: 8,
-    name: 'Needs Changes',
-    key: 'needsChanges',
-    component: 'NeedsChanges',
-    quantity: 0,
-    link: 'needs-changes',
-  },
-  {
-    id: 9,
-    name: 'Offer Released',
-    key: 'offerReleased',
-    component: 'OfferReleased',
-    quantity: 0,
-    link: 'offer-released',
-  },
-  {
-    id: 10,
-    name: 'Offer Accepted',
-    key: 'offerAccepted',
-    component: 'OfferAccepted',
-    quantity: 0,
-    link: 'offer-accepted',
-  },
-  {
-    id: 11,
-    name: 'Document Checklist Verification',
-    key: 'checkList',
-    component: 'DocumentCheckList',
-    quantity: 0,
-    link: 'document-checklist',
-  },
-  {
-    id: 12,
-    name: 'Joined',
-    key: 'joined',
-    component: 'Joined',
-    quantity: 0,
-    link: 'joined',
-  },
-  {
-    id: 13,
-    name: 'Rejected Offers',
-    key: 'rejectedOffers',
-    component: 'RejectedOffers',
-    quantity: 0,
-    link: 'rejected-offer',
-  },
-  {
-    id: 14,
-    name: 'Withdrawn Offers',
-    key: 'withdrawnOffers',
-    component: 'WithdrawnOffers',
-    quantity: 0,
-    link: 'withdrawn-offers',
-  },
-];
-
-const formatDate = (date) => {
-  return date ? moment(date).locale('en').format('MM.DD.YY') : '';
-};
-
-const dateDiffInDays = (a, b) => {
-  if (!a || !b) {
-    return 10;
-  }
-  // a and b are javascript Date objects
-  const SECOND_IN_DAY = 1000 * 60 * 60 * 24;
-  const firstDate = new Date(a);
-  const secondDate = new Date(b);
-
-  const diff = parseFloat((firstDate.getDate() - secondDate.getDate()) / SECOND_IN_DAY);
-  return diff;
-};
-
-const formatData = (list = []) => {
-  const formatList = [];
-  _.map(list, (item) => {
-    const {
-      _id,
-      ticketID,
-      firstName = '',
-      middleName = '',
-      lastName = '',
-      employeeType = {},
-      grade = {},
-      // position,
-      title = '',
-      workLocation,
-      workFromHome,
-      clientLocation,
-      privateEmail = '',
-      previousExperience = '',
-      dateOfJoining = '',
-      department = {},
-      // requestDate = '',
-      receiveDate = '',
-      reportingManager = {},
-      reportees = [],
-      sentDate = '',
-      updatedAt = '',
-      createdAt = '',
-      comments = '',
-      assignTo = {},
-      assigneeManager = {},
-      processStatus = '',
-      verifiedDocument = 0,
-      expiryDate = '',
-      currentStep = 0,
-    } = item;
-    const dateSent = formatDate(sentDate) || '';
-    const dateReceived = formatDate(receiveDate) || '';
-    const dateJoin = formatDate(dateOfJoining) || '';
-    const dateRequest = formatDate(createdAt) || '';
-    const offerExpiryDate = formatDate(expiryDate) || '';
-
-    let isNew = false;
-    const fullName = `${firstName ? `${firstName} ` : ''}${middleName ? `${middleName} ` : ''}${
-      lastName ? `${lastName} ` : ''
-    }`;
-
-    if (fullName) {
-      isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
-    }
-
-    let reportingManagerData = '';
-    if (reportingManager.generalInfo) {
-      reportingManagerData = `${reportingManager.generalInfo.firstName} - ${reportingManager.generalInfo.userId}`;
-    }
-
-    const reporteesData = reportees.map((reportee) => {
-      return `${reportee.generalInfoInfo.firstName} - ${reportee.generalInfoInfo.userId}`;
-    });
-
-    const rookie = {
-      candidate: _id || '',
-      candidateId: `#${ticketID}`,
-      isNew,
-      candidateName: fullName,
-      firstName,
-      middleName,
-      lastName,
-      personEmail: privateEmail,
-      previousExperience,
-      position: title.name,
-      employeeType: employeeType.name || '',
-      grade: grade.name || '',
-      department: department.name || '',
-      reportees: reporteesData,
-      reportingManager: reportingManagerData,
-      location: workLocation
-        ? workLocation.name
-        : clientLocation || (workFromHome && 'Work From Home'),
-      comments: comments || '',
-      dateSent: dateSent || '',
-      dateReceived: dateReceived || '',
-      dateJoin: dateJoin || '',
-      dateRequest: dateRequest || '',
-      offerExpiryDate: offerExpiryDate || '',
-      documentVerified: verifiedDocument,
-      resubmit: 0,
-      changeRequest: '-',
-      assignTo,
-      assigneeManager,
-      processStatus: NEW_PROCESS_STATUS_TABLE_NAME[processStatus],
-      processStatusId: processStatus,
-      currentStep,
-    };
-    formatList.push(rookie);
-  });
-
-  return formatList;
-};
 
 const onboarding = {
   namespace: 'onboarding',
+
   state: {
     mainTabActiveKey: '1',
     menu: {
@@ -258,517 +44,65 @@ const onboarding = {
       },
     },
     onboardingOverview: {
-      dataAll: [],
-      drafts: [],
-      profileVerifications: [],
-      documentVerifications: [],
-      salaryNegotiations: [],
-      awaitingApprovals: [],
-      needsChanges: [],
-      offerReleased: [],
-      offerAccepted: [],
-      rejectedOffers: [],
-      withdrawnOffers: [],
-      joinedOffers: [],
-      currentStatus: '',
-      referenceVerification: [],
-      checkListVerification: [],
+      onboardingData: [],
     },
     searchOnboarding: {
       jobTitleList: [],
       locationList: [],
-      isFilter: false,
     },
+    customFields: {},
+    employeeList: [],
+    hrManagerList: [],
+    jobTitleList: [],
+    filterList: {},
+    joiningFormalities: {
+      listJoiningFormalities: [],
+      listNewComer: [],
+      itemNewComer: {},
+      totalComer: 0,
+      userName: '',
+      domain: '',
+      messageErr: '',
+      employeeData: {},
+      generatedId: '',
+      prefix: '',
+      idItem: '',
+      employeeIdList: [],
+      settingId: '',
+    },
+    reloadTableData: false,
   },
+
   effects: {
-    // eslint-disable-next-line no-shadow
-    *fetchTotalNumberOfOnboardingListEffect(_, { call, put }) {
-      let response;
-      try {
-        const payload = {
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-        };
-        response = yield call(getTotalNumberOnboardingList, payload);
-        const { statusCode, data: totalNumber = [] } = response;
-        if (statusCode !== 200) throw response;
-        // Update menu
-        yield put({
-          type: 'updateMenuQuantity',
-          payload: {
-            totalNumber,
-          },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-      return response;
-    },
-
-    /* ////////////////////////////////////////////////////////////////////////////////////////////// */
-    *fetchOnboardListAll({ payload }, { call, put }) {
-      try {
-        yield put({
-          type: 'fetchTotalNumberOfOnboardingListEffect',
-        });
-
-        const { processStatus = '', page, limit, name } = payload;
-        const tenantId = getCurrentTenant();
-        const company = getCurrentCompany();
-        const req = {
-          processStatus,
-          page,
-          tenantId,
-          limit,
-          name,
-          company,
-        };
-        const response = yield call(getOnboardingList, req);
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
-        const returnedData = formatData(response.data);
-
-        yield put({
-          type: 'saveAll',
-          payload: returnedData,
-        });
-        yield put({
-          type: 'saveOnboardingOverview',
-          payload: {
-            total: response.total,
-            currentStatus: processStatus || 'ALL',
-          },
-        });
-        return response;
-      } catch (errors) {
-        dialog(errors);
-        return '';
-      }
-    },
     *fetchOnboardList({ payload = {} }, { call, put }) {
-      try {
-        yield put({
-          type: 'fetchTotalNumberOfOnboardingListEffect',
-        });
-
-        const {
-          DRAFT,
-          PROFILE_VERIFICATION,
-          DOCUMENT_VERIFICATION,
-          SALARY_NEGOTIATION,
-          AWAITING_APPROVALS,
-          NEEDS_CHANGES,
-          OFFER_RELEASED,
-          OFFER_ACCEPTED,
-          OFFER_REJECTED,
-          OFFER_WITHDRAWN,
-          JOINED,
-          REFERENCE_VERIFICATION,
-          DOCUMENT_CHECKLIST_VERIFICATION,
-        } = NEW_PROCESS_STATUS;
-
-        const { processStatus = [], page, limit } = payload;
-        const tenantId = getCurrentTenant();
-        const company = getCurrentCompany();
-        const req = {
-          // processStatus,
-          page,
-          limit,
-          tenantId,
-          // name,
-          company,
-          ...payload,
-        };
-        const response = yield call(getOnboardingList, req);
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
-        const returnedData = formatData(response.data);
-
-        yield put({
-          type: 'saveOnboardingOverview',
-          payload: {
-            total: response.total,
-            currentStatus: processStatus[0],
-          },
-        });
-
-        // Fetch data
-        switch (processStatus[0]) {
-          case DRAFT: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                drafts: returnedData,
-              },
-            });
-            return response;
-          }
-          case PROFILE_VERIFICATION: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                profileVerifications: returnedData,
-              },
-            });
-            return response;
-          }
-          case DOCUMENT_VERIFICATION: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                documentVerifications: returnedData,
-              },
-            });
-            return response;
-          }
-          case SALARY_NEGOTIATION: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                salaryNegotiations: returnedData,
-              },
-            });
-            return response;
-          }
-          case AWAITING_APPROVALS: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                awaitingApprovals: returnedData,
-              },
-            });
-            return response;
-          }
-          case NEEDS_CHANGES: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                needsChanges: returnedData,
-              },
-            });
-            return response;
-          }
-          case OFFER_RELEASED: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                offerReleased: returnedData,
-              },
-            });
-            return response;
-          }
-          case OFFER_ACCEPTED: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                offerAccepted: returnedData,
-              },
-            });
-            return response;
-          }
-          case OFFER_REJECTED: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                rejectedOffers: returnedData,
-              },
-            });
-            return response;
-          }
-          case OFFER_WITHDRAWN: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                withdrawnOffers: returnedData,
-              },
-            });
-            return response;
-          }
-          case REFERENCE_VERIFICATION: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                referenceVerification: returnedData,
-              },
-            });
-            return response;
-          }
-          case DOCUMENT_CHECKLIST_VERIFICATION: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                checkListVerification: returnedData,
-              },
-            });
-            return response;
-          }
-          case JOINED: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                joinedOffers: returnedData,
-              },
-            });
-            return response;
-          }
-          default:
-            return response;
-        }
-      } catch (errors) {
-        dialog(errors);
-        return '';
-      }
-    },
-    *filterOnboardList({ payload = {}, currentStatus = '' }, { call, put }) {
-      try {
-        const tenantId = getCurrentTenant();
-        const company = getCurrentCompany();
-
-        const {
-          DRAFT,
-          PROFILE_VERIFICATION,
-          DOCUMENT_VERIFICATION,
-          SALARY_NEGOTIATION,
-          AWAITING_APPROVALS,
-          NEEDS_CHANGES,
-          OFFER_RELEASED,
-          OFFER_ACCEPTED,
-          OFFER_REJECTED,
-          OFFER_WITHDRAWN,
-          JOINED,
-          REFERENCE_VERIFICATION,
-          DOCUMENT_CHECKLIST_VERIFICATION,
-        } = NEW_PROCESS_STATUS;
-
-        const response = yield call(getOnboardingList, {
-          ...payload,
-          tenantId,
-          company,
-        });
-
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
-        const returnedData = formatData(response.data);
-
-        yield put({
-          type: 'saveOnboardingOverview',
-          payload: {
-            total: response.total,
-          },
-        });
-
-        switch (currentStatus) {
-          case DRAFT:
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                drafts: returnedData,
-              },
-            });
-            break;
-          case PROFILE_VERIFICATION: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                profileVerifications: returnedData,
-              },
-            });
-            break;
-          }
-          case DOCUMENT_VERIFICATION: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                documentVerifications: returnedData,
-              },
-            });
-            break;
-          }
-          case SALARY_NEGOTIATION: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                salaryNegotiations: returnedData,
-              },
-            });
-            break;
-          }
-          case AWAITING_APPROVALS: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                awaitingApprovals: returnedData,
-              },
-            });
-            break;
-          }
-          case NEEDS_CHANGES: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                needsChanges: returnedData,
-              },
-            });
-            break;
-          }
-          case OFFER_RELEASED: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                offerReleased: returnedData,
-              },
-            });
-            break;
-          }
-          case OFFER_ACCEPTED: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                offerAccepted: returnedData,
-              },
-            });
-            break;
-          }
-          case OFFER_REJECTED: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                rejectedOffers: returnedData,
-              },
-            });
-            break;
-          }
-          case OFFER_WITHDRAWN: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                withdrawnOffers: returnedData,
-              },
-            });
-            break;
-          }
-          case REFERENCE_VERIFICATION: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                referenceVerification: returnedData,
-              },
-            });
-            break;
-          }
-          case DOCUMENT_CHECKLIST_VERIFICATION: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                checkListVerification: returnedData,
-              },
-            });
-            break;
-          }
-          case JOINED: {
-            yield put({
-              type: 'saveOnboardingOverview',
-              payload: {
-                joinedOffers: returnedData,
-              },
-            });
-            return response;
-          }
-          default:
-            // ALL
-            yield put({
-              type: 'saveAll',
-              payload: returnedData,
-            });
-            break;
-        }
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-
-    *handleExpiryTicket({ payload }, { call, put, select }) {
-      let response;
-      try {
-        const {
-          id = '',
-          tenantId = '',
-          expiryDate = '',
-          processStatus = '',
-          isAll = false,
-          page = '',
-          limit = '',
-          type = '',
-        } = payload;
-        const req = {
-          rookieID: id,
-          tenantId,
-          expiryDate,
-          type,
-        };
-        response = yield call(handleExpiryTicket, req);
-        const { statusCode, message } = response;
-        if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
-        if (!isAll) {
-          yield put({
-            type: 'fetchOnboardList',
-            payload: {
-              tenantId,
-              processStatus,
-            },
-          });
-        } else {
-          const { currentStatusAll } = yield select((state) => state.onboard.onboardingOverview);
-
-          yield put({
-            type: 'fetchOnboardListAll',
-            payload: {
-              tenantId,
-              processStatus: currentStatusAll,
-              page,
-              limit,
-            },
-          });
-        }
-      } catch (error) {
-        dialog(error);
-      }
-      return response;
-    },
-    *withdrawTicket({ payload = {}, processStatus = '' }, { call, put }) {
       let response = {};
       try {
-        response = yield call(withdrawTicket, {
+        const tenantId = getCurrentTenant();
+        const company = getCurrentCompany();
+        const req = {
+          tenantId,
+          company,
           ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-
-        // Refresh table tab OFFER_WITHDRAWN and current tab which has implemented action withdraw
-
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus,
-          },
-        });
+        };
+        response = yield call(getOnboardingList, req);
+        if (response) {
+          const { statusCode, data = [] } = response;
+          if (statusCode !== 200) throw response;
+          // const data = formatData(response.data)
+          yield put({
+            type: 'saveOnboardingOverview',
+            payload: {
+              total: response.total,
+              onboardingData: data,
+            },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }
       return response;
     },
-    *deleteTicketDraft({ payload = {}, processStatus = '' }, { call, put }) {
+    *deleteTicketDraft({ payload = {} }, { call }) {
       let response;
       try {
         const { id = '', tenantId = '' } = payload;
@@ -777,51 +111,21 @@ const onboarding = {
           tenantId,
         };
         response = yield call(deleteDraft, req);
-        const { statusCode } = response;
+        const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
-
-        // deleteTicket
-        yield put({
-          type: 'deleteTicket',
-          payload: id,
-        });
-        yield put({
-          type: 'fetchTotalNumberOfOnboardingListEffect',
-        });
-
-        if (processStatus === NEW_PROCESS_STATUS.DRAFT) {
-          yield put({
-            type: 'fetchOnboardList',
-            payload: {
-              processStatus: [processStatus],
-            },
-          });
-          yield put({
-            type: 'fetchOnboardListAll',
-            payload: {},
-          });
-        }
-
         notification.success({
-          message: 'Delete ticket successfully.',
+          message,
         });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
-    *reassignTicket({ payload }, { call, put }) {
+
+    *reassignTicket({ payload }, { call }) {
       let response;
       try {
-        const {
-          id = '',
-          tenantId = '',
-          newAssignee = '',
-          processStatus = '',
-          isAll = false,
-          page = '',
-          limit = '',
-        } = payload;
+        const { id = '', tenantId = '', newAssignee = '' } = payload;
 
         const req = {
           rookieID: id,
@@ -834,29 +138,149 @@ const onboarding = {
         notification.success({
           message,
         });
-        if (!isAll) {
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *handleExpiryTicket({ payload }, { call }) {
+      let response;
+      try {
+        const { id = '', tenantId = '', expiryDate = '', type = '' } = payload;
+        const req = {
+          rookieID: id,
+          tenantId,
+          expiryDate,
+          type,
+        };
+        response = yield call(handleExpiryTicket, req);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *withdrawTicket({ payload = {} }, { call }) {
+      let response = {};
+      try {
+        response = yield call(withdrawTicket, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *redirectToReview({ payload }) {
+      try {
+        const { id } = payload;
+        history.push(`/onboarding/list/view/${id}`);
+        yield null;
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *createProfileEffect({ payload }, { call }) {
+      let response;
+      try {
+        response = yield call(createProfile, payload);
+        const { statusCode } = response;
+        // console.log(data[0].defaultMessage);
+        if (statusCode === 400) {
+          dialog(response);
+        }
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    // eslint-disable-next-line no-shadow
+    *fetchTotalNumberOfOnboardingListEffect({ payload }, { call, put }) {
+      let response;
+      try {
+        const payloadTemp = {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        };
+        response = yield call(getTotalNumberOnboardingList, payloadTemp);
+        if (response) {
+          const { statusCode, data: totalNumber = [] } = response;
+          if (statusCode !== 200) throw response;
+          // Update menu
           yield put({
-            type: 'fetchOnboardList',
-            payload: {
-              tenantId,
-              processStatus,
-            },
-          });
-        } else {
-          yield put({
-            type: 'fetchOnboardListAll',
-            payload: {
-              tenantId,
-              processStatus: '',
-              page,
-              limit,
-            },
+            type: 'updateMenuQuantity',
+            payload: { totalNumber },
           });
         }
       } catch (error) {
         dialog(error);
       }
       return response;
+    },
+
+    // REASSIGN
+    *fetchFilterList({ payload }, { call, put }) {
+      try {
+        const response = yield call(getFilterList, payload);
+        const { statusCode, data: filterList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { filterList } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *fetchEmployeeList({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getListEmployee, {
+          ...payload,
+          status: ['ACTIVE'],
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data: employeeList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { employeeList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchHRManagerList(
+      { payload: { company = [], department = [], location = [], roles = [] } = {} },
+      { call, put },
+    ) {
+      try {
+        const response = yield call(getListEmployee, {
+          status: ['ACTIVE'],
+          company,
+          department,
+          location,
+          roles,
+        });
+        const { statusCode, data: hrManagerList = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({ type: 'save', payload: { hrManagerList } });
+        return hrManagerList;
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
     },
     *fetchJobTitleList({ payload = {} }, { call, put }) {
       try {
@@ -869,12 +293,7 @@ const onboarding = {
         const response = yield call(getPosition, newPayload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveSearch',
-          payload: {
-            jobTitleList: data,
-          },
-        });
+        yield put({ type: 'saveSearch', payload: { jobTitleList: data } });
       } catch (errors) {
         dialog(errors);
       }
@@ -898,6 +317,266 @@ const onboarding = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    // joiningFormalities
+    *getListJoiningFormalities({ payload }, { call, put }) {
+      try {
+        const response = yield call(getListJoiningFormalities, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({ type: 'saveJoiningFormalities', payload: { listJoiningFormalities: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateJoiningFormalities({ payload }, { call }) {
+      try {
+        const response = yield call(updateJoiningFormalities, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Update successfully' });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return errors;
+      }
+    },
+    *addJoiningFormalities({ payload }, { call }) {
+      try {
+        const response = yield call(addJoiningFormalities, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Add successfully' });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return errors;
+      }
+    },
+    *removeJoiningFormalities({ payload }, { call }) {
+      try {
+        const response = yield call(removeJoiningFormalities, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Remove successfully' });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getSettingEmployeeId({ payload }, { call, put }) {
+      try {
+        const response = yield call(getSettingEmployeeId, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        const { generatedId = '', prefix = '', _id } = data;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { generatedId, prefix, idItem: _id },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateSettingEmployeeId({ payload }, { call, put }) {
+      try {
+        const response = yield call(updateSettingEmployeeId, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        const { generatedId = '', prefix = '' } = payload;
+        yield put({ type: 'saveJoiningFormalities', payload: { generatedId, prefix } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return errors;
+      }
+    },
+    *getEmployeeId({ payload }, { call, put }) {
+      try {
+        const response = yield call(createUserName, {
+          tenantId: getCurrentTenant(),
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        const { userName = '' } = data;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { userName },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *checkExistedUserName({ payload }, { call }) {
+      try {
+        const response = yield call(checkExistingUserName, {
+          tenantId: getCurrentTenant(),
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        const { isExistingUserName = false } = data;
+        return isExistingUserName;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *createEmployee({ payload }, { call, put }) {
+      try {
+        const response = yield call(createEmployee, {
+          tenantId: getCurrentTenant(),
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { employeeData: data },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *getListNewComer({ payload }, { call, put }) {
+      try {
+        const response = yield call(getListNewComer, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode, data, total } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { listNewComer: data, totalComer: total },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getCandidateById({ payload }, { call, put }) {
+      try {
+        const response = yield call(getCandidateById, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { itemNewComer: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    // eslint-disable-next-line no-shadow
+    *fetchListDomain(_, { call, put }) {
+      try {
+        const response = yield call(getDomain, {
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { listDomain: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getEmployeeIdFormatByLocation({ payload }, { call, put }) {
+      try {
+        const response = yield call(getEmployeeIdFormatByLocation, {
+          ...payload,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { settingId: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getEmployeeIdFormatList({ payload }, { call, put }) {
+      try {
+        const response = yield call(getEmployeeIdFormatByLocation, {
+          ...payload,
+        });
+        const { statusCode, data, total } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { employeeIdList: data, locationTotal: total },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateEmployeeFormatByLocation({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(updateEmployeeFormatByLocation, {
+          ...payload,
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *updateEmployeeFormatByGlobal({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(updateEmployeeFormatByGlobal, {
+          ...payload,
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
   reducers: {
@@ -925,12 +604,14 @@ const onboarding = {
         },
       };
     },
-    saveAll(state, action) {
+
+    saveOrderNameField(state, action) {
       return {
         ...state,
-        onboardingOverview: {
-          ...state.onboardingOverview,
-          dataAll: action.payload,
+        settings: {
+          optionalOnboardQuestions: {
+            nameList: action.payload.nameList,
+          },
         },
       };
     },
@@ -1025,10 +706,7 @@ const onboarding = {
           newTotalNumber.needsChanges +
           newTotalNumber.offerReleased +
           newTotalNumber.offerAccepted +
-          newTotalNumber.rejectedOffers +
-          newTotalNumber.withdrawnOffers +
           newTotalNumber.referenceVerification +
-          newTotalNumber.joined +
           newTotalNumber.checkListVerification;
       });
 
@@ -1097,7 +775,17 @@ const onboarding = {
         },
       };
     },
+    // joiningFormalities
+    saveJoiningFormalities(state, action) {
+      const { joiningFormalities } = state;
+      return {
+        ...state,
+        joiningFormalities: {
+          ...joiningFormalities,
+          ...action.payload,
+        },
+      };
+    },
   },
 };
-
 export default onboarding;

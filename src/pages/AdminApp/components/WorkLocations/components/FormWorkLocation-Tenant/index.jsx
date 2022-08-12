@@ -9,9 +9,8 @@ import {
 } from '@ant-design/icons';
 import classnames from 'classnames';
 import { connect } from 'umi';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentTenant } from '@/utils/authority';
 import RemoveLocationModal from '../RemoveLocationModal';
-// import { bool } from 'prop-types';
 import s from './index.less';
 
 const { Option } = Select;
@@ -78,6 +77,7 @@ class FormWorkLocationTenant extends Component {
         country = '',
         state = '',
         zipCode = '',
+        timezone = '',
       } = {},
     } = this.props;
     this.formRef.current.setFieldsValue({
@@ -88,6 +88,7 @@ class FormWorkLocationTenant extends Component {
       country,
       state,
       zipCode,
+      timezone,
     });
   };
 
@@ -101,11 +102,18 @@ class FormWorkLocationTenant extends Component {
     });
   };
 
-  findListState = (idCountry) => {
+  findListState = (countryId) => {
     const { listCountry = [] } = this.props;
-    const itemCountry = listCountry.find((item) => item._id === idCountry) || {};
+    const itemCountry = listCountry.find((item) => item._id === countryId) || {};
     const listState = itemCountry.states || [];
     return listState;
+  };
+
+  findListTimezone = (countryId) => {
+    const { listCountry = [] } = this.props;
+    const timezone = listCountry.find((item) => item._id === countryId) || [];
+    const { timezones = [] } = timezone;
+    return timezones;
   };
 
   hideConfirm = () => {
@@ -141,6 +149,7 @@ class FormWorkLocationTenant extends Component {
       country = '',
       state = '',
       zipCode = '',
+      timezone = '',
     } = beforeVals;
     const {
       name: newName,
@@ -150,6 +159,7 @@ class FormWorkLocationTenant extends Component {
       country: newCountry = '',
       state: newState = '',
       zipCode: newZipCode = '',
+      timezone: newTimezone = '',
     } = afterVals;
     return (
       name === newName &&
@@ -158,7 +168,8 @@ class FormWorkLocationTenant extends Component {
       city === newCity &&
       country === newCountry &&
       state === newState &&
-      zipCode === newZipCode
+      zipCode === newZipCode &&
+      timezone === newTimezone
     );
   };
 
@@ -174,6 +185,7 @@ class FormWorkLocationTenant extends Component {
       country = '',
       state = '',
       zipCode = '',
+      timezone = '',
     } = values;
 
     const checkTheSame = this.compareValues(values, locationInfo);
@@ -202,13 +214,7 @@ class FormWorkLocationTenant extends Component {
           state,
           zipCode,
         },
-        // legalAddress: {
-        //   addressLine1,
-        //   addressLine2,
-        //   country,
-        //   state,
-        //   zipCode,
-        // },
+        timezone,
       };
       const res = await dispatch({
         type: 'adminApp/updateLocation',
@@ -259,14 +265,15 @@ class FormWorkLocationTenant extends Component {
         state = '',
         zipCode = '',
         isHeadQuarter = false,
+        timezone = '',
       } = {},
       listLength = 0,
       index = 0,
       loadingUpdateLocation = false,
       loadingRemoveLocation = false,
     } = this.props;
-
     const listState = this.findListState(newCountry) || [];
+    const listTimezone = this.findListTimezone(newCountry);
     const disableInput = !isEditing;
 
     return (
@@ -284,6 +291,7 @@ class FormWorkLocationTenant extends Component {
               country,
               state,
               zipCode,
+              timezone,
             }}
           >
             {isSaved && (
@@ -388,7 +396,7 @@ class FormWorkLocationTenant extends Component {
               </Col>
             </Row>
             <Row gutter={[24, 24]} className={s.content__viewBottom__row}>
-              <Col span={8} className={s.viewFormVertical}>
+              <Col span={6} className={s.viewFormVertical}>
                 <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>
                   Country*
                 </p>
@@ -403,7 +411,7 @@ class FormWorkLocationTenant extends Component {
                     disabled={disableInput}
                     onChange={this.onChangeCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {listCountry.map((item) => (
                       <Option key={item._id}>{item.name}</Option>
@@ -411,7 +419,7 @@ class FormWorkLocationTenant extends Component {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={8} className={s.viewFormVertical}>
+              <Col span={6} className={s.viewFormVertical}>
                 <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>State*</p>
                 <Form.Item
                   rules={[{ required: true, message: 'Please select State' }]}
@@ -423,7 +431,7 @@ class FormWorkLocationTenant extends Component {
                     showSearch
                     disabled={disableInput || !newCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {listState.map((item) => (
                       <Option key={item}>{item}</Option>
@@ -431,7 +439,7 @@ class FormWorkLocationTenant extends Component {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={8} className={s.viewFormVertical}>
+              <Col span={6} className={s.viewFormVertical}>
                 <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>
                   Zip/Postal Code*
                 </p>
@@ -440,6 +448,28 @@ class FormWorkLocationTenant extends Component {
                   name="zipCode"
                 >
                   <Input disabled={disableInput} placeholder="Zip/Postal Code" />
+                </Form.Item>
+              </Col>
+              <Col span={6} className={s.viewFormVertical}>
+                <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>
+                  Timezone*
+                </p>
+                <Form.Item
+                  rules={[{ required: true, message: 'Please select Timezone' }]}
+                  name="timezone"
+                >
+                  <Select
+                    placeholder="Select Timezone"
+                    showArrow
+                    showSearch
+                    disabled={disableInput || !newCountry}
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >
+                    {listTimezone.map((item) => (
+                      <Option key={item}>{item}</Option>
+                    ))}
+                  </Select>
                 </Form.Item>
               </Col>
             </Row>

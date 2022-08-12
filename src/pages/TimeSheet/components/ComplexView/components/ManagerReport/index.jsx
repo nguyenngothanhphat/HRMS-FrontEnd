@@ -1,12 +1,13 @@
-import { Button, Tabs } from 'antd';
+import { Tabs } from 'antd';
+import moment from 'moment';
 import React, { useState } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
 import ProjectView from './components/ProjectView';
 import TeamView from './components/TeamView';
 import styles from './index.less';
-import { exportRawDataToCSV } from '@/utils/utils';
 
 const { TabPane } = Tabs;
 
@@ -65,13 +66,9 @@ const ManagerReport = (props) => {
   const options = () => {
     return (
       <div className={styles.options}>
-        <Button
-          className={styles.exportBtn}
-          icon={<img src={DownloadIcon} alt="Icon Download" />}
-          onClick={exportTag}
-        >
+        <CustomOrangeButton icon={DownloadIcon} onClick={exportTag}>
           Export
-        </Button>
+        </CustomOrangeButton>
       </div>
     );
   };

@@ -43,15 +43,24 @@ const ActivityLog = (props) => {
     });
   }, [statusApproval]);
 
+  // useEffect(() => {
+  //   dispatch({
+  //     type: 'dashboard/fetchListMyTicket',
+  //   });
+  // }, [status]);
+
   useEffect(() => {
     dispatch({
-      type: 'dashboard/fetchListMyTicket',
+      type: 'dashboard/fetchMyTicketList',
+      payload: {
+        employeeId: _id,
+      },
     });
   }, [status]);
 
   useEffect(() => {
     dispatch({
-      type: 'dashboard/fetchLeaveRequestOfEmployee',
+      type: 'dashboard/fetchMyLeaveRequest',
       payload: {
         status: ['IN-PROGRESS'],
       },
@@ -82,7 +91,7 @@ const ActivityLog = (props) => {
     const listMyTicketNew =
       listMyTicket.length > 0
         ? listMyTicket.filter((val) => {
-            return val.employee_raise === _id;
+            return [...val.cc_list, val.employee_assignee, val.employee_raise].includes(_id);
           })
         : [];
     const dataMyTickets = listMyTicketNew.filter((element) =>

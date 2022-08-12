@@ -1,7 +1,7 @@
 import { Button, Card, Col, Form, Radio, Row, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { FORM_ITEM_NAME, TIMEOFF_ACCRUAL_METHOD } from '@/utils/timeOff';
+import { FORM_ITEM_NAME, TIMEOFF_ACCRUAL_METHOD } from '@/constants/timeOff';
 import AccrualRate from './components/AccrualRate';
 import styles from './index.less';
 

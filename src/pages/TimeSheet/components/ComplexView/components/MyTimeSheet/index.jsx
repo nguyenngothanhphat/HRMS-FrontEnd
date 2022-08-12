@@ -1,17 +1,19 @@
 import moment from 'moment';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect } from 'umi';
-import { generateAllWeeks, dateFormatAPI, VIEW_TYPE } from '@/utils/timeSheet';
-import { getCurrentCompany } from '@/utils/authority';
+import { dateFormatAPI, VIEW_TYPE } from '@/constants/timeSheet';
 import ViewTypeSelector from '@/pages/TimeSheet/components/ComplexView/components/ViewTypeSelector';
-import DailyHeader from './components/DailyHeader';
-import WeeklyHeader from './components/WeeklyHeader';
-import MonthlyHeader from './components/MonthlyHeader';
-import DailyTable from './components/DailyTable';
-import WeeklyTable from './components/WeeklyTable';
-import MonthlyTable from './components/MonthlyTable';
+import { getCurrentCompany } from '@/utils/authority';
+import useCancelToken from '@/utils/hooks';
+import { generateAllWeeks } from '@/utils/timeSheet';
+import { debounceFetchData } from '@/utils/utils';
 import DailyFooter from './components/DailyFooter';
-
+import DailyHeader from './components/DailyHeader';
+import DailyTable from './components/DailyTable';
+import MonthlyHeader from './components/MonthlyHeader';
+import MonthlyTable from './components/MonthlyTable';
+import WeeklyHeader from './components/WeeklyHeader';
+import WeeklyTable from './components/WeeklyTable';
 import styles from './index.less';
 
 const MyTimeSheet = (props) => {
@@ -29,6 +31,8 @@ const MyTimeSheet = (props) => {
 
   // others
   const [selectedView, setSelectedView] = useState(VIEW_TYPE.D); // D: daily, W: weekly, M: monthly
+  const { cancelToken, cancelRequest } = useCancelToken();
+
   const {
     dispatch,
     myTimesheetByDay = [],
@@ -37,7 +41,6 @@ const MyTimeSheet = (props) => {
     timeoffList = [],
     employee: { _id: employeeId = '' } = {},
     currentDateProp = '',
-    loadingFetch = false,
   } = props;
 
   // FUNCTION AREA
@@ -50,6 +53,16 @@ const MyTimeSheet = (props) => {
         fromDate: moment(startDate).format(dateFormatAPI),
         toDate: moment(endDate).format(dateFormatAPI),
         viewType: selectedView,
+        cancelToken: cancelToken(),
+      },
+    });
+  };
+
+  const fetchMyProjectList = () => {
+    dispatch({
+      type: 'timeSheet/fetchMyProjects',
+      payload: {
+        employee: employeeId,
       },
     });
   };
@@ -57,20 +70,32 @@ const MyTimeSheet = (props) => {
   // USE EFFECT AREA
   useLayoutEffect(() => {
     if (selectedDate && selectedView === VIEW_TYPE.D) {
-      fetchMyTimesheetEffectByType(selectedDate, selectedDate);
+      debounceFetchData(() => fetchMyTimesheetEffectByType(selectedDate, selectedDate));
+      return () => {
+        cancelRequest();
+      };
     }
+    return () => {};
   }, [selectedDate, selectedView]);
 
   useLayoutEffect(() => {
     if (startDateWeek && selectedView === VIEW_TYPE.W) {
-      fetchMyTimesheetEffectByType(startDateWeek, endDateWeek);
+      debounceFetchData(() => fetchMyTimesheetEffectByType(startDateWeek, endDateWeek));
+      return () => {
+        cancelRequest();
+      };
     }
+    return () => {};
   }, [startDateWeek, selectedView]);
 
   useLayoutEffect(() => {
     if (startDateMonth && selectedView === VIEW_TYPE.M) {
-      fetchMyTimesheetEffectByType(startDateMonth, endDateMonth);
+      debounceFetchData(() => fetchMyTimesheetEffectByType(startDateMonth, endDateMonth));
+      return () => {
+        cancelRequest();
+      };
     }
+    return () => {};
   }, [startDateMonth, selectedView]);
 
   useEffect(() => {
@@ -101,6 +126,10 @@ const MyTimeSheet = (props) => {
     setWeeksOfMonth(weeks);
   }, [startDateMonth]);
 
+  useEffect(() => {
+    fetchMyProjectList();
+  }, []);
+
   // RENDER UI
   const viewChangeComponent = () => (
     <ViewTypeSelector selectedView={selectedView} setSelectedView={setSelectedView} />
@@ -116,7 +145,6 @@ const MyTimeSheet = (props) => {
             selectedView={selectedView}
             setSelectedView={setSelectedView}
             viewChangeComponent={viewChangeComponent}
-            loadingFetch={loadingFetch}
           />
         );
       case VIEW_TYPE.W:
@@ -129,7 +157,6 @@ const MyTimeSheet = (props) => {
             viewChangeComponent={viewChangeComponent}
             setSelectedDate={setSelectedDate}
             selectedDate={selectedDate}
-            loadingFetch={loadingFetch}
           />
         );
 
@@ -143,7 +170,6 @@ const MyTimeSheet = (props) => {
             setEndDate={setEndDateMonth}
             viewChangeComponent={viewChangeComponent}
             setSelectedDate={setSelectedDate}
-            loadingFetch={loadingFetch}
           />
         );
 

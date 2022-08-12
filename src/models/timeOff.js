@@ -3,7 +3,7 @@ import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils
 import { dialog } from '@/utils/utils';
 import {
   getHolidaysList,
-  getLeaveRequestOfEmployee,
+  getMyLeaveRequest,
   addLeaveRequest,
   removeLeaveRequestOnDatabase,
   addCompoffRequest,
@@ -14,6 +14,7 @@ import {
   getEmailsListByCompany,
   getProjectsListByEmployee,
   getLeaveRequestById,
+  getLeaveRequestOfEmployee,
   updateLeaveRequestById,
   saveDraftLeaveRequest,
   updateDraftLeaveRequest,
@@ -105,6 +106,7 @@ const timeOff = {
     itemTimeOffType: {},
     viewingLeaveType: {},
     employeeTypeList: [],
+    employeeBehalfOf: '',
     pageStart: true,
     locationByCompany: [],
     tempData: {
@@ -320,36 +322,38 @@ const timeOff = {
       }
       return response;
     },
-    *fetchLeaveRequestOfEmployee({ payload }, { call, put }) {
+    *fetchMyLeaveRequest({ payload }, { call, put }) {
       let response = {};
       try {
         const tenantId = getCurrentTenant();
-        response = yield call(getLeaveRequestOfEmployee, {
+        response = yield call(getMyLeaveRequest, {
           ...payload,
           tenantId,
           company: getCurrentCompany(),
         });
-        const { statusCode, data: { items: leaveRequests = [] } = {}, total = 0 } = response;
-        if (statusCode !== 200) throw response;
+        if (response) {
+          const { statusCode, data: { items: leaveRequests = [] } = {}, total = 0 } = response;
+          if (statusCode !== 200) throw response;
 
-        yield put({
-          type: 'save',
-          payload: { leaveRequests },
-        });
-        yield put({
-          type: 'savePaging',
-          payload: { total },
-        });
+          yield put({
+            type: 'save',
+            payload: { leaveRequests },
+          });
+          yield put({
+            type: 'savePaging',
+            payload: { total },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }
-      return response;
+      return response || {};
     },
 
     *fetchLeaveHistory({ employee = '', status = '' }, { call, put }) {
       try {
         const tenantId = getCurrentTenant();
-        const response = yield call(getLeaveRequestOfEmployee, {
+        const response = yield call(getMyLeaveRequest, {
           employee,
           status,
           tenantId,
@@ -386,6 +390,29 @@ const timeOff = {
         dialog(errors);
       }
     },
+
+    *fetchLeaveRequestOfEmployee({ payload }, { call, put }) {
+      let response = {};
+      try {
+        const tenantId = getCurrentTenant();
+
+        response = yield call(getLeaveRequestOfEmployee, {
+          ...payload,
+          tenantId,
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data: viewingLeaveRequest = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { viewingLeaveRequest },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
     *updateLeaveRequestById({ payload = {} }, { call }) {
       try {
         const response = yield call(updateLeaveRequestById, {
@@ -617,11 +644,11 @@ const timeOff = {
       return 0;
     },
 
-    *fetchEmailsListByCompany({ payload: { company = [] } = {} }, { call, put }) {
+    *fetchEmailsListByCompany({ payload = {} }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getEmailsListByCompany, {
-          company,
-          tenantId: getCurrentTenant(),
+        response = yield call(getEmailsListByCompany, {
+          ...payload,
         });
         // console.log('email res', response);
         const { statusCode, data: emailsList = [] } = response;
@@ -633,6 +660,7 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *fetchProjectsListByEmployee({ payload = {} }, { call, put }) {
       try {
@@ -689,26 +717,28 @@ const timeOff = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const {
-          statusCode,
-          data: { items: teamLeaveRequests = [] },
-          total = 0,
-        } = response;
-        // console.log('response', response);
-        if (statusCode !== 200) throw response;
+        if (response) {
+          const {
+            statusCode,
+            data: { items: teamLeaveRequests = [] },
+            total = 0,
+          } = response;
+          // console.log('response', response);
+          if (statusCode !== 200) throw response;
 
-        yield put({
-          type: 'save',
-          payload: { teamLeaveRequests },
-        });
-        yield put({
-          type: 'savePaging',
-          payload: { total },
-        });
+          yield put({
+            type: 'save',
+            payload: { teamLeaveRequests },
+          });
+          yield put({
+            type: 'savePaging',
+            payload: { total },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }
-      return response;
+      return response || {};
     },
 
     *fetchAllLeaveRequests({ payload }, { call, put }) {
@@ -719,43 +749,53 @@ const timeOff = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const {
-          statusCode,
-          data: { items: allLeaveRequests = [] },
-          total = 0,
-        } = response;
+        if (response) {
+          const {
+            statusCode,
+            data: { items: allLeaveRequests = [] },
+            total = 0,
+          } = response;
 
-        if (statusCode !== 200) throw response;
+          if (statusCode !== 200) throw response;
 
-        yield put({
-          type: 'save',
-          payload: { allLeaveRequests },
-        });
-        yield put({
-          type: 'savePaging',
-          payload: { total },
-        });
+          yield put({
+            type: 'save',
+            payload: { allLeaveRequests },
+          });
+          yield put({
+            type: 'savePaging',
+            payload: { total },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }
-      return response;
+      return response || {};
     },
 
     *getTotalByTypeEffect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getTotalByType, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data = {} } = response;
-        if (statusCode !== 200) throw response;
+        response = yield call(
+          getTotalByType,
+          {
+            cancelToken: payload.cancelToken,
+          },
+          {
+            ...payload,
+            tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
+          },
+        );
+        if (response) {
+          const { statusCode, data = {} } = response;
+          if (statusCode !== 200) throw response;
 
-        yield put({
-          type: 'save',
-          payload: { totalByType: data },
-        });
+          yield put({
+            type: 'save',
+            payload: { totalByType: data },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }
@@ -915,11 +955,11 @@ const timeOff = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, message = '' } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
+        // notification.success({
+        //   message,
+        // });
         return statusCode;
       } catch (errors) {
         dialog(errors);

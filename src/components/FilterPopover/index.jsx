@@ -5,47 +5,11 @@ import CloseIcon from '@/assets/directory/closeX.svg';
 import styles from './index.less';
 
 const FilterPopover = (props) => {
-  const {
-    children,
-    placement = 'bottom',
-    onSubmit = () => {},
-    content = '',
-    // submitText = 'Submit',
-    // closeText = 'Close',
-    // onSecondButton,
-    // realTime = false,
-  } = props;
+  const { children, placement = 'bottom', content = '' } = props;
   const [showPopover, setShowPopover] = useState(false);
 
-  // const onFormSubmit = (values) => {
-  //   onSubmit(values);
-  // };
-
   const renderPopup = () => {
-    return (
-      <>
-        <div className={styles.popupContainer}>{content}</div>
-        {/* {!realTime && (
-          <div className={styles.buttons}>
-            <Button
-              className={styles.btnClose}
-              onClick={onSecondButton || (() => setShowPopover(false))}
-            >
-              {closeText}
-            </Button>
-            <Button
-              className={styles.btnApply}
-              form="filter"
-              htmlType="submit"
-              key="submit"
-              onClick={onFormSubmit}
-            >
-              {submitText}
-            </Button>
-          </div>
-        )} */}
-      </>
-    );
+    return <div className={styles.popupContainer}>{content}</div>;
   };
 
   return (

@@ -1,5 +1,5 @@
+import { Col, Row, Skeleton } from 'antd';
 import React from 'react';
-import { Row, Col, Skeleton, Button } from 'antd';
 
 import { connect } from 'umi';
 import EditBtn from '@/assets/edit.svg';
@@ -8,6 +8,7 @@ import CommonModal from '@/components/CommonModal';
 import EditTax from './component/EditTax';
 import ViewTax from './component/ViewTax';
 
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import styles from './index.less';
 
 const TaxWithholdingInfo = (props) => {
@@ -91,7 +92,7 @@ const TaxWithholdingInfo = (props) => {
         hasHeader={false}
         content={
           <>
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: 'center', paddingTop: 24 }}>
               <img src={imageAddSuccess} alt="update success" />
             </div>
             <br />
@@ -100,9 +101,7 @@ const TaxWithholdingInfo = (props) => {
               Update information successfully
             </p>
             <div className={styles.spaceFooterModalSuccess}>
-              <Button onClick={handleCancelModelSuccess} className={styles.btnOkModalSuccess}>
-                Okay
-              </Button>
+              <CustomPrimaryButton onClick={handleCancelModelSuccess}>Okay</CustomPrimaryButton>
             </div>
           </>
         }

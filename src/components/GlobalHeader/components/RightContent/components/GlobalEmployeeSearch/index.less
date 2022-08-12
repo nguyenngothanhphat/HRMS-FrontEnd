@@ -1,0 +1,101 @@
+.globalEmployeeSearch {
+  // overflow-x: hidden;
+  padding-bottom: 50px;
+  :global {
+    .ant-modal-body {
+      // height: calc(100vh - 175px);
+      // overflow-y: scroll;
+      overflow-x: hidden;
+    }
+    .ant-modal-header {
+      padding: 24px;
+      border-top-left-radius: 8px;
+    }
+    .ant-modal-content {
+      border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+    .ant-modal-footer {
+      padding: 24px;
+    }
+    .ant-modal-close-x {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 54px;
+      height: 48px;
+      color: #fff;
+      background-color: @primary-color;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      &:active {
+        opacity: 0.5;
+      }
+    }
+  }
+  .btnSubmit {
+    width: 95px;
+    height: 40px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    background-color: #ffa100;
+    border: none;
+    border-radius: 25px;
+  }
+  .btnSubmit:disabled {
+    color: #fff;
+    opacity: 0.5;
+  }
+  .btnCancel {
+    display: inline-block;
+    margin-right: 40px;
+    color: #ffa100;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    &:active {
+      opacity: 0.5;
+    }
+  }
+  .viewImg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    &__img {
+      height: auto;
+      object-fit: contain;
+      border-radius: 5px;
+    }
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &__text {
+      margin: 0;
+      color: #161c29;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    &__upload {
+      cursor: pointer;
+      &:active {
+        transform: translateY(-1px);
+      }
+      &__icon {
+        width: 20px;
+        height: 20px;
+      }
+      &__text {
+        margin-left: 16px;
+        color: @primary-color;
+        font-size: 14px;
+      }
+    }
+  }
+}

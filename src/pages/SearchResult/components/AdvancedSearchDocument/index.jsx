@@ -1,6 +1,9 @@
+import { DatePicker, Form, Input, Select } from 'antd';
 import React from 'react';
-import { Input, Form, Button, Select, DatePicker } from 'antd';
 import { connect, history } from 'umi';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from '../../index.less';
 
 const AdvancedSearchDocument = (props) => {
@@ -18,7 +21,7 @@ const AdvancedSearchDocument = (props) => {
     });
     history.push('/search-result/documents');
   };
-  const dateFormat = 'DD/MM/YY';
+
   return (
     <Form
       form={form}
@@ -27,7 +30,7 @@ const AdvancedSearchDocument = (props) => {
       onFinish={onFinish}
       initialValues={documentAdvance}
     >
-      <div className={styles.resultContent}>
+      <div className={styles.ResultContent}>
         <div className={styles.headerFilter}>
           <div className={styles.headerFilter__title}>Documents</div>
           <div className={styles.headerFilter__description}>
@@ -54,7 +57,7 @@ const AdvancedSearchDocument = (props) => {
               </Select>
             </Form.Item>
             <Form.Item name="createdOn" label="Created On">
-              <DatePicker placeholder="Enter created on" format={dateFormat} />
+              <DatePicker placeholder="Enter created on" format={DATE_FORMAT_MDY} />
             </Form.Item>
           </div>
           <div className={styles.filterItem}>
@@ -62,23 +65,14 @@ const AdvancedSearchDocument = (props) => {
               <Input placeholder="Enter document owner" />
             </Form.Item>
             <Form.Item name="modifiedOn" label="Modified On">
-              <DatePicker placeholder="Enter modified on" format={dateFormat} />
+              <DatePicker placeholder="Enter modified on" format={DATE_FORMAT_MDY} />
             </Form.Item>
           </div>
         </div>
       </div>
       <div className={styles.filterFooter}>
-        <Button
-          type="link"
-          htmlType="button"
-          className={styles.btnReset}
-          onClick={() => form.resetFields()}
-        >
-          Reset
-        </Button>
-        <Button type="primary" htmlType="submit" className={styles.btnSubmit}>
-          Search
-        </Button>
+        <CustomSecondaryButton onClick={() => form.resetFields()}>Reset</CustomSecondaryButton>
+        <CustomPrimaryButton htmlType="submit">Search</CustomPrimaryButton>
       </div>
     </Form>
   );

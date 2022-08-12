@@ -6,9 +6,11 @@ import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import CheckBoxIcon from '@/assets/onboarding/checkbox.svg';
 import UnCheckBoxIcon from '@/assets/onboarding/uncheckbox.svg';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import DebounceSelect from '@/components/DebounceSelect';
 
 const { Option } = Select;
 const { TreeNode } = TreeSelect;
@@ -27,7 +29,6 @@ const JobDetailForm = (props) => {
         listCustomerLocation = [],
         departmentList = [],
         titleList = [],
-        managerList = [],
         jobGradeLevelList = [],
         // values
         position = '',
@@ -39,6 +40,7 @@ const JobDetailForm = (props) => {
         clientLocation,
         title,
         reportingManager,
+        reportingManagerObj = {},
         dateOfJoining = '',
         employeeType,
         processStatus = '',
@@ -61,6 +63,28 @@ const JobDetailForm = (props) => {
           ...values,
         },
       },
+    });
+  };
+
+  const onEmployeeSearch = (value) => {
+    if (!value) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+
+    return dispatch({
+      type: 'newCandidateForm/fetchManagerList',
+      payload: {
+        name: value,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfoInfo?.legalName,
+        value: user._id,
+      }));
     });
   };
 
@@ -134,10 +158,16 @@ const JobDetailForm = (props) => {
       }
 
       case 'grade':
-      case 'dateOfJoining':
-      case 'reportingManager': {
+      case 'dateOfJoining': {
         saveToRedux({
           [type]: value,
+        });
+        break;
+      }
+      case 'reportingManager': {
+        saveToRedux({
+          [type]: value?.value,
+          reportingManagerObj: value,
         });
         break;
       }
@@ -318,11 +348,15 @@ const JobDetailForm = (props) => {
             allowClear
             treeIcon
             treeDefaultExpandAll
+            filterTreeNode={(input, treeNode) =>
+              treeNode.title.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             <TreeNode icon={CustomIconHeader()} title="Office Location">
-              {locationList.map((x, index) => (
-                <TreeNode icon={CustomIcon(x._id)} title={x.name} value={x._id} key={index} />
-              ))}
+              {locationList
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((x, index) => (
+                  <TreeNode icon={CustomIcon(x._id)} title={x.name} value={x._id} key={index} />
+                ))}
             </TreeNode>
             <TreeNode
               icon={CustomIconDisable()}
@@ -480,23 +514,26 @@ const JobDetailForm = (props) => {
           },
         ],
         component: (
-          <Select
+          <DebounceSelect
             placeholder="Select the reporting manager"
+            fetchOptions={onEmployeeSearch}
+            showSearch
             onChange={(value) => onChangeValue(value, 'reportingManager')}
             disabled={disabled}
-            showSearch
+            labelInValue
             showArrow
             allowClear
-            filterOption={(input, option) => {
-              return option.props.children.toLowerCase().indexOf(input.toLowerCase()) > -1;
-            }}
-          >
-            {managerList.map((x, index) => (
-              <Option value={x._id} key={index}>
-                {x.generalInfo?.legalName}
-              </Option>
-            ))}
-          </Select>
+            // do not change anything if you do not understand
+            defaultValue={
+              reportingManager
+                ? {
+                    value: reportingManagerObj?.value || reportingManager?._id,
+                    label:
+                      reportingManagerObj?.label || reportingManager?.generalInfoInfo?.legalName,
+                  }
+                : null
+            }
+          />
         ),
       },
     ];
@@ -541,7 +578,7 @@ const JobDetailForm = (props) => {
             className={styles}
             placeholder="Select a date"
             picker="date"
-            format="MM/DD/YYYY"
+            format={DATE_FORMAT_MDY}
             disabledDate={disabledDate}
             onChange={(value) => onChangeValue(value, 'dateOfJoining')}
           />
@@ -582,7 +619,8 @@ const JobDetailForm = (props) => {
           clientLocation,
           title: title?._id || title,
           grade: grade?._id || grade,
-          reportingManager: reportingManager?._id || reportingManager,
+          // because debounceSelect has labelInValue, we need to pass the value as value.value
+          reportingManager: { value: reportingManager?._id || reportingManager },
           dateOfJoining: dateOfJoining ? moment(dateOfJoining) : null,
         }}
       >

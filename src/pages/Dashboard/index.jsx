@@ -2,7 +2,7 @@ import { Col, message, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { connect } from 'umi';
-import { WIDGET_IDS } from '@/utils/dashboard';
+import { WIDGET_IDS } from '@/constants/dashboard';
 import ActivityLog from './components/ActivityLog';
 import Calendar from './components/Calendar';
 import ManageWidgetsModal from './components/ManageWidgetsModal';

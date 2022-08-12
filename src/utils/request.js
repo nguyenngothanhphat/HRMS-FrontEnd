@@ -1,7 +1,7 @@
 import { notification } from 'antd';
 import axios from 'axios';
 import { getDvaApp } from 'umi';
-import { proxy, API_KEYS } from '../../config/proxy';
+import { PROXY, API_KEYS } from '../../config/proxy';
 import { getToken } from './token';
 
 const codeMessage = {
@@ -50,22 +50,22 @@ const errorHandler = (error) => {
 
 const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) => {
   const { method = 'POST', data = {}, params = {} } = options;
+  const { cancelToken = null } = data;
   const token = getToken();
-
   const headers = {
     'Content-Type': 'application/json;charset=UTF-8',
     'Access-Control-Allow-Origin': '*',
     Authorization: !noAuth ? `Bearer ${token}` : '',
   };
 
-  const { CancelToken } = axios;
-  const source = CancelToken.source();
+  const paramsTemp = { ...params };
+  delete paramsTemp.cancelToken;
 
   const instance = axios.create({
-    baseURL: proxy[apiKey],
+    baseURL: PROXY[apiKey],
     headers,
-    params,
-    cancelToken: source.token,
+    params: paramsTemp,
+    cancelToken,
   });
 
   instance.interceptors.response.use(
@@ -76,10 +76,12 @@ const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) =>
     },
   );
   try {
+    delete data.cancelToken;
     const res = await instance[method.toLowerCase()](url, data);
     return res.data;
   } catch (e) {
-    return errorHandler(e);
+    const isCancel = axios.isCancel(e);
+    return isCancel ? null : errorHandler(e);
   }
 };
 

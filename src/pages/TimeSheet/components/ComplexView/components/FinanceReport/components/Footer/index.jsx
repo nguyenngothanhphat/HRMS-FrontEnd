@@ -1,12 +1,13 @@
-import { Button } from 'antd';
+import { isEmpty } from 'lodash';
+import moment from 'moment';
 import React from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
-import { isEmpty } from 'lodash';
-import exportToCSV from '@/utils/exportAsExcel';
 import DownloadIcon from '@/assets/timeSheet/solidDownload.svg';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import { VIEW_TYPE } from '@/constants/timeSheet';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
+import { convertMsToTime } from '@/utils/timeSheet';
 import styles from './index.less';
-import { convertMsToTime, VIEW_TYPE } from '@/utils/timeSheet';
 
 const Footer = (props) => {
   const { selectedProjects = [], data = [], selectedView = '' } = props;
@@ -25,8 +26,9 @@ const Footer = (props) => {
     return newData;
   };
 
-  const processData = (array) => {
-    return array.map((item) => {
+  const processData = (array = []) => {
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
       const {
         projectName = '',
         engagementType = '',
@@ -42,7 +44,7 @@ const Footer = (props) => {
         resourceNames += val.employee.legalName;
         if (index + 1 < resource.length) resourceNames += ', ';
       });
-      const dataExport = {
+      const payload = {
         'Project Name': projectName || '-',
         Type: engagementType || '-',
         Resources: resourceNames || '-',
@@ -50,15 +52,30 @@ const Footer = (props) => {
         'Total Hours ': `${projectSpentInHours} Hours` || '-',
       };
       if (locationUser) {
-        dataExport['Break Time'] = breakTime;
-        dataExport['Over Time'] = overTime;
+        payload['Break Time'] = breakTime;
+        payload['Over Time'] = overTime;
       }
-      return dataExport;
+      return payload;
     });
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('__')}`.split('__');
+      dataExport.push(value);
+    });
+
+    return dataExport;
   };
 
-  const processDataMonthly = (array) => {
-    return array.map((item) => {
+  const processDataMonthly = (array = []) => {
+    // Uppercase first letter
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
       const { weeks = [], projectName = '' } = item;
       const week1 = weeks.find((val) => val.week === 1);
       const week2 = weeks.find((val) => val.week === 2);
@@ -112,14 +129,26 @@ const Footer = (props) => {
 
       return dataExport;
     });
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('__')}`.split('__');
+      dataExport.push(value);
+    });
+
+    return dataExport;
   };
 
   const downloadTemplate = () => {
     const result = getSelectedData();
     if (selectedView === VIEW_TYPE.W) {
-      exportToCSV(processData(result), 'FinanceReportDataWeekly.xlsx');
+      exportArrayDataToCsv('FinanceReportDataWeekly', processData(result));
     } else {
-      exportToCSV(processDataMonthly(result), 'FinanceReportDataMonthly.xlsx');
+      exportArrayDataToCsv('FinanceReportDataMonthly', processDataMonthly(result));
     }
   };
 
@@ -127,9 +156,9 @@ const Footer = (props) => {
     <div className={styles.Footer}>
       <div className={styles.left}>{selectedProjects.length} Projects selected</div>
       <div className={styles.right}>
-        <Button icon={<img src={DownloadIcon} alt="" />} onClick={downloadTemplate}>
+        <CustomPrimaryButton icon={<img src={DownloadIcon} alt="" />} onClick={downloadTemplate}>
           Download
-        </Button>
+        </CustomPrimaryButton>
       </div>
     </div>
   );

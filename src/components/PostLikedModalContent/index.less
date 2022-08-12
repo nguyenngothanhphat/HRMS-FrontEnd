@@ -1,5 +1,5 @@
 @commonPadding: 24px;
-@blue: #2c6df9;
+@blue: @primary-color;
 @black: #171924;
 
 .PostLikedModalContent {
@@ -22,6 +22,7 @@
       border: 1px solid #f1f1f1;
       border-radius: 50%;
       img {
+        width: 100%;
         height: 100%;
         object-fit: cover;
       }
@@ -40,7 +41,7 @@
         }
       }
       .isMe {
-        color: #2c6df9;
+        color: @primary-color;
       }
       .title {
         display: block;
@@ -55,7 +56,7 @@
     }
   }
   .user:not(:last-child) {
-    border-bottom: 1px solid #d6dce0;
+    border-bottom: 1px solid @border-color-base;
   }
   .loadMore {
     display: flex;
@@ -71,7 +72,7 @@
         border: none;
         box-shadow: none;
         span {
-          color: #2c6df9;
+          color: @primary-color;
           font-weight: 500;
           font-size: 13px;
           font-style: normal;

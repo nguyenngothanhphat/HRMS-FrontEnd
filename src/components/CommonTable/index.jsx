@@ -8,19 +8,20 @@ const CommonTable = ({
   onChangePage = () => {},
   isBackendPaging = false,
   list = [],
-  columns,
+  columns = [],
   loading = false,
   page = 1,
   limit = 10,
   total: totalProp,
   selectable = false,
-  rowKey = '',
-  scrollable = false,
+  rowKey = '', // work with selectable
   showPagination = true,
-  selectedRowKeys = [],
-  setSelectedRowKeys = () => {},
+  selectedRowKeys = [], // work with selectable
+  setSelectedRowKeys = () => {}, // work with selectable
   components,
-  width = '100%',
+  scrollable = false,
+  width = '100%', // work with scroll
+  height = 400, // work with scroll
   pageSizeOptions = ['10', '25', '50', '100'],
   ...props
 }) => {
@@ -70,8 +71,6 @@ const CommonTable = ({
     <>
       <div className={styles.CommonTable}>
         <Table
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...props}
           components={components}
           size="middle"
           locale={{
@@ -81,10 +80,11 @@ const CommonTable = ({
           columns={columns}
           dataSource={list}
           loading={loading}
-          // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
           pagination={showPagination ? pagination : { position: ['none', 'none'] }}
-          scroll={scrollable ? { x: width, y: '400px' } : {}}
+          scroll={scrollable ? { x: width, y: height } : {}}
           rowKey={rowKey ? (record) => record[rowKey] : null}
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...props}
         />
       </div>
     </>

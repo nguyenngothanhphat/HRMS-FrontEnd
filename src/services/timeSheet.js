@@ -94,11 +94,12 @@ export async function getMyTimesheetByType(payload, params) {
   );
 }
 
-export async function getHolidaysByDate(params) {
+export async function getHolidaysByDate(payload, params) {
   return request(
     `/api/holidays`,
     {
       method: 'GET',
+      data: payload,
       params,
     },
     false,
@@ -358,4 +359,23 @@ export async function sendMailInCompleteTimeSheet(payload) {
     false,
     API_KEYS.TIMESHEET_API,
   );
+}
+
+export async function getProjectsByEmployee(payload) {
+  return request(
+    `api-project/resourcetenant/get-by-employee`,
+    {
+      method: 'POST',
+      data: payload,
+    },
+    false,
+    API_KEYS.PROJECT_API,
+  );
+}
+
+export async function getLocationsOfCountries(params) {
+  return request('/api/locationtenant/group-country', {
+    method: 'GET',
+    params,
+  });
 }

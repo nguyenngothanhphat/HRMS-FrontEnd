@@ -4,13 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
+import { TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/constants/timeOff';
 import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
-import {
-  checkNormalTypeTimeoff,
-  isFutureDay,
-  TIMEOFF_DATE_FORMAT,
-  TIMEOFF_STATUS,
-} from '@/utils/timeOff';
+import { checkNormalTypeTimeoff, isFutureDay } from '@/utils/timeOff';
 import HolidayCalendar from './components/HolidayCalendar';
 import HolidayList from './components/HolidayList';
 import LeaveHistoryCalendar from './components/LeaveHistoryCalendar';
@@ -120,10 +117,7 @@ const LeaveHistoryAndHoliday = (props) => {
         status === IN_PROGRESS ||
         status === IN_PROGRESS_NEXT
       ) {
-        const listLeave = leaveDates.sort(
-          (a, b) =>
-            moment(a.date).locale('en').format('DD') - moment(b.date).locale('en').format('DD'),
-        );
+        const listLeave = leaveDates.sort((a, b) => new Date(a.date) - new Date(b.date));
         const fromDate = from
           ? moment(from).locale('en').format(TIMEOFF_DATE_FORMAT)
           : moment(listLeave[0].date).locale('en').format(TIMEOFF_DATE_FORMAT);
@@ -180,10 +174,7 @@ const LeaveHistoryAndHoliday = (props) => {
         const fromDate = moment(from).locale('en').format(TIMEOFF_DATE_FORMAT);
         const toDate = moment(to).locale('en').format(TIMEOFF_DATE_FORMAT);
         const listLeave = leaveDates
-          .sort(
-            (a, b) =>
-              moment(a.date).locale('en').format('DD') - moment(b.date).locale('en').format('DD'),
-          )
+          .sort((a, b) => new Date(a.date) - new Date(b.date))
           .map((x) => x.date);
         if (checkNormalTypeTimeoff(type)) {
           return {
@@ -216,7 +207,7 @@ const LeaveHistoryAndHoliday = (props) => {
 
   useEffect(() => {
     const arr1 = formatHolidayLists(
-      holidaysListByLocation.filter((x) => isFutureDay(moment(x.date?.iso, 'YYYY-MM-DD'))),
+      holidaysListByLocation.filter((x) => isFutureDay(moment(x.date?.iso, DATE_FORMAT_YMD))),
     );
     const arr2 = formatHolidayLists(holidaysListByLocation);
 

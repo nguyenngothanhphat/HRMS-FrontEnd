@@ -2,11 +2,10 @@ import { Col, Popover, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import CloseX from '@/assets/dashboard/closeX.svg';
-
 import { convertMsToTime } from '@/utils/timeSheet';
+import { TIMEOFF_PERIOD } from '@/constants/timeOff';
+import CloseX from '@/assets/dashboard/closeX.svg';
 import styles from './index.less';
-import { TIMEOFF_PERIOD } from '@/utils/timeOff';
 
 const TimeoffPopover = (props) => {
   const {
@@ -61,9 +60,14 @@ const TimeoffPopover = (props) => {
           )}
 
           {timeoff.length !== 0 &&
-            showingTimeOff.map((timeoffProp) => {
+            showingTimeOff.map((timeoffProp, i) => {
               return (
-                <Row className={styles.eachRow} justify="space-between" align="middle">
+                <Row
+                  className={styles.eachRow}
+                  justify="space-between"
+                  align="middle"
+                  key={`${i + 1}`}
+                >
                   <Col span={18} className={styles.taskName}>
                     <span>
                       Timeoff (

@@ -88,7 +88,6 @@ const offboarding = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        console.log('🚀  ~ response', response);
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({

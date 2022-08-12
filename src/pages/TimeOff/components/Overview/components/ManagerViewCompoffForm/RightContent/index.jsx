@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Steps, Spin } from 'antd';
 import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import styles from './index.less';
 

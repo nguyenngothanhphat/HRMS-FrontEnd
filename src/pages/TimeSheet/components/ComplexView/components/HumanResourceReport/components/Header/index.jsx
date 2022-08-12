@@ -1,19 +1,19 @@
+import { Skeleton, Tooltip } from 'antd';
 import moment from 'moment';
-import React, { Suspense, useEffect, useState } from 'react';
-import { Button, Skeleton, Tag, Tooltip } from 'antd';
+import React, { Suspense, useState } from 'react';
 import { connect } from 'umi';
-import { CloseOutlined } from '@ant-design/icons';
-import exportToCSV from '@/utils/exportAsExcel';
 import DownloadIcon from '@/assets/timeSheet/download.svg';
 import IconWarning from '@/assets/timeSheet/ic_warning.svg';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
+import FilterCountTag from '@/components/FilterCountTag';
+import FilterPopover from '@/components/FilterPopover';
+import { VIEW_TYPE } from '@/constants/timeSheet';
 import CustomRangePicker from '@/pages/TimeSheet/components/ComplexView/components/CustomRangePicker';
 import SearchBar from '@/pages/TimeSheet/components/ComplexView/components/SearchBar';
-import { checkHolidayInWeek, dateFormatAPI, holidayFormatDate, VIEW_TYPE } from '@/utils/timeSheet';
-import styles from './index.less';
-import FilterButton from '@/components/FilterButton';
-import FilterPopover from '@/components/FilterPopover';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
+import { checkHolidayInWeek, holidayFormatDate } from '@/utils/timeSheet';
 import FilterContent from './components/FilterContent';
-import { getCurrentCompany } from '@/utils/authority';
+import styles from './index.less';
 
 const Header = (props) => {
   const {
@@ -35,9 +35,9 @@ const Header = (props) => {
         location: { headQuarterAddress: { country: { _id: countryID } = {} } = {} } = {},
       } = {},
     } = {},
+    timeSheet: { filterHrView = {} },
+    holidays = [],
   } = props;
-  const [applied, setApplied] = useState(0);
-  const [holidays, setHolidays] = useState([]);
   const [form, setForm] = useState(null);
 
   const locationUser = countryID === 'US';
@@ -79,7 +79,9 @@ const Header = (props) => {
   };
 
   const processData = (array) => {
-    return array.map((item) => {
+    // Uppercase first letter
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
       const {
         legalName = '',
         leaveTaken = '',
@@ -95,6 +97,7 @@ const Header = (props) => {
         breakTime = '',
         department: { name = '' } = {},
       } = item;
+
       let projectName = '';
       projects.forEach((el, index) => {
         projectName += el;
@@ -106,54 +109,52 @@ const Header = (props) => {
         incompleteTimeSheetDates += date;
         if (index + 1 < incompleteDates.length) incompleteTimeSheetDates += ', ';
       });
-      const dataExport = {
+
+      const payload = {
         Employee: legalName,
         'Employee ID': employeeCode,
         Department: name,
         Project: projectName,
         'Working Days': `${userSpentInDay} hours)`,
-        'Leave Taken ': leaveTaken,
+        'Leave Taken': leaveTaken,
         'Total Hours': `${userSpentInHours} hours`,
         'Incomplete TimeSheet Dates': incompleteTimeSheetDates,
       };
       if (locationUser) {
-        dataExport['Break Time'] = breakTime;
-        dataExport['Over Time'] = overTime;
+        payload['Break Time'] = breakTime;
+        payload['Over Time'] = overTime;
       }
-      return dataExport;
+
+      return payload;
     });
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('__')}`.split('__');
+      dataExport.push(value);
+    });
+
+    return dataExport;
   };
 
   const downloadTemplate = () => {
-    exportToCSV(processData(data), 'HumanResourceReportData.xlsx');
+    exportArrayDataToCsv('HRReportData', processData(data));
   };
 
   const handleClearFilter = () => {
     dispatch({
       type: 'timeSheet/clearFilter',
     });
-    setApplied(0);
     form?.resetFields();
   };
 
-  const fetchHolidaysByDate = async () => {
-    const holidaysResponse = await dispatch({
-      type: 'timeSheet/fetchHolidaysByDate',
-      payload: {
-        companyId: getCurrentCompany(),
-        fromDate: moment(startDate).format(dateFormatAPI),
-        toDate: moment(endDate).format(dateFormatAPI),
-      },
-    });
-    setHolidays(holidaysResponse);
-  };
-
-  // USE EFFECT AREA
-  useEffect(() => {
-    if (startDate && endDate) fetchHolidaysByDate();
-  }, [startDate, endDate]);
-
   const isHoliday = checkHolidayInWeek(startDate, endDate, holidays);
+  const applied = Object.values(filterHrView).filter((v) => v).length;
 
   // MAIN AREA
   return (
@@ -190,29 +191,21 @@ const Header = (props) => {
       <div className={styles.Header__middle}>{viewChangeComponent()}</div>
 
       <div className={styles.Header__right}>
-        {applied > 0 && (
-          <Tag
-            className={styles.Header__tagCountFilter}
-            closable
-            closeIcon={<CloseOutlined onClick={handleClearFilter} />}
-          >
-            {applied} filters applied
-          </Tag>
-        )}
-        <div className={styles.downloadIcon} onClick={downloadTemplate}>
-          <img src={DownloadIcon} alt="Icon Download" />
-          <Button>Download</Button>
-        </div>
+        <FilterCountTag count={applied} onClearFilter={handleClearFilter} />
+        <CustomOrangeButton onClick={downloadTemplate} icon={DownloadIcon}>
+          Download
+        </CustomOrangeButton>
+
         <FilterPopover
           placement="bottomRight"
           content={
             <Suspense fallback={<Skeleton active />}>
-              <FilterContent setForm={setForm} setApplied={setApplied} />
+              <FilterContent setForm={setForm} />
             </Suspense>
           }
           realTime
         >
-          <FilterButton />
+          <CustomOrangeButton showDot={applied > 0} />
         </FilterPopover>
         <SearchBar onChangeSearch={onChangeSearch} activeView={activeView} />
       </div>

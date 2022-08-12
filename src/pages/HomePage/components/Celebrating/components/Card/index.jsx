@@ -13,7 +13,9 @@ import PlaceholderImage from '@/assets/homePage/previewImage.png';
 import CommonModal from '@/components/CommonModal';
 import PostLikedModalContent from '@/components/PostLikedModalContent';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { CELEBRATE_TYPE, LIKE_ACTION, POST_OR_CMT, roundNumber, TAB_IDS } from '@/utils/homePage';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
+import { CELEBRATE_TYPE, LIKE_ACTION, POST_OR_CMT, TAB_IDS } from '@/constants/homePage';
+import { roundNumber } from '@/utils/homePage';
 import { getCompanyName, singularify } from '@/utils/utils';
 import CelebratingDetailModalContent from '../CelebratingDetailModalContent';
 import styles from './index.less';
@@ -61,7 +63,7 @@ const Card = (props) => {
     return moment(date1).format('MM/DD') === moment(date2).format('MM/DD');
   };
 
-  const getPostReactionListEffect = (postId, type) => {
+  const getPostReactionListEffect = (postId, type = LIKE_ACTION.LIKE) => {
     return dispatch({
       type: 'homePage/fetchPostReactionListEffect',
       payload: {
@@ -170,7 +172,7 @@ const Card = (props) => {
     }
     if (eventType === CELEBRATE_TYPE.ANNIVERSARY) {
       const yearCount = roundNumber(
-        moment.utc().diff(moment.utc(createdBy?.joinDate).format('YYYY-MM-DD'), 'years', true),
+        moment.utc().diff(moment.utc(createdBy?.joinDate).format(DATE_FORMAT_YMD), 'years', true),
       );
       return (
         <span>
@@ -195,7 +197,7 @@ const Card = (props) => {
     const liked = card.react === LIKE_ACTION.LIKE;
 
     return (
-      <div className={styles.cardContainer}>
+      <div className={styles.cardContainer} key={card?._id}>
         <div className={styles.image}>
           <img
             src={card.createdBy?.generalInfoInfo?.avatar || BirthdayImage}
@@ -344,7 +346,7 @@ const Card = (props) => {
             list={reactionList.map((x) => x.employee)}
             loading={loadingFetchReactList}
             total={reactionTotal}
-            loadMore={getPostReactionListEffect}
+            loadMore={() => getPostReactionListEffect(viewingItem?._id)}
           />
         }
         width={500}
