@@ -7,6 +7,7 @@ import CommonTable from '@/components/CommonTable';
 import DeleteCategoryModalContent from './components/DeleteCategoryModalContent';
 import EditCategoryModalContent from './components/EditCategoryModalContent';
 import styles from './index.less';
+import { HELP_TYPO } from '@/constants/helpPage';
 
 const ACTION = {
   DELETE: 'DELETE',
@@ -15,12 +16,15 @@ const ACTION = {
 
 const CategoryTable = (props) => {
   const {
-    categoryList = [],
     loadingGetList = false,
     loadingDelete = false,
     loadingUpdate = false,
     fetchData = () => {},
+    helpPage: { categoryList = [], helpType = '' } = {},
   } = props;
+
+  const categoryName = HELP_TYPO[helpType].SETTINGS.CATEGORY.NAME;
+  const questionTopicName = HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.NAME;
 
   const [action, setAction] = useState(false);
   const [item, setItem] = useState({});
@@ -37,15 +41,15 @@ const CategoryTable = (props) => {
 
   const columns = [
     {
-      title: 'Category Name',
+      title: `${categoryName} Name`,
       dataIndex: 'category',
       key: 'category',
     },
     {
-      title: 'No. of Questions',
-      dataIndex: 'helpDatas',
-      key: 'helpDatas',
-      render: (helpDatas = []) => helpDatas.length,
+      title: `No. of ${questionTopicName}s`,
+      dataIndex: 'listFAQs',
+      key: 'listFAQs',
+      render: (listFAQs = []) => listFAQs.length,
     },
     {
       title: 'Action',
@@ -68,7 +72,7 @@ const CategoryTable = (props) => {
       <CommonModal
         visible={action === ACTION.EDIT}
         onClose={() => setAction('')}
-        title="Edit Category"
+        title={`Edit ${categoryName}`}
         firstText="Save Changes"
         formName="editForm"
         loading={loadingUpdate}
@@ -87,7 +91,7 @@ const CategoryTable = (props) => {
       <CommonModal
         visible={action === ACTION.DELETE}
         onClose={() => setAction('')}
-        title="Delete Category"
+        title={`Delete ${categoryName}`}
         formName="deleteForm"
         firstText="Yes, delete"
         loading={loadingDelete}
@@ -106,9 +110,9 @@ const CategoryTable = (props) => {
   );
 };
 
-export default connect(({ loading, helpPage: { categoryList = [] } = {} }) => ({
+export default connect(({ loading, helpPage }) => ({
   loadingGetList: loading.effects['helpPage/fetchHelpCategoryList'],
   loadingUpdate: loading.effects['helpPage/updateHelpCategory'],
   loadingDelete: loading.effects['helpPage/deleteHelpCategory'],
-  categoryList,
+  helpPage,
 }))(CategoryTable);

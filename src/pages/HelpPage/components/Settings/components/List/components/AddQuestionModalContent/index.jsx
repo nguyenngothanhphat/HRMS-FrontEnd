@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import AttachmentIcon from '@/assets/attachment.svg';
 import UrlIcon from '@/assets/faqPage/urlIcon.svg';
+import { HELP_TYPE, HELP_TYPO } from '@/constants/helpPage';
 import uploadFirebase from '@/services/firebase';
 import styles from './index.less';
-import { HELP_TYPE } from '@/utils/helpPage';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -34,6 +34,7 @@ const AddQuestionModalContent = (props) => {
         type: 'helpPage/fetchHelpCategoryList',
         payload: {
           country: [selectedCountry],
+          type: helpType,
         },
       });
     }
@@ -77,6 +78,7 @@ const AddQuestionModalContent = (props) => {
         country: [selectedCountry],
         url: upLink,
         attachment: first?.id || null,
+        type: helpType,
       },
     }).then((response) => {
       const { statusCode } = response;
@@ -117,6 +119,10 @@ const AddQuestionModalContent = (props) => {
     }
   };
 
+  const questionName = HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.NAME;
+  const categoryLabel = HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.CATEGORY_ADD_LABEL;
+  const descLabel = HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.DESC_LABEL;
+
   return (
     <div className={styles.AddQuestionModalContent}>
       <Form
@@ -128,13 +134,13 @@ const AddQuestionModalContent = (props) => {
       >
         <Form.Item
           rules={[{ required: true, message: 'Required field!' }]}
-          label={helpType === HELP_TYPE.FAQ ? 'FAQ Category' : 'Help Center Category'}
+          label={categoryLabel}
           name="category"
           labelCol={{ span: 24 }}
         >
           <Select
             showSearch
-            placeholder="Select the category"
+            placeholder={`Select the ${HELP_TYPO[helpType].SETTINGS.CATEGORY.NAME.toLowerCase()}`}
             loading={loadingGetList}
             optionFilterProp="children"
             filterOption={(input, option) =>
@@ -147,7 +153,7 @@ const AddQuestionModalContent = (props) => {
         </Form.Item>
 
         <Form.Item
-          label={helpType === HELP_TYPE.FAQ ? 'Question' : 'Topic'}
+          label={questionName}
           name="question"
           labelCol={{ span: 24 }}
           rules={[
@@ -165,19 +171,13 @@ const AddQuestionModalContent = (props) => {
             }),
           ]}
         >
-          <Input
-            placeholder={helpType === HELP_TYPE.FAQ ? 'Enter the question' : 'Enter the topic'}
-          />
+          <Input placeholder={`Enter the ${questionName.toLowerCase()}`} />
         </Form.Item>
-        {helpType === HELP_TYPE.FAQ ? (
-          <Form.Item label="Answer" name="answer" labelCol={{ span: 24 }}>
-            <TextArea rows={4} placeholder="Enter the answer" />
-          </Form.Item>
-        ) : (
-          <Form.Item label="Description" name="answer" labelCol={{ span: 24 }}>
-            <TextArea rows={4} placeholder="Enter the description" />
-          </Form.Item>
-        )}
+
+        <Form.Item label={descLabel} name="answer" labelCol={{ span: 24 }}>
+          <TextArea rows={4} placeholder={`Enter the ${descLabel.toLowerCase()}`} />
+        </Form.Item>
+
         <Form.Item
           label="Upload Media File"
           name="upFile"

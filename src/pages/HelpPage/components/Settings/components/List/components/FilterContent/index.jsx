@@ -3,6 +3,7 @@ import { Col, DatePicker, Form, Row, Select } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { HELP_TYPE } from '@/constants/helpPage';
 import styles from './index.less';
 
 const FilterContent = (props) => {
@@ -16,6 +17,7 @@ const FilterContent = (props) => {
     categoryList = [],
     filter = {},
     setFilter = () => {},
+    helpType = '',
   } = props;
   const [fromDate, setFromDate] = useState();
   const [toDate, setToDate] = useState();
@@ -29,9 +31,9 @@ const FilterContent = (props) => {
   useEffect(() => {
     dispatch({
       type: 'helpPage/fetchHelpCategoryList',
-      payload: { country: selectedCountry },
+      payload: { country: selectedCountry, type: helpType },
     });
-  }, [selectedCountry]);
+  }, [selectedCountry, helpType]);
 
   // FUNCTIONALITY
   const onFinish = (values) => {
@@ -105,7 +107,7 @@ const FilterContent = (props) => {
           })}
         </Select>
       </Form.Item>
-      <Form.Item label="By Add" name="employees">
+      <Form.Item label="Added By" name="employees">
         <Select
           allowClear
           showSearch
@@ -125,7 +127,7 @@ const FilterContent = (props) => {
           ))}
         </Select>
       </Form.Item>
-      <Form.Item label="By Duration">
+      <Form.Item label="By Created Date">
         <Row>
           <Col span={11}>
             <Form.Item name="fromDate">
@@ -157,8 +159,12 @@ const FilterContent = (props) => {
 };
 
 export default connect(
-  ({ loading, helpPage: { selectedCountry = '', listCreator = [], categoryList = [] } = {} }) => ({
+  ({
+    loading,
+    helpPage: { selectedCountry = '', listCreator = [], categoryList = [], helpType = '' } = {},
+  }) => ({
     selectedCountry,
+    helpType,
     listCreator,
     categoryList,
     loadingFetchCreatorList: loading.effects['helpPage/fetchListCreator'],

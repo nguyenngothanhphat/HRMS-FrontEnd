@@ -1,6 +1,7 @@
 import { Form, Input } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
+import { HELP_TYPO } from '@/constants/helpPage';
 import styles from './index.less';
 
 const EditCategoryModalContent = (props) => {
@@ -12,6 +13,7 @@ const EditCategoryModalContent = (props) => {
     refreshData = () => {},
     onClose = () => {},
     dispatch,
+    helpType = '',
   } = props;
 
   const handleFinish = (values) => {
@@ -30,6 +32,8 @@ const EditCategoryModalContent = (props) => {
     });
   };
 
+  const name = HELP_TYPO[helpType].SETTINGS.CATEGORY.NAME;
+
   return (
     <div className={styles.EditCategoryModalContent}>
       <Form
@@ -40,7 +44,7 @@ const EditCategoryModalContent = (props) => {
         onFinish={handleFinish}
       >
         <Form.Item
-          label="Categories Name"
+          label={`${name} Name`}
           name="category"
           labelCol={{ span: 24 }}
           rules={[
@@ -50,7 +54,7 @@ const EditCategoryModalContent = (props) => {
                 const duplicate = categoryList.find((val) => val.name === value);
                 if (duplicate) {
                   // eslint-disable-next-line prefer-promise-reject-errors
-                  return Promise.reject('Category name is exist');
+                  return Promise.reject(`${name} name is exist`);
                 }
                 // eslint-disable-next-line compat/compat
                 return Promise.resolve();
@@ -58,14 +62,17 @@ const EditCategoryModalContent = (props) => {
             }),
           ]}
         >
-          <Input placeholder="Enter the category name" />
+          <Input placeholder={`Enter the ${name.toLowerCase()} name`} />
         </Form.Item>
       </Form>
     </div>
   );
 };
 
-export default connect(({ helpPage: { categoryList = [], selectedCountry } = {} }) => ({
-  categoryList,
-  selectedCountry,
-}))(EditCategoryModalContent);
+export default connect(
+  ({ helpPage: { helpType = '', categoryList = [], selectedCountry } = {} }) => ({
+    categoryList,
+    helpType,
+    selectedCountry,
+  }),
+)(EditCategoryModalContent);

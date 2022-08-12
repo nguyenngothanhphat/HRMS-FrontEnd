@@ -3,7 +3,8 @@ import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
 import CustomBlueButton from '@/components/CustomBlueButton';
 import { PageContainer } from '@/layouts/layout/src';
-import { getSettingPageUrl, HELP_NAME, HELP_TYPE } from '@/utils/helpPage';
+import { getSettingPageUrl } from '@/utils/helpPage';
+import { HELP_NAME, HELP_TYPE } from '@/constants/helpPage';
 import HelpList from './components/HelpList';
 import styles from './index.less';
 

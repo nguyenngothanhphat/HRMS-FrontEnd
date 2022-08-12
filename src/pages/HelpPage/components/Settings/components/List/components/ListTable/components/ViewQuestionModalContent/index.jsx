@@ -1,11 +1,16 @@
 import { Image as ImageTag } from 'antd';
 import Parser from 'html-react-parser';
+import { connect } from 'umi';
 import React from 'react';
 import { hashtagify, urlify } from '@/utils/homePage';
 import styles from './index.less';
+import { HELP_TYPO } from '@/constants/helpPage';
 
 const ViewQuestionModalContent = (props) => {
-  const { item: { attachment = {}, question = '', answer = '' } = {} } = props;
+  const {
+    item: { attachment = {}, question = '', answer = '' } = {},
+    helpPage: { helpType = '' } = {},
+  } = props;
 
   const renderContent = (text) => {
     const temp = urlify(text);
@@ -30,17 +35,21 @@ const ViewQuestionModalContent = (props) => {
       </div>
     );
   };
+
+  const questionName = HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.NAME;
+  const answerName = HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.DESC_LABEL;
+
   return (
     <div className={styles.ViewQuestionModalContent}>
       <p>
-        <b>Question:</b> {question || ''}
+        <b>{questionName}:</b> {question || ''}
       </p>
       <p>
-        <b>Answer:</b> {answer ? Parser(renderContent(answer)) : ''}
+        <b>{answerName}:</b> {answer ? Parser(renderContent(answer)) : ''}
       </p>
       {attachment?.length && renderMedia(attachment)}
     </div>
   );
 };
 
-export default ViewQuestionModalContent;
+export default connect(({ helpPage }) => ({ helpPage }))(ViewQuestionModalContent);

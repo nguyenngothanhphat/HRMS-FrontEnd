@@ -1,18 +1,18 @@
 import { notification } from 'antd';
+import { HELP_TYPE } from '@/constants/helpPage';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   addCategory,
-  getListCategory,
-  updateCategory,
-  deleteCategory,
   addQuestion,
-  getListFAQ,
-  updateQuestion,
+  deleteCategory,
   deleteQuestion,
+  getListCategory,
   getListCreator,
+  getListFAQ,
+  updateCategory,
+  updateQuestion,
 } from '../services/helpPage';
-import { HELP_TYPE } from '@/utils/helpPage';
 
 const helpPage = {
   namespace: 'helpPage',

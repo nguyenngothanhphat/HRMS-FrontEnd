@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import AttachmentIcon from '@/assets/attachment.svg';
 import UrlIcon from '@/assets/faqPage/urlIcon.svg';
+import { HELP_TYPE, HELP_TYPO } from '@/constants/helpPage';
 import uploadFirebase from '@/services/firebase';
 import styles from './index.less';
 
@@ -17,9 +18,8 @@ const EditQuestionModalContent = (props) => {
     employeeId = '',
     onClose = () => {},
     visible = false,
-    categoryList = [],
     refreshData = () => {},
-    selectedCountry = '',
+    helpPage: { categoryList = [], selectedCountry, helpType = '' } = {},
   } = props;
 
   const [showLink, setShowLink] = useState(true);
@@ -33,6 +33,7 @@ const EditQuestionModalContent = (props) => {
         type: 'helpPage/fetchHelpCategoryList',
         payload: {
           country: [selectedCountry],
+          type: helpType,
         },
       });
       form.setFieldsValue({
@@ -140,6 +141,10 @@ const EditQuestionModalContent = (props) => {
     }
   };
 
+  const questionName = HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.NAME;
+  const categoryLabel = HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.CATEGORY_ADD_LABEL;
+  const descLabel = HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.DESC_LABEL;
+
   return (
     <div className={styles.EditQuestionModalContent}>
       <Form
@@ -150,8 +155,8 @@ const EditQuestionModalContent = (props) => {
         onValuesChange={onValuesChange}
       >
         <Form.Item
-          rules={[{ required: true, message: 'Please name Categories' }]}
-          label="FAQ Categories"
+          rules={[{ required: true, message: 'Required field!' }]}
+          label={categoryLabel}
           name="faqCategory"
           labelCol={{ span: 24 }}
         >
@@ -167,10 +172,10 @@ const EditQuestionModalContent = (props) => {
           </Select>
         </Form.Item>
 
-        <Form.Item label="Question" name="question" labelCol={{ span: 24 }}>
+        <Form.Item label={questionName} name="question" labelCol={{ span: 24 }}>
           <Input />
         </Form.Item>
-        <Form.Item label="Answer" name="answer" labelCol={{ span: 24 }}>
+        <Form.Item label={descLabel} name="answer" labelCol={{ span: 24 }}>
           <TextArea rows={4} />
         </Form.Item>
         <Form.Item
@@ -221,12 +226,8 @@ const EditQuestionModalContent = (props) => {
 };
 
 export default connect(
-  ({
-    helpPage: { categoryList = [], selectedCountry } = {},
-    user: { currentUser: { employee: { _id: employeeId = '' } = {} } = {} },
-  }) => ({
-    categoryList,
+  ({ helpPage, user: { currentUser: { employee: { _id: employeeId = '' } = {} } = {} } }) => ({
     employeeId,
-    selectedCountry,
+    helpPage,
   }),
 )(EditQuestionModalContent);

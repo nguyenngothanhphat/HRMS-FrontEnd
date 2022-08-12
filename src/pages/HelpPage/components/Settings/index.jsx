@@ -2,8 +2,8 @@ import { Select } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import LayoutHelpSettingPage from '@/components/LayoutHelpSettingPage';
+import { HELP_STR, HELP_TYPE, HELP_TYPO } from '@/constants/helpPage';
 import { PageContainer } from '@/layouts/layout/src';
-import { getHelpUrl, HELP_STR, HELP_TYPE } from '@/utils/helpPage';
 import Category from './components/Category';
 import List from './components/List';
 import styles from './index.less';
@@ -19,6 +19,21 @@ const Settings = (props) => {
     match: { params: { tabName = '' } = {} },
     helpPage: { selectedCountry = '', helpType = '' } = {},
   } = props;
+
+  const { pathname } = window.location;
+
+  useEffect(() => {
+    let helpTypeTemp = HELP_TYPE.FAQ;
+    if (pathname.includes('help-center')) {
+      helpTypeTemp = HELP_TYPE.HRMS_HELP_CENTER;
+    }
+    dispatch({
+      type: 'helpPage/save',
+      payload: {
+        helpType: helpTypeTemp,
+      },
+    });
+  }, [pathname]);
 
   useEffect(() => {
     dispatch({
@@ -100,6 +115,7 @@ const Settings = (props) => {
       type: 'helpPage/fetchHelpCategoryList',
       payload: {
         country: [value],
+        type: helpType,
       },
     });
   };
@@ -107,13 +123,13 @@ const Settings = (props) => {
   const listMenu = [
     {
       id: 1,
-      name: helpType === HELP_TYPE.FAQ ? 'FAQ Categories' : 'Help Center Categories',
+      name: HELP_TYPO[helpType].SETTINGS.CATEGORY.TAB_NAME,
       link: 'category',
       component: <Category />,
     },
     {
       id: 2,
-      name: helpType === HELP_TYPE.FAQ ? 'FAQ List' : 'Help Center Topic',
+      name: HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.TAB_NAME,
       link: 'list',
       component: <List />,
     },

@@ -9,6 +9,7 @@ import DeleteQuestionModalContent from './components/DeleteQuestionModalContent'
 import EditQuestionModalContent from './components/EditQuestionModalContent';
 import ViewQuestionModalContent from './components/ViewQuestionModalContent';
 import styles from './index.less';
+import { HELP_TYPO } from '@/constants/helpPage';
 
 const ACTION = {
   DELETE: 'DELETE',
@@ -30,7 +31,11 @@ const ListTable = (props) => {
     loadingUpload = false,
     loadingDelete = false,
     fetchData = () => {},
+    helpPage: { helpType = '' } = {},
   } = props;
+
+  const categoryName = HELP_TYPO[helpType].SETTINGS.CATEGORY.NAME;
+  const qtName = HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.NAME;
 
   const [action, setAction] = useState(false);
   const [item, setItem] = useState({});
@@ -54,11 +59,11 @@ const ListTable = (props) => {
     return (
       <Menu>
         <Menu.Item onClick={() => handleViewQuestion(record)}>
-          <span>View Question</span>
+          <span>View {qtName}</span>
         </Menu.Item>
         <Divider />
         <Menu.Item onClick={() => handleUpdateQuestion(record)}>
-          <span>Update Question</span>
+          <span>Update {qtName}</span>
         </Menu.Item>
         <Divider />
         <Menu.Item onClick={() => handleDeleteQuestion(record)}>
@@ -100,14 +105,14 @@ const ListTable = (props) => {
 
   const columns = [
     {
-      title: 'Category Name',
+      title: `${categoryName} Name`,
       dataIndex: 'categoryName',
       sorter: {
         compare: (a, b) => a.categoryName.localeCompare(b.categoryName),
       },
     },
     {
-      title: 'Question',
+      title: qtName,
       dataIndex: 'question',
       sorter: {
         compare: (a, b) => a.question.localeCompare(b.question),
@@ -168,7 +173,7 @@ const ListTable = (props) => {
         loading={loadingGetList || loadingSearch}
       />
       <CommonModal
-        title="Edit Question"
+        title={`Edit ${qtName}`}
         visible={action === ACTION.EDIT}
         onClose={() => setAction('')}
         loading={loadingUpdate || loadingUpload}
@@ -186,7 +191,7 @@ const ListTable = (props) => {
         }
       />
       <CommonModal
-        title="Delete Question"
+        title={`Delete ${qtName}`}
         visible={action === ACTION.DELETE}
         onClose={() => setAction('')}
         loading={loadingDelete || loadingUpload}
@@ -204,7 +209,7 @@ const ListTable = (props) => {
         }
       />
       <CommonModal
-        title="View Question"
+        title={`View ${qtName}`}
         visible={action === ACTION.VIEW}
         onClose={() => setAction('')}
         firstText="Close"

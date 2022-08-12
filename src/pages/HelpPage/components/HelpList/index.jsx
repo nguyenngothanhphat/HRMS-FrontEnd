@@ -7,7 +7,8 @@ import HelpIcon from '@/assets/helpPage/ic_help.svg';
 import MinusCircleIcon from '@/assets/helpPage/ic_minus_circle.svg';
 import PlusCircleIcon from '@/assets/helpPage/ic_plus_circle.svg';
 import ModalFeedback from '@/components/ModalFeedback';
-import { convertStr, HELP_STR } from '@/utils/helpPage';
+import { HELP_STR, HELP_TYPE } from '@/constants/helpPage';
+import { convertStr } from '@/utils/helpPage';
 import { hashtagify, urlify } from '@/utils/homePage';
 import MediaContent from './components/MediaContent';
 import NoteComponent from './components/NoteComponent';
@@ -36,15 +37,17 @@ const HelpList = (props) => {
       type: 'helpPage/fetchHelpCategoryList',
       payload: {
         country: [country],
+        type: helpType,
       },
     });
     dispatch({
       type: 'helpPage/fetchHelpData',
       payload: {
         country: [country],
+        type: helpType,
       },
     });
-  }, []);
+  }, [helpType]);
 
   useEffect(() => {
     if (!isEmpty(categoryList)) {

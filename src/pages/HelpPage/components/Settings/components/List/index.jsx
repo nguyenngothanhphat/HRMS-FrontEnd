@@ -9,6 +9,7 @@ import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
+import { HELP_TYPE, HELP_TYPO } from '@/constants/helpPage';
 import AddQuestionModalContent from './components/AddQuestionModalContent';
 import FilterContent from './components/FilterContent';
 import ListTable from './components/ListTable';
@@ -16,13 +17,11 @@ import styles from './index.less';
 
 const List = (props) => {
   const {
-    helpData = [],
     loadingGetList = false,
-    totalHelpData,
     loadingAdd = false,
     loadingUpload = false,
     dispatch,
-    selectedCountry = '',
+    helpPage: { selectedCountry, helpData = [], totalHelpData = 0, helpType = '' } = {},
   } = props;
 
   const [addModalVisible, setAddModalVisible] = useState(false);
@@ -45,6 +44,7 @@ const List = (props) => {
       type: 'helpPage/fetchHelpData',
       payload: {
         country: [selectedCountry],
+        type: helpType,
         page: pageSelected,
         limit: size,
         nameSearch: searchValue,
@@ -69,10 +69,12 @@ const List = (props) => {
   return (
     <div className={styles.List}>
       <div className={styles.headerPolicy}>
-        <div className={styles.title}>Frequently Asked Questions</div>
+        <div className={styles.title}>{HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.TABLE_NAME}</div>
         <div className={styles.options}>
           <FilterCountTag count={Object.keys(filter).length} onClearFilter={handleClearFilter} />
-          <CustomAddButton onClick={() => setAddModalVisible(true)}>Add Questions</CustomAddButton>
+          <CustomAddButton onClick={() => setAddModalVisible(true)}>
+            Add {HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.NAME}
+          </CustomAddButton>
           <div className={styles.filterButton}>
             <FilterPopover
               placement="bottomRight"
@@ -87,7 +89,7 @@ const List = (props) => {
             </FilterPopover>
           </div>
           <CustomSearchBox
-            placeholder="Search by question or answer"
+            placeholder={HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.SEARCH_PLACEHOLDER}
             onSearch={(e) => onSearch(e)}
           />
         </div>
@@ -109,7 +111,7 @@ const List = (props) => {
         onClose={() => setAddModalVisible(false)}
         firstText="Add"
         formName="addForm"
-        title="Add Question"
+        title={`Add ${HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.NAME}`}
         loading={loadingAdd || loadingUpload}
         content={
           <AddQuestionModalContent
@@ -124,13 +126,9 @@ const List = (props) => {
     </div>
   );
 };
-export default connect(
-  ({ loading, helpPage: { selectedCountry, helpData = [], totalHelpData = 0 } = {} }) => ({
-    selectedCountry,
-    loadingGetList: loading.effects['helpPage/fetchHelpData'],
-    loadingAdd: loading.effects['helpPage/addQuestion'],
-    loadingUpload: loading.effects['upload/addAttachment'],
-    helpData,
-    totalHelpData,
-  }),
-)(List);
+export default connect(({ loading, helpPage = {} }) => ({
+  helpPage,
+  loadingGetList: loading.effects['helpPage/fetchHelpData'],
+  loadingAdd: loading.effects['helpPage/addQuestion'],
+  loadingUpload: loading.effects['upload/addAttachment'],
+}))(List);

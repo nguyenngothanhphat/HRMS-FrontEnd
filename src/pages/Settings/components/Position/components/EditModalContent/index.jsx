@@ -21,7 +21,7 @@ const EditModalContent = (props) => {
     viewingPosition: {
       department: departmentProp = '',
       name: nameProp = '',
-      gradeObj: gradeObjProp = '',
+      gradeObj: gradeObjProp = {},
       timeSheetRequired: timeSheetRequiredProp = false,
       timeSheetAdvancedMode: timeSheetAdvancedModeProp = false,
       eligibleForCompOff: eligibleForCompOffProp = false,
@@ -63,7 +63,7 @@ const EditModalContent = (props) => {
     form.setFieldsValue({
       department: departmentProp,
       name: nameProp,
-      gradeObj: gradeObjProp,
+      gradeObj: gradeObjProp?._id,
       timeSheetRequired: timeSheetRequiredProp,
       timeSheetAdvancedMode: timeSheetAdvancedModeProp,
       eligibleForCompOff: eligibleForCompOffProp,
