@@ -9,7 +9,7 @@ const PollContent = (props) => {
   const dateFormat = 'YYYY-MM-DD'
   const disabledStartDate = (current) => {
     const endDate = form.getFieldValue('endDateP');
-    const currentDate = current ? moment(current).format(dateFormat) : moment().format(dateFormat)
+    const currentDate = moment(current).format(dateFormat)
     if (endDate) {
       return (
         moment(currentDate).isBefore(moment().format(dateFormat), 'day') ||
@@ -21,7 +21,7 @@ const PollContent = (props) => {
 
   const disabledEndDate = (current) => {
     const startDate = form.getFieldValue('startDateP');
-    const currentDate = current ? moment(current).format(dateFormat) : moment().format(dateFormat)
+    const currentDate = moment(current).format(dateFormat)
     if (startDate) {
       return moment(currentDate).isBefore(moment(startDate).format(dateFormat), 'day');
     }
