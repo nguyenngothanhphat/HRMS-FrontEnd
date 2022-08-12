@@ -4,15 +4,16 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import HelpIcon from '@/assets/dashboard/help.svg';
+import CommonModal from '@/components/CommonModal';
+import CustomAddButton from '@/components/CustomAddButton';
 import DebounceSelect from '@/components/DebounceSelect';
 import { PRIORITY } from '@/constants/dashboard';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { FILE_TYPE } from '@/constants/upload';
-import { getAuthority, getCurrentLocation } from '@/utils/authority';
+import uploadFirebase from '@/services/firebase';
+import { getAuthority } from '@/utils/authority';
 import { beforeUpload } from '@/utils/upload';
 import styles from './index.less';
-import CustomAddButton from '@/components/CustomAddButton';
-import CommonModal from '@/components/CommonModal';
 
 const { Option } = Select;
 
@@ -37,16 +38,15 @@ const EditTicketModal = (props) => {
     ticket = {},
     refreshFetchTicketList = () => {},
     listEmployeeByIds = [],
+    loadingUpload = false,
   } = props;
-  console.log('🚀 ~ ticket', ticket);
-  console.log('🚀 ~ listEmployeeByIds', listEmployeeByIds);
 
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
   const listCC = listEmployeeByIds.map((x) => {
-    return { value: x.id, label: x.generalInfo.legalName };
+    return { value: x._id, label: x.generalInfoInfo.legalName };
   });
-  console.log('🚀 ~ listCC', listCC);
   const support = supportTeamList.find((x) => x.name === ticket.support_team);
   const reqDate = new Date(ticket.created_at)
     .toLocaleDateString()
@@ -58,8 +58,6 @@ const EditTicketModal = (props) => {
   const formatData = (values) => {
     const {
       description = '',
-      interestList = [],
-      cc_list: ccList = [],
       priority = '',
       query_type_id: queryTypeId = '',
       queryType = '',
@@ -67,7 +65,6 @@ const EditTicketModal = (props) => {
     } = values;
     return {
       description,
-      ccList: ccList || interestList,
       priority,
       queryTypeId: queryType || queryTypeId,
       subject,
@@ -127,6 +124,28 @@ const EditTicketModal = (props) => {
   }, [visible]);
 
   useEffect(() => {
+    if (visible && !isEmpty(ticket)) {
+      const { attachments = [] } = ticket || {};
+      const fileListTemp = attachments.map((x, i) => {
+        return {
+          ...x,
+          uid: i,
+          name: x.attachmentName,
+          status: 'done',
+          url: x.attachmentUrl,
+          thumbUrl: x.attachmentUrl,
+          id: x.attachment,
+        };
+      });
+
+      setUploadedAttachments(fileListTemp);
+      form.setFieldsValue({
+        attachments: { fileList: [...fileListTemp] },
+      });
+    }
+  }, [visible, JSON.stringify(ticket)]);
+
+  useEffect(() => {
     if (visible) {
       form.setFieldsValue({
         supportTeam: ticket?.department_assign,
@@ -140,15 +159,16 @@ const EditTicketModal = (props) => {
       });
       setQueryTypeList(support?.queryType || []);
     }
-  }, [visible, JSON.stringify(support)]);
+  }, [visible, JSON.stringify(support), JSON.stringify(listCC)]);
 
   const handleUpload = async (file) => {
-    console.log('🚀 ~ file', file);
-    const formData = new FormData();
-    formData.append('uri', file);
+    const payload = await uploadFirebase({ file, typeFile: 'ATTACHMENT' });
     const res = await dispatch({
-      type: 'ticketManagement/uploadFileAttachments',
-      payload: formData,
+      type: 'upload/addAttachment',
+      payload: {
+        attachments: [payload],
+      },
+      showNotification: true,
     });
     if (res.statusCode === 200) {
       const { data = [] } = res;
@@ -156,27 +176,10 @@ const EditTicketModal = (props) => {
         const uploadedAttachmentsTemp = JSON.parse(JSON.stringify(uploadedAttachments));
         uploadedAttachmentsTemp.push(data[0]);
         setUploadedAttachments(uploadedAttachmentsTemp);
+        setIsEdit(true);
       }
     }
   };
-
-  const handleRemove = async (file) => {
-    let uploadedAttachmentsTemp = JSON.parse(JSON.stringify(uploadedAttachments));
-    uploadedAttachmentsTemp = uploadedAttachmentsTemp.filter(
-      (att) => att.name !== file.name && att.size !== file.size,
-    );
-    setUploadedAttachments(uploadedAttachmentsTemp);
-  };
-
-  // const onSupportTeamChange = (value) => {
-  //   const find = supportTeamList.find((x) => x._id === value);
-  //   if (find) {
-  //     setQueryTypeList(find?.queryType || []);
-  //     formRef.current.setFieldsValue({
-  //       queryType: null,
-  //     });
-  //   }
-  // };
 
   const refreshData = () => {
     refreshFetchTicketList();
@@ -190,19 +193,25 @@ const EditTicketModal = (props) => {
   };
 
   const handleFinish = (value = {}) => {
-    console.log('🚀 ~ value', value);
     const documents = uploadedAttachments?.map((item) => {
-      const { id = '', url = '', name = '' } = item;
+      const {
+        id = '',
+        url = '',
+        name = '',
+        attachment = '',
+        attachmentName = '',
+        attachmentUrl = '',
+      } = item;
       return {
-        attachment: id,
-        attachmentName: name,
-        attachmentUrl: url,
+        attachment: id || attachment,
+        attachmentName: name || attachmentName,
+        attachmentUrl: url || attachmentUrl,
       };
     });
 
-    // const supportTeam = supportTeamList.find((val) => val._id === value.supportTeam).name;
     let queryType;
     supportTeamList.find((val) => {
+      // eslint-disable-next-line no-return-assign
       return (queryType = val.queryType.find((y) => y._id === value.queryType));
     });
 
@@ -214,24 +223,17 @@ const EditTicketModal = (props) => {
       };
     }, {});
     if (payload.queryTypeId) payload = { ...payload, queryType: queryType.name };
-    console.log('🚀 ~ diff', payload);
 
     dispatch({
       type: 'ticketManagement/updateTicket',
       payload: {
         id: ticket.id,
+        ccList: value.interestList || undefined,
         employeeRaise: ticket.employee_raise,
         employeeAssignee: ticket.employee_assignee || '',
         action: 'EDIT_TICKET',
         status: ticket.status,
-        //     oldEmployeeAssignee,
-        //     queryTypeId: value.queryType,
-        //     subject: value.subject,
-        //     description: value.description,
-        //     priority: value.priority,
-        //     ccList: value.interestList,
         attachments: documents || undefined,
-        //     queryType: queryType.name,
         employee: myEmployeeID,
         role,
         ...payload,
@@ -247,6 +249,11 @@ const EditTicketModal = (props) => {
     });
   };
 
+  const onValuesChange = (changedValues, allValues) => {
+    setIsEdit(true);
+    setUploadedAttachments(allValues.attachments?.fileList || []);
+  };
+
   const renderModalContent = () => {
     return (
       <div className={styles.EditTicketModal}>
@@ -256,6 +263,7 @@ const EditTicketModal = (props) => {
           ref={formRef}
           id="editTicketForm"
           onFinish={handleFinish}
+          onValuesChange={onValuesChange}
         >
           <Row gutter={[24, 0]}>
             <Col xs={24} md={12}>
@@ -269,7 +277,6 @@ const EditTicketModal = (props) => {
                   loading={loadingFetchSupportTeam}
                   disabled
                   showSearch
-                  // onChange={onSupportTeamChange}
                   placeholder="Select the support team"
                 >
                   {supportTeamList.map((val) => (
@@ -370,54 +377,55 @@ const EditTicketModal = (props) => {
                   showSearch
                   mode="multiple"
                   allowClear
-                  defaultValue={listCC}
+                  defautOptions={listCC}
                 />
               </Form.Item>
             </Col>
 
             <Col xs={24}>
-              <Upload
-                maxCount={2}
-                action={(file) => handleUpload(file)}
-                beforeUpload={(file) => beforeUpload(file, [FILE_TYPE.IMAGE, FILE_TYPE.PDF], 2)}
-                onRemove={(file) => handleRemove(file)}
-                openFileDialogOnClick={!(uploadedAttachments.length === 2)}
-                showUploadList={uploadedAttachments.length > 0}
-                listType="picture"
-                // multiple
-              >
-                {isEmpty(uploadedAttachments) ? (
-                  <>
-                    {loadingUploadAttachment ? (
-                      <Spin />
-                    ) : (
-                      <div className={styles.addAttachments}>
-                        <CustomAddButton
-                          onClick={(e) => e.preventDefault()}
-                          disabled={uploadedAttachments.length === 2}
-                        >
-                          Add attachments
-                        </CustomAddButton>
-                        <span className={styles.description}>
-                          (You can upload upto 2 documents of 2MB each)
-                        </span>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className={styles.addAttachments}>
-                    <CustomAddButton
-                      onClick={(e) => e.preventDefault()}
-                      disabled={uploadedAttachments.length === 2}
-                    >
-                      Add attachments
-                    </CustomAddButton>
-                    <span className={styles.description}>
-                      (You can upload upto 2 documents of 2MB each)
-                    </span>
-                  </div>
-                )}
-              </Upload>
+              <Form.Item name="attachments" labelCol={{ span: 24 }}>
+                <Upload
+                  maxCount={2}
+                  action={(file) => handleUpload(file)}
+                  beforeUpload={(file) => beforeUpload(file, [FILE_TYPE.IMAGE, FILE_TYPE.PDF], 2)}
+                  openFileDialogOnClick={!(uploadedAttachments.length === 2)}
+                  showUploadList={uploadedAttachments.length > 0}
+                  listType="picture"
+                  fileList={uploadedAttachments}
+                >
+                  {isEmpty(uploadedAttachments) ? (
+                    <>
+                      {loadingUploadAttachment ? (
+                        <Spin />
+                      ) : (
+                        <div className={styles.addAttachments}>
+                          <CustomAddButton
+                            onClick={(e) => e.preventDefault()}
+                            disabled={uploadedAttachments.length === 2}
+                          >
+                            Add attachments
+                          </CustomAddButton>
+                          <span className={styles.description}>
+                            (You can upload upto 2 documents of 2MB each)
+                          </span>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className={styles.addAttachments}>
+                      <CustomAddButton
+                        onClick={(e) => e.preventDefault()}
+                        disabled={uploadedAttachments.length === 2}
+                      >
+                        Add attachments
+                      </CustomAddButton>
+                      <span className={styles.description}>
+                        (You can upload upto 2 documents of 2MB each)
+                      </span>
+                    </div>
+                  )}
+                </Upload>
+              </Form.Item>
             </Col>
           </Row>
         </Form>
@@ -429,13 +437,14 @@ const EditTicketModal = (props) => {
     <CommonModal
       onClose={handleCancel}
       width={650}
-      loading={loadingUpdateTicket}
+      loading={loadingUpdateTicket || loadingUpload}
       hasCancelButton={false}
       content={renderModalContent()}
       visible={visible}
       firstText="Update"
       title={`Edit Ticket ${ticket.id}`}
       formName="editTicketForm"
+      disabledButton={!isEdit}
     />
   );
 };
@@ -454,5 +463,6 @@ export default connect(
     loadingFetchListEmployee: loading.effects['ticketManagement/fetchListEmployee'],
     loadingFetchSupportTeam: loading.effects['ticketManagement/fetchSupportTeamList'],
     loadingUpdateTicket: loading.effects['ticketManagement/updateTicket'],
+    loadingUpload: loading.effects['upload/addAttachment'],
   }),
 )(EditTicketModal);

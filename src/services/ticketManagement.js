@@ -129,9 +129,9 @@ export async function getLocationsOfCountries(params) {
   });
 }
 
-export async function getListEmployeeByIds(payload) {
-  return request('/api/employeetenant/list-ids', {
-    method: 'POST',
-    data: payload,
+export async function getListEmployeeByIds(params) {
+  return request('/api/employeetenant', {
+    method: 'GET',
+    params,
   });
 }

@@ -10,16 +10,17 @@ import PDFIcon from '@/assets/pdf_icon.png';
 import TrashIcon from '@/assets/ticketManagement-trashIcon.svg';
 import AttachmentIcon from '@/assets/ticketsManagement-attach.svg';
 import CustomBlueButton from '@/components/CustomBlueButton';
+import CustomEditButton from '@/components/CustomEditButton';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { PRIORITY_COLOR } from '@/constants/ticketManagement';
 import { FILE_TYPE } from '@/constants/upload';
-import { getEmployeeUrl } from '@/utils/utils';
 import { beforeUpload, compressImage, identifyFile } from '@/utils/upload';
+import { getEmployeeUrl } from '@/utils/utils';
 import AssignTeamModal from '../../AssignTeamModal';
-import styles from './index.less';
-import CustomEditButton from '@/components/CustomEditButton';
 import EditTicketModal from '../../EditTicketModal';
+import TicketUpdatedContent from '../TicketUpdatedContent';
+import styles from './index.less';
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
@@ -55,7 +56,7 @@ const TicketDetailsForm = (props) => {
   const [editVisible, setEditVisible] = React.useState(false);
 
   useEffect(() => {
-    setArrayChats(chats.reverse());
+    if (chats?.length) setArrayChats(chats.reverse());
   }, [chats]);
 
   const findRole = () => {
@@ -451,28 +452,9 @@ const TicketDetailsForm = (props) => {
                           <div className={styles.timeChat}>
                             {moment(item.createdAt).format('DD-MM-YYYY, hh:mm a')}
                           </div>
-                          {typeof item.message === 'object' &&
-                            item.message.map((x) => (
-                              <div className={styles.chatMessage}>
-                                {x.name === 'attachments' ? (
-                                  <>
-                                    <div className={styles.chatMessage__title}>{x.name}:</div>
-                                    {`${x.oldValue[0]?.attachmentName || ''} ⇾ `}
-                                    <span className={styles.chatMessage__changed}>
-                                      {x.newValue[0]?.attachmentName}
-                                    </span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <div className={styles.chatMessage__title}>{x.name}:</div>
-                                    {`${x.oldValue || ''} ⇾ `}
-                                    <span className={styles.chatMessage__changed}>
-                                      {x.newValue}
-                                    </span>
-                                  </>
-                                )}
-                              </div>
-                            ))}
+                          {typeof item.message === 'object' && (
+                            <TicketUpdatedContent message={item.message} />
+                          )}
                         </Timeline.Item>
                       );
                     })}
