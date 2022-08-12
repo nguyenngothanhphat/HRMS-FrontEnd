@@ -126,6 +126,7 @@ const FilterContent = (props) => {
         type: typeTemp,
         payload: {
           name: value,
+          status: ['ACTIVE'],
         },
       });
     }
@@ -226,7 +227,8 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by Department"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
           showArrow
         >
           {listDepartmentName.map((x) => {
@@ -247,7 +249,8 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by request type"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
           showArrow
         >
           {listTypes.map((x) => {

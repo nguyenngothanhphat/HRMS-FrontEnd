@@ -2,16 +2,16 @@ import { Col, Dropdown, Menu } from 'antd';
 import React from 'react';
 import LazyLoad from 'react-lazyload';
 import { connect } from 'umi';
-import EmployeeTag from '../EmployeeTag';
-import LikeComment from '../LikeComment';
-import PostContent from '../PostContent';
-import MenuIcon from '@/assets/offboarding/menuIcon.png';
-import styles from './index.less';
-import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
 import UpdateIcon from '@/assets/editMailExit.svg';
 import FlagIcon from '@/assets/homePage/flagIcon.svg';
 import HideIcon from '@/assets/homePage/hideIcon.svg';
+import MenuIcon from '@/assets/offboarding/menuIcon.png';
 import DeleteIcon from '@/assets/relievingDel.svg';
+import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
+import EmployeeTag from '../EmployeeTag';
+import LikeComment from '../LikeComment';
+import PostContent from '../PostContent';
+import styles from './index.less';
 
 function AnnouncementsCard(props) {
   const {
@@ -27,9 +27,6 @@ function AnnouncementsCard(props) {
     setIsDelete = () => {},
     setIsEdit = () => {},
     setIsVisible = () => {},
-  } = props;
-
-  const {
     user: {
       currentUser: { employee: { _id: employeeId = '' } = {} } = {},
       permissions: { viewSettingHomePage = -1 } = {},
@@ -125,7 +122,12 @@ function AnnouncementsCard(props) {
       <Col span={24}>
         <div className={styles.AnnouncementsCard}>
           <div className={styles.cardTitle}>
-            <EmployeeTag employee={item.createdBy} createDate={item.createdAt} />
+            <EmployeeTag
+              postAsCompany={item.postAsCompany}
+              company={item.company}
+              employee={item.createdBy}
+              createDate={item.createdAt}
+            />
             {isSocial && (
               <Dropdown
                 className={styles.menuIcon}
