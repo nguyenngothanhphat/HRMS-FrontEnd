@@ -111,7 +111,7 @@ const PollTable = (props) => {
         render: (pollDetail = {}) => {
           return (
             <span>
-              {pollDetail.startDate ? moment(pollDetail.startDate).utc(0).format(DATE_FORMAT_MDY) : ''}
+              {pollDetail.startDate ? moment(new Date(pollDetail.startDate)).utc(0).format(DATE_FORMAT_MDY) : ''}
             </span>
           );
         },
@@ -123,7 +123,7 @@ const PollTable = (props) => {
         render: (pollDetail = {}) => {
           return (
             <span>
-              {pollDetail.endDate ? moment(pollDetail.endDate).utc(0).format(DATE_FORMAT_MDY) : ''}
+              {pollDetail.endDate ? moment(new Date(pollDetail.endDate)).utc(0).format(DATE_FORMAT_MDY) : ''}
             </span>
           );
         },
@@ -139,7 +139,7 @@ const PollTable = (props) => {
         dataIndex: 'createdAt',
         key: 'createdAt',
         render: (createdAt = {}) => {
-          return <span>{createdAt ? moment(createdAt).utc(0).format(DATE_FORMAT_MDY) : ''}</span>;
+          return <span>{createdAt ? moment(new Date(createdAt)).utc(0).format(DATE_FORMAT_MDY) : ''}</span>;
         },
       },
       {

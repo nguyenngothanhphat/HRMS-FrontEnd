@@ -10,6 +10,7 @@ import { FILE_TYPE } from '@/constants/upload';
 import { beforeUpload, compressImage } from '@/utils/upload';
 import { getCurrentCompanyObj } from '@/utils/utils';
 import AnnouncementContent from './components/AnnouncementContent';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import BannerContent from './components/BannerContent';
 import BirthdayContent from './components/BirthdayContent';
 import ImagesContent from './components/ImagesContent';
@@ -164,8 +165,8 @@ const AddPost = (props) => {
                 response: record.pollDetail?.response3,
               },
             ],
-            startDateP: moment(record.pollDetail?.startDate).utc(0),
-            endDateP: moment(record.pollDetail?.endDate).utc(0),
+            startDateP: moment(new Date(record.pollDetail?.startDate)).utc(0),
+            endDateP: moment(new Date(record.pollDetail?.endDate)).utc(0),
           };
           break;
         default:
@@ -313,8 +314,8 @@ const AddPost = (props) => {
             response1: values.responsesP[0]?.response,
             response2: values.responsesP[1]?.response,
             response3: values.responsesP[2]?.response,
-            startDate: moment(values.startDateP).utc(0),
-            endDate: moment(values.endDateP).utc(0),
+            startDate: moment(new Date(values.startDateP)).format(DATE_FORMAT_YMD),
+            endDate: moment(new Date(values.endDateP)).format(DATE_FORMAT_YMD),
           },
           location: values.location,
         };
@@ -385,8 +386,8 @@ const AddPost = (props) => {
             response1: values.responsesP[0]?.response,
             response2: values.responsesP[1]?.response,
             response3: values.responsesP[2]?.response,
-            startDate: moment(values.startDateP).utc(0),
-            endDate: moment(values.endDateP).utc(0),
+            startDate: moment(new Date(values.startDateP)).format(DATE_FORMAT_YMD),
+            endDate: moment(new Date(values.endDateP)).format(DATE_FORMAT_YMD),
           },
         };
         break;

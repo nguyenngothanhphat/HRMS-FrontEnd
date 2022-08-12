@@ -2,30 +2,30 @@
 import { Col, DatePicker, Form, Input, Row } from 'antd';
 import moment from 'moment';
 import React from 'react';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const PollContent = (props) => {
   const { form } = props;
-  const dateFormat = 'YYYY-MM-DD'
   const disabledStartDate = (current) => {
     const endDate = form.getFieldValue('endDateP');
-    const currentDate = moment(current).format(dateFormat)
+    const currentDate = moment(current).format(DATE_FORMAT_YMD)
     if (endDate) {
       return (
-        moment(currentDate).isBefore(moment().format(dateFormat), 'day') ||
-        moment(currentDate).isAfter(moment(endDate).format(dateFormat), 'day')
+        moment(currentDate).isBefore(moment().format(DATE_FORMAT_YMD), 'day') ||
+        moment(currentDate).isAfter(moment(endDate).format(DATE_FORMAT_YMD), 'day')
       );
     }
-    return moment(currentDate).isBefore(moment().format(dateFormat), 'day');
+    return moment(currentDate).isBefore(moment().format(DATE_FORMAT_YMD), 'day');
   };
 
   const disabledEndDate = (current) => {
     const startDate = form.getFieldValue('startDateP');
-    const currentDate = moment(current).format(dateFormat)
+    const currentDate = moment(current).format(DATE_FORMAT_YMD)
     if (startDate) {
-      return moment(currentDate).isBefore(moment(startDate).format(dateFormat), 'day');
+      return moment(currentDate).isBefore(moment(startDate).format(DATE_FORMAT_YMD), 'day');
     }
-    return moment(currentDate).isBefore(moment().format(dateFormat), 'day');
+    return moment(currentDate).isBefore(moment().format(DATE_FORMAT_YMD), 'day');
   };
 
   return (
