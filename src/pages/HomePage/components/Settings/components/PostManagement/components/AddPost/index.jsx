@@ -282,15 +282,15 @@ const AddPost = (props) => {
     setFormValuesDebounce(newValues);
   };
 
-  const onPost = async (values, data = {}) => {
+  const onPost = async (values, attachmentList = []) => {
     let payload = {};
 
+    let attachments = [];
+    if ((attachmentList || []).length) {
+      attachments = (attachmentList || []).map((x) => x?._id);
+    }
     switch (mode) {
       case TAB_IDS.ANNOUNCEMENTS: {
-        let attachments = [];
-        if (Object.keys(data)?.length) {
-          attachments = data?.map((x) => x?._id);
-        }
         payload = {
           attachments,
           postType: TAB_IDS.ANNOUNCEMENTS,
@@ -302,10 +302,6 @@ const AddPost = (props) => {
         break;
       }
       case TAB_IDS.ANNIVERSARY: {
-        let attachments = [];
-        if (Object.keys(data)?.length) {
-          attachments = data?.map((x) => x?._id);
-        }
         payload = {
           attachments,
           postType: TAB_IDS.ANNIVERSARY,
@@ -316,10 +312,6 @@ const AddPost = (props) => {
         break;
       }
       case TAB_IDS.IMAGES: {
-        let attachments = [];
-        if (Object.keys(data)?.length) {
-          attachments = data?.map((x) => x?._id);
-        }
         payload = {
           attachments,
           postType: TAB_IDS.IMAGES,
@@ -331,10 +323,6 @@ const AddPost = (props) => {
         break;
       }
       case TAB_IDS.BANNER: {
-        let attachments = [];
-        if (Object.keys(data)?.length) {
-          attachments = data?.map((x) => x?._id);
-        }
         payload = {
           attachments,
           postType: TAB_IDS.BANNER,
@@ -373,26 +361,32 @@ const AddPost = (props) => {
     }
   };
 
-  const onEdit = async (values, data = {}) => {
+  const onEdit = async (values, attachmentList = []) => {
     let payload = {};
+    let newAttachments = [];
+    let oldAttachments = [];
+    const getListIdAttachments = (uploadFile) => {
+      return (uploadFile?.fileList || []).map((x) => x._id);
+    };
+
+    if ((attachmentList || []).length) {
+      newAttachments = attachmentList?.map((x) => x?._id);
+    }
 
     switch (mode) {
       case TAB_IDS.ANNOUNCEMENTS: {
         payload = {
-          attachments: values.uploadFilesA?.fileList?.map((x) => x._id) || [],
+          attachments: getListIdAttachments(values.uploadFilesA) || [],
           postType: TAB_IDS.ANNOUNCEMENTS,
           description: values.descriptionA,
           location: values.location,
           postAsCompany: values.postAsCompany,
         };
-        if (Object.keys(data)?.length) {
-          const newAttachments = data?.map((x) => x?._id);
-          if (data[0]?.category === CATEGORY_NAME.URL) {
+        if ((attachmentList || []).length) {
+          if (attachmentList[0]?.category === CATEGORY_NAME.URL) {
             payload.attachments = [...newAttachments];
           } else {
-            const oldAttachments = values.uploadFilesA?.fileList
-              ?.filter((x) => x.category !== CATEGORY_NAME.URL)
-              ?.map((x) => x._id);
+            oldAttachments = getListIdAttachments(values.uploadFilesA);
             payload.attachments = [...newAttachments, ...oldAttachments];
           }
         }
@@ -400,43 +394,41 @@ const AddPost = (props) => {
       }
       case TAB_IDS.ANNIVERSARY: {
         payload = {
-          attachments: values.uploadFilesB?.fileList?.map((x) => x._id) || [],
+          attachments: getListIdAttachments(values.uploadFilesB) || [],
           postType: TAB_IDS.ANNIVERSARY,
           description: values.descriptionB,
           location: values.location,
         };
-        if (Object.keys(data)?.length) {
-          const newAttachments = data?.map((x) => x?._id);
-          const oldAttachments = values.uploadFilesB?.fileList?.map((x) => x._id);
+        if ((attachmentList || []).length) {
+          oldAttachments = getListIdAttachments(values.uploadFilesB);
           payload.attachments = [...newAttachments, ...oldAttachments];
         }
         break;
       }
       case TAB_IDS.IMAGES: {
         payload = {
-          attachments: values.uploadFilesI?.fileList?.map((x) => x._id) || [],
+          attachments: getListIdAttachments(values.uploadFilesI) || [],
           postType: TAB_IDS.IMAGES,
           title: values.titleI,
           description: values.descriptionI,
           location: values.location,
         };
-        if (Object.keys(data)?.length) {
-          const newAttachments = data?.map((x) => x?._id);
-          const oldAttachments = values.uploadFilesI?.fileList?.map((x) => x._id);
+        if ((attachmentList || []).length) {
+          oldAttachments = getListIdAttachments(values.uploadFilesI);
           payload.attachments = [...newAttachments, ...oldAttachments];
         }
         break;
       }
       case TAB_IDS.BANNER: {
         payload = {
-          attachments: values.uploadFilesBN?.fileList?.map((x) => x._id) || [],
+          attachments: getListIdAttachments(values.uploadFilesBN) || [],
           postType: TAB_IDS.BANNER,
         };
-        if (Object.keys(data)?.length) {
-          const newAttachments = data?.map((x) => x?._id);
-          const oldAttachments = values.uploadFilesBN?.fileList?.map((x) => x._id);
+        if ((attachmentList || []).length) {
+          oldAttachments = getListIdAttachments(values.uploadFilesBN);
           payload.attachments = [...newAttachments, ...oldAttachments];
         }
+
         break;
       }
       case TAB_IDS.POLL:
@@ -471,7 +463,7 @@ const AddPost = (props) => {
     }
   };
 
-  const onUploadFiles = async (values) => {
+  const onFinish = async (values) => {
     const data = [];
     const newList = [];
     setIsUploadFile(true);
@@ -503,11 +495,8 @@ const AddPost = (props) => {
         },
         showNotification: false,
       }).then((resp) => {
-        const { statusCode, data: listAttachments = {} } = resp;
+        const { statusCode, data: listAttachments = [] } = resp;
         if (statusCode === 200) {
-          if (listAttachments[0]?.defaultMessage) {
-            setIsUploadFile(false);
-          }
           if (!editing) {
             onPost(values, listAttachments);
           } else {
@@ -566,7 +555,7 @@ const AddPost = (props) => {
             createBy: employee?.generalInfo?.legalName,
             postAsCompany: false,
           }}
-          onFinish={onUploadFiles}
+          onFinish={onFinish}
         >
           <Form.Item label="Post Type" name="postType">
             <Select disabled showArrow style={{ width: '100%' }} onChange={onModeChange}>
