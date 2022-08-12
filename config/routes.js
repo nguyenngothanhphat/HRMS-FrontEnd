@@ -826,11 +826,12 @@ const routes = [
             redirect: '/customer-management/list',
             name: 'customer-management',
             icon: '/assets/images/menuIcons/customer.svg',
+            authority: ['P_CUSTOMER_MANAGEMENT_VIEW','M_CUSTOMER_MANAGEMENT_VIEW', OWNER],
           },
           {
             path: '/customer-management/:tabName',
             component: './CustomerManagement',
-            authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
+            authority: ['P_CUSTOMER_MANAGEMENT_VIEW','M_CUSTOMER_MANAGEMENT_VIEW', OWNER],
           },
           {
             path: '/customer-management/list/customer-profile/:reId',
@@ -841,7 +842,7 @@ const routes = [
             name: 'view-customer',
             hideInMenu: true,
             component: './CustomerProfile',
-            authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
+            authority: ['P_CUSTOMER_MANAGEMENT_VIEW','M_CUSTOMER_MANAGEMENT_VIEW', OWNER],
           },
 
           // PROJECTS MANAGEMENT
@@ -910,25 +911,35 @@ const routes = [
             path: '/faq',
             name: 'faqs',
             hideInMenu: true,
-            component: './FAQs',
+            component: './HelpPage',
           },
           {
             path: '/help-center',
-            name: 'HRMS Help Center',
+            name: 'hrms-help-center',
             hideInMenu: true,
-            component: './FAQs',
+            component: './HelpPage',
           },
           {
             path: '/faq/settings',
             name: 'settings',
             hideInMenu: true,
-            component: './FAQs/components/SettingFAQ',
+            component: './HelpPage/components/Settings',
+          },
+          {
+            path: '/faq/settings/:tabName',
+            hideInMenu: true,
+            component: './HelpPage/components/Settings',
           },
           {
             path: '/help-center/settings',
             name: 'settings',
             hideInMenu: true,
-            component: './FAQs/components/SettingFAQ',
+            component: './HelpPage/components/Settings',
+          },
+          {
+            path: '/help-center/settings/:tabName',
+            hideInMenu: true,
+            component: './HelpPage/components/Settings',
           },
           {
             path: '/policies-regulations',

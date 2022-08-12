@@ -24,6 +24,7 @@
     "camelize",
     "choosable",
     "Compoff",
+    "hashtagify",
     "Joinees",
     "preffered",
     "Req",
@@ -35,6 +36,7 @@
     "timesheet",
     "Timesheets",
     "Unmount",
-    "Upsert"
+    "Upsert",
+    "urlify"
   ]
 }

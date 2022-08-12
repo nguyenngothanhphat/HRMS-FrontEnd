@@ -78,15 +78,15 @@ const AddPostContent = (props) => {
     }
   }, [isEdit]);
 
-  const onAddNew = async (values, data = {}) => {
+  const onAddNew = async (values, attachmentsList = []) => {
     const payload = {
       postType: POST_TYPE.SOCIAL,
       description: values.description,
       createdBy: employee?._id,
     };
 
-    if (Object.keys(data)?.length) {
-      payload.attachments = data?.map((x) => x?._id);
+    if ((attachmentsList || []).length) {
+      payload.attachments = attachmentsList.map((x) => x._id);
     }
 
     dispatch({
@@ -98,11 +98,13 @@ const AddPostContent = (props) => {
         setIsUploadFile(false);
         setIsVisible(false);
         fetchData(POST_TYPE.SOCIAL, limit, '', STATUS_POST.ACTIVE);
+      } else {
+        setIsUploadFile(false);
       }
     });
   };
 
-  const onEditPost = async (values, data = {}) => {
+  const onEditPost = async (values, attachmentsList = []) => {
     const payload = {
       id: record?._id,
       postType: POST_TYPE.SOCIAL,
@@ -110,14 +112,12 @@ const AddPostContent = (props) => {
       attachments: values.uploadFiles?.fileList?.map((x) => x._id) || [],
     };
 
-    if (Object.keys(data)?.length) {
-      const newAttachments = data?.map((x) => x?._id);
-      if (data[0]?.category === CATEGORY_NAME.URL) {
+    if ((attachmentsList || []).length) {
+      const newAttachments = attachmentsList.map((x) => x._id);
+      if (attachmentsList[0]?.category === CATEGORY_NAME.URL) {
         payload.attachments = [...newAttachments];
       } else {
-        const oldAttachments = values.uploadFiles?.fileList
-          ?.filter((x) => x.category !== CATEGORY_NAME.URL)
-          ?.map((x) => x._id);
+        const oldAttachments = values.uploadFiles?.fileList.map((x) => x._id);
         payload.attachments = [...newAttachments, ...oldAttachments];
       }
     }
@@ -132,11 +132,13 @@ const AddPostContent = (props) => {
         setIsUploadFile(false);
         setIsVisible(false);
         fetchData(POST_TYPE.SOCIAL, limit, '', STATUS_POST.ACTIVE);
+      } else {
+        setIsUploadFile(false);
       }
     });
   };
 
-  const onUploadFiles = async (values) => {
+  const onFinish = async (values) => {
     const data = [];
     const newList = [];
     setIsUploadFile(true);
@@ -170,14 +172,13 @@ const AddPostContent = (props) => {
       }).then((resp) => {
         const { statusCode, data: listAttachments = {} } = resp;
         if (statusCode === 200) {
-          if (listAttachments[0]?.defaultMessage) {
-            setIsUploadFile(false);
-          }
           if (!isEdit) {
             onAddNew(values, listAttachments);
           } else {
             onEditPost(values, listAttachments);
           }
+        } else {
+          setIsUploadFile(false);
         }
       });
     } else if (isEdit) {
@@ -244,7 +245,7 @@ const AddPostContent = (props) => {
         id="myForm"
         className={styles.form}
         onValuesChange={onValuesChange}
-        onFinish={onUploadFiles}
+        onFinish={onFinish}
       >
         <Form.Item
           label="Description"

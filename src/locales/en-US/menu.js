@@ -140,4 +140,5 @@ export default {
   'menu.upload-document': 'Add Document',
   'menu.create-template': 'Create New Template',
   'menu.faqs': 'FAQs',
+  'menu.hrms-help-center': 'HRMS Help Center',
 };

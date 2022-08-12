@@ -73,26 +73,30 @@ class ViewRequestForm extends PureComponent {
               </div>
             </div>
           </Affix>
-          <Row className={styles.container} gutter={[20, 20]}>
+          <Row className={styles.container} gutter={[24, 24]}>
             <Col xs={24} lg={16}>
               <Spin spinning={loadingFetchLeaveRequestById}>
                 <RequestInformation />
               </Spin>
             </Col>
             <Col xs={24} lg={8}>
-              {!loadingFetchLeaveRequestById && (
-                <>
-                  {!isEmpty(history) ? (
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  {!loadingFetchLeaveRequestById && (
                     <>
-                      <RequestHistory data={viewingLeaveRequest} status={status} />
-                    </>
-                  ) : (
-                    <>
-                      <RightContent data={viewingLeaveRequest} status={status} />
+                      {!isEmpty(history) ? (
+                        <>
+                          <RequestHistory data={viewingLeaveRequest} status={status} />
+                        </>
+                      ) : (
+                        <>
+                          <RightContent data={viewingLeaveRequest} status={status} />
+                        </>
+                      )}
                     </>
                   )}
-                </>
-              )}
+                </Col>
+              </Row>
             </Col>
           </Row>
         </div>

@@ -20,7 +20,6 @@ import templateDetails from './en-US/templateDetails';
 import offBoarding from './en-US/offBoarding';
 import onBoardingCustomFields from './en-US/onBoardingCustomFields';
 import changePassword from './en-US/changePassword';
-import frequentlyAskedQuestions from './en-US/frequentlyAskedQuestions';
 // admin pages
 import usersManagementPage from './en-US/usersManagementPage';
 import documentsManagementPage from './en-US/documentsManagementPage';
@@ -59,7 +58,6 @@ export default {
   ...templateDetails,
   ...offBoarding,
   ...changePassword,
-  ...frequentlyAskedQuestions,
   // admin pages
   ...usersManagementPage,
   ...documentsManagementPage,

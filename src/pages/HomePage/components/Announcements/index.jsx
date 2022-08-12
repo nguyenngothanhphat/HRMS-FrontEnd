@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row, Skeleton, Spin } from 'antd';
+import { Button, Col, Row, Skeleton, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import ErrorFile from '@/assets/adminSetting/errorFile.svg';
@@ -7,8 +7,8 @@ import ShowMoreIcon from '@/assets/homePage/downArrow.svg';
 
 import CommonModal from '@/components/CommonModal';
 import EmptyComponent from '@/components/Empty';
-import { getCurrentLocation } from '@/utils/authority';
 import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
+import { getCurrentLocation } from '@/utils/authority';
 import { getCompanyName } from '@/utils/utils';
 import AddPostContent from './components/AddPostContent';
 import AnnouncementsCard from './components/AnnouncementsCard';
@@ -168,23 +168,25 @@ const Announcements = (props) => {
         <div className={styles.head}>
           <p className={styles.text}>Announcements</p>
           <div style={{ position: 'relative' }} className={styles.button}>
-            <Button
-              className={!isSocial ? styles.buttonTabs : ''}
-              disabled={!isSocial}
+            <button
+              className={`${styles.spanTabs} ${!isSocial && styles.buttonTabs}`}
               onClick={handleCompanyClick}
+              disabled={!isSocial}
+              type="button"
             >
               {getCompanyName()}
-            </Button>
-            <Button
+            </button>
+            <button
               style={{
                 marginLeft: 5,
               }}
-              className={isSocial ? styles.buttonTabs : ''}
+              className={`${styles.spanTabs} ${isSocial && styles.buttonTabs}`}
               onClick={handleSocialClick}
               disabled={isSocial}
+              type="button"
             >
               Social
-            </Button>
+            </button>
             <div
               className={
                 !isSocial
