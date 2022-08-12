@@ -417,25 +417,39 @@ const TableTickets = (props) => {
           );
         }
         return (
-          <Popover
-            trigger="click"
-            overlayClassName={styles.dropdownPopover}
-            content={renderMenuDropdown()}
-            placement="bottomRight"
-          >
-            <div
-              onClick={() => handleClickSelect(row.id)}
-              style={{
-                width: 'fit-content',
-                cursor: 'pointer',
-                color: '#2c6df9',
-                fontWeight: 500,
-              }}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
+            <Popover
+              trigger="click"
+              overlayClassName={styles.dropdownPopover}
+              content={renderMenuDropdown()}
+              placement="bottomRight"
             >
-              Select User &emsp;
-              <img src={ArrowDownIcon} alt="" />
-            </div>
-          </Popover>
+              <div
+                onClick={() => handleClickSelect(row.id)}
+                style={{
+                  width: 'fit-content',
+                  cursor: 'pointer',
+                  color: '#2c6df9',
+                  fontWeight: 500,
+                }}
+              >
+                Select User &emsp;
+                <img src={ArrowDownIcon} alt="" />
+              </div>
+            </Popover>
+            <Tooltip title="Edit">
+              <img
+                width={32}
+                height={32}
+                src={EditTicketIcon}
+                alt="edit ticket icon"
+                style={{
+                  cursor: 'pointer',
+                }}
+                onClick={() => handleEditTicket(row.id)}
+              />
+            </Tooltip>
+          </div>
         );
       },
       sorter: (a, b) => {
