@@ -3,11 +3,12 @@ import Parser from 'html-react-parser';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
+import { VideoCameraAddOutlined } from '@ant-design/icons';
 import EditIcon from '@/assets/homePage/editIcon.svg';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { hashtagify, urlify } from '@/utils/homePage';
-import { goToTop } from '@/utils/utils';
+import { checkTypeURL, goToTop } from '@/utils/utils';
 import CommonTable from '../CommonTable';
 import styles from './index.less';
 
@@ -94,16 +95,23 @@ const AnnouncementTable = (props) => {
         key: 'attachments',
         width: '10%',
         render: (attachments = []) => {
+          if (checkTypeURL(attachments)) {
+            return (
+              <div className={styles.media}>
+                <Image.PreviewGroup>
+                  {attachments.slice(0, 3).map((x) => {
+                    return <Image width={32} height={32} src={x.url} key={x._id || x.id} />;
+                  })}
+                </Image.PreviewGroup>
+                {attachments.length > 3 && (
+                  <span style={{ fontWeight: 500 }}>+{attachments.length - 3} more</span>
+                )}
+              </div>
+            );
+          }
           return (
-            <div className={styles.media}>
-              <Image.PreviewGroup>
-                {attachments.slice(0, 3).map((x) => {
-                  return <Image width={32} height={32} src={x.url} key={x._id || x.id} />;
-                })}
-              </Image.PreviewGroup>
-              {attachments.length > 3 && (
-                <span style={{ fontWeight: 500 }}>+{attachments.length - 3} more</span>
-              )}
+            <div className={styles.iconVideo}>
+              <VideoCameraAddOutlined />
             </div>
           );
         },
