@@ -1,0 +1,51 @@
+.SettingFAQ {
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    background: #ffffff;
+    border-bottom: 1px solid #eeeeee;
+    // box-shadow: 0px 1px 2px #eeeeee;
+    padding-inline: 24px;
+    &__left {
+      color: #161c29;
+      font-weight: 500;
+      font-size: 18px;
+
+      font-style: normal;
+      line-height: 21px;
+    }
+    &__location {
+      :global {
+        .ant-select .ant-select-arrow {
+          color: @primary-color;
+          transition: transform 0.2s ease-in;
+        }
+        .ant-select-open .ant-select-arrow {
+          color: @primary-color;
+          transform: rotate(180deg);
+        }
+      }
+      .selectCountry {
+        width: 200px;
+      }
+      .optionCountry {
+        display: flex;
+        height: 20px;
+      }
+      .labelText {
+        display: flex;
+        align-items: center;
+        span {
+          font-weight: 500;
+          font-size: 12px;
+        }
+        .nameCountry {
+          font-weight: 500;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}

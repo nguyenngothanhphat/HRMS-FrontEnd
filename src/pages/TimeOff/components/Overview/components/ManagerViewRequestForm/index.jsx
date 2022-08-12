@@ -71,27 +71,35 @@ const ManagerViewRequestForm = (props) => {
           </div>
         </Affix>
 
-        <Row className={styles.container} gutter={[20, 20]}>
+        <Row className={styles.container} gutter={[24, 24]}>
           <Col xs={24} lg={16}>
             <Spin spinning={loadingFetchLeaveRequestById}>
               <RequestInformation employeeId={employeeId} reId={id} />
             </Spin>
           </Col>
           <Col xs={24} lg={8}>
-            {!loadingFetchLeaveRequestById && (
-              <>
-                {!isEmpty(history) ? (
+            <Row gutter={[24, 24]}>
+              <Col span={24}>
+                {!loadingFetchLeaveRequestById && (
                   <>
-                    <RequestHistory data={viewingLeaveRequest} status={status} />
-                  </>
-                ) : (
-                  <>
-                    <RightContent data={viewingLeaveRequest} status={status} />
+                    {!isEmpty(history) ? (
+                      <>
+                        <RequestHistory data={viewingLeaveRequest} status={status} />
+                      </>
+                    ) : (
+                      <>
+                        <RightContent data={viewingLeaveRequest} status={status} />
+                      </>
+                    )}
                   </>
                 )}
-              </>
-            )}
-            {!isEmpty(viewingLeaveRequest) && <TimeOffHistory data={viewingLeaveRequest} />}
+              </Col>
+              {!isEmpty(viewingLeaveRequest) && (
+                <Col span={24}>
+                  <TimeOffHistory data={viewingLeaveRequest} />
+                </Col>
+              )}
+            </Row>
           </Col>
         </Row>
       </div>
