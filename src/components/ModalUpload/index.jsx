@@ -69,7 +69,7 @@ class ModalUpload extends Component {
     if (!isLt2M) {
       message.error('Image must smaller than 5MB!');
     }
-    return  isLt2M;
+    return isJpgOrPng && isLt2M;
   };
 
   onChange = (info) => {
