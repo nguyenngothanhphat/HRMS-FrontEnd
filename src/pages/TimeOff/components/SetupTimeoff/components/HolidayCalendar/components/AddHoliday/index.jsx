@@ -11,14 +11,9 @@ import styles from './index.less';
 
 @connect(
   ({
-    user: {
-      currentUser: {
-        location: { _id: idLocation = '', headQuarterAddress = {}, company = '' } = {},
-      } = {},
-    } = {},
+    user: { currentUser: { location: { _id: idLocation = '', company = '' } = {} } = {} } = {},
   }) => ({
     idLocation,
-    headQuarterAddress,
     company,
   }),
 )

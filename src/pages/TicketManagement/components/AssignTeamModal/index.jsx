@@ -14,7 +14,7 @@ const AssignTeamModal = (props) => {
     currentUser: {
       employee: {
         _id: employeeId = '',
-        location: { headQuarterAddress: { country = '' } = {} } = {},
+        location: { headQuarterAddress: { country = {} } = {} } = {},
       } = {} || {},
     } = {} || {},
     listEmployee = [],
@@ -37,7 +37,7 @@ const AssignTeamModal = (props) => {
         type: 'ticketManagement/fetchSupportTeamList',
         payload: {
           permissions,
-          country,
+          country: country?._id,
         },
       });
       dispatch({

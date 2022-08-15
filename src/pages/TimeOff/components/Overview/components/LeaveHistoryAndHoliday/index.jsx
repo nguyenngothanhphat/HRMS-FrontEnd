@@ -40,7 +40,7 @@ const LeaveHistoryAndHoliday = (props) => {
       type: 'timeOff/fetchHolidaysListByLocation',
       payload: {
         location: getCurrentLocation(),
-        country: location.headQuarterAddress.country._id,
+        country: location.headQuarterAddress?.country?._id,
         company: getCurrentCompany(),
       },
     });

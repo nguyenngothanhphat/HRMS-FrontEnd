@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Form, notification, Skeleton } from 'antd';
+import { Button, Form, notification, Skeleton, Spin } from 'antd';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
@@ -59,7 +59,7 @@ const WorkLocations = (props) => {
           addressLine1,
           addressLine2,
           city,
-          country: country || country?._id || '',
+          country,
           state,
           zipCode,
         },
@@ -67,7 +67,7 @@ const WorkLocations = (props) => {
           addressLine1,
           addressLine2,
           city,
-          country: country || country?._id || '',
+          country,
           state,
           zipCode,
         },
@@ -88,6 +88,7 @@ const WorkLocations = (props) => {
     });
     const { statusCode } = res;
     if (statusCode === 200) {
+      form.resetFields();
       notification.success({
         message: 'Add new locations successfully.',
       });
@@ -177,26 +178,6 @@ const WorkLocations = (props) => {
 
   const listLocation = formatListLocation();
 
-  if (fetchingLocationsList || loadingCountry)
-    return (
-      <div className={s.WorkLocations}>
-        <div className={s.root}>
-          <div className={s.content__viewTop}>
-            <p className={s.title}>Work Locations</p>
-            <p className={s.text}>
-              This information is used to assign the employees to the right office. We will also
-              enable you to assign office specific administrators, filter employees per work
-              location, view Business Intelligence reports, and more. You do not need to add the
-              address of your remote employees here.
-            </p>
-          </div>
-          <div className={s.content__viewBottom}>
-            <Skeleton active />
-          </div>
-        </div>
-      </div>
-    );
-
   const formatCurrentLocationsList = formatCurrentLocationList(locationsList);
 
   return (
@@ -212,21 +193,23 @@ const WorkLocations = (props) => {
           </p>
         </div>
         <div className={s.content__viewBottom}>
-          {formatCurrentLocationsList.map((location, index) => {
-            return (
-              <LocationContent
-                isRequired={false}
-                defaultCountry={location?.country}
-                listCountry={listCountry}
-                listLocation={listLocation}
-                locationInfo={location}
-                trackingEditButton={trackingEditButton}
-                removeLocation={removeLocation}
-                listLength={formatCurrentLocationsList.length}
-                index={index}
-              />
-            );
-          })}
+          <Spin spinning={fetchingLocationsList || loadingCountry}>
+            {formatCurrentLocationsList.map((location, index) => {
+              return (
+                <LocationContent
+                  isRequired={false}
+                  defaultCountry={location?.country}
+                  listCountry={listCountry}
+                  listLocation={listLocation}
+                  locationInfo={location}
+                  trackingEditButton={trackingEditButton}
+                  removeLocation={removeLocation}
+                  listLength={formatCurrentLocationsList.length}
+                  index={index}
+                />
+              );
+            })}
+          </Spin>
         </div>
       </div>
 

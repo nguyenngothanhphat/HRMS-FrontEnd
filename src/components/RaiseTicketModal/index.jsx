@@ -25,7 +25,7 @@ const RaiseTicketModal = (props) => {
     currentUser: {
       employee: {
         _id: myEmployeeID = '',
-        location: { headQuarterAddress: { country = '' } = {} } = {},
+        location: { headQuarterAddress: { country = {} } = {} } = {},
       } = {} || {},
     } = {} || {},
     loadingFetchSupportTeam = false,
@@ -51,7 +51,7 @@ const RaiseTicketModal = (props) => {
         type: 'ticketManagement/fetchSupportTeamList',
         payload: {
           permissions,
-          country,
+          country: country?._id,
         },
       });
     }
