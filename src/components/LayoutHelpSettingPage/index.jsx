@@ -1,68 +1,67 @@
 import { Col, Row, Skeleton } from 'antd';
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
+import { HELP_TYPE } from '@/constants/helpPage';
 import ItemMenu from './components/ItemMenu';
 import s from './index.less';
 
-@connect(() => ({}))
-class LayoutHelpSettingPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedItemId: '',
-      displayComponent: '',
-    };
-  }
+const LayoutHelpSettingPage = (props) => {
+  const { dispatch, loading = false, listMenu = [], reId = '', baseUrl = '' } = props;
+  const { pathname } = window.location;
 
-  componentDidMount() {
-    this.fetchTab();
-  }
+  const [selectedItemId, setSelectedItemId] = useState('');
+  const [displayComponent, setDisplayComponent] = useState('');
+  // this state to prevent use effect fetch list call multiple times
+  const [isSavingHelpType, setIsSavingHelpType] = useState(true);
 
-  componentDidUpdate(prevProps) {
-    const { reId = '' } = this.props;
-    if (prevProps.reId !== reId) {
-      this.fetchTab();
-    }
-  }
-
-  fetchTab = () => {
-    const { listMenu = [], reId = '' } = this.props;
+  const fetchTab = () => {
     const findTab = listMenu.find((menu) => menu.link === reId) || listMenu[0];
-    this.setState({
-      selectedItemId: findTab.id || 1,
-      displayComponent: findTab.component,
-    });
+    setSelectedItemId(findTab.id || 1);
+    setDisplayComponent(findTab.component);
   };
 
-  _handleClick = (item) => {
-    const { baseUrl = '' } = this.props;
+  useEffect(() => {
+    let helpTypeTemp = HELP_TYPE.FAQ;
+    if (pathname.includes('help-center')) {
+      helpTypeTemp = HELP_TYPE.HRMS_HELP_CENTER;
+    }
+    dispatch({
+      type: 'helpPage/save',
+      payload: {
+        helpType: helpTypeTemp,
+      },
+    });
+    setIsSavingHelpType(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    fetchTab();
+  }, [reId]);
+
+  const _handleClick = (item) => {
     history.push(`${baseUrl}/${item.link}`);
   };
 
-  render() {
-    const { listMenu = [], loading = false } = this.props;
-    const { displayComponent, selectedItemId } = this.state;
+  if (isSavingHelpType) return '';
+  return (
+    <Row className={s.LayoutHelpSettingPage}>
+      <Col xs={24} md={6} xl={4} className={s.viewLeft}>
+        <div className={s.viewLeft__menu}>
+          {listMenu.map((item) => (
+            <ItemMenu
+              key={item.id}
+              item={item}
+              handleClick={_handleClick}
+              selectedItemId={selectedItemId}
+            />
+          ))}
+        </div>
+      </Col>
+      <Col xs={24} md={18} xl={20} className={s.viewRight}>
+        {loading ? <Skeleton /> : displayComponent}
+      </Col>
+    </Row>
+  );
+};
 
-    return (
-      <Row className={s.LayoutHelpSettingPage}>
-        <Col xs={24} md={6} xl={4} className={s.viewLeft}>
-          <div className={s.viewLeft__menu}>
-            {listMenu.map((item) => (
-              <ItemMenu
-                key={item.id}
-                item={item}
-                handleClick={this._handleClick}
-                selectedItemId={selectedItemId}
-              />
-            ))}
-          </div>
-        </Col>
-        <Col xs={24} md={18} xl={20} className={s.viewRight}>
-          {loading ? <Skeleton /> : displayComponent}
-        </Col>
-      </Row>
-    );
-  }
-}
-
-export default LayoutHelpSettingPage;
+export default connect(() => ({}))(LayoutHelpSettingPage);

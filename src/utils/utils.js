@@ -211,13 +211,13 @@ export const getEmployeeUrl = (userId) => {
   return `/directory/employee-profile/${userId}`;
 };
 
-export const checkTypeURL = (attachments) => {
-  if (
-    attachments[0]?.category === UPLOAD.CATEGORY_NAME.URL &&
-    attachments[0]?.type?.split('/')[0] === 'video'
-  ) {
-    return false;
-  }
-  return true;
-};
 export const debounceFetchData = debounce((callback) => callback(), 500);
+
+export const getYoutubeIdFromUrl = (url = '') => {
+  let videoId = url.split('v=')[1];
+  const ampersandPosition = videoId.indexOf('&');
+  if (ampersandPosition !== -1) {
+    videoId = videoId.substring(0, ampersandPosition);
+  }
+  return videoId;
+};
