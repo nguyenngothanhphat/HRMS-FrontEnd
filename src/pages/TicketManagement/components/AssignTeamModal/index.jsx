@@ -11,12 +11,7 @@ const AssignTeamModal = (props) => {
     visible = false,
     onClose = () => {},
     loadingAssign = false,
-    currentUser: {
-      employee: {
-        _id: employeeId = '',
-        location: { headQuarterAddress: { country = '' } = {} } = {},
-      } = {} || {},
-    } = {} || {},
+    currentUser: { employee: { _id: employeeId = '' } = {} || {} } = {} || {},
     listEmployee = [],
     supportTeamList = [],
     loadingFetchListEmployee = false,
@@ -32,12 +27,18 @@ const AssignTeamModal = (props) => {
 
   useEffect(() => {
     if (visible) {
+      const tempData = Object.keys(ticket).length ? ticket : ticketDetail;
+      const {
+        employeeRaise: {
+          location: { headQuarterAddress: { country: { _id: countryId = '' } = {} } = {} } = {},
+        } = {},
+      } = tempData;
       const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
       dispatch({
         type: 'ticketManagement/fetchSupportTeamList',
         payload: {
           permissions,
-          country,
+          country: countryId,
         },
       });
       dispatch({
