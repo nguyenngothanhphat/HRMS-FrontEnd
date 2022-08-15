@@ -7,10 +7,10 @@ import styles from './index.less';
 
 const ModalAddBank = (props) => {
   const [form] = Form.useForm();
-  const { bankData, locationEmpl: { headQuarterAddress: { country = '' } = {} } = {} } = props;
-  const checkIndiaLocation = country === 'IN';
-  const checkVietNamLocation = country === 'VN';
-  const checkUSALocation = country === 'US';
+  const { bankData, locationEmpl: { headQuarterAddress: { country = {} } = {} } = {} } = props;
+  const checkIndiaLocation = country?._id === 'IN';
+  const checkVietNamLocation = country?._id === 'VN';
+  const checkUSALocation = country?._id === 'US';
 
   const { onClose = () => {}, visible } = props;
 

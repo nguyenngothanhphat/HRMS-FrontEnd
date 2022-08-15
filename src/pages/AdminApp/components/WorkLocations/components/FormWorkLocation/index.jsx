@@ -29,17 +29,17 @@ class FormWorkLocation extends Component {
   }
 
   onChangeCountry = (country) => {
-    const { formRef = {}, field: { name = 0 } = {} } = this.props;
+    const { form = {}, field: { name = 0 } = {} } = this.props;
     this.setState({
       country,
     });
-    const workLocations = formRef.current.getFieldValue('workLocations');
+    const workLocations = form?.getFieldValue('workLocations');
     const cloneWorkLocations = [...workLocations];
     const check = cloneWorkLocations[name];
     if (check) {
       cloneWorkLocations[name].state = undefined;
     }
-    formRef.current.setFieldsValue({
+    form?.setFieldsValue({
       workLocations: cloneWorkLocations,
     });
   };

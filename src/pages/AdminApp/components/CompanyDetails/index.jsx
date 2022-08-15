@@ -55,6 +55,7 @@ class CompanyDetails extends Component {
       headQuarterAddress: { country: countryHeadquarter } = {},
       legalAddress: { country: countryLegal } = {},
     } = companyDetails;
+
     this.setState({
       countryHeadquarter,
       countryLegal,

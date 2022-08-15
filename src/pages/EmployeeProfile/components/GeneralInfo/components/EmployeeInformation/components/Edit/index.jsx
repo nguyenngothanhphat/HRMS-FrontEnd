@@ -141,12 +141,12 @@ class Edit extends PureComponent {
   };
 
   handleSave = () => {
-    const { dispatch, locationProp: { headQuarterAddress: { country = '' } = {} } = {} } =
+    const { dispatch, locationProp: { headQuarterAddress: { country = {} } = {} } = {} } =
       this.props;
     const payload = this.processDataChanges() || {};
     // const tenantId = localStorage.getItem('tenantId');
     const dataTempKept = this.processDataKept() || {};
-    if (country === 'IN') {
+    if (country?._id === 'IN') {
       this.handleUpLoadAdhaarCard();
     }
     dispatch({
@@ -294,7 +294,7 @@ class Edit extends PureComponent {
       loadingAdhaarCard,
       // taxData = {},
       currentUser: { roles = [] },
-      locationProp: { headQuarterAddress: { country = '' } = {} } = {},
+      locationProp: { headQuarterAddress: { country = {} } = {} } = {},
       AdhaarCard = {},
     } = this.props;
     const {
@@ -324,9 +324,9 @@ class Edit extends PureComponent {
     // const nationalIdNumber = taxData.length > 0 ? taxData[0].nationalId : '';
     const formatDate = DOB && moment.utc(DOB);
     const dateFormat = 'Do MMMM YYYY';
-    const checkIndiaLocation = country === 'IN';
-    const checkVietNamLocation = country === 'VN';
-    const checkUSALocation = country === 'US';
+    const checkIndiaLocation = country?._id === 'IN';
+    const checkVietNamLocation = country?._id === 'VN';
+    const checkUSALocation = country?._id === 'US';
 
     const permissions = checkPermissions(roles);
     const disabledFields = true;

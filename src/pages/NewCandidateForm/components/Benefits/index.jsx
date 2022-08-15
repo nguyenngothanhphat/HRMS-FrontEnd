@@ -55,12 +55,12 @@ class Benefits extends PureComponent {
   fetchListBenefit = () => {
     const {
       dispatch,
-      data: { workLocation: { headQuarterAddress: { country = '' } = {} } = {} } = {},
+      data: { workLocation: { headQuarterAddress: { country = {} } = {} } = {} } = {},
     } = this.props;
 
     dispatch({
       type: 'newCandidateForm/fetchListBenefit',
-      payload: { country },
+      payload: { country: country?._id },
     });
   };
 
