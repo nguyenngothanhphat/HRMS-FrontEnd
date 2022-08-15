@@ -366,8 +366,8 @@ class ViewInformation extends Component {
     } = generalData;
 
     const { visible, openEditBio } = this.state;
-    const { generalInfo: { legalName: managerName = '', userId: managerUserId = '' } = {} } =
-      manager;
+    const { generalInfo: { legalName: managerName = '', userId: managerUserId = '' } = {} || {} } =
+      manager || {};
 
     const { bio } = this.state;
     const check = 170 - bio.length;

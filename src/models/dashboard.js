@@ -19,7 +19,6 @@ import {
 
   // NEW DASHBOARD
   syncGoogleCalendar,
-  getWidgets,
   updateWidgets,
   // getMyTeam,
   getMyTimesheet,
@@ -288,30 +287,7 @@ const dashboard = {
       }
       return response;
     },
-    *getWidgetsEffect({ payload = {} }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getWidgets, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-        });
 
-        const { statusCode, data = {} } = response;
-        if (statusCode !== 200) throw response;
-
-        yield put({
-          type: 'save',
-          payload: {
-            employeeInfo: data,
-            // employeeWidgets: data.widgetDashboardShow || [],
-            // employeeId: data._id,
-          },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response;
-    },
     *updateWidgetsEffect({ payload = {} }, { call, put }) {
       let response = {};
       try {

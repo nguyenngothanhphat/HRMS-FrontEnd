@@ -85,6 +85,7 @@ class EditCurrentInfo extends PureComponent {
       employeeType,
       manager,
       department,
+      grade,
     } = values;
     const payload = {
       id,
@@ -96,9 +97,10 @@ class EditCurrentInfo extends PureComponent {
       empTypeOther,
       department,
       manager,
+      grade,
     };
     dispatch({
-      type: 'employeeProfile/updateEmployment',
+      type: 'employeeProfile/patchEmployment',
       payload,
     });
   };
@@ -230,7 +232,6 @@ class EditCurrentInfo extends PureComponent {
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
               onChange={this.onChangeGrade}
-              disabled
             >
               {listGrades.map((item) => (
                 <Option key={item._id}>{item.name}</Option>

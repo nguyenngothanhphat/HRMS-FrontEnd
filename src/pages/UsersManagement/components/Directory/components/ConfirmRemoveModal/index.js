@@ -30,7 +30,9 @@ class ConfirmRemoveModal extends Component {
       await dispatch({
         type: 'usersManagement/fetchEmployeeDetail',
         payload: {
-          id: selectedUserId,
+          _id: selectedUserId,
+        },
+        params: {
           tenantId: selectedUserTenant,
         },
       });
