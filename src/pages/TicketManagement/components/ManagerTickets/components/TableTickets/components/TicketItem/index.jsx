@@ -4,7 +4,7 @@ import { connect, Link } from 'umi';
 import TeamIcon from '@/assets/assignTeam.svg';
 import EditIcon from '@/assets/customerManagement/edit2.svg';
 import CloseIcon from '@/assets/ticketManagement-trashIcon.svg';
-import EditTicketIcon from '@/assets/ticketManagement/edit.svg';
+import EditTicketIcon from '@/assets/ticketManagement/Edit.svg';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import { getEmployeeUrl } from '@/utils/utils';
 import styles from './index.less';
@@ -118,17 +118,17 @@ const TicketItem = (props) => {
         visible={isEdit}
       >
         {!isEdit ? (
-          <Tooltip title='Assign to'>
+          <Tooltip title="Assign to">
             <img
               width={32}
               height={32}
               src={EditIcon}
               alt="edit"
               onClick={() => {
-              handleEdit(row.id, legalNameProps);
-            }}
+                handleEdit(row.id, legalNameProps);
+              }}
             />
-          </Tooltip>         
+          </Tooltip>
         ) : (
           <img
             width={32}

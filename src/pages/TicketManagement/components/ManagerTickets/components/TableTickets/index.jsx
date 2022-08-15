@@ -5,7 +5,7 @@ import React, { memo, Suspense, useEffect, useState } from 'react';
 import { connect, history, Link } from 'umi';
 import PersonIcon from '@/assets/assignPerson.svg';
 import TeamIcon from '@/assets/assignTeam.svg';
-import EditTicketIcon from '@/assets/ticketManagement/edit.svg';
+import EditTicketIcon from '@/assets/ticketManagement/Edit.svg';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import AddressPopover from '@/components/AddressPopover';
 import CommonTable from '@/components/CommonTable';

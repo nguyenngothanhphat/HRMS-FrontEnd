@@ -5,7 +5,7 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { connect, history, Link } from 'umi';
 import PersonIcon from '@/assets/assignPerson.svg';
 import TeamIcon from '@/assets/assignTeam.svg';
-import EditTicketIcon from '@/assets/ticketManagement/edit.svg';
+import EditTicketIcon from '@/assets/ticketManagement/Edit.svg';
 import ArrowDownIcon from '@/assets/ticketManagement/ic_arrowDown.svg';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import AddressPopover from '@/components/AddressPopover';
