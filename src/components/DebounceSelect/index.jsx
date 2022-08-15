@@ -33,7 +33,7 @@ const DebounceSelect = ({
     return debounce(loadOptions, debounceTimeout);
   }, [fetchOptions, debounceTimeout]);
 
-  const { optionType = '', defautOptions = [] } = props;
+  const { optionType = '', defaultOptions = [] } = props;
 
   // for select has default value, no need to call all employee list
   if (!isEmpty(defaultValue) && options.length === 0 && didMount.current) {
@@ -44,7 +44,7 @@ const DebounceSelect = ({
     didMount.current = false;
   }
 
-  if (defautOptions?.length && options.length) options.concat(defautOptions);
+  if (defaultOptions?.length && options.length) options.concat(defaultOptions);
 
   return (
     <Select
@@ -78,9 +78,9 @@ const DebounceSelect = ({
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
     >
-      {defautOptions?.length &&
+      {defaultOptions?.length &&
         options.length === 0 &&
-        defautOptions.map((option) => (
+        defaultOptions.map((option) => (
           <Select.Option key={option.value} value={option.value}>
             {option.label}
           </Select.Option>

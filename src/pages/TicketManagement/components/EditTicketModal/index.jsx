@@ -193,7 +193,7 @@ const EditTicketModal = (props) => {
   };
 
   const handleFinish = (value = {}) => {
-    const documents = uploadedAttachments?.map((item) => {
+    const documents = (uploadedAttachments || []).map((item) => {
       const {
         id = '',
         url = '',
