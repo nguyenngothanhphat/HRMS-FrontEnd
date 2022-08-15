@@ -106,13 +106,6 @@ export async function updateWidgets(payload) {
   });
 }
 
-export async function getWidgets(payload) {
-  return request('/api/employeetenant/get-by-id', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 // MY TEAM
 export async function getMyTeam(payload) {
   return request('/api/employeetenant/list-by-single-company', {

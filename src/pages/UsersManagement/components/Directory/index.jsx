@@ -69,7 +69,7 @@ const DirectoryComponent = (props) => {
   };
 
   const renderData = () => {
-    const { active, inActive } = tabList;
+    const { inActive } = tabList;
 
     // if there are location & company, call API
     const checkCallAPI =
@@ -77,37 +77,20 @@ const DirectoryComponent = (props) => {
 
     if (checkCallAPI) {
       // MULTI COMPANY & LOCATION PAYLOAD
-      if (tabId === active) {
-        dispatch({
-          type: 'usersManagement/fetchEmployeesList',
-          payload: {
-            ...filter,
-            status: ['ACTIVE'],
-            company: getCurrentCompany(),
-            tenantId: getCurrentTenant(),
-          },
-          params: {
-            page: pageSelected,
-            limit: size,
-          },
-        });
-      }
 
-      if (tabId === inActive) {
-        dispatch({
-          type: 'usersManagement/fetchEmployeesList',
-          payload: {
-            ...filter,
-            status: ['INACTIVE'],
-            company: getCurrentCompany(),
-            tenantId: getCurrentTenant(),
-          },
-          params: {
-            page: pageSelected,
-            limit: size,
-          },
-        });
-      }
+      dispatch({
+        type: 'usersManagement/fetchEmployeesList',
+        payload: {
+          ...filter,
+          status: tabId === inActive ? ['INACTIVE'] : ['ACTIVE'],
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        },
+        params: {
+          page: pageSelected,
+          limit: size,
+        },
+      });
     }
   };
 

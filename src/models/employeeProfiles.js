@@ -44,6 +44,7 @@ import {
   getAddTax,
   updateTax,
   updateEmployment,
+  patchEmployment,
   updatePrivate,
   getListRelation,
   getCountryStates,
@@ -817,11 +818,11 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchEmploymentInfo({ payload }, { call, put }) {
+    *fetchEmploymentInfo({ payload, params }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getEmploymentInfo, {
-          ...payload,
+        response = yield call(getEmploymentInfo, payload, {
+          ...params,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
@@ -1320,6 +1321,32 @@ const employeeProfile = {
       let isUpdateEmployment = false;
       try {
         const response = yield call(updateEmployment, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'fetchEmploymentInfo',
+          payload: { id: payload.id },
+        });
+
+        isUpdateEmployment = true;
+        yield put({
+          type: 'save',
+          payload: { visibleSuccess: true },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      yield put({ type: 'save', payload: { isUpdateEmployment } });
+    },
+    *patchEmployment({ payload = {} }, { call, put }) {
+      let isUpdateEmployment = false;
+      try {
+        const response = yield call(patchEmployment, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
