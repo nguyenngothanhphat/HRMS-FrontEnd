@@ -1,5 +1,5 @@
 import { Affix } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import CustomBlueButton from '@/components/CustomBlueButton';
 import { PageContainer } from '@/layouts/layout/src';
@@ -7,6 +7,7 @@ import { getSettingPageUrl } from '@/utils/helpPage';
 import { HELP_NAME, HELP_TYPE } from '@/constants/helpPage';
 import HelpList from './components/HelpList';
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 const HelpPage = (props) => {
   const { pathname } = window.location;
@@ -16,6 +17,9 @@ const HelpPage = (props) => {
     helpPage: { helpType: helpTypeProp = '' },
   } = props;
   const viewFAQSetting = permissions.viewFAQSetting !== -1;
+
+  // this state to prevent use effect fetch list call multiple times
+  const [isSavingHelpType, setIsSavingHelpType] = useState(true);
 
   const onSettingClick = () => {
     history.push(getSettingPageUrl(pathname));
@@ -32,7 +36,20 @@ const HelpPage = (props) => {
         helpType,
       },
     });
+    setIsSavingHelpType(false);
   }, [pathname]);
+
+  useEffect(() => {
+    goToTop();
+
+    return () => {
+      dispatch({
+        type: 'helpPage/clearState',
+      });
+    };
+  }, []);
+
+  if (isSavingHelpType) return null;
 
   return (
     <PageContainer>
@@ -47,7 +64,7 @@ const HelpPage = (props) => {
             </div>
           </div>
         </Affix>
-        <HelpList />
+        <HelpList pathname={pathname} />
       </div>
     </PageContainer>
   );

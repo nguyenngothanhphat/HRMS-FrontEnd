@@ -29,3 +29,9 @@ export const UPLOAD = {
     URL: 'URL',
   },
 };
+
+export const ATTACHMENT_TYPES = {
+  IMAGE: 'image',
+  VIDEO: 'video',
+  YOUTUBE: 'youtube',
+};

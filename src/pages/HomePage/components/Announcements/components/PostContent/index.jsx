@@ -1,10 +1,14 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { Col, Image, Row } from 'antd';
 import Parser from 'html-react-parser';
 import React, { useState } from 'react';
-import { checkTypeURL } from '@/utils/utils';
-import { getUrlFromString, hashtagify, urlify } from '@/utils/homePage';
 import PreviewImage from '@/assets/homePage/previewImage.png';
+import YoutubeEmbed from '@/components/YoutubeEmbed';
+import { ATTACHMENT_TYPES } from '@/constants/upload';
+import { getUrlFromString, hashtagify, urlify } from '@/utils/homePage';
+import { getAttachmentType } from '@/utils/upload';
+import { getYoutubeIdFromUrl } from '@/utils/utils';
 import styles from './index.less';
 
 const PostContent = (props) => {
@@ -155,25 +159,36 @@ const PostContent = (props) => {
   };
 
   const renderPreviewImage = () => {
-    let isImg = true;
-    let content = '';
+    const [first] = attachments || [];
+    const attachmentType = getAttachmentType(first);
 
-    isImg = checkTypeURL(attachments);
-
-    if (attachments.length) {
-      if (isImg) {
-        content = (
-          <Image.PreviewGroup>
-            {renderImageLayout(attachments.map((x) => x.url))}
-          </Image.PreviewGroup>
+    switch (attachmentType) {
+      case ATTACHMENT_TYPES.IMAGE:
+        return (
+          <div className={styles.previewImage}>
+            <Image.PreviewGroup>
+              {renderImageLayout(attachments.map((x) => x.url))}
+            </Image.PreviewGroup>
+          </div>
         );
-      } else {
-        // eslint-disable-next-line jsx-a11y/media-has-caption
-        content = <video src={attachments[0]?.url} alt="video" width="100%" controls />;
-      }
-    }
 
-    return <div className={styles.previewImage}>{content}</div>;
+      case ATTACHMENT_TYPES.VIDEO:
+        return (
+          <div className={styles.previewImage}>
+            <video src={first?.url} alt="video" width="100%" controls />
+          </div>
+        );
+
+      case ATTACHMENT_TYPES.YOUTUBE:
+        return (
+          <div className={styles.previewImage}>
+            <YoutubeEmbed embedId={getYoutubeIdFromUrl(first?.url)} />
+          </div>
+        );
+
+      default:
+        return null;
+    }
   };
 
   const renderImageCountTag = () => {

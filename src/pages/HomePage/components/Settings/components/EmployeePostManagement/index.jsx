@@ -1,20 +1,22 @@
-import { CloseOutlined, VideoCameraAddOutlined } from '@ant-design/icons';
-import { Image, Popconfirm, Tag } from 'antd';
+import { VideoCameraAddOutlined } from '@ant-design/icons';
+import { Image, Popconfirm } from 'antd';
 import Parser from 'html-react-parser';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
 import HideIcon from '@/assets/homePage/hideIconWhite.svg';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
+import ViewPostIcon from '@/assets/projectManagement/view.svg';
 import CommonModal from '@/components/CommonModal';
 import CommonTable from '@/components/CommonTable';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
-import AnnouncementsCard from '@/pages/HomePage/components/Announcements/components/AnnouncementsCard';
 import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
+import { ATTACHMENT_TYPES } from '@/constants/upload';
+import AnnouncementsCard from '@/pages/HomePage/components/Announcements/components/AnnouncementsCard';
+import { getAttachmentType } from '@/utils/upload';
 import FilterForm from './components/FilterForm';
-import ViewPostIcon from '@/assets/projectManagement/view.svg';
 import styles from './index.less';
-import { checkTypeURL } from '@/utils/utils';
 
 function EmployeePostManagement(props) {
   const {
@@ -31,7 +33,6 @@ function EmployeePostManagement(props) {
   const [detailPost, setDetailPost] = useState({});
   const [activePostID, setActivePostID] = useState('');
   const [applied, setApplied] = useState(0);
-  const [statusPost, setStatusPost] = useState(STATUS_POST.ACTIVE);
   const [filterForm, setFilterForm] = useState({});
   const [form, setForm] = useState(null);
 
@@ -47,9 +48,9 @@ function EmployeePostManagement(props) {
     });
   };
 
-  const onChangePage = (pageSeleted, size) => {
-    setPage(pageSeleted);
-    setLimit(size || limit);
+  const onChangePage = (p, s) => {
+    setPage(p);
+    setLimit(s || limit);
   };
 
   useEffect(() => {
@@ -67,7 +68,6 @@ function EmployeePostManagement(props) {
     }).then((res) => {
       const { statusCode } = res;
       if (statusCode === 200) fetchData();
-      setStatusPost(STATUS_POST.HIDDEN);
     });
   };
 
@@ -82,7 +82,6 @@ function EmployeePostManagement(props) {
     }).then((res) => {
       const { statusCode } = res;
       if (statusCode === 200) fetchData();
-      setStatusPost(STATUS_POST.ACTIVE);
     });
   };
 
@@ -131,7 +130,10 @@ function EmployeePostManagement(props) {
         key: 'attachments',
         width: '10%',
         render: (attachments = []) => {
-          if (checkTypeURL(attachments)) {
+          if (attachments.length === 0) return null;
+
+          const [first] = attachments;
+          if (getAttachmentType(first) === ATTACHMENT_TYPES.IMAGE) {
             return (
               <div className={styles.media}>
                 <Image.PreviewGroup>
@@ -156,7 +158,6 @@ function EmployeePostManagement(props) {
         title: 'Created By',
         dataIndex: 'createdBy',
         key: 'createdBy',
-        width: '15%',
         render: (createdBy = {}) => {
           const { generalInfoInfo: { legalName = '', userId = '' } = {} } = createdBy;
           return (
@@ -170,7 +171,6 @@ function EmployeePostManagement(props) {
         title: 'Created On',
         dataIndex: 'updatedAt',
         key: 'updatedAt',
-        width: '15%',
         render: (updatedAt = '') => {
           return <span>{updatedAt ? updatedAt?.substring(0, 10) : ''}</span>;
         },
@@ -179,7 +179,7 @@ function EmployeePostManagement(props) {
         title: 'Flag as Inappropriate',
         dataIndex: 'flag',
         key: 'flag',
-        width: '5%',
+        width: '10%',
         align: 'center',
         render: (flag = []) => {
           return <span>{flag?.length}</span>;
@@ -190,6 +190,7 @@ function EmployeePostManagement(props) {
         dataIndex: 'status',
         key: 'status',
         width: '10%',
+        align: 'center',
         render: (status = '') => {
           return <span>{status}</span>;
         },
@@ -251,15 +252,7 @@ function EmployeePostManagement(props) {
     <div className={styles.PostCard}>
       <div className={styles.title}>
         <div className={styles.filter}>
-          {applied > 0 && (
-            <Tag
-              className={styles.tagCountFilter}
-              closable
-              closeIcon={<CloseOutlined onClick={handleClearFilter} />}
-            >
-              {applied} filters applied
-            </Tag>
-          )}
+          <FilterCountTag count={applied} onClear={handleClearFilter} />
           <FilterPopover
             content={
               <FilterForm

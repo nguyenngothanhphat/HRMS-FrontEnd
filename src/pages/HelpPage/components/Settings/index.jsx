@@ -2,11 +2,12 @@ import { Select } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import LayoutHelpSettingPage from '@/components/LayoutHelpSettingPage';
-import { HELP_STR, HELP_TYPE, HELP_TYPO } from '@/constants/helpPage';
+import { HELP_STR, HELP_TYPO } from '@/constants/helpPage';
 import { PageContainer } from '@/layouts/layout/src';
 import Category from './components/Category';
 import List from './components/List';
 import styles from './index.less';
+import { goToTop } from '@/utils/utils';
 
 const { Option } = Select;
 
@@ -20,22 +21,8 @@ const Settings = (props) => {
     helpPage: { selectedCountry = '', helpType = '' } = {},
   } = props;
 
-  const { pathname } = window.location;
-
   useEffect(() => {
-    let helpTypeTemp = HELP_TYPE.FAQ;
-    if (pathname.includes('help-center')) {
-      helpTypeTemp = HELP_TYPE.HRMS_HELP_CENTER;
-    }
-    dispatch({
-      type: 'helpPage/save',
-      payload: {
-        helpType: helpTypeTemp,
-      },
-    });
-  }, [pathname]);
-
-  useEffect(() => {
+    goToTop();
     dispatch({
       type: 'helpPage/save',
       payload: {
@@ -123,13 +110,13 @@ const Settings = (props) => {
   const listMenu = [
     {
       id: 1,
-      name: HELP_TYPO[helpType].SETTINGS.CATEGORY.TAB_NAME,
+      name: HELP_TYPO[helpType]?.SETTINGS.CATEGORY.TAB_NAME,
       link: 'category',
       component: <Category />,
     },
     {
       id: 2,
-      name: HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.TAB_NAME,
+      name: HELP_TYPO[helpType]?.SETTINGS.QUESTION_TOPIC.TAB_NAME,
       link: 'list',
       component: <List />,
     },

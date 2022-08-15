@@ -1,14 +1,16 @@
+import { VideoCameraAddOutlined } from '@ant-design/icons';
 import { Image, Popconfirm } from 'antd';
 import Parser from 'html-react-parser';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import { VideoCameraAddOutlined } from '@ant-design/icons';
 import EditIcon from '@/assets/homePage/editIcon.svg';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { ATTACHMENT_TYPES } from '@/constants/upload';
 import { hashtagify, urlify } from '@/utils/homePage';
-import { checkTypeURL, goToTop } from '@/utils/utils';
+import { getAttachmentType } from '@/utils/upload';
+import { goToTop } from '@/utils/utils';
 import CommonTable from '../CommonTable';
 import styles from './index.less';
 
@@ -95,7 +97,10 @@ const AnnouncementTable = (props) => {
         key: 'attachments',
         width: '10%',
         render: (attachments = []) => {
-          if (checkTypeURL(attachments)) {
+          if (attachments.length === 0) return null;
+
+          const [first] = attachments;
+          if (getAttachmentType(first) === ATTACHMENT_TYPES.IMAGE) {
             return (
               <div className={styles.media}>
                 <Image.PreviewGroup>
