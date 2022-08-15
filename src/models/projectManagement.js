@@ -1,7 +1,8 @@
 import { notification, message } from 'antd';
+import { uniq } from 'lodash';
 import {
   getProjectList,
-  getProjectNameList,
+  // getProjectNameList,
   getStatusSummary,
   generateProjectId,
   getCustomerList,
@@ -68,7 +69,7 @@ const ProjectManagement = {
     *fetchProjectNameListEffect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getProjectNameList, {
+        response = yield call(getProjectList, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
@@ -79,7 +80,7 @@ const ProjectManagement = {
         yield put({
           type: 'save',
           payload: {
-            projectNameList: data,
+            projectNameList: uniq(data.map((x) => x.projectName)),
           },
         });
       } catch (errors) {
