@@ -14,18 +14,19 @@ import {
   updateQuestion,
 } from '../services/helpPage';
 
+const defaultState = {
+  helpType: '',
+  categoryList: [],
+  helpData: [],
+  countryList: [],
+  selectedCountry: '',
+  totalHelpData: 0,
+  totalCategory: 0,
+  listCreator: [],
+};
 const helpPage = {
   namespace: 'helpPage',
-  state: {
-    helpType: HELP_TYPE.FAQ,
-    categoryList: [],
-    helpData: [],
-    countryList: [],
-    selectedCountry: '',
-    totalHelpData: 0,
-    totalCategory: 0,
-    listCreator: [],
-  },
+  state: defaultState,
   effects: {
     *addHelpCategory({ payload }, { call }) {
       let response;
@@ -193,6 +194,9 @@ const helpPage = {
         ...state,
         ...action.payload,
       };
+    },
+    clearState() {
+      return defaultState;
     },
     saveOrigin(state, action) {
       const { originData } = state;

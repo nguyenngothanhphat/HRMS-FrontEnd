@@ -145,14 +145,17 @@ const ListTable = (props) => {
       align: 'center',
       render: (_, record) => {
         return (
-          <div className={styles.MoreIcon}>
+          <div>
             <Dropdown
               overlayClassName="dropdownQuestion"
               overlay={() => actionMenu(record)}
               placement="bottomRight"
               arrow
+              trigger="click"
             >
-              <img src={MoreIcon} alt="MoreIcon" />
+              <div className={styles.actionBtn}>
+                <img src={MoreIcon} alt="MoreIcon" />
+              </div>
             </Dropdown>
           </div>
         );

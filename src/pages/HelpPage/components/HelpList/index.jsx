@@ -6,8 +6,9 @@ import { connect, history } from 'umi';
 import HelpIcon from '@/assets/helpPage/ic_help.svg';
 import MinusCircleIcon from '@/assets/helpPage/ic_minus_circle.svg';
 import PlusCircleIcon from '@/assets/helpPage/ic_plus_circle.svg';
+import EmptyComponent from '@/components/Empty';
 import ModalFeedback from '@/components/ModalFeedback';
-import { HELP_STR, HELP_TYPE } from '@/constants/helpPage';
+import { HELP_STR } from '@/constants/helpPage';
 import { convertStr } from '@/utils/helpPage';
 import { hashtagify, urlify } from '@/utils/homePage';
 import MediaContent from './components/MediaContent';
@@ -22,6 +23,7 @@ const HelpList = (props) => {
     dispatch,
     user: { currentUser = {} },
     helpPage: { categoryList = [], helpData = [], helpType = '' } = {},
+    loadingFetch = false,
   } = props;
 
   const { location: { headQuarterAddress: { country = '' } } = {} } = currentUser?.employee || {};
@@ -33,20 +35,22 @@ const HelpList = (props) => {
   };
 
   useEffect(() => {
-    dispatch({
-      type: 'helpPage/fetchHelpCategoryList',
-      payload: {
-        country: [country],
-        type: helpType,
-      },
-    });
-    dispatch({
-      type: 'helpPage/fetchHelpData',
-      payload: {
-        country: [country],
-        type: helpType,
-      },
-    });
+    if (helpType) {
+      dispatch({
+        type: 'helpPage/fetchHelpCategoryList',
+        payload: {
+          country: [country],
+          type: helpType,
+        },
+      });
+      dispatch({
+        type: 'helpPage/fetchHelpData',
+        payload: {
+          country: [country],
+          type: helpType,
+        },
+      });
+    }
   }, [helpType]);
 
   useEffect(() => {
@@ -139,6 +143,10 @@ const HelpList = (props) => {
     );
   };
 
+  if (!loadingFetch && isEmpty(helpData)) {
+    return <EmptyComponent description="Please update data in the setting page" />;
+  }
+
   return (
     <div className={styles.HelpList}>
       <Row>
@@ -171,7 +179,9 @@ const HelpList = (props) => {
   );
 };
 
-export default connect(({ helpPage, user }) => ({
+export default connect(({ helpPage, user, loading }) => ({
   user,
   helpPage,
+  loadingFetch:
+    loading.effects['helpPage/fetchHelpCategoryList'] || loading.effects['helpPage/fetchHelpData'],
 }))(HelpList);

@@ -1,14 +1,18 @@
 import { Image as ImageTag } from 'antd';
 import Parser from 'html-react-parser';
-import { connect } from 'umi';
 import React from 'react';
-import { hashtagify, urlify } from '@/utils/homePage';
-import styles from './index.less';
+import { connect } from 'umi';
+import YoutubeEmbed from '@/components/YoutubeEmbed';
 import { HELP_TYPO } from '@/constants/helpPage';
+import { ATTACHMENT_TYPES } from '@/constants/upload';
+import { hashtagify, urlify } from '@/utils/homePage';
+import { getAttachmentType } from '@/utils/upload';
+import { getYoutubeIdFromUrl } from '@/utils/utils';
+import styles from './index.less';
 
 const ViewQuestionModalContent = (props) => {
   const {
-    item: { attachment = {}, question = '', answer = '' } = {},
+    item: { attachment = [], question = '', answer = '' } = {},
     helpPage: { helpType = '' } = {},
   } = props;
 
@@ -17,23 +21,32 @@ const ViewQuestionModalContent = (props) => {
     return hashtagify(temp);
   };
 
-  const renderMedia = (media) => {
-    const src = media[0].url;
-    const fileRegex = /image[/]|video[/]/gim;
-    const checkType = fileRegex.test(media[0].type);
-    return (
-      <div className={styles.media}>
-        {checkType &&
-          (media[0].type.match(/image[/]/gim) ? (
-            <ImageTag.PreviewGroup>
-              <ImageTag className={styles.media__image} src={src} alt="img" />
-            </ImageTag.PreviewGroup>
-          ) : (
-            // eslint-disable-next-line jsx-a11y/media-has-caption
-            <video className={styles.media__video} src={src} alt="video" controls autoPlay />
-          ))}
-      </div>
-    );
+  const renderMedia = () => {
+    if (attachment.length === 0) return null;
+
+    const src = attachment[0].url;
+    const attachmentType = getAttachmentType(attachment[0]);
+
+    switch (attachmentType) {
+      case ATTACHMENT_TYPES.IMAGE:
+        return (
+          <ImageTag.PreviewGroup>
+            <ImageTag className={styles.media__image} src={src} alt="img" />
+          </ImageTag.PreviewGroup>
+        );
+
+      case ATTACHMENT_TYPES.VIDEO:
+        return (
+          // eslint-disable-next-line jsx-a11y/media-has-caption
+          <video className={styles.media__video} src={src} alt="video" controls autoPlay />
+        );
+
+      case ATTACHMENT_TYPES.YOUTUBE:
+        return <YoutubeEmbed embedId={getYoutubeIdFromUrl(src)} />;
+
+      default:
+        return null;
+    }
   };
 
   const questionName = HELP_TYPO[helpType].SETTINGS.QUESTION_TOPIC.NAME;
@@ -47,7 +60,7 @@ const ViewQuestionModalContent = (props) => {
       <p>
         <b>{answerName}:</b> {answer ? Parser(renderContent(answer)) : ''}
       </p>
-      {attachment?.length && renderMedia(attachment)}
+      {attachment && <div className={styles.media}>{renderMedia()} </div>}
     </div>
   );
 };
