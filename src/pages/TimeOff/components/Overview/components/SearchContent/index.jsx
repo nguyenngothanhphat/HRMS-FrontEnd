@@ -1,14 +1,13 @@
 import { Col, DatePicker, Form, Row, Select, Skeleton, Space } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
 import { DATE_FORMAT_STR } from '@/constants/dateFormat';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { splitArrayItem } from '@/utils/utils';
 import styles from './index.less';
 
@@ -25,6 +24,8 @@ const TimeOffFilter = (props) => {
   } = props;
   const typeList = [...typeListData].filter((x) => (shortType ? x.type === shortType : true));
 
+  const [searchTerm, setSearchTerm] = useState('');
+
   const onSearchDebounce = debounce((value) => {
     dispatch({
       type: 'timeOff/save',
@@ -40,6 +41,7 @@ const TimeOffFilter = (props) => {
 
   const onSearch = (e = {}) => {
     const { value = '' } = e.target;
+    setSearchTerm(value);
     onSearchDebounce(value);
   };
 
@@ -61,7 +63,7 @@ const TimeOffFilter = (props) => {
     dispatch({
       type: 'timeOff/save',
       payload: {
-        filter: { ...search, type: newType, fromDate: values.fromDate, toDate: values.toDate },
+        filter: { ...filter, type: newType, fromDate: values.fromDate, toDate: values.toDate },
       },
     });
   };
@@ -90,10 +92,17 @@ const TimeOffFilter = (props) => {
     // dispatch action
     dispatch({
       type: 'timeOff/save',
-      payload: { filter: {} },
+      payload: { filter: { search } },
     });
     form.resetFields();
   };
+
+  useEffect(() => {
+    if (isEmpty(filter)) {
+      form.resetFields();
+      setSearchTerm('');
+    }
+  }, [filter]);
 
   const FilterContent = () => {
     return (
@@ -165,7 +174,11 @@ const TimeOffFilter = (props) => {
           <CustomOrangeButton fontSize={14} showDot={applied > 0} />
         </FilterPopover>
 
-        <CustomSearchBox onSearch={onSearch} placeholder="Search by Employee ID, name..." />
+        <CustomSearchBox
+          value={searchTerm}
+          onSearch={onSearch}
+          placeholder="Search by Employee ID, name..."
+        />
       </div>
     </Space>
   );

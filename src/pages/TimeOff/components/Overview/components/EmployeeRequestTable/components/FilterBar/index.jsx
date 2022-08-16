@@ -16,12 +16,13 @@ class FilterBar extends PureComponent {
 
   render() {
     const {
-      dataNumber: {
-        inProgressLength = '',
-        approvedLength = '',
-        rejectedLength = '',
-        draftLength = '',
-        withdrawnLength = '',
+      totalByStatus: {
+        'IN-PROGRESS': IN_PROGRESS = 0,
+        'ON-HOLD': ON_HOLD = 0,
+        ACCEPTED = 0,
+        REJECTED = 0,
+        DRAFTS = 0,
+        WITHDRAWN = 0,
       } = {},
       timeOff: { currentFilterTab = '' } = {},
     } = this.props;
@@ -34,11 +35,11 @@ class FilterBar extends PureComponent {
           onChange={(activeKey) => this.onChangeTab(activeKey)}
           tabBarExtraContent={this.renderTableTitle}
         >
-          <TabPane tab={`In Progress (${addZeroToNumber(inProgressLength)})`} key="1" />
-          <TabPane tab={`Approved (${addZeroToNumber(approvedLength)})`} key="2" />
-          <TabPane tab={`Rejected (${addZeroToNumber(rejectedLength)})`} key="3" />
-          <TabPane tab={`Drafts (${addZeroToNumber(draftLength)})`} key="4" />
-          <TabPane tab={`Withdrawn (${addZeroToNumber(withdrawnLength)})`} key="5" />
+          <TabPane tab={`In Progress (${addZeroToNumber(IN_PROGRESS + ON_HOLD)})`} key="1" />
+          <TabPane tab={`Approved (${addZeroToNumber(ACCEPTED)})`} key="2" />
+          <TabPane tab={`Rejected (${addZeroToNumber(REJECTED)})`} key="3" />
+          <TabPane tab={`Drafts (${addZeroToNumber(DRAFTS)})`} key="4" />
+          <TabPane tab={`Withdrawn (${addZeroToNumber(WITHDRAWN)})`} key="5" />
         </Tabs>
       </div>
     );
