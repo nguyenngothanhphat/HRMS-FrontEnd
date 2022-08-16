@@ -1,9 +1,9 @@
-import { CloseOutlined } from '@ant-design/icons';
-import { Layout, Skeleton, Tabs, Tag } from 'antd';
+import { Skeleton, Tabs } from 'antd';
 import React, { Suspense, useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
 import iconDownload from '@/assets/download-icon-yellow.svg';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
+import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
 import {
   getCurrentCompany,
@@ -12,16 +12,15 @@ import {
   isOwner,
 } from '@/utils/authority';
 import { exportArrayDataToCsv, exportRawDataToCSV } from '@/utils/exportToCsv';
+import { goToTop } from '@/utils/utils';
 import AddEmployeeModal from './components/AddEmployeeModal';
 import DirectoryTable from './components/DirectoryTable';
 import ImportEmployeeModal from './components/ImportEmployeeModal';
-import FilterCountTag from '@/components/FilterCountTag';
 
 import styles from './index.less';
 
 const FilterContent = React.lazy(() => import('./components/FilterContent'));
 
-const { Content } = Layout;
 const { TabPane } = Tabs;
 
 const DirectoryComponent = (props) => {
@@ -109,6 +108,8 @@ const DirectoryComponent = (props) => {
   };
 
   const renderData = (params = {}) => {
+    goToTop();
+
     const { active, myTeam, inActive } = tabList;
 
     const currentCompany = getCurrentCompany();

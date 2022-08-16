@@ -288,7 +288,7 @@ class EditCustomerModalContent extends PureComponent {
                     placeholder="Enter Account Owner"
                     fetchOptions={this.onEmployeeSearch}
                     showSearch
-                    defaultValue={{
+                    defaultOptions={{
                       value: accountOwner?._id,
                       label: accountOwner?.generalInfo?.legalName,
                     }}

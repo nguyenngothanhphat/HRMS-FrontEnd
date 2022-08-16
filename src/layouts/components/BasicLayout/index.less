@@ -5,25 +5,28 @@
     .ant-affix {
       z-index: 10 !important;
     }
-    .ant-breadcrumb-link {
-      display: inline-flex;
-    }
-
-    .ant-breadcrumb a {
-      color: #161c29;
-      font-size: 13px;
-      opacity: 0.6;
-    }
-
     .ant-breadcrumb-separator {
       display: none;
       margin: 0px 20px;
       color: rgba(0, 0, 0, 0.45);
       font-size: large;
     }
-
     .ant-breadcrumb {
+      display: flex;
+      align-items: center;
+      height: 42px;
+      border-bottom: 1px solid #e4e7eb;
+      a {
+        color: #161c29;
+        font-size: 13px;
+        opacity: 0.6;
+      }
+      span {
+        display: flex;
+        align-items: center;
+      }
       .ant-breadcrumb-link {
+        display: inline-flex;
         a {
           z-index: 1;
         }
@@ -32,26 +35,21 @@
       > span:nth-child(n):not(:last-child):not(:first-child) {
         a {
           display: inline-block;
-          padding: 8px;
-
           color: #707177;
           font-weight: 500;
           font-size: 13px;
-
           font-style: normal;
-          // line-height: 15px;
         }
         span.ant-breadcrumb-link {
           position: relative;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          height: 30px;
-
           &::after {
             display: block;
             height: 16px;
             content: url('../../../../public/assets/images/arrowBreakcum.svg');
+            padding-inline: 8px;
           }
         }
         span.ant-breadcrumb-separator {
@@ -60,32 +58,26 @@
           margin-bottom: -4px;
         }
       }
-    }
-    .ant-breadcrumb {
+
       > span:first-child {
         a {
           display: inline-block;
-          padding: 8px;
           padding-left: @padding-lg;
           color: #707177;
           font-weight: 500;
           font-size: 13px;
-
           font-style: normal;
-          // line-height: 15px;
         }
         span.ant-breadcrumb-link {
           position: relative;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          height: 30px;
-          padding: 4px 0px;
-
           &::after {
             display: block;
             height: 16px;
             content: url('../../../../public/assets/images/arrowBreakcum.svg');
+            padding-inline: 8px;
           }
         }
         span.ant-breadcrumb-separator {
@@ -94,7 +86,20 @@
           margin-bottom: -4px;
         }
       }
+
+      > span:last-child a {
+        display: flex;
+        align-items: center;
+        color: @primary-color;
+        font-weight: 500;
+        font-size: 13px;
+        font-style: normal;
+        // line-height: 15px;
+        background: none;
+        opacity: 1;
+      }
     }
+
     .ant-pro-menu-item {
       display: flex;
       align-items: center;
@@ -148,17 +153,6 @@
       width: 100%;
       padding: 0;
       background-color: #f6f7f9;
-    }
-
-    .ant-breadcrumb {
-      display: flex;
-      align-items: center;
-      height: 42px;
-      border-bottom: 1px solid #e4e7eb;
-      span {
-        display: flex;
-        align-items: center;
-      }
     }
 
     .ant-page-header-heading {
@@ -382,48 +376,6 @@
           height: 100%;
         }
       }
-    }
-  }
-}
-
-.breadCrumbA {
-  :global {
-    .ant-breadcrumb > span:last-child a {
-      display: flex;
-      align-items: center;
-      height: 30px;
-      padding: 0 15px;
-      color: #161c29;
-      font-weight: 500;
-      font-size: 13px;
-      background: none;
-      opacity: 1;
-    }
-  }
-}
-
-.breadCrumbB {
-  :global {
-    .ant-breadcrumb > span:last-child a {
-      display: flex;
-      align-items: center;
-      height: 30px;
-      padding: 8px;
-      color: @primary-color;
-      font-weight: 500;
-      font-size: 13px;
-      font-style: normal;
-      // line-height: 15px;
-      background: none;
-      opacity: 1;
-    }
-  }
-}
-
-.hiddenBreadCrumb {
-  :global {
-    .ant-page-header {
-      display: none;
     }
   }
 }

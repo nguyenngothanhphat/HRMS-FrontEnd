@@ -304,7 +304,7 @@ class EditCurrentInfo extends PureComponent {
               placeholder="Select the manager"
               fetchOptions={this.onEmployeeSearch}
               showSearch
-              defaultValue={{
+              defaultOptions={{
                 value: manager?._id,
                 label: manager?.generalInfo?.legalName,
               }}

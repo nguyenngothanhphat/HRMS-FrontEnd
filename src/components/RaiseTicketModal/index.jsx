@@ -297,7 +297,11 @@ const RaiseTicketModal = (props) => {
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please enter the description' }]}
               >
-                <Input.TextArea autoSize={{ minRows: 3 }} placeholder="Enter the description" />
+                <Input.TextArea
+                  autoSize={{ minRows: 5, maxRows: 9 }}
+                  maxLength={1000}
+                  placeholder="Enter the description"
+                />
               </Form.Item>
             </Col>
 

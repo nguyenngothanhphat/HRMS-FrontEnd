@@ -11,6 +11,7 @@ import AddPostContent from './components/AddPostContent';
 import PostCard from './components/PostCard';
 import ModeSwitcher from './components/ModeSwitcher';
 import styles from './index.less';
+import { getSocialMode, setSocialMode } from '@/utils/homePage';
 
 const Announcements = (props) => {
   const {
@@ -28,7 +29,7 @@ const Announcements = (props) => {
   const [activePostID, setActivePostID] = useState('');
   const [limitCompany, setLimitCompany] = useState(5);
   const [limitSocial, setLimitSocial] = useState(5);
-  const [isSocial, setIsSocial] = useState(false);
+  const [isSocial, setIsSocial] = useState(getSocialMode());
   const [isVisible, setIsVisible] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -96,6 +97,10 @@ const Announcements = (props) => {
       setLimitSocial(limitSocial);
     };
   }, []);
+
+  useEffect(() => {
+    setSocialMode(isSocial);
+  }, [isSocial]);
 
   const renderShowMoreBtn = () => {
     const showMore = announcements.length < announcementTotal;

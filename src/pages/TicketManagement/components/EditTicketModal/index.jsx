@@ -44,7 +44,7 @@ const EditTicketModal = (props) => {
   const [queryTypeList, setQueryTypeList] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const listCC = listEmployeeByIds.map((x) => {
-    return { value: x._id, label: x.generalInfoInfo.legalName };
+    return { value: x._id, label: x.generalInfoInfo?.legalName };
   });
   const support = supportTeamList.find((x) => x.name === ticket.support_team);
   const reqDate = new Date(ticket.created_at)
@@ -375,7 +375,7 @@ const EditTicketModal = (props) => {
                   showSearch
                   mode="multiple"
                   allowClear
-                  defautOptions={listCC}
+                  defaultOptions={listCC}
                 />
               </Form.Item>
             </Col>

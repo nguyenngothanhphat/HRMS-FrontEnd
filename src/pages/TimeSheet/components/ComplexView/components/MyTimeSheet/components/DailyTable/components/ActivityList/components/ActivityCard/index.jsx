@@ -42,7 +42,6 @@ const ActivityCard = (props) => {
     } = {},
     card = {},
     cardDay = '',
-    startWorkingHour = '',
     dispatch,
     isOldTimeSheet = false,
     currentUser: {
@@ -100,7 +99,7 @@ const ActivityCard = (props) => {
     if (!isOldTimeSheet) {
       calculateCardPosition();
     }
-  }, [JSON.stringify(card), startWorkingHour]);
+  }, [JSON.stringify(card)]);
 
   useEffect(() => {
     if (startTime && endTime) {

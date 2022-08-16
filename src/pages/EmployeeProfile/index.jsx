@@ -130,7 +130,7 @@ const EmployeeProfile = (props) => {
     if (permissions.viewEmployeeTimeoffBalance !== -1 || isProfileOwner) {
       listMenu.push({
         name: 'Timeoff History',
-        component: <History />,
+        component: <History padding={0} />,
         link: 'timeoff-history',
       });
     }

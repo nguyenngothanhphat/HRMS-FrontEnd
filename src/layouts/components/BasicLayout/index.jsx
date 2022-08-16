@@ -125,16 +125,13 @@ const BasicLayout = (props) => {
   };
   const { formatMessage } = useIntl();
 
-  const { pathname } = window.location;
-  const classNameBreadCrumb = pathname === '/dashboard' ? styles.breadCrumbA : styles.breadCrumbB;
-
   if (currentUser?.firstCreated) {
     return <Redirect to="/control-panel" />;
   }
 
   return (
     <>
-      <div className={classnames(`${styles.root}`, classNameBreadCrumb)}>
+      <div className={classnames(`${styles.root}`, `${styles.breadCrumb}`)}>
         <ProLayout
           logo={getCurrentLogo() || logo}
           headerHeight={76}
