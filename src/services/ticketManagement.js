@@ -128,3 +128,10 @@ export async function getLocationsOfCountries(params) {
     params,
   });
 }
+
+export async function getListEmployeeByIds(params) {
+  return request('/api/employeetenant', {
+    method: 'GET',
+    params,
+  });
+}

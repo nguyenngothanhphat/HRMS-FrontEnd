@@ -30,7 +30,7 @@ const DocumentVerification = (props) => {
         ticketID = '',
         isSentEmail = false,
         assignTo: {
-          generalInfo: { firstName: hrFN = '', middleName: hrMN = '', lastName: hrLN = '' } = {} ||
+          generalInfoInfo: { firstName: hrFN = '', middleName: hrMN = '', lastName: hrLN = '' } = {} ||
             {},
           _id: hrId = '',
           titleInfo: { name: titleName = ''}

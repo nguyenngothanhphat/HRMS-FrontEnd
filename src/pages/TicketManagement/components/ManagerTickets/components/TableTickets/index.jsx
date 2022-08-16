@@ -1,10 +1,11 @@
-import { Popover, Spin, Tag } from 'antd';
+import { Popover, Spin, Tag, Tooltip } from 'antd';
 import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { memo, Suspense, useEffect, useState } from 'react';
 import { connect, history, Link } from 'umi';
 import PersonIcon from '@/assets/assignPerson.svg';
 import TeamIcon from '@/assets/assignTeam.svg';
+import EditTicketIcon from '@/assets/ticketManagement/Edit.svg';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import AddressPopover from '@/components/AddressPopover';
 import CommonTable from '@/components/CommonTable';
@@ -13,6 +14,7 @@ import UserProfilePopover from '@/components/UserProfilePopover';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { PRIORITY_COLOR } from '@/constants/ticketManagement';
 import AssignTeamModal from '@/pages/TicketManagement/components/AssignTeamModal';
+import EditTicketModal from '@/pages/TicketManagement/components/EditTicketModal';
 import { getEmployeeUrl } from '@/utils/utils';
 import TicketItem from './components/TicketItem';
 import styles from './index.less';
@@ -44,6 +46,7 @@ const TableTickets = (props) => {
   const [oldName, setOldName] = useState('');
   const [selected, setSelected] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
+  const [editVisible, setEditVisible] = useState(false);
   const [oldId, setOldId] = useState();
 
   const isAssignTicket = assignTicket === 1;
@@ -110,6 +113,11 @@ const TableTickets = (props) => {
   const handleAssignTeam = (id) => {
     handleClickSelect(id);
     setModalVisible(true);
+  };
+
+  const handleEditTicket = (id) => {
+    handleClickSelect(id);
+    setEditVisible(true);
   };
 
   const renderTag = (priority) => {
@@ -332,11 +340,24 @@ const TableTickets = (props) => {
                       setOldAssignName={setOldName}
                       setOldId={setOldId}
                       setModalVisible={setModalVisible}
+                      setEditVisible={setEditVisible}
                     />
                   );
                 }
                 return (
                   <>
+                    <Tooltip title="Edit">
+                      <img
+                        width={32}
+                        height={32}
+                        src={EditTicketIcon}
+                        alt="edit ticket icon"
+                        style={{
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => handleEditTicket(row.id)}
+                      />
+                    </Tooltip>
                     {(isAssignTicket || isViewTicketByAdmin) && (
                       <Popover
                         trigger="click"
@@ -344,29 +365,33 @@ const TableTickets = (props) => {
                         content={renderMenuDropdown()}
                         placement="bottomRight"
                       >
-                        <img
-                          width={32}
-                          height={32}
-                          src={PersonIcon}
-                          alt="assign person icon"
-                          style={{
-                            cursor: 'pointer',
-                          }}
-                          onClick={() => handleClickSelect(row.id)}
-                        />
+                        <Tooltip title="Assign to">
+                          <img
+                            width={32}
+                            height={32}
+                            src={PersonIcon}
+                            alt="assign person icon"
+                            style={{
+                              cursor: 'pointer',
+                            }}
+                            onClick={() => handleClickSelect(row.id)}
+                          />
+                        </Tooltip>
                       </Popover>
                     )}
                     {(isAppendTicket || isViewTicketByAdmin) && (
-                      <img
-                        width={32}
-                        height={32}
-                        src={TeamIcon}
-                        alt="assign team icon"
-                        style={{
-                          cursor: 'pointer',
-                        }}
-                        onClick={() => handleAssignTeam(row.id)}
-                      />
+                      <Tooltip title="Move to Team">
+                        <img
+                          width={32}
+                          height={32}
+                          src={TeamIcon}
+                          alt="assign team icon"
+                          style={{
+                            cursor: 'pointer',
+                          }}
+                          onClick={() => handleAssignTeam(row.id)}
+                        />
+                      </Tooltip>
                     )}
                   </>
                 );
@@ -435,6 +460,13 @@ const TableTickets = (props) => {
       <AssignTeamModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
+        refreshFetchTicketList={refreshFetchTicketList}
+        ticket={ticket}
+        role={role}
+      />
+      <EditTicketModal
+        visible={editVisible}
+        onClose={() => setEditVisible(false)}
         refreshFetchTicketList={refreshFetchTicketList}
         ticket={ticket}
         role={role}

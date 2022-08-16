@@ -36,6 +36,7 @@ const initialState = {
   divisionList: [],
   employeeList: [],
   customerInfo: {},
+  totalProjectList: 0,
 };
 
 const ProjectManagement = {
@@ -51,7 +52,7 @@ const ProjectManagement = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data = [] } = response;
+        const { statusCode, data = [], total = 0 } = response;
         if (statusCode !== 200) throw response;
 
         yield put({
@@ -59,6 +60,7 @@ const ProjectManagement = {
           payload: {
             projectList: data,
             projectListPayload: payload,
+            totalProjectList: total,
           },
         });
       } catch (errors) {
