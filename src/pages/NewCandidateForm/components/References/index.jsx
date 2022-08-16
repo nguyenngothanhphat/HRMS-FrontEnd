@@ -79,7 +79,7 @@ const References = (props) => {
         ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
         : processStatus;
 
-    if (!isFilledReferences) {
+    if (!isFilledReferences && numReferencesProp > 0) {
       dispatch({
         type: 'newCandidateForm/sendNoReferenceEffect',
         payload: {
