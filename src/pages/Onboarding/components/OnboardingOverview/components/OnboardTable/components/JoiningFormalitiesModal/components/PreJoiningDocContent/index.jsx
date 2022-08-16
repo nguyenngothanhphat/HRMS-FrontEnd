@@ -11,11 +11,12 @@ import styles from '@/pages/Onboarding/components/OnboardingOverview/components/
 const PreJoiningDocContent = (props) => {
   const {
     dispatch,
-    tempData: { documentChecklist = [] } = {},
+    tempData: { documentChecklist = [], dateOfJoining = '' } = {},
     candidateId = '',
     setCallback = () => {},
     preJoinCheckList = [],
     setPreJoinCheckList = () => {},
+    currentStep = '',
   } = props;
   const [selectingFile, setSelectingFile] = useState(null);
   const [validated, setValidated] = useState(false);
@@ -61,6 +62,8 @@ const PreJoiningDocContent = (props) => {
       dispatch({
         type: 'newCandidateForm/updateByHR',
         payload: {
+          dateOfJoining,
+          currentStep,
           candidate: candidateId,
           ...documentChecklist,
         },
@@ -179,6 +182,7 @@ const PreJoiningDocContent = (props) => {
   );
 };
 
-export default connect(({ newCandidateForm: { tempData = {} } }) => ({
+export default connect(({ newCandidateForm: { tempData = {}, currentStep = '' } }) => ({
   tempData,
+  currentStep,
 }))(PreJoiningDocContent);
