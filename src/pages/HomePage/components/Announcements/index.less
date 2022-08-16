@@ -25,73 +25,6 @@
     font-style: normal;
     line-height: 30px;
   }
-  .button {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 200px;
-    padding: 5px 2px;
-    border: 1px solid #d0d5dd;
-    border-radius: 50px;
-    button:disabled {
-      cursor: not-allowed;
-    }
-  }
-
-  .active {
-    position: absolute;
-    top: 2px;
-    width: 95px;
-    height: 90%;
-    background: @blue;
-    border-radius: 50px;
-    transition: all 0.3s;
-     &:focus,
-        &:active {
-          border: none;
-          outline: none;
-          box-shadow: none;
-        }
-  }
-
-  .active1 {
-    transform: translateX(99px);
-  }
-
-  .active2 {
-    transform: translateX(0px);
-  }
-
-  .buttonTabs {
-    color: #fff;
-  }
-
-  .spanTabs {
-    height: 32px;
-    // padding-right: 25px;
-    // padding-left: 25px;
-    background-color: transparent;
-    border: none;
-    box-shadow: none;
-    display: inline-block;
-    width: 95px;
-    line-height: 32px;
-    text-align: center;
-    z-index: 1;
-    cursor: pointer;
-  }
-
-  .sharePost {
-    padding: 20px 16px;
-    &__content {
-      display: flex;
-      padding: 10px 0 10px 14px;
-      background: #f2f4f7;
-      border-radius: 5px;
-      cursor: pointer;
-      opacity: 0.7;
-    }
-  }
 
   .card {
     overflow: hidden;
@@ -137,7 +70,7 @@
   }
 }
 
-.hidenModalContent {
+.hiddenModalContent {
   padding: 20px 60px;
   text-align: center;
   p {

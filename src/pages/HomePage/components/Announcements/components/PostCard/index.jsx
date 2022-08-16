@@ -1,4 +1,4 @@
-import { Col, Dropdown, Menu } from 'antd';
+import { Col, Popover } from 'antd';
 import React from 'react';
 import LazyLoad from 'react-lazyload';
 import { connect } from 'umi';
@@ -8,12 +8,12 @@ import HideIcon from '@/assets/homePage/hideIcon.svg';
 import MenuIcon from '@/assets/offboarding/menuIcon.png';
 import DeleteIcon from '@/assets/relievingDel.svg';
 import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
-import EmployeeTag from '../EmployeeTag';
-import LikeComment from '../LikeComment';
-import PostContent from '../PostContent';
+import EmployeeTag from './components/EmployeeTag';
+import LikeComment from './components/LikeComment';
+import PostContent from './components/PostContent';
 import styles from './index.less';
 
-function AnnouncementsCard(props) {
+function PostCard(props) {
   const {
     dispatch,
     item = {},
@@ -32,6 +32,8 @@ function AnnouncementsCard(props) {
       permissions: { viewSettingHomePage = -1 } = {},
     },
   } = props;
+
+  const [menuVisible, setMenuVisible] = React.useState(false);
 
   const flagPost = (postId = '') => {
     return dispatch({
@@ -64,63 +66,77 @@ function AnnouncementsCard(props) {
     });
   };
 
-  const actionMenu = (data) => {
-    let menu = '';
-    if (data?.createdBy?._id === employeeId) {
-      menu = (
-        <Menu>
-          <Menu.Item
+  const renderMenuDropdown = () => {
+    const isMe = item?.createdBy?._id === employeeId;
+    if (isMe) {
+      return (
+        <div className={styles.containerDropdown}>
+          <div
+            className={styles.btn}
             onClick={() => {
               setIsVisible(true);
               setIsEdit(true);
-              setRecord(data);
+              setRecord(item);
+              setMenuVisible(false);
             }}
           >
             <img className={styles.actionIcon} src={UpdateIcon} alt="updateIcon" />
-            <span>Edit your post</span>
-          </Menu.Item>
-          <Menu.Item
+            <span>Edit</span>
+          </div>
+
+          <div
+            className={styles.btn}
             onClick={() => {
               setIsDelete(true);
-              setRecord(data);
+              setRecord(item);
+              setMenuVisible(false);
             }}
           >
             <img className={styles.actionIcon} src={DeleteIcon} alt="deleteIcon" />
-            <span>Delete your post</span>
-          </Menu.Item>
-        </Menu>
+            <span>Delete</span>
+          </div>
+        </div>
       );
-    } else if (viewSettingHomePage === 1) {
-      menu = (
-        <Menu>
-          <Menu.Item
+    }
+    if (viewSettingHomePage === 1) {
+      return (
+        <div className={styles.containerDropdown}>
+          <div
+            className={styles.btn}
             onClick={() => {
-              hiddenPost(data._id);
+              hiddenPost(item._id);
+              setMenuVisible(false);
             }}
           >
             <img className={styles.actionIcon} src={HideIcon} alt="hideIcon" />
             <span>Hide this post</span>
-          </Menu.Item>
-        </Menu>
-      );
-    } else if (!data?.flag?.includes(employeeId)) {
-      menu = (
-        <Menu>
-          <Menu.Item onClick={() => flagPost(data?._id)}>
-            <img className={styles.actionIcon} src={FlagIcon} alt="flagIcon" />
-            <span>Flag as inappropriate</span>
-          </Menu.Item>
-        </Menu>
+          </div>
+        </div>
       );
     }
-
-    return menu;
+    if (!item?.flag?.includes(employeeId)) {
+      return (
+        <div className={styles.containerDropdown}>
+          <div
+            className={styles.btn}
+            onClick={() => {
+              flagPost(item?._id);
+              setMenuVisible(false);
+            }}
+          >
+            <img className={styles.actionIcon} src={FlagIcon} alt="flagIcon" />
+            <span>Flag as inappropriate</span>
+          </div>
+        </div>
+      );
+    }
+    return '';
   };
 
   return (
     <LazyLoad key={item._id} height={200} offset={[-100, 0]}>
       <Col span={24}>
-        <div className={styles.AnnouncementsCard}>
+        <div className={styles.PostCard}>
           <div className={styles.cardTitle}>
             <EmployeeTag
               postAsCompany={item.postAsCompany}
@@ -129,14 +145,16 @@ function AnnouncementsCard(props) {
               createDate={item.createdAt}
             />
             {isSocial && (
-              <Dropdown
-                className={styles.menuIcon}
-                overlay={actionMenu(item)}
-                placement="bottomRight"
+              <Popover
                 trigger="click"
+                overlayClassName={styles.dropdownPopover}
+                content={renderMenuDropdown()}
+                placement="bottomRight"
+                visible={menuVisible}
+                onVisibleChange={(visible) => setMenuVisible(visible)}
               >
-                <img style={{ padding: 24 }} src={MenuIcon} alt="menu-icon" />
-              </Dropdown>
+                <img src={MenuIcon} alt="" style={{ cursor: 'pointer', padding: '4px 10px' }} />
+              </Popover>
             )}
           </div>
           <PostContent post={item} />
@@ -154,4 +172,4 @@ function AnnouncementsCard(props) {
 
 export default connect(({ user }) => ({
   user,
-}))(AnnouncementsCard);
+}))(PostCard);

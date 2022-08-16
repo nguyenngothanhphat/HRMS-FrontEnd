@@ -2,8 +2,8 @@ import { Form, Input, message, Select, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import AttachmentIcon from '@/assets/attachment.svg';
-import UrlIcon from '@/assets/faqPage/urlIcon.svg';
-import { HELP_TYPE, HELP_TYPO } from '@/constants/helpPage';
+import UrlIcon from '@/assets/helpPage/ic_url.svg';
+import { HELP_TYPO } from '@/constants/helpPage';
 import uploadFirebase from '@/services/firebase';
 import styles from './index.less';
 
