@@ -250,7 +250,9 @@ const EditTicketModal = (props) => {
 
   const onValuesChange = (changedValues, allValues) => {
     setIsEdit(true);
-    setUploadedAttachments(allValues.attachments?.fileList || []);
+    if (uploadedAttachments.length > 1)
+      setUploadedAttachments(allValues.attachments?.fileList || []);
+    else setUploadedAttachments([allValues.attachments?.file] || []);
   };
 
   const renderModalContent = () => {
