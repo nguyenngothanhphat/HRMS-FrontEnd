@@ -42,7 +42,7 @@ const ConfirmModal = (props) => {
 
   const renderReportees = (
     <>
-      {reportees.slice(0, 4).map((t, i) => {
+      {reportees.slice(0, 4).map((t) => {
         const { generalInfoInfo: { legalName = '' } = {} } = t;
         return (
           <>
@@ -59,8 +59,8 @@ const ConfirmModal = (props) => {
           const { generalInfoInfo: { legalName = '' } = {} } = t;
           return (
             <>
-              {reportees.length > i && ', '}
               <strong>{legalName}</strong>
+              {reportees.length > i && ', '}
             </>
           );
         })
@@ -90,7 +90,9 @@ const ConfirmModal = (props) => {
             <div className={styles.pageBottom__text}>
               Reporting Manager: <strong>{reportingManager?.generalInfoInfo.legalName}</strong>
             </div>
-            <div className={styles.pageBottom__text}>Reportees: {renderReportees}</div>
+            {reportees?.length > 0 && (
+              <div className={styles.pageBottom__text}>Reportees: {renderReportees}</div>
+            )}
           </div>
         </Spin>
       ),

@@ -28,6 +28,7 @@ import {
   updateJoiningFormalities,
   updateSettingEmployeeId,
   withdrawTicket,
+  getListEmployeeByIds,
 } from '@/services/onboarding';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
@@ -69,6 +70,7 @@ const onboarding = {
       idItem: '',
       employeeIdList: [],
       settingId: '',
+      listEmployeeByIds: [],
     },
     reloadTableData: false,
   },
@@ -575,6 +577,23 @@ const onboarding = {
         notification.success({ message });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+    *fetchListEmployeeByIds({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getListEmployeeByIds, {
+          ...payload,
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveJoiningFormalities',
+          payload: { listEmployeeByIds: data },
+        });
+      } catch (error) {
+        dialog(error);
       }
       return response;
     },
