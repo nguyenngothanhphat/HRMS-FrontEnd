@@ -21,12 +21,12 @@ const ReportingManagerContent = (props) => {
   const [selectedManager, setSelectedManager] = useState(manager?._id);
   const listTemp = [...employee, manager];
   const listId = listTemp.map((x) => x._id);
-  const listDefaultManager = listEmployeeByIds.map((x) => {
-    return { value: x._id, label: x.generalInfoInfo.legalName };
+  const defaultManagerList = listEmployeeByIds.map((x) => {
+    return { value: x._id, label: x.generalInfoInfo?.legalName };
   });
-  const listDefaultreportee = listEmployeeByIds
+  const defaultReporteeList = listEmployeeByIds
     .filter((x) => x._id !== manager?._id)
-    .map((x) => ({ value: x._id, label: x.generalInfoInfo.legalName }));
+    .map((x) => ({ value: x._id, label: x.generalInfoInfo?.legalName }));
 
   const onValuesChange = (changedValues, allValues) => {
     const { reportingManager = '' } = allValues;
@@ -107,22 +107,22 @@ const ReportingManagerContent = (props) => {
         <Form.Item
           name="reportingManager"
           label="Reporting Manager"
-          rules={[{ required: true, message: 'Please select reporting manager' }]}
+          rules={[{ required: true, message: 'Please select the reporting manager' }]}
           className={styles.selectForm}
         >
           <DebounceSelect
-            placeholder="Please select Manager"
+            placeholder="Please select the manager"
             fetchOptions={onEmployeeSearch}
-            defaultOptions={listDefaultManager}
+            defaultOptions={defaultManagerList}
             showSearch
           />
         </Form.Item>
         <Form.Item name="reportees" label="Reportees" className={styles.selectForm}>
           <DebounceSelect
-            placeholder="Please select reportees"
+            placeholder="Please select the reportees"
             fetchOptions={onEmployeeSearch}
             showSearch
-            defaultOptions={listDefaultreportee}
+            defaultOptions={defaultReporteeList}
             mode="multiple"
           />
         </Form.Item>
