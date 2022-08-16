@@ -5,10 +5,10 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const ViewBank = (props) => {
-  const { bankData, locationProp: { headQuarterAddress: { country = '' } = {} } = {} } = props;
-  const checkIndiaLocation = country === 'IN';
-  const checkVietNamLocation = country === 'VN';
-  const checkUSALocation = country === 'US';
+  const { bankData, locationProp: { headQuarterAddress: { country = {} } = {} } = {} } = props;
+  const checkIndiaLocation = country?._id === 'IN';
+  const checkVietNamLocation = country?._id === 'VN';
+  const checkUSALocation = country?._id === 'US';
 
   const dataBankDetails = [
     { lable: 'Bank Name', value: bankData[0] ? bankData[0].bankName : '-' },

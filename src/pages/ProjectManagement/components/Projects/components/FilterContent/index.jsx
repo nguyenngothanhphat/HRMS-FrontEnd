@@ -132,8 +132,8 @@ const FilterContent = (props) => {
           >
             {projectNameList.map((item) => {
               return (
-                <Select.Option value={item.projectName} key={item}>
-                  {item.projectName}
+                <Select.Option value={item} key={item}>
+                  {item}
                 </Select.Option>
               );
             })}

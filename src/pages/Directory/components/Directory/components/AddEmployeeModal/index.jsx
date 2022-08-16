@@ -111,17 +111,17 @@ class AddEmployeeModal extends Component {
     // });
 
     const locationPayload = companyLocationList.map(
-      ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
+      ({ headQuarterAddress: { country: countryItem1 = {} } = {} }) => {
         let stateList = [];
         companyLocationList.forEach(
-          ({ headQuarterAddress: { country: countryItem2 = '', state: stateItem2 = '' } = {} }) => {
-            if (countryItem1 === countryItem2) {
+          ({ headQuarterAddress: { country: countryItem2 = {}, state: stateItem2 = '' } = {} }) => {
+            if (countryItem1?._id === countryItem2?._id) {
               stateList = [...stateList, stateItem2];
             }
           },
         );
         return {
-          country: countryItem1,
+          country: countryItem1?._id,
           state: stateList,
         };
       },

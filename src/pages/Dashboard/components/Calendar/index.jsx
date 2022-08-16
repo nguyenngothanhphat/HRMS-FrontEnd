@@ -70,7 +70,7 @@ const Calendar = (props) => {
     setSelectedDate(moment(selectedDate).add(1, 'days').format());
   };
   useEffect(() => {
-    const country = location ? location.headQuarterAddress.country._id : '';
+    const country = location ? location.headQuarterAddress?.country?._id : '';
     dispatch({
       type: 'dashboard/fetchHolidaysByCountry',
       payload: {

@@ -16,12 +16,25 @@ const Overview = (props) => {
     viewHRTimeoff = false,
     viewManagerTimeoff = false,
     viewRequestOnBehalfOf = false,
+    dispatch,
   } = props;
 
   const [isViewingInformation, setIsViewingInformation] = useState(false);
 
   useEffect(() => {
     goToTop();
+    return () => {
+      dispatch({
+        type: 'timeOff/save',
+        payload: {
+          currentLeaveTypeTab: '1',
+          currentScopeTab: '1',
+          totalByType: {},
+          totalByStatus: {},
+          currentPayloadTypes: [],
+        },
+      });
+    };
   }, []);
 
   const buttonOnClickCompoff = () => {

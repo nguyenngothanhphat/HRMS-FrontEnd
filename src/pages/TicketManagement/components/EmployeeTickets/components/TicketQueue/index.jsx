@@ -18,7 +18,7 @@ const TicketQueue = (props) => {
     employee: {
       _id = '',
       departmentInfo: { _id: idDepart = '' },
-      location: { headQuarterAddress: { country = '' } = {} } = {},
+      location: { headQuarterAddress: { country = {} } = {} } = {},
     } = {},
     role = '',
     permissions = [],
@@ -52,7 +52,7 @@ const TicketQueue = (props) => {
       payload = {
         ...payload,
         permissions,
-        country,
+        country: country?._id,
       };
     }
     dispatch({

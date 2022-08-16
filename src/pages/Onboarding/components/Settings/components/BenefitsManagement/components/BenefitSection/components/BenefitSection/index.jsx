@@ -41,7 +41,7 @@ class BenefitSection extends Component {
     companyLocationList.forEach((item) => {
       if (item._id === getCurrentLocation()) {
         const { headQuarterAddress: { country = {} || {} } = {} || {} } = item;
-        countryId = country._id;
+        countryId = country?._id;
       }
     });
 

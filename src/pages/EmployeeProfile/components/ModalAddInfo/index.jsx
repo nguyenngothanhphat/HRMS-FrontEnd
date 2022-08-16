@@ -546,7 +546,7 @@ const ModalAddInfo = (props) => {
         if (arrBankAccount.length === 0) {
           addBank(numOfBank);
         }
-        if (location.headQuarterAddress.country === 'VN') {
+        if (location?.headQuarterAddress?.country?._id === 'VN') {
           return (
             <Form
               form={form}
@@ -696,7 +696,7 @@ const ModalAddInfo = (props) => {
           );
         }
 
-        if (location.headQuarterAddress.country === 'US') {
+        if (location?.headQuarterAddress?.country?._id === 'US') {
           return (
             <Form
               form={form}
@@ -983,7 +983,7 @@ const ModalAddInfo = (props) => {
         );
       }
       case 3: {
-        if (location.headQuarterAddress.country === 'VN') {
+        if (location?.headQuarterAddress?.country?._id === 'VN') {
           return (
             <Form
               form={form}
@@ -1063,7 +1063,7 @@ const ModalAddInfo = (props) => {
             </Form>
           );
         }
-        if (location.headQuarterAddress.country === 'IN') {
+        if (location?.headQuarterAddress?.country?._id === 'IN') {
           return (
             <Form
               form={form}
@@ -1146,7 +1146,7 @@ const ModalAddInfo = (props) => {
             </Form>
           );
         }
-        if (location.headQuarterAddress.country === 'US') {
+        if (location?.headQuarterAddress?.country?._id === 'US') {
           return (
             <Form
               form={form}

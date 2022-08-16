@@ -62,7 +62,9 @@ const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
       {options.map((option) => {
         const {
           generalInfoInfo: { avatar = '', workEmail = '' } = {},
-          locationInfo: { headQuarterAddress: { country: { _id: countryId } = {} } = {} } = {},
+          locationInfo: {
+            headQuarterAddress: { country: { _id: countryId } = {} } = {} || {},
+          } = {} || {},
           _id = '',
         } = option;
 

@@ -149,7 +149,8 @@ class ChangePasswordBox extends PureComponent {
                       }),
                     },
                     {
-                      pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{0,}$/,
+                      pattern:
+                        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(){}[\]?_+,.\\/|;':"-`~])[!@#$%^&*(){}[\]?_+,.\\/|;':"-`~]{0,}$/,
                       message: formatMessage({
                         id: 'page.changePassword.rules.patterns',
                       }),

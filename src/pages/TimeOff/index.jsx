@@ -5,7 +5,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import Overview from './components/Overview';
 import SetupTimeoff from './components/SetupTimeoff';
 import styles from './index.less';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import History from './components/History';
 
 const { TabPane } = Tabs;
 const TimeOff = (props) => {
@@ -30,10 +30,6 @@ const TimeOff = (props) => {
       });
       dispatch({
         type: 'timeOffManagement/getTimeOffTypeListEffect',
-        payload: {
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-        },
       });
     }
     dispatch({
@@ -109,7 +105,9 @@ const TimeOff = (props) => {
             viewRequestOnBehalfOf={viewRequestOnBehalfOf}
           />
         </TabPane>
-
+        <TabPane tab="History" key="history">
+          <History />
+        </TabPane>
         {viewSettingTimeoff && (
           <TabPane tab="Setup Timeoff policy" key="setup">
             <SetupTimeoff type={type} />
