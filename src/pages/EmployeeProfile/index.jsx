@@ -12,6 +12,7 @@ import Documents from './components/Documents';
 import GeneralInfo from './components/GeneralInfo';
 import PerformanceHistory from './components/PerformanceHistory';
 import styles from './index.less';
+import History from '../TimeOff/components/History';
 
 const EmployeeProfile = (props) => {
   const {
@@ -61,6 +62,17 @@ const EmployeeProfile = (props) => {
       });
     };
   }, []);
+
+  useEffect(() => {
+    if (employee) {
+      dispatch({
+        type: 'timeOff/fetchTimeOffTypeByEmployeeEffect',
+        payload: {
+          employee,
+        },
+      });
+    }
+  }, [employee]);
 
   useEffect(() => {
     dispatch({
@@ -115,7 +127,13 @@ const EmployeeProfile = (props) => {
         link: 'benefits',
       });
     }
-
+    if (permissions.viewEmployeeTimeoffBalance !== -1 || isProfileOwner) {
+      listMenu.push({
+        name: 'Timeoff History',
+        component: <History />,
+        link: 'timeoff-history',
+      });
+    }
     listMenu = listMenu.map((x, i) => {
       return {
         ...x,
