@@ -40,7 +40,7 @@ const TicketDetailsForm = (props) => {
     query_type: queryType = '',
     attachments = [],
     chats = [],
-    employeeRaise = [],
+    employeeRaise = {},
     ccList = [],
     employee_assignee: employeeAssignedTickets = '',
   } = ticketDetail;
@@ -180,10 +180,10 @@ const TicketDetailsForm = (props) => {
   };
 
   const getOpenBy = () => {
-    if ((employeeRaise || []).length > 0) {
+    if (!isEmpty(employeeRaise)) {
       return (
-        <Link to={getEmployeeUrl(employeeRaise[0]?.generalInfo?.userId)}>
-          {employeeRaise[0].generalInfo.legalName}
+        <Link to={getEmployeeUrl(employeeRaise?.generalInfo?.userId)}>
+          {employeeRaise?.generalInfo?.legalName}
         </Link>
       );
     }
