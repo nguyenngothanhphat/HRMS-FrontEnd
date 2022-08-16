@@ -25,7 +25,7 @@ export default function TicketUpdatedContent(props) {
     );
   };
   return (
-    <>
+    <div className={styles.TicketUpdatedContent}>
       <hr style={{ border: '1px solid #EAECF0' }} />
       {view &&
         message.map((x) => (
@@ -59,6 +59,6 @@ export default function TicketUpdatedContent(props) {
           </div>
         ))}
       {renderViewDetailBtn()}
-    </>
+    </div>
   );
 }

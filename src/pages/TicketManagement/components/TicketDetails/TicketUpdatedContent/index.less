@@ -1,40 +1,42 @@
-.showDetail {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  margin-top: 8px;
-  :global {
-    .ant-btn {
-      height: 32px;
-      padding-right: 25px;
-      padding-left: 25px;
-      background-color: transparent;
-      border: none;
-      box-shadow: none;
-      span {
-        color: @primary-color;
-        font-weight: 500;
-        font-size: 13px;
-        font-style: normal;
-        line-height: 19px;
-      }
-      img {
-        margin-left: 10px;
+.TicketUpdatedContent {
+  .showDetail {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 8px;
+    :global {
+      .ant-btn {
+        height: 32px;
+        padding-right: 25px;
+        padding-left: 25px;
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        span {
+          color: @primary-color;
+          font-weight: 500;
+          font-size: 13px;
+          font-style: normal;
+          line-height: 19px;
+        }
+        img {
+          margin-left: 10px;
+        }
       }
     }
   }
-}
-.chatMessage {
-  margin: 8px 0;
-  color: #212020;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 21px;
-  &__title {
-    color: #667085;
-  }
-  &__changed {
-    color: @primary-color;
+  .chatMessage {
+    margin: 8px 0;
+    color: #212020;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 21px;
+    &__title {
+      color: #667085;
+    }
+    &__changed {
+      color: @primary-color;
+    }
   }
 }

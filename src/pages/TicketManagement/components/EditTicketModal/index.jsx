@@ -19,14 +19,13 @@ const { Option } = Select;
 
 const EditTicketModal = (props) => {
   const [form] = Form.useForm();
-  const formRef = React.createRef();
   const {
     visible = false,
     onClose = () => {},
     currentUser: {
       employee: {
         _id: myEmployeeID = '',
-        location: { headQuarterAddress: { country = '' } = {} } = {},
+        location: { headQuarterAddress: { country = {} } = {} } = {},
       } = {} || {},
     } = {} || {},
     loadingFetchSupportTeam = false,
@@ -106,7 +105,7 @@ const EditTicketModal = (props) => {
         type: 'ticketManagement/fetchSupportTeamList',
         payload: {
           permissions,
-          country,
+          country: country?._id,
         },
       });
       if (ticket.cc_list?.length)
@@ -260,7 +259,6 @@ const EditTicketModal = (props) => {
         <Form
           form={form}
           name="editTicketForm"
-          ref={formRef}
           id="editTicketForm"
           onFinish={handleFinish}
           onValuesChange={onValuesChange}
