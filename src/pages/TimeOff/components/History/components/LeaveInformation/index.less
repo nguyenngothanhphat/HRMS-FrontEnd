@@ -1,0 +1,42 @@
+@gray-color: #464646;
+@light-gray-color: #6c717a;
+
+.LeaveInformation {
+  position: relative;
+  width: 100%;
+
+  :global {
+    .ant-collapse-header {
+      justify-content: center;
+    }
+  }
+
+  .totalLeaveBalance {
+    display: flex;
+    flex-direction: column;
+    .title {
+      color: @gray-color;
+      font-weight: 700;
+      font-size: 18px;
+      text-align: center;
+    }
+    .leaveBalanceBox {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0 30px 0;
+      .circleProgress {
+        margin-top: 10px;
+        .percentValue {
+          color: @gray-color;
+          font-weight: 700;
+          font-size: 28px;
+        }
+        .remainingText {
+          color: @light-gray-color;
+          font-size: 13px;
+        }
+      }
+    }
+  }
+}
