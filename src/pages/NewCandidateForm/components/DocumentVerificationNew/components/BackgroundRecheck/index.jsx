@@ -99,6 +99,7 @@ const BackgroundRecheck = (props) => {
           documentTypeC,
           documentTypeD,
           documentTypeE,
+          currentStep,
         },
       });
       const check = validateFiles();

@@ -187,10 +187,3 @@ export async function updateEmployeeFormatByGlobal(payload) {
     data: payload,
   });
 }
-
-export async function getListEmployeeByIds(params) {
-  return request('/api/employeetenant', {
-    method: 'GET',
-    params,
-  });
-}
