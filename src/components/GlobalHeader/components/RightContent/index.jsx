@@ -16,7 +16,9 @@ import SelectCompanyModal from './components/SelectCompanyModal';
 const RightContent = (props) => {
   const { dispatch, theme, currentUser, companiesOfUser, unseenTotal, activeConversationUnseen } =
     props;
-
+  useEffect(() => {
+    socket.connect()
+  })
   const saveNewMessage = async (message) => {
     await dispatch({
       type: 'conversation/saveNewMessage',

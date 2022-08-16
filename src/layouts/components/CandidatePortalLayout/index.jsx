@@ -62,6 +62,9 @@ const CandidatePortalLayout = React.memo((props) => {
     authority: undefined,
   };
   const disablePage = getFirstChangePassword();
+  useEffect(() => {
+    socket.connect()
+  })
 
   const fetchNotificationList = async () => {
     if (candidate) {
