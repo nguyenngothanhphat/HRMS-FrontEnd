@@ -23,6 +23,7 @@ const Projects = (props) => {
     loadingUpdateProject = false,
     loadingDeleteProject = false,
     permissions = {},
+    totalProjectList = 0,
   } = props;
   const [projectStatus, setProjectStatus] = useState('All');
 
@@ -288,6 +289,7 @@ const Projects = (props) => {
           isBackendPaging
           limit={size}
           page={page}
+          total={totalProjectList}
         />
       </div>
 
@@ -329,12 +331,18 @@ const Projects = (props) => {
 };
 export default connect(
   ({
-    projectManagement: { projectList = [], statusSummary = [], projectListPayload = {} } = {},
+    projectManagement: {
+      projectList = [],
+      statusSummary = [],
+      projectListPayload = {},
+      totalProjectList = 0,
+    } = {},
     user: { currentUser = {}, permissions = {} } = {},
     loading,
   }) => ({
     currentUser,
     permissions,
+    totalProjectList,
     projectList,
     statusSummary,
     projectListPayload,
