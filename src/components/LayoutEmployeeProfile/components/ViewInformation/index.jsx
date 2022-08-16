@@ -466,7 +466,6 @@ class ViewInformation extends Component {
                 <Tag
                   style={{
                     color: `${item.color.colorText}`,
-                    fontWeight: 'normal',
                   }}
                   key={item.id}
                   color={item.color.bg}

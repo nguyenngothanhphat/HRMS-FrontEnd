@@ -19,3 +19,12 @@ export const getUrlFromString = (text) => {
 
 export const roundNumber = (x) => Math.round(x * 10) / 10;
 export const roundNumber2 = (x) => Math.round(x * 100) / 100;
+
+export function setSocialMode(value) {
+  localStorage.setItem('homePageSocialMode', value);
+}
+
+export function getSocialMode() {
+  const val = localStorage.getItem('homePageSocialMode');
+  return val === 'true';
+}

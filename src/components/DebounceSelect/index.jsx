@@ -1,13 +1,14 @@
 import { Empty, Select, Spin } from 'antd';
 import { debounce, isEmpty } from 'lodash';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 
 const DebounceSelect = ({
   fetchOptions,
   debounceTimeout = 800,
   labelInValue = false,
-  defaultValue = {},
+  optionType = '',
+  defaultOptions, // you can pass an array or an object to this prop, needs to have { value, label } keys
   ...props
 }) => {
   const [fetching, setFetching] = useState(false);
@@ -33,18 +34,22 @@ const DebounceSelect = ({
     return debounce(loadOptions, debounceTimeout);
   }, [fetchOptions, debounceTimeout]);
 
-  const { optionType = '', defaultOptions = [] } = props;
-
   // for select has default value, no need to call all employee list
-  if (!isEmpty(defaultValue) && options.length === 0 && didMount.current) {
-    options.push({
-      label: defaultValue?.label,
-      value: defaultValue.value,
-    });
-    didMount.current = false;
-  }
-
-  if (defaultOptions?.length && options.length) options.concat(defaultOptions);
+  useEffect(() => {
+    if (!isEmpty(defaultOptions) && options.length === 0 && didMount.current) {
+      let newOptions = [];
+      if (Array.isArray(defaultOptions)) {
+        newOptions = defaultOptions;
+      } else if (typeof defaultOptions === 'object') {
+        newOptions.push({
+          value: defaultOptions?.value,
+          label: defaultOptions?.label,
+        });
+      }
+      setOptions(newOptions);
+      didMount.current = false;
+    }
+  }, [JSON.stringify(defaultOptions)]);
 
   return (
     <Select

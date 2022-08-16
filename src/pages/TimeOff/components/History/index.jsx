@@ -1,7 +1,7 @@
-import { formatHistoryData } from '@/utils/timeOff';
-import { sortAlphabet } from '@/utils/utils';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { formatHistoryData } from '@/utils/timeOff';
+import { sortAlphabet } from '@/utils/utils';
 import HistoryTable from './components/HistoryTable';
 import LeaveBalance from './components/LeaveBalance';
 import styles from './index.less';
@@ -9,10 +9,11 @@ import styles from './index.less';
 const History = ({
   dispatch,
   employee,
-  commonLeaves,
-  specialLeaves,
-  historyTimeoff,
-  historyTypeList,
+  commonLeaves = [],
+  specialLeaves = [],
+  historyTimeoff = [],
+  historyTypeList = [],
+  padding = 24,
 }) => {
   const leavesData = sortAlphabet(commonLeaves.concat(specialLeaves), 'typeName');
   const historyData = formatHistoryData(historyTimeoff);
@@ -25,9 +26,7 @@ const History = ({
       type: 'timeOff/fetchHistoryTimeoffByEmployee',
       payload,
     });
-
-    const { total = 0 } = response;
-    setTotal(total);
+    setTotal(response?.total || 0);
   };
 
   const handleFilter = (values) => {
@@ -45,7 +44,7 @@ const History = ({
   }, []);
 
   return (
-    <div className={styles.History}>
+    <div className={styles.History} style={{ padding }}>
       <LeaveBalance data={leavesData} />
       <HistoryTable
         data={historyData}

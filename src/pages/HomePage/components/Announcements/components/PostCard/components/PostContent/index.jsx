@@ -101,36 +101,12 @@ const PostContent = (props) => {
                 onError={(e) => {
                   e.target.src = PreviewImage;
                 }}
-                height={500}
+                // height={600}
               />
             </Col>
           </Row>
         );
       case 2:
-        if (mode) {
-          return (
-            <Row gutter={[4, 0]}>
-              <Col span={24}>
-                <Image
-                  src={images[0]}
-                  onError={(e) => {
-                    e.target.src = PreviewImage;
-                  }}
-                  height={250}
-                />
-              </Col>
-              <Col span={24}>
-                <Image
-                  src={images[1]}
-                  onError={(e) => {
-                    e.target.src = PreviewImage;
-                  }}
-                  height={250}
-                />
-              </Col>
-            </Row>
-          );
-        }
         return (
           <Row gutter={[4, 4]}>
             <Col span={12}>

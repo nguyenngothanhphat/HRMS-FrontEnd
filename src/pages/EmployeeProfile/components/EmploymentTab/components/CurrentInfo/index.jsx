@@ -40,7 +40,7 @@ const CurrentInfo = (props) => {
     else {
       value = joinDate;
     }
-    return moment(value).locale('en').format('Do MMMM YYYY');
+    return (value && moment(value).locale('en').format('Do MMMM YYYY')) || '';
   };
 
   const data = {

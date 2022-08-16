@@ -2,17 +2,16 @@ import { Button, Col, Row, Skeleton, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import ErrorFile from '@/assets/adminSetting/errorFile.svg';
-import EditIcon from '@/assets/edit-customField.svg';
 import ShowMoreIcon from '@/assets/homePage/downArrow.svg';
-
 import CommonModal from '@/components/CommonModal';
 import EmptyComponent from '@/components/Empty';
 import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
 import { getCurrentLocation } from '@/utils/authority';
-import { getCompanyName } from '@/utils/utils';
 import AddPostContent from './components/AddPostContent';
-import AnnouncementsCard from './components/AnnouncementsCard';
+import PostCard from './components/PostCard';
+import ModeSwitcher from './components/ModeSwitcher';
 import styles from './index.less';
+import { getSocialMode, setSocialMode } from '@/utils/homePage';
 
 const Announcements = (props) => {
   const {
@@ -25,15 +24,12 @@ const Announcements = (props) => {
   } = props;
 
   // redux
-  const {
-    homePage: { announcements = [], announcementTotal = 0 } = {},
-    user: { currentUser: { name = '' } = {} } = {},
-  } = props;
+  const { homePage: { announcements = [], announcementTotal = 0 } = {} } = props;
 
   const [activePostID, setActivePostID] = useState('');
   const [limitCompany, setLimitCompany] = useState(5);
   const [limitSocial, setLimitSocial] = useState(5);
-  const [isSocial, setIsSocial] = useState(false);
+  const [isSocial, setIsSocial] = useState(getSocialMode());
   const [isVisible, setIsVisible] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -102,6 +98,10 @@ const Announcements = (props) => {
     };
   }, []);
 
+  useEffect(() => {
+    setSocialMode(isSocial);
+  }, [isSocial]);
+
   const renderShowMoreBtn = () => {
     const showMore = announcements.length < announcementTotal;
     if (!showMore) return null;
@@ -121,7 +121,7 @@ const Announcements = (props) => {
     return (
       <Row gutter={[24, 24]} style={{ minHeight: 300 }}>
         {announcements.map((x) => (
-          <AnnouncementsCard
+          <PostCard
             item={x}
             isSocial={isSocial}
             activePostID={activePostID}
@@ -151,66 +151,17 @@ const Announcements = (props) => {
     return <Spin spinning={loadingFetchAnnouncementList}>{children}</Spin>;
   };
 
-  const handleCompanyClick = () => {
-    setIsSocial(false);
-    fetchData(POST_TYPE.COMPANY, limitCompany, getCurrentLocation());
-  };
-
-  const handleSocialClick = () => {
-    setIsSocial(true);
-    fetchData(POST_TYPE.SOCIAL, limitSocial, '', STATUS_POST.ACTIVE);
-  };
-
   // RENDER UI
   return (
     <div className={styles.Announcements}>
-      <div className={styles.title}>
-        <div className={styles.head}>
-          <p className={styles.text}>Announcements</p>
-          <div style={{ position: 'relative' }} className={styles.button}>
-            <button
-              className={`${styles.spanTabs} ${!isSocial && styles.buttonTabs}`}
-              onClick={handleCompanyClick}
-              disabled={!isSocial}
-              type="button"
-            >
-              {getCompanyName()}
-            </button>
-            <button
-              style={{
-                marginLeft: 5,
-              }}
-              className={`${styles.spanTabs} ${isSocial && styles.buttonTabs}`}
-              onClick={handleSocialClick}
-              disabled={isSocial}
-              type="button"
-            >
-              Social
-            </button>
-            <div
-              className={
-                !isSocial
-                  ? `${styles.active} ${styles.active2}`
-                  : `${styles.active} ${styles.active1}`
-              }
-            />
-          </div>
-        </div>
-        {isSocial && (
-          <div className={styles.sharePost}>
-            <p
-              className={styles.sharePost__content}
-              onClick={() => {
-                setIsVisible(true);
-              }}
-            >
-              <img src={EditIcon} alt="editIcon" style={{ paddingRight: 10 }} />
-              <span> Hi {name}, let share something today!</span>
-            </p>
-          </div>
-        )}
-      </div>
-      {/* {isSocial ? renderSocialUI() : renderCompanyUI()} */}
+      <ModeSwitcher
+        fetchData={fetchData}
+        setIsVisible={setIsVisible}
+        isSocial={isSocial}
+        setIsSocial={setIsSocial}
+        limitSocial={limitSocial}
+        limitCompany={limitCompany}
+      />
       {!loadingFetchAnnouncementList && announcements.length === 0 ? (
         <div className={styles.card}>
           <EmptyComponent description="No Announcements" />
@@ -251,9 +202,9 @@ const Announcements = (props) => {
         visible={isDelete}
         onClose={() => setIsDelete(false)}
         content={
-          <div className={styles.hidenModalContent}>
+          <div className={styles.hiddenModalContent}>
             <img src={ErrorFile} alt="errorFile" />
-            <p>Are you sure you want to delete for this post.</p>
+            <p>Are you sure you want to delete this post?</p>
           </div>
         }
         hasHeader={false}

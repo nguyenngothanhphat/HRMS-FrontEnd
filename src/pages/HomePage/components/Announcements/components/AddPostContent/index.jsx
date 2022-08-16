@@ -2,7 +2,7 @@ import { Form, Input, message, Upload } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import AttachmentIcon from '@/assets/attachment.svg';
-import UploadFileURLIcon from '@/assets/homePage/uploadURLIcon.svg';
+import UrlIcon from '@/assets/homePage/ic_url.svg';
 import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
 import { uploadFirebaseMultiple } from '@/services/firebase';
 import styles from './index.less';
@@ -305,8 +305,9 @@ const AddPostContent = (props) => {
           <Input
             placeholder="Type your media link here"
             allowClear
-            prefix={<img src={UploadFileURLIcon} alt="upload-url-icon" />}
+            prefix={<img src={UrlIcon} alt="upload-url-icon" />}
             disabled={isUpload}
+            className={styles.inputURL}
           />
         </Form.Item>
       </Form>

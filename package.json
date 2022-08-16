@@ -1,8 +1,8 @@
 {
-  "name": "ant-design-pro",
-  "version": "1.2.0",
+  "name": "hrms",
+  "version": "1.8.2",
   "private": true,
-  "description": "An out-of-box UI solution for enterprise applications",
+  "description": "HRMS is a web application for managing human resource management system.",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 GENERATE_SOURCEMAP=false umi build",
     "build": "GENERATE_SOURCEMAP=false umi build",

@@ -99,6 +99,7 @@ export default {
   'menu.view-compoff-request': 'View compoff request',
   'menu.time-off-type-configuration': 'Configure timeoff type',
   'menu.timeoff-setup': 'Setup Timeoff policy',
+  'menu.timeoff-history': 'Timeoff History',
   'menu.timeoff-overview': 'Overview',
   // project management
   'menu.project-management': 'Project Management',

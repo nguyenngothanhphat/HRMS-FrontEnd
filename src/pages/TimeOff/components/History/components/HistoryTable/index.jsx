@@ -1,14 +1,14 @@
+import { Col, DatePicker, Form, Row, Select, Skeleton } from 'antd';
+import { isEmpty } from 'lodash';
+import moment from 'moment';
+import React, { Suspense, useState } from 'react';
+import { connect } from 'umi';
 import CommonTable from '@/components/CommonTable';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
 import { DATE_FORMAT_STR } from '@/constants/dateFormat';
 import { TIMEOFF_HISTORY_OPERATIONS } from '@/constants/timeOff';
-import { Col, DatePicker, Form, Row, Select, Skeleton } from 'antd';
-import { isEmpty } from 'lodash';
-import moment from 'moment';
-import React, { Suspense, useState } from 'react';
-import { connect } from 'umi';
 import styles from './index.less';
 
 const initialFilter = {

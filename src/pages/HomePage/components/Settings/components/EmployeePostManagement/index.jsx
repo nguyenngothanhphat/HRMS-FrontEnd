@@ -3,7 +3,7 @@ import { Image, Popconfirm } from 'antd';
 import Parser from 'html-react-parser';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import HideIcon from '@/assets/homePage/hideIconWhite.svg';
+import HideIcon from '@/assets/homePage/ic_hide.svg';
 import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import ViewPostIcon from '@/assets/projectManagement/view.svg';
 import CommonModal from '@/components/CommonModal';
@@ -13,7 +13,7 @@ import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
 import { POST_TYPE, STATUS_POST } from '@/constants/homePage';
 import { ATTACHMENT_TYPES } from '@/constants/upload';
-import AnnouncementsCard from '@/pages/HomePage/components/Announcements/components/AnnouncementsCard';
+import PostCard from '@/pages/HomePage/components/Announcements/components/PostCard';
 import { getAttachmentType } from '@/utils/upload';
 import FilterForm from './components/FilterForm';
 import styles from './index.less';
@@ -287,7 +287,7 @@ function EmployeePostManagement(props) {
         visible={viewDetailModal}
         onClose={() => setViewDetailModal(false)}
         content={
-          <AnnouncementsCard
+          <PostCard
             item={detailPost}
             activePostID={activePostID}
             setActivePostID={setActivePostID}
