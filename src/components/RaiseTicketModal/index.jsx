@@ -138,7 +138,7 @@ const RaiseTicketModal = (props) => {
     if (permissions && permissions.length > 0) {
       payload = {
         ...payload,
-        country,
+        country: country?._id,
         permissions,
       };
     }
