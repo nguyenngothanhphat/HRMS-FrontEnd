@@ -5,7 +5,6 @@ import {
   getListTimeSheetTicket,
   getAllListTicket,
   getListMyTicket,
-  getLeaveRequestOfEmployee,
   approveRequest,
   rejectRequest,
   approveTimeSheetRequest,
@@ -19,15 +18,14 @@ import {
 
   // NEW DASHBOARD
   syncGoogleCalendar,
-  getWidgets,
   updateWidgets,
   // getMyTeam,
   getMyTimesheet,
   getListMyTeam,
   getHolidaysByCountry,
-  getMyTeamLeaveRequestList,
   getTimeOffTypeByCountry,
   getMyTickets,
+  getLeaveRequests,
 } from '../services/dashboard';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 
@@ -139,20 +137,20 @@ const dashboard = {
         dialog(errors);
       }
     },
-    *fetchMyLeaveRequest({ payload }, { call, put }) {
+    *fetchLeaveRequests({ payload }, { call, put }) {
       try {
         const tenantId = getCurrentTenant();
-        const response = yield call(getLeaveRequestOfEmployee, {
+        const response = yield call(getLeaveRequests, {
           ...payload,
           tenantId,
           company: getCurrentCompany(),
         });
-        const { statusCode, data: { items: leaveRequests = [] } = {} } = response;
+        const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
 
         yield put({
           type: 'save',
-          payload: { leaveRequests },
+          payload: { leaveRequests: data },
         });
         return response;
       } catch (errors) {
@@ -288,30 +286,7 @@ const dashboard = {
       }
       return response;
     },
-    *getWidgetsEffect({ payload = {} }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getWidgets, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-        });
 
-        const { statusCode, data = {} } = response;
-        if (statusCode !== 200) throw response;
-
-        yield put({
-          type: 'save',
-          payload: {
-            employeeInfo: data,
-            // employeeWidgets: data.widgetDashboardShow || [],
-            // employeeId: data._id,
-          },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response;
-    },
     *updateWidgetsEffect({ payload = {} }, { call, put }) {
       let response = {};
       try {
@@ -524,21 +499,16 @@ const dashboard = {
     },
     *fetchTeamLeaveRequests({ payload }, { call, put }) {
       try {
-        const response = yield call(getMyTeamLeaveRequestList, {
+        const response = yield call(getLeaveRequests, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const {
-          statusCode,
-          data: { items: teamLeaveRequestList = [] },
-          total = 0,
-        } = response;
-        // console.log('response', response);
+        const { statusCode, data = [], total = 0 } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { teamLeaveRequestList },
+          payload: { teamLeaveRequestList: data },
         });
         yield put({
           type: 'savePaging',

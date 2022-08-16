@@ -11,7 +11,7 @@ import styles from './index.less';
 const AllTickets = (props) => {
   const {
     dispatch,
-    country = '',
+    country = {},
     loadingFetchTicketList = false,
     listOffAllTicket: data = [],
     totalStatus = [],
@@ -58,7 +58,7 @@ const AllTickets = (props) => {
       page: pageSelected,
       limit: size,
       location: selectedLocations,
-      country,
+      country: country?._id,
       ...filter,
       cancelToken: cancelToken(),
     };
@@ -182,7 +182,7 @@ export default connect(
     loading = {},
     user: {
       currentUser: {
-        employee: { location: { headQuarterAddress: { country = '' } = {} } = {} } = {},
+        employee: { location: { headQuarterAddress: { country = {} } = {} } = {} } = {},
       } = {},
     },
     ticketManagement: {

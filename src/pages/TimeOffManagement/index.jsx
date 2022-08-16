@@ -126,10 +126,6 @@ const TimeOffManagement = (props) => {
   useEffect(() => {
     dispatch({
       type: 'timeOffManagement/getTimeOffTypeListEffect',
-      payload: {
-        company: getCurrentCompany(),
-        tenantId: getCurrentTenant(),
-      },
     });
     if (!locationsOfCountries.length) {
       dispatch({

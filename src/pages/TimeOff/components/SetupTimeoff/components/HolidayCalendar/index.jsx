@@ -160,7 +160,7 @@ const TimeOffType = (props) => {
   useEffect(() => {
     let countryArr = [];
     countryArr = countryList.map((item) => {
-      return item.headQuarterAddress.country;
+      return item.headQuarterAddress?.country;
     });
     const newArr = removeDuplicate(countryArr, (item) => item._id);
     setCountryListState(newArr);

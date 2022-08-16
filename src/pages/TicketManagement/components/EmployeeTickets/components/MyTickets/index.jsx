@@ -19,7 +19,7 @@ const MyTickets = (props) => {
     employee: {
       _id = '',
       departmentInfo: { _id: idDepart = '' },
-      location: { headQuarterAddress: { country = '' } = {} } = {},
+      location: { headQuarterAddress: { country = {} } = {} } = {},
     } = {},
     dispatch,
     role = '',
@@ -64,7 +64,7 @@ const MyTickets = (props) => {
       page: pageSelected,
       limit: size,
       location: selectedLocations,
-      country,
+      country: country?._id,
       ...filter,
     };
     if (nameSearch) {

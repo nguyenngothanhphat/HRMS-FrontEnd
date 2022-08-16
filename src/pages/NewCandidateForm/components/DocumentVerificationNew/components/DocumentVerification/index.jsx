@@ -33,12 +33,13 @@ const DocumentVerification = (props) => {
           generalInfo: { firstName: hrFN = '', middleName: hrMN = '', lastName: hrLN = '' } = {} ||
             {},
           _id: hrId = '',
+          titleInfo: { name: titleName = ''}
         } = {} || {},
         CEOInfo: {
           generalInfoInfo: { legalName: ceoFullname = '' } = {} || {},
           title: { name: titleCEOName = '' } = {} || {},
         } = {} || {},
-        titleList = [],
+        // titleList = [],
         department,
         workLocation,
         reportingManager,
@@ -209,11 +210,6 @@ const DocumentVerification = (props) => {
     // get hr name
     let hrName = `${hrFN} ${hrMN} ${hrLN}`;
     if (!hrMN) hrName = `${hrFN} ${hrLN}`;
-    // get job title
-    let currentJobTitle = title;
-    if (!currentJobTitle)
-      currentJobTitle = titleList.find((t) => t._id === title?._id || t._id === title) || {};
-    const titleName = currentJobTitle?.name || '-';
     const messages = [
       {
         id: 1,

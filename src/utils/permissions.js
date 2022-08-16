@@ -100,7 +100,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'T_DIRECTORY_B_ADD',
     'T_DIRECTORY_B_ADD_EMPLOYEE',
   ]);
-
+  const indexViewEmployeeTimeoffBalance = isAuthorized(permissionList, [
+    'P_DIRECTORY_VIEW_EMPLOYEE_TIMEOFF_BALANCE',
+  ]);
   const indexViewActionButton = isAuthorized(permissionList, []);
 
   // Directory Page - Tab general info - Public/Private Personal phone/email
@@ -381,6 +383,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     importEmployees: findIndexImport,
     addEmployee: findIndexAdd,
     viewActionButton: indexViewActionButton,
+    viewEmployeeTimeoffBalance: indexViewEmployeeTimeoffBalance,
     // Directory Page - Filter - Display location
     filterLocationActive: findIndexShowLocationActive,
     filterLocationInActive: findIndexShowLocationInActive,

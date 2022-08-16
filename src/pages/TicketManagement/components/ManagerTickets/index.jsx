@@ -128,7 +128,7 @@ export default connect(
     user: {
       currentUser: {
         employee: {
-          location: { _id: locationId = '', headQuarterAddress: { country = '' } = {} } = {},
+          location: { _id: locationId = '', headQuarterAddress: { country = {} } = {} } = {},
         } = {},
       } = {},
     },

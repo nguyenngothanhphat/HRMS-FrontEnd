@@ -16,7 +16,7 @@ const FilterForm = (props) => {
     dispatch,
     visible = false,
     setFilterForm = () => {},
-    country = '',
+    country = {},
     permissions = {},
     ticketManagement: {
       currentStatus = [],
@@ -47,7 +47,7 @@ const FilterForm = (props) => {
     setAssignedListState([]);
     dispatch({
       type: 'ticketManagement/fetchSupportTeamList',
-      payload: { country, permissions },
+      payload: { country: country?._id, permissions },
     });
   }, [visible]);
 
@@ -365,7 +365,7 @@ export default connect(
     user: {
       permissions = {},
       currentUser: {
-        employee: { location: { headQuarterAddress: { country = '' } = {} } = {} } = {},
+        employee: { location: { headQuarterAddress: { country = {} } = {} } = {} } = {},
       } = {},
     },
   }) => ({

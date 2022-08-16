@@ -9,7 +9,7 @@ const HealthWellbeing = (props) => {
     dispatch,
     employeeProfile: { originData: { benefitPlans = [], employmentData = {} } = {} } = {},
   } = props;
-  const countryId = employmentData?.location?.headQuarterAddress?.country;
+  const countryId = employmentData?.location?.headQuarterAddress?.country?._id;
 
   useEffect(() => {
     if (countryId) {

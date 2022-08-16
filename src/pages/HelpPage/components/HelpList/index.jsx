@@ -26,7 +26,7 @@ const HelpList = (props) => {
     loadingFetch = false,
   } = props;
 
-  const { location: { headQuarterAddress: { country = '' } } = {} } = currentUser?.employee || {};
+  const { location: { headQuarterAddress: { country = {} } } = {} } = currentUser?.employee || {};
   const [menuList, setMenuList] = useState([]);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
 
@@ -39,14 +39,14 @@ const HelpList = (props) => {
       dispatch({
         type: 'helpPage/fetchHelpCategoryList',
         payload: {
-          country: [country],
+          country: [country?._id],
           type: helpType,
         },
       });
       dispatch({
         type: 'helpPage/fetchHelpData',
         payload: {
-          country: [country],
+          country: [country?._id],
           type: helpType,
         },
       });

@@ -43,13 +43,6 @@ export async function getListMyTicket(payload) {
   );
 }
 
-export async function getLeaveRequestOfEmployee(payload) {
-  return request('/api/leaverequesttenant/get-my-request', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 // reporting manager
 // approve/reject a leave request or a withdraw request
 export async function approveRequest(data) {
@@ -101,13 +94,6 @@ export async function syncGoogleCalendar(payload) {
 // WIDGETS
 export async function updateWidgets(payload) {
   return request('/api/usermap/update', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
-export async function getWidgets(payload) {
-  return request('/api/employeetenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
@@ -209,10 +195,10 @@ export async function getMyResourceList(payload) {
   );
 }
 
-export async function getMyTeamLeaveRequestList(payload) {
-  return request('/api/leaverequesttenant/get-team-request', {
-    method: 'POST',
-    data: payload,
+export async function getLeaveRequests(params) {
+  return request('/api/leaverequesttenant', {
+    method: 'GET',
+    params,
   });
 }
 

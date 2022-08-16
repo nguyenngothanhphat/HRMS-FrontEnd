@@ -72,6 +72,6 @@ const CommonTab = (props) => {
 export default connect(({ loading }) => ({
   loadingReject: loading.effects['dashboard/rejectRequest'],
   loadingApprove: loading.effects['dashboard/approveRequest'],
-  loadingFetchTimeoff: loading.effects['dashboard/fetchMyLeaveRequest'],
+  loadingFetchTimeoff: loading.effects['dashboard/fetchLeaveRequests'],
   loadingFetchTimesheet: loading.effects['dashboard/fetchListTimeSheetTicket'],
 }))(CommonTab);

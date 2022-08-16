@@ -44,7 +44,7 @@ const HR1On1 = (props) => {
     if (moment().isSameOrAfter(moment(hrDate))) {
       return '1 -on- 1 Meeting Completed';
     }
-    return 'return `HR 1 on 1 Requested`';
+    return `HR 1 on 1 Requested`;
   };
 
   const renderContent = () => {

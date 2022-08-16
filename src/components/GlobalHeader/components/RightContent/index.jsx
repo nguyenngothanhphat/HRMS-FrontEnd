@@ -35,8 +35,8 @@ const RightContent = (props) => {
 
   const initialSocket = () => {
     socket.emit(CHAT_EVENT.ADD_USER, currentUser?.employee?._id || '');
-    socket.on(CHAT_EVENT.GET_MESSAGE, async (data) => {
-      saveNewMessage(data);
+    socket.on(CHAT_EVENT.GET_MESSAGE, (message) => {
+      saveNewMessage(message);
       fetchNotificationList();
     });
   };

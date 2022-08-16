@@ -4,6 +4,7 @@ import { connect } from 'umi';
 import { addZeroToNumber } from '@/utils/utils';
 import MultipleCheckTablePopup from '@/components/MultipleCheckTablePopup';
 import styles from './index.less';
+import { LEAVE_QUERY_TYPE } from '@/constants/timeOff';
 
 const { TabPane } = Tabs;
 
@@ -31,13 +32,14 @@ class FilterBar extends PureComponent {
 
   render() {
     const {
-      dataNumber: {
-        inProgressLength = 0,
-        approvedLength = 0,
-        rejectedLength = 0,
-        draftLength = 0,
-        withdrawnLength = 0,
-        deletedLength = 0,
+      totalByStatus: {
+        'IN-PROGRESS': IN_PROGRESS = 0,
+        'ON-HOLD': ON_HOLD = 0,
+        ACCEPTED = 0,
+        REJECTED = 0,
+        DRAFTS = 0,
+        WITHDRAWN = 0,
+        DELETED = 0,
       } = {},
       category = '',
       timeOff: { currentFilterTab = '' } = {},
@@ -45,12 +47,11 @@ class FilterBar extends PureComponent {
     } = this.props;
     const { length = 0 } = handlePackage;
 
-    const inProgressExist = inProgressLength > 0;
+    const IN_PROGRESS_ON_HOLD = IN_PROGRESS + ON_HOLD;
 
     return (
       <div className={styles.FilterBar}>
         <Tabs
-          // tabBarGutter={35}
           activeKey={currentFilterTab}
           onChange={(activeKey) => this.onChangeTab(activeKey)}
           tabBarExtraContent={
@@ -59,24 +60,24 @@ class FilterBar extends PureComponent {
         >
           <TabPane
             tab={
-              inProgressExist ? (
+              IN_PROGRESS_ON_HOLD ? (
                 <Badge dot>
-                  <span>In Progress ({addZeroToNumber(inProgressLength)}) </span>
+                  <span>In Progress ({addZeroToNumber(IN_PROGRESS_ON_HOLD)}) </span>
                 </Badge>
               ) : (
-                <span>In Progress ({addZeroToNumber(inProgressLength)}) </span>
+                <span>In Progress ({addZeroToNumber(IN_PROGRESS_ON_HOLD)}) </span>
               )
             }
             key="1"
           />
-          <TabPane tab={`Approved (${addZeroToNumber(approvedLength)})`} key="2" />
-          <TabPane tab={`Rejected (${addZeroToNumber(rejectedLength)})`} key="3" />
-          {category === 'MY' && (
-            <TabPane tab={`Drafts (${addZeroToNumber(draftLength)})`} key="4" />
+          <TabPane tab={`Approved (${addZeroToNumber(ACCEPTED)})`} key="2" />
+          <TabPane tab={`Rejected (${addZeroToNumber(REJECTED)})`} key="3" />
+          {category === LEAVE_QUERY_TYPE.SELF && (
+            <TabPane tab={`Drafts (${addZeroToNumber(DRAFTS)})`} key="4" />
           )}
-          <TabPane tab={`Withdrawn (${addZeroToNumber(withdrawnLength)})`} key="5" />
-          {category !== 'MY' && (
-            <TabPane tab={`Deleted (${addZeroToNumber(deletedLength)})`} key="6" />
+          <TabPane tab={`Withdrawn (${addZeroToNumber(WITHDRAWN)})`} key="5" />
+          {category !== LEAVE_QUERY_TYPE.SELF && (
+            <TabPane tab={`Deleted (${addZeroToNumber(DELETED)})`} key="6" />
           )}
         </Tabs>
       </div>

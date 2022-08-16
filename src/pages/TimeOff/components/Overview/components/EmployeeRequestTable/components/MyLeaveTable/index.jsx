@@ -15,11 +15,11 @@ import DefaultAvatar from '@/assets/avtDefault.jpg';
 import styles from './index.less';
 
 const { ON_HOLD } = TIMEOFF_STATUS;
-// loading
+
 @connect(({ loading, dispatch, timeOff: { paging } }) => ({
   paging,
   dispatch,
-  loadingFetchLeaveRequests: loading.effects['timeOff/fetchMyLeaveRequest'],
+  loadingFetchLeaveRequests: loading.effects['timeOff/fetchLeaveRequests'],
 }))
 class MyLeaveTable extends PureComponent {
   columns = [
@@ -77,7 +77,6 @@ class MyLeaveTable extends PureComponent {
       title: `Requested on `,
       dataIndex: 'onDate',
       align: 'center',
-      // width: '30%',
       render: (onDate) => <span>{moment(onDate).locale('en').format(TIMEOFF_DATE_FORMAT)}</span>,
     },
     {
@@ -90,9 +89,10 @@ class MyLeaveTable extends PureComponent {
       title: 'Assigned',
       align: 'left',
       dataIndex: 'approvalManager',
-      // width: '25%',
       render: (approvalManager = {}) => {
-        const assigned = approvalManager ? [approvalManager?.generalInfo] : [];
+        const { generalInfoInfo } = approvalManager;
+        const assigned = generalInfoInfo ? [generalInfoInfo] : [];
+
         return (
           <div className={styles.rowAction}>
             <Avatar.Group
@@ -125,7 +125,6 @@ class MyLeaveTable extends PureComponent {
       align: 'left',
       width: '15%',
       dataIndex: '_id',
-      // width: '20%',
       render: (_id) => (
         <div className={styles.rowAction}>
           <Link to={`/time-off/overview/personal-timeoff/view/${_id}`}>View Request</Link>
@@ -134,7 +133,6 @@ class MyLeaveTable extends PureComponent {
     },
   ];
 
-  // pagination
   onChangePagination = (pageNumber, pageSize) => {
     const { dispatch } = this.props;
     dispatch({
@@ -236,9 +234,7 @@ class MyLeaveTable extends PureComponent {
     return (
       <div className={styles.MyLeaveTable}>
         <Table
-          // size="middle"
           loading={tableLoading}
-          // rowSelection={rowSelection}
           pagination={data.length === 0 ? null : { ...pagination, total }}
           columns={this.columns}
           dataSource={data}

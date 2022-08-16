@@ -56,7 +56,7 @@ const QuickLinks = (props) => {
   ];
 
   useEffect(() => {
-    const country = location ? location.headQuarterAddress.country._id : '';
+    const country = location ? location.headQuarterAddress?.country?._id : '';
     dispatch({
       type: 'dashboard/fetchHolidaysByCountry',
       payload: {
