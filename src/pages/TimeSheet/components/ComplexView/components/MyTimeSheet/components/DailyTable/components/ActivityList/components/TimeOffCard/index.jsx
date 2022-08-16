@@ -58,7 +58,7 @@ const TimeOffCard = (props) => {
     let heightTemp = 0;
 
     if (startTimeTemp && endTimeTemp) {
-      for (let i = startWorkingHour; i <= endWorkingHour; i += 1) {
+      for (let i = 0; i <= endWorkingHour; i += 1) {
         if (i < startTimeHourTemp) {
           topTemp += EMP_ROW_HEIGHT;
         } else if (i === startTimeHourTemp) {
