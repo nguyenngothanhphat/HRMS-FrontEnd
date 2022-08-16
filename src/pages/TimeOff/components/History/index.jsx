@@ -41,9 +41,6 @@ const History = ({
         employee,
       },
     });
-  }, []);
-
-  useEffect(() => {
     fetchHistory();
   }, []);
 
@@ -67,10 +64,12 @@ export default connect(
       yourTimeOffTypes: { commonLeaves = [], specialLeaves = [] } = {},
       historyTypeList = [],
     } = {},
+    employeeProfile: { employee = '' },
   }) => ({
     historyTimeoff,
     commonLeaves,
     specialLeaves,
     historyTypeList,
+    employee,
   }),
 )(History);
