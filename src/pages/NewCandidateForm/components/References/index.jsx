@@ -24,7 +24,6 @@ const References = (props) => {
     loadingSendNoReference = false,
     loadingFetchReferences = false,
   } = data;
-  const [numReferences, setNumReferences] = useState(0);
   const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
@@ -48,13 +47,12 @@ const References = (props) => {
       setDisabled(false);
     }
 
-    if (numReferencesProp && numReferencesProp > 0 && references.length === 0) {
+    if (numReferencesProp && numReferencesProp >= 0 && references.length === 0) {
       setDisabled(true);
     }
   };
 
   useEffect(() => {
-    setNumReferences(numReferencesProp || 3);
     form.setFieldsValue({
       noOfReferences: numReferencesProp || 3,
     });
@@ -69,6 +67,7 @@ const References = (props) => {
   };
 
   const onClickNext = async () => {
+    const numReferences = form.getFieldValue('noOfReferences') * 1 || 0;
     const nextStep =
       processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
         ? ONBOARDING_STEPS.SALARY_STRUCTURE
@@ -79,7 +78,7 @@ const References = (props) => {
         ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
         : processStatus;
 
-    if (!isFilledReferences && numReferencesProp > 0) {
+    if (!isFilledReferences && numReferences > 0) {
       dispatch({
         type: 'newCandidateForm/sendNoReferenceEffect',
         payload: {
@@ -139,10 +138,6 @@ const References = (props) => {
                 placeholder="No. of references"
                 className={styles.formInput}
                 disabled={disabled}
-                onChange={(e) => {
-                  e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                  setNumReferences(e.target.value);
-                }}
               />
             </Form.Item>
           </Col>
@@ -241,7 +236,7 @@ const References = (props) => {
                                       index={index}
                                       references={references}
                                     />
-                                    {numReferences > index + 1 && (
+                                    {numReferencesProp > index + 1 && (
                                       <Divider className={styles.divider} />
                                     )}
                                   </div>

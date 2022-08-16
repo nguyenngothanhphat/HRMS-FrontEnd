@@ -2,6 +2,7 @@ import { Button, Col, Input, Popover, Radio, Row, Select, Skeleton, Space, Typog
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage, history } from 'umi';
+import { isEmpty } from 'lodash';
 import BigEditVector from '@/assets/bigEditVector.svg';
 import CustomModal from '@/components/CustomModal';
 import ModalDrawSignature from '@/components/ModalDrawSignature';
@@ -61,9 +62,11 @@ const PreviewOffer = (props) => {
 
   const { employee: { _id: currentUserId = '' } = {} || {} } = currentUser;
   const [hrSignature, setHrSignature] = useState(hrSignatureProp || '');
+  console.log('🚀 ~ hrSignature', hrSignature);
 
   const [hrSignatureSubmit, setHrSignatureSubmit] = useState(false);
   const [hrManagerSignature, setHrManagerSignature] = useState(hrManagerSignatureProp || '');
+  console.log('🚀 ~ hrManagerSignature', hrManagerSignature);
   const [hrManagerSignatureSubmit, setHrManagerSignatureSubmit] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
@@ -80,8 +83,8 @@ const PreviewOffer = (props) => {
   const [isSignatureHR, setIsSignatureHR] = useState(false);
   const [optionSignature, setOptionSignature] = useState('upload');
   const [optionSignatureHRManager, setOptionSignatureHRManager] = useState('upload');
+  const [valueDigitalSignatureHR, setValueDigitalSignatureHR] = useState(null);
   const [valueDigitalSignature, setValueDigitalSignature] = useState(null);
-  console.log('🚀 ~ valueDigitalSignature', valueDigitalSignature);
   const [arrImgBase64, setArrImgBase64] = useState([]);
   const [openDigitalHR, setOpenDigitalHR] = useState(false);
   const [openDigitalHrManager, setOpenDigitalHrManager] = useState(false);
@@ -110,8 +113,10 @@ const PreviewOffer = (props) => {
   // const processStatus = NEW_PROCESS_STATUS.OFFER_WITHDRAWN;
 
   const isTicketAssignee = currentUserId === assigneeId;
+  console.log('🚀 ~ isTicketAssignee', isTicketAssignee);
   // const isTicketAssignee = true;
   const isTicketManager = currentUserId === assigneeManagerId;
+  console.log('🚀 ~ isTicketManager', isTicketManager);
   // const isTicketManager = false;
   const isNewOffer = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION;
   const isAwaitingOffer = processStatus === NEW_PROCESS_STATUS.AWAITING_APPROVALS;
@@ -395,6 +400,7 @@ const PreviewOffer = (props) => {
     setIsSignatureHR(true);
   };
   const resetDefaultState = () => {
+    setValueDigitalSignatureHR(null);
     setValueDigitalSignature(null);
     setNameSignatureHR('');
     setNameSignatureHrManager('');
@@ -416,7 +422,7 @@ const PreviewOffer = (props) => {
       setOpenDigitalHR(true);
       setNameSignatureHR(e.target.value);
       if (!e.target.value) {
-        setValueDigitalSignature(null);
+        setValueDigitalSignatureHR(null);
       }
     } else {
       setOpenDigitalHrManager(true);
@@ -435,11 +441,11 @@ const PreviewOffer = (props) => {
     }
     if (arrImgBase64.length > 0) {
       const formData = new FormData();
-      if (!arrImgBase64[valueDigitalSignature]) {
+      if (!arrImgBase64[valueDigitalSignatureHR]) {
         setOpenModal('');
         return;
       }
-      const file = dataURItoBlob(arrImgBase64[valueDigitalSignature]);
+      const file = dataURItoBlob(arrImgBase64[valueDigitalSignatureHR]);
       formData.append('blob', file, 'signatureCandidate.jpeg');
       const responsive = await dispatch({
         type: 'upload/uploadFile',
@@ -510,7 +516,7 @@ const PreviewOffer = (props) => {
   };
 
   const renderSignatureHr = () => {
-    if (optionSignature === 'digital')
+    if (optionSignature === 'digital-hr')
       return (
         <>
           <div>
@@ -522,9 +528,9 @@ const PreviewOffer = (props) => {
                 content={
                   <Radio.Group
                     onChange={(e) => {
-                      setValueDigitalSignature(e.target.value);
+                      setValueDigitalSignatureHR(e.target.value);
                     }}
-                    value={0 || valueDigitalSignature}
+                    value={0 || valueDigitalSignatureHR}
                   >
                     <Space direction="vertical">
                       {['Airin', 'GermanyScript', 'SH Imogen Agnes', 'AudreyAndReynold'].map(
@@ -1106,7 +1112,7 @@ const PreviewOffer = (props) => {
                     >
                       <Option value="upload">Upload</Option>
                       <Option value="draw">Draw</Option>
-                      <Option value="digital">Digital Signature</Option>
+                      <Option value="digital-hr">Digital Signature</Option>
                     </Select>
                   </Col>
                 </Row>
@@ -1117,23 +1123,18 @@ const PreviewOffer = (props) => {
             {(isTicketAssignee || isTicketManager) &&
               (isNewOffer || isAwaitingOffer || isNeedsChanges) && (
                 <div className={styles.submitContainer}>
-                  {(!hrSignature ||
-                    hrSignature !== oldHrReSignature ||
-                    optionSignature === 'digital') && (
+                  {(!hrSignature || hrSignature !== oldHrReSignature || openDigitalHR) && (
                     <Button
                       type="primary"
                       onClick={handleHrSignatureSubmit}
                       disabled={
-                        optionSignature !== 'digital'
-                          ? !hrSignature.url && !(isTicketAssignee || isTicketManager)
-                          : valueDigitalSignature
+                        !hrSignature.url &&
+                        !(isTicketAssignee || isTicketManager) &&
+                        optionSignature !== 'digital-hr'
                       }
                       className={`${
-                        (
-                          optionSignature !== 'digital'
-                            ? hrSignature.url && (isTicketAssignee || isTicketManager)
-                            : valueDigitalSignature !== null
-                        )
+                        (!isEmpty(hrSignature) && (isTicketAssignee || isTicketManager)) ||
+                        optionSignature === 'digital-hr'
                           ? styles.active
                           : styles.disable
                       }`}
@@ -1247,21 +1248,19 @@ const PreviewOffer = (props) => {
               <div className={styles.submitContainer}>
                 {(!hrManagerSignature ||
                   hrManagerSignature !== oldHrManagerReSignature ||
-                  optionSignatureHRManager === 'digitalManager') && (
+                  optionSignatureHRManager === 'digital') && (
                   <Button
                     type="primary"
                     disabled={
                       optionSignatureHRManager !== 'digital'
-                        ? !hrManagerSignature.url && !isTicketManager
+                        ? isEmpty(hrManagerSignature) && !isTicketManager
                         : valueDigitalSignature
                     }
                     onClick={handleHrManagerSignatureSubmit}
                     className={`${
-                      (
-                        optionSignatureHRManager !== 'digital'
-                          ? hrManagerSignature.url && isTicketManager
-                          : valueDigitalSignature
-                      )
+                      !isEmpty(hrManagerSignature) &&
+                      (isTicketAssignee || isTicketManager) &&
+                      optionSignatureHRManager !== 'digital'
                         ? styles.active
                         : styles.disable
                     }`}
