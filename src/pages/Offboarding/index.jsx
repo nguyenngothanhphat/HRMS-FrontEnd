@@ -2,7 +2,7 @@ import { Tabs } from 'antd';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect, history, Redirect } from 'umi';
-import iconDownload from '@/assets/download-icon-yellow.svg';
+import DownloadIcon from '@/assets/download-icon-yellow.svg';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import LocationDropdownSelector from '@/components/LocationDropdownSelector';
@@ -142,7 +142,6 @@ const Offboarding = (props) => {
         getType: 'EXPORT',
       },
     });
-    // const { data: dataExport = '' } = getListExport;
     exportRawDataToCSV(getListExport, 'offboarding');
   };
 
@@ -164,7 +163,7 @@ const Offboarding = (props) => {
               selectedList={selectedDivisions}
             />
           )}
-          <CustomOrangeButton onClick={exportReport} icon={iconDownload}>
+          <CustomOrangeButton onClick={exportReport} icon={DownloadIcon}>
             Export
           </CustomOrangeButton>
         </div>
