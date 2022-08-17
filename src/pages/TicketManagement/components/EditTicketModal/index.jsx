@@ -34,7 +34,7 @@ const EditTicketModal = (props) => {
     loadingUploadAttachment = false,
     role = '',
     ticket = {},
-    refreshData: refreshFetchTicketList = () => {},
+    refreshData = () => {},
     listEmployeeByIds = [],
     loadingUpload = false,
   } = props;
@@ -174,17 +174,6 @@ const EditTicketModal = (props) => {
       setQueryTypeList(support?.queryType || []);
     }
   }, [visible, JSON.stringify(support), JSON.stringify(listCC)]);
-
-  const refreshData = () => {
-    refreshFetchTicketList();
-
-    dispatch({
-      type: 'ticketManagement/fetchTicketByID',
-      payload: {
-        id: ticket.id,
-      },
-    });
-  };
 
   const handleFinish = (value = {}, attach = []) => {
     const oldAttachments = (value.attachments?.fileList || []).filter((a) => a.attachment);
