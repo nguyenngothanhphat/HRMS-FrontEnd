@@ -87,18 +87,18 @@ export const convertOperationText = (operation = '') => {
 
 export const formatHistoryData = (data) => {
   const formattedData = data.map((item) => {
+    const { history = {}, changedBy = {}, timeoffType = {}, leaveRequest = {} } = item;
     const {
-      history: {
-        date = '-',
-        operation = '',
-        status = '-',
-        duration: numberOfDays = '-',
-        currentBalance = '-',
-      } = {},
-      changedBy: { generalInfoInfo: { legalName: changedBy = '-' } = {} } = {},
-      timeoffType: { name: leaveType = '-' } = {},
-      leaveRequest: { fromDate: startDate = '-', toDate: endDate = '-' } = {},
-    } = item;
+      date = '-',
+      operation = '',
+      status = '-',
+      duration: numberOfDays = '-',
+      currentBalance = '-',
+    } = history || {};
+    const { generalInfoInfo = {} } = changedBy || {};
+    const { legalName = '-' } = generalInfoInfo || {};
+    const { name: leaveType = '-' } = timeoffType || {};
+    const { fromDate: startDate = '-', toDate: endDate = '-' } = leaveRequest || {};
 
     return {
       date: formatDateHistory(date),
@@ -106,7 +106,7 @@ export const formatHistoryData = (data) => {
       leaveType,
       startDate: formatDateHistory(startDate),
       endDate: formatDateHistory(endDate),
-      changedBy,
+      changedBy: legalName,
       status: TIMEOFF_STATUS_NAME[status] || '-',
       numberOfDays,
       currentBalance,
