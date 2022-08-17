@@ -24,7 +24,6 @@ const References = (props) => {
     loadingSendNoReference = false,
     loadingFetchReferences = false,
   } = data;
-  const [numReferences, setNumReferences] = useState(0);
   const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
@@ -44,19 +43,21 @@ const References = (props) => {
   }, []);
 
   const getDisabled = () => {
-    if (isFilledReferences) {
+    if (isFilledReferences && numReferencesProp > 0) {
       setDisabled(false);
     }
 
-    if (numReferencesProp && numReferencesProp > 0 && references.length === 0) {
+    if (
+      (numReferencesProp && numReferencesProp > 0 && references.length === 0) ||
+      processStatus !== NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
+    ) {
       setDisabled(true);
     }
   };
 
   useEffect(() => {
-    setNumReferences(numReferencesProp || 3);
     form.setFieldsValue({
-      noOfReferences: numReferencesProp || 3,
+      noOfReferences: numReferencesProp || 0,
     });
   }, [ticketID]);
 
@@ -69,6 +70,8 @@ const References = (props) => {
   };
 
   const onClickNext = async () => {
+    const numReferences = form.getFieldValue('noOfReferences') * 1;
+    const typeOfReferences = typeof numReferences === 'number';
     const nextStep =
       processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
         ? ONBOARDING_STEPS.SALARY_STRUCTURE
@@ -78,47 +81,48 @@ const References = (props) => {
       processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
         ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
         : processStatus;
-
-    if (!isFilledReferences) {
-      dispatch({
-        type: 'newCandidateForm/sendNoReferenceEffect',
-        payload: {
-          numReferences,
-          candidateId,
-        },
-      }).then(({ statusCode }) => {
-        if (statusCode === 200) {
-          message.success('Add number of references successfully');
-        }
-      });
-      setDisabled(true);
-    } else {
-      await dispatch({
-        type: 'newCandidateForm/updateByHR',
-        payload: {
-          candidate: candidateId,
-          currentStep: nextStep,
-          processStatus: nextStatus,
-        },
-      }).then(({ statusCode }) => {
-        if (statusCode === 200) {
-          dispatch({
-            type: 'newCandidateForm/save',
-            payload: {
-              currentStep: nextStep,
-            },
-          });
-          dispatch({
-            type: 'newCandidateForm/saveTemp',
-            payload: {
-              processStatus: nextStatus,
-            },
-          });
-          history.push(
-            `/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`,
-          );
-        }
-      });
+    if (typeOfReferences) {
+      if (!isFilledReferences && numReferences > 0) {
+        dispatch({
+          type: 'newCandidateForm/sendNoReferenceEffect',
+          payload: {
+            numReferences: numReferences || 0,
+            candidateId,
+          },
+        }).then(({ statusCode }) => {
+          if (statusCode === 200) {
+            message.success('Add number of references successfully');
+          }
+        });
+        setDisabled(true);
+      } else {
+        await dispatch({
+          type: 'newCandidateForm/updateByHR',
+          payload: {
+            candidate: candidateId,
+            currentStep: nextStep,
+            processStatus: nextStatus,
+          },
+        }).then(({ statusCode }) => {
+          if (statusCode === 200) {
+            dispatch({
+              type: 'newCandidateForm/save',
+              payload: {
+                currentStep: nextStep,
+              },
+            });
+            dispatch({
+              type: 'newCandidateForm/saveTemp',
+              payload: {
+                processStatus: nextStatus,
+              },
+            });
+            history.push(
+              `/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`,
+            );
+          }
+        });
+      }
     }
   };
 
@@ -139,10 +143,6 @@ const References = (props) => {
                 placeholder="No. of references"
                 className={styles.formInput}
                 disabled={disabled}
-                onChange={(e) => {
-                  e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                  setNumReferences(e.target.value);
-                }}
               />
             </Form.Item>
           </Col>
@@ -241,7 +241,7 @@ const References = (props) => {
                                       index={index}
                                       references={references}
                                     />
-                                    {numReferences > index + 1 && (
+                                    {numReferencesProp > index + 1 && (
                                       <Divider className={styles.divider} />
                                     )}
                                   </div>
@@ -257,7 +257,11 @@ const References = (props) => {
                   </Card>
                 </Col>
 
-                <Col span={24}>{_renderBottomBar()}</Col>
+                <Col span={24}>
+                  {processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
+                    ? _renderBottomBar()
+                    : null}
+                </Col>
               </Row>
             </Form>
           </Spin>
