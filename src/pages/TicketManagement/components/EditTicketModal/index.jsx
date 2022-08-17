@@ -187,7 +187,7 @@ const EditTicketModal = (props) => {
   };
 
   const handleFinish = (value = {}, attach = []) => {
-    const oldAttachments = value.attachments?.fileList.filter((a) => a.attachment);
+    const oldAttachments = (value.attachments?.fileList || []).filter((a) => a.attachment);
     const fileList = [...attach, ...oldAttachments];
     const documents = (fileList || []).map((item) => {
       const {
