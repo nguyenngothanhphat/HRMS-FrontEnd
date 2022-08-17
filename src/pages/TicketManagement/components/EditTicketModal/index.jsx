@@ -10,7 +10,7 @@ import DebounceSelect from '@/components/DebounceSelect';
 import { PRIORITY } from '@/constants/dashboard';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { FILE_TYPE } from '@/constants/upload';
-import uploadFirebase from '@/services/firebase';
+import uploadFirebase, { uploadFirebaseMultiple } from '@/services/firebase';
 import { getAuthority } from '@/utils/authority';
 import { beforeUpload } from '@/utils/upload';
 import styles from './index.less';
@@ -41,8 +41,11 @@ const EditTicketModal = (props) => {
   } = props;
 
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
+  console.log('🚀 ~ uploadedAttachments', uploadedAttachments);
   const [queryTypeList, setQueryTypeList] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
+  const [isUploadFile, setIsUploadFile] = useState(false);
+
   const listCC = listEmployeeByIds.map((x) => {
     return { value: x._id, label: x.generalInfoInfo?.legalName };
   });
@@ -160,26 +163,6 @@ const EditTicketModal = (props) => {
     }
   }, [visible, JSON.stringify(support), JSON.stringify(listCC)]);
 
-  const handleUpload = async (file) => {
-    const payload = await uploadFirebase({ file, typeFile: 'ATTACHMENT' });
-    const res = await dispatch({
-      type: 'upload/addAttachment',
-      payload: {
-        attachments: [payload],
-      },
-      showNotification: true,
-    });
-    if (res.statusCode === 200) {
-      const { data = [] } = res;
-      if (data.length > 0) {
-        const uploadedAttachmentsTemp = JSON.parse(JSON.stringify(uploadedAttachments));
-        uploadedAttachmentsTemp.push(data[0]);
-        setUploadedAttachments(uploadedAttachmentsTemp);
-        setIsEdit(true);
-      }
-    }
-  };
-
   const refreshData = () => {
     refreshFetchTicketList();
 
@@ -191,8 +174,8 @@ const EditTicketModal = (props) => {
     });
   };
 
-  const handleFinish = (value = {}) => {
-    const documents = (uploadedAttachments || []).map((item) => {
+  const handleFinish = (value = {}, haha) => {
+    const documents = (haha || []).map((item) => {
       const {
         id = '',
         url = '',
@@ -239,6 +222,7 @@ const EditTicketModal = (props) => {
       },
     }).then((response) => {
       const { statusCode } = response;
+      setIsUploadFile(false);
       if (statusCode === 200) {
         onClose();
         form.resetFields();
@@ -248,11 +232,58 @@ const EditTicketModal = (props) => {
     });
   };
 
+  const handleUpload = async (...rest) => {
+    const [first] = rest;
+    let payload;
+    const newList = [];
+    setIsUploadFile(true);
+    uploadedAttachments.forEach((attach) => {
+      if (attach?.originFileObj) {
+        newList.push(attach);
+      }
+    });
+    if (first.attachments?.fileList?.length) {
+      const files = newList.map((file) => ({ file: file?.originFileObj, typeFile: 'ATTACHMENT' }));
+      payload = await uploadFirebaseMultiple(files);
+    }
+    if (payload.length > 0) {
+      const res = await dispatch({
+        type: 'upload/addAttachment',
+        payload: {
+          attachments: [...payload],
+        },
+        showNotification: false,
+      });
+      if (res.statusCode === 200) {
+        const { data = [] } = res;
+        if (data.length > 0) {
+          // const uploadedAttachmentsTemp = JSON.parse(JSON.stringify(uploadedAttachments));
+          // uploadedAttachmentsTemp.push(data[0]);
+          // setUploadedAttachments(uploadedAttachmentsTemp);
+          setIsEdit(true);
+          handleFinish(...rest, data);
+        }
+      }
+    } else handleFinish(...rest);
+  };
+
   const onValuesChange = (changedValues, allValues) => {
+    console.log('🚀 ~ allValues', allValues);
     setIsEdit(true);
-    if (uploadedAttachments.length > 1)
-      setUploadedAttachments(allValues.attachments?.fileList || []);
-    else setUploadedAttachments([allValues.attachments?.file] || []);
+    // if (uploadedAttachments.length > 1)
+    //   setUploadedAttachments(allValues.attachments?.fileList || []);
+    // else setUploadedAttachments([allValues.attachments?.file] || []);
+
+    const tempAllValues = { ...allValues };
+    let { fileList: fileListTemp = [] } = tempAllValues.attachments || {};
+    fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
+    if (uploadedAttachments?.length) fileListTemp = [...fileListTemp, ...uploadedAttachments];
+    console.log('🚀 ~ fileListTemp', fileListTemp);
+    setUploadedAttachments([...fileListTemp]);
+    if (tempAllValues.attachments) {
+      tempAllValues.attachments.fileList = fileListTemp;
+    }
+    return tempAllValues;
   };
 
   const renderModalContent = () => {
@@ -262,7 +293,7 @@ const EditTicketModal = (props) => {
           form={form}
           name="editTicketForm"
           id="editTicketForm"
-          onFinish={handleFinish}
+          onFinish={handleUpload}
           onValuesChange={onValuesChange}
         >
           <Row gutter={[24, 0]}>
@@ -386,10 +417,10 @@ const EditTicketModal = (props) => {
               <Form.Item name="attachments" labelCol={{ span: 24 }}>
                 <Upload
                   maxCount={2}
-                  action={(file) => handleUpload(file)}
+                  // action={(file) => setUploadedAttachments([...file, ...uploadedAttachments])}
                   beforeUpload={(file) => beforeUpload(file, [FILE_TYPE.IMAGE, FILE_TYPE.PDF], 2)}
                   openFileDialogOnClick={!(uploadedAttachments.length === 2)}
-                  showUploadList={uploadedAttachments.length > 0}
+                  // showUploadList={uploadedAttachments.length > 0}
                   listType="picture"
                   fileList={uploadedAttachments}
                 >
@@ -437,7 +468,7 @@ const EditTicketModal = (props) => {
     <CommonModal
       onClose={handleCancel}
       width={650}
-      loading={loadingUpdateTicket || loadingUpload}
+      loading={loadingUpdateTicket || loadingUpload || isUploadFile}
       hasCancelButton={false}
       content={renderModalContent()}
       visible={visible}
