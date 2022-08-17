@@ -224,13 +224,7 @@ const ActivityCard = (props) => {
     return (
       <span>
         {handleLongString(text)}{' '}
-        <Tooltip
-          title={text}
-          placement="bottomLeft"
-          getPopupContainer={(trigger) => {
-            return trigger;
-          }}
-        >
+        <Tooltip title={text} placement="bottomLeft" trigger="hover">
           <span className={styles.readMoreBtn}>Read More</span>
         </Tooltip>
       </span>
