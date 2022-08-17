@@ -14,19 +14,12 @@ const ReportingManagerContent = (props) => {
     rookieId = '',
     currentStep = '',
     dateOfJoining = '',
-    listEmployeeByIds = [],
   } = props;
 
   const [form] = Form.useForm();
   const [selectedManager, setSelectedManager] = useState(manager?._id);
-  const listTemp = [...employee, manager];
-  const listId = listTemp.map((x) => x._id);
-  const defaultManagerList = listEmployeeByIds.map((x) => {
-    return { value: x._id, label: x.generalInfoInfo?.legalName };
-  });
-  const defaultReporteeList = listEmployeeByIds
-    .filter((x) => x._id !== manager?._id)
-    .map((x) => ({ value: x._id, label: x.generalInfoInfo?.legalName }));
+  const [defaultReporteeList, setDefaultReporteeList] = useState([]);
+  const [defaultManagerList, setDefaultManagerList] = useState([]);
 
   const onValuesChange = (changedValues, allValues) => {
     const { reportingManager = '' } = allValues;
@@ -34,18 +27,19 @@ const ReportingManagerContent = (props) => {
   };
 
   useEffect(() => {
-    if (manager || employee?.length)
-      dispatch({
-        type: 'onboarding/fetchListEmployeeByIds',
-        payload: {
-          ids: listId,
-        },
-      });
+    if (manager || employee?.length) {
+      setDefaultManagerList({ value: manager?._id, label: manager.generalInfoInfo?.legalName });
+      setDefaultReporteeList(
+        employee
+          .filter((x) => x._id !== manager?._id)
+          .map((x) => ({ value: x._id, label: x.generalInfoInfo?.legalName })),
+      );
+    }
     form.setFieldsValue({
       reportingManager: manager?._id,
       reportees: employee?.map((a) => a?._id),
     });
-  }, []);
+  }, [manager, employee]);
 
   const onEmployeeSearch = (value) => {
     if (!value) {
@@ -143,11 +137,7 @@ export default connect(
       },
       currentStep = '',
     },
-    onboarding: {
-      joiningFormalities: { listEmployeeByIds = [] },
-    },
   }) => ({
-    listEmployeeByIds,
     dateOfJoining,
     currentStep,
     rookieId,

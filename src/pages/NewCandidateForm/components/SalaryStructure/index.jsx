@@ -75,7 +75,7 @@ class SalaryStructure extends PureComponent {
   };
 
   saveSalaryNote = () => {
-    const { dispatch, candidateId = '' } = this.props;
+    const { dispatch, candidateId = '', currentStep = '' } = this.props;
     const { salaryNoteState } = this.state;
 
     dispatch({
@@ -84,6 +84,7 @@ class SalaryStructure extends PureComponent {
         salaryNote: salaryNoteState,
         candidate: candidateId,
         tenantId: getCurrentTenant(),
+        currentStep,
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
