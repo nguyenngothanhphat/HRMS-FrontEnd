@@ -43,18 +43,21 @@ const References = (props) => {
   }, []);
 
   const getDisabled = () => {
-    if (isFilledReferences) {
+    if (isFilledReferences && numReferencesProp > 0) {
       setDisabled(false);
     }
 
-    if (numReferencesProp && numReferencesProp >= 0 && references.length === 0) {
+    if (
+      (numReferencesProp && numReferencesProp > 0 && references.length === 0) ||
+      processStatus !== NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
+    ) {
       setDisabled(true);
     }
   };
 
   useEffect(() => {
     form.setFieldsValue({
-      noOfReferences: numReferencesProp || 3,
+      noOfReferences: numReferencesProp || 0,
     });
   }, [ticketID]);
 
@@ -67,7 +70,8 @@ const References = (props) => {
   };
 
   const onClickNext = async () => {
-    const numReferences = form.getFieldValue('noOfReferences') * 1 || 0;
+    const numReferences = form.getFieldValue('noOfReferences') * 1;
+    const typeOfReferences = typeof numReferences === 'number';
     const nextStep =
       processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
         ? ONBOARDING_STEPS.SALARY_STRUCTURE
@@ -77,47 +81,48 @@ const References = (props) => {
       processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
         ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
         : processStatus;
-
-    if (!isFilledReferences && numReferences > 0) {
-      dispatch({
-        type: 'newCandidateForm/sendNoReferenceEffect',
-        payload: {
-          numReferences,
-          candidateId,
-        },
-      }).then(({ statusCode }) => {
-        if (statusCode === 200) {
-          message.success('Add number of references successfully');
-        }
-      });
-      setDisabled(true);
-    } else {
-      await dispatch({
-        type: 'newCandidateForm/updateByHR',
-        payload: {
-          candidate: candidateId,
-          currentStep: nextStep,
-          processStatus: nextStatus,
-        },
-      }).then(({ statusCode }) => {
-        if (statusCode === 200) {
-          dispatch({
-            type: 'newCandidateForm/save',
-            payload: {
-              currentStep: nextStep,
-            },
-          });
-          dispatch({
-            type: 'newCandidateForm/saveTemp',
-            payload: {
-              processStatus: nextStatus,
-            },
-          });
-          history.push(
-            `/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`,
-          );
-        }
-      });
+    if (typeOfReferences) {
+      if (!isFilledReferences && numReferences > 0) {
+        dispatch({
+          type: 'newCandidateForm/sendNoReferenceEffect',
+          payload: {
+            numReferences: numReferences || 0,
+            candidateId,
+          },
+        }).then(({ statusCode }) => {
+          if (statusCode === 200) {
+            message.success('Add number of references successfully');
+          }
+        });
+        setDisabled(true);
+      } else {
+        await dispatch({
+          type: 'newCandidateForm/updateByHR',
+          payload: {
+            candidate: candidateId,
+            currentStep: nextStep,
+            processStatus: nextStatus,
+          },
+        }).then(({ statusCode }) => {
+          if (statusCode === 200) {
+            dispatch({
+              type: 'newCandidateForm/save',
+              payload: {
+                currentStep: nextStep,
+              },
+            });
+            dispatch({
+              type: 'newCandidateForm/saveTemp',
+              payload: {
+                processStatus: nextStatus,
+              },
+            });
+            history.push(
+              `/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`,
+            );
+          }
+        });
+      }
     }
   };
 
@@ -252,7 +257,11 @@ const References = (props) => {
                   </Card>
                 </Col>
 
-                <Col span={24}>{_renderBottomBar()}</Col>
+                <Col span={24}>
+                  {processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
+                    ? _renderBottomBar()
+                    : null}
+                </Col>
               </Row>
             </Form>
           </Spin>

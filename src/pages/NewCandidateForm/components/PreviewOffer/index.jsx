@@ -2,7 +2,6 @@ import { Button, Col, Input, Popover, Radio, Row, Select, Skeleton, Space, Typog
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage, history } from 'umi';
-import { isEmpty } from 'lodash';
 import BigEditVector from '@/assets/bigEditVector.svg';
 import CustomModal from '@/components/CustomModal';
 import ModalDrawSignature from '@/components/ModalDrawSignature';
@@ -13,12 +12,10 @@ import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/co
 import ModalUpload from '../../../../components/ModalUpload';
 import NoteComponent from '../NoteComponent';
 import CancelIcon from './components/CancelIcon';
-import ExtendOfferModal from './components/ExtendOfferModal';
 import FileContent from './components/FileContent';
 import whiteImg from './components/images/whiteImg.png';
 import ModalContent from './components/ModalContent';
 import RejectOfferModal from './components/RejectOfferModal';
-import WithdrawOfferModal from './components/WithdrawOfferModal';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -62,11 +59,9 @@ const PreviewOffer = (props) => {
 
   const { employee: { _id: currentUserId = '' } = {} || {} } = currentUser;
   const [hrSignature, setHrSignature] = useState(hrSignatureProp || '');
-  console.log('🚀 ~ hrSignature', hrSignature);
 
   const [hrSignatureSubmit, setHrSignatureSubmit] = useState(false);
   const [hrManagerSignature, setHrManagerSignature] = useState(hrManagerSignatureProp || '');
-  console.log('🚀 ~ hrManagerSignature', hrManagerSignature);
   const [hrManagerSignatureSubmit, setHrManagerSignatureSubmit] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
@@ -113,10 +108,8 @@ const PreviewOffer = (props) => {
   // const processStatus = NEW_PROCESS_STATUS.OFFER_WITHDRAWN;
 
   const isTicketAssignee = currentUserId === assigneeId;
-  console.log('🚀 ~ isTicketAssignee', isTicketAssignee);
   // const isTicketAssignee = true;
   const isTicketManager = currentUserId === assigneeManagerId;
-  console.log('🚀 ~ isTicketManager', isTicketManager);
   // const isTicketManager = false;
   const isNewOffer = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION;
   const isAwaitingOffer = processStatus === NEW_PROCESS_STATUS.AWAITING_APPROVALS;
@@ -1127,14 +1120,13 @@ const PreviewOffer = (props) => {
                     <Button
                       type="primary"
                       onClick={handleHrSignatureSubmit}
-                      disabled={
-                        !hrSignature.url &&
-                        !(isTicketAssignee || isTicketManager) &&
-                        optionSignature !== 'digital-hr'
-                      }
+                      disabled={!hrSignature.url && !(isTicketAssignee || isTicketManager)}
                       className={`${
-                        (!isEmpty(hrSignature) && (isTicketAssignee || isTicketManager)) ||
-                        optionSignature === 'digital-hr'
+                        (
+                          optionSignature !== 'digital-hr'
+                            ? hrSignature.url && (isTicketAssignee || isTicketManager)
+                            : valueDigitalSignatureHR !== null
+                        )
                           ? styles.active
                           : styles.disable
                       }`}
@@ -1251,16 +1243,14 @@ const PreviewOffer = (props) => {
                   optionSignatureHRManager === 'digital') && (
                   <Button
                     type="primary"
-                    disabled={
-                      optionSignatureHRManager !== 'digital'
-                        ? isEmpty(hrManagerSignature) && !isTicketManager
-                        : valueDigitalSignature
-                    }
+                    disabled={hrManagerSignature.url && !isTicketManager}
                     onClick={handleHrManagerSignatureSubmit}
                     className={`${
-                      !isEmpty(hrManagerSignature) &&
-                      (isTicketAssignee || isTicketManager) &&
-                      optionSignatureHRManager !== 'digital'
+                      (
+                        optionSignatureHRManager === !'digital'
+                          ? hrManagerSignature.url && (isTicketAssignee || isTicketManager)
+                          : valueDigitalSignature !== null
+                      )
                         ? styles.active
                         : styles.disable
                     }`}
