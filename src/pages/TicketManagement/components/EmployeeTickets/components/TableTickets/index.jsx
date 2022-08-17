@@ -350,7 +350,7 @@ const TableTickets = (props) => {
       sortDirections: ['ascend', 'descend'],
     },
     {
-      title: 'Assigned To',
+      title: 'Actions',
       dataIndex: 'employeeAssignee',
       key: 'employeeAssignee',
       fixed: 'right',

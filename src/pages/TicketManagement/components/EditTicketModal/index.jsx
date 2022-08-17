@@ -1,4 +1,4 @@
-import { Col, DatePicker, Form, Input, Row, Select, Spin, Tooltip, Upload } from 'antd';
+import { Col, DatePicker, Form, Input, message, Row, Select, Spin, Tooltip, Upload } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -10,9 +10,8 @@ import DebounceSelect from '@/components/DebounceSelect';
 import { PRIORITY } from '@/constants/dashboard';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { FILE_TYPE } from '@/constants/upload';
-import uploadFirebase, { uploadFirebaseMultiple } from '@/services/firebase';
+import { uploadFirebaseMultiple } from '@/services/firebase';
 import { getAuthority } from '@/utils/authority';
-import { beforeUpload } from '@/utils/upload';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -41,7 +40,6 @@ const EditTicketModal = (props) => {
   } = props;
 
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
-  console.log('🚀 ~ uploadedAttachments', uploadedAttachments);
   const [queryTypeList, setQueryTypeList] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [isUploadFile, setIsUploadFile] = useState(false);
@@ -75,6 +73,19 @@ const EditTicketModal = (props) => {
 
   const handleCancel = () => {
     onClose();
+  };
+
+  const beforeUpload = (file) => {
+    const fileRegex = /image[/](jpg|jpeg|png)|application[/]pdf/gim;
+    const checkType = fileRegex.test(file.type);
+    if (!checkType) {
+      message.error('You can only upload png, jpg, jpeg and pdf files!');
+    }
+    const isLt5M = file.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
+      message.error('Image must smaller than 5MB!');
+    }
+    return (checkType && isLt5M) || Upload.LIST_IGNORE;
   };
 
   const onEmployeeSearch = (value) => {
@@ -122,6 +133,7 @@ const EditTicketModal = (props) => {
     return () => {
       setQueryTypeList([]);
       setUploadedAttachments([]);
+      setIsUploadFile(false);
     };
   }, [visible]);
 
@@ -174,8 +186,10 @@ const EditTicketModal = (props) => {
     });
   };
 
-  const handleFinish = (value = {}, haha) => {
-    const documents = (haha || []).map((item) => {
+  const handleFinish = (value = {}, attach = []) => {
+    const oldAttachments = value.attachments?.fileList.filter((a) => a.attachment);
+    const fileList = [...attach, ...oldAttachments];
+    const documents = (fileList || []).map((item) => {
       const {
         id = '',
         url = '',
@@ -246,7 +260,7 @@ const EditTicketModal = (props) => {
       const files = newList.map((file) => ({ file: file?.originFileObj, typeFile: 'ATTACHMENT' }));
       payload = await uploadFirebaseMultiple(files);
     }
-    if (payload.length > 0) {
+    if (payload?.length > 0) {
       const res = await dispatch({
         type: 'upload/addAttachment',
         payload: {
@@ -257,9 +271,6 @@ const EditTicketModal = (props) => {
       if (res.statusCode === 200) {
         const { data = [] } = res;
         if (data.length > 0) {
-          // const uploadedAttachmentsTemp = JSON.parse(JSON.stringify(uploadedAttachments));
-          // uploadedAttachmentsTemp.push(data[0]);
-          // setUploadedAttachments(uploadedAttachmentsTemp);
           setIsEdit(true);
           handleFinish(...rest, data);
         }
@@ -268,17 +279,9 @@ const EditTicketModal = (props) => {
   };
 
   const onValuesChange = (changedValues, allValues) => {
-    console.log('🚀 ~ allValues', allValues);
     setIsEdit(true);
-    // if (uploadedAttachments.length > 1)
-    //   setUploadedAttachments(allValues.attachments?.fileList || []);
-    // else setUploadedAttachments([allValues.attachments?.file] || []);
-
     const tempAllValues = { ...allValues };
-    let { fileList: fileListTemp = [] } = tempAllValues.attachments || {};
-    fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
-    if (uploadedAttachments?.length) fileListTemp = [...fileListTemp, ...uploadedAttachments];
-    console.log('🚀 ~ fileListTemp', fileListTemp);
+    const { fileList: fileListTemp = [] } = tempAllValues.attachments || {};
     setUploadedAttachments([...fileListTemp]);
     if (tempAllValues.attachments) {
       tempAllValues.attachments.fileList = fileListTemp;
@@ -417,10 +420,9 @@ const EditTicketModal = (props) => {
               <Form.Item name="attachments" labelCol={{ span: 24 }}>
                 <Upload
                   maxCount={2}
-                  // action={(file) => setUploadedAttachments([...file, ...uploadedAttachments])}
                   beforeUpload={(file) => beforeUpload(file, [FILE_TYPE.IMAGE, FILE_TYPE.PDF], 2)}
                   openFileDialogOnClick={!(uploadedAttachments.length === 2)}
-                  // showUploadList={uploadedAttachments.length > 0}
+                  showUploadList={uploadedAttachments.length > 0}
                   listType="picture"
                   fileList={uploadedAttachments}
                 >
