@@ -16,6 +16,8 @@ import {
   setTenantId,
 } from '@/utils/authority';
 import { checkPermissions } from '@/utils/permissions';
+import { socket } from '@/utils/socket';
+import { CHAT_EVENT } from '@/constants/socket';
 
 const UserModel = {
   namespace: 'user',
@@ -230,6 +232,9 @@ const UserModel = {
             employeeWidgets: data.widgetDashboardShow || [],
           },
         });
+
+        // init socket
+        socket.emit(CHAT_EVENT.ADD_USER, data?.employee?._id || '');
 
         return response;
       } catch (errors) {

@@ -315,7 +315,7 @@ class ActiveChat extends PureComponent {
     } = this.props;
     const { message } = values;
     if (activeId && message) {
-      socket.emit(CHAT_EVENT.SEND_MESSAGE, {
+      socket.emit(CHAT_EVENT.SEND_MESSAGE_TO_HR, {
         conversationId: activeId,
         senderId: candidateId,
         receiverId: assignTo?._id || assignTo || '',
