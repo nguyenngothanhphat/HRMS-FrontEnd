@@ -114,6 +114,9 @@ const CandidatePortalLayout = React.memo((props) => {
   }, []);
 
   const initialSocket = () => {
+    if (!socket.connected) {
+      socket.connect()
+    } 
     socket.emit(CHAT_EVENT.ADD_USER, candidate?._id);
     socket.on(CHAT_EVENT.GET_MESSAGE, (message) => {
       saveNewMessage(message);
