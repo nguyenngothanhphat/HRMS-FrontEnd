@@ -8,7 +8,7 @@ const antIcon = <LoadingOutlined style={{ fontSize: 28 }} spin />;
 const PageLoading: React.FC<{
   tip?: string;
 }> = ({ tip }) => (
-  <div style={{ paddingTop: 300, paddingBottom: 100, textAlign: 'center' }}>
+  <div style={{ paddingTop: 200, paddingBottom: 100, textAlign: 'center' }}>
     <Spin size="large" tip={tip} indicator={antIcon} />
     <span style={{
       fontSize: 13,
@@ -16,9 +16,9 @@ const PageLoading: React.FC<{
       display: 'block',
       fontWeight: 700,
       letterSpacing: 1.5,
-      opacity: 0.8
+      opacity: 0.6
     }}
-    >LOADING, PLEASE WAIT...
+    >LOADING...
     </span>
   </div>
 );
