@@ -1,4 +1,4 @@
-import { Col, DatePicker, Form, Input, Row, Select, Spin, Tooltip, Upload } from 'antd';
+import { Col, DatePicker, Form, Input, message, Row, Select, Spin, Tooltip, Upload } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -10,9 +10,8 @@ import DebounceSelect from '@/components/DebounceSelect';
 import { PRIORITY } from '@/constants/dashboard';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { FILE_TYPE } from '@/constants/upload';
-import uploadFirebase from '@/services/firebase';
+import { uploadFirebaseMultiple } from '@/services/firebase';
 import { getAuthority } from '@/utils/authority';
-import { beforeUpload } from '@/utils/upload';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -43,6 +42,8 @@ const EditTicketModal = (props) => {
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
+  const [isUploadFile, setIsUploadFile] = useState(false);
+
   const listCC = listEmployeeByIds.map((x) => {
     return { value: x._id, label: x.generalInfoInfo?.legalName };
   });
@@ -72,6 +73,19 @@ const EditTicketModal = (props) => {
 
   const handleCancel = () => {
     onClose();
+  };
+
+  const beforeUpload = (file) => {
+    const fileRegex = /image[/](jpg|jpeg|png)|application[/]pdf/gim;
+    const checkType = fileRegex.test(file.type);
+    if (!checkType) {
+      message.error('You can only upload png, jpg, jpeg and pdf files!');
+    }
+    const isLt5M = file.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
+      message.error('Image must smaller than 5MB!');
+    }
+    return (checkType && isLt5M) || Upload.LIST_IGNORE;
   };
 
   const onEmployeeSearch = (value) => {
@@ -119,6 +133,7 @@ const EditTicketModal = (props) => {
     return () => {
       setQueryTypeList([]);
       setUploadedAttachments([]);
+      setIsUploadFile(false);
     };
   }, [visible]);
 
@@ -160,28 +175,10 @@ const EditTicketModal = (props) => {
     }
   }, [visible, JSON.stringify(support), JSON.stringify(listCC)]);
 
-  const handleUpload = async (file) => {
-    const payload = await uploadFirebase({ file, typeFile: 'ATTACHMENT' });
-    const res = await dispatch({
-      type: 'upload/addAttachment',
-      payload: {
-        attachments: [payload],
-      },
-      showNotification: true,
-    });
-    if (res.statusCode === 200) {
-      const { data = [] } = res;
-      if (data.length > 0) {
-        const uploadedAttachmentsTemp = JSON.parse(JSON.stringify(uploadedAttachments));
-        uploadedAttachmentsTemp.push(data[0]);
-        setUploadedAttachments(uploadedAttachmentsTemp);
-        setIsEdit(true);
-      }
-    }
-  };
-
-  const handleFinish = (value = {}) => {
-    const documents = (uploadedAttachments || []).map((item) => {
+  const handleFinish = (value = {}, attach = []) => {
+    const oldAttachments = (value.attachments?.fileList || []).filter((a) => a.attachment);
+    const fileList = [...attach, ...oldAttachments];
+    const documents = (fileList || []).map((item) => {
       const {
         id = '',
         url = '',
@@ -228,6 +225,7 @@ const EditTicketModal = (props) => {
       },
     }).then((response) => {
       const { statusCode } = response;
+      setIsUploadFile(false);
       if (statusCode === 200) {
         onClose();
         form.resetFields();
@@ -237,9 +235,47 @@ const EditTicketModal = (props) => {
     });
   };
 
+  const handleUpload = async (...rest) => {
+    const [first] = rest;
+    let payload;
+    const newList = [];
+    setIsUploadFile(true);
+    uploadedAttachments.forEach((attach) => {
+      if (attach?.originFileObj) {
+        newList.push(attach);
+      }
+    });
+    if (first.attachments?.fileList?.length) {
+      const files = newList.map((file) => ({ file: file?.originFileObj, typeFile: 'ATTACHMENT' }));
+      payload = await uploadFirebaseMultiple(files);
+    }
+    if (payload?.length > 0) {
+      const res = await dispatch({
+        type: 'upload/addAttachment',
+        payload: {
+          attachments: [...payload],
+        },
+        showNotification: false,
+      });
+      if (res.statusCode === 200) {
+        const { data = [] } = res;
+        if (data.length > 0) {
+          setIsEdit(true);
+          handleFinish(...rest, data);
+        }
+      }
+    } else handleFinish(...rest);
+  };
+
   const onValuesChange = (changedValues, allValues) => {
     setIsEdit(true);
-    setUploadedAttachments(allValues.attachments?.fileList || []);
+    const tempAllValues = { ...allValues };
+    const { fileList: fileListTemp = [] } = tempAllValues.attachments || {};
+    setUploadedAttachments([...fileListTemp]);
+    if (tempAllValues.attachments) {
+      tempAllValues.attachments.fileList = fileListTemp;
+    }
+    return tempAllValues;
   };
 
   const renderModalContent = () => {
@@ -249,7 +285,7 @@ const EditTicketModal = (props) => {
           form={form}
           name="editTicketForm"
           id="editTicketForm"
-          onFinish={handleFinish}
+          onFinish={handleUpload}
           onValuesChange={onValuesChange}
         >
           <Row gutter={[24, 0]}>
@@ -373,7 +409,6 @@ const EditTicketModal = (props) => {
               <Form.Item name="attachments" labelCol={{ span: 24 }}>
                 <Upload
                   maxCount={2}
-                  action={(file) => handleUpload(file)}
                   beforeUpload={(file) => beforeUpload(file, [FILE_TYPE.IMAGE, FILE_TYPE.PDF], 2)}
                   openFileDialogOnClick={!(uploadedAttachments.length === 2)}
                   showUploadList={uploadedAttachments.length > 0}
@@ -424,7 +459,7 @@ const EditTicketModal = (props) => {
     <CommonModal
       onClose={handleCancel}
       width={650}
-      loading={loadingUpdateTicket || loadingUpload}
+      loading={loadingUpdateTicket || loadingUpload || isUploadFile}
       hasCancelButton={false}
       content={renderModalContent()}
       visible={visible}

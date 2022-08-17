@@ -319,98 +319,94 @@ const TableTickets = (props) => {
         },
         sortDirections: ['ascend', 'descend'],
       },
-      ...(isAssignTicket || isAppendTicket || isViewTicketByAdmin
-        ? [
-            {
-              title: 'Assigned To',
-              dataIndex: 'employeeAssignee',
-              key: 'employeeAssignee',
-              fixed: 'right',
-              align: 'center',
-              render: (employeeAssignee, row) => {
-                if (employeeAssignee) {
-                  return (
-                    <TicketItem
-                      employeeAssignee={employeeAssignee}
-                      renderMenuDropdown={renderMenuDropdown}
-                      handleClickSelect={handleClickSelect}
-                      row={row}
-                      selected={selected}
-                      setOldAssignName={setOldName}
-                      setOldId={setOldId}
-                      setModalVisible={setModalVisible}
-                      setEditVisible={setEditVisible}
+      {
+        title: 'Actions',
+        dataIndex: 'employeeAssignee',
+        key: 'employeeAssignee',
+        fixed: 'right',
+        align: 'center',
+        render: (employeeAssignee, row) => {
+          if (employeeAssignee) {
+            return (
+              <TicketItem
+                employeeAssignee={employeeAssignee}
+                renderMenuDropdown={renderMenuDropdown}
+                handleClickSelect={handleClickSelect}
+                row={row}
+                selected={selected}
+                setOldAssignName={setOldName}
+                setOldId={setOldId}
+                setModalVisible={setModalVisible}
+                setEditVisible={setEditVisible}
+              />
+            );
+          }
+          return (
+            <>
+              <Tooltip title="Edit">
+                <img
+                  width={32}
+                  height={32}
+                  src={EditTicketIcon}
+                  alt="edit ticket icon"
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handleEditTicket(row.id)}
+                />
+              </Tooltip>
+              {(isAssignTicket || isViewTicketByAdmin) && (
+                <Popover
+                  trigger="click"
+                  overlayClassName={styles.dropdownPopover}
+                  content={renderMenuDropdown()}
+                  placement="bottomRight"
+                >
+                  <Tooltip title="Assign to">
+                    <img
+                      width={32}
+                      height={32}
+                      src={PersonIcon}
+                      alt="assign person icon"
+                      style={{
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => handleClickSelect(row.id)}
                     />
-                  );
-                }
-                return (
-                  <>
-                    <Tooltip title="Edit">
-                      <img
-                        width={32}
-                        height={32}
-                        src={EditTicketIcon}
-                        alt="edit ticket icon"
-                        style={{
-                          cursor: 'pointer',
-                        }}
-                        onClick={() => handleEditTicket(row.id)}
-                      />
-                    </Tooltip>
-                    {(isAssignTicket || isViewTicketByAdmin) && (
-                      <Popover
-                        trigger="click"
-                        overlayClassName={styles.dropdownPopover}
-                        content={renderMenuDropdown()}
-                        placement="bottomRight"
-                      >
-                        <Tooltip title="Assign to">
-                          <img
-                            width={32}
-                            height={32}
-                            src={PersonIcon}
-                            alt="assign person icon"
-                            style={{
-                              cursor: 'pointer',
-                            }}
-                            onClick={() => handleClickSelect(row.id)}
-                          />
-                        </Tooltip>
-                      </Popover>
-                    )}
-                    {(isAppendTicket || isViewTicketByAdmin) && (
-                      <Tooltip title="Move to Team">
-                        <img
-                          width={32}
-                          height={32}
-                          src={TeamIcon}
-                          alt="assign team icon"
-                          style={{
-                            cursor: 'pointer',
-                          }}
-                          onClick={() => handleAssignTeam(row.id)}
-                        />
-                      </Tooltip>
-                    )}
-                  </>
-                );
-              },
-              sorter: (a, b) => {
-                if (
-                  a.employeeAssignee?.generalInfo?.legalName &&
-                  b.employeeAssignee?.generalInfo?.legalName
+                  </Tooltip>
+                </Popover>
+              )}
+              {(isAppendTicket || isViewTicketByAdmin) && (
+                <Tooltip title="Move to Team">
+                  <img
+                    width={32}
+                    height={32}
+                    src={TeamIcon}
+                    alt="assign team icon"
+                    style={{
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => handleAssignTeam(row.id)}
+                  />
+                </Tooltip>
+              )}
+            </>
+          );
+        },
+        sorter: (a, b) => {
+          if (
+            a.employeeAssignee?.generalInfo?.legalName &&
+            b.employeeAssignee?.generalInfo?.legalName
+          )
+            return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
+              ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
+                  `${b.employeeAssignee.generalInfo?.legalName}`,
                 )
-                  return a.employeeAssignee.generalInfo && a.employeeAssignee.generalInfo?.legalName
-                    ? a.employeeAssignee.generalInfo?.legalName.localeCompare(
-                        `${b.employeeAssignee.generalInfo?.legalName}`,
-                      )
-                    : null;
-                return null;
-              },
-              sortDirections: ['ascend', 'descend'],
-            },
-          ]
-        : []),
+              : null;
+          return null;
+        },
+        sortDirections: ['ascend', 'descend'],
+      },
     ];
   };
 
