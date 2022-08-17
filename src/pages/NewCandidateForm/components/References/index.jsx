@@ -2,6 +2,7 @@ import { Button, Card, Col, Divider, Form, Input, message, Row, Spin } from 'ant
 import React, { useEffect, useState } from 'react';
 // import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import { connect, history } from 'umi';
+import { isNaN } from 'lodash';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';
@@ -75,8 +76,7 @@ const References = (props) => {
   };
 
   const onClickNext = async () => {
-    const numReferences = form.getFieldValue('noOfReferences') * 1;
-    const typeOfReferences = typeof numReferences === 'number';
+    const numReferences = Number(form.getFieldValue('noOfReferences'));
     const nextStep =
       processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
         ? ONBOARDING_STEPS.SALARY_STRUCTURE
@@ -87,7 +87,7 @@ const References = (props) => {
         ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
         : processStatus;
 
-    if (typeOfReferences) {
+    if (!isNaN(numReferences)) {
       if (
         !isFilledReferences &&
         numReferences > 0 &&
