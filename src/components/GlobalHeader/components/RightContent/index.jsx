@@ -19,10 +19,10 @@ const RightContent = (props) => {
 
   useEffect(() => {
     if (!socket.connected) {
-      socket.connect()
-    } 
-  }, [])
-  
+      socket.connect();
+    }
+  }, []);
+
   const saveNewMessage = async (message) => {
     await dispatch({
       type: 'conversation/saveNewMessage',
@@ -39,14 +39,6 @@ const RightContent = (props) => {
     });
   };
 
-  const initialSocket = () => {
-    socket.emit(CHAT_EVENT.ADD_USER, currentUser?.employee?._id || '');
-    socket.on(CHAT_EVENT.GET_MESSAGE, (message) => {
-      saveNewMessage(message);
-      fetchNotificationList();
-    });
-  };
-
   const [modalVisible, setModalVisible] = useState(false);
   const [isSwitchCompanyVisible, setIsSwitchCompanyVisible] = useState(false);
   const [notification, setNotification] = useState(unseenTotal);
@@ -54,10 +46,17 @@ const RightContent = (props) => {
   const checkIsOwner =
     isOwner() && currentUser.signInRole.map((role) => role.toLowerCase()).includes('owner');
 
+  const handleMessage = (message) => {
+    console.log('🚀  ~ message', message);
+    saveNewMessage(message);
+    fetchNotificationList();
+  };
+
   useEffect(() => {
     fetchNotificationList();
-    initialSocket();
+    socket.on(CHAT_EVENT.GET_MESSAGE_HR, handleMessage);
     return () => {
+      socket.off(CHAT_EVENT.GET_MESSAGE_HR);
       disconnectSocket();
     };
   }, []);

@@ -50,12 +50,6 @@ const CandidatePortalLayout = React.memo((props) => {
     activeConversationUnseen,
   } = props;
 
-  useEffect(() => {
-    if (!socket.connected) {
-      socket.connect()
-    } 
-  }, [])
-
   const [notification, setNotification] = useState(0);
   const [openUpcomingEventModal, setOpenUpcomingEventModal] = useState(false);
   let candidateFullName = `${firstName} ${middleName} ${lastName}`;
@@ -108,31 +102,17 @@ const CandidatePortalLayout = React.memo((props) => {
     });
   };
 
-  useEffect(() => {
-    if (!candidate) {
-      dispatch({
-        type: 'user/fetchCurrent',
-      });
-    }
-    return () => {
-      disconnectSocket();
-    };
-  }, []);
-
-  const initialSocket = () => {
-    socket.emit(CHAT_EVENT.ADD_USER, candidate?._id);
-    socket.on(CHAT_EVENT.GET_MESSAGE, (message) => {
-      saveNewMessage(message);
-      fetchNotificationList();
-      getListLastMessage();
-    });
-  };
-
   const getViewingTask = () => {
     const currentLink = window.location.href;
     return pendingTasks.find((task) => currentLink.includes(task.id));
   };
   const viewingTask = getViewingTask();
+
+  const handleMessage = (message) => {
+    saveNewMessage(message);
+    fetchNotificationList();
+    getListLastMessage();
+  };
 
   useEffect(() => {
     if (candidate) {
@@ -142,10 +122,24 @@ const CandidatePortalLayout = React.memo((props) => {
           candidate: candidate._id,
         },
       });
-
-      initialSocket();
+    } else {
+      dispatch({
+        type: 'user/fetchCurrent',
+      });
     }
-  }, [JSON.stringify(candidate)]);
+  }, [candidate]);
+
+  useEffect(() => {
+    if (!socket.connected) {
+      socket.connect();
+    }
+
+    socket.on(CHAT_EVENT.GET_MESSAGE, handleMessage);
+    return () => {
+      socket.off(CHAT_EVENT.GET_MESSAGE);
+      disconnectSocket();
+    };
+  }, []);
 
   useEffect(() => {
     setCandidateMode(window.location.href.includes('ticket'));
