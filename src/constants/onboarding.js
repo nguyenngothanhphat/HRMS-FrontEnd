@@ -140,6 +140,13 @@ export const ONBOARDING_COLUMN_NAME = {
   PROCESS_STATUS: 'process_status',
 };
 
+export const SALARY_FIELDS_KEY = {
+  BASIC: 'basic',
+  LUNCH_ALLOWANCE: 'lunch_allowance',
+  PETRO_ALLOWANCE: 'petrol_allowance',
+  MOBILE_INTERNET_ALLOWANCE: 'mobile_internet_allowance',
+};
+
 const COLS = ONBOARDING_COLUMN_NAME;
 
 export const MENU_DATA = [
