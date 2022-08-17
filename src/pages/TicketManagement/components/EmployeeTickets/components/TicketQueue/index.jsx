@@ -6,6 +6,8 @@ import SearchFilterBar from '../../../SearchFilterBar';
 import TableTickets from '../TableTickets';
 import OverallTotal from '../OverallTotal';
 import styles from './index.less';
+import useCancelToken from '@/utils/hooks';
+import { debounceFetchData } from '@/utils/utils';
 
 const TicketQueue = (props) => {
   const {
@@ -13,19 +15,18 @@ const TicketQueue = (props) => {
     data = [],
     loading,
     loadingFilter,
-    totalList = [],
-    selectedLocations = [],
     employee: {
       _id = '',
       departmentInfo: { _id: idDepart = '' },
-      location: { headQuarterAddress: { country = '' } = {} } = {},
+      location: { headQuarterAddress: { country = {} } = {} } = {},
     } = {},
     role = '',
     permissions = [],
     tabName = '',
-    filter = '',
+    ticketManagement: { selectedLocations = [], totalList = [], filter = [], total = 0 } = {},
   } = props;
 
+  const { cancelToken, cancelRequest } = useCancelToken();
   const [pageSelected, setPageSelected] = useState(1);
   const [size, setSize] = useState(10);
   const [nameSearch, setNameSearch] = useState('');
@@ -34,12 +35,13 @@ const TicketQueue = (props) => {
     setNameSearch(value);
   }, 500);
 
-  const initDataTable = () => {
+  const fetchData = () => {
     let payload = {
       status: ['New'],
       page: pageSelected,
       limit: size,
       location: selectedLocations,
+      cancelToken: cancelToken(),
       ...filter,
     };
     if (nameSearch) {
@@ -52,11 +54,11 @@ const TicketQueue = (props) => {
       payload = {
         ...payload,
         permissions,
-        country,
+        country: country?._id,
       };
     }
     dispatch({
-      type: 'ticketManagement/fetchListAllTicket',
+      type: 'ticketManagement/fetchTicketList',
       payload,
     });
   };
@@ -66,7 +68,7 @@ const TicketQueue = (props) => {
       employeeAssignee: _id,
       departmentAssign: idDepart,
       location: selectedLocations,
-      country,
+      country: country?._id,
       permissions,
     };
     dispatch({
@@ -86,7 +88,10 @@ const TicketQueue = (props) => {
   };
 
   useEffect(() => {
-    initDataTable();
+    debounceFetchData(fetchData);
+    return () => {
+      cancelRequest();
+    };
   }, [pageSelected, size, nameSearch, JSON.stringify(selectedLocations), JSON.stringify(filter)]);
 
   useEffect(() => {
@@ -113,12 +118,13 @@ const TicketQueue = (props) => {
         <TableTickets
           data={data}
           loading={loading || loadingFilter}
-          pageSelected={pageSelected}
+          page={pageSelected}
           size={size}
-          getPageAndSize={getPageAndSize}
-          refreshFetchData={initDataTable}
+          onChangePage={getPageAndSize}
+          refreshFetchData={fetchData}
           refreshFetchTotalList={fetchTotalList}
           role={role}
+          total={total}
         />
       </Card>
     </div>
@@ -126,22 +132,9 @@ const TicketQueue = (props) => {
 };
 
 export default connect(
-  ({
-    loading,
-    ticketManagement: {
-      listDepartment = [],
-      selectedLocations = [],
-      totalList = [],
-      filter = [],
-    } = {},
-    user: { currentUser: { employee = {} } = {} } = {},
-  }) => ({
-    listDepartment,
+  ({ loading, ticketManagement = {}, user: { currentUser: { employee = {} } = {} } = {} }) => ({
+    ticketManagement,
     employee,
-    totalList,
-    filter,
-    selectedLocations,
-    loading: loading.effects['ticketManagement/fetchListAllTicket'],
-    loadingFilter: loading.effects['ticketManagement/fetchListAllTicketSearch'],
+    loading: loading.effects['ticketManagement/fetchTicketList'],
   }),
 )(TicketQueue);

@@ -13,8 +13,6 @@ const ManagerRequestTable = (props) => {
     dispatch,
     timeOff: {
       currentLeaveTypeTab = '',
-      currentScopeTab = '',
-      // yourTimeOffTypes = {},
       totalByType = {
         A: 0,
         B: 0,
@@ -34,7 +32,7 @@ const ManagerRequestTable = (props) => {
       payload: {
         currentLeaveTypeTab: String(type),
         currentFilterTab: '1',
-        currentPayloadTypes: listIdType,
+        currentPayloadTypes: listIdType.sort(),
       },
     });
     dispatch({
@@ -51,7 +49,7 @@ const ManagerRequestTable = (props) => {
 
   useEffect(() => {
     saveCurrentTypeTab('1');
-  }, [JSON.stringify(typeList), currentScopeTab]);
+  }, [JSON.stringify(typeList)]);
 
   const renderTableTitle = {
     left: (

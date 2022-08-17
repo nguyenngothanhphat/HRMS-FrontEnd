@@ -12,10 +12,11 @@ export async function getGeneralInfoByUserId(payload) {
     data: payload,
   });
 }
-export async function getEmploymentInfo(payload) {
-  return request('/api/employeetenant/get-by-id', {
-    method: 'POST',
+export async function getEmploymentInfo(payload, params) {
+  return request(`/api/employeetenant/${payload.id}`, {
+    method: 'GET',
     data: payload,
+    params,
   });
 }
 export async function getCompensation(payload) {
@@ -312,6 +313,13 @@ export async function updateTax(payload) {
 export async function updateEmployment(payload) {
   return request('/api/employeetenant/update', {
     method: 'POST',
+    data: payload,
+  });
+}
+
+export async function patchEmployment(payload) {
+  return request(`/api/employeetenant/${payload.id}`, {
+    method: 'PATCH',
     data: payload,
   });
 }

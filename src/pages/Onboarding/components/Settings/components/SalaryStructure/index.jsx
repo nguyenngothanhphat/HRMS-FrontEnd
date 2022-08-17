@@ -42,7 +42,7 @@ const SalaryStructure = (props) => {
   const getListLocation = (countryId) => {
     const arrLocation = filter(
       locationList,
-      (item) => item.headQuarterAddress.country._id === countryId,
+      (item) => item.headQuarterAddress?.country?._id === countryId,
     );
     setListLocation(arrLocation);
     setSelectedLocation(arrLocation[0]._id);

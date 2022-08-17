@@ -86,6 +86,7 @@ const Certification = (props) => {
               required: true,
               message: 'Required field',
             },
+            { whitespace: true, message: 'Required field' },
           ]}
         >
           <Input disabled={disabled} placeholder="Certification name" />

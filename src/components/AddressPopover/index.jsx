@@ -29,17 +29,13 @@ const AddressPopover = (props) => {
   };
 
   const userInfo = () => {
-    const getTimezone =
-      getTimezoneViaCity(city) ||
-      getTimezoneViaCity(state) ||
-      getTimezoneViaCity(typeof country === 'string' ? country : '') ||
-      '';
+    const getTimezone = getTimezoneViaCity(state) || getTimezoneViaCity(city) || '';
 
     const timezone =
       getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone;
     const time = getCurrentTimeOfTimezoneOption(new Date(), timezone);
 
-    const address = [addressLine1, addressLine2, state, country.name || country || null, zipCode]
+    const address = [addressLine1, addressLine2, state, country?.name || null, zipCode]
       .filter(Boolean)
       .join(', ');
 

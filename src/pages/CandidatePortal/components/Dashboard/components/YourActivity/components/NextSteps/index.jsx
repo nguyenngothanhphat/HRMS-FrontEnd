@@ -28,7 +28,7 @@ class NextSteps extends PureComponent {
 
   render() {
     const data = this.getData();
-    if (data.length === 0) return <EmptyComponent />;
+    if (data.length === 0) return <EmptyComponent description="Next Steps will be added soon" />;
     return (
       <div className={styles.NextSteps}>
         {data.map((val, index) => this.renderItem(val, data.length, index))}

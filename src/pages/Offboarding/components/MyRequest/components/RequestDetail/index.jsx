@@ -11,6 +11,7 @@ import { onJoinMeeting } from '@/utils/offboarding';
 
 import SetMeetingModal from '../../../SetMeetingModal';
 import styles from './index.less';
+import { getCompanyName } from '@/utils/utils';
 
 const { STATUS, UPDATE_ACTION, MEETING_STATUS } = OFFBOARDING;
 const RequestDetail = (props) => {
@@ -46,7 +47,7 @@ const RequestDetail = (props) => {
       payload: {
         action: UPDATE_ACTION.EMPLOYEE_RESCHEDULE,
         meeting: {
-          employeeDate: moment(values.time),
+          employeeDate: new Date(values.time).toLocaleString(),
         },
         id: _id,
       },
@@ -280,7 +281,7 @@ const RequestDetail = (props) => {
             </Row>
           </Col>
           <Col span={24} className={styles.title}>
-            Reason for leaving us?
+            Reason for leaving {getCompanyName()}?
           </Col>
           <Col span={24} style={{ color: '#707177' }}>
             {reason}

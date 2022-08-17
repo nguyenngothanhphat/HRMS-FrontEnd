@@ -168,7 +168,7 @@ const EditProjectModalContent = (props) => {
                 placeholder="Select Project Manager"
                 fetchOptions={onEmployeeSearch}
                 showSearch
-                defaultValue={{
+                defaultOptions={{
                   value: projectManager?._id,
                   label: projectManager?.generalInfo?.legalName,
                 }}
@@ -192,7 +192,7 @@ const EditProjectModalContent = (props) => {
                 placeholder="Select Engineering Owner"
                 fetchOptions={onEmployeeSearch}
                 showSearch
-                defaultValue={{
+                defaultOptions={{
                   value: engineeringOwner?._id,
                   label: engineeringOwner?.generalInfo?.legalName,
                 }}

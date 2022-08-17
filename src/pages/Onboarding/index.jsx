@@ -3,6 +3,7 @@ import { Button, Col, Row, Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 import CustomBlueButton from '@/components/CustomBlueButton';
 import { ONBOARDING_TABS } from '@/constants/onboarding';
 import { PageContainer } from '@/layouts/layout/src';
@@ -14,10 +15,16 @@ import Settings from './components/Settings';
 import styles from './index.less';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 
-@connect(({ user: { permissions = [] } = {}, onboarding: { onboardingOverview = {} } = {} }) => ({
-  permissions,
-  onboardingOverview,
-}))
+@connect(
+  ({
+    user: { permissions = [] } = {},
+    onboarding: { onboardingOverview = {}, joiningFormalities = {} } = {},
+  }) => ({
+    permissions,
+    onboardingOverview,
+    joiningFormalities,
+  }),
+)
 class Onboarding extends PureComponent {
   componentDidMount = () => {
     const {
@@ -37,50 +44,74 @@ class Onboarding extends PureComponent {
     });
   };
 
-  downloadTemplate = () => {
-    const { onboardingOverview: { onboardingData = [] } = {} } = this.props;
-    exportArrayDataToCsv('OnboardingData', this.processData(onboardingData));
+  downloadTemplate = (tabName) => {
+    if (tabName === ONBOARDING_TABS.OVERVIEW) {
+      const { onboardingOverview: { onboardingData = [] } = {} } = this.props;
+      exportArrayDataToCsv('OnboardingData', this.processData(onboardingData, tabName));
+    } else {
+      const { joiningFormalities: { listNewComer = [] } = {} } = this.props;
+      exportArrayDataToCsv('NewJoineesData', this.processData(listNewComer, tabName));
+    }
   };
 
-  processData = (array = []) => {
+  processData = (array = [], tabName) => {
     // Uppercase first letter
     let capsPopulations = [];
-    capsPopulations = array.map((item) => {
-      const { workLocation, clientLocation, workFromHome } = item;
-      const location = workLocation
-        ? workLocation.name
-        : clientLocation || (workFromHome && 'Work From Home');
+    if (tabName === ONBOARDING_TABS.OVERVIEW) {
+      capsPopulations = array.map((item) => {
+        const { workLocation, clientLocation, workFromHome } = item;
+        const location = workLocation
+          ? workLocation.name
+          : clientLocation || (workFromHome && 'Work From Home');
 
-      const reportingManager = [
-        item.reportingManager?.generalInfo?.firstName,
-        item.reportingManager?.generalInfo?.middleName,
-        item.reportingManager?.generalInfo?.lastName,
-      ]
-        .filter(Boolean)
-        .join(' ');
-      return {
-        Candidate: item.ticketID,
-        'First Name': item.firstName,
-        'Middle Name': item.middleName,
-        'Last Name': item.lastName,
-        'Person Email': item.privateEmail,
-        Position: item.title?.name,
-        Location: location,
-        Classification: item.employeeType?.name,
-        Grade: item.grade?.name,
-        Department: item.department?.name,
-        'Previous years of experience': item.previousExperience,
-        'Reporting Manager': reportingManager,
-        // Reportees: item.reportees,
-        'Date of Join': item.dateOfJoining && moment(item.dateOfJoining).format(DATE_FORMAT_MDY),
-        'Assign to': item.assignTo?.generalInfo?.legalName,
-        'HR Manager': item.assigneeManager?.generalInfo?.legalName,
-        Status: item.processStatus,
-      };
-    });
+        const reportingManager = [
+          item.reportingManager?.generalInfo?.firstName,
+          item.reportingManager?.generalInfo?.middleName,
+          item.reportingManager?.generalInfo?.lastName,
+        ]
+          .filter(Boolean)
+          .join(' ');
+        return {
+          Candidate: item.ticketID,
+          'First Name': item.firstName,
+          'Middle Name': item.middleName,
+          'Last Name': item.lastName,
+          'Person Email': item.privateEmail,
+          Position: item.title?.name,
+          Location: location,
+          Classification: item.employeeType?.name,
+          Grade: item.grade?.name,
+          Department: item.department?.name,
+          'Previous years of experience': item.previousExperience,
+          'Reporting Manager': reportingManager,
+          // Reportees: item.reportees,
+          'Date of Join': item.dateOfJoining && moment(item.dateOfJoining).format(DATE_FORMAT_MDY),
+          'Assign to': item.assignTo?.generalInfo?.legalName,
+          'HR Manager': item.assigneeManager?.generalInfo?.legalName,
+          Status: item.processStatus,
+        };
+      });
+    } else {
+      capsPopulations = array.map((item) => {
+        const {
+          title: { name: titleName = '' } = {},
+          hrEmployee: { generalInfoInfo: { legalName: hrPOCName = '' } = {} } = {},
+          hrManager: { generalInfoInfo: { legalName: hrManagerName = '' } = {} } = {},
+        } = item;
+        return {
+          Candidate: item.ticketId,
+          'Full Name': item.candidateFullName,
+          'Joining Date': item.joiningDate && moment(item.joiningDate).format(DATE_FORMAT_MDY),
+          'Years of Experience': item.yearsOfExp,
+          'Job Title': titleName,
+          'HR POC': hrPOCName,
+          'HR Manager': hrManagerName,
+        };
+      });
+    }
 
     // Get keys, header csv
-    const keys = Object.keys(capsPopulations[0]);
+    const keys = Object.keys(!isEmpty(capsPopulations) ? capsPopulations[0] : []);
     const dataExport = [];
     dataExport.push(keys);
 
@@ -113,7 +144,7 @@ class Onboarding extends PureComponent {
                 icon={<DownloadOutlined />}
                 className={styles.generate}
                 type="text"
-                onClick={this.downloadTemplate}
+                onClick={() => this.downloadTemplate(tabName)}
               >
                 {formatMessage({ id: 'component.employeeOnboarding.generate' })}
               </Button>

@@ -13,12 +13,14 @@ import ResignationRequestDetail from './components/ResignationRequestDetail';
 import WhatNext from './components/WhatNext';
 import styles from './index.less';
 
+const { STATUS } = OFFBOARDING;
+
 const ManagerTicketDetails = (props) => {
   const {
     dispatch,
     match: { params: { id = '' } = {} },
     offboarding: {
-      viewingRequest: { ticketId = '', employee = {}, status = '' } = {},
+      viewingRequest: { ticketId = '', employee = {}, status = '', hrStatus = '' } = {},
       viewingRequest = {},
     } = {},
     loadingFetchData = false,
@@ -43,6 +45,60 @@ const ManagerTicketDetails = (props) => {
         offBoardingId: id,
       },
     });
+  };
+
+  const renderStatus = (statusProp) => {
+    switch (statusProp) {
+      case STATUS.DRAFT:
+        return (
+          <div className={styles.containerStatus}>
+            <div>Status: </div>
+            <div className={styles.statusDraft} />
+            <div style={{ color: '#fd4546' }}>Draft</div>
+          </div>
+        );
+      case STATUS.ACCEPTED:
+        if (hrStatus === STATUS.IN_PROGRESS) {
+          return (
+            <div className={styles.containerStatus}>
+              <div>Status: </div>
+              <div className={styles.statusInProgress} />
+              <div style={{ color: '#ffa100' }}>In Progress</div>
+            </div>
+          );
+        }
+        return (
+          <div className={styles.containerStatus}>
+            <div>Status: </div>
+            <div className={styles.statusAccepted} />
+            <div style={{ color: '#00C598' }}>Accepted</div>
+          </div>
+        );
+      case STATUS.REJECTED:
+        return (
+          <div className={styles.containerStatus}>
+            <div>Status: </div>
+            <div className={styles.statusDraft} />
+            <div style={{ color: '#fd4546' }}>Rejected</div>
+          </div>
+        );
+      case STATUS.DELETED:
+        return (
+          <div className={styles.containerStatus}>
+            <div>Status: </div>
+            <div className={styles.statusDraft} />
+            <div style={{ color: 'red' }}>Deleted</div>
+          </div>
+        );
+      default:
+        return (
+          <div className={styles.containerStatus}>
+            <div>Status: </div>
+            <div className={styles.statusInProgress} />
+            <div style={{ color: '#ffa100' }}>In Progress</div>
+          </div>
+        );
+    }
   };
 
   useEffect(() => {
@@ -70,6 +126,7 @@ const ManagerTicketDetails = (props) => {
               [Ticket ID: {ticketId}] Terminate work relationship with{' '}
               {getEmployeeName(employee.generalInfoInfo)}
             </p>
+            <div>{renderStatus(status)}</div>
           </div>
         </Affix>
         <Spin spinning={loadingFetchData}>
@@ -92,6 +149,7 @@ const ManagerTicketDetails = (props) => {
                     <WhatNext
                       item={viewingRequest}
                       setIsEnterClosingComment={setIsEnterClosingComment}
+                      disabled={status === STATUS.DELETED}
                     />
                   )}
                 </Col>

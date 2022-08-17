@@ -150,9 +150,7 @@ const JobDetails = (props) => {
     }
 
     if (workLocation1) {
-      countryID =
-        workLocation1?.headQuarterAddress?.country?._id ||
-        workLocation1?.headQuarterAddress?.country;
+      countryID = workLocation1?.headQuarterAddress?.country?._id;
     }
 
     if (countryID) {

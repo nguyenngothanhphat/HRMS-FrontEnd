@@ -1,7 +1,8 @@
 import { notification, message } from 'antd';
+import { uniq } from 'lodash';
 import {
   getProjectList,
-  getProjectNameList,
+  // getProjectNameList,
   getStatusSummary,
   generateProjectId,
   getCustomerList,
@@ -35,6 +36,7 @@ const initialState = {
   divisionList: [],
   employeeList: [],
   customerInfo: {},
+  totalProjectList: 0,
 };
 
 const ProjectManagement = {
@@ -50,7 +52,7 @@ const ProjectManagement = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data = [] } = response;
+        const { statusCode, data = [], total = 0 } = response;
         if (statusCode !== 200) throw response;
 
         yield put({
@@ -58,6 +60,7 @@ const ProjectManagement = {
           payload: {
             projectList: data,
             projectListPayload: payload,
+            totalProjectList: total,
           },
         });
       } catch (errors) {
@@ -68,7 +71,7 @@ const ProjectManagement = {
     *fetchProjectNameListEffect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getProjectNameList, {
+        response = yield call(getProjectList, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
@@ -79,7 +82,7 @@ const ProjectManagement = {
         yield put({
           type: 'save',
           payload: {
-            projectNameList: data,
+            projectNameList: uniq(data.map((x) => x.projectName)),
           },
         });
       } catch (errors) {

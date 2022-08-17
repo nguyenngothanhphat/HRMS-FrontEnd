@@ -2,8 +2,10 @@ import moment from 'moment';
 import {
   TIMEOFF_12H_FORMAT,
   TIMEOFF_24H_FORMAT,
+  TIMEOFF_DATE_HISTORY_FORMAT,
   TIMEOFF_NEW_REQUEST_DAYS,
   TIMEOFF_STATUS,
+  TIMEOFF_STATUS_NAME,
   TIMEOFF_TYPE,
 } from '@/constants/timeOff';
 
@@ -65,3 +67,51 @@ export const isUpdatedRequest = (status, updated = false) => {
 
 export const getTypeListByTab = (typeList = [], tab = '') =>
   typeList.filter((x) => x.type === tabType[tab]);
+
+export const formatDateHistory = (date) => {
+  if (moment(date).isValid()) return moment(date).locale('en').format(TIMEOFF_DATE_HISTORY_FORMAT);
+  return '-';
+};
+
+export const convertOperationText = (operation = '') => {
+  if (!operation) return '-';
+  const dashTxt = operation.replace(/-+/g, ' ').toLowerCase();
+  const txtArray = dashTxt.split(' ');
+
+  for (let i = 0; i < txtArray.length; i += 1) {
+    txtArray[i] = txtArray[i].charAt(0).toUpperCase() + txtArray[i].slice(1);
+  }
+
+  return txtArray.join(' ');
+};
+
+export const formatHistoryData = (data) => {
+  const formattedData = data.map((item) => {
+    const { history = {}, changedBy = {}, timeoffType = {}, leaveRequest = {} } = item;
+    const {
+      date = '-',
+      operation = '',
+      status = '-',
+      duration: numberOfDays = '-',
+      currentBalance = '-',
+    } = history || {};
+    const { generalInfoInfo = {} } = changedBy || {};
+    const { legalName = '-' } = generalInfoInfo || {};
+    const { name: leaveType = '-' } = timeoffType || {};
+    const { fromDate: startDate = '-', toDate: endDate = '-' } = leaveRequest || {};
+
+    return {
+      date: formatDateHistory(date),
+      operation: convertOperationText(operation),
+      leaveType,
+      startDate: formatDateHistory(startDate),
+      endDate: formatDateHistory(endDate),
+      changedBy: legalName,
+      status: TIMEOFF_STATUS_NAME[status] || '-',
+      numberOfDays,
+      currentBalance,
+    };
+  });
+
+  return formattedData;
+};

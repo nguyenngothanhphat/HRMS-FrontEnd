@@ -3,7 +3,7 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { TIMEOFF_STATUS } from '@/constants/timeOff';
+import { LEAVE_QUERY_TYPE, TIMEOFF_STATUS } from '@/constants/timeOff';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import mockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
 import styles from './index.less';
@@ -24,6 +24,7 @@ const TeamLeaveCalendar = (props) => {
       dispatch({
         type: 'dashboard/fetchTeamLeaveRequests',
         payload: {
+          queryType: LEAVE_QUERY_TYPE.TEAM,
           status: [TIMEOFF_STATUS.ACCEPTED],
           fromDate: startOfMonth,
           toDate: endOfMonth,

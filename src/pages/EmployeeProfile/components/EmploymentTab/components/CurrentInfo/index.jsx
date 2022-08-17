@@ -15,6 +15,7 @@ const CurrentInfo = (props) => {
     empTypeOther = '',
     manager,
     titleInfo = {},
+    grade = {},
     // compensation = {},
     department = {},
   } = employeeProfile?.originData?.employmentData || {};
@@ -39,13 +40,13 @@ const CurrentInfo = (props) => {
     else {
       value = joinDate;
     }
-    return moment(value).locale('en').format('Do MMMM YYYY');
+    return (value && moment(value).locale('en').format('Do MMMM YYYY')) || '';
   };
 
   const data = {
     title: title?.name || '',
     department: department?.name || '',
-    grade: titleInfo?.gradeInfo?.name || '',
+    grade: grade?.name || '',
     initialJoiningDate: getInitialJoiningDate(),
     joiningDate: joinDate ? moment(joinDate).locale('en').format('Do MMMM YYYY') : '',
     location: location?.name || '',

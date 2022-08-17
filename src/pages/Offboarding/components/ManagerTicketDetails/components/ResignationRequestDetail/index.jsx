@@ -3,6 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
+import { getCompanyName } from '@/utils/utils';
 
 const ResignationRequestDetail = (props) => {
   const { item = {} } = props;
@@ -19,7 +20,7 @@ const ResignationRequestDetail = (props) => {
         </div>
 
         <div className={styles.reason}>
-          <span className={styles.title}>Reason for leaving us?</span>
+          <span className={styles.title}>Reason for leaving {getCompanyName()}?</span>
           <p className={styles.reasonContent}>{reason}</p>
         </div>
 

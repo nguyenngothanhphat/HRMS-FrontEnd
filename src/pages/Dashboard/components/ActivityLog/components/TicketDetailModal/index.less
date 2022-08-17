@@ -6,7 +6,14 @@
 @borderColor: @border-color-base;
 
 .TicketDetailModal {
+  a {
+    font-weight: 500;
+  }
   :global {
+    .ant-tag {
+      font-size: 13px;
+      border-radius: 30px;
+    }
     .ant-form-item-explain {
       div {
         font-size: 13px;
@@ -14,6 +21,9 @@
     }
     .ant-select-selection-item {
       color: #161c29 !important;
+    }
+    .ant-select {
+      width: 160px;
     }
     .ant-select-selector,
     .ant-input {
@@ -32,26 +42,6 @@
       height: 0;
       color: #707177;
       font-size: 12px;
-    }
-    .ant-btn {
-      height: 40px;
-      padding: 0 25px;
-      object-fit: contain;
-      color: #ffffff;
-      font-weight: 500;
-      font-size: 14px;
-
-      letter-spacing: 0.13px;
-
-      text-shadow: none;
-      background-color: #ffa100;
-      border: solid 1px #ffa100;
-      border-radius: 25px;
-      box-shadow: none;
-      &:hover {
-        color: #ffffff;
-        background-color: #ffa100;
-      }
     }
 
     .ant-modal-header {

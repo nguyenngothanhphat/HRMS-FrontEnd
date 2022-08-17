@@ -49,8 +49,8 @@ const ResourceList = (props) => {
 
   const [filter, setFilter] = useState({});
 
-  const updateData = (listOffAllTicket) => {
-    const array = formatData(listOffAllTicket);
+  const updateData = (ticketList) => {
+    const array = formatData(ticketList);
     setResourceListState(array);
   };
 

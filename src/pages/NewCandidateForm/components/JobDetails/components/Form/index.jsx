@@ -524,7 +524,7 @@ const JobDetailForm = (props) => {
             showArrow
             allowClear
             // do not change anything if you do not understand
-            defaultValue={
+            defaultOptions={
               reportingManager
                 ? {
                     value: reportingManagerObj?.value || reportingManager?._id,

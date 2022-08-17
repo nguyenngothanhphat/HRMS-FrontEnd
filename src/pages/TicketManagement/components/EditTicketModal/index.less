@@ -1,0 +1,153 @@
+@darkColour: #161c29;
+@blueColour: @primary-color;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@contentPadding: 24px;
+@borderColor: @border-color-base;
+
+.EditTicketModal {
+  padding: @padding-lg;
+  :global {
+    .ant-form-item-explain {
+      display: none;
+    }
+
+    .ant-select-selection-item {
+      color: #161c29;
+    }
+    .ant-select-disabled {
+      .ant-select-selection-item {
+        color: #161c2980;
+      }
+    }
+
+    // SELECT
+    .ant-select {
+      width: 100% !important;
+    }
+    .ant-select-selector {
+      min-height: 42px !important;
+      border-radius: 5px !important;
+    }
+    .ant-select-single {
+      .ant-select-selection-search-input {
+        height: 42px !important;
+      }
+    }
+    .ant-select-selection-item,
+    .ant-select-selection-placeholder {
+      font-size: 13px !important;
+      line-height: 42px !important;
+    }
+    .ant-select-multiple {
+      .ant-select-selection-item {
+        height: 28px !important;
+        padding-top: 3px !important;
+        font-size: 13px;
+        line-height: unset !important;
+        background: #ffffff;
+        border: 1px solid @border-color-base;
+        border-left: 4px solid @primary-color;
+        border-radius: 5px;
+      }
+      .ant-select-selection-item-remove {
+        margin-top: 3px;
+        margin-inline: 5px;
+
+        .anticon-close {
+          border: 0.75px solid #707177;
+          border-radius: 50%;
+        }
+      }
+    }
+    .ant-select-multiple .ant-select-selection-item-remove > * {
+      line-height: 0;
+    }
+    .ant-select-auto-complete {
+      .ant-input {
+        border: none !important;
+      }
+    }
+
+    .ant-select-selector {
+      overflow: hidden;
+    }
+    .ant-input-affix-wrapper {
+      .ant-input-prefix {
+        margin-right: 9px;
+      }
+      .ant-input {
+        height: unset !important;
+      }
+      border: none !important;
+    }
+    // INPUT + DATE PICKER
+    .ant-input,
+    .ant-input-number,
+    .ant-picker {
+      width: 100%;
+      height: 42px !important;
+      border-radius: 5px !important;
+    }
+    .ant-input-number,
+    .ant-input {
+      font-size: 13px;
+    }
+    .ant-picker {
+      input {
+        font-size: 13px;
+      }
+    }
+    .ant-input-number-input-wrap {
+      input {
+        height: 40px !important;
+      }
+    }
+
+    .ant-form-item-label label {
+      height: 0;
+      color: #707177;
+      font-size: 13px;
+    }
+
+    .ant-form-item {
+      margin-bottom: 12px;
+    }
+
+    .ant-select-selection-overflow-item .ant-select-selection-overflow-item-suffix {
+      display: none;
+    }
+
+    .ant-upload-list {
+      color: @primary-color !important;
+      text-decoration: underline;
+    }
+    .ant-upload-list-item-card-actions .anticon {
+      color: #fd4546 !important ;
+    }
+    .ant-upload-list-text .ant-upload-text-icon .anticon {
+      color: @primary-color !important;
+    }
+  }
+
+  .addAttachments {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 10px;
+    .description {
+      display: block;
+      color: #707177;
+      font-size: 13px;
+      line-height: 15px;
+    }
+  }
+  .disableUpload {
+    cursor: not-allowed !important;
+    opacity: 0.7;
+    .btn {
+      cursor: not-allowed !important;
+    }
+  }
+}

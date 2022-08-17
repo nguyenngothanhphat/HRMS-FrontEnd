@@ -19,7 +19,6 @@ import {
   saveDraftLeaveRequest,
   updateDraftLeaveRequest,
   getTeamCompoffRequests,
-  getTeamLeaveRequests,
   getTotalByType,
   uploadFile,
   uploadBalances,
@@ -63,6 +62,9 @@ import {
   getTimeOffTypeByEmployee,
   getLeaveTypeByTimeOffType,
   getEmployeeTypeList,
+  getTotalByStatus,
+  getHistoryTimeoffByEmployee,
+  getLeaveTypeByEmployee,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -72,12 +74,15 @@ const timeOff = {
     currentScopeTab: '1',
     currentFilterTab: '1',
     totalByType: {},
+    totalByStatus: {},
     holidaysList: [],
     holidaysListByLocation: [],
     holidaysListByCountry: [],
     leaveHistory: [],
     leavingList: [],
     leaveRequests: [],
+    historyTimeoff: [],
+    historyTypeList: [],
     compoffRequests: [],
     timeOffTypes: [],
     yourTimeOffTypes: {},
@@ -198,7 +203,6 @@ const timeOff = {
       try {
         const response = yield call(getTimeOffTypes, payload);
         const { statusCode, data: timeOffTypes = [] } = response;
-        // console.log('timeOffTypes', timeOffTypes);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -322,34 +326,6 @@ const timeOff = {
       }
       return response;
     },
-    *fetchMyLeaveRequest({ payload }, { call, put }) {
-      let response = {};
-      try {
-        const tenantId = getCurrentTenant();
-        response = yield call(getMyLeaveRequest, {
-          ...payload,
-          tenantId,
-          company: getCurrentCompany(),
-        });
-        if (response) {
-          const { statusCode, data: { items: leaveRequests = [] } = {}, total = 0 } = response;
-          if (statusCode !== 200) throw response;
-
-          yield put({
-            type: 'save',
-            payload: { leaveRequests },
-          });
-          yield put({
-            type: 'savePaging',
-            payload: { total },
-          });
-        }
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response || {};
-    },
-
     *fetchLeaveHistory({ employee = '', status = '' }, { call, put }) {
       try {
         const tenantId = getCurrentTenant();
@@ -413,6 +389,49 @@ const timeOff = {
       return response;
     },
 
+    *fetchHistoryTimeoffByEmployee({ payload }, { call, put }) {
+      let response = {};
+      try {
+        const tenantId = getCurrentTenant();
+
+        response = yield call(getHistoryTimeoffByEmployee, {
+          ...payload,
+          tenantId,
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { historyTimeoff: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchLeaveTypeByEmployee({ payload }, { call, put }) {
+      let response = {};
+      try {
+        const tenantId = getCurrentTenant();
+
+        response = yield call(getLeaveTypeByEmployee, {
+          ...payload,
+          tenantId,
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { historyTypeList: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
     *updateLeaveRequestById({ payload = {} }, { call }) {
       try {
         const response = yield call(updateLeaveRequestById, {
@@ -440,8 +459,6 @@ const timeOff = {
         });
       } catch (errors) {
         // dialog(errors);
-        // eslint-disable-next-line no-console
-        // console.log('errors of holiday list', erros);
       }
       return response;
     },
@@ -593,7 +610,6 @@ const timeOff = {
           tenantId: getCurrentTenant(),
         });
         const { statusCode, data: { result: compoffRequests = [] } = {}, total = 0 } = response;
-        // console.log('response', response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -650,7 +666,6 @@ const timeOff = {
         response = yield call(getEmailsListByCompany, {
           ...payload,
         });
-        // console.log('email res', response);
         const { statusCode, data: emailsList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -692,7 +707,6 @@ const timeOff = {
           data: { items: teamCompoffRequests = [] },
           total = 0,
         } = response;
-        // console.log('response', response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -709,58 +723,28 @@ const timeOff = {
       return {};
     },
 
-    *fetchTeamLeaveRequests({ payload }, { call, put }) {
+    *fetchLeaveRequests({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getTeamLeaveRequests, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
+        response = yield call(
+          getAllLeaveRequests,
+          {
+            cancelToken: payload.cancelToken,
+          },
+          {
+            ...payload,
+            tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
+          },
+        );
         if (response) {
-          const {
-            statusCode,
-            data: { items: teamLeaveRequests = [] },
-            total = 0,
-          } = response;
-          // console.log('response', response);
-          if (statusCode !== 200) throw response;
-
-          yield put({
-            type: 'save',
-            payload: { teamLeaveRequests },
-          });
-          yield put({
-            type: 'savePaging',
-            payload: { total },
-          });
-        }
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response || {};
-    },
-
-    *fetchAllLeaveRequests({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getAllLeaveRequests, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        if (response) {
-          const {
-            statusCode,
-            data: { items: allLeaveRequests = [] },
-            total = 0,
-          } = response;
+          const { statusCode, data = [], total = 0 } = response;
 
           if (statusCode !== 200) throw response;
 
           yield put({
             type: 'save',
-            payload: { allLeaveRequests },
+            payload: { allLeaveRequests: data },
           });
           yield put({
             type: 'savePaging',
@@ -802,6 +786,35 @@ const timeOff = {
       return response;
     },
 
+    *getTotalByStatusEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(
+          getTotalByStatus,
+          {
+            cancelToken: payload.cancelToken,
+          },
+          {
+            ...payload,
+            tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
+          },
+        );
+        if (response) {
+          const { statusCode, data = {} } = response;
+          if (statusCode !== 200) throw response;
+
+          yield put({
+            type: 'save',
+            payload: { totalByStatus: data },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
     *clearViewingLeaveRequest(_, { put }) {
       try {
         yield put({
@@ -827,7 +840,6 @@ const timeOff = {
       try {
         const response = yield call(uploadFile, { ...payload, tenantId: getCurrentTenant() });
         const { statusCode, data } = response;
-        // console.log('response', response);
         if (statusCode !== 200) throw response;
         notification.success({
           message: 'Upload file Successfully',
@@ -844,7 +856,6 @@ const timeOff = {
       try {
         const response = yield call(uploadBalances, { ...payload, tenantId: getCurrentTenant() });
         const { statusCode, data: balances } = response;
-        // console.log('response', response);
         if (statusCode !== 200) throw response;
         notification.success({
           message: 'Upload file Successfully',
@@ -1218,16 +1229,9 @@ const timeOff = {
       };
     },
     clearFilter(state) {
-      const { filter } = state;
       return {
         ...state,
-        filter: {
-          ...filter,
-          search: '',
-          fromDate: '',
-          toDate: '',
-          isSearch: false,
-        },
+        filter: {},
       };
     },
     savePaging(state, action) {

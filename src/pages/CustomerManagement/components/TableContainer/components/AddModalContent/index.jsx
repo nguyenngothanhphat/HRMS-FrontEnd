@@ -339,7 +339,7 @@ const AddModalContent = (props) => {
                   placeholder="Enter Account Owner"
                   fetchOptions={onEmployeeSearch}
                   showSearch
-                  defaultValue={{
+                  defaultOptions={{
                     value: employee?._id,
                     label: employee?.generalInfo?.legalName,
                   }}

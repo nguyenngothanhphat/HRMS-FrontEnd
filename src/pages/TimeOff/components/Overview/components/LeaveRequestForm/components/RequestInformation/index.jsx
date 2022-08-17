@@ -84,7 +84,6 @@ const RequestInformation = (props) => {
   const [selectedTypeName, setSelectedTypeName] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [showSuccessModalVisible, setShowSuccessModalVisible] = useState(false);
-  const [secondNotice, setSecondNotice] = useState('');
   const [durationFrom, setDurationFrom] = useState('');
   const [durationTo, setDurationTo] = useState('');
   const [buttonState, setButtonState] = useState(0); // save draft or submit
@@ -851,29 +850,6 @@ const RequestInformation = (props) => {
     }
   }, []);
 
-  const generateSecondNotice = () => {
-    switch (selectedType) {
-      case A:
-      case B:
-        return `${selectedTypeName}s gets credited each month.`;
-      case C: {
-        if (currentAllowanceState) {
-          return `A 'To date' will be set automatically as per a duration of ${currentAllowanceState} days from the selected 'From date'`;
-        }
-        return '';
-      }
-      case D: {
-        if (choosableDateList.length > 0) {
-          return `${selectedTypeName} applied for: ${choosableDateList.length} days`;
-        }
-        return ``;
-      }
-
-      default:
-        return '';
-    }
-  };
-
   useEffect(() => {
     const currentAllowance = getCurrentAllowance(selectedType);
     setCurrentAllowanceState(currentAllowance);
@@ -897,12 +873,6 @@ const RequestInformation = (props) => {
       </Tag>
     );
   };
-
-  useEffect(() => {
-    // generate second notice
-    const secondNoticeTemp = generateSecondNotice();
-    setSecondNotice(secondNoticeTemp);
-  }, [selectedTypeName, currentAllowanceState, JSON.stringify(continuousDateList)]);
 
   useEffect(() => {
     dispatch({
@@ -1325,13 +1295,6 @@ const RequestInformation = (props) => {
                   </>
                 )}
               </Row>
-            </Col>
-            <Col lg={6} sm={0}>
-              {secondNotice !== '' && (
-                <div className={styles.smallNotice}>
-                  <span className={styles.normalText}>{secondNotice}</span>
-                </div>
-              )}
             </Col>
           </Row>
 

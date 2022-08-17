@@ -11,11 +11,11 @@ const EditBank = (props) => {
     bankDataOrigin,
     loading,
     handleCancel = () => {},
-    locationProp: { headQuarterAddress: { country = '' } = {} } = {},
+    locationProp: { headQuarterAddress: { country = {} } = {} } = {},
   } = props;
-  const checkIndiaLocation = country === 'IN';
-  const checkVietNamLocation = country === 'VN';
-  const checkUSALocation = country === 'US';
+  const checkIndiaLocation = country?._id === 'IN';
+  const checkVietNamLocation = country?._id === 'VN';
+  const checkUSALocation = country?._id === 'US';
 
   const handleChange = (changedValues) => {
     const bankInfo = {

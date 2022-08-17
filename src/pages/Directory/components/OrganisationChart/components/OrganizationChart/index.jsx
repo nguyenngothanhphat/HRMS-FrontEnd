@@ -186,11 +186,7 @@ const OrganizationChart = (props) => {
 
   return (
     <div className={styles.orgChartRoot}>
-      {loading ? (
-        <div className={styles.viewLoading}>
-          <Spin size="large" />
-        </div>
-      ) : (
+      <Spin indicator={null} spinning={loading}>
         <div className={styles.charts}>
           {renderManagerNode()}
 
@@ -204,7 +200,7 @@ const OrganizationChart = (props) => {
             {renderChildrenList()}
           </Collapse>
         </div>
-      )}
+      </Spin>
     </div>
   );
 };

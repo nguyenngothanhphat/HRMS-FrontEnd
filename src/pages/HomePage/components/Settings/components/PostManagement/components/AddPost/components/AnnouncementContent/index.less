@@ -75,4 +75,32 @@
       }
     }
   }
+  .separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+  }
+  .separator::before,
+  .separator::after {
+    flex: 1;
+    border-bottom: 1px solid #eaecf0;
+    content: '';
+  }
+
+  .separator:not(:empty)::before {
+    margin-right: 12px;
+  }
+
+  .separator:not(:empty)::after {
+    margin-left: 12px;
+  }
+  :global {
+    .ant-input-affix-wrapper {
+      border-radius: 5px;
+      padding: 0 11px;
+    }
+    .ant-input{
+      height: 32px !important;
+    }
+  }
 }

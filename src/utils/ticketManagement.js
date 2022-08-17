@@ -1,6 +1,6 @@
 import { debounce } from 'lodash';
 
-const debouncedChangeLocation = debounce((callback) => callback(), 500);
+const debouncedChangeLocation = debounce((callback) => callback(), 400);
 
 export { debouncedChangeLocation };
 

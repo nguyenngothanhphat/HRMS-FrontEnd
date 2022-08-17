@@ -28,7 +28,7 @@ const MyTeam = (props) => {
     timeOffTypesByCountry = [],
   } = props;
   const checkLocation = employee ? employee.location : {};
-  const country = checkLocation ? employee.location.headQuarterAddress.country : '';
+  const country = checkLocation ? employee?.location?.headQuarterAddress?.country : '';
 
   useEffect(() => {
     dispatch({

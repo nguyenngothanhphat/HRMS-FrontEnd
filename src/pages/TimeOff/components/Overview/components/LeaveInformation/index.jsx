@@ -15,7 +15,6 @@ const LeaveInformation = (props) => {
     timeOff: {
       yourTimeOffTypes: { overview = {}, commonLeaves = [], specialLeaves = [] } = {},
     } = {},
-    viewDocumentVisible = false,
   } = props;
 
   const [isShow, setIsShow] = useState(false);
@@ -45,7 +44,7 @@ const LeaveInformation = (props) => {
   );
 
   return (
-    <div className={styles.LeaveInformation} style={viewDocumentVisible ? { zIndex: '1002' } : {}}>
+    <div className={styles.LeaveInformation}>
       <div className={styles.totalLeaveBalance}>
         <div className={styles.aboveContainer}>
           <div className={styles.header}>

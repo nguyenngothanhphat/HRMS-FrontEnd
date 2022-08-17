@@ -8,19 +8,24 @@ import {
   updateTicket,
   getTicketById,
   getListEmployee,
-  getOffAllTicketList,
+  getTicketList,
   getDepartmentList,
   getOffToTalList,
   uploadFile,
   getSupportTeamList,
   getListMyTeam,
   getLocationsOfCountries,
+  getListEmployeeByIds,
+  getTotals,
 } from '../services/ticketManagement';
 
 const ticketManagement = {
   namespace: 'ticketManagement',
   state: {
-    listOffAllTicket: [],
+    ticketList: [],
+    total: 0,
+    totals: [],
+
     currentStatus: [],
     totalStatus: [],
     totalList: [],
@@ -36,6 +41,7 @@ const ticketManagement = {
     supportTeamList: [],
     employeeFilterList: [],
     locationsOfCountries: [],
+    listEmployeeByIds: [],
   },
   effects: {
     *addTicket({ payload }, { call }) {
@@ -115,7 +121,7 @@ const ticketManagement = {
       }
       return response;
     },
-    *fetchListAllTicket({ payload }, { call, put, select }) {
+    *fetchTicketList({ payload }, { call, put, select }) {
       let response;
       try {
         const { selectedLocations } = yield select((state) => state.ticketManagement);
@@ -130,19 +136,50 @@ const ticketManagement = {
             location: selectedLocations,
           };
         }
-        response = yield call(getOffAllTicketList, tempPayload);
+        response = yield call(getTicketList, tempPayload);
         if (response) {
-          const { statusCode, data = [], total = [] } = response;
+          const { statusCode, data = [], total = 0 } = response;
           if (statusCode !== 200) throw response;
           yield put({
             type: 'save',
-            payload: { listOffAllTicket: data, currentStatus: payload.status, totalStatus: total },
+            payload: {
+              ticketList: data,
+              total,
+              currentStatus: payload.status,
+            },
           });
         }
       } catch (error) {
         dialog(error);
       }
       return response;
+    },
+
+    *fetchTotals({ payload }, { call, put, select }) {
+      try {
+        const { selectedLocations } = yield select((state) => state.ticketManagement);
+        let tempPayload = {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        };
+        if (selectedLocations && selectedLocations.length > 0) {
+          tempPayload = {
+            ...tempPayload,
+            location: selectedLocations,
+          };
+        }
+
+        const response = yield call(getTotals, tempPayload);
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { totals: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
     },
     *fetchToTalList({ payload }, { call, put, select }) {
       try {
@@ -332,6 +369,23 @@ const ticketManagement = {
         yield put({
           type: 'save',
           payload: { locationsOfCountries: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchListEmployeeByIds({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getListEmployeeByIds, {
+          ...payload,
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { listEmployeeByIds: data },
         });
       } catch (error) {
         dialog(error);

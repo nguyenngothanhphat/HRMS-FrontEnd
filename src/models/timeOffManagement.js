@@ -57,7 +57,11 @@ const timeOffManagement = {
     *getTimeOffTypeListEffect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getTimeOffTypeList, payload);
+        response = yield call(getTimeOffTypeList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({

@@ -1,10 +1,11 @@
-import { Avatar, Popover, Tabs } from 'antd';
+import { Avatar, Tabs, Tooltip } from 'antd';
 import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
+import ReAssignIcon from '@/assets/assignPerson.svg';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
-import MenuIcon from '@/assets/offboarding/menuIcon.png';
+import ScheduleIcon from '@/assets/reassignButtonIcon.svg';
 import CommonTable from '@/components/CommonTable';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
@@ -22,6 +23,8 @@ import { addZeroToNumber, removeEmptyFields } from '@/utils/utils';
 import SetMeetingModal from '../SetMeetingModal';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
+import CommonModal from '@/components/CommonModal';
+import ReassignModalContent from './components/ReassignModalContent';
 
 const RequestTable = (props) => {
   const {
@@ -33,15 +36,18 @@ const RequestTable = (props) => {
     } = {},
     loadingFetchList = false,
     type = OFFBOARDING_TABS.TEAM,
+    setQueryExport = () => {},
+    loadingReassign = false,
   } = props;
 
   const [size, setSize] = useState(10);
   const [page, setPage] = useState(1);
   const [currentStatus, setCurrentStatus] = useState(OFFBOARDING.STATUS.IN_PROGRESS);
   const [handlingRequest, setHandlingRequest] = useState(null);
-  const [showDropdownId, setShowDropdownId] = useState(null);
   const [searchText, setSearchText] = useState('');
   const [filterValues, setFilterValues] = useState({});
+  const [reassignModalVisible, setReassignModalVisible] = useState(false);
+  const [handlingRecord, setHandlingRecord] = useState(null);
 
   const fetchData = () => {
     const payload = {
@@ -64,6 +70,7 @@ const RequestTable = (props) => {
         payload.toDate = moment(toDate).format(DATE_FORMAT_YMD);
       }
     }
+    setQueryExport(payload);
     dispatch({
       type: 'offboarding/fetchListEffect',
       payload,
@@ -80,9 +87,14 @@ const RequestTable = (props) => {
           type === OFFBOARDING_TABS.TEAM
             ? OFFBOARDING.UPDATE_ACTION.MANAGER_RESCHEDULE
             : OFFBOARDING.UPDATE_ACTION.HR_RESCHEDULE,
-        meeting: {
-          managerDate: moment(values.time),
-        },
+        meeting:
+          type === OFFBOARDING_TABS.TEAM
+            ? {
+                managerDate: moment(values.time).format('YYYY/MM/DD hh:mm:ss'),
+              }
+            : {
+                hrDate: moment(values.time).format('YYYY/MM/DD hh:mm:ss'),
+              },
       },
     });
     if (res.statusCode === 200) {
@@ -160,51 +172,9 @@ const RequestTable = (props) => {
     );
   };
 
-  const renderMenuDropdown = (row = {}) => {
-    if (type === OFFBOARDING_TABS.TEAM) {
-      return (
-        <div className={styles.containerDropdown}>
-          <div className={styles.btn}>
-            <span>
-              <Link to={getViewDetailURL(row._id)}>Change assigned</Link>
-            </span>
-          </div>
-
-          {!row.meeting?.employeeDate && !row.meeting?.managerDate && (
-            <div
-              className={styles.btn}
-              onClick={() => {
-                setHandlingRequest(row);
-                setShowDropdownId(null);
-              }}
-            >
-              <span>Schedule 1 on 1</span>
-            </div>
-          )}
-        </div>
-      );
-    }
-    return (
-      <div className={styles.containerDropdown}>
-        <div className={styles.btn}>
-          <span>
-            <Link to={getViewDetailURL(row._id)}>Re-assign</Link>
-          </span>
-        </div>
-
-        {row.managerNote?.isHrRequired && !row.meetingHR?.date && (
-          <div
-            className={styles.btn}
-            onClick={() => {
-              setHandlingRequest(row);
-              setShowDropdownId(null);
-            }}
-          >
-            <span>Schedule 1 on 1</span>
-          </div>
-        )}
-      </div>
-    );
+  const handleReassign = (row) => {
+    setHandlingRecord(row);
+    setReassignModalVisible(true);
   };
 
   const columns = [
@@ -337,7 +307,9 @@ const RequestTable = (props) => {
       title: <span className={styles.title}>1-on-1 date</span>,
       dataIndex: 'meeting',
       ellipsis: true,
-      render: (meeting = {}, row) => {
+      render: (_, row) => {
+        const { meeting = {}, meetingHR = {} } = row;
+        const { date = '' } = meetingHR;
         const { employeeDate = '', managerDate = '' } = meeting;
         if (employeeDate || managerDate) {
           return (
@@ -350,53 +322,41 @@ const RequestTable = (props) => {
             </span>
           );
         }
-        return (
-          <span
-            className={styles.title__value}
-            style={{
-              textDecoration: 'underline',
-            }}
-            onClick={() => setHandlingRequest(row)}
-          >
-            Schedule 1 on 1
-          </span>
-        );
+        if (date) {
+          return (
+            <span
+              style={{
+                textTransform: 'uppercase',
+              }}
+            >
+              {moment(date).format(`${DATE_FORMAT} h:mm a`)}
+            </span>
+          );
+        }
+        return <span>-</span>;
       },
     },
     {
       title: <span className={styles.title}>Action</span>,
       dataIndex: '_id',
-      fixed: 'right',
+      fixed: 'center',
       ellipsis: true,
       width: '10%',
-      render: (id) => {
+      render: (_, row) => {
         return (
           <div className={styles.rowAction}>
-            <Link to={getViewDetailURL(id)} className={styles.title__value}>
-              View Request
-            </Link>
+            <Tooltip title="Re-assign Person">
+              <img
+                style={{ width: 34 }}
+                src={ReAssignIcon}
+                alt="reAssignIcon"
+                onClick={() => handleReassign(row)}
+              />
+            </Tooltip>
+            <Tooltip title="Schedule 1 on 1">
+              <img src={ScheduleIcon} alt="scheduleIcon" onClick={() => setHandlingRequest(row)} />
+            </Tooltip>
           </div>
-        );
-      },
-    },
-    {
-      title: '',
-      align: 'right',
-      width: '4%',
-      fixed: 'right',
-      dataIndex: '_id',
-      render: (_id, row) => {
-        return (
-          <Popover
-            trigger="click"
-            overlayClassName={styles.dropdownPopover}
-            content={renderMenuDropdown(row)}
-            placement="bottomLeft"
-            visible={_id === showDropdownId}
-            onVisibleChange={(visible) => setShowDropdownId(visible ? _id : null)}
-          >
-            <img src={MenuIcon} alt="" style={{ cursor: 'pointer', padding: '4px 10px' }} />
-          </Popover>
         );
       },
     },
@@ -437,6 +397,26 @@ const RequestTable = (props) => {
         employee={handlingRequest?.employee}
         onFinish={onSetOneOnOneMeeting}
       />
+      <CommonModal
+        visible={reassignModalVisible}
+        title="Re-assign Employee"
+        onClose={() => {
+          setReassignModalVisible(false);
+        }}
+        width={500}
+        firstText="Add"
+        loading={loadingReassign}
+        content={
+          <ReassignModalContent
+            item={handlingRecord}
+            onClose={() => {
+              setReassignModalVisible(false);
+            }}
+            visible={reassignModalVisible}
+            refreshData={fetchData}
+          />
+        }
+      />
     </div>
   );
 };
@@ -447,5 +427,6 @@ export default connect(
     offboarding,
     companyLocationList,
     loadingFetchList: loading.effects['offboarding/fetchListEffect'],
+    loadingReassign: loading.effects['offboarding/updateRequestEffect'],
   }),
 )(RequestTable);

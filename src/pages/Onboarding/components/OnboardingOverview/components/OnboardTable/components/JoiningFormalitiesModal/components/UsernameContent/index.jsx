@@ -40,7 +40,7 @@ const UserNameContent = (props) => {
         payload: { userName: name },
       });
       if (isExistingUserName === false) {
-        onSaveRedux({ domain: domainName });
+        onSaveRedux({ userName: name, domain: domainName });
         next();
       } else setValidate({ validateStatus: 'error', errorMsg: 'That username is already taken' });
     } else setValidate({ validateStatus: 'error', errorMsg: 'Please input user name' });
@@ -55,8 +55,9 @@ const UserNameContent = (props) => {
           validateStatus={validate.validateStatus}
           help={validate.errorMsg}
           className={styles.inputForm}
+          rules={[{ required: true }]}
         >
-          <Input />
+          <Input disabled={loadingGetListDomain} />
         </Form.Item>
         <Form.Item
           name="domain"

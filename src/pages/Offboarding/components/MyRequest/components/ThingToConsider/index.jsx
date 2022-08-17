@@ -14,15 +14,7 @@ const array = [
   {
     icon: icon2,
     description: (
-      <p>
-        Make sure you are done with your current project to have this discussion continued. If not,
-        please{' '}
-        <span style={{ color: '#2C6DF9', fontWeight: '500', borderBottom: '1px solid #2C6DF9' }}>
-          {' '}
-          schedule a meeting{' '}
-        </span>
-        with project manager now.
-      </p>
+      <p>Make sure you are done with your current project to have this discussion continued.</p>
     ),
   },
   {
@@ -61,7 +53,7 @@ const ThingToConsider = () => {
   };
 
   return (
-    <Card title="Few thing to consider" className={styles.ThingToConsider}>
+    <Card title="Few other things to consider" className={styles.ThingToConsider}>
       <div className={styles.container}>
         <div className={styles.items}>
           <Row justify="space-between" gutter={[24, 16]}>

@@ -6,6 +6,7 @@ import CommonModal from '@/components/CommonModal';
 import styles from './index.less';
 import CommonTab from './components/CommonTab';
 import ActivityLogModalContent from './components/ActivityLogModalContent';
+import { LEAVE_QUERY_TYPE } from '@/constants/timeOff';
 
 const { TabPane } = Tabs;
 
@@ -43,12 +44,6 @@ const ActivityLog = (props) => {
     });
   }, [statusApproval]);
 
-  // useEffect(() => {
-  //   dispatch({
-  //     type: 'dashboard/fetchListMyTicket',
-  //   });
-  // }, [status]);
-
   useEffect(() => {
     dispatch({
       type: 'dashboard/fetchMyTicketList',
@@ -60,9 +55,10 @@ const ActivityLog = (props) => {
 
   useEffect(() => {
     dispatch({
-      type: 'dashboard/fetchMyLeaveRequest',
+      type: 'dashboard/fetchLeaveRequests',
       payload: {
-        status: ['IN-PROGRESS'],
+        status: statusRequestTimeoff,
+        queryType: LEAVE_QUERY_TYPE.SELF,
       },
     });
   }, []);
@@ -264,6 +260,5 @@ export default connect(
     employee,
     activeConversationUnseen,
     loadingFetchListTicket: loading.effects['dashboard/fetchListTicket'],
-    loadingFetchListMyTicket: loading.effects['dashboard/fetchListMyTicket'],
   }),
 )(ActivityLog);

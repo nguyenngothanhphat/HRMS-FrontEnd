@@ -8,12 +8,7 @@ import ImportModal from '@/pages/TimeSheet/components/ComplexView/components/Imp
 import styles from './index.less';
 
 const DailyHeader = (props) => {
-  const {
-    selectedDate,
-    setSelectedDate = () => {},
-    viewChangeComponent = '',
-    loadingFetch = false,
-  } = props;
+  const { selectedDate, setSelectedDate = () => {}, viewChangeComponent = '' } = props;
   const [addTaskModalVisible, setAddTaskModalVisible] = useState(false);
   const [importModalVisible, setImportModalVisible] = useState(false);
 
@@ -21,11 +16,7 @@ const DailyHeader = (props) => {
   return (
     <div className={styles.DailyHeader}>
       <div className={styles.DailyHeader__left}>
-        <CustomDatePicker
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          // disableBtn={loadingFetch}
-        />
+        <CustomDatePicker selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
       </div>
       <div className={styles.DailyHeader__middle}>{viewChangeComponent()}</div>
       <div className={styles.DailyHeader__right}>

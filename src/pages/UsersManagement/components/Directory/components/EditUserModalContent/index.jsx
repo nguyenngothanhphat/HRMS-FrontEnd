@@ -29,7 +29,7 @@ const EditUserModalContent = (props) => {
     joinDate = '',
     location: { _id: locationName = '' } = {},
     company: { _id: companyName = '' } = {},
-    generalInfo: {
+    generalInfoInfo: {
       workEmail = '',
       firstName = '',
       lastName = '',
@@ -50,7 +50,9 @@ const EditUserModalContent = (props) => {
       await dispatch({
         type: 'usersManagement/fetchEmployeeDetail',
         payload: {
-          id: selectedUserId,
+          _id: selectedUserId,
+        },
+        params: {
           tenantId: selectedUserTenant,
         },
       }).then((res) => {
@@ -94,7 +96,11 @@ const EditUserModalContent = (props) => {
   }, [JSON.stringify(employeeDetail)]);
 
   const onFinish = (values) => {
-    const { _id = '', tenant = '', generalInfo: { _id: generalInfoId = '' } = {} } = employeeDetail;
+    const {
+      _id = '',
+      tenant = '',
+      generalInfoInfo: { _id: generalInfoId = '' } = {},
+    } = employeeDetail;
 
     // Updating details in the admin portal should update the associated fields also
     // The above 3 points should work for both the active users and inactive users portal
@@ -122,7 +128,7 @@ const EditUserModalContent = (props) => {
     });
 
     const payloadUpdateEmployee = {
-      id: _id,
+      _id,
       location: locationId,
       company: companyId,
       status: values.status,
@@ -134,6 +140,9 @@ const EditUserModalContent = (props) => {
     dispatch({
       type: 'usersManagement/updateEmployee',
       payload: payloadUpdateEmployee,
+      params: {
+        ID: values.employeeId,
+      },
     }).then((statusCode) => {
       if (statusCode === 200) {
         notification.success({

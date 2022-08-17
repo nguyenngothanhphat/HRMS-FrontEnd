@@ -164,7 +164,7 @@ class CandidatePortal extends PureComponent {
         <p style={{ paddingBottom: isLastStep ? '20px' : '0px' }}>
           {!isLastStep && (
             <Button {...closeProps} style={{ border: 'none', background: 'none' }}>
-              skip
+              Skip
             </Button>
           )}
           <Button
@@ -209,6 +209,7 @@ class CandidatePortal extends PureComponent {
           continuous
           showProgress
           // showSkipButton
+          locale={{ back: 'Back', close: 'Close', last: 'End', next: 'Next' }}
           tooltipComponent={CustomTooltip}
           run={isFirstLogin && openJoyrde}
           callback={this.handleJoyrideCallback}

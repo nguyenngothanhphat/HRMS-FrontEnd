@@ -5,15 +5,16 @@ import { addZeroToNumber, splitArrayItem } from '@/utils/utils';
 import TimeOffRequestTab from './components/TimeOffRequestTab';
 import styles from './index.less';
 import { getTypeListByTab } from '@/utils/timeOff';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
 
 const { TabPane } = Tabs;
+const { IN_PROGRESS, ON_HOLD } = TIMEOFF_STATUS;
 
 const EmployeeRequestTable = (props) => {
   const {
     dispatch,
     timeOff: {
       currentLeaveTypeTab = '',
-      yourTimeOffTypes = {},
       totalByType = {
         A: 0,
         B: 0,
@@ -23,7 +24,6 @@ const EmployeeRequestTable = (props) => {
     } = {},
     loadingTimeOffType = false,
     eligibleForCompOff = false,
-    currentScopeTab = '',
     typeList = [],
   } = props;
 
@@ -35,7 +35,7 @@ const EmployeeRequestTable = (props) => {
       payload: {
         currentLeaveTypeTab: String(type),
         currentFilterTab: '1',
-        currentPayloadTypes: listIdType,
+        currentPayloadTypes: listIdType.sort(),
       },
     });
 
@@ -51,9 +51,25 @@ const EmployeeRequestTable = (props) => {
     });
   };
 
+  const getTotalByType = () => {
+    const payload = {
+      status: [IN_PROGRESS, ON_HOLD],
+      isTeam: false,
+    };
+
+    dispatch({
+      type: 'timeOff/getTotalByTypeEffect',
+      payload,
+    });
+  };
+
   useEffect(() => {
     saveCurrentTypeTab('1');
-  }, [JSON.stringify(typeList), currentScopeTab]);
+  }, [JSON.stringify(typeList)]);
+
+  useEffect(() => {
+    getTotalByType();
+  }, []);
 
   const renderTableTitle = {
     left: (
