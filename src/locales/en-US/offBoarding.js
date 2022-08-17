@@ -23,7 +23,7 @@ export default {
   'pages.offBoarding.resignation.lwd': 'Last working date (System generated)',
   'pages.offBoarding.closingComments': 'Closing comments from 1-on-1',
 
-  'pages.offBoarding.textConsider': 'Few thing to consider',
+  'pages.offBoarding.textConsider': 'Few other things to consider',
 
   'pages.offBoarding.putOnHold': 'Put on hold',
   'pages.offBoarding.reject': 'Reject',

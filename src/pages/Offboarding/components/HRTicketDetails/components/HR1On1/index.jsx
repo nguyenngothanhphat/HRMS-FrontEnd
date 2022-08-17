@@ -30,7 +30,7 @@ const HR1On1 = (props) => {
         employeeId: employee?._id,
         action: OFFBOARDING.UPDATE_ACTION.HR_RESCHEDULE,
         meeting: {
-          hrDate: moment(values.time),
+          hrDate: moment(values.time).format('YYYY/MM/DD hh:mm:ss'),
         },
       },
     });

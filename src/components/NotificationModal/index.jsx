@@ -11,12 +11,16 @@ const NotificationModal = ({
   description = '',
   buttonText = 'Okay',
   image = '',
+  secondDescription = '',
 }) => {
   const renderModalContent = () => {
     return (
       <div className={styles.welcomeContent}>
         <img src={image || WelcomeImage} alt="" />
         <span className={styles.welcomeText}>{title}</span>
+        {secondDescription && (
+          <div className={styles.secondDescriptionText}>{secondDescription}</div>
+        )}
         <span className={styles.describeText}>{description}</span>
         <CustomPrimaryButton onClick={onClose}>{buttonText}</CustomPrimaryButton>
       </div>

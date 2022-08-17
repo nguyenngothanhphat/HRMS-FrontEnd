@@ -30,7 +30,7 @@ const FirstSchedule = (props) => {
           <div className={styles.headerSchedule__title}>Did you know?</div>
           <div className={styles.container__content}>
             <div className={styles.headerSchedule__content}>
-              {`Your Manager, `}
+              Have you discussed your concerns with your Manager
               <span className={styles.headerSchedule__content__managerName}>
                 <UserProfilePopover
                   placement="topRight"
@@ -42,7 +42,7 @@ const FirstSchedule = (props) => {
                   </span>
                 </UserProfilePopover>
               </span>
-              , usually conducts 1-on-1s and you can speak anything to him.{' '}
+              ?
               <p style={{ fontWeight: 600, color: '#161c29', marginBottom: '0' }}>
                 8/10 employees have changed their mind after talking to their manager.
               </p>

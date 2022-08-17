@@ -2,8 +2,9 @@ import { Tabs } from 'antd';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect, history, Redirect } from 'umi';
-import CustomBlueButton from '@/components/CustomBlueButton';
+import DownloadIcon from '@/assets/download-icon-yellow.svg';
 import CustomDropdownSelector from '@/components/CustomDropdownSelector';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
 import LocationDropdownSelector from '@/components/LocationDropdownSelector';
 import { OFFBOARDING_TABS } from '@/constants/offboarding';
 import ROLES from '@/constants/roles';
@@ -15,6 +16,7 @@ import MyRequest from './components/MyRequest';
 import RequestTable from './components/RequestTable';
 import Settings from './components/Settings';
 import styles from './index.less';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
 
 const { TabPane } = Tabs;
 
@@ -49,6 +51,7 @@ const Offboarding = (props) => {
   const [selectedLocations, setSelectedLocation] = useState([]);
   const [selectedDivisions, setSelectedDivisions] = useState('');
   const [data, setData] = useState([]);
+  const [queryExport, setQueryExport] = useState({});
 
   const getMyRequest = () => {
     dispatch({
@@ -131,6 +134,17 @@ const Offboarding = (props) => {
     goToTop();
   }, []);
 
+  const exportReport = async () => {
+    const getListExport = await dispatch({
+      type: 'offboarding/exportReportEffect',
+      payload: {
+        ...queryExport,
+        getType: 'EXPORT',
+      },
+    });
+    exportRawDataToCSV(getListExport, 'offboarding');
+  };
+
   const options = () => {
     if ([OFFBOARDING_TABS.COMPANY_WIDE, OFFBOARDING_TABS.TEAM].includes(tabName)) {
       return (
@@ -149,7 +163,9 @@ const Offboarding = (props) => {
               selectedList={selectedDivisions}
             />
           )}
-          <CustomBlueButton>Generate Report</CustomBlueButton>
+          <CustomOrangeButton onClick={exportReport} icon={DownloadIcon}>
+            Export
+          </CustomOrangeButton>
         </div>
       );
     }
@@ -174,12 +190,12 @@ const Offboarding = (props) => {
           )}
           {showCompanyWideRequest && (
             <TabPane tab="Company Wide" key={OFFBOARDING_TABS.COMPANY_WIDE}>
-              <RequestTable type={OFFBOARDING_TABS.COMPANY_WIDE} />
+              <RequestTable type={OFFBOARDING_TABS.COMPANY_WIDE} setQueryExport={setQueryExport} />
             </TabPane>
           )}
           {showTeamRequest && (
             <TabPane tab="Team Request" key={OFFBOARDING_TABS.TEAM}>
-              <RequestTable type={OFFBOARDING_TABS.TEAM} />
+              <RequestTable type={OFFBOARDING_TABS.TEAM} setQueryExport={setQueryExport} />
             </TabPane>
           )}
           {showSettings && (

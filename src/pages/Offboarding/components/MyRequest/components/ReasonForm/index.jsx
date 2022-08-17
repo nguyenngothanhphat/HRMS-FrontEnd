@@ -8,7 +8,7 @@ import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import NotificationModal from '@/components/NotificationModal';
 import { DATE_FORMAT, OFFBOARDING } from '@/constants/offboarding';
 import { PageContainer } from '@/layouts/layout/src';
-import { goToTop } from '@/utils/utils';
+import { goToTop, getCompanyName } from '@/utils/utils';
 import Notes from '../Notes';
 import styles from './index.less';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
@@ -24,6 +24,7 @@ const ReasonForm = (props) => {
     viewingRequest: { reason: reasonProps = '', status = '' } = {},
     match: { params: { reId = '', action = '' } = {} },
     loading = false,
+    employee: { managerInfo: { legalName: name = '' } = {} } = {},
   } = props;
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [statusState, setStatusState] = useState('');
@@ -97,7 +98,9 @@ const ReasonForm = (props) => {
               }}
             >
               <div style={{ padding: '24px' }}>
-                <div className={styles.title}>What is the reason for leaving us ?</div>
+                <div className={styles.title}>
+                  What is the reason for leaving {getCompanyName()} ?
+                </div>
                 <Form.Item name="reason" rules={[{ required: true }]}>
                   <TextArea
                     onChange={(e) => onValuesChange(e.target.value)}
@@ -175,14 +178,22 @@ const ReasonForm = (props) => {
         visible={successModalVisible}
         onClose={handleOk}
         buttonText="Ok"
-        description="Your request has been submitted. Please set a 1-1 with your manager"
+        secondDescription="Your request has been submitted."
+        description={`To continue please setup a 1-on-1 with your Manager ${name}`}
       />
     </PageContainer>
   );
 };
 
-export default connect(({ offboarding: { viewingRequest = {} } = {}, loading }) => ({
-  viewingRequest,
-  loadingStatus: loading.effects['offboarding/getMyRequestEffect'],
-  loading: loading.effects['offboarding/createRequestEffect'],
-}))(ReasonForm);
+export default connect(
+  ({
+    offboarding: { viewingRequest = {} } = {},
+    loading,
+    user: { currentUser: { employee = {} } = {} } = {},
+  }) => ({
+    viewingRequest,
+    employee,
+    loadingStatus: loading.effects['offboarding/getMyRequestEffect'],
+    loading: loading.effects['offboarding/createRequestEffect'],
+  }),
+)(ReasonForm);
