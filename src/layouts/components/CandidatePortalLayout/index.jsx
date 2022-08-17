@@ -54,7 +54,7 @@ const CandidatePortalLayout = React.memo((props) => {
     if (!socket.connected) {
       socket.connect()
     } 
-  })
+  }, [])
 
   const [notification, setNotification] = useState(0);
   const [openUpcomingEventModal, setOpenUpcomingEventModal] = useState(false);

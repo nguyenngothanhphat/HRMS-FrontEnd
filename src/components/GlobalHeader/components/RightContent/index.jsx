@@ -21,7 +21,7 @@ const RightContent = (props) => {
     if (!socket.connected) {
       socket.connect()
     } 
-  })
+  }, [])
   
   const saveNewMessage = async (message) => {
     await dispatch({
