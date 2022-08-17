@@ -17,6 +17,12 @@ const RightContent = (props) => {
   const { dispatch, theme, currentUser, companiesOfUser, unseenTotal, activeConversationUnseen } =
     props;
 
+  useEffect(() => {
+    if (!socket.connected) {
+      socket.connect()
+    } 
+  })
+  
   const saveNewMessage = async (message) => {
     await dispatch({
       type: 'conversation/saveNewMessage',
@@ -34,9 +40,6 @@ const RightContent = (props) => {
   };
 
   const initialSocket = () => {
-    if (!socket.connected) {
-      socket.connect()
-    } 
     socket.emit(CHAT_EVENT.ADD_USER, currentUser?.employee?._id || '');
     socket.on(CHAT_EVENT.GET_MESSAGE, (message) => {
       saveNewMessage(message);
