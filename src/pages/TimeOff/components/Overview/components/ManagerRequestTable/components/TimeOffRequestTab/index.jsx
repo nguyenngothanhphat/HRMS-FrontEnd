@@ -61,6 +61,10 @@ const TimeOffRequestTab = (props) => {
     }
     setSelectedTab(selectedTabTemp);
     setSelectedTabNumber(currentFilterTab);
+    dispatch({
+      type: 'timeOff/savePaging',
+      payload: { page: 1 },
+    });
   }, [currentFilterTab]);
 
   const getTotalByType = () => {

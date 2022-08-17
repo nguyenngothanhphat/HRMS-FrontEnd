@@ -35,7 +35,7 @@ const EditTicketModal = (props) => {
     loadingUploadAttachment = false,
     role = '',
     ticket = {},
-    refreshFetchTicketList = () => {},
+    refreshData = () => {},
     listEmployeeByIds = [],
     loadingUpload = false,
   } = props;
@@ -178,17 +178,6 @@ const EditTicketModal = (props) => {
         setIsEdit(true);
       }
     }
-  };
-
-  const refreshData = () => {
-    refreshFetchTicketList();
-
-    dispatch({
-      type: 'ticketManagement/fetchTicketByID',
-      payload: {
-        id: ticket.id,
-      },
-    });
   };
 
   const handleFinish = (value = {}) => {

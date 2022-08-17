@@ -19,7 +19,7 @@ const AssignTeamModal = (props) => {
     oldId = '',
     ticketDetail = {},
     role = '',
-    refreshFetchTicketList = () => {},
+    refreshData = () => {},
     ticket = {},
   } = props;
   const [form] = Form.useForm();
@@ -102,7 +102,7 @@ const AssignTeamModal = (props) => {
       const { statusCode = '' } = res;
       if (statusCode === 200) {
         if (Object.keys(ticket).length) {
-          refreshFetchTicketList();
+          refreshData();
         } else {
           dispatch({
             type: 'ticketManagement/fetchTicketByID',

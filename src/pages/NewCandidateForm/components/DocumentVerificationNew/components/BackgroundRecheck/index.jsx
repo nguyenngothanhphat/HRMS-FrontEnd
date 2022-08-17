@@ -392,6 +392,7 @@ const BackgroundRecheck = (props) => {
         title={`${selectingFile?.item?.alias} ${action ? 'for Resubmission' : ''}`}
         width={600}
         onFinish={action ? () => {} : onVerified}
+        disabledButton={processStatus !== NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION}
       />
 
       {/* view candidate comment modal  */}

@@ -1,15 +1,18 @@
 import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
-import { Button, Col, Modal, Row, Select, Spin, Steps } from 'antd';
+import { Button, Col, Modal, Row, Select, Spin, Steps, Tag } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
+import { connect, Link } from 'umi';
 import { TIMEOFF_STATUS } from '@/constants/timeOff';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import PDFIcon from '@/assets/pdf_icon.png';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import MessageBox from '../MessageBox';
 import styles from './index.less';
+import { getEmployeeUrl } from '@/utils/utils';
+import { PRIORITY_COLOR } from '@/constants/ticketManagement';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const { Step } = Steps;
 const { Option } = Select;
@@ -46,20 +49,24 @@ const TicketDetailModal = (props) => {
     loadingFetchListEmployee = false,
     dispatch,
   } = props;
+
   const [statusState, setStatus] = useState('');
+
   useEffect(() => {
     setStatus(status);
   }, []);
+
   useEffect(() => {
-    if (!isEmpty(ccList)) {
+    if (visible && !isEmpty(ccList)) {
       dispatch({
         type: 'dashboard/fetchListEmployee',
         payload: {
-          // employees: ccList,
+          ids: ccList,
         },
       });
     }
-  }, []);
+  }, [visible, JSON.stringify(ccList)]);
+
   const handleUpdateStatus = () => {
     const { employee: { _id: employeeID = '' } = {} } = props;
     const payload = {
@@ -98,31 +105,23 @@ const TicketDetailModal = (props) => {
   const handleCancel = () => {
     onClose();
   };
-  const renderccList = () => {
+  const renderCCList = () => {
     const intersection = listEmployee.filter((element) => ccList.includes(element._id));
-    return intersection.map((val) => {
-      const { generalInfo: { legalName = '' } = {} } = val;
-      return (
-        <span style={{ paddingRight: '8px' }} key={val._id}>
-          {legalName || ''}
-        </span>
-      );
-    });
+    return (
+      <span>
+        {intersection.map((val, index) => {
+          const { generalInfo: { legalName = '', userId = '' } = {} } = val;
+          return (
+            <Link to={getEmployeeUrl(userId)}>
+              {legalName}
+              {index + 1 < intersection.length ? ', ' : ''}
+            </Link>
+          );
+        })}
+      </span>
+    );
   };
-  const getColor = () => {
-    switch (priority) {
-      case 'High':
-        return '#ffb6b6';
-      case 'Normal':
-        return '#eefffb';
-      case 'Low':
-        return '#ffe9c5';
-      case 'Urgent':
-        return '#FF8484';
-      default:
-        return '#ffffff';
-    }
-  };
+
   const attachmentsContent = () => {
     return (
       <span className={styles.attachments}>
@@ -221,11 +220,7 @@ const TicketDetailModal = (props) => {
       },
       {
         name: 'Priority',
-        value: (
-          <span className={styles.priority} style={{ background: getColor() }}>
-            {priority}
-          </span>
-        ),
+        value: <Tag color={PRIORITY_COLOR[priority]}>{priority}</Tag>,
         span: 12,
         disabled: typeName.length > 0,
       },
@@ -245,7 +240,7 @@ const TicketDetailModal = (props) => {
       {
         name: 'CC',
         value: (
-          <span>{loadingFetchListEmployee && !isEmpty(ccList) ? <Spin /> : renderccList()}</span>
+          <span>{loadingFetchListEmployee && !isEmpty(ccList) ? <Spin /> : renderCCList()}</span>
         ),
         span: 12,
         disabled: typeName.length > 0,
@@ -294,12 +289,12 @@ const TicketDetailModal = (props) => {
                   </Select>
                 </div>
                 <div className={styles.actionButton}>
-                  <Button
+                  <CustomPrimaryButton
                     disabled={status === 'New' || status === 'IN-PROGRESS'}
                     onClick={handleUpdateStatus}
                   >
                     Update
-                  </Button>
+                  </CustomPrimaryButton>
                 </div>
               </>
             ) : (

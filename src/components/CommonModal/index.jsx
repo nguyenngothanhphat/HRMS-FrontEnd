@@ -79,6 +79,7 @@ const CommonModal = ({
                   onClick={onSecondButtonClick}
                   paddingInline={0}
                   loading={loadingSecond}
+                  disabled={disabledButton}
                 >
                   {secondText}
                 </CustomSecondaryButton>

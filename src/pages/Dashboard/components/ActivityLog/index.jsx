@@ -44,12 +44,6 @@ const ActivityLog = (props) => {
     });
   }, [statusApproval]);
 
-  // useEffect(() => {
-  //   dispatch({
-  //     type: 'dashboard/fetchListMyTicket',
-  //   });
-  // }, [status]);
-
   useEffect(() => {
     dispatch({
       type: 'dashboard/fetchMyTicketList',
@@ -266,6 +260,5 @@ export default connect(
     employee,
     activeConversationUnseen,
     loadingFetchListTicket: loading.effects['dashboard/fetchListTicket'],
-    loadingFetchListMyTicket: loading.effects['dashboard/fetchListMyTicket'],
   }),
 )(ActivityLog);

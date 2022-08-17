@@ -33,7 +33,7 @@ const TableTickets = (props) => {
     size,
     total = 0,
     getPageAndSize = () => {},
-    refreshFetchTicketList = () => {},
+    refreshData = () => {},
     employeeFilterList = [],
     loadingFetchEmployee = false,
     role = '',
@@ -103,7 +103,7 @@ const TableTickets = (props) => {
         const { statusCode = '' } = res;
         if (statusCode === 200) {
           setSelected(true);
-          refreshFetchTicketList();
+          refreshData();
           setNameSearch('');
         }
       });
@@ -334,7 +334,6 @@ const TableTickets = (props) => {
                       employeeAssignee={employeeAssignee}
                       renderMenuDropdown={renderMenuDropdown}
                       handleClickSelect={handleClickSelect}
-                      refreshFetchTicketList={refreshFetchTicketList}
                       row={row}
                       selected={selected}
                       setOldAssignName={setOldName}
@@ -460,14 +459,14 @@ const TableTickets = (props) => {
       <AssignTeamModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        refreshFetchTicketList={refreshFetchTicketList}
+        refreshData={refreshData}
         ticket={ticket}
         role={role}
       />
       <EditTicketModal
         visible={editVisible}
         onClose={() => setEditVisible(false)}
-        refreshFetchTicketList={refreshFetchTicketList}
+        refreshData={refreshData}
         ticket={ticket}
         role={role}
       />

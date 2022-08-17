@@ -2,7 +2,7 @@ import { Tabs } from 'antd';
 import { debounce } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { debouncedChangeLocation } from '@/utils/ticketManagement';
+import { debounceFetchData } from '@/utils/utils';
 import useCancelToken from '@/utils/hooks';
 import SearchFilterBar from '../../../SearchFilterBar';
 import TableTickets from '../TableTickets';
@@ -13,15 +13,19 @@ const AllTickets = (props) => {
     dispatch,
     country = {},
     loadingFetchTicketList = false,
-    listOffAllTicket: data = [],
-    totalStatus = [],
-    selectedLocations = [],
     permissions = [],
     role = '',
-    filter = {},
+    ticketManagement: {
+      selectedLocations = [],
+      ticketList: data = [],
+      totals = [],
+      filter = {},
+      total = 0,
+    } = {},
   } = props;
 
   const { cancelToken, cancelRequest } = useCancelToken();
+  const { cancelToken: cancelToken2, cancelRequest: cancelRequest2 } = useCancelToken();
   const [pageSelected, setPageSelected] = useState(1);
   const [size, setSize] = useState(10);
   const [nameSearch, setNameSearch] = useState('');
@@ -51,7 +55,7 @@ const AllTickets = (props) => {
     }
   };
 
-  const initDataTable = () => {
+  const fetchData = () => {
     let payload = {
       status: [getStatus(activeKey)],
       permissions,
@@ -69,8 +73,20 @@ const AllTickets = (props) => {
       };
     }
     dispatch({
-      type: 'ticketManagement/fetchListAllTicket',
+      type: 'ticketManagement/fetchTicketList',
       payload,
+    });
+
+    const totalPayload = {
+      ...payload,
+      cancelToken: cancelToken2(),
+    };
+    delete totalPayload.page;
+    delete totalPayload.limit;
+
+    dispatch({
+      type: 'ticketManagement/fetchTotals',
+      payload: totalPayload,
     });
   };
 
@@ -85,9 +101,10 @@ const AllTickets = (props) => {
   };
 
   useEffect(() => {
-    debouncedChangeLocation(initDataTable);
+    debounceFetchData(fetchData);
     return () => {
       cancelRequest();
+      cancelRequest2();
     };
   }, [
     pageSelected,
@@ -97,6 +114,10 @@ const AllTickets = (props) => {
     JSON.stringify(selectedLocations),
     JSON.stringify(filter),
   ]);
+
+  useEffect(() => {
+    setPageSelected(1);
+  }, [activeKey, nameSearch, JSON.stringify(filter), JSON.stringify(selectedLocations)]);
 
   const renderOptions = () => {
     return (
@@ -112,7 +133,7 @@ const AllTickets = (props) => {
   };
 
   const getCount = (value) => {
-    const find = totalStatus.find((val) => val.status === value);
+    const find = totals.find((val) => val.status === value);
     return find?.total || 0;
   };
 
@@ -165,9 +186,9 @@ const AllTickets = (props) => {
               loading={loadingFetchTicketList}
               pageSelected={pageSelected}
               size={size}
-              total={item.count}
+              total={total}
               getPageAndSize={getPageAndSize}
-              refreshFetchTicketList={initDataTable}
+              refreshData={fetchData}
               selectedFilterTab={activeKey}
             />
           </Tabs.TabPane>
@@ -185,18 +206,10 @@ export default connect(
         employee: { location: { headQuarterAddress: { country = {} } = {} } = {} } = {},
       } = {},
     },
-    ticketManagement: {
-      selectedLocations = [],
-      listOffAllTicket = [],
-      totalStatus = [],
-      filter = {},
-    } = {},
+    ticketManagement,
   }) => ({
-    listOffAllTicket,
-    totalStatus,
-    selectedLocations,
-    filter,
+    ticketManagement,
     country,
-    loadingFetchTicketList: loading.effects['ticketManagement/fetchListAllTicket'],
+    loadingFetchTicketList: loading.effects['ticketManagement/fetchTicketList'],
   }),
 )(AllTickets);

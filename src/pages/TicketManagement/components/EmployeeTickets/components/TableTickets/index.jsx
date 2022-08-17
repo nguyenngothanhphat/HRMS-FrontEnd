@@ -37,6 +37,10 @@ const TableTickets = (props) => {
     refreshFetchTotalList = () => {},
     refreshFetchData = () => {},
     role = '',
+    total = 0,
+    page = 1,
+    size = 10,
+    onChangePage = () => {},
     loadingFetchEmployee = false,
     loadingUpdate = false,
     permissions: { viewTicketByAdmin },
@@ -496,6 +500,11 @@ const TableTickets = (props) => {
         columns={columns}
         list={data}
         rowKey="id"
+        total={total}
+        isBackendPaging
+        limit={size}
+        page={page}
+        onChangePage={onChangePage}
       />
       <AssignTeamModal
         visible={modalVisible}
