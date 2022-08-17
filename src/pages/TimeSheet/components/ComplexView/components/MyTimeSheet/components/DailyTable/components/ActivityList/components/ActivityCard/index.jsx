@@ -219,7 +219,7 @@ const ActivityCard = (props) => {
     handleUpdateActivity({ start, end });
   };
 
-  const renderDescription = (text = '') => {
+  const renderLongText = (text = '') => {
     if (text.length <= textLong) return text;
     return (
       <span>
@@ -298,10 +298,10 @@ const ActivityCard = (props) => {
             {projectName || ''}
           </Col>
           <Col span={TASK} className={styles.normalCell}>
-            {taskName}
+            {renderLongText(taskName)}
           </Col>
           <Col span={DESCRIPTION} className={styles.normalCell}>
-            {renderDescription(description)}
+            {renderLongText(description)}
           </Col>
           <Col span={TIME} className={`${styles.normalCell} ${styles.blueText}`}>
             {timeInfo}
