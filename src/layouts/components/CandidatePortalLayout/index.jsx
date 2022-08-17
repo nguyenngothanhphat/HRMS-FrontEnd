@@ -50,6 +50,12 @@ const CandidatePortalLayout = React.memo((props) => {
     activeConversationUnseen,
   } = props;
 
+  useEffect(() => {
+    if (!socket.connected) {
+      socket.connect()
+    } 
+  }, [])
+
   const [notification, setNotification] = useState(0);
   const [openUpcomingEventModal, setOpenUpcomingEventModal] = useState(false);
   let candidateFullName = `${firstName} ${middleName} ${lastName}`;
@@ -114,9 +120,6 @@ const CandidatePortalLayout = React.memo((props) => {
   }, []);
 
   const initialSocket = () => {
-    if (!socket.connected) {
-      socket.connect()
-    } 
     socket.emit(CHAT_EVENT.ADD_USER, candidate?._id);
     socket.on(CHAT_EVENT.GET_MESSAGE, (message) => {
       saveNewMessage(message);
