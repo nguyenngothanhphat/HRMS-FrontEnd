@@ -17,6 +17,7 @@ import {
 import RejectCommentModal from '../RejectCommentModal';
 import styles from './index.less';
 import { TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/constants/timeOff';
+import CommonTable from '@/components/CommonTable';
 
 const { IN_PROGRESS, REJECTED, ON_HOLD } = TIMEOFF_STATUS;
 
@@ -505,32 +506,6 @@ class TeamLeaveTable extends PureComponent {
       indicator: <Spin indicator={antIcon} />,
     };
 
-    const pagination = {
-      position: ['bottomLeft'],
-      total,
-      showTotal: (totals, range) => (
-        <span>
-          {' '}
-          Showing{'  '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          of {totals}{' '}
-        </span>
-      ),
-      defaultPageSize: 10,
-      showSizeChanger: true,
-      pageSizeOptions: ['10', '25', '50', '100'],
-      pageSize: limit,
-      current: page,
-      onChange: this.onChangePagination,
-    };
-
-    const scroll = {
-      x: selectedTab !== REJECTED ? '50vw' : '64vw',
-      y: 'max-content',
-    };
-
     const rowSelection = {
       type: 'checkbox',
       selectedRowKeys,
@@ -552,16 +527,20 @@ class TeamLeaveTable extends PureComponent {
 
     return (
       <div className={styles.TeamLeaveTable}>
-        <Table
-          // size="middle"
+        <CommonTable
           loading={tableLoading}
           rowSelection={selectedTab === IN_PROGRESS ? rowSelection : null}
-          // if data.length > 10, pagination will appear
-          pagination={data.length === 0 ? null : { ...pagination }}
           columns={tableByRole}
-          dataSource={data}
-          scroll={data.length > 0 ? scroll : null}
-          rowKey={(id) => id._id}
+          list={data}
+          scrollable={data.length > 0}
+          isBackendPaging
+          onChangePage={this.onChangePagination}
+          limit={limit}
+          page={page}
+          total={total}
+          rowKey="_id"
+          width={selectedTab !== REJECTED ? '50vw' : '64vw'}
+          height="max-content"
           locale={{
             emptyText: (
               <div className={styles.emptyTable}>

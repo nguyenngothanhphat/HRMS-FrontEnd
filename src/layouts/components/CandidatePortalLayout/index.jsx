@@ -50,6 +50,12 @@ const CandidatePortalLayout = React.memo((props) => {
     activeConversationUnseen,
   } = props;
 
+  useEffect(() => {
+    if (!socket.connected) {
+      socket.connect()
+    } 
+  }, [])
+
   const [notification, setNotification] = useState(0);
   const [openUpcomingEventModal, setOpenUpcomingEventModal] = useState(false);
   let candidateFullName = `${firstName} ${middleName} ${lastName}`;

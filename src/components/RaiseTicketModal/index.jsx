@@ -143,7 +143,7 @@ const RaiseTicketModal = (props) => {
       };
     }
     dispatch({
-      type: 'ticketManagement/fetchListAllTicket',
+      type: 'ticketManagement/fetchTicketList',
       payload,
     });
     dispatch({

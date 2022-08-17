@@ -84,6 +84,7 @@ const BackgroundRecheck = (props) => {
         payload: {
           candidate,
           documentChecklist,
+          currentStep,
         },
       });
       const check = validateFiles();

@@ -1,7 +1,6 @@
-import { Col, Row } from 'antd';
+import { Col, Row, Table } from 'antd';
 import React from 'react';
 import { connect } from 'umi';
-import CommonTable from '@/components/CommonTable';
 import IconLeaveCategory from '@/assets/employeeProfile/ic_leave_category.svg';
 import LeaveInformation from '../LeaveInformation';
 import styles from './index.less';
@@ -56,22 +55,21 @@ const LeaveBalance = ({ data, loading }) => {
       },
       {
         title: 'Total Remaining',
-        dataIndex: 'total',
-        key: 'total',
+        dataIndex: 'remainingMessage',
+        key: 'remainingMessage',
         align: 'center',
-        render: (_, row) => {
-          const { total, taken } = row;
-          return <span className={styles.totalValue}>{total - taken}</span>;
+        render: (remainingMessage = '-') => {
+          return <span className={styles.totalValue}>{remainingMessage}</span>;
         },
       },
       {
         title: 'Total Accrued',
-        dataIndex: 'total',
-        key: 'total',
+        dataIndex: 'accruedMessage',
+        key: 'accruedMessage',
         editable: 'true',
         align: 'center',
-        render: (total) => {
-          return <span className={styles.totalValue}>{total}</span>;
+        render: (accruedMessage = '-') => {
+          return <span className={styles.totalValue}>{accruedMessage}</span>;
         },
       },
       {
@@ -80,7 +78,7 @@ const LeaveBalance = ({ data, loading }) => {
         key: 'taken',
         editable: 'true',
         align: 'center',
-        render: (taken) => {
+        render: (taken = '-') => {
           return <span className={styles.totalValue}>{taken}</span>;
         },
       },
@@ -94,7 +92,12 @@ const LeaveBalance = ({ data, loading }) => {
         <LeaveInformation />
       </Col>
       <Col span={18} className={styles.leaveTableContainer}>
-        <CommonTable list={data} columns={getColumns()} showPagination={false} loading={loading} />
+        <Table
+          dataSource={data}
+          columns={getColumns()}
+          loading={loading}
+          pagination={{ pageSize: data.length, position: ['none', 'none'] }}
+        />
       </Col>
     </Row>
   );

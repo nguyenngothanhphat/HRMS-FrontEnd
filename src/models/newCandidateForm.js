@@ -1924,7 +1924,7 @@ const newCandidateForm = {
       const { tempData = {} } = state;
       const { employeeType = '' } = tempData;
 
-      if (Object.keys(employeeType).length === 0) {
+      if (employeeType && Object.keys(employeeType).length === 0) {
         return {
           ...state,
           tempData: {

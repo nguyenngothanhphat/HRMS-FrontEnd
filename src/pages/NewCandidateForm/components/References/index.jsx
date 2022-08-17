@@ -8,6 +8,7 @@ import NoteComponent from '../NewNoteComponent';
 import ReferenceForm from './components/ReferenceForm';
 import styles from './index.less';
 import { goToTop } from '@/utils/utils';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const References = (props) => {
   const [form] = Form.useForm();
@@ -24,8 +25,8 @@ const References = (props) => {
     loadingSendNoReference = false,
     loadingFetchReferences = false,
   } = data;
-  const [numReferences, setNumReferences] = useState(0);
-  const [disabled, setDisabled] = useState(false);
+  const [disabledInput, setDisabledInput] = useState(false);
+  const [disabledButton, setDisabledButton] = useState(false);
 
   useEffect(() => {
     form.resetFields();
@@ -44,19 +45,24 @@ const References = (props) => {
   }, []);
 
   const getDisabled = () => {
-    if (isFilledReferences) {
-      setDisabled(false);
-    }
-
-    if (numReferencesProp && numReferencesProp > 0 && references.length === 0) {
-      setDisabled(true);
+    if (processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION) {
+      if (isFilledReferences && numReferencesProp > 0) {
+        setDisabledInput(false);
+        setDisabledButton(false);
+      }
+      if (numReferencesProp && numReferencesProp > 0 && references.length === 0) {
+        setDisabledInput(true);
+        setDisabledButton(true);
+      }
+    } else {
+      setDisabledInput(true);
+      setDisabledButton(false);
     }
   };
 
   useEffect(() => {
-    setNumReferences(numReferencesProp || 3);
     form.setFieldsValue({
-      noOfReferences: numReferencesProp || 3,
+      noOfReferences: numReferencesProp || 0,
     });
   }, [ticketID]);
 
@@ -69,6 +75,8 @@ const References = (props) => {
   };
 
   const onClickNext = async () => {
+    const numReferences = form.getFieldValue('noOfReferences') * 1;
+    const typeOfReferences = typeof numReferences === 'number';
     const nextStep =
       processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
         ? ONBOARDING_STEPS.SALARY_STRUCTURE
@@ -79,46 +87,53 @@ const References = (props) => {
         ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
         : processStatus;
 
-    if (!isFilledReferences) {
-      dispatch({
-        type: 'newCandidateForm/sendNoReferenceEffect',
-        payload: {
-          numReferences,
-          candidateId,
-        },
-      }).then(({ statusCode }) => {
-        if (statusCode === 200) {
-          message.success('Add number of references successfully');
-        }
-      });
-      setDisabled(true);
-    } else {
-      await dispatch({
-        type: 'newCandidateForm/updateByHR',
-        payload: {
-          candidate: candidateId,
-          currentStep: nextStep,
-          processStatus: nextStatus,
-        },
-      }).then(({ statusCode }) => {
-        if (statusCode === 200) {
-          dispatch({
-            type: 'newCandidateForm/save',
-            payload: {
-              currentStep: nextStep,
-            },
-          });
-          dispatch({
-            type: 'newCandidateForm/saveTemp',
-            payload: {
-              processStatus: nextStatus,
-            },
-          });
-          history.push(
-            `/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`,
-          );
-        }
-      });
+    if (typeOfReferences) {
+      if (
+        !isFilledReferences &&
+        numReferences > 0 &&
+        processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
+      ) {
+        dispatch({
+          type: 'newCandidateForm/sendNoReferenceEffect',
+          payload: {
+            numReferences: numReferences || 0,
+            candidateId,
+          },
+        }).then(({ statusCode }) => {
+          if (statusCode === 200) {
+            message.success('Add number of references successfully');
+          }
+        });
+        setDisabledInput(true);
+        setDisabledButton(true);
+      } else {
+        await dispatch({
+          type: 'newCandidateForm/updateByHR',
+          payload: {
+            candidate: candidateId,
+            currentStep: nextStep,
+            processStatus: nextStatus,
+          },
+        }).then(({ statusCode }) => {
+          if (statusCode === 200) {
+            dispatch({
+              type: 'newCandidateForm/save',
+              payload: {
+                currentStep: nextStep,
+              },
+            });
+            dispatch({
+              type: 'newCandidateForm/saveTemp',
+              payload: {
+                processStatus: nextStatus,
+              },
+            });
+            history.push(
+              `/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`,
+            );
+          }
+        });
+      }
     }
   };
 
@@ -138,11 +153,7 @@ const References = (props) => {
               <Input
                 placeholder="No. of references"
                 className={styles.formInput}
-                disabled={disabled}
-                onChange={(e) => {
-                  e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                  setNumReferences(e.target.value);
-                }}
+                disabled={disabledInput}
               />
             </Form.Item>
           </Col>
@@ -161,8 +172,8 @@ const References = (props) => {
   };
 
   const getButtonText = () => {
-    if (!isFilledReferences) {
-      if (disabled) return 'Sent';
+    if (!isFilledReferences && numReferencesProp > 0) {
+      if (disabledButton) return 'Sent';
       return 'Send';
     }
     return 'Next';
@@ -185,18 +196,13 @@ const References = (props) => {
                   </Button>
                 </Col>
                 <Col span={12}>
-                  <Button
-                    type="primary"
+                  <CustomPrimaryButton
                     onClick={onClickNext}
-                    className={[
-                      styles.bottomBar__button__primary,
-                      disabled ? styles.bottomBar__button__disabled : '',
-                    ]}
                     loading={loadingSendNoReference}
-                    disabled={disabled}
+                    disabled={disabledButton}
                   >
                     {getButtonText()}
-                  </Button>
+                  </CustomPrimaryButton>
                 </Col>
               </Row>
             </div>
@@ -204,6 +210,15 @@ const References = (props) => {
         </Row>
       </div>
     );
+  };
+
+  const onValuesChange = (changedValues, allValues) => {
+    dispatch({
+      type: 'newCandidateForm/saveTemp',
+      payload: {
+        numReferences: allValues.noOfReferences * 1,
+      },
+    });
   };
 
   return (
@@ -218,6 +233,7 @@ const References = (props) => {
                 references,
               }}
               form={form}
+              onValuesChange={onValuesChange}
             >
               <Row gutter={[24, 24]}>
                 <Col span={24}>
@@ -241,7 +257,7 @@ const References = (props) => {
                                       index={index}
                                       references={references}
                                     />
-                                    {numReferences > index + 1 && (
+                                    {numReferencesProp > index + 1 && (
                                       <Divider className={styles.divider} />
                                     )}
                                   </div>

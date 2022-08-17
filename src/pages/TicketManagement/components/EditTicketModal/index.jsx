@@ -35,7 +35,7 @@ const EditTicketModal = (props) => {
     loadingUploadAttachment = false,
     role = '',
     ticket = {},
-    refreshFetchTicketList = () => {},
+    refreshData: refreshFetchTicketList = () => {},
     listEmployeeByIds = [],
     loadingUpload = false,
   } = props;

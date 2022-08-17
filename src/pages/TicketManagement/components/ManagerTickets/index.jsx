@@ -134,14 +134,14 @@ export default connect(
     },
     location: { companyLocationList = [] },
     ticketManagement: {
-      listOffAllTicket = [],
+      ticketList = [],
       totalList = [],
       selectedLocations = [],
       isLocationLoaded = false,
       locationsOfCountries = [],
     } = {},
   }) => ({
-    listOffAllTicket,
+    ticketList,
     totalList,
     country,
     companyLocationList,

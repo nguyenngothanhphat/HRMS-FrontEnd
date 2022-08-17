@@ -31,17 +31,6 @@ export async function getAllListTicket(params) {
     API_KEYS.TIMESHEET_API,
   );
 }
-export async function getListMyTicket(payload) {
-  return request(
-    '/api-ticket/tickettenant/list',
-    {
-      method: 'POST',
-      data: payload,
-    },
-    false,
-    API_KEYS.TICKET_API,
-  );
-}
 
 // reporting manager
 // approve/reject a leave request or a withdraw request
@@ -99,13 +88,6 @@ export async function updateWidgets(payload) {
   });
 }
 
-// MY TEAM
-export async function getMyTeam(payload) {
-  return request('/api/employeetenant/list-by-single-company', {
-    method: 'POST',
-    data: payload,
-  });
-}
 export async function updateTicket(payload) {
   return request(
     `/api-ticket/tickettenant/update`,
@@ -139,10 +121,10 @@ export async function getListMyTeam(payload) {
   });
 }
 
-export async function getListEmployee(payload) {
-  return request('/api/employeetenant/list-by-single-company', {
-    method: 'POST',
-    data: payload,
+export async function getListEmployee(params) {
+  return request('/api/employeetenant', {
+    method: 'GET',
+    params,
   });
 }
 export async function getHolidaysByCountry(payload) {

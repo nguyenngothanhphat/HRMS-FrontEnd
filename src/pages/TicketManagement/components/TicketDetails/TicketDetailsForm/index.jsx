@@ -32,6 +32,7 @@ const TicketDetailsForm = (props) => {
     loadingAddChat = false,
     roles = [],
     permissions = {},
+    refreshData = () => {},
   } = props;
 
   const {
@@ -476,6 +477,7 @@ const TicketDetailsForm = (props) => {
         visible={editVisible}
         role={role}
         onClose={() => setEditVisible(false)}
+        refreshData={refreshData}
       />
     </div>
   );
