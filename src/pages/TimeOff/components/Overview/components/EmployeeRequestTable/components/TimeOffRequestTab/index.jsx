@@ -51,6 +51,10 @@ const TimeOffRequestTab = (props) => {
 
   useEffect(() => {
     setSelectedTabNumber(currentFilterTab);
+    dispatch({
+      type: 'timeOff/savePaging',
+      payload: { page: 1 },
+    });
   }, [currentFilterTab]);
 
   const fetchData = () => {

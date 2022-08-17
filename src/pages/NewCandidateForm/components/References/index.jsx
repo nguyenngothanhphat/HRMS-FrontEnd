@@ -8,6 +8,7 @@ import NoteComponent from '../NewNoteComponent';
 import ReferenceForm from './components/ReferenceForm';
 import styles from './index.less';
 import { goToTop } from '@/utils/utils';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const References = (props) => {
   const [form] = Form.useForm();
@@ -24,7 +25,8 @@ const References = (props) => {
     loadingSendNoReference = false,
     loadingFetchReferences = false,
   } = data;
-  const [disabled, setDisabled] = useState(false);
+  const [disabledInput, setDisabledInput] = useState(false);
+  const [disabledButton, setDisabledButton] = useState(false);
 
   useEffect(() => {
     form.resetFields();
@@ -43,15 +45,18 @@ const References = (props) => {
   }, []);
 
   const getDisabled = () => {
-    if (isFilledReferences && numReferencesProp > 0) {
-      setDisabled(false);
-    }
-
-    if (
-      (numReferencesProp && numReferencesProp > 0 && references.length === 0) ||
-      processStatus !== NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
-    ) {
-      setDisabled(true);
+    if (processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION) {
+      if (isFilledReferences && numReferencesProp > 0) {
+        setDisabledInput(false);
+        setDisabledButton(false);
+      }
+      if (numReferencesProp && numReferencesProp > 0 && references.length === 0) {
+        setDisabledInput(true);
+        setDisabledButton(true);
+      }
+    } else {
+      setDisabledInput(true);
+      setDisabledButton(false);
     }
   };
 
@@ -81,8 +86,13 @@ const References = (props) => {
       processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
         ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
         : processStatus;
+
     if (typeOfReferences) {
-      if (!isFilledReferences && numReferences > 0) {
+      if (
+        !isFilledReferences &&
+        numReferences > 0 &&
+        processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
+      ) {
         dispatch({
           type: 'newCandidateForm/sendNoReferenceEffect',
           payload: {
@@ -94,7 +104,8 @@ const References = (props) => {
             message.success('Add number of references successfully');
           }
         });
-        setDisabled(true);
+        setDisabledInput(true);
+        setDisabledButton(true);
       } else {
         await dispatch({
           type: 'newCandidateForm/updateByHR',
@@ -142,7 +153,7 @@ const References = (props) => {
               <Input
                 placeholder="No. of references"
                 className={styles.formInput}
-                disabled={disabled}
+                disabled={disabledInput}
               />
             </Form.Item>
           </Col>
@@ -161,8 +172,8 @@ const References = (props) => {
   };
 
   const getButtonText = () => {
-    if (!isFilledReferences) {
-      if (disabled) return 'Sent';
+    if (!isFilledReferences && numReferencesProp > 0) {
+      if (disabledButton) return 'Sent';
       return 'Send';
     }
     return 'Next';
@@ -185,18 +196,13 @@ const References = (props) => {
                   </Button>
                 </Col>
                 <Col span={12}>
-                  <Button
-                    type="primary"
+                  <CustomPrimaryButton
                     onClick={onClickNext}
-                    className={[
-                      styles.bottomBar__button__primary,
-                      disabled ? styles.bottomBar__button__disabled : '',
-                    ]}
                     loading={loadingSendNoReference}
-                    disabled={disabled}
+                    disabled={disabledButton}
                   >
                     {getButtonText()}
-                  </Button>
+                  </CustomPrimaryButton>
                 </Col>
               </Row>
             </div>
@@ -204,6 +210,15 @@ const References = (props) => {
         </Row>
       </div>
     );
+  };
+
+  const onValuesChange = (changedValues, allValues) => {
+    dispatch({
+      type: 'newCandidateForm/saveTemp',
+      payload: {
+        numReferences: allValues.noOfReferences * 1,
+      },
+    });
   };
 
   return (
@@ -218,6 +233,7 @@ const References = (props) => {
                 references,
               }}
               form={form}
+              onValuesChange={onValuesChange}
             >
               <Row gutter={[24, 24]}>
                 <Col span={24}>
@@ -257,11 +273,7 @@ const References = (props) => {
                   </Card>
                 </Col>
 
-                <Col span={24}>
-                  {processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
-                    ? _renderBottomBar()
-                    : null}
-                </Col>
+                <Col span={24}>{_renderBottomBar()}</Col>
               </Row>
             </Form>
           </Spin>

@@ -123,20 +123,6 @@ const dashboard = {
         dialog(errors);
       }
     },
-    *fetchListMyTicket({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(getListMyTicket, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listMyTicket: data } });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
     *fetchLeaveRequests({ payload }, { call, put }) {
       try {
         const tenantId = getCurrentTenant();
@@ -376,9 +362,10 @@ const dashboard = {
       }
       return response;
     },
-    // ADDNOTE
-    *addNotes({ payload }, { call, put }) {
+    // ADD NOTES
+    *addNotes({ payload }, { call, put, select }) {
       let response;
+      const { currentUser = {} } = yield select((state) => state.user);
       try {
         response = yield call(addNotes, {
           ...payload,
@@ -388,8 +375,10 @@ const dashboard = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'fetchListMyTicket',
-          payload: {},
+          type: 'fetchMyTicketList',
+          payload: {
+            employeeId: currentUser?.employee?._id,
+          },
         });
       } catch (error) {
         dialog(error);

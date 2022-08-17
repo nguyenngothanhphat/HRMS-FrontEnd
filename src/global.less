@@ -112,6 +112,11 @@ ol {
 li.ant-pagination-item {
   display: none;
 }
+.ant-pagination-prev,
+.ant-pagination-next {
+  min-width: 24px !important;
+  height: 24px !important;
+}
 
 li.ant-pagination-total-text {
   margin-right: 20px;
@@ -120,20 +125,16 @@ li.ant-pagination-total-text {
   letter-spacing: 0.12px;
 }
 
-.ant-pagination.mini .ant-pagination-prev .ant-pagination-item-link,
-.ant-pagination.mini .ant-pagination-next .ant-pagination-item-link {
-  background: #f0f2f6;
-  border-color: transparent;
-}
-
-.ant-pagination.mini .ant-pagination-next {
-  margin-left: 25px;
-}
-
 button.ant-pagination-item-link {
-  padding: 0;
+  padding: 0 !important;
   font-size: 10px !important;
+  background: #f0f2f6 !important;
+  border-color: transparent !important;
   border-radius: 50% !important;
+}
+
+.ant-pagination-next {
+  margin-left: @margin-md !important;
 }
 
 /* End Pagination */
