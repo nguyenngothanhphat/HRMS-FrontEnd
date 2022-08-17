@@ -91,6 +91,7 @@ const LeaveRequestForm = (props) => {
       });
       invalidDatesTemp = [...invalidDatesTemp, ...temp];
     });
+    console.log('🚀  ~ invalidDatesTemp', invalidDatesTemp);
     setInvalidDates(invalidDatesTemp);
   };
 
@@ -130,10 +131,9 @@ const LeaveRequestForm = (props) => {
           queryType: LEAVE_QUERY_TYPE.SELF,
           status: [IN_PROGRESS, ACCEPTED],
         },
-      }).then((res) => {
+      }).then((res = {}) => {
         if (res.statusCode === 200) {
-          const { items: leaveRequests = [] } = res?.data;
-          getInvalidDate(leaveRequests);
+          getInvalidDate(res?.data);
         }
       });
     }
