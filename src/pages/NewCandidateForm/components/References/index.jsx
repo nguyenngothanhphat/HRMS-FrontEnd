@@ -1,20 +1,27 @@
-import { Button, Card, Col, Divider, Form, Input, message, Row, Spin } from 'antd';
+import { Button, Card, Col, Divider, Form, Input, Row, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 // import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
-import { connect, history } from 'umi';
 import { isNaN } from 'lodash';
+import { connect, history } from 'umi';
+import CustomModal from '@/components/CustomModal';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
+import { goToTop } from '@/utils/utils';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';
+import ModalContent from '../PreviewOffer/components/ModalContent';
 import ReferenceForm from './components/ReferenceForm';
 import styles from './index.less';
-import { goToTop } from '@/utils/utils';
-import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const References = (props) => {
   const [form] = Form.useForm();
 
-  const { data, dispatch } = props;
+  const {
+    tempData,
+    dispatch,
+    loadingSendNoReference = false,
+    loadingFetchReferences = false,
+  } = props;
   const {
     ticketID = '',
     _id: candidateId = '',
@@ -23,12 +30,12 @@ const References = (props) => {
     isFilledReferences = false,
     numReferences: numReferencesProp = null,
     currentStep = 0,
-    loadingSendNoReference = false,
-    loadingFetchReferences = false,
     dateOfJoining = '',
-  } = data;
+  } = tempData;
+
   const [disabledInput, setDisabledInput] = useState(false);
   const [disabledButton, setDisabledButton] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     form.resetFields();
@@ -63,9 +70,15 @@ const References = (props) => {
   };
 
   useEffect(() => {
-    form.setFieldsValue({
-      noOfReferences: numReferencesProp || 0,
-    });
+    if (numReferencesProp !== null || numReferencesProp === 0) {
+      form.setFieldsValue({
+        noOfReferences: numReferencesProp,
+      });
+    } else {
+      form.setFieldsValue({
+        noOfReferences: 3,
+      });
+    }
   }, [ticketID]);
 
   useEffect(() => {
@@ -77,7 +90,8 @@ const References = (props) => {
   };
 
   const onClickNext = async () => {
-    const numReferences = Number(form.getFieldValue('noOfReferences'));
+    const numReferences =
+      numReferencesProp !== null ? numReferencesProp : Number(form.getFieldValue('noOfReferences'));
     const nextStep =
       processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
         ? ONBOARDING_STEPS.SALARY_STRUCTURE
@@ -102,12 +116,21 @@ const References = (props) => {
           },
         }).then(({ statusCode }) => {
           if (statusCode === 200) {
-            message.success('Add number of references successfully');
+            setVisible(true);
           }
         });
         setDisabledInput(true);
         setDisabledButton(true);
       } else {
+        if (!isFilledReferences) {
+          dispatch({
+            type: 'newCandidateForm/sendNoReferenceEffect',
+            payload: {
+              numReferences: 0,
+              candidateId,
+            },
+          });
+        }
         await dispatch({
           type: 'newCandidateForm/updateByHR',
           payload: {
@@ -128,6 +151,8 @@ const References = (props) => {
               type: 'newCandidateForm/saveTemp',
               payload: {
                 processStatus: nextStatus,
+                numReferences,
+                currentStep: nextStep,
               },
             });
             history.push(
@@ -214,15 +239,6 @@ const References = (props) => {
     );
   };
 
-  const onValuesChange = (changedValues, allValues) => {
-    dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload: {
-        numReferences: allValues.noOfReferences * 1,
-      },
-    });
-  };
-
   return (
     <div className={styles.References}>
       <Row gutter={[24, 24]}>
@@ -235,7 +251,6 @@ const References = (props) => {
                 references,
               }}
               form={form}
-              onValuesChange={onValuesChange}
             >
               <Row gutter={[24, 24]}>
                 <Col span={24}>
@@ -291,12 +306,17 @@ const References = (props) => {
           </Row>
         </Col>
       </Row>
+      <CustomModal
+        open={visible}
+        closeModal={() => setVisible(false)}
+        content={<ModalContent closeModal={() => setVisible(false)} type="references" />}
+      />
     </div>
   );
 };
 
-export default connect(({ newCandidateForm: { data }, loading }) => ({
-  data,
+export default connect(({ newCandidateForm: { tempData }, loading }) => ({
+  tempData,
   loadingFetchReferences: loading.effects['newCandidateForm/fetchListReferences'],
   loadingSendNoReference: loading.effects['newCandidateForm/sendNoReferenceEffect'],
 }))(References);
