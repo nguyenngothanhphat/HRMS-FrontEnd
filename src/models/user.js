@@ -1,4 +1,5 @@
 import { history } from 'umi';
+import routes from '../../config/routes';
 import ROLES from '@/constants/roles';
 import { fetchCompanyOfUser, query as queryUsers, queryCurrent } from '@/services/user';
 import {
@@ -224,6 +225,24 @@ const UserModel = {
             isSwitchingRole,
           },
         });
+
+        // auto select first menu
+        if (isSwitchingRole) {
+          let find = routes.find((x) => x.component === '../layouts/components/SecurityLayout');
+          find = find.routes?.find((x) => x.component === '../layouts/components/BasicLayout');
+          const arr = find.routes;
+          if (arr) {
+            const x = arr.find((r) => {
+              const { authority = [] } = r;
+              return !!formatArrRoles.find((t) => authority.includes(t) && t !== 'admin');
+            });
+            if (x?.path) {
+              history.replace(x.path);
+            }
+          } else {
+            history.replace('/');
+          }
+        }
 
         // save dashboard widgets
         yield put({
