@@ -68,39 +68,39 @@ function PostCard(props) {
 
   const renderMenuDropdown = () => {
     const isMe = item?.createdBy?._id === employeeId;
-    if (isMe) {
-      return (
-        <div className={styles.containerDropdown}>
-          <div
-            className={styles.btn}
-            onClick={() => {
-              setIsVisible(true);
-              setIsEdit(true);
-              setRecord(item);
-              setMenuVisible(false);
-            }}
-          >
-            <img className={styles.actionIcon} src={UpdateIcon} alt="updateIcon" />
-            <span>Edit</span>
-          </div>
 
-          <div
-            className={styles.btn}
-            onClick={() => {
-              setIsDelete(true);
-              setRecord(item);
-              setMenuVisible(false);
-            }}
-          >
-            <img className={styles.actionIcon} src={DeleteIcon} alt="deleteIcon" />
-            <span>Delete</span>
-          </div>
-        </div>
-      );
-    }
-    if (viewSettingHomePage === 1) {
-      return (
-        <div className={styles.containerDropdown}>
+    return (
+      <div className={styles.containerDropdown}>
+        {isMe && (
+          <>
+            <div
+              className={styles.btn}
+              onClick={() => {
+                setIsVisible(true);
+                setIsEdit(true);
+                setRecord(item);
+                setMenuVisible(false);
+              }}
+            >
+              <img className={styles.actionIcon} src={UpdateIcon} alt="updateIcon" />
+              <span>Edit</span>
+            </div>
+
+            <div
+              className={styles.btn}
+              onClick={() => {
+                setIsDelete(true);
+                setRecord(item);
+                setMenuVisible(false);
+              }}
+            >
+              <img className={styles.actionIcon} src={DeleteIcon} alt="deleteIcon" />
+              <span>Delete</span>
+            </div>
+          </>
+        )}
+
+        {viewSettingHomePage === 1 && (
           <div
             className={styles.btn}
             onClick={() => {
@@ -111,12 +111,9 @@ function PostCard(props) {
             <img className={styles.actionIcon} src={HideIcon} alt="hideIcon" />
             <span>Hide this post</span>
           </div>
-        </div>
-      );
-    }
-    if (!item?.flag?.includes(employeeId)) {
-      return (
-        <div className={styles.containerDropdown}>
+        )}
+
+        {!item?.flag?.includes(employeeId) && (
           <div
             className={styles.btn}
             onClick={() => {
@@ -127,10 +124,9 @@ function PostCard(props) {
             <img className={styles.actionIcon} src={FlagIcon} alt="flagIcon" />
             <span>Flag as inappropriate</span>
           </div>
-        </div>
-      );
-    }
-    return '';
+        )}
+      </div>
+    );
   };
 
   return (
