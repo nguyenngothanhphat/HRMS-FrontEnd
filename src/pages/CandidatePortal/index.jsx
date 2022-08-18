@@ -153,7 +153,7 @@ class CandidatePortal extends PureComponent {
       step,
       size,
       backProps,
-      skipProps,
+      closeProps,
       primaryProps,
       tooltipProps,
       isLastStep,
@@ -163,7 +163,7 @@ class CandidatePortal extends PureComponent {
         <br />
         <p style={{ paddingBottom: isLastStep ? '20px' : '0px' }}>
           {!isLastStep && (
-            <Button {...skipProps} style={{ border: 'none', background: 'none' }}>
+            <Button {...closeProps} style={{ border: 'none', background: 'none' }}>
               Skip
             </Button>
           )}
