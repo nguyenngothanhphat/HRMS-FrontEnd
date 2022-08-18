@@ -23,12 +23,13 @@ import { goToTop } from '@/utils/utils';
         salaryStructure: { status: statusSalary },
         title = {},
       },
-      tempData: { salaryTitle = '', salaryNote: salaryNoteTemp = '' } = {},
+      tempData: { salaryTitle = '', salaryNote: salaryNoteTemp = '', dateOfJoining = '' } = {},
       salaryStructure = {},
       checkMandatory = {},
       currentStep = 0,
     } = {},
   }) => ({
+    dateOfJoining,
     candidateId,
     processStatus,
     salaryStructure,
@@ -53,7 +54,7 @@ class SalaryStructure extends PureComponent {
 
   componentDidMount() {
     goToTop();
-    const { candidate = '', dispatch, processStatus } = this.props;
+    const { candidate = '', dispatch, processStatus, dateOfJoining = '' } = this.props;
     if (processStatus === 'DRAFT') {
       if (dispatch && candidate) {
         dispatch({
@@ -61,6 +62,7 @@ class SalaryStructure extends PureComponent {
           payload: {
             candidate,
             currentStep: ONBOARDING_STEPS.DOCUMENT_VERIFICATION,
+            dateOfJoining,
           },
         });
       }
@@ -75,7 +77,7 @@ class SalaryStructure extends PureComponent {
   };
 
   saveSalaryNote = () => {
-    const { dispatch, candidateId = '', currentStep = '' } = this.props;
+    const { dispatch, candidateId = '', currentStep = '', dateOfJoining = '' } = this.props;
     const { salaryNoteState } = this.state;
 
     dispatch({
@@ -85,6 +87,7 @@ class SalaryStructure extends PureComponent {
         candidate: candidateId,
         tenantId: getCurrentTenant(),
         currentStep,
+        dateOfJoining,
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {

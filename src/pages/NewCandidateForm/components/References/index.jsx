@@ -30,6 +30,7 @@ const References = (props) => {
     isFilledReferences = false,
     numReferences: numReferencesProp = null,
     currentStep = 0,
+    dateOfJoining = '',
   } = tempData;
 
   const [disabledInput, setDisabledInput] = useState(false);
@@ -136,6 +137,7 @@ const References = (props) => {
             candidate: candidateId,
             currentStep: nextStep,
             processStatus: nextStatus,
+            dateOfJoining,
           },
         }).then(({ statusCode }) => {
           if (statusCode === 200) {

@@ -69,6 +69,7 @@ const DocumentVerification = (props) => {
         documentTypeE = [],
         documentLayout = [],
         currentStep = 0,
+        dateOfJoining = '',
       } = {} || {},
     },
     dispatch,
@@ -383,6 +384,7 @@ const DocumentVerification = (props) => {
           documentTypeD,
           documentTypeE,
           currentStep,
+          dateOfJoining,
         },
       });
     }

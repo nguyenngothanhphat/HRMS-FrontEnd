@@ -42,7 +42,6 @@ const AvatarDropdown = (props) => {
   const [SETTINGS] = useState('settings');
   const [selectLocationAbility, setSelectLocationAbility] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const companyId = getCurrentCompany();
@@ -73,8 +72,6 @@ const AvatarDropdown = (props) => {
     const authority = JSON.parse(localStorage.getItem('antd-pro-authority')) || [];
     const check = authority.includes('admin') || authority.includes('owner');
     setIsCheck(!check);
-
-    setLoading(false);
   }, []);
 
   const viewProfile = async () => {
@@ -133,7 +130,6 @@ const AvatarDropdown = (props) => {
       isSwitch = true;
     }
     setIsCheck(!isCheck);
-    setLoading(true);
 
     await dispatch({
       type: 'user/fetchCurrent',
@@ -145,7 +141,9 @@ const AvatarDropdown = (props) => {
     const { pathname } = window.location;
     if (pathname === '/dashboard') {
       window.location.reload();
-    } else history.replace('/');
+    } else if (!isSwitch) {
+      history.replace('/');
+    }
   };
 
   const onMenuClick = async (event) => {
@@ -297,10 +295,7 @@ const AvatarDropdown = (props) => {
           <>
             <Menu.Divider className={styles.secondDivider} />
             <Menu.Item key={SWITCH_ROLE} className={styles.menuItemLink}>
-              {loading
-                ? 'Switching...'
-                : `
-                Switch to ${isCheck ? 'Admin' : 'Employee'}`}
+              Switch to {isCheck ? 'Admin' : 'Employee'}
             </Menu.Item>
           </>
         )}

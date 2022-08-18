@@ -52,6 +52,7 @@ const SalaryStructureTemplate = (props) => {
         salaryStructure: { salaryTemplate = {}, settings: settingsTempData = [] } = {},
         ticketID = '',
         salaryNote = '',
+        dateOfJoining = '',
       } = {},
     },
     dispatch,
@@ -103,6 +104,8 @@ const SalaryStructureTemplate = (props) => {
             },
             candidate: candidateId,
             sentDate: moment(),
+            currentStep,
+            dateOfJoining,
           },
         }).then(({ statusCode }) => {
           if (statusCode === 200) {
@@ -115,6 +118,7 @@ const SalaryStructureTemplate = (props) => {
           payload: {
             currentStep: ONBOARDING_STEPS.BENEFITS,
             candidate: candidateId,
+            dateOfJoining,
           },
         });
         dispatch({
