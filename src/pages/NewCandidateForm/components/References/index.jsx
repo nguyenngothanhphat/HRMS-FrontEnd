@@ -25,6 +25,7 @@ const References = (props) => {
     currentStep = 0,
     loadingSendNoReference = false,
     loadingFetchReferences = false,
+    dateOfJoining = '',
   } = data;
   const [disabledInput, setDisabledInput] = useState(false);
   const [disabledButton, setDisabledButton] = useState(false);
@@ -113,6 +114,7 @@ const References = (props) => {
             candidate: candidateId,
             currentStep: nextStep,
             processStatus: nextStatus,
+            dateOfJoining,
           },
         }).then(({ statusCode }) => {
           if (statusCode === 200) {

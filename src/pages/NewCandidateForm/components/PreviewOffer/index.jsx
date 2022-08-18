@@ -48,6 +48,7 @@ const PreviewOffer = (props) => {
     offerLetterTemplate: offerLetterTemplateProp = '',
     reasonForRejectionHR: reasonForRejectionHRProp = '',
     reasonForWithdraw: reasonForWithdrawProp = '',
+    dateOfJoining = '',
   } = tempData;
   const {
     privateEmail: candidateEmailProp = '',
@@ -484,6 +485,7 @@ const PreviewOffer = (props) => {
           hrSignature: id,
           currentStep: ONBOARDING_STEPS.OFFER_DETAILS,
           tenantId: getCurrentTenant(),
+          dateOfJoining,
         },
       }).then(({ statusCode }) => {
         if (statusCode === 200) {
@@ -499,6 +501,7 @@ const PreviewOffer = (props) => {
           hrSignature: hrSignatureProp.id,
           currentStep: ONBOARDING_STEPS.OFFER_DETAILS,
           tenantId: getCurrentTenant(),
+          dateOfJoining,
         },
       }).then(({ statusCode }) => {
         if (statusCode === 200) {
@@ -613,6 +616,7 @@ const PreviewOffer = (props) => {
             candidate: _id,
             currentStep: ONBOARDING_STEPS.OFFER_DETAILS,
             offerLetter: newTemplateId,
+            dateOfJoining,
           },
         });
       }
@@ -987,7 +991,7 @@ const PreviewOffer = (props) => {
     data: (
       <p>
         <Typography.Text>
-          You must be ticket's assignee or assignee's manager to proceed this step.
+          You must be ticket&#39;s assignee or assignee&#39;s manager to proceed this step.
         </Typography.Text>
       </p>
     ),
