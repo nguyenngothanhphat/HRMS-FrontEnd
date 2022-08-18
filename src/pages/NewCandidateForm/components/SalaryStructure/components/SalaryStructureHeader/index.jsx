@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
 import editIcon from '@/assets/pencilIcon.svg';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import styles from './index.less';
 
 @connect(

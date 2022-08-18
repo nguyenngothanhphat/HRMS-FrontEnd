@@ -8,9 +8,9 @@ import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import { SPECIFY, TYPE_QUESTION } from '@/components/Question/utils';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { getCurrentTenant } from '@/utils/authority';
-import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
-import { mapType } from '@/utils/newCandidateForm';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { DOCUMENT_TYPES } from '@/constants/candidatePortal';
+import { MAP_TYPE } from '@/constants/newCandidateForm';
+import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
 import { Page } from '../../../../../NewCandidateForm/utils';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NoteComponent';
@@ -23,7 +23,7 @@ import Title from './components/Title';
 import ViewCommentModalContent from './components/ViewCommentModalContent';
 import styles from './index.less';
 
-const { NOT_AVAILABLE_PENDING_HR } = DOCUMENT_TYPES;
+const { NOT_AVAILABLE_PENDING_HR, VERIFYING, VERIFIED, NOT_AVAILABLE_ACCEPTED } = DOCUMENT_TYPES;
 
 const Note = {
   title: 'Note',
@@ -90,7 +90,7 @@ const EligibilityDocs = (props) => {
       if (arr.length === 0) return true;
       return arr
         .filter((x) => (x.required || x.value) && x.status !== NOT_AVAILABLE_PENDING_HR)
-        .every((x) => x.document);
+        .every((x) => [VERIFIED, VERIFYING, NOT_AVAILABLE_ACCEPTED].includes(x.status));
     };
     // for type E
     const checkDocumentUploadedTypeE = (arr = []) => {
@@ -303,13 +303,13 @@ const EligibilityDocs = (props) => {
     dispatch({
       type: 'candidatePortal/saveOrigin',
       payload: {
-        [mapType[type]]: result,
+        [MAP_TYPE[type]]: result,
       },
     });
   };
 
   const onComment = (values) => {
-    let items = [...data[mapType[selectingFile?.type]]];
+    let items = [...data[MAP_TYPE[selectingFile?.type]]];
     const { notAvailableComment = '' } = values;
     const assignCommentToData = (arr) => {
       return arr.map((x) => {
@@ -352,7 +352,7 @@ const EligibilityDocs = (props) => {
             {documentLayout
               .filter((x) => ['A', 'B', 'C'].includes(x.type))
               .map((x) => {
-                const find = data[mapType[x.type]] || [];
+                const find = data[MAP_TYPE[x.type]] || [];
                 const items = find.filter((y) => y.value || y.required);
                 if (items.length === 0) return null;
                 return (
@@ -368,7 +368,7 @@ const EligibilityDocs = (props) => {
 
             {/* TYPE D */}
             <TechnicalCertification
-              items={data[mapType.D] || []}
+              items={data[MAP_TYPE.D] || []}
               layout={documentLayout.find((x) => x.type === 'D')}
               onNotAvailableClick={onNotAvailableClick}
               onViewCommentClick={onViewCommentClick}
@@ -376,15 +376,15 @@ const EligibilityDocs = (props) => {
             />
 
             {/* TYPE E */}
-            {data[mapType.E]
-              ? data[mapType.E].length > 0 && (
-                  <PreviousEmployment
-                    items={data[mapType.E]}
-                    layout={documentLayout.find((x) => x.type === 'E')}
-                    onNotAvailableClick={onNotAvailableClick}
-                    onViewCommentClick={onViewCommentClick}
-                    onViewDocumentClick={onViewDocumentClick}
-                  />
+            {data[MAP_TYPE.E]
+              ? data[MAP_TYPE.E].length > 0 && (
+              <PreviousEmployment
+                items={data[MAP_TYPE.E]}
+                layout={documentLayout.find((x) => x.type === 'E')}
+                onNotAvailableClick={onNotAvailableClick}
+                onViewCommentClick={onViewCommentClick}
+                onViewDocumentClick={onViewDocumentClick}
+              />
                 )
               : null}
           </div>

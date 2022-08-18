@@ -111,17 +111,17 @@ class AddEmployeeModal extends Component {
     // });
 
     const locationPayload = companyLocationList.map(
-      ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
+      ({ headQuarterAddress: { country: countryItem1 = {} } = {} }) => {
         let stateList = [];
         companyLocationList.forEach(
-          ({ headQuarterAddress: { country: countryItem2 = '', state: stateItem2 = '' } = {} }) => {
-            if (countryItem1 === countryItem2) {
+          ({ headQuarterAddress: { country: countryItem2 = {}, state: stateItem2 = '' } = {} }) => {
+            if (countryItem1?._id === countryItem2?._id) {
               stateList = [...stateList, stateItem2];
             }
           },
         );
         return {
-          country: countryItem1,
+          country: countryItem1?._id,
           state: stateList,
         };
       },
@@ -373,12 +373,40 @@ class AddEmployeeModal extends Component {
 
           <Form.Item
             label={formatMessage({ id: 'addEmployee.employeeType' })}
-            name="employeeType"
+            name="empTypeOther"
             rules={[{ required: true }]}
           >
             <Select
               autoComplete="dontshow"
               placeholder={formatMessage({ id: 'addEmployee.placeholder.employeeType' })}
+              showArrow
+              showSearch
+              // disabled={isDisabledTitle || loadingTitle}
+              loading={loadingTitle}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {['Regular', 'Contingent Worker'].map((x, index) => {
+                return (
+                  <Option key={`${index + 1}`} value={x}>
+                    {x}
+                  </Option>
+                );
+              })}
+              ]
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.employmentType' })}
+            name="employeeType"
+            rules={[{ required: true }]}
+          >
+            <Select
+              autoComplete="dontshow"
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.employmentType' })}
               showArrow
               showSearch
               // disabled={isDisabledTitle || loadingTitle}

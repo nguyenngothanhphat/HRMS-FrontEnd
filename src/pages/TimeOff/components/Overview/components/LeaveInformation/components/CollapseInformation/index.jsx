@@ -1,7 +1,7 @@
 import { Col, Row } from 'antd';
 import React, { useState } from 'react';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import { TIMEOFF_TYPE } from '@/utils/timeOff';
+import { TIMEOFF_TYPE } from '@/constants/timeOff';
 import LeaveProgressBar from '../LeaveProgressBar';
 import SpecialLeaveBox from '../SpecialLeaveBox';
 import styles from './index.less';

@@ -23,6 +23,7 @@ import PDFIcon from '@/assets/onboarding/pdf-2.svg';
 import UploadIcon from '@/assets/onboarding/upload.svg';
 import ViewIcon from '@/assets/onboarding/viewIcon.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import { getCurrentLocation } from '@/utils/authority';
 import styles from './index.less';
 
@@ -228,7 +229,7 @@ const UploadDocument = (props) => {
             initialValues={{
               category: action === 'edit' ? categoryName : '',
               displayName: action === 'edit' ? displayNameProps : '',
-              dateCreated: moment(currentDate).format('YYYY-MM-DD'),
+              dateCreated: moment(currentDate).format(DATE_FORMAT_YMD),
               employee: author,
               location: action === 'edit' ? location.map((item) => item._id) : currentLocation,
             }}

@@ -1,10 +1,11 @@
-import { debounce } from 'lodash';
-import React, { useEffect } from 'react';
+import { debounce, isEmpty } from 'lodash';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CommonTable from '@/components/CommonTable';
-import FilterButton from '../FilterButton';
-import FilterPopover from '../FilterPopover';
-import SearchBar from '../SearchBar';
+import CustomOrangeButton from '@/components/CustomOrangeButton';
+import CustomSearchBox from '@/components/CustomSearchBox';
+import FilterCountTag from '@/components/FilterCountTag';
+import FilterPopover from '@/components/FilterPopover';
 import FilterContent from './components/FilterContent';
 import styles from './index.less';
 
@@ -13,30 +14,74 @@ const Projects = (props) => {
     dispatch,
     loadingFetch = false,
     reId = '',
-    customerProfile: { projectList = [] } = {},
+    customerProfile: {
+      projectList = [],
+      // filter list
+      projectTypeList = [],
+      projectStatusList = [],
+      divisionList = [],
+      employeeList = [],
+      projectNameList = [],
+    } = {},
   } = props;
 
-  const fetchProjectList = async (payload) => {
+  const [searchValue, setSearchValue] = useState('');
+  const [filter, setFilter] = useState({});
+
+  const fetchProjectList = async () => {
     dispatch({
       type: 'customerProfile/fetchProjectListEffect',
       payload: {
         customerId: [reId],
-        ...payload,
+        searchKey: searchValue,
+        ...filter,
       },
     });
   };
 
+  const fetchFilterData = () => {
+    if (isEmpty(projectNameList)) {
+      dispatch({
+        type: 'customerProfile/fetchProjectNameListEffect',
+      });
+    }
+    if (isEmpty(projectTypeList)) {
+      dispatch({
+        type: 'customerProfile/fetchProjectTypeListEffect',
+      });
+    }
+    if (isEmpty(projectStatusList)) {
+      dispatch({
+        type: 'customerProfile/fetchProjectStatusListEffect',
+      });
+    }
+    if (isEmpty(divisionList)) {
+      dispatch({
+        type: 'customerProfile/fetchDivisionListEffect',
+      });
+    }
+    if (isEmpty(employeeList)) {
+      dispatch({
+        type: 'customerProfile/fetchEmployeeListEffect',
+      });
+    }
+  };
+
   useEffect(() => {
     fetchProjectList();
-  }, []);
+  }, [searchValue, JSON.stringify(filter)]);
 
   const onSearchDebounce = debounce((value) => {
-    fetchProjectList({ searchKey: value });
+    setSearchValue(value);
   }, 1000);
 
   const onSearch = (e = {}) => {
     const { value = '' } = e.target;
     onSearchDebounce(value);
+  };
+
+  const onFilter = (values) => {
+    setFilter(values);
   };
 
   const generateColumns = () => {
@@ -81,6 +126,8 @@ const Projects = (props) => {
     }));
   };
 
+  const applied = Object.values(filter).filter((v) => v).length;
+
   return (
     <div className={styles.Projects}>
       <div className={styles.documentHeader}>
@@ -88,10 +135,20 @@ const Projects = (props) => {
           <span>Projects</span>
         </div>
         <div className={styles.documentHeaderFunction}>
-          <FilterPopover placement="bottomRight" content={<FilterContent />}>
-            <FilterButton />
+          <FilterCountTag
+            count={applied}
+            onClearFilter={() => {
+              onFilter({});
+            }}
+          />
+
+          <FilterPopover
+            placement="bottomRight"
+            content={<FilterContent onFilter={onFilter} filter={filter} />}
+          >
+            <CustomOrangeButton onClick={fetchFilterData} showDot={applied > 0} />
           </FilterPopover>
-          <SearchBar placeholder="Search by Project Name" onSearch={onSearch} />
+          <CustomSearchBox placeholder="Search by Project Name" onSearch={onSearch} />
         </div>
       </div>
       <div className={styles.documentBody}>

@@ -5,6 +5,7 @@ import { connect } from 'umi';
 import ShowBreakdownIcon from '@/assets/iconViewBreakdown.svg';
 import CollapseInformation from './components/CollapseInformation';
 import styles from './index.less';
+import TypeInfoPopover from '../TypeInfoPopover';
 
 const { Panel } = Collapse;
 
@@ -14,7 +15,6 @@ const LeaveInformation = (props) => {
     timeOff: {
       yourTimeOffTypes: { overview = {}, commonLeaves = [], specialLeaves = [] } = {},
     } = {},
-    viewDocumentVisible = false,
   } = props;
 
   const [isShow, setIsShow] = useState(false);
@@ -44,10 +44,19 @@ const LeaveInformation = (props) => {
   );
 
   return (
-    <div className={styles.LeaveInformation} style={viewDocumentVisible ? { zIndex: '1002' } : {}}>
+    <div className={styles.LeaveInformation}>
       <div className={styles.totalLeaveBalance}>
         <div className={styles.aboveContainer}>
-          <span className={styles.title}>Total Leave Balance</span>
+          <div className={styles.header}>
+            <span className={styles.title}>Total Leave Balance</span>
+            <TypeInfoPopover placement="rightTop" data={[...commonLeaves, ...specialLeaves]}>
+              <Tooltip title="Leave balances detail">
+                <div className={styles.infoIcon} onClick={onInformationClick}>
+                  <InfoCircleOutlined />
+                </div>
+              </Tooltip>
+            </TypeInfoPopover>
+          </div>
           <div className={styles.leaveBalanceBox}>
             <Progress
               type="circle"
@@ -69,11 +78,6 @@ const LeaveInformation = (props) => {
           </Panel>
         </Collapse>
       </div>
-      <Tooltip title="Leave balances detail">
-        <div onClick={onInformationClick} className={styles.infoIcon}>
-          <InfoCircleOutlined />
-        </div>
-      </Tooltip>
     </div>
   );
 };

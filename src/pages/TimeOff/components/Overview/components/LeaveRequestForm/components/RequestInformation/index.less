@@ -1,7 +1,7 @@
 .RequestInformation {
   width: 100%;
   background-color: white;
-  border: 1px solid #ebeff2;
+  border: 1px solid @border-color-base;
   border-radius: 5px;
 
   .formTitle {
@@ -121,7 +121,17 @@
           }
         }
       }
-
+      .durationSelector {
+        :global {
+          .ant-select-selector {
+            height: auto !important;
+            min-height: 42px;
+            padding-top: 4px !important;
+            padding-bottom: 2px !important;
+            border-radius: 5px;
+          }
+        }
+      }
       // cc selection
       .ccSelection {
         :global {
@@ -130,6 +140,7 @@
             min-height: 42px;
             padding-top: 4px !important;
             padding-bottom: 2px !important;
+            border-radius: 5px;
           }
           .ant-select-selection-item {
             align-items: center !important;
@@ -158,7 +169,7 @@
   :global {
     .ant-input:focus,
     .ant-picker-focused {
-      border-color: #2c6df9;
+      border-color: @primary-color;
       outline: 0;
       box-shadow: unset;
     }
@@ -167,14 +178,9 @@
     .ant-select-selector:focus,
     .ant-select-selector:active,
     .ant-select-open .ant-select-selector {
-      border-color: #2c6df9;
+      border-color: @primary-color;
       outline: 0;
       box-shadow: unset !important;
-    }
-
-    .ant-select-selector {
-      min-height: 42px;
-      border-radius: 5px;
     }
 
     .ant-select-single.ant-select-show-arrow .ant-select-selection-item,
@@ -241,43 +247,9 @@
     }
     .formButtons {
       display: flex;
+      gap: 2px;
+      align-items: center;
       justify-content: flex-end;
-      .cancelButton {
-        span {
-          color: #fd4546 !important;
-        }
-      }
-      .saveDraftButton {
-        span {
-          color: #ffa100 !important;
-        }
-      }
-      :global {
-        .ant-btn-link {
-          margin-left: -10px !important;
-          background-color: white !important;
-          span {
-            font-weight: bold !important;
-          }
-          // margin-right: 5px !important;
-        }
-        .ant-btn {
-          height: 40px;
-          margin-left: 25px;
-          // width: 108px;
-          padding: 0 30px;
-          background-color: #ffa100;
-          border: none;
-          border-radius: 30px;
-          span {
-            color: white;
-            font-weight: 700;
-          }
-          &:hover {
-            background-color: #ffa100cc; // hex with alpha 0.8
-          }
-        }
-      }
     }
   }
 }

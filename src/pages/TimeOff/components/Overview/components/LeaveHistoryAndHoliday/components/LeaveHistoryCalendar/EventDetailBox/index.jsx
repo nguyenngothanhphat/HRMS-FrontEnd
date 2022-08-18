@@ -4,7 +4,7 @@ import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { history } from 'umi';
 import { isEmpty } from 'lodash';
-import { TIMEOFF_COLOR } from '@/utils/timeOff';
+import { TIMEOFF_COLOR } from '@/constants/timeOff';
 import styles from './index.less';
 
 export default class EventDetailBox extends PureComponent {

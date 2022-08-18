@@ -1,8 +1,7 @@
-import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { getShortType, TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/utils/timeOff';
+import { TIMEOFF_DATE_FORMAT_API, LEAVE_QUERY_TYPE, TIMEOFF_STATUS } from '@/constants/timeOff';
 import FilterBar from '../FilterBar';
 import MyCompoffTable from '../MyCompoffTable';
 import MyLeaveTable from '../MyLeaveTable';
@@ -19,20 +18,15 @@ const TimeOffRequestTab = (props) => {
       filter = {},
       paging: { page, limit },
       compoffRequests = [],
-      leaveRequests = [],
+      allLeaveRequests = [],
       currentPayloadTypes = [],
-      currentLeaveTypeTab = '',
+      totalByStatus = {},
     } = {},
     type = 0,
     tab = 0,
     dispatch,
   } = props;
 
-  const [inProgressLength, setInProgressLength] = useState(0);
-  const [approvedLength, setApprovedLength] = useState(0);
-  const [rejectedLength, setRejectedLength] = useState(0);
-  const [draftLength, setDraftLength] = useState(0);
-  const [withdrawnLength, setWithdrawnLength] = useState(0);
   const [selectedTabNumber, setSelectedTabNumber] = useState('1');
 
   const setSelectedFilterTab = (id) => {
@@ -44,68 +38,27 @@ const TimeOffRequestTab = (props) => {
     });
   };
 
+  const getTotalByStatus = () => {
+    dispatch({
+      type: 'timeOff/getTotalByStatusEffect',
+      payload: {
+        queryType: LEAVE_QUERY_TYPE.SELF,
+        type: currentPayloadTypes,
+        status: Object.values(TIMEOFF_STATUS),
+      },
+    });
+  };
+
   useEffect(() => {
     setSelectedTabNumber(currentFilterTab);
-  }, [currentFilterTab]);
-
-  const countTotal = (newData) => {
-    let inProgressLengthTemp = 0;
-    let approvedLengthTemp = 0;
-    let rejectedLengthTemp = 0;
-    let draftLengthTemp = 0;
-    let withdrawnLengthTemp = 0;
-
-    newData.forEach((item) => {
-      const { _id: status = '' } = item;
-      switch (status) {
-        case IN_PROGRESS:
-        case ON_HOLD: {
-          inProgressLengthTemp += item.count;
-          break;
-        }
-        case ACCEPTED: {
-          approvedLengthTemp += item.count;
-          break;
-        }
-        case REJECTED: {
-          rejectedLengthTemp += item.count;
-          break;
-        }
-        case DRAFTS: {
-          draftLengthTemp += item.count;
-          break;
-        }
-        case WITHDRAWN: {
-          withdrawnLengthTemp += item.count;
-          break;
-        }
-        default:
-          break;
-      }
-    });
-    setInProgressLength(inProgressLengthTemp);
-    setApprovedLength(approvedLengthTemp);
-    setRejectedLength(rejectedLengthTemp);
-    setDraftLength(draftLengthTemp);
-    setWithdrawnLength(withdrawnLengthTemp);
-  };
-
-  const getTotalByType = () => {
-    const payload = {
-      type: getShortType(currentLeaveTypeTab),
-      status: [IN_PROGRESS, ON_HOLD],
-      isTeam: false,
-    };
-
     dispatch({
-      type: 'timeOff/getTotalByTypeEffect',
-      payload,
+      type: 'timeOff/savePaging',
+      payload: { page: 1 },
     });
-  };
+  }, [currentFilterTab]);
 
   const fetchData = () => {
     let status = '';
-
     if (type === 1) {
       if (selectedTabNumber === '1') {
         status = [IN_PROGRESS, ON_HOLD];
@@ -141,15 +94,11 @@ const TimeOffRequestTab = (props) => {
       }
     }
 
-    let typeAPI = '';
-    if (type === 1) {
-      typeAPI = 'timeOff/fetchMyLeaveRequest';
-    } else typeAPI = 'timeOff/fetchMyCompoffRequests';
-
     dispatch({
-      type: typeAPI,
+      type: `timeOff/${type === 1 ? 'fetchLeaveRequests' : 'fetchMyCompoffRequests'}`,
       payload: {
         status,
+        queryType: LEAVE_QUERY_TYPE.SELF,
         type: timeOffTypes.length === 0 ? currentPayloadTypes : timeOffTypes,
         search,
         fromDate: fromDate ? moment(fromDate).format(TIMEOFF_DATE_FORMAT_API) : null,
@@ -157,37 +106,28 @@ const TimeOffRequestTab = (props) => {
         page,
         limit,
       },
-    }).then((res) => {
-      const { data: { total = [] } = {}, statusCode } = res;
-      if (statusCode === 200) {
-        countTotal(total);
-      }
     });
-
-    getTotalByType();
   };
 
   useEffect(() => {
-    if (timeOffTypes.length > 0 || (currentPayloadTypes.length > 0 && isEmpty(filter))) {
+    if (currentPayloadTypes.length) {
       fetchData();
     }
   }, [selectedTabNumber, page, limit, JSON.stringify(filter), JSON.stringify(currentPayloadTypes)]);
 
-  const dataNumber = {
-    inProgressLength,
-    approvedLength,
-    rejectedLength,
-    draftLength,
-    withdrawnLength,
-  };
+  useEffect(() => {
+    if (currentPayloadTypes.length) {
+      getTotalByStatus();
+    }
+  }, [JSON.stringify(currentPayloadTypes)]);
 
   return (
     <div className={styles.TimeOffRequestTab}>
-      <FilterBar dataNumber={dataNumber} setSelectedFilterTab={setSelectedFilterTab} />
+      <FilterBar totalByStatus={totalByStatus} setSelectedFilterTab={setSelectedFilterTab} />
       <div className={styles.tableContainer}>
         {type === 1 && (
           <>
-            <MyLeaveTable data={leaveRequests} tab={tab} />
+            <MyLeaveTable data={allLeaveRequests} tab={tab} />
           </>
         )}
         {type === 2 && (
@@ -202,8 +142,7 @@ const TimeOffRequestTab = (props) => {
 export default connect(({ timeOff, loading, user }) => ({
   timeOff,
   user,
-  loading1: loading.effects['timeOff/fetchMyLeaveRequest'],
-  loading2: loading.effects['timeOff/fetchTeamLeaveRequests'],
+  loading1: loading.effects['timeOff/fetchLeaveRequests'],
   loading3: loading.effects['timeOff/fetchMyCompoffRequests'],
   loading4: loading.effects['timeOff/fetchTeamCompoffRequests'],
 }))(TimeOffRequestTab);

@@ -1,14 +1,7 @@
 import { debounce } from 'lodash';
 
-const LOCATION = {
-  Headquarter: 'Headquarter',
-  VN: 'VN',
-  INDIA: 'INDIA',
-  USA: 'USA',
-};
-
-const debouncedChangeLocation = debounce((callback) => callback(), 500);
+const debouncedChangeLocation = debounce((callback) => callback(), 400);
 
 export { debouncedChangeLocation };
 
-export default { LOCATION };
+export default { debouncedChangeLocation };

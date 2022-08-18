@@ -1,35 +1,30 @@
 /* eslint-disable react/jsx-indent */
-import React, { Component } from 'react';
+import { Card } from 'antd';
+import React from 'react';
 import { connect } from 'umi';
-import EditBtn from '@/assets/edit.svg';
+import CustomEditButton from '@/components/CustomEditButton';
 import Edit from './components/Edit';
 import View from './components/View';
 import styles from './index.less';
 
-@connect(
-  ({
-    employeeProfile: {
-      editGeneral: { openContactDetails = false },
-      originData: { generalData: generalDataOrigin = {} } = {},
-      tempData: { generalData = {} } = {},
-    } = {},
-  }) => ({
-    openContactDetails,
-    generalDataOrigin,
+const EmergencyContact = (props) => {
+  const {
     generalData,
-  }),
-)
-class EmergencyContact extends Component {
-  handleEdit = () => {
-    const { dispatch } = this.props;
+    openContactDetails,
+    permissions = {},
+    isProfileOwner = false,
+    generalDataOrigin,
+    dispatch,
+  } = props;
+
+  const handleEdit = () => {
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
       payload: { openContactDetails: true },
     });
   };
 
-  handleCancel = () => {
-    const { generalDataOrigin, generalData, dispatch } = this.props;
+  const handleCancel = () => {
     const { emergencyContactDetails = [] } = generalDataOrigin;
     const reverseFields = { emergencyContactDetails };
     const payload = { ...generalData, ...reverseFields };
@@ -49,35 +44,37 @@ class EmergencyContact extends Component {
     });
   };
 
-  render() {
-    const {
-      generalData,
-      openContactDetails,
-      permissions = {},
-      isProfileOwner = false,
-    } = this.props;
-    const renderComponent = openContactDetails ? (
-      <Edit refForm={this.editRef} handleCancel={this.handleCancel} />
-    ) : (
-      <View dataAPI={generalData} />
-    );
-    return (
-      <div className={styles.EmergencyContact}>
-        <div className={styles.spaceTitle}>
-          <p className={styles.EmployeeTitle}>Emergency Contact Details</p>
-          {openContactDetails
-            ? ''
-            : (permissions.editEmergencyContact !== -1 || isProfileOwner) && (
-                <div className={styles.flexEdit} onClick={this.handleEdit}>
-                  <img src={EditBtn} alt="" className={styles.IconEdit} />
-                  <p className={styles.Edit}>Edit</p>
-                </div>
-              )}
-        </div>
-        <div className={styles.viewBottom}>{renderComponent}</div>
-      </div>
-    );
-  }
-}
+  const options = () => {
+    return openContactDetails
+      ? ''
+      : (permissions.editEmergencyContact !== -1 || isProfileOwner) && (
+          <CustomEditButton onClick={handleEdit}>Edit</CustomEditButton>
+        );
+  };
 
-export default EmergencyContact;
+  const renderComponent = openContactDetails ? (
+    <Edit handleCancel={handleCancel} />
+  ) : (
+    <View dataAPI={generalData} />
+  );
+
+  return (
+    <Card className={styles.EmergencyContact} title="Emergency Contact Details" extra={options()}>
+      <div className={styles.container}>{renderComponent}</div>
+    </Card>
+  );
+};
+
+export default connect(
+  ({
+    employeeProfile: {
+      editGeneral: { openContactDetails = false },
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    openContactDetails,
+    generalDataOrigin,
+    generalData,
+  }),
+)(EmergencyContact);

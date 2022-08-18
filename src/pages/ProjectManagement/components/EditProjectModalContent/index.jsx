@@ -1,6 +1,7 @@
 import { Col, Divider, Form, Input, Row, Select } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
+import DebounceSelect from '@/components/DebounceSelect';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -14,26 +15,21 @@ const EditProjectModalContent = (props) => {
       engagementTypeId = '',
       projectName = '',
       projectAlias = '',
-      projectManager: { _id: projectManagerId = '' } = {},
-      engineeringOwner: { _id: engineeringOwnerId = '' } = {},
+      projectManager = {},
+      engineeringOwner = {},
       division = '',
       tags = [],
     } = {},
     selectedProject,
     visible = false,
+    user = {},
   } = props;
 
-  const {
-    projectManagement: {
-      projectTypeList = [],
-      tagList = [],
-      divisionList = [],
-      employeeList = [],
-    } = {},
-    loadingFetchEmployeeList = false,
-  } = props;
+  const { projectManagement: { projectTypeList = [], tagList = [], divisionList = [] } = {} } =
+    props;
 
-  const formRef = React.createRef();
+  const [form] = Form.useForm();
+
   const handleFinish = async (values) => {
     const tagTemp = tagList.filter((item) => values.tags.includes(item.tag_name));
 
@@ -48,6 +44,7 @@ const EditProjectModalContent = (props) => {
         engineering_owner: values.engineeringOwner,
         division: values.division,
         tags: tagTemp,
+        userName: user?.currentUser?.employee?.generalInfo?.legalName,
       },
     });
     if (res.statusCode === 200) {
@@ -67,25 +64,43 @@ const EditProjectModalContent = (props) => {
       dispatch({
         type: 'projectManagement/fetchDivisionListEffect',
       });
-      dispatch({
-        type: 'projectManagement/fetchEmployeeListEffect',
-      });
     }
   }, [visible]);
+
+  const onEmployeeSearch = (val) => {
+    if (!val) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+    return dispatch({
+      type: 'projectManagement/fetchEmployeeListEffect',
+      payload: {
+        name: val,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfoInfo?.legalName,
+        value: user._id,
+      }));
+    });
+  };
 
   return (
     <div className={styles.EditProjectModalContent}>
       <Form
-        name="basic"
-        ref={formRef}
-        id="myForm"
+        name="editProjectForm"
+        form={form}
+        id="editProjectForm"
         onFinish={handleFinish}
         initialValues={{
           engagementType: engagementTypeId,
           projectName,
           projectAlias,
-          projectManager: projectManagerId,
-          engineeringOwner: engineeringOwnerId,
+          projectManager: projectManager?._id,
+          engineeringOwner: engineeringOwner?._id,
           division,
           tags: tags.map((item) => item.tag_name),
         }}
@@ -147,19 +162,17 @@ const EditProjectModalContent = (props) => {
               fieldKey="projectManager"
               labelCol={{ span: 24 }}
             >
-              <Select
-                loading={loadingFetchEmployeeList}
-                placeholder="Select Project Manager"
-                showSearch
+              <DebounceSelect
                 allowClear
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                disabled={loadingFetchEmployeeList}
-              >
-                {employeeList.map((x) => (
-                  <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
-                ))}
-              </Select>
+                showArrow
+                placeholder="Select Project Manager"
+                fetchOptions={onEmployeeSearch}
+                showSearch
+                defaultOptions={{
+                  value: projectManager?._id,
+                  label: projectManager?.generalInfo?.legalName,
+                }}
+              />
             </Form.Item>
           </Col>
         </Row>
@@ -173,19 +186,17 @@ const EditProjectModalContent = (props) => {
               fieldKey="engineeringOwner"
               labelCol={{ span: 24 }}
             >
-              <Select
-                disabled={loadingFetchEmployeeList}
-                loading={loadingFetchEmployeeList}
-                placeholder="Select Engineering Owner"
-                showSearch
+              <DebounceSelect
                 allowClear
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                {employeeList.map((x) => (
-                  <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
-                ))}
-              </Select>
+                showArrow
+                placeholder="Select Engineering Owner"
+                fetchOptions={onEmployeeSearch}
+                showSearch
+                defaultOptions={{
+                  value: engineeringOwner?._id,
+                  label: engineeringOwner?.generalInfo?.legalName,
+                }}
+              />
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
@@ -239,7 +250,8 @@ const EditProjectModalContent = (props) => {
   );
 };
 
-export default connect(({ projectManagement = {}, loading }) => ({
+export default connect(({ projectManagement = {}, user, loading }) => ({
   projectManagement,
+  user,
   loadingFetchEmployeeList: loading.effects['projectManagement/fetchEmployeeListEffect'],
 }))(EditProjectModalContent);

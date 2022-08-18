@@ -1,70 +1,45 @@
-import {
-  Button,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  message,
-  Modal,
-  Row,
-  Select,
-  Spin,
-  Tooltip,
-  Upload,
-} from 'antd';
+import { Col, DatePicker, Form, Input, Row, Select, Spin, Tooltip, Upload } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { PRIORITY } from '@/utils/dashboard';
-import {
-  getAuthority,
-  getCurrentCompany,
-  getCurrentLocation,
-  getCurrentTenant,
-} from '@/utils/authority';
 import HelpIcon from '@/assets/dashboard/help.svg';
-import BlueAddIcon from '@/assets/dashboard/blueAdd.svg';
+import DebounceSelect from '@/components/DebounceSelect';
+import { PRIORITY } from '@/constants/dashboard';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { FILE_TYPE } from '@/constants/upload';
+import { getAuthority, getCurrentLocation } from '@/utils/authority';
+import { beforeUpload } from '@/utils/upload';
+import CommonModal from '../CommonModal';
+import CustomAddButton from '../CustomAddButton';
 import styles from './index.less';
 
 const { Option } = Select;
-const dateFormat = 'MM/DD/YYYY';
 
 const RaiseTicketModal = (props) => {
   const [form] = Form.useForm();
   const formRef = React.createRef();
   const {
     visible = false,
-    title = 'Raise Ticket',
     onClose = () => {},
     currentUser: {
       employee: {
         _id: myEmployeeID = '',
-        location: { headQuarterAddress: { country = '' } = {} } = {},
+        location: { headQuarterAddress: { country = {} } = {} } = {},
       } = {} || {},
     } = {} || {},
-    loadingFetchListEmployee = false,
     loadingFetchSupportTeam = false,
     loadingAddTicket = false,
     supportTeamList = [],
     isFeedback = false,
+    dispatch,
+    loadingUploadAttachment = false,
   } = props;
-  const { listEmployee, loadingUploadAttachment = false } = props;
-  const { maxFileSize = 2, dispatch } = props;
 
   const [uploadedAttachments, setUploadedAttachments] = useState([]);
   const [queryTypeList, setQueryTypeList] = useState([]);
   const support = supportTeamList.find((x) => x.name === 'H.R.M.S Support');
 
-  // permission setting
-
-  const renderModalHeader = () => {
-    return (
-      <div className={styles.header}>
-        <p className={styles.header__text}>{title}</p>
-      </div>
-    );
-  };
   const handleCancel = () => {
     onClose();
   };
@@ -76,18 +51,35 @@ const RaiseTicketModal = (props) => {
         type: 'ticketManagement/fetchSupportTeamList',
         payload: {
           permissions,
-          country,
-        },
-      });
-      dispatch({
-        type: 'ticketManagement/fetchListEmployee',
-        payload: {
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
+          country: country?._id,
         },
       });
     }
   }, [visible]);
+
+  const onEmployeeSearch = (value) => {
+    if (!value) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+
+    return dispatch({
+      type: 'ticketManagement/fetchListEmployee',
+      payload: {
+        name: value,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data
+        .filter((x) => x._id !== myEmployeeID)
+        .map((user) => ({
+          label: user.generalInfo?.legalName,
+          value: user._id,
+        }));
+    });
+  };
 
   useEffect(() => {
     if (isFeedback && visible) {
@@ -101,28 +93,6 @@ const RaiseTicketModal = (props) => {
   const handleReset = () => {
     form.resetFields();
     setUploadedAttachments([]);
-  };
-
-  const beforeUpload = (file) => {
-    const checkType =
-      file.type === 'application/pdf' ||
-      file.type === 'image/jpeg' ||
-      file.type === 'image/png' ||
-      file.type === 'application/pdf';
-
-    if (!checkType) {
-      message.error('You can only upload JPG/PNG/PDF file!');
-    }
-    const isLtMaxFileSize = file.size / 1024 / 1024 < maxFileSize;
-    if (!isLtMaxFileSize) {
-      if (file.type === 'image/jpeg' || file.type === 'image/png') {
-        message.error(`Image must smaller than ${maxFileSize}MB!`);
-      }
-      if (file.type === 'application/pdf') {
-        message.error(`File must smaller than ${maxFileSize}MB!`);
-      }
-    }
-    return checkType && isLtMaxFileSize;
   };
 
   const handleUpload = async (file) => {
@@ -154,6 +124,9 @@ const RaiseTicketModal = (props) => {
     const find = supportTeamList.find((x) => x._id === value);
     if (find) {
       setQueryTypeList(find?.queryType || []);
+      formRef.current.setFieldsValue({
+        queryType: null,
+      });
     }
   };
 
@@ -165,12 +138,12 @@ const RaiseTicketModal = (props) => {
     if (permissions && permissions.length > 0) {
       payload = {
         ...payload,
-        country,
+        country: country?._id,
         permissions,
       };
     }
     dispatch({
-      type: 'ticketManagement/fetchListAllTicket',
+      type: 'ticketManagement/fetchTicketList',
       payload,
     });
     dispatch({
@@ -179,7 +152,7 @@ const RaiseTicketModal = (props) => {
     });
   };
 
-  const handleFinish = (value) => {
+  const handleFinish = (value = {}) => {
     const documents = uploadedAttachments?.map((item) => {
       const { id = '', url = '', name = '' } = item;
       return {
@@ -187,6 +160,12 @@ const RaiseTicketModal = (props) => {
         attachmentName: name,
         attachmentUrl: url,
       };
+    });
+
+    const supportTeam = supportTeamList.find((val) => val._id === value.supportTeam).name;
+    let queryType;
+    supportTeamList.find((val) => {
+      return (queryType = val.queryType.find((y) => y._id === value.queryType));
     });
 
     dispatch({
@@ -203,6 +182,8 @@ const RaiseTicketModal = (props) => {
         attachments: documents,
         departmentAssign: value.supportTeam,
         location: getCurrentLocation(),
+        supportTeam,
+        queryType: queryType.name,
       },
     }).then((response) => {
       const { statusCode } = response;
@@ -217,12 +198,12 @@ const RaiseTicketModal = (props) => {
 
   const renderModalContent = () => {
     return (
-      <div className={styles.content}>
+      <div className={styles.RaiseTicketModal}>
         <Form
           form={form}
-          name="basic"
+          name="raiseTicketForm"
           ref={formRef}
-          id="myForm"
+          id="raiseTicketForm"
           onFinish={handleFinish}
           initialValues={{
             status: 'New',
@@ -245,14 +226,16 @@ const RaiseTicketModal = (props) => {
                   placeholder="Select the support team"
                 >
                   {supportTeamList.map((val) => (
-                    <Option value={val._id}>{val.name}</Option>
+                    <Option value={val._id} key={val._id}>
+                      {val.name}
+                    </Option>
                   ))}
                 </Select>
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
               <Form.Item label="Request Date" name="requestDate" labelCol={{ span: 24 }}>
-                <DatePicker disabled format={dateFormat} />
+                <DatePicker disabled format={DATE_FORMAT_MDY} />
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
@@ -264,7 +247,9 @@ const RaiseTicketModal = (props) => {
               >
                 <Select showSearch placeholder="Select the query type">
                   {queryTypeList.map((val) => (
-                    <Option value={val._id}>{val.name}</Option>
+                    <Option value={val._id} key={val._id}>
+                      {val.name}
+                    </Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -285,7 +270,9 @@ const RaiseTicketModal = (props) => {
               >
                 <Select showSearch placeholder="Select the priority">
                   {PRIORITY.map((val) => (
-                    <Option value={val}>{val}</Option>
+                    <Option value={val} key={val}>
+                      {val}
+                    </Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -310,7 +297,11 @@ const RaiseTicketModal = (props) => {
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please enter the description' }]}
               >
-                <Input.TextArea autoSize={{ minRows: 3 }} placeholder="Enter the description" />
+                <Input.TextArea
+                  autoSize={{ minRows: 5, maxRows: 9 }}
+                  maxLength={1000}
+                  placeholder="Enter the description"
+                />
               </Form.Item>
             </Col>
 
@@ -330,22 +321,12 @@ const RaiseTicketModal = (props) => {
                 name="interestList"
                 labelCol={{ span: 24 }}
               >
-                <Select
+                <DebounceSelect
+                  placeholder="Select the interest list"
+                  fetchOptions={onEmployeeSearch}
                   showSearch
                   mode="multiple"
-                  placeholder="Select the interest list"
-                  allowClear
-                  loading={loadingFetchListEmployee}
-                  disabled={loadingFetchListEmployee}
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                  {listEmployee
-                    ? listEmployee.map((val) => {
-                        return <Option value={val?._id}>{val?.generalInfo?.legalName}</Option>;
-                      })
-                    : ''}
-                </Select>
+                />
               </Form.Item>
             </Col>
 
@@ -353,10 +334,11 @@ const RaiseTicketModal = (props) => {
               <Upload
                 maxCount={2}
                 action={(file) => handleUpload(file)}
-                beforeUpload={beforeUpload}
+                beforeUpload={(file) => beforeUpload(file, [FILE_TYPE.IMAGE, FILE_TYPE.PDF], 2)}
                 onRemove={(file) => handleRemove(file)}
                 openFileDialogOnClick={!(uploadedAttachments.length === 2)}
                 showUploadList={uploadedAttachments.length > 0}
+                listType="picture"
                 // multiple
               >
                 {isEmpty(uploadedAttachments) ? (
@@ -364,15 +346,13 @@ const RaiseTicketModal = (props) => {
                     {loadingUploadAttachment ? (
                       <Spin />
                     ) : (
-                      <div
-                        className={`${styles.addAttachments} ${
-                          uploadedAttachments.length === 2 ? styles.disableUpload : {}
-                        }`}
-                      >
-                        <div className={styles.btn}>
-                          <img src={BlueAddIcon} alt="blueAddIcon" />
-                          <span className={styles.text}>Add attachments</span>
-                        </div>
+                      <div className={styles.addAttachments}>
+                        <CustomAddButton
+                          onClick={(e) => e.preventDefault()}
+                          disabled={uploadedAttachments.length === 2}
+                        >
+                          Add attachments
+                        </CustomAddButton>
                         <span className={styles.description}>
                           (You can upload upto 2 documents of 2MB each)
                         </span>
@@ -380,34 +360,18 @@ const RaiseTicketModal = (props) => {
                     )}
                   </>
                 ) : (
-                  <div
-                    className={`${styles.addAttachments} ${
-                      uploadedAttachments.length === 2 ? styles.disableUpload : {}
-                    }`}
-                  >
-                    <div className={styles.btn}>
-                      <img src={BlueAddIcon} alt="blueAddIcon" />
-                      <span className={styles.text}>Add attachments</span>
-                    </div>
+                  <div className={styles.addAttachments}>
+                    <CustomAddButton
+                      onClick={(e) => e.preventDefault()}
+                      disabled={uploadedAttachments.length === 2}
+                    >
+                      Add attachments
+                    </CustomAddButton>
                     <span className={styles.description}>
                       (You can upload upto 2 documents of 2MB each)
                     </span>
                   </div>
                 )}
-
-                {/* <div
-                  className={`${styles.addAttachments} ${
-                    uploadedAttachments.length === 2 ? styles.disableUpload : {}
-                  }`}
-                >
-                  <div className={styles.btn}>
-                    <img src={BlueAddIcon} alt="blueAddIcon" />
-                    <span className={styles.text}>Add attachments</span>
-                  </div>
-                  <span className={styles.description}>
-                    (You can upload upto 2 documents of 2MB each)
-                  </span>
-                </div> */}
               </Upload>
             </Col>
           </Row>
@@ -418,39 +382,19 @@ const RaiseTicketModal = (props) => {
 
   return (
     <>
-      <Modal
-        className={`${styles.RaiseTicketModal} ${styles.withPadding}`}
-        onCancel={handleCancel}
-        destroyOnClose
+      <CommonModal
+        onClose={handleCancel}
         width={650}
-        footer={
-          <>
-            <Button className={styles.btnCancel} onClick={handleReset}>
-              Reset
-            </Button>
-            <Button
-              className={styles.btnSubmit}
-              type="primary"
-              form="myForm"
-              key="submit"
-              htmlType="submit"
-              disabled={
-                loadingAddTicket ||
-                loadingFetchSupportTeam ||
-                loadingFetchListEmployee ||
-                loadingUploadAttachment
-              }
-            >
-              Submit
-            </Button>
-          </>
-        }
-        title={renderModalHeader()}
-        centered
+        loading={loadingAddTicket}
+        hasCancelButton={false}
+        hasSecondButton
+        secondText="Reset"
+        onSecondButtonClick={handleReset}
+        content={renderModalContent()}
         visible={visible}
-      >
-        {renderModalContent()}
-      </Modal>
+        title="Raise Ticket"
+        formName="raiseTicketForm"
+      />
     </>
   );
 };

@@ -1,0 +1,24 @@
+.MyTickets {
+  .container {
+    width: 100%;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid @border-color-base;
+    border-radius: 8px;
+  }
+  :global {
+    .ant-tabs-tab-btn {
+      font-size: 14px !important;
+    }
+    .ant-tabs-nav {
+      height: 70px;
+      padding: 0 @padding-lg !important;
+    }
+  }
+  .options {
+    display: flex;
+    gap: @padding-md;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}

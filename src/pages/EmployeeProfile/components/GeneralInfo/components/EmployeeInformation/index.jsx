@@ -1,46 +1,40 @@
 /* eslint-disable react/jsx-indent */
-import React, { PureComponent } from 'react';
+import { Card } from 'antd';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import EditBtn from '@/assets/edit.svg';
+import CustomEditButton from '@/components/CustomEditButton';
 import Edit from './components/Edit';
 import View from './components/View';
 import styles from './index.less';
 
-@connect(
-  ({
-    upload: { employeeInformationURL = '' } = {},
-    employeeProfile: {
-      editGeneral: { openEmployeeInfo = false },
-      originData: { generalData: generalDataOrigin = {}, taxData = {}, bankData = {} } = {},
-      tempData: { generalData = {} } = {},
-    } = {},
-  }) => ({
-    openEmployeeInfo,
-    generalDataOrigin,
+const EmployeeInformation = (props) => {
+  const {
+    // employmentData,
     generalData,
-    employeeInformationURL,
-    taxData,
-    bankData,
-  }),
-)
-class EmployeeInformation extends PureComponent {
-  componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'employeeProfile/closeModeEdit',
-    });
-  }
+    openEmployeeInfo,
+    permissions = {},
+    taxData = {},
+    bankData = {},
+    generalDataOrigin,
+    dispatch,
+  } = props;
 
-  handleEdit = () => {
-    const { dispatch } = this.props;
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: 'employeeProfile/closeModeEdit',
+      });
+    };
+  }, []);
+
+  const handleEdit = () => {
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
       payload: { openEmployeeInfo: true },
     });
   };
 
-  handleCancel = () => {
-    const { generalDataOrigin, generalData, dispatch } = this.props;
+  const handleCancel = () => {
     const {
       legalGender = '',
       legalName = '',
@@ -81,38 +75,40 @@ class EmployeeInformation extends PureComponent {
     });
   };
 
-  render() {
-    const {
-      // employmentData,
-      generalData,
-      openEmployeeInfo,
-      permissions = {},
-      taxData = {},
-      bankData = {},
-    } = this.props;
-    const renderComponent = openEmployeeInfo ? (
-      <Edit handleCancel={this.handleCancel} />
-    ) : (
-      <View dataAPI={generalData} taxData={taxData} bankData={bankData} />
-    );
-    return (
-      <div className={styles.EmployeeInformation}>
-        <div className={styles.spaceTitle}>
-          <p className={styles.EmployeeTitle}>Employee Information</p>
-          {openEmployeeInfo
-            ? ''
-            : permissions.editEmployeeInfo !== -1 && (
-                <div className={styles.flexEdit} onClick={this.handleEdit}>
-                  <img src={EditBtn} alt="" className={styles.IconEdit} />
-                  <p className={styles.Edit}>Edit</p>
-                </div>
-              )}
-        </div>
+  const options = () => {
+    return openEmployeeInfo
+      ? ''
+      : permissions.editEmployeeInfo !== -1 && (
+          <CustomEditButton onClick={handleEdit}>Edit</CustomEditButton>
+        );
+  };
 
-        <div className={styles.viewBottom}>{renderComponent}</div>
-      </div>
-    );
-  }
-}
+  const renderComponent = openEmployeeInfo ? (
+    <Edit handleCancel={handleCancel} />
+  ) : (
+    <View dataAPI={generalData} taxData={taxData} bankData={bankData} />
+  );
+  return (
+    <Card className={styles.EmployeeInformation} title="Employee Information" extra={options()}>
+      <div className={styles.container}>{renderComponent}</div>
+    </Card>
+  );
+};
 
-export default EmployeeInformation;
+export default connect(
+  ({
+    upload: { employeeInformationURL = '' } = {},
+    employeeProfile: {
+      editGeneral: { openEmployeeInfo = false },
+      originData: { generalData: generalDataOrigin = {}, taxData = {}, bankData = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    openEmployeeInfo,
+    generalDataOrigin,
+    generalData,
+    employeeInformationURL,
+    taxData,
+    bankData,
+  }),
+)(EmployeeInformation);

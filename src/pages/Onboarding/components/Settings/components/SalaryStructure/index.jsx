@@ -9,7 +9,7 @@ import EditSalaryVN from './component/EditSalaryVN';
 import ImportSalary from './component/ImportSalary';
 
 import styles from './index.less';
-import { SALARY_STRUCTURE_OPTION } from '@/utils/onboardingSetting';
+import { SALARY_STRUCTURE_OPTION } from '@/constants/onboardingSetting';
 
 const { Option } = Select;
 
@@ -42,7 +42,7 @@ const SalaryStructure = (props) => {
   const getListLocation = (countryId) => {
     const arrLocation = filter(
       locationList,
-      (item) => item.headQuarterAddress.country._id === countryId,
+      (item) => item.headQuarterAddress?.country?._id === countryId,
     );
     setListLocation(arrLocation);
     setSelectedLocation(arrLocation[0]._id);

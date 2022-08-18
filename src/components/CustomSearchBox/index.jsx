@@ -1,6 +1,6 @@
 import { SearchOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.less';
 
 const CustomSearchBox = ({
@@ -8,7 +8,19 @@ const CustomSearchBox = ({
   onSearch = () => {},
   borderRadius = 33,
   width = 250,
+  value = '',
 }) => {
+  const [searchTerm, setSearchTerm] = useState(value);
+
+  const onChange = (e) => {
+    setSearchTerm(e.target.value);
+    onSearch(e);
+  };
+
+  useEffect(() => {
+    setSearchTerm(value);
+  }, [value]);
+
   const searchPrefix = () => {
     return (
       <SearchOutlined
@@ -29,11 +41,13 @@ const CustomSearchBox = ({
       }}
     >
       <Input
+        value={searchTerm}
         className={styles.searchInput}
         style={{ borderRadius }}
         placeholder={placeholder}
         prefix={searchPrefix()}
-        onChange={onSearch}
+        onChange={onChange}
+        allowClear
       />
     </div>
   );

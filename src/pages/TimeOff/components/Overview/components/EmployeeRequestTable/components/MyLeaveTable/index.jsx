@@ -1,27 +1,26 @@
 import { LoadingOutlined } from '@ant-design/icons';
-import { Avatar, Spin, Table, Tag, Tooltip } from 'antd';
+import { Avatar, Spin, Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, Link } from 'umi';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
+import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
+import CommonTable from '@/components/CommonTable';
+import { TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/constants/timeOff';
 import {
   checkNormalTypeTimeoff,
   isNewRequest,
   isUpdatedRequest,
   roundNumber,
-  TIMEOFF_DATE_FORMAT,
-  TIMEOFF_STATUS,
 } from '@/utils/timeOff';
-import DefaultAvatar from '@/assets/avtDefault.jpg';
-import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
-
 import styles from './index.less';
 
 const { ON_HOLD } = TIMEOFF_STATUS;
-// loading
+
 @connect(({ loading, dispatch, timeOff: { paging } }) => ({
   paging,
   dispatch,
-  loadingFetchLeaveRequests: loading.effects['timeOff/fetchMyLeaveRequest'],
+  loadingFetchLeaveRequests: loading.effects['timeOff/fetchLeaveRequests'],
 }))
 class MyLeaveTable extends PureComponent {
   columns = [
@@ -79,7 +78,6 @@ class MyLeaveTable extends PureComponent {
       title: `Requested on `,
       dataIndex: 'onDate',
       align: 'center',
-      // width: '30%',
       render: (onDate) => <span>{moment(onDate).locale('en').format(TIMEOFF_DATE_FORMAT)}</span>,
     },
     {
@@ -92,9 +90,10 @@ class MyLeaveTable extends PureComponent {
       title: 'Assigned',
       align: 'left',
       dataIndex: 'approvalManager',
-      // width: '25%',
       render: (approvalManager = {}) => {
-        const assigned = approvalManager ? [approvalManager?.generalInfo] : [];
+        const { generalInfoInfo } = approvalManager;
+        const assigned = generalInfoInfo ? [generalInfoInfo] : [];
+
         return (
           <div className={styles.rowAction}>
             <Avatar.Group
@@ -127,7 +126,6 @@ class MyLeaveTable extends PureComponent {
       align: 'left',
       width: '15%',
       dataIndex: '_id',
-      // width: '20%',
       render: (_id) => (
         <div className={styles.rowAction}>
           <Link to={`/time-off/overview/personal-timeoff/view/${_id}`}>View Request</Link>
@@ -136,7 +134,6 @@ class MyLeaveTable extends PureComponent {
     },
   ];
 
-  // pagination
   onChangePagination = (pageNumber, pageSize) => {
     const { dispatch } = this.props;
     dispatch({
@@ -209,43 +206,21 @@ class MyLeaveTable extends PureComponent {
       indicator: <Spin indicator={antIcon} />,
     };
 
-    const pagination = {
-      position: ['bottomLeft'],
-      total,
-      showTotal: (totals, range) => (
-        <span>
-          {' '}
-          Showing{'  '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          of {totals}{' '}
-        </span>
-      ),
-      defaultPageSize: 10,
-      showSizeChanger: true,
-      pageSizeOptions: ['10', '25', '50', '100'],
-      pageSize: limit,
-      current: page,
-      onChange: this.onChangePagination,
-    };
-
-    const scroll = {
-      x: '60vw',
-      y: 'max-content',
-    };
-
     return (
       <div className={styles.MyLeaveTable}>
-        <Table
-          // size="middle"
+        <CommonTable
           loading={tableLoading}
-          // rowSelection={rowSelection}
-          pagination={data.length === 0 ? null : { ...pagination, total }}
           columns={this.columns}
-          dataSource={data}
-          scroll={data.length > 0 ? scroll : null}
-          rowKey={(id) => id.ticketID}
+          list={data}
+          scrollable={data.length > 0}
+          isBackendPaging
+          onChangePage={this.onChangePagination}
+          limit={limit}
+          page={page}
+          width="60vw"
+          total={total}
+          rowKey="ticketID"
+          height="max-content"
           locale={{
             emptyText: (
               <div className={styles.emptyTable}>

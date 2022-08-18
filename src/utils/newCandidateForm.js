@@ -6,26 +6,12 @@ export const camelize = (str) => {
     .replace(/\s+/g, '');
 };
 
-export const mapType = {
-  A: 'documentTypeA',
-  B: 'documentTypeB',
-  C: 'documentTypeC',
-  D: 'documentTypeD',
-  E: 'documentTypeE',
-};
-
-export const DOCUMENTS_CHECKLIST_TYPE = {
-  SCAN_UPLOAD: 'Scan & Upload',
-  ELECTRONICALLY: 'Electronically Sign',
-  HARD_COPY: 'Hard Copy',
-};
-
 export const listNoteSalary = (joiningBonus = '', midtermHike = '', noteSalary = '') => {
   const arr = [];
   if (joiningBonus) {
     arr.push(`As a part of this offer the candidate shall be entitled to a Joining Bonus of INR
     ${joiningBonus}. Post Joining 50% of this amount shall be paid
-     along with the second month&apos;s salary (or the applicable first payroll). And on
+     along with the second month's salary (or the applicable first payroll). And on
      completion of three months of service the balance 50% shall be paid along with the
      immediate next payroll.`);
   }

@@ -17,7 +17,7 @@ const UserNameContent = (props) => {
 
   useEffect(() => {
     dispatch({
-      type: 'onboard/fetchListDomain',
+      type: 'onboarding/fetchListDomain',
     });
   }, []);
 
@@ -27,7 +27,7 @@ const UserNameContent = (props) => {
 
   const onSaveRedux = (result) => {
     dispatch({
-      type: 'onboard/saveJoiningFormalities',
+      type: 'onboarding/saveJoiningFormalities',
       payload: result,
     });
   };
@@ -36,11 +36,11 @@ const UserNameContent = (props) => {
     const { userName: name = '', domain: domainName } = value;
     if (name) {
       const isExistingUserName = await dispatch({
-        type: 'onboard/checkExistedUserName',
+        type: 'onboarding/checkExistedUserName',
         payload: { userName: name },
       });
       if (isExistingUserName === false) {
-        onSaveRedux({ domain: domainName });
+        onSaveRedux({ userName: name, domain: domainName });
         next();
       } else setValidate({ validateStatus: 'error', errorMsg: 'That username is already taken' });
     } else setValidate({ validateStatus: 'error', errorMsg: 'Please input user name' });
@@ -55,8 +55,9 @@ const UserNameContent = (props) => {
           validateStatus={validate.validateStatus}
           help={validate.errorMsg}
           className={styles.inputForm}
+          rules={[{ required: true }]}
         >
-          <Input />
+          <Input disabled={loadingGetListDomain} />
         </Form.Item>
         <Form.Item
           name="domain"
@@ -88,11 +89,11 @@ const UserNameContent = (props) => {
 export default connect(
   ({
     loading,
-    onboard: { joiningFormalities: { listDomain = [], userName = '', domain = '' } } = {},
+    onboarding: { joiningFormalities: { listDomain = [], userName = '', domain = '' } } = {},
   }) => ({
     listDomain,
     userName,
     domain,
-    loadingGetListDomain: loading.effects['onboard/fetchListDomain'],
+    loadingGetListDomain: loading.effects['onboarding/fetchListDomain'],
   }),
 )(UserNameContent);

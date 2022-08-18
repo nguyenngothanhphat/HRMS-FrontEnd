@@ -200,24 +200,27 @@ export async function getTeamCompoffRequests(payload) {
   });
 }
 
-export async function getTeamLeaveRequests(payload) {
-  return request('/api/leaverequesttenant/get-team-request', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 // HR
-export async function getAllLeaveRequests(payload) {
-  return request('/api/leaverequesttenant/get-all-request', {
-    method: 'POST',
-    data: payload,
+export async function getAllLeaveRequests(data, params) {
+  return request('/api/leaverequesttenant', {
+    method: 'GET',
+    data,
+    params,
   });
 }
 
-export async function getTotalByType(params) {
+export async function getTotalByType(data, params) {
   return request('/api/leaverequesttenant/group-type', {
     method: 'GET',
+    data,
+    params,
+  });
+}
+
+export async function getTotalByStatus(data, params) {
+  return request('/api/leaverequesttenant/group-status', {
+    method: 'GET',
+    data,
     params,
   });
 }
@@ -410,5 +413,17 @@ export async function getLeaveRequestOfEmployee(payload) {
   return request('/api/leaverequesttenant/get-by-employee', {
     method: 'POST',
     data: payload,
+  });
+}
+export async function getLeaveTypeByEmployee(params) {
+  return request('/api/leaverequesttenant/group-type-employee', {
+    method: 'GET',
+    params,
+  });
+}
+export async function getHistoryTimeoffByEmployee(params) {
+  return request('/api/leavebalancetenant/history-by-employee', {
+    method: 'GET',
+    params,
   });
 }

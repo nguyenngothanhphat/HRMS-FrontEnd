@@ -29,6 +29,7 @@ export default {
   'component.directory.table.location': 'Location',
   'component.directory.table.reportingManager': 'Reporting Manager ',
   'component.directory.table.employmentType': 'Employment Type',
+  'component.directory.table.employeeType': 'Employee Type',
   'component.directory.table.action': 'Action',
   'component.directory.pagination.showing': 'Showing',
   'component.directory.pagination.of': 'of',

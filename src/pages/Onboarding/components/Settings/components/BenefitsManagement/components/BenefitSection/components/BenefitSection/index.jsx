@@ -41,7 +41,7 @@ class BenefitSection extends Component {
     companyLocationList.forEach((item) => {
       if (item._id === getCurrentLocation()) {
         const { headQuarterAddress: { country = {} || {} } = {} || {} } = item;
-        countryId = country._id;
+        countryId = country?._id;
       }
     });
 
@@ -173,7 +173,7 @@ class BenefitSection extends Component {
           activeKeyTab={activeKey}
           visible={visible}
           countryId={countryIdProps}
-          handleCandelModal={closeModal}
+          handleCancelModal={closeModal}
         />
       </div>
     );

@@ -1,10 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { PureComponent } from 'react';
-import { Row, Input, Form, DatePicker, Radio, Button, Tooltip } from 'antd';
-import { connect, formatMessage } from 'umi';
+import { DatePicker, Form, Input, Radio, Row, Tooltip } from 'antd';
 import moment from 'moment';
-import UploadImage from '@/components/UploadImage';
+import React, { PureComponent } from 'react';
+import { connect, formatMessage } from 'umi';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import UploadImage from '@/components/UploadImage';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { checkPermissions } from '@/utils/permissions';
 import styles from './index.less';
@@ -139,12 +141,12 @@ class Edit extends PureComponent {
   };
 
   handleSave = () => {
-    const { dispatch, locationProp: { headQuarterAddress: { country = '' } = {} } = {} } =
+    const { dispatch, locationProp: { headQuarterAddress: { country = {} } = {} } = {} } =
       this.props;
     const payload = this.processDataChanges() || {};
     // const tenantId = localStorage.getItem('tenantId');
     const dataTempKept = this.processDataKept() || {};
-    if (country === 'IN') {
+    if (country?._id === 'IN') {
       this.handleUpLoadAdhaarCard();
     }
     dispatch({
@@ -292,7 +294,7 @@ class Edit extends PureComponent {
       loadingAdhaarCard,
       // taxData = {},
       currentUser: { roles = [] },
-      locationProp: { headQuarterAddress: { country = '' } = {} } = {},
+      locationProp: { headQuarterAddress: { country = {} } = {} } = {},
       AdhaarCard = {},
     } = this.props;
     const {
@@ -322,9 +324,9 @@ class Edit extends PureComponent {
     // const nationalIdNumber = taxData.length > 0 ? taxData[0].nationalId : '';
     const formatDate = DOB && moment.utc(DOB);
     const dateFormat = 'Do MMMM YYYY';
-    const checkIndiaLocation = country === 'IN';
-    const checkVietNamLocation = country === 'VN';
-    const checkUSALocation = country === 'US';
+    const checkIndiaLocation = country?._id === 'IN';
+    const checkVietNamLocation = country?._id === 'VN';
+    const checkUSALocation = country?._id === 'US';
 
     const permissions = checkPermissions(roles);
     const disabledFields = true;
@@ -550,18 +552,10 @@ class Edit extends PureComponent {
             ) : null}
           </div>
           <div className={styles.spaceFooter}>
-            <div className={styles.cancelFooter} onClick={handleCancel}>
-              Cancel
-            </div>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className={styles.buttonFooter}
-              loading={loading}
-              disabled={isLt5M === false}
-            >
+            <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+            <CustomPrimaryButton htmlType="submit" loading={loading} disabled={isLt5M === false}>
               Save
-            </Button>
+            </CustomPrimaryButton>
           </div>
           <ViewDocumentModal visible={visible} onClose={this.handleCancel} url={linkImage} />
         </Form>

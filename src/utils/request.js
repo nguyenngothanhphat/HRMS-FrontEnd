@@ -1,7 +1,7 @@
 import { notification } from 'antd';
 import axios from 'axios';
 import { getDvaApp } from 'umi';
-import { proxy, API_KEYS } from '../../config/proxy';
+import { PROXY, API_KEYS } from '../../config/proxy';
 import { getToken } from './token';
 
 const codeMessage = {
@@ -57,10 +57,14 @@ const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) =>
     'Access-Control-Allow-Origin': '*',
     Authorization: !noAuth ? `Bearer ${token}` : '',
   };
+
+  const paramsTemp = { ...params };
+  delete paramsTemp.cancelToken;
+
   const instance = axios.create({
-    baseURL: proxy[apiKey],
+    baseURL: PROXY[apiKey],
     headers,
-    params,
+    params: paramsTemp,
     cancelToken,
   });
 
@@ -72,9 +76,8 @@ const request = async (url, options = {}, noAuth, apiKey = API_KEYS.BASE_API) =>
     },
   );
   try {
-    const updateData = { ...data };
-    delete updateData.cancelToken;
-    const res = await instance[method.toLowerCase()](url, updateData);
+    delete data.cancelToken;
+    const res = await instance[method.toLowerCase()](url, data);
     return res.data;
   } catch (e) {
     const isCancel = axios.isCancel(e);

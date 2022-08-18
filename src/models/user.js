@@ -1,4 +1,5 @@
 import { history } from 'umi';
+import ROLES from '@/constants/roles';
 import { fetchCompanyOfUser, query as queryUsers, queryCurrent } from '@/services/user';
 import {
   getCurrentCompany,
@@ -15,6 +16,8 @@ import {
   setTenantId,
 } from '@/utils/authority';
 import { checkPermissions } from '@/utils/permissions';
+import { socket } from '@/utils/socket';
+import { CHAT_EVENT } from '@/constants/socket';
 
 const UserModel = {
   namespace: 'user',
@@ -42,7 +45,7 @@ const UserModel = {
         };
         const response = yield call(queryCurrent, payload);
         const { statusCode, data = {} } = response;
-        const { country = '' } = data?.location?.headQuarterAddress || {};
+        const { country = {} } = data?.location?.headQuarterAddress || {};
         setCountry(JSON.stringify(country));
         if (statusCode !== 200) {
           history.push('/login');
@@ -196,6 +199,21 @@ const UserModel = {
               currentUserRoles,
             },
           });
+
+          if (!isOwnerRole) {
+            // if is employee, hide offboarding module if there is no offboarding request
+            const lowerCaseRoles = formatArrRoles.map((role) => role.toLowerCase());
+
+            yield put({
+              type: 'offboarding/getMyRequestEffect',
+              userModelProp: {
+                hideMenu:
+                  !lowerCaseRoles.includes(ROLES.MANAGER) &&
+                  !lowerCaseRoles.includes(ROLES.HR_MANAGER) &&
+                  !lowerCaseRoles.includes(ROLES.HR),
+              },
+            });
+          }
         }
 
         yield put({
@@ -214,6 +232,9 @@ const UserModel = {
             employeeWidgets: data.widgetDashboardShow || [],
           },
         });
+
+        // init socket
+        socket.emit(CHAT_EVENT.ADD_USER, data?.employee?._id || '');
 
         return response;
       } catch (errors) {

@@ -1,4 +1,4 @@
-@blueColor: #2c6df9;
+@blueColor: @primary-color;
 @orangeColor: #ffa100;
 .ResourceTypeCard {
   :global {
@@ -53,12 +53,9 @@
   }
   .options {
     display: flex;
+    gap: @padding-md;
     align-items: center;
     justify-content: flex-end;
-  }
-  .tagCountFilter {
-    padding: 5px;
-    border-radius: 15px;
   }
 }
 .dropdownPopover {

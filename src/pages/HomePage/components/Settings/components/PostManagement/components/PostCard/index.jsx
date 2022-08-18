@@ -8,7 +8,7 @@ import BannerTable from './components/BannerTable';
 import ImageTable from './components/ImageTable';
 import PollTable from './components/PollTable';
 import styles from './index.less';
-import { TAB_IDS } from '@/utils/homePage';
+import { TAB_IDS } from '@/constants/homePage';
 
 const PostCard = (props) => {
   const {

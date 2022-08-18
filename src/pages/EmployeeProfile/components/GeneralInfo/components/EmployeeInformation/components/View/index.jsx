@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import Icon from '@ant-design/icons';
 import Moment from 'moment';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import ConformIcondata from '../../../confirmIcon';
+import ConfirmIconData from '../../../ConfirmIconData';
 import iconQuestTion from '../../../Icon/icon';
 import styles from './index.less';
 
@@ -67,7 +67,7 @@ class View extends PureComponent {
       currentUser: { employee: { _id: idEmployee = '' } = {} || {} } = {},
       permissions = [],
       employee = '',
-      locationProp: { headQuarterAddress: { country = '' } = {} } = {},
+      locationProp: { headQuarterAddress: { country = {} } = {} } = {},
     } = this.props;
     let splitUrl = '';
     let urlAdhaarCard = '';
@@ -81,9 +81,9 @@ class View extends PureComponent {
 
     const checkVisible = employee === idEmployee || permissions.editEmployeeInfo !== -1;
 
-    const checkIndiaLocation = country === 'IN';
-    const checkVietNamLocation = country === 'VN';
-    const checkUSALocation = country === 'US';
+    const checkIndiaLocation = country?._id === 'IN';
+    const checkVietNamLocation = country?._id === 'VN';
+    const checkUSALocation = country?._id === 'US';
 
     const dummyData = [
       { label: 'Full Name', value: dataAPI.legalName },
@@ -141,7 +141,7 @@ class View extends PureComponent {
                   >
                     {splitUrl}
                   </p>
-                  <ConformIcondata data={splitUrl} />
+                  <ConfirmIconData data={splitUrl} />
                 </div>
               ) : (
                 ''

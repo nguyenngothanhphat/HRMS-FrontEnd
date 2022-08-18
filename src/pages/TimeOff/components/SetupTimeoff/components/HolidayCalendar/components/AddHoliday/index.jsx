@@ -1,21 +1,19 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable compat/compat */
-import React, { Component } from 'react';
+import { DatePicker, Form, Input, Modal, Select } from 'antd';
 import moment from 'moment';
+import React, { Component } from 'react';
 import { connect } from 'umi';
-import { Modal, Input, DatePicker, Form, Button, Select } from 'antd';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import styles from './index.less';
 
 @connect(
   ({
-    user: {
-      currentUser: {
-        location: { _id: idLocation = '', headQuarterAddress = {}, company = '' } = {},
-      } = {},
-    } = {},
+    user: { currentUser: { location: { _id: idLocation = '', company = '' } = {} } = {} } = {},
   }) => ({
     idLocation,
-    headQuarterAddress,
     company,
   }),
 )
@@ -34,7 +32,7 @@ class AddHoliday extends Component {
     const { addHoliday = () => {} } = this.props;
     const { date, name } = value;
     const datetime = new Date(date).toISOString();
-    const newDateTime = moment(datetime).format('YYYY-MM-DD');
+    const newDateTime = moment(datetime).format(DATE_FORMAT_YMD);
     const typeHoliday = [];
     typeHoliday.push(value.type);
     const payload = {
@@ -64,22 +62,25 @@ class AddHoliday extends Component {
         title="Create a new holiday"
         onCancel={this.handleCancel}
         destroyOnClose
-        footer={[
+        footer={
           <>
-            <Button key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
+            <CustomSecondaryButton
+              key="cancel"
+              className={styles.btnCancel}
+              onClick={this.handleCancel}
+            >
               Cancel
-            </Button>
-            <Button
+            </CustomSecondaryButton>
+            <CustomPrimaryButton
               key="submit"
-              type="primary"
               htmlType="submit"
               form="basic"
               className={styles.btnSubmit}
             >
               Add
-            </Button>
-          </>,
-        ]}
+            </CustomPrimaryButton>
+          </>
+        }
       >
         <div className={styles.modal__content}>
           <Form {...layout} name="basic" onFinish={this.onFinish}>

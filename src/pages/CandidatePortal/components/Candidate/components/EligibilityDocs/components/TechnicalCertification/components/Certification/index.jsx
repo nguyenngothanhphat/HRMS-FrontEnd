@@ -2,6 +2,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import { Checkbox, Col, DatePicker, Form, Input, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const Certification = (props) => {
@@ -85,6 +86,7 @@ const Certification = (props) => {
               required: true,
               message: 'Required field',
             },
+            { whitespace: true, message: 'Required field' },
           ]}
         >
           <Input disabled={disabled} placeholder="Certification name" />
@@ -110,7 +112,7 @@ const Certification = (props) => {
               <DatePicker
                 disabledDate={disabledStartDate}
                 placeholder="Issued date"
-                format="MM/DD/YYYY"
+                format={DATE_FORMAT_MDY}
                 disabled={disabled}
               />
             </Form.Item>
@@ -132,7 +134,7 @@ const Certification = (props) => {
                   disabledDate={disabledEndDate}
                   placeholder="Validity date"
                   disabled={disabled}
-                  format="MM/DD/YYYY"
+                  format={DATE_FORMAT_MDY}
                 />
               </Form.Item>
             </Col>

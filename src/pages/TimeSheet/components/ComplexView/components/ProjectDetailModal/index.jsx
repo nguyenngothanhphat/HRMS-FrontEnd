@@ -1,7 +1,8 @@
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import exportToCSV from '@/utils/exportAsExcel';
+import { exportArrayDataToCsv } from '@/utils/exportToCsv';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import Information from './components/Information';
 import TaskTable from './components/TaskTable';
 import styles from './index.less';
@@ -43,31 +44,40 @@ const ProjectDetailModal = (props) => {
     );
   };
 
-  const processData = (array) => {
-    const result = [];
+  const processData = (array = []) => {
+    const capsPopulations = [];
     array.forEach((item) => {
-      const { task = '', description = '', department = '', projectMembers = [] } = item;
+      const { department = '', projectMembers = [] } = item;
       projectMembers.forEach((pro) => {
         const dataExport = {
           Department: department || '-',
-          Task: task || '-',
-          Description: description || '-',
           'Resources ': pro.legalName || '-',
           'Time taken': pro.userSpentTimeInHours || '-',
-          'Total time (task)': pro.totaltime || '-',
         };
         if (locationUser) {
           dataExport['Break Time'] = pro.breakTime;
           dataExport['Over Time'] = pro.overTime;
         }
-        result.push(dataExport);
+        capsPopulations.push(dataExport);
       });
     });
-    return result;
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('__')}`.split('__');
+      dataExport.push(value);
+    });
+
+    return dataExport;
   };
 
   const downloadTemplate = () => {
-    exportToCSV(processData(data?.projectDetail), 'ProjectDetailData.xlsx');
+    exportArrayDataToCsv('ProjectDetailData', processData(data?.projectDetail || []));
   };
 
   const renderModalContent = () => {
@@ -98,14 +108,9 @@ const ProjectDetailModal = (props) => {
         width={750}
         footer={
           <>
-            <Button
-              disabled={disabledBtn()}
-              className={styles.btnSubmit}
-              type="primary"
-              onClick={downloadTemplate}
-            >
+            <CustomPrimaryButton disabled={disabledBtn()} onClick={downloadTemplate}>
               Download
-            </Button>
+            </CustomPrimaryButton>
           </>
         }
         title={renderModalHeader()}

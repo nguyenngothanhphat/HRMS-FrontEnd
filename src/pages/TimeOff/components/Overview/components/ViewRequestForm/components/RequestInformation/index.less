@@ -1,7 +1,7 @@
 .RequestInformation {
   width: 100%;
   background-color: white;
-  border: 1px solid #ebeff2;
+  border: 1px solid @border-color-base;
   border-radius: 5px;
   :global {
     .ant-tag {
@@ -43,7 +43,7 @@
       cursor: pointer;
       .label {
         margin-left: 10px;
-        color: #2c6df9;
+        color: @primary-color;
         font-weight: 700;
         font-size: 14px;
       }
@@ -62,6 +62,11 @@
       color: #707177;
       white-space: pre-wrap;
       word-break: break-word;
+      span,
+      p,
+      div {
+        line-height: 20px;
+      }
       span {
         white-space: pre-wrap;
         word-break: break-word;
@@ -121,32 +126,8 @@
     }
     .formButtons {
       display: flex;
+      align-items: center;
       justify-content: flex-end;
-      :global {
-        .ant-btn-link {
-          background-color: white !important;
-          span {
-            color: #ffa100 !important;
-            font-weight: bold !important;
-          }
-        }
-        .ant-btn {
-          height: 40px;
-          margin-left: 20px;
-          // width: 108px;
-          padding: 0 30px;
-          background-color: #ffa100;
-          border: none;
-          border-radius: 30px;
-          span {
-            color: white;
-            font-weight: 700;
-          }
-          &:hover {
-            background-color: #ffa100cc; // hex with alpha 0.8
-          }
-        }
-      }
     }
   }
 }

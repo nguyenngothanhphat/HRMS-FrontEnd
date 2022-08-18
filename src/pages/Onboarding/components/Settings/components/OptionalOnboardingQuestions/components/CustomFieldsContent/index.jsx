@@ -6,7 +6,7 @@ import FieldName from '../FieldName';
 
 import styles from './index.less';
 
-@connect(({ onboard: { settings: { optionalOnboardQuestions } = {} } = {} }) => ({
+@connect(({ onboarding: { settings: { optionalOnboardQuestions } = {} } = {} }) => ({
   optionalOnboardQuestions,
 }))
 class CustomFieldsContent extends Component {
@@ -29,7 +29,7 @@ class CustomFieldsContent extends Component {
 
     const items = this.reorder(nameList, result.source.index, result.destination.index);
     dispatch({
-      type: 'onboard/saveOrderNameField',
+      type: 'onboarding/saveOrderNameField',
       payload: {
         nameList: items,
       },

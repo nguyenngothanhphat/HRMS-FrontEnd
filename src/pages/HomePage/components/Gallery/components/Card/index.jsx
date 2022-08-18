@@ -4,6 +4,7 @@ import { connect } from 'umi';
 import NextIcon from '@/assets/homePage/next.svg';
 import PrevIcon from '@/assets/homePage/prev.svg';
 import SampleImage from '@/assets/homePage/samplePhoto.png';
+import PreviewImage from '@/assets/homePage/previewImage.png';
 import styles from './index.less';
 
 const NextArrow = (props) => {
@@ -27,11 +28,26 @@ const Card = (props) => {
 
   const renderCard = (card) => {
     const { attachments = [], description = '', title = '' } = card;
+    if (attachments.length === 0) {
+      return (
+        <div className={styles.cardContainer} key={card?._id}>
+          <div className={styles.content}>
+            <p className={styles.caption}>No data</p>
+          </div>
+        </div>
+      );
+    }
     const [firstImage] = attachments;
     return (
-      <div className={styles.cardContainer}>
+      <div className={styles.cardContainer} key={card?._id}>
         <div className={styles.image}>
-          <img src={firstImage?.url || SampleImage} alt="" />
+          <img
+            src={firstImage?.url || SampleImage}
+            alt=""
+            onError={(e) => {
+              e.target.src = PreviewImage;
+            }}
+          />
         </div>
         <div className={styles.content}>
           <p className={styles.title}>{title}</p>

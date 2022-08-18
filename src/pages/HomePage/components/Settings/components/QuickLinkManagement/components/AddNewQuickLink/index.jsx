@@ -3,10 +3,12 @@ import { debounce } from 'lodash';
 // import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { TAB_IDS_QUICK_LINK } from '@/utils/homePage';
+import { TAB_IDS_QUICK_LINK } from '@/constants/homePage';
 import QuickLinkContent from './components/QuickLinkContent';
 import QuickLinkTimeOffContent from './components/QuickLinkTimeOffContent';
 import styles from './index.less';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 
 const AddNewQuickLink = (props) => {
   const [form] = Form.useForm();
@@ -266,11 +268,11 @@ const AddNewQuickLink = (props) => {
         </Form>
         <div className={styles.footer}>
           {!editing && (
-            <Button className={styles.btnReset} onClick={onReset}>
-              Reset
-            </Button>
+            <CustomSecondaryButton onClick={onReset}>
+              <span style={{ color: '#ffa100' }}>Reset</span>
+            </CustomSecondaryButton>
           )}
-          <Button
+          <CustomPrimaryButton
             className={styles.btnSave}
             type="primary"
             form="myForm"
@@ -280,7 +282,7 @@ const AddNewQuickLink = (props) => {
             disabled={loadingAddQuickLink || loadingEditQuickLink}
           >
             {editing ? 'Update' : 'Save'}
-          </Button>
+          </CustomPrimaryButton>
         </div>
       </div>
     );

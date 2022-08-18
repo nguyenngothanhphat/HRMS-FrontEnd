@@ -11,12 +11,7 @@ const AssignTeamModal = (props) => {
     visible = false,
     onClose = () => {},
     loadingAssign = false,
-    currentUser: {
-      employee: {
-        _id: employeeId = '',
-        location: { headQuarterAddress: { country = '' } = {} } = {},
-      } = {} || {},
-    } = {} || {},
+    currentUser: { employee: { _id: employeeId = '' } = {} || {} } = {} || {},
     listEmployee = [],
     supportTeamList = [],
     loadingFetchListEmployee = false,
@@ -24,7 +19,7 @@ const AssignTeamModal = (props) => {
     oldId = '',
     ticketDetail = {},
     role = '',
-    refreshFetchTicketList = () => {},
+    refreshData = () => {},
     ticket = {},
   } = props;
   const [form] = Form.useForm();
@@ -32,12 +27,18 @@ const AssignTeamModal = (props) => {
 
   useEffect(() => {
     if (visible) {
+      const tempData = Object.keys(ticket).length ? ticket : ticketDetail;
+      const {
+        employeeRaise: {
+          location: { headQuarterAddress: { country: { _id: countryId = '' } = {} } = {} } = {},
+        } = {},
+      } = tempData;
       const permissions = getAuthority().filter((x) => x.toLowerCase().includes('ticket'));
       dispatch({
         type: 'ticketManagement/fetchSupportTeamList',
         payload: {
           permissions,
-          country,
+          country: countryId,
         },
       });
       dispatch({
@@ -50,7 +51,7 @@ const AssignTeamModal = (props) => {
     }
 
     return () => {
-      form.setFieldsValue({ newTeam: '', ccList: [], queryType: '' });
+      form.setFieldsValue({ newTeam: null, ccList: [], queryType: null });
       setQueryTypeList([]);
     };
   }, [visible]);
@@ -84,7 +85,7 @@ const AssignTeamModal = (props) => {
         oldEmployeeAssignee: oldId || '',
         status: 'New',
         queryTypeId,
-        newTeam,
+        supportTeam: newTeam,
         oldTeam,
         queryType,
         subject,
@@ -95,12 +96,13 @@ const AssignTeamModal = (props) => {
         departmentAssign: newTeamId,
         employee: employeeId,
         role,
+        permissions: ['M_ADMIN_VIEW_TICKETS'],
       },
     }).then((res) => {
       const { statusCode = '' } = res;
       if (statusCode === 200) {
         if (Object.keys(ticket).length) {
-          refreshFetchTicketList();
+          refreshData();
         } else {
           dispatch({
             type: 'ticketManagement/fetchTicketByID',

@@ -3,7 +3,7 @@
 import { Button, Col, Row, Spin } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/constants/onboarding';
 import BasicInformation from '../../pages/NewCandidateForm/components/BasicInformation';
 import ItemMenu from './components/ItemMenu';
 // import BottomBar from '../BottomBar';
@@ -249,19 +249,19 @@ class LayoutAddCandidateForm extends Component {
   // };
 
   checkDisablePrimaryButton = () => {
-    const {
-      tempData: { hrSignature, hrManagerSignature } = {},
-      data: { processStatus = '' } = {},
-    } = this.props;
+    const { data: { processStatus = '' } = {} } = this.props;
     const isSentOffer = processStatus === NEW_PROCESS_STATUS.OFFER_RELEASED;
 
     if (!isSentOffer) {
-      // if (!hrManagerSignature.url || !hrSignature.url) {
       return true;
-      // }
     }
 
     return false;
+  };
+
+  checkDisableButtonWithDrawn = () => {
+    const { data: { processStatus = '' } = {} } = this.props;
+    return processStatus === NEW_PROCESS_STATUS.OFFER_WITHDRAWN;
   };
 
   render() {
@@ -319,7 +319,12 @@ class LayoutAddCandidateForm extends Component {
                 >
                   Extend Offer Date
                 </Button>
-                <Button type="primary" onClick={this.onPrimaryButtonClick}>
+                <Button
+                  className={[this.checkDisableButtonWithDrawn() ? s.disabled : '']}
+                  disabled={this.checkDisableButtonWithDrawn()}
+                  type="primary"
+                  onClick={this.onPrimaryButtonClick}
+                >
                   Withdraw Offer
                 </Button>
               </div>

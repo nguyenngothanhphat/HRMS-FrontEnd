@@ -1,20 +1,22 @@
 import { Col, DatePicker, Form, Input, Row, Select, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
 import CreatableSelect from 'react-select/creatable';
+import { connect } from 'umi';
+import { DATE_FORMAT_MDY, DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import HelpIcon from '@/assets/projectManagement/help.svg';
 import CalendarIcon from '@/assets/projectManagement/calendar.svg';
 import styles from './index.less';
+import { disabledEndDate } from '@/utils/projectManagement';
+import DebounceSelect from '@/components/DebounceSelect';
 
-const dateFormat = 'MM-DD-YYYY';
 const { Option } = Select;
 
 const AddProjectModal = (props) => {
   const [form] = Form.useForm();
   const { visible = false, onClose = () => {}, dispatch } = props;
   const [customerId, setCustomerId] = useState('');
-
+  const [startDate, setStartDate] = useState('');
   // redux
   const {
     projectManagement: {
@@ -24,16 +26,16 @@ const AddProjectModal = (props) => {
       tagList = [],
       skillList = [],
       divisionList = [],
-      employeeList = [],
       newProjectId = '',
-      customerInfo: { accountOwnerId = '' },
+      customerInfo = {},
     } = {},
     employee: { generalInfo: { legalName: ownerName = '' } = {} } = {} || {},
     loadingGenId = false,
-    loadingFetchEmployeeList = false,
     loadingFetchCustomerList = false,
     loadingFetchCustomerInfo = false,
   } = props;
+
+  const [accountOwner, setAccountOwner] = useState();
 
   const tagListDefault = tagList.map((x) => ({ ...x, name: x.tag_name }));
   const allSkillList = tagListDefault
@@ -45,6 +47,27 @@ const AddProjectModal = (props) => {
             item.name.replace(/\s/g, '').toLowerCase() === v.name.replace(/\s/g, '').toLowerCase(),
         ) === i,
     );
+
+  const onEmployeeSearch = (val) => {
+    if (!val) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+    return dispatch({
+      type: 'projectManagement/fetchEmployeeListEffect',
+      payload: {
+        name: val,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfoInfo?.legalName,
+        value: user._id,
+      }));
+    });
+  };
 
   useEffect(() => {
     if (visible) {
@@ -63,9 +86,6 @@ const AddProjectModal = (props) => {
       dispatch({
         type: 'projectManagement/fetchDivisionListEffect',
       });
-      dispatch({
-        type: 'projectManagement/fetchEmployeeListEffect',
-      });
     }
   }, [visible]);
 
@@ -76,10 +96,14 @@ const AddProjectModal = (props) => {
   }, [newProjectId]);
 
   useEffect(() => {
-    form.setFieldsValue({
-      accountOwner: accountOwnerId || null,
+    setAccountOwner({
+      label: customerInfo?.accountOwner?.generalInfoInfo?.legalName,
+      value: customerInfo?.accountOwnerId,
     });
-  }, [accountOwnerId]);
+    form.setFieldsValue({
+      accountOwner: customerInfo?.accountOwner?.generalInfoInfo?.legalName || null,
+    });
+  }, [JSON.stringify(customerInfo)]);
 
   useEffect(() => {
     const find = customerList.find((x) => x.customerId === customerId);
@@ -142,9 +166,10 @@ const AddProjectModal = (props) => {
       type: 'projectManagement/addProjectEffect',
       payload: {
         ...values,
-        startDate: moment(values.startDate).format('YYYY-MM-DD'),
-        tentativeEndDate: moment(values.tentativeEndDate).format('YYYY-MM-DD'),
+        startDate: moment(values.startDate).format(DATE_FORMAT_YMD),
+        tentativeEndDate: moment(values.tentativeEndDate).format(DATE_FORMAT_YMD),
         customerName: customer?.legalName,
+        accountOwner: accountOwner?.value,
         ownerName,
         tags: name,
       },
@@ -175,8 +200,7 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 onClear={() => form.setFieldsValue({ projectId: null, accountOwner: null })}
               >
                 {customerList.map((x) => (
@@ -198,8 +222,7 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {projectTypeList.map((x) => (
                   <Option value={x.id}>{x.type_name}</Option>
@@ -215,11 +238,7 @@ const AddProjectModal = (props) => {
               labelCol={{ span: 24 }}
               rules={[{ required: true, message: 'Select Account Owner' }]}
             >
-              <Select placeholder="Account Owner" disabled loading={loadingFetchCustomerInfo}>
-                {employeeList.map((x) => (
-                  <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
-                ))}
-              </Select>
+              <Input placeholder="Account Owner" disabled />
             </Form.Item>
           </Col>
         </Row>
@@ -263,8 +282,7 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {projectStatusList.map((x) => (
                   <Option value={x.id}>{x.status}</Option>
@@ -302,7 +320,8 @@ const AddProjectModal = (props) => {
               labelCol={{ span: 24 }}
             >
               <DatePicker
-                format={dateFormat}
+                onChange={(val) => setStartDate(val)}
+                format={DATE_FORMAT_MDY}
                 placeholder="Select Start Date"
                 suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
               />
@@ -317,7 +336,8 @@ const AddProjectModal = (props) => {
               labelCol={{ span: 24 }}
             >
               <DatePicker
-                format={dateFormat}
+                disabledDate={(currentDate) => disabledEndDate(currentDate, startDate)}
+                format={DATE_FORMAT_MDY}
                 placeholder="Select Tentative End Date"
                 suffixIcon={<img src={CalendarIcon} alt="" className={styles.calendarIcon} />}
               />
@@ -331,19 +351,13 @@ const AddProjectModal = (props) => {
               fieldKey="projectManager"
               labelCol={{ span: 24 }}
             >
-              <Select
-                loading={loadingFetchEmployeeList}
-                placeholder="Select Project Manager"
-                showSearch
+              <DebounceSelect
                 allowClear
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-              >
-                {employeeList.map((x) => (
-                  <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
-                ))}
-              </Select>
+                showArrow
+                placeholder="Select Project Manager"
+                fetchOptions={onEmployeeSearch}
+                showSearch
+              />
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
@@ -417,19 +431,14 @@ const AddProjectModal = (props) => {
               fieldKey="engineeringOwner"
               labelCol={{ span: 24 }}
             >
-              <Select
-                loading={loadingFetchEmployeeList}
-                placeholder="Select Engineering Owner"
-                showSearch
+              <DebounceSelect
                 allowClear
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-              >
-                {employeeList.map((x) => (
-                  <Option value={x._id}>{x?.generalInfo?.legalName}</Option>
-                ))}
-              </Select>
+                showArrow
+                placeholder="Select Engineering Owner"
+                mode="multiple"
+                fetchOptions={onEmployeeSearch}
+                showSearch
+              />
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
@@ -445,8 +454,7 @@ const AddProjectModal = (props) => {
                 showSearch
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {divisionList.map((x) => (
                   <Option value={x.name}>{x.name}</Option>

@@ -1,0 +1,55 @@
+.PostCard {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #d8d8d8;
+  border-radius: 8px;
+  // box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.1);
+  .cardTitle {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: @padding-lg;
+  }
+  .menuIcon {
+    cursor: pointer;
+    padding-block: 10px;
+  }
+}
+.actionIcon {
+  margin-right: 7px;
+}
+.dropdownPopover {
+  min-width: 100px;
+  :global {
+    .ant-popover-inner {
+      padding: 0;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08);
+    }
+    .ant-popover-inner-content {
+      padding: 0 !important;
+    }
+  }
+  .containerDropdown {
+    .btn {
+      padding: 8px;
+      cursor: pointer;
+      &:not(:last-child) {
+        border-bottom: 1px solid @border-color-base;
+      }
+      img {
+        padding-right: 4px;
+      }
+      span {
+        color: #464646;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 14px;
+      }
+      &:hover {
+        background: #f5f5f581;
+      }
+    }
+  }
+}

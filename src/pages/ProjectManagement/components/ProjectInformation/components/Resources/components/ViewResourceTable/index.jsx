@@ -1,8 +1,8 @@
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import CommonTable from '@/components/CommonTable';
-import { DATE_FORMAT_LIST } from '@/utils/projectManagement';
 import styles from './index.less';
 
 const ViewResourceTable = (props) => {
@@ -42,7 +42,7 @@ const ViewResourceTable = (props) => {
     return (
       <span className={styles.timeTitle}>
         <span>{title}</span>
-        <span className={styles.smallText}>(mm/dd/yyyy)</span>
+        <span className={styles.smallText}>({DATE_FORMAT_MDY.toLowerCase()})</span>
       </span>
     );
   };
@@ -84,7 +84,7 @@ const ViewResourceTable = (props) => {
         key: 'startDate',
         align: 'center',
         render: () => {
-          const value = startDate ? moment(startDate).format(DATE_FORMAT_LIST) : null;
+          const value = startDate ? moment(startDate).format(DATE_FORMAT_MDY) : null;
           return <span>{value || '-'}</span>;
         },
       },
@@ -96,7 +96,7 @@ const ViewResourceTable = (props) => {
         render: () => {
           const value =
             endDate || tentativeEndDate
-              ? moment(endDate || tentativeEndDate).format(DATE_FORMAT_LIST)
+              ? moment(endDate || tentativeEndDate).format(DATE_FORMAT_MDY)
               : null;
           return <span>{value || '-'}</span>;
         },

@@ -7,7 +7,11 @@ import { getCurrentTenant } from '@/utils/authority';
 import { listNoteSalary } from '@/utils/newCandidateForm';
 import NotifyModal from '../NotifyModal';
 import styles from './index.less';
-import { JOINING_BONUS, MIDTERM_HIKE, SALARY_STRUCTURE_OPTION } from '@/utils/onboardingSetting';
+import {
+  JOINING_BONUS,
+  MIDTERM_HIKE,
+  SALARY_STRUCTURE_OPTION,
+} from '@/constants/onboardingSetting';
 
 @connect(
   ({

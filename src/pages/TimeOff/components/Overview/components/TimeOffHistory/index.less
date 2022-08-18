@@ -1,0 +1,55 @@
+.TimeOffHistory {
+  border-radius: 5px;
+  .note {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: @margin-lg;
+    padding: 24px;
+    background-color: #fcf7e8;
+    border-radius: 5px;
+    &__title {
+      padding-top: 16px;
+      color: #f28313;
+      font-weight: 500;
+      font-size: 16px;
+    }
+  }
+  .title {
+    margin-bottom: @margin-md;
+    color: #101828;
+    font-weight: 500;
+    font-size: 16px;
+  }
+  .container__table {
+    .header {
+      padding: 8px 16px;
+      color: white;
+      font-weight: 500 !important;
+      font-size: 13px !important;
+      background: @primary-color;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      .center {
+        text-align: center;
+      }
+    }
+    .body {
+      border-right: 1px solid @border-color-base;
+      border-bottom: 1px solid @border-color-base;
+      border-left: 1px solid @border-color-base;
+      .row {
+        padding: 13px 16px;
+        color: #101828;
+        font-size: 13px;
+        .center {
+          text-align: center;
+        }
+      }
+      &:last-child {
+        border-bottom-right-radius: 8px;
+        border-bottom-left-radius: 8px;
+      }
+    }
+  }
+}

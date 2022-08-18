@@ -18,7 +18,7 @@ const Resources = (props) => {
     <div className={styles.Resources}>
       <Row gutter={[24, 24]}>
         {data.map((employee) => (
-          <EmployeeCard employee={employee} />
+          <EmployeeCard employee={employee} key={employee._id} />
         ))}
       </Row>
     </div>

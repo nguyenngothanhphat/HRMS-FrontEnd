@@ -5,7 +5,7 @@ import { connect, history } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
 import { Page } from '../../../../utils';
 import MessageBox from '../../../MessageBox';
 import NoteComponent from '../../../NewNoteComponent';
@@ -16,7 +16,7 @@ import ModalContentComponent from './components/ModalContentComponent';
 import SendEmail from './components/SendEmail';
 import Title from './components/Title';
 import styles from './styles.less';
-import { mapType } from '@/utils/newCandidateForm';
+import { MAP_TYPE } from '@/constants/newCandidateForm';
 
 const DocumentVerification = (props) => {
   const {
@@ -30,15 +30,19 @@ const DocumentVerification = (props) => {
         ticketID = '',
         isSentEmail = false,
         assignTo: {
-          generalInfo: { firstName: hrFN = '', middleName: hrMN = '', lastName: hrLN = '' } = {} ||
-            {},
+          generalInfoInfo: {
+            firstName: hrFN = '',
+            middleName: hrMN = '',
+            lastName: hrLN = '',
+          } = {} || {},
           _id: hrId = '',
+          titleInfo: { name: titleName = '' },
         } = {} || {},
         CEOInfo: {
           generalInfoInfo: { legalName: ceoFullname = '' } = {} || {},
           title: { name: titleCEOName = '' } = {} || {},
         } = {} || {},
-        titleList = [],
+        // titleList = [],
         department,
         workLocation,
         reportingManager,
@@ -209,11 +213,6 @@ const DocumentVerification = (props) => {
     // get hr name
     let hrName = `${hrFN} ${hrMN} ${hrLN}`;
     if (!hrMN) hrName = `${hrFN} ${hrLN}`;
-    // get job title
-    let currentJobTitle = title;
-    if (!currentJobTitle)
-      currentJobTitle = titleList.find((t) => t._id === title?._id || t._id === title) || {};
-    const titleName = currentJobTitle?.name || '-';
     const messages = [
       {
         id: 1,
@@ -383,6 +382,7 @@ const DocumentVerification = (props) => {
           documentTypeC,
           documentTypeD,
           documentTypeE,
+          currentStep,
         },
       });
     }
@@ -396,7 +396,7 @@ const DocumentVerification = (props) => {
   ]);
 
   const getItemByType = (type) => {
-    return tempData[mapType[type]];
+    return tempData[MAP_TYPE[type]];
   };
 
   if (loadingFetchCandidate) return <Skeleton />;

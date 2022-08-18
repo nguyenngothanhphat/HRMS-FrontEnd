@@ -1,14 +1,18 @@
 import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
-import { Button, Col, Modal, Row, Select, Spin, Steps } from 'antd';
+import { Button, Col, Modal, Row, Select, Spin, Steps, Tag } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { connect, Link } from 'umi';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import PDFIcon from '@/assets/pdf_icon.png';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
 import MessageBox from '../MessageBox';
 import styles from './index.less';
+import { getEmployeeUrl } from '@/utils/utils';
+import { PRIORITY_COLOR } from '@/constants/ticketManagement';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const { Step } = Steps;
 const { Option } = Select;
@@ -45,20 +49,24 @@ const TicketDetailModal = (props) => {
     loadingFetchListEmployee = false,
     dispatch,
   } = props;
+
   const [statusState, setStatus] = useState('');
+
   useEffect(() => {
     setStatus(status);
   }, []);
+
   useEffect(() => {
-    if (!isEmpty(ccList)) {
+    if (visible && !isEmpty(ccList)) {
       dispatch({
         type: 'dashboard/fetchListEmployee',
         payload: {
-          // employees: ccList,
+          ids: ccList,
         },
       });
     }
-  }, []);
+  }, [visible, JSON.stringify(ccList)]);
+
   const handleUpdateStatus = () => {
     const { employee: { _id: employeeID = '' } = {} } = props;
     const payload = {
@@ -97,32 +105,28 @@ const TicketDetailModal = (props) => {
   const handleCancel = () => {
     onClose();
   };
-  const renderccList = () => {
+  const renderCCList = () => {
     const intersection = listEmployee.filter((element) => ccList.includes(element._id));
-    return intersection.map((val) => {
-      const { generalInfo: { legalName = '' } = {} } = val;
-      return <span style={{ paddingRight: '8px' }}>{legalName || ''}</span>;
-    });
+    return (
+      <span>
+        {intersection.map((val, index) => {
+          const { generalInfo: { legalName = '', userId = '' } = {} } = val;
+          return (
+            <Link to={getEmployeeUrl(userId)}>
+              {legalName}
+              {index + 1 < intersection.length ? ', ' : ''}
+            </Link>
+          );
+        })}
+      </span>
+    );
   };
-  const getColor = () => {
-    switch (priority) {
-      case 'High':
-        return '#ffb6b6';
-      case 'Normal':
-        return '#eefffb';
-      case 'Low':
-        return '#ffe9c5';
-      case 'Urgent':
-        return '#FF8484';
-      default:
-        return '#ffffff';
-    }
-  };
+
   const attachmentsContent = () => {
     return (
       <span className={styles.attachments}>
         {!isEmpty(attachments)
-          ? attachments.map((val) => {
+          ? attachments.map((val, i) => {
               const attachmentSlice = () => {
                 if (val.attachmentName) {
                   if (val.attachmentName.length > 35) {
@@ -137,7 +141,7 @@ const TicketDetailModal = (props) => {
               };
 
               return (
-                <div className={styles.attachments__file}>
+                <div className={styles.attachments__file} key={`${i + 1}`}>
                   <a href={val.attachmentUrl} target="_blank" rel="noreferrer">
                     {attachmentSlice()}
                   </a>
@@ -149,7 +153,7 @@ const TicketDetailModal = (props) => {
       </span>
     );
   };
-  const renderIcon = (url, statuss) => {
+  const renderIcon = (url, statusTemp) => {
     return (
       <div className={styles.avatar}>
         <img
@@ -159,7 +163,7 @@ const TicketDetailModal = (props) => {
           src={url || DefaultAvatar}
           alt="avatar"
         />
-        {statuss === REJECTED && <CloseCircleTwoTone twoToneColor="#fd4546" />}
+        {statusTemp === REJECTED && <CloseCircleTwoTone twoToneColor="#fd4546" />}
       </div>
     );
   };
@@ -206,29 +210,27 @@ const TicketDetailModal = (props) => {
       },
       {
         name: 'Request Date',
-        value: moment(requestDate || onDate || createdAt).format('DD/MM/YYYY'),
+        value: moment(requestDate || onDate || createdAt).format(DATE_FORMAT_MDY),
         span: 12,
       },
       {
-        name: queryType.length > 0 ? 'Query Type' : 'Timeoff Type',
+        name: queryType && queryType.length > 0 ? 'Query Type' : 'Timeoff Type',
         value: queryType || typeName,
         span: 12,
       },
       {
         name: 'Priority',
-        value: (
-          <span className={styles.priority} style={{ background: getColor() }}>
-            {priority}
-          </span>
-        ),
+        value: <Tag color={PRIORITY_COLOR[priority]}>{priority}</Tag>,
         span: 12,
         disabled: typeName.length > 0,
       },
       {
         name: 'Duration',
-        value: `${moment(fromDate).format('DD/MM/YYYY')} - ${moment(toDate).format('DD/MM/YYYY')}`,
+        value: `${moment(fromDate).format(DATE_FORMAT_MDY)} - ${moment(toDate).format(
+          DATE_FORMAT_MDY,
+        )}`,
         span: 12,
-        disabled: queryType.length > 0,
+        disabled: queryType && queryType.length > 0,
       },
       {
         name: 'Subject',
@@ -238,7 +240,7 @@ const TicketDetailModal = (props) => {
       {
         name: 'CC',
         value: (
-          <span>{loadingFetchListEmployee && !isEmpty(ccList) ? <Spin /> : renderccList()}</span>
+          <span>{loadingFetchListEmployee && !isEmpty(ccList) ? <Spin /> : renderCCList()}</span>
         ),
         span: 12,
         disabled: typeName.length > 0,
@@ -263,7 +265,7 @@ const TicketDetailModal = (props) => {
               {content.map(
                 (val) =>
                   !val.disabled && (
-                    <Col span={val.span}>
+                    <Col span={val.span} key={val.name}>
                       <div>
                         <span className={styles.title}>{val.name}</span>:{' '}
                         <span className={styles.value}>{val.value}</span>
@@ -274,7 +276,7 @@ const TicketDetailModal = (props) => {
             </Row>
           </div>
           <div className={styles.belowPart}>
-            {queryType.length > 0 ? (
+            {queryType && queryType.length > 0 ? (
               <>
                 <div className={styles.status}>
                   <span>Status:</span>
@@ -287,12 +289,12 @@ const TicketDetailModal = (props) => {
                   </Select>
                 </div>
                 <div className={styles.actionButton}>
-                  <Button
+                  <CustomPrimaryButton
                     disabled={status === 'New' || status === 'IN-PROGRESS'}
                     onClick={handleUpdateStatus}
                   >
                     Update
-                  </Button>
+                  </CustomPrimaryButton>
                 </div>
               </>
             ) : (
@@ -331,7 +333,7 @@ const TicketDetailModal = (props) => {
             )}
           </div>
         </div>
-        {queryType.length > 0 && <MessageBox chats={chats} item={item} />}
+        {queryType && queryType.length > 0 && <MessageBox chats={chats} item={item} />}
       </div>
     );
   };

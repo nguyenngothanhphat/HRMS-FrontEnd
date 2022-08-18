@@ -2,14 +2,14 @@ import { Button, Card, Col, Row, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { goToTop } from '@/utils/utils';
 import { Page } from '../../utils';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';
 import JobDetailForm from './components/Form';
 import styles from './index.less';
-import { goToTop } from '@/utils/utils';
 
 const JobDetails = (props) => {
   const {
@@ -20,7 +20,6 @@ const JobDetails = (props) => {
       // list
       locationList = [],
       listCustomerLocation = [],
-      departmentList = [],
       managerList = [],
       jobGradeLevelList = [],
 
@@ -47,7 +46,6 @@ const JobDetails = (props) => {
     loadingLocationList = false,
     loadingLocationCustomerList = false,
     loadingFetchDepartment = false,
-    loadingFetchManager = false,
     loadingFetchGrade = false,
     companyLocationList = [],
   } = props;
@@ -79,18 +77,6 @@ const JobDetails = (props) => {
     if (jobGradeLevelList.length === 0) {
       dispatch({
         type: 'newCandidateForm/getJobGradeList',
-      });
-    }
-
-    if (departmentList.length === 0) {
-      dispatch({
-        type: 'newCandidateForm/fetchManagerList',
-        payload: {
-          company: companyId,
-          status: ['ACTIVE'],
-          // location: locationPayload,
-          tenantId: getCurrentTenant(),
-        },
       });
     }
 
@@ -164,9 +150,7 @@ const JobDetails = (props) => {
     }
 
     if (workLocation1) {
-      countryID =
-        workLocation1?.headQuarterAddress?.country?._id ||
-        workLocation1?.headQuarterAddress?.country;
+      countryID = workLocation1?.headQuarterAddress?.country?._id;
     }
 
     if (countryID) {
@@ -332,8 +316,7 @@ const JobDetails = (props) => {
             loadingFetchDepartment ||
             loadingLocationList ||
             loadingLocationCustomerList ||
-            loadingFetchGrade ||
-            loadingFetchManager
+            loadingFetchGrade
           }
         >
           <div className={styles.JobDetailsComponent}>

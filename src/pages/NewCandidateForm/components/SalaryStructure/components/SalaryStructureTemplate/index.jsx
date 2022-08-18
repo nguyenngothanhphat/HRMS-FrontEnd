@@ -1,27 +1,33 @@
 import { Button, Col, Input, Row, Slider, Space, Spin } from 'antd';
-import { toNumber, toString, trim, trimStart, isEmpty } from 'lodash';
+import { isEmpty, toNumber, toString, trim, trimStart } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import {
-  roundNumber2,
-  SALARY_STRUCTURE_OPTION,
   ANNUAL_RETENTION_BONUS,
   ELIGIBLE_VARIABLE_PAY,
   INSURANCE,
   JOINING_BONUS,
   MIDTERM_HIKE,
+  SALARY_STRUCTURE_OPTION,
   TOTAL_COMPENSATION,
   TOTAL_COST_COMPANY,
-} from '@/utils/onboardingSetting';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
+} from '@/constants/onboardingSetting';
+import {
+  NEW_PROCESS_STATUS,
+  ONBOARDING_FORM_LINK,
+  ONBOARDING_STEPS,
+  SALARY_FIELDS_KEY,
+} from '@/constants/onboarding';
 import { listNoteSalary } from '@/utils/newCandidateForm';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { Page } from '../../../../utils';
 import styles from './index.less';
 import ModalWaitAccept from './ModalWaitAccept/index';
 import SalaryReference from './SalaryReference/index';
+import { roundNumber2 } from '@/utils/onboardingSetting';
 
+const { BASIC, LUNCH_ALLOWANCE, PETRO_ALLOWANCE, MOBILE_INTERNET_ALLOWANCE } = SALARY_FIELDS_KEY;
 const reg = /^\d*(\.\d*)?$/;
 
 const SalaryStructureTemplate = (props) => {
@@ -168,17 +174,30 @@ const SalaryStructureTemplate = (props) => {
     }
   };
 
-  const handleChange = (e, key) => {
+  const handleChange = (e, item) => {
+    const { key = '', unit = '' } = item;
     const { value } = e.target;
-    let newValue = value.replace(/,/g, '');
+    const newValue = value.replace(/,/g, '');
+
+    const validate = () => {
+      const maxValue = getValueByKey(salaryTempDataSetting, key);
+      if (unit === '%') {
+        if (+newValue > 100) return 100;
+        return newValue;
+      }
+      if (key === BASIC) {
+        if (+newValue > maximum) return maximum;
+      } else if (maxValue && +newValue > maxValue) return maxValue;
+
+      return newValue;
+    };
 
     if (reg.test(newValue) || newValue === '') {
-      if (key === 'basic' && toNumber(newValue) > maximum) newValue = maximum;
-
+      const validValue = validate();
       const tempTableData = JSON.parse(JSON.stringify(settingsTempData));
 
       const index = tempTableData.findIndex((x) => x.key === key);
-      tempTableData[index].value = newValue;
+      tempTableData[index].value = validValue;
 
       dispatch({
         type: 'newCandidateForm/saveSalaryStructure',
@@ -308,13 +327,13 @@ const SalaryStructureTemplate = (props) => {
     let newValue = value.replace(/,/g, '');
 
     if (reg.test(newValue) || newValue === '') {
-      if (key === 'basic' && toNumber(newValue) < minimum) newValue = minimum;
+      if (key === BASIC && toNumber(newValue) < minimum) newValue = minimum;
 
       const tempTableData = JSON.parse(JSON.stringify(settingsTempData));
 
       const index = tempTableData.findIndex((x) => x.key === key);
       tempTableData[index].value = toNumber(newValue);
-      const indexBasic = tempTableData.findIndex((x) => x.key === 'basic');
+      const indexBasic = tempTableData.findIndex((x) => x.key === BASIC);
       const basic = tempTableData[indexBasic].value;
       let sum = 0;
       tempTableData.forEach((item) => {
@@ -400,13 +419,13 @@ const SalaryStructureTemplate = (props) => {
           <Input
             addonAfter="% of Basics"
             value={convertVariable(item.value)}
-            onChange={(e) => handleChange(e, item.key)}
+            onChange={(e) => handleChange(e, item)}
             onBlur={(e) => onBlur(e, item.key)}
           />
         </div>
       );
     if (salaryCountry === 'VN') {
-      if (item.key === 'basic') {
+      if (item.key === BASIC) {
         marks[minimum] = `VND ${convertValue(minimum)}`;
         marks[maximum] = `VND ${convertValue(maximum)}`;
         return (
@@ -415,7 +434,7 @@ const SalaryStructureTemplate = (props) => {
               <Input
                 addonBefore={item.unit}
                 value={convertValue(item.value)}
-                onChange={(e) => handleChange(e, item.key)}
+                onChange={(e) => handleChange(e, item)}
                 onBlur={(e) => onBlur(e, item.key)}
               />
             </div>
@@ -443,7 +462,7 @@ const SalaryStructureTemplate = (props) => {
             <Input
               addonBefore={item.unit}
               value={convertValue(item.value)}
-              onChange={(e) => handleChange(e, item.key)}
+              onChange={(e) => handleChange(e, item)}
               onBlur={(e) => onBlur(e, item.key)}
             />
           </div>
@@ -467,7 +486,7 @@ const SalaryStructureTemplate = (props) => {
         <Input
           addonBefore={item.unit}
           value={convertValue(item.value)}
-          onChange={(e) => handleChange(e, item.key)}
+          onChange={(e) => handleChange(e, item)}
           onBlur={(e) => onBlur(e, item.key)}
         />
       </div>
@@ -542,10 +561,10 @@ const SalaryStructureTemplate = (props) => {
                       className={
                         isEditingSalary &&
                         salaryCountry === 'VN' &&
-                        (item.key === 'basic' ||
-                          item.key === 'lunch_allowance' ||
-                          item.key === 'petrol_allowance' ||
-                          item.key === 'mobile_internet_allowance')
+                        (item.key === BASIC ||
+                          item.key === LUNCH_ALLOWANCE ||
+                          item.key === PETRO_ALLOWANCE ||
+                          item.key === MOBILE_INTERNET_ALLOWANCE)
                           ? styles.salary__left__textEdit
                           : styles.salary__left__text
                       }
@@ -606,7 +625,7 @@ const SalaryStructureTemplate = (props) => {
           <div className={styles.containerNote}>
             Note-
             {arrListNoteSalary.map((x, index) => (
-              <div className={styles.noteField}>{`${index + 1}. ${x}`}</div>
+              <div key={x.key} className={styles.noteField}>{`${index + 1}. ${x}`}</div>
             ))}
           </div>
         )}
@@ -742,12 +761,14 @@ const SalaryStructureTemplate = (props) => {
             <div className={styles.content}>
               <div className={styles.leftSide}>
                 {salaryFields.map((x) => (
-                  <span className={styles.itemTitle}>{x.title}</span>
+                  <span key={x.key} className={styles.itemTitle}>
+                    {x.title}
+                  </span>
                 ))}
               </div>
               <div className={styles.rightSide}>
                 {salaryFields.map((x) => (
-                  <>
+                  <div key={x.key}>
                     {isEditingSalary && x.key === INSURANCE ? (
                       <div className={styles.inputBefore}>
                         <Input
@@ -762,7 +783,7 @@ const SalaryStructureTemplate = (props) => {
                         {renderSingle(x.value, x.unit)}
                       </span>
                     )}
-                  </>
+                  </div>
                 ))}
               </div>
             </div>
@@ -782,7 +803,7 @@ const SalaryStructureTemplate = (props) => {
           <div className={styles.containerNote}>
             Note-
             {arrListNoteSalary.map((x, index) => (
-              <div className={styles.noteField}>{`${index + 1}. ${x}`}</div>
+              <div key={x.key} className={styles.noteField}>{`${index + 1}. ${x}`}</div>
             ))}
           </div>
         )}
@@ -826,7 +847,7 @@ const SalaryStructureTemplate = (props) => {
           </div>
         </Col>
       </Row>
-      {checkKey('lunch_allowance') && (
+      {checkKey(LUNCH_ALLOWANCE) && (
         <Row className={styles.noteAllowance}>Allowances value as per month</Row>
       )}
 

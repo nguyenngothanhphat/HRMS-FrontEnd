@@ -1,9 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-curly-newline */
-import { Button, DatePicker, Form, Input, Select, Skeleton } from 'antd';
+import { DatePicker, Form, Select } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
+import DebounceSelect from '@/components/DebounceSelect';
+import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -17,7 +20,6 @@ const { Option } = Select;
   }) => ({
     employeeProfile,
     compensationTypes,
-    loadingLocationsList: loading.effects['employeeProfile/fetchLocationsByCompany'],
     loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
     loadingCompensationList: loading.effects['employeeProfile/fetchCompensationList'],
     loadingFetchEmployeeList:
@@ -39,17 +41,10 @@ class EditCurrentInfo extends PureComponent {
       },
     });
     dispatch({
-      type: 'employeeProfile/fetchLocationsByCompany',
-    });
-    dispatch({
       type: 'employeeProfile/fetchCompensationList',
     });
     dispatch({
       type: 'employeeProfile/fetchGradeList',
-    });
-    // fetch employees to show in "select manager" of employee
-    dispatch({
-      type: 'employeeProfile/fetchEmployeeListSingleCompanyEffect',
     });
   }
 
@@ -90,6 +85,7 @@ class EditCurrentInfo extends PureComponent {
       employeeType,
       manager,
       department,
+      grade,
     } = values;
     const payload = {
       id,
@@ -101,10 +97,34 @@ class EditCurrentInfo extends PureComponent {
       empTypeOther,
       department,
       manager,
+      grade,
     };
     dispatch({
-      type: 'employeeProfile/updateEmployment',
+      type: 'employeeProfile/patchEmployment',
       payload,
+    });
+  };
+
+  onEmployeeSearch = (value) => {
+    const { dispatch } = this.props;
+    if (!value) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+
+    return dispatch({
+      type: 'employeeProfile/fetchEmployeeListSingleCompanyEffect',
+      payload: {
+        name: value,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfo?.legalName,
+        value: user._id,
+      }));
     });
   };
 
@@ -116,12 +136,10 @@ class EditCurrentInfo extends PureComponent {
 
     const {
       employeeProfile,
-      employeeProfile: { employeeList = [], departments = [], listGrades = [] },
+      employeeProfile: { departments = [], listGrades = [] },
       loadingTitleList,
-      loadingLocationsList,
       handleCancel = () => {},
       companyLocationList,
-      loadingFetchEmployeeList = false,
       loadingUpdate = false,
     } = this.props;
     const {
@@ -142,14 +160,6 @@ class EditCurrentInfo extends PureComponent {
     const compensationType = compensation ? compensation.compensationType : '';
 
     const dateFormat = 'Do MMMM YYYY';
-
-    if (loadingLocationsList) {
-      return (
-        <div className={styles.editCurrentInfo}>
-          <Skeleton active />
-        </div>
-      );
-    }
 
     return (
       <div className={styles.editCurrentInfo}>
@@ -202,6 +212,7 @@ class EditCurrentInfo extends PureComponent {
             <Select
               placeholder="Enter Department"
               showArrow
+              onChange={this.onChangeDepartment}
               showSearch
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -221,7 +232,6 @@ class EditCurrentInfo extends PureComponent {
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
               onChange={this.onChangeGrade}
-              disabled
             >
               {listGrades.map((item) => (
                 <Option key={item._id}>{item.name}</Option>
@@ -289,47 +299,23 @@ class EditCurrentInfo extends PureComponent {
             </Select>
           </Form.Item>
 
-          {loadingFetchEmployeeList ? (
-            <Form.Item label="Manager" name="managerLoading">
-              <Input disabled />
-            </Form.Item>
-          ) : (
-            <Form.Item label="Manager" name="manager">
-              <Select
-                showSearch
-                optionFilterProp="children"
-                placeholder={manager?.generalInfo?.legalName || 'Select a manager'}
-                filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-                defaultValue={manager._id}
-                loading={loadingFetchEmployeeList}
-                disabled={loadingFetchEmployeeList}
-              >
-                {employeeList.map((item, index) => {
-                  return (
-                    <Option key={`${index + 1}`} value={item._id}>
-                      {item?.generalInfo?.legalName}
-                    </Option>
-                  );
-                })}
-                ]
-              </Select>
-            </Form.Item>
-          )}
+          <Form.Item label="Manager" name="manager">
+            <DebounceSelect
+              placeholder="Select the manager"
+              fetchOptions={this.onEmployeeSearch}
+              showSearch
+              defaultOptions={{
+                value: manager?._id,
+                label: manager?.generalInfo?.legalName,
+              }}
+            />
+          </Form.Item>
 
           <div className={styles.spaceFooter}>
-            <div className={styles.btnCancel} onClick={handleCancel}>
-              Cancel
-            </div>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className={styles.btnSubmit}
-              loading={loadingUpdate}
-            >
+            <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+            <CustomPrimaryButton htmlType="submit" loading={loadingUpdate}>
               Save
-            </Button>
+            </CustomPrimaryButton>
           </div>
         </Form>
       </div>

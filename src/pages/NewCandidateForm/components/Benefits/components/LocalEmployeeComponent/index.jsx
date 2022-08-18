@@ -1,9 +1,10 @@
 /* eslint-disable no-nested-ternary */
 
-import React, { PureComponent } from 'react';
-import { Checkbox, Typography, Row } from 'antd';
+import { Checkbox, Typography } from 'antd';
 import moment from 'moment';
+import React, { PureComponent } from 'react';
 
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 class LocalEmployeeComponent extends PureComponent {
@@ -19,7 +20,7 @@ class LocalEmployeeComponent extends PureComponent {
 
     if (createdAt === '') return '';
 
-    createdAt = moment(createdAt).locale('en').format('DD/MM/YYYY');
+    createdAt = moment(createdAt).locale('en').format(DATE_FORMAT_MDY);
     return createdAt ? (
       <div className={styles.headerText}>Coverage will take effect on {createdAt}</div>
     ) : (

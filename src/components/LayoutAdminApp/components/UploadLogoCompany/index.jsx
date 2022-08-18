@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import logoDefault from '@/assets/companyDefault.png';
 import { Button, Image, Spin } from 'antd';
 import { connect } from 'umi';
+import { DeleteOutlined } from '@ant-design/icons';
+import logoDefault from '@/assets/companyDefault.png';
 import ModalUpload from '@/components/ModalUpload';
 import { getCurrentTenant } from '@/utils/authority';
-import { DeleteOutlined } from '@ant-design/icons';
 import s from './index.less';
 import ModalRemoveLogo from './components/ModalRemoveLogo';
 
@@ -57,9 +57,9 @@ class UploadLogoCompany extends Component {
       companyDetails: { company: { _id: id = '' } = {} } = {},
     } = this.props;
     const tenantId = getCurrentTenant();
+    const [first] = data;
 
     if (statusCode === 200) {
-      const [first] = data;
       if (id) {
         dispatch({
           type: 'companiesManagement/updateCompany',
@@ -74,7 +74,7 @@ class UploadLogoCompany extends Component {
       } else {
         dispatch({
           type: 'companiesManagement/saveCompanyDetails',
-          payload: { ...companyDetails?.company, logoUrl: first?.url },
+          payload: { ...companyDetails?.company, logoUrl: data?.url },
           // dataTempKept: {},
           // isAccountSetup: true,
         });

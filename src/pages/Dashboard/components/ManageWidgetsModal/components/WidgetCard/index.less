@@ -4,7 +4,7 @@
     overflow: hidden;
 
     background: #ffffff;
-    border: 1px solid #d6dce0;
+    border: 1px solid @border-color-base;
     border-radius: 12px;
 
     .preview {
@@ -23,7 +23,7 @@
     }
     .info {
       padding: 16px;
-      border-top: 1px solid #d6dce0;
+      border-top: 1px solid @border-color-base;
       span {
         display: block;
       }
@@ -48,10 +48,10 @@
     }
     .ant-checkbox-checked .ant-checkbox-inner {
       background-color: #f0f3f9;
-      border: 1px solid #2c6df9;
+      border: 1px solid @primary-color;
     }
     .ant-checkbox-checked .ant-checkbox-inner::after {
-      border-color: #2c6df9;
+      border-color: @primary-color;
     }
     .ant-checkbox-inner {
       width: 24px;

@@ -2,10 +2,11 @@ import { Button, Form, Input, Skeleton } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { ChatEvent, socket } from '@/utils/socket';
+import { socket } from '@/utils/socket';
 import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
 import styles from './index.less';
+import { CHAT_EVENT } from '@/constants/socket';
 
 const { TextArea } = Input;
 
@@ -216,10 +217,9 @@ class MessageBox extends PureComponent {
     const { activeId } = this.state;
     const { message } = values;
     if (activeId && message) {
-      socket.emit(ChatEvent.SEND_MESSAGE, {
+      socket.emit(CHAT_EVENT.SEND_MESSAGE_TO_HR, {
         conversationId: activeId,
         senderId: candidateId,
-        receiverId: assignTo?._id || assignTo || '',
         text: message,
       });
 

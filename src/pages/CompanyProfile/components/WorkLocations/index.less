@@ -3,7 +3,7 @@
   width: 100%;
   height: fit-content;
   background: #ffffff;
-  border: 1px solid #d6dce0;
+  border: 1px solid @border-color-base;
   border-radius: 5px;
   p {
     margin: 0;
@@ -16,7 +16,7 @@
     align-items: center;
     width: fit-content;
     // margin-top: 24px;
-    color: #2c6df9;
+    color: @primary-color;
     cursor: pointer;
     &__icon {
       display: flex;
@@ -55,7 +55,7 @@
   .content {
     &__viewTop {
       padding: 24px;
-      border-bottom: 1px solid #d6dce0;
+      border-bottom: 1px solid @border-color-base;
 
       .text {
         margin-top: 10px;
@@ -156,9 +156,9 @@
     font-size: 14px;
     line-height: 16px;
     text-align: center;
+    background: transparent;
     border: none;
     border-radius: 25px;
-    background: transparent;
     &:hover {
       opacity: 0.8;
     }
@@ -167,14 +167,14 @@
 
 .actions {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-top: 0px;
 }
 .actionsWithMargin {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-top: 24px;
 }
 .viewSkeleton {

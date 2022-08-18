@@ -69,3 +69,17 @@ export async function getEmployeeList(payload) {
     data: payload,
   });
 }
+
+export async function getLocationsOfCountries(params) {
+  return request('/api/locationtenant/group-country', {
+    method: 'GET',
+    params,
+  });
+}
+
+export async function terminateReason(payload) {
+  return request('/api/employeetenant/terminate-admin', {
+    method: 'POST',
+    data: payload,
+  });
+}

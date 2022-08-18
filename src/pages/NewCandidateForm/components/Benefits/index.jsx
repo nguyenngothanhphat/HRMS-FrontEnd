@@ -4,7 +4,7 @@ import { connect, history, formatMessage } from 'umi';
 // import PreviewOffer from '@/pages/NewCandidateForm/components/PreviewOffer/index';
 import { getCurrentTenant } from '@/utils/authority';
 // import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import { ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/utils/onboarding';
+import { ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
 import Header from './components/Header';
 import GlobalEmployeeComponent from './components/GlobalEmployeeComponent';
 import LocalEmployeeComponent from './components/LocalEmployeeComponent';
@@ -55,12 +55,12 @@ class Benefits extends PureComponent {
   fetchListBenefit = () => {
     const {
       dispatch,
-      data: { workLocation: { headQuarterAddress: { country = '' } = {} } = {} } = {},
+      data: { workLocation: { headQuarterAddress: { country = {} } = {} } = {} } = {},
     } = this.props;
 
     dispatch({
       type: 'newCandidateForm/fetchListBenefit',
-      payload: { country },
+      payload: { country: country?._id },
     });
   };
 

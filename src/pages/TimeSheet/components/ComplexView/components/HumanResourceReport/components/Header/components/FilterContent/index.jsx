@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
-import { Form, Select, AutoComplete, Input, Spin } from 'antd';
-import { debounce } from 'lodash';
+import { AutoComplete, Form, Input, Select, Spin } from 'antd';
+import { debounce, isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import SearchIcon from '@/assets/directory/search.svg';
@@ -10,12 +10,15 @@ const FilterContent = (props) => {
   const [form] = Form.useForm();
   const {
     dispatch,
-    timeSheet: { departmentList = [], projectList = [], employeeNameList = [] } = {},
+    timeSheet: {
+      filterHrView = {},
+      departmentList = [],
+      projectList = [],
+      employeeNameList = [],
+    } = {},
     loadingFetchEmployeeNameList = false,
     loadingFetchDepartmentList = false,
     loadingFetchProjectList = false,
-    setForm,
-    setApplied,
   } = props;
 
   const [employeeNameListState, setEmployeeNameListState] = useState([]);
@@ -30,7 +33,6 @@ const FilterContent = (props) => {
     dispatch({
       type: 'timeSheet/fetchProjectListEffect',
     });
-    setForm(form);
   }, []);
 
   useEffect(() => {
@@ -71,15 +73,16 @@ const FilterContent = (props) => {
     onFinish(values);
   }, 700);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    const filteredObj = Object.entries(values).filter(
-      ([, value]) => value !== undefined && value.length > 0,
-    );
-    const newObj = Object.fromEntries(filteredObj);
-    setApplied(Object.keys(newObj).length);
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
+
+  // clear values
+  useEffect(() => {
+    if (isEmpty(filterHrView)) {
+      form.resetFields();
+    }
+  }, [JSON.stringify(filterHrView)]);
 
   const onSearchEmployeeDebounce = debounce((type, value) => {
     let typeTemp = '';

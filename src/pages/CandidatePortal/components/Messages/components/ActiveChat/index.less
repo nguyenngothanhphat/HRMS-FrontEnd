@@ -2,8 +2,8 @@
 @lightGrayColor: #707177;
 @commonPadding: 15px;
 @inlinePadding: 32px;
-@borderColor: #d6dce0;
-@blueColor: #2c6df9;
+@borderColor: @border-color-base;
+@blueColor: @primary-color;
 @lightBlueColor: #eaf0fe;
 
 .ActiveChat {
@@ -167,7 +167,6 @@
         }
         .messageBody {
           width: fit-content;
-
           max-width: 700px;
           padding: @commonPadding;
           background-color: @lightBlueColor;
@@ -176,6 +175,7 @@
             color: @darkColor;
             font-size: 14px;
             line-height: 21px;
+            white-space: pre-line;
           }
         }
       }
@@ -207,7 +207,7 @@
       width: 100%;
     }
     .disabledBtn {
-      background-color: #2c6df975 !important;
+      background-color: @primary-color !important; // NEED FIX - OPACITY 75
     }
     :global {
       .ant-form-item {

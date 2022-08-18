@@ -6,6 +6,7 @@ import LayoutHomePageSettings from '@/components/LayoutHomePageSettings';
 import PostManagement from './components/PostManagement';
 import QuickLinkManagement from './components/QuickLinkManagement';
 import styles from './index.less';
+import EmployeePostManagement from './components/EmployeePostManagement';
 
 const Settings = (props) => {
   const { match: { params: { reId = '', tabName = '' } = {} } = {} } = props;
@@ -21,6 +22,12 @@ const Settings = (props) => {
       name: 'Quick Link Management',
       component: <QuickLinkManagement />,
       link: 'quick-link-management',
+    },
+    {
+      id: 3,
+      name: 'Employee’s Post',
+      component: <EmployeePostManagement />,
+      link: 'employee-post-management',
     },
   ];
   return (

@@ -2,7 +2,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { getCurrentCompany } from '@/utils/authority';
-import { MAKE_CHANGE_TYPE } from '@/utils/employeeProfile';
+import { MAKE_CHANGE_TYPE } from '@/constants/employeeProfile';
 import { dialog } from '@/utils/utils';
 import FifthStep from './components/FifthStep';
 import FirstStep from './components/FirstStep';
@@ -78,13 +78,10 @@ const HandleChanges = (props) => {
         },
       });
     }
-    dispatch({
-      type: 'employee/fetchDataOrgChart',
-      payload: { employee: employeeProfile.employee },
-    });
     if (!(employeeProfile.employeeList || []).length) {
       dispatch({
         type: 'employeeProfile/fetchEmployeeListSingleCompanyEffect',
+        // status: ['ACTIVE', 'INACTIVE'],
       });
     }
   }, []);
@@ -359,19 +356,12 @@ const HandleChanges = (props) => {
 };
 
 export default connect(
-  ({
-    // employee: { dataOrgChart = {} },
-    employeeProfile,
-    user,
-    location: { companyLocationList = [] } = {},
-    loading,
-  }) => ({
+  ({ employeeProfile, user, location: { companyLocationList = [] } = {}, loading }) => ({
     employeeProfile,
     companyLocationList,
     user,
     loadingFetchEmployeeList:
       loading.effects['employeeProfile/fetchEmployeeListSingleCompanyEffect'],
     loadingFetchTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
-    // dataOrgChart,
   }),
 )(HandleChanges);

@@ -1,0 +1,38 @@
+.Document {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-right: 20px;
+  padding: 10px 20px;
+  background: #ffffff;
+  border: 1px solid @border-color-base;
+  border-radius: 8px;
+  &:hover {
+    border: 1px solid rgb(45, 120, 247);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.07);
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .left {
+    display: flex;
+    align-items: center;
+    img {
+      margin-top: -2px;
+    }
+    .fileName {
+      margin-left: 10px;
+      font-size: 13px;
+    }
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    min-height: 30px;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+}

@@ -43,8 +43,8 @@ import {
   getTax,
   getAddTax,
   updateTax,
-  getLocationsByCompany,
   updateEmployment,
+  patchEmployment,
   updatePrivate,
   getListRelation,
   getCountryStates,
@@ -818,11 +818,11 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchEmploymentInfo({ payload }, { call, put }) {
+    *fetchEmploymentInfo({ payload, params }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getEmploymentInfo, {
-          ...payload,
+        response = yield call(getEmploymentInfo, payload, {
+          ...params,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
@@ -1303,23 +1303,7 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchLocationsByCompany({ payload }, { call, put }) {
-      try {
-        const res = yield call(getLocationsByCompany, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data } = res;
-        if (statusCode !== 200) throw res;
-        yield put({
-          type: 'save',
-          payload: { companyLocationList: data },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
+
     *fetchCompensationList(_, { call, put }) {
       try {
         const res = yield call(getCompensationList, { tenantId: getCurrentTenant() });
@@ -1337,6 +1321,32 @@ const employeeProfile = {
       let isUpdateEmployment = false;
       try {
         const response = yield call(updateEmployment, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'fetchEmploymentInfo',
+          payload: { id: payload.id },
+        });
+
+        isUpdateEmployment = true;
+        yield put({
+          type: 'save',
+          payload: { visibleSuccess: true },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      yield put({ type: 'save', payload: { isUpdateEmployment } });
+    },
+    *patchEmployment({ payload = {} }, { call, put }) {
+      let isUpdateEmployment = false;
+      try {
+        const response = yield call(patchEmployment, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -1580,10 +1590,10 @@ const employeeProfile = {
       let response = {};
       try {
         response = yield call(getListEmployeeSingleCompany, {
-          ...payload,
           status: ['ACTIVE'],
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
+          ...payload,
         });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;

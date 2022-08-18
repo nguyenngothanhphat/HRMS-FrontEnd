@@ -1,148 +1,22 @@
-.mixin-border-bottom-row {
-  border-bottom: solid 1px #d6dce0;
-}
-
-.selectCol {
-  :global {
-    td.ant-table-column-sort {
-      background-color: #fafafa;
-    }
-  }
-}
-
-.directoryTable {
-  padding: 24px 24px 0 24px;
+.DirectoryTable {
+  padding: 24px;
+  background-color: #fff;
 
   .employeeId {
     padding-left: 16px !important;
   }
 
+  a {
+    font-weight: 500;
+  }
+
   :global {
-    .ant-table-cell {
-      background: #fff;
-    }
-    .ant-pagination {
-      align-items: center;
-    }
-    .ant-pagination-options {
-      display: flex;
-      justify-content: flex-end;
-      margin-left: 24px !important;
-    }
-
-    .ant-select-selector {
-      height: 32px !important;
-      padding: 5px 7px !important;
-    }
-    .ant-select-selection-item,
-    .ant-select-item {
-      font-size: 13px !important;
-    }
-
     .ant-table-body {
-      overflow-x: auto !important;
-    }
-
-    .ant-table-tbody > tr.ant-table-row:hover > td {
-      cursor: pointer;
-    }
-
-    .ant-table.ant-table-small:after {
-      position: absolute;
-      bottom: -1px;
-      left: -24px;
-      width: 150%;
-      height: 1px;
-      background-color: #d6dce0;
-      content: '';
-    }
-
-    .ant-table-body {
-      height: 570px;
-      color: #000000;
-    }
-
-    .ant-table-tbody {
-      height: 100%;
-      overflow: scroll;
-    }
-
-    .ant-table-tbody > tr:last-child > td {
-      border-bottom: none;
-    }
-
-    .ant-table-tbody > tr > td {
-      .mixin-border-bottom-row();
-    }
-
-    .ant-table-column-sorter-down {
-      margin-left: -1em;
-    }
-
-    .ant-table-column-sorter-inner {
-      display: inline;
-    }
-
-    .ant-table-column-sorter-up.active,
-    .ant-table-column-sorter-down.active {
-      color: #ffffff;
-      opacity: 1;
-    }
-
-    .ant-table-column-sorter-up,
-    .ant-table-column-sorter-down {
-      font-size: 14px;
-      opacity: 0;
-    }
-
-    .ant-table-thead th.ant-table-column-has-sorters:hover {
-      background: #6495ff;
-      opacity: 1;
-    }
-
-    td.ant-table-cell.ant-table-cell-fix-left.ant-table-cell-fix-left-last {
-      box-shadow: 4px 0 5px 0 rgba(0, 0, 0, 0.05);
-    }
-
-    .ant-table-column-sorters-with-tooltip {
-      box-shadow: 4px 0 5px 0 rgba(0, 0, 0, 0.05);
-    }
-
-    .ant-table.ant-table-small .ant-table-thead,
-    .ant-table.ant-table-small .ant-table-thead .ant-table-column-sorters {
-      padding-block: 8px !important;
-    }
-
-    .ant-table-cell-scrollbar {
-      box-shadow: none;
-    }
-
-    .ant-btn {
-      padding: 0px;
-    }
-
-    th.ant-table-cell {
-      padding-top: 0 !important;
-      padding-bottom: 0 !important;
+      height: 500px;
     }
   }
 
-  // .col {
-  //   :global {
-  //     .ant-table-column-sorter-inner {
-  //       display: inline;
-  //     }
-  //   }
-  // }
-
-  .directoryTable_fullName {
-    .directoryTable_iconSort {
-      margin-left: 0.5em;
-      font-size: 14px;
-    }
-  }
-
-  .directoryTableName {
+  .employeeName {
     display: flex;
     align-items: center;
 
@@ -158,12 +32,12 @@
       border: solid 1px #707070;
     }
 
-    &__name {
+    .name {
       width: 70%;
       margin: 0;
       padding-left: 12px;
       overflow: hidden;
-      color: #2c6df9;
+      color: @primary-color;
       font-weight: 500;
       letter-spacing: 0.12px;
       white-space: nowrap;
@@ -176,15 +50,10 @@
     }
   }
 
-  .directoryTable_deparmentText {
-    padding: 4px 8px;
-    background-color: #f6f7f9;
-    border-radius: 5px;
-  }
-
   .viewAction {
     .actionBtn {
-      color: #2c6df9;
+      padding: 0 !important;
+      color: @primary-color;
       font-size: 13px;
       background: none;
       border: none;
@@ -194,7 +63,7 @@
 
   .managerName {
     overflow: hidden;
-    color: #2c6df9;
+    color: @primary-color;
     // font-weight: 500;
     white-space: nowrap;
     text-align: left;
@@ -214,7 +83,7 @@
   }
   .title {
     &:hover {
-      color: #2c6df9;
+      color: @primary-color;
     }
   }
 }

@@ -1,10 +1,11 @@
 import request from '@/utils/request';
 
-export async function getEmployeesList(payload) {
+export async function getEmployeesList(payload, params) {
   // return request('/api/employeetenant/admin-list', {
   return request('/api/employeetenant/list', {
     method: 'POST',
     data: payload,
+    params,
   });
 }
 
@@ -35,17 +36,19 @@ export async function getRoleList(payload) {
   });
 }
 
-export async function getEmployeeDetailById(payload) {
-  return request('/api/employeetenant/get-by-id', {
-    method: 'POST',
+export async function getEmployeeDetailById(payload, params) {
+  return request(`/api/employeetenant/${payload._id}`, {
+    method: 'GET',
     data: payload,
+    params,
   });
 }
 
-export async function updateEmployee(payload) {
-  return request('/api/employeetenant/update', {
-    method: 'POST',
+export async function updateEmployee(payload, params) {
+  return request(`/api/employeetenant/${payload._id}`, {
+    method: 'PATCH',
     data: payload,
+    params,
   });
 }
 

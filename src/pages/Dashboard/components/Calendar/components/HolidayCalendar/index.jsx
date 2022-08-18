@@ -1,7 +1,8 @@
 import { Col, Row } from 'antd';
 import moment from 'moment';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import Empty from '@/components/Empty';
 import Icon from '@/assets/timeOffTableEmptyIcon.svg';
 import styles from './index.less';
@@ -27,7 +28,7 @@ const HolidayCalendar = (props) => {
   // RENDER UI
   const renderTag = (name, span) => {
     return (
-      <Col span={span} className={styles.tag}>
+      <Col span={span} className={styles.tag} key={name}>
         <div>{name}</div>
       </Col>
     );
@@ -50,7 +51,7 @@ const HolidayCalendar = (props) => {
             holidays: monthHolidays.filter((z) => {
               return (
                 moment(z.date.dateTime.day, 'DD').format('DD') ===
-                moment(y, 'YYYY-MM-DD').format('DD')
+                moment(y, DATE_FORMAT_YMD).format('DD')
               );
             }),
           };
@@ -77,12 +78,13 @@ const HolidayCalendar = (props) => {
           }`}
           justify="center"
           align="middle"
+          key={item._id}
         >
           <Col xs={4} className={styles.eachRow__left}>
             <div>
               {index === 0 && <span className={styles.monthLabel}>{month}</span>}
               <span className={styles.dateLabel}>
-                {moment(item.date, 'YYYY-MM-DD').locale('en').format(dateFormat)}
+                {moment(item.date, DATE_FORMAT_YMD).locale('en').format(dateFormat)}
               </span>
             </div>
           </Col>

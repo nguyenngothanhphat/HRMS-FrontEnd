@@ -1,11 +1,12 @@
 import { AutoComplete, Col, DatePicker, Form, Input, Row, Select, Spin } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
+import { TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
 import SearchIcon from '@/assets/directory/search.svg';
 import styles from './index.less';
-import { TYPE_TICKET_APPROVAL } from '@/utils/dashboard';
 
 const FilterContent = (props) => {
   const [form] = Form.useForm();
@@ -19,9 +20,7 @@ const FilterContent = (props) => {
     } = {},
     loadingFetchEmployeeIDList = false,
     loadingFetchEmployeeNameList = false,
-    // handleFilterCounts = () => {},
-    setForm = () => {},
-    fetchListTicket = () => {},
+    filter = {},
   } = props;
 
   const dateFormat = 'MMM DD, YYYY';
@@ -34,7 +33,6 @@ const FilterContent = (props) => {
   });
 
   useEffect(() => {
-    setForm(form);
     return () => {
       dispatch({
         type: 'employee/clearFilter',
@@ -81,10 +79,10 @@ const FilterContent = (props) => {
     );
 
     if (filterTemp.fromDate) {
-      filterTemp.fromDate = moment(filterTemp.fromDate).format('YYYY-MM-DD');
+      filterTemp.fromDate = moment(filterTemp.fromDate).format(DATE_FORMAT_YMD);
     }
     if (filterTemp.toDate) {
-      filterTemp.toDate = moment(filterTemp.toDate).format('YYYY-MM-DD');
+      filterTemp.toDate = moment(filterTemp.toDate).format(DATE_FORMAT_YMD);
     }
     if (filterTemp.employeeCode) {
       filterTemp.employeeCode = [filterTemp.employeeCode];
@@ -94,18 +92,22 @@ const FilterContent = (props) => {
     }
 
     onFilter(filterTemp);
-    fetchListTicket('', filterTemp);
   };
 
   const onFinishDebounce = debounce((values) => {
-    // handleFilterCounts(values);
     onFinish(values);
   }, 700);
 
-  const onValuesChange = () => {
-    const values = form.getFieldsValue();
-    onFinishDebounce(values);
+  const onValuesChange = (changedValues, allValues) => {
+    onFinishDebounce(allValues);
   };
+
+  // clear values
+  useEffect(() => {
+    if (isEmpty(filter)) {
+      form.resetFields();
+    }
+  }, [JSON.stringify(filter)]);
 
   const onSearchEmployeeDebounce = debounce((type, value) => {
     let typeTemp = '';
@@ -124,6 +126,7 @@ const FilterContent = (props) => {
         type: typeTemp,
         payload: {
           name: value,
+          status: ['ACTIVE'],
         },
       });
     }

@@ -1,0 +1,50 @@
+.FileUploadForm {
+  height: 100%;
+  background-color: white;
+  .fileUploadedContainer {
+    .previewIcon {
+      margin-bottom: 20px;
+      // img {
+      //   width: 0px;
+      // }
+    }
+    .fileName {
+      margin-bottom: 30px;
+      font-size: 14px;
+      a {
+        // text-decoration: underline;
+        color: @primary-color;
+      }
+    }
+  }
+  .uploadIcon {
+    img {
+      max-width: 120px;
+    }
+  }
+  .uploadText {
+    margin: 20px 0;
+    color: #464646;
+    font-size: 20px;
+    line-height: 1.4;
+  }
+  :global {
+    .ant-upload.ant-upload-drag {
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+    }
+    .ant-btn {
+      height: 35px;
+      padding: 0 35px;
+      background-color: #ffa100;
+      border: none;
+      border-radius: 40px;
+      span {
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+      }
+    }
+  }
+}

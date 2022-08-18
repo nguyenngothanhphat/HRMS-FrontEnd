@@ -1,22 +1,25 @@
-import { Form, Select } from 'antd';
+import { Form } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import DebounceSelect from '@/components/DebounceSelect';
 import styles from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable/index.less';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 const ReportingManagerContent = (props) => {
   const {
     dispatch,
-    loadingEmployeeList = false,
-    managerList: employeeList = [],
-    reportingManager: manager = [],
+    reportingManager: manager = {},
     reportees: employee = [],
     candidateId = '',
     rookieId = '',
+    currentStep = '',
+    dateOfJoining = '',
   } = props;
+
   const [form] = Form.useForm();
-  // const [arr, setArr] = useState(employeeList);
-  const [selectedManager, setSelectedManager] = useState(null);
+  const [selectedManager, setSelectedManager] = useState(manager?._id);
+  const [defaultReporteeList, setDefaultReporteeList] = useState([]);
+  const [defaultManagerList, setDefaultManagerList] = useState([]);
 
   const onValuesChange = (changedValues, allValues) => {
     const { reportingManager = '' } = allValues;
@@ -24,29 +27,52 @@ const ReportingManagerContent = (props) => {
   };
 
   useEffect(() => {
-    dispatch({
+    if (manager || employee?.length) {
+      setDefaultManagerList({ value: manager?._id, label: manager.generalInfoInfo?.legalName });
+      setDefaultReporteeList(
+        employee
+          .filter((x) => x._id !== manager?._id)
+          .map((x) => ({ value: x._id, label: x.generalInfoInfo?.legalName })),
+      );
+    }
+    form.setFieldsValue({
+      reportingManager: manager?._id,
+      reportees: employee?.map((a) => a?._id),
+    });
+  }, [manager, employee]);
+
+  const onEmployeeSearch = (value) => {
+    if (!value) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+
+    return dispatch({
       type: 'newCandidateForm/fetchManagerList',
       payload: {
         company: getCurrentCompany(),
         status: ['ACTIVE'],
         tenantId: getCurrentTenant(),
       },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data
+        .filter((x) => x._id !== selectedManager)
+        .map((user) => ({
+          label: user.generalInfo?.legalName,
+          value: user._id,
+        }));
     });
-    form.setFieldsValue({
-      reportingManager: manager?._id,
-      reportees: employee?.map((a) => a?._id),
-    });
-  }, []);
-
-  useEffect(() => {
-    setSelectedManager(null);
-  }, []);
+  };
 
   const onFinish = async (value) => {
     const { reportingManager, reportees } = value;
     const response = await dispatch({
       type: 'newCandidateForm/updateByHR',
       payload: {
+        dateOfJoining,
+        currentStep,
         reportingManager,
         reportees,
         candidate: candidateId,
@@ -75,51 +101,24 @@ const ReportingManagerContent = (props) => {
         <Form.Item
           name="reportingManager"
           label="Reporting Manager"
-          rules={[{ required: true, message: 'Please select reporting manager' }]}
+          rules={[{ required: true, message: 'Please select the reporting manager' }]}
           className={styles.selectForm}
         >
-          <Select
-            placeholder="Please select"
-            allowClear
+          <DebounceSelect
+            placeholder="Please select the manager"
+            fetchOptions={onEmployeeSearch}
+            defaultOptions={defaultManagerList}
             showSearch
-            loading={loadingEmployeeList}
-            disabled={loadingEmployeeList}
-            filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          >
-            {employeeList?.map((item) => (
-              <Select.Option key={item._id} value={item._id}>
-                {item.generalInfo?.legalName}
-              </Select.Option>
-            ))}
-          </Select>
+          />
         </Form.Item>
-        <Form.Item
-          name="reportees"
-          label="Reportees"
-          rules={[{ required: true, message: 'Please select reportees' }]}
-          className={styles.selectForm}
-        >
-          <Select
-            placeholder="Please select"
-            allowClear
-            mode="multiple"
+        <Form.Item name="reportees" label="Reportees" className={styles.selectForm}>
+          <DebounceSelect
+            placeholder="Please select the reportees"
+            fetchOptions={onEmployeeSearch}
             showSearch
-            showArrow
-            loading={loadingEmployeeList}
-            disabled={loadingEmployeeList}
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          >
-            {employeeList
-              .filter((x) => x._id !== selectedManager)
-              .map((item) => (
-                <Select.Option key={item._id} value={item._id}>
-                  {item.generalInfo?.legalName}
-                </Select.Option>
-              ))}
-          </Select>
+            defaultOptions={defaultReporteeList}
+            mode="multiple"
+          />
         </Form.Item>
       </div>
     </Form>
@@ -130,15 +129,20 @@ export default connect(
   ({
     newCandidateForm: {
       rookieId = '',
-      tempData: { managerList = [], reportingManager = {}, reportees = [], _id: candidateId = '' },
+      tempData: {
+        reportingManager = {},
+        reportees = [],
+        _id: candidateId = '',
+        dateOfJoining = '',
+      },
+      currentStep = '',
     },
-    loading,
   }) => ({
-    managerList,
+    dateOfJoining,
+    currentStep,
     rookieId,
     reportingManager,
     reportees,
     candidateId,
-    loadingEmployeeList: loading.effects['newCandidateForm/fetchManagerList'],
   }),
 )(ReportingManagerContent);

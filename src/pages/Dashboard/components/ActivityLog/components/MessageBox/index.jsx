@@ -12,6 +12,7 @@ import PDFIcon from '@/assets/pdf_icon.png';
 import ImageIcon from '@/assets/image_icon.png';
 
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
 
 const { Dragger } = Upload;
 @connect(
@@ -23,8 +24,8 @@ const { Dragger } = Upload;
     employee,
     listEmployee,
     loadingUploadAttachment: loading.effects['dashboard/uploadFileAttachments'],
-    loadingFectchListMyTicket: loading.effects['dashboard/fetchListMyTicket'],
-    loadingfetchListEmployee: loading.effects['dashboard/fetchListEmployee'],
+    loadingMyTicketList: loading.effects['dashboard/fetchMyTicketList'],
+    loadingFetchListEmployee: loading.effects['dashboard/fetchListEmployee'],
     loadingAddNotes: loading.effects['dashboard/addNotes'],
   }),
 )
@@ -192,23 +193,27 @@ class MessageBox extends PureComponent {
     const intersection = listEmployee.filter((element) => element._id === value);
     return intersection.map((val) => {
       const { generalInfo: { legalName = '' } = {} } = val;
-      return <span className={styles.nameAttach}>{legalName || ''}</span>;
+      return (
+        <span className={styles.nameAttach} key={val._id}>
+          {legalName || ''}
+        </span>
+      );
     });
   };
 
   renderChatContent = () => {
-    const { chats = [], loadingfetchListEmployee = false } = this.props;
+    const { chats = [], loadingFetchListEmployee = false } = this.props;
     if (!isEmpty(chats)) {
-      return chats.map((chat) => {
+      return chats.map((chat, i) => {
         return (
-          <div className={styles.boxMessage}>
+          <div className={styles.boxMessage} key={`${i + 1}`}>
             <div className={styles.chatTitle}>{chat.title || ''}</div>
             <div className={styles.chatText}>{chat.message || ''}</div>
             <div>
               {chat.attachments ? (
                 <>
                   {!isEmpty(chat.attachments)
-                    ? chat.attachments.map((val) => {
+                    ? chat.attachments.map((val, i) => {
                         const attachmentSlice = () => {
                           if (val.attachmentName) {
                             if (val.attachmentName.length > 35) {
@@ -226,7 +231,7 @@ class MessageBox extends PureComponent {
                         };
 
                         return (
-                          <div className={styles.attachments__file}>
+                          <div className={styles.attachments__file} key={`${i + 1}`}>
                             <img
                               className={styles.attachments__file__img}
                               src={PDFIcon}
@@ -245,7 +250,7 @@ class MessageBox extends PureComponent {
               )}
             </div>
             <div>
-              {loadingfetchListEmployee ? <Spin /> : this.renderNameAttach(chat.employee)}
+              {loadingFetchListEmployee ? <Spin /> : this.renderNameAttach(chat.employee)}
               <span className={styles.chatDate}>
                 {moment(chat.createdAt).locale('en').format('DD-MM-YYYY, hh:mm a')}
               </span>
@@ -254,14 +259,14 @@ class MessageBox extends PureComponent {
         );
       });
     }
-    return '';
+    return <EmptyComponent />;
   };
 
   renderInput = () => {
     const {
       loadingUploadAttachment = false,
       loadingAddNotes = false,
-      loadingFectchListMyTicket = false,
+      loadingMyTicketList = false,
     } = this.props;
     const { fileNameList, value } = this.state;
 
@@ -307,7 +312,10 @@ class MessageBox extends PureComponent {
               </Dragger>
               <>
                 {fileNameList.map((item) => (
-                  <div className={styles.fileUploadedContainer__listFiles}>
+                  <div
+                    className={styles.fileUploadedContainer__listFiles}
+                    key={item._id || item.id}
+                  >
                     <div className={styles.fileUploadedContainer__listFiles__files}>
                       <div className={styles.previewIcon}>
                         {this.identifyImageOrPdf(item.nameFile) === 1 ? (
@@ -343,7 +351,7 @@ class MessageBox extends PureComponent {
           <div>
             <Button
               htmlType="submit"
-              loading={loadingAddNotes && loadingFectchListMyTicket}
+              loading={loadingAddNotes && loadingMyTicketList}
               className={`${value === '' ? styles.btnAddNote__disable : styles.btnNote}`}
               onClick={this.handleAddNote}
             >

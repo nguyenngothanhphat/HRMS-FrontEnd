@@ -7,6 +7,7 @@ import styles from './index.less';
 const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
   const [fetching, setFetching] = useState(false);
   const [options, setOptions] = useState([]);
+
   const fetchRef = useRef(0);
   const debounceFetcher = useMemo(() => {
     const loadOptions = (value) => {
@@ -32,9 +33,27 @@ const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
       labelInValue
       filterOption={false}
       onSearch={debounceFetcher}
+      dropdownRender={(menu) => (
+        <>
+          {options.length > 0 && (
+            <p
+              style={{
+                fontSize: 12,
+                fontStyle: 'italic',
+                color: '#8c8c8c',
+                marginBlock: 6,
+                paddingLeft: 12,
+              }}
+            >
+              Type to search
+            </p>
+          )}
+          {menu}
+        </>
+      )}
       notFoundContent={
         <Spin size="small" spinning={fetching}>
-          <Empty description="No data, type to search" />
+          <Empty description={<span style={{ fontSize: 12 }}>No data, type to search</span>} />
         </Spin>
       }
       // eslint-disable-next-line react/jsx-props-no-spreading
@@ -43,7 +62,9 @@ const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }) => {
       {options.map((option) => {
         const {
           generalInfoInfo: { avatar = '', workEmail = '' } = {},
-          locationInfo: { headQuarterAddress: { country: { _id: countryId } = {} } = {} } = {},
+          locationInfo: {
+            headQuarterAddress: { country: { _id: countryId } = {} } = {} || {},
+          } = {} || {},
           _id = '',
         } = option;
 

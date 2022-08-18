@@ -1,5 +1,5 @@
 .borderLeaveBalanceInfoBox {
-  border: 1px solid #ebeff2;
+  border: 1px solid @border-color-base;
   border-radius: 5px;
 }
 .LeaveInformation {
@@ -21,14 +21,23 @@
     border-radius: 5px;
     .aboveContainer {
       padding: 24px 24px 0 24px;
-      border-top: 1px solid #ebeff2;
-      border-right: 1px solid #ebeff2;
-      border-left: 1px solid #ebeff2;
+      border-top: 1px solid @border-color-base;
+      border-right: 1px solid @border-color-base;
+      border-left: 1px solid @border-color-base;
       border-radius: 5px 5px 0 0;
-      .title {
-        color: #464646;
-        font-weight: 700;
-        font-size: 18px;
+      .header {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        justify-content: space-between;
+        span {
+          display: block;
+        }
+        .title {
+          color: #464646;
+          font-weight: 700;
+          font-size: 18px;
+        }
       }
       .leaveBalanceBox {
         display: flex;
@@ -64,9 +73,9 @@
       .ant-collapse-header {
         // overflow: hidden;
         text-align: center;
-        border-right: 1px solid #ebeff2;
-        border-bottom: 1px solid #ebeff2;
-        border-left: 1px solid #ebeff2;
+        border-right: 1px solid @border-color-base;
+        border-bottom: 1px solid @border-color-base;
+        border-left: 1px solid @border-color-base;
         border-radius: 0 0 5px 5px !important;
       }
       .ant-collapse-content > .ant-collapse-content-box {
@@ -79,7 +88,7 @@
       cursor: pointer;
       span {
         margin-right: 10px;
-        color: #2c6df9;
+        color: @primary-color;
         font-weight: 500;
         text-decoration: underline;
       }
@@ -94,9 +103,6 @@
   }
 
   .infoIcon {
-    position: absolute;
-    top: 30px;
-    right: 14px;
     width: 20px;
     cursor: pointer;
     :global {

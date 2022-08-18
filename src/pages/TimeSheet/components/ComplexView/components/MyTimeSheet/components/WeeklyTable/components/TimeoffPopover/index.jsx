@@ -2,11 +2,10 @@ import { Col, Popover, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import CloseX from '@/assets/dashboard/closeX.svg';
-
 import { convertMsToTime } from '@/utils/timeSheet';
+import { TIMEOFF_PERIOD } from '@/constants/timeOff';
+import CloseX from '@/assets/dashboard/closeX.svg';
 import styles from './index.less';
-import { TIMEOFF_PERIOD } from '@/utils/timeOff';
 
 const TimeoffPopover = (props) => {
   const {

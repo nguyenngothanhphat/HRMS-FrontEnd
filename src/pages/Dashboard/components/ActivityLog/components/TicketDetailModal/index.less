@@ -1,12 +1,19 @@
 @darkColour: #161c29;
-@blueColour: #2c6df9;
+@blueColour: @primary-color;
 @lightGrayColor: #707177;
 @commonPadding: 15px;
 @contentPadding: 24px;
-@borderColor: #d6dce0;
+@borderColor: @border-color-base;
 
 .TicketDetailModal {
+  a {
+    font-weight: 500;
+  }
   :global {
+    .ant-tag {
+      font-size: 13px;
+      border-radius: 30px;
+    }
     .ant-form-item-explain {
       div {
         font-size: 13px;
@@ -14,6 +21,9 @@
     }
     .ant-select-selection-item {
       color: #161c29 !important;
+    }
+    .ant-select {
+      width: 160px;
     }
     .ant-select-selector,
     .ant-input {
@@ -32,26 +42,6 @@
       height: 0;
       color: #707177;
       font-size: 12px;
-    }
-    .ant-btn {
-      height: 40px;
-      padding: 0 25px;
-      object-fit: contain;
-      color: #ffffff;
-      font-weight: 500;
-      font-size: 14px;
-
-      letter-spacing: 0.13px;
-
-      text-shadow: none;
-      background-color: #ffa100;
-      border: solid 1px #ffa100;
-      border-radius: 25px;
-      box-shadow: none;
-      &:hover {
-        color: #ffffff;
-        background-color: #ffa100;
-      }
     }
 
     .ant-modal-header {
@@ -77,7 +67,7 @@
       width: 54px;
       height: 48px;
       color: #fff;
-      background-color: #2c6df9;
+      background-color: @primary-color;
       border-top-right-radius: 8px;
       border-bottom-right-radius: 8px;
       &:active {
@@ -102,7 +92,7 @@
   .container {
     &__details {
       background: #ffffff;
-      border: 1px solid #d6dce0;
+      border: 1px solid @border-color-base;
       border-radius: 5px;
       .abovePart {
         padding: 24px;
@@ -118,7 +108,7 @@
           line-height: 16px;
         }
         .ticketID {
-          color: #2c6df9;
+          color: @primary-color;
           font-weight: 500;
           font-size: 14px;
           line-height: 16px;
@@ -140,7 +130,7 @@
         align-items: center;
         justify-content: space-between;
         padding: 16px 24px;
-        border-top: 1px solid #d6dce0;
+        border-top: 1px solid @border-color-base;
         .status {
           span {
             display: inline-block;
@@ -208,7 +198,7 @@
               .ant-steps-icon {
                 border-radius: 50%;
                 img {
-                  border: 2px solid #2c6df9;
+                  border: 2px solid @primary-color;
                   border-radius: 50%;
                 }
               }

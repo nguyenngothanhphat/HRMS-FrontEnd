@@ -1,0 +1,36 @@
+@commonPadding: 24px;
+@blueColor: @primary-color;
+@lightBlueColor: #e4edff;
+.RolePermission {
+  padding: @commonPadding;
+  background: #ffffff;
+  border: 1px solid @border-color-base;
+  border-radius: 8px;
+  .header {
+    display: flex;
+    justify-content: flex-end;
+    height: 37px;
+    margin-bottom: 16px;
+  }
+
+  .roleName {
+    font-weight: 500;
+  }
+  .permissionTag {
+    display: inline-block;
+    margin-right: 5px;
+    padding: 6px;
+    color: #464646;
+    font-size: 11px;
+    letter-spacing: 0.121875px;
+    text-transform: capitalize !important;
+    background: #f3f6fc;
+    border-radius: 24px;
+    margin-block: 2px;
+  }
+  .actions {
+    img {
+      cursor: pointer;
+    }
+  }
+}

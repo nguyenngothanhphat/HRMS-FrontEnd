@@ -1,9 +1,11 @@
 import { Avatar, Calendar, Spin, Tooltip } from 'antd';
+import { isEmpty } from 'lodash';
+import moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
+import { LEAVE_QUERY_TYPE, TIMEOFF_STATUS } from '@/constants/timeOff';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import mockAvatar from '@/assets/timeSheet/mockAvatar.jpg';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 
 const TeamLeaveCalendar = (props) => {
@@ -14,35 +16,37 @@ const TeamLeaveCalendar = (props) => {
     listTimeOffType = [],
     loadingFetch = false,
   } = props;
-  const startOfMonth = moment(selectedMonth).startOf('month').format('MM/DD/YYYY');
-  const endOfMonth = moment(selectedMonth).endOf('month').format('MM/DD/YYYY');
+  const startOfMonth = moment(selectedMonth).startOf('month').format(DATE_FORMAT_MDY);
+  const endOfMonth = moment(selectedMonth).endOf('month').format(DATE_FORMAT_MDY);
   useEffect(() => {
     // refresh data by month here
-    dispatch({
-      type: 'dashboard/fetchTeamLeaveRequests',
-      payload: {
-        status: [TIMEOFF_STATUS.ACCEPTED],
-        fromDate: startOfMonth,
-        toDate: endOfMonth,
-        type: listTimeOffType,
-        page: 1,
-        limit: 100,
-        search: '',
-      },
-    });
-  }, [selectedMonth]);
+    if (!isEmpty(listTimeOffType)) {
+      dispatch({
+        type: 'dashboard/fetchTeamLeaveRequests',
+        payload: {
+          queryType: LEAVE_QUERY_TYPE.TEAM,
+          status: [TIMEOFF_STATUS.ACCEPTED],
+          fromDate: startOfMonth,
+          toDate: endOfMonth,
+          type: listTimeOffType,
+          page: 1,
+          limit: 100,
+          search: '',
+        },
+      });
+    }
+  }, [selectedMonth, listTimeOffType]);
 
   // FUNCTIONS
   const checkDate = (date, listDate) => {
     return (
       listDate.filter(
-        (val) =>
-          moment(val.date).format('MM/DD/YYYY') === moment(date).format('MM/DD/YYYY'),
+        (val) => moment(val.date).format(DATE_FORMAT_MDY) === moment(date).format(DATE_FORMAT_MDY),
       ) || []
     );
   };
   const getLeaveRequestOfDate = (date) => {
-    // return leaveRequest.find((l) => l.date === moment(date).format('MM/DD/YYYY'));
+    // return leaveRequest.find((l) => l.date === moment(date).format(DATE_FORMAT_MDY));
     const filterDateLeave = teamLeaveRequestList.map((obj) => {
       return {
         employeeInfo: obj.employee,
@@ -76,16 +80,12 @@ const TeamLeaveCalendar = (props) => {
   const renderTooltipTitle = (list) => {
     return (
       <div>
-        {list.map((member) => (
-          <span style={{ display: 'block' }}>
-            {/* {member.name} ({getDateDuration(member.duration)}) */}
+        {list.map((member, i) => (
+          <span style={{ display: 'block' }} key={`${i + 1}`}>
             {member.employeeInfo.generalInfo.firstName} {member.employeeInfo.generalInfo.lastName}{' '}
             {member ? `(${getDateDuration(member)})` : ''}
           </span>
         ))}
-        {/* <span style={{ display: 'block' }}>
-          {list.employeeInfo.generalInfo.firstName} ({list ? list.duration.timeOfDay : ''})
-        </span> */}
       </div>
     );
   };
@@ -103,12 +103,26 @@ const TeamLeaveCalendar = (props) => {
       >
         <div className={styles.projectMembers}>
           <Avatar.Group maxCount={4}>
-            {find.map((member) => {
+            {find.map((member, i) => {
               return (
-                <Avatar size="large" src={member.employeeInfo.generalInfo.avatar || mockAvatar} />
+                <Avatar
+                  size="large"
+                  src={
+                    <img
+                      src={member.employeeInfo?.generalInfo?.avatar || mockAvatar}
+                      alt=""
+                      onError={(e) => {
+                        e.target.src = mockAvatar;
+                      }}
+                    />
+                  }
+                  style={{
+                    backgroundColor: '#fff',
+                  }}
+                  key={`${i + 1}`}
+                />
               );
             })}
-            {/* <Avatar size='large' src={find.employeeInfo.generalInfo.avatar} /> */}
           </Avatar.Group>
         </div>
       </Tooltip>

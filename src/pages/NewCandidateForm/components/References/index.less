@@ -4,7 +4,7 @@
 @commonPadding: 15px;
 @commonPadding2: 24px;
 @commonPadding3: 32px;
-@borderColor: #d6dce0;
+@borderColor: @border-color-base;
 
 .References {
   position: relative;
@@ -46,7 +46,7 @@
   .bottomBar {
     padding: @commonPadding;
     background-color: #ffffff;
-    border: solid 1px #d6dce0;
+    border: solid 1px @border-color-base;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
 
@@ -74,6 +74,8 @@
 
     &__button {
       display: flex;
+      gap: @padding-md;
+      align-items: center;
       justify-content: flex-end;
 
       &__disabled {
@@ -81,27 +83,6 @@
       }
 
       :global {
-        .ant-btn-primary {
-          height: 40px;
-          object-fit: contain;
-          color: #ffffff;
-          font-weight: 500;
-          font-size: 14px;
-
-          letter-spacing: 0.13px;
-          text-shadow: none;
-          background-color: #ffa100;
-          border: solid 1px #ffa100;
-          border-radius: 25px;
-          box-shadow: none;
-          padding-inline: 25px;
-
-          &:hover {
-            color: #ffffff;
-            background-color: #ffa100;
-          }
-        }
-
         .ant-btn-secondary {
           width: 94px;
           height: 40px;
@@ -122,7 +103,7 @@
 
   .divider {
     margin: 0;
-    border-top: 1px solid #d6dce0;
+    border-top: 1px solid @border-color-base;
   }
 
   :global {

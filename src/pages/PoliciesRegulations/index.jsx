@@ -1,25 +1,19 @@
+import { Button, Col, Row } from 'antd';
 import React, { PureComponent } from 'react';
-import { Row, Col, Button } from 'antd';
 import { connect, Link } from 'umi';
+import ExportButton from '@/components/ExportButton';
 import { PageContainer } from '@/layouts/layout/src';
+import PoliciesCertification from '@/pages/PoliciesRegulations/components/PoliciesCertification';
+import { getCurrentLocation } from '@/utils/authority';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
 import Polices from './components/Policies';
 import styles from './index.less';
-import PoliciesCertification from '@/pages/PoliciesRegulations/components/PoliciesCertification';
-import ExportButton from '@/components/ExportButton';
-import { getCurrentLocation } from '@/utils/authority';
 
 @connect(({ user: { permissions = {} }, policiesRegulations }) => ({
   permissions,
   policiesRegulations,
 }))
 class PoliciesRegulations extends PureComponent {
-  downloadFile = (fileName, urlData) => {
-    const element = document.createElement('a');
-    element.setAttribute('href', `data:text/text;charset=utf-8,%EF%BB%BF${encodeURI(urlData)}`);
-    element.setAttribute('download', fileName);
-    element.click();
-  };
-
   removeDuplicate = (array, key) => {
     return [...new Map(array.map((x) => [key(x), x])).values()];
   };
@@ -43,7 +37,7 @@ class PoliciesRegulations extends PureComponent {
       },
     }).then((res) => {
       if (res.statusCode === 200) {
-        this.downloadFile('policiesCertificationStatus.csv', res.data);
+        exportRawDataToCSV(res.data, 'policiesCertificationStatus');
       }
     });
   };

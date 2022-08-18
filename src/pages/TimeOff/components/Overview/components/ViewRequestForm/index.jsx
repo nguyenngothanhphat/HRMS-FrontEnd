@@ -1,13 +1,13 @@
 import { Affix, Col, Row, Spin } from 'antd';
+import { isEmpty } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { isEmpty } from 'lodash';
-import { TIMEOFF_COLOR, TIMEOFF_STATUS_NAME } from '@/utils/timeOff';
 import { PageContainer } from '@/layouts/layout/src';
+import { TIMEOFF_COLOR, TIMEOFF_STATUS_NAME } from '@/constants/timeOff';
+import RequestHistory from '../RequestHistory';
 import RequestInformation from './components/RequestInformation';
 import RightContent from './components/RightContent';
 import styles from './index.less';
-import History from '../../../History';
 
 @connect(({ timeOff, loading }) => ({
   timeOff,
@@ -73,24 +73,32 @@ class ViewRequestForm extends PureComponent {
               </div>
             </div>
           </Affix>
-          <Spin spinning={loadingFetchLeaveRequestById}>
-            <Row className={styles.container} gutter={[20, 20]}>
-              <Col xs={24} lg={16}>
+          <Row className={styles.container} gutter={[24, 24]}>
+            <Col xs={24} lg={16}>
+              <Spin spinning={loadingFetchLeaveRequestById}>
                 <RequestInformation />
-              </Col>
-              <Col xs={24} lg={8}>
-                {!isEmpty(history) ? (
-                  <>
-                    <History data={viewingLeaveRequest} status={status} />
-                  </>
-                ) : (
-                  <>
-                    <RightContent data={viewingLeaveRequest} status={status} />
-                  </>
-                )}
-              </Col>
-            </Row>
-          </Spin>
+              </Spin>
+            </Col>
+            <Col xs={24} lg={8}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  {!loadingFetchLeaveRequestById && (
+                    <>
+                      {!isEmpty(history) ? (
+                        <>
+                          <RequestHistory data={viewingLeaveRequest} status={status} />
+                        </>
+                      ) : (
+                        <>
+                          <RightContent data={viewingLeaveRequest} status={status} />
+                        </>
+                      )}
+                    </>
+                  )}
+                </Col>
+              </Row>
+            </Col>
+          </Row>
         </div>
       </PageContainer>
     );

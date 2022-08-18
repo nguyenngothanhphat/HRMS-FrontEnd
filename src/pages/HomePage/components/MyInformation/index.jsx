@@ -6,6 +6,7 @@ import MyTeam from './components/MyTeam';
 import MyCalendar from './components/MyCalendar';
 import MyTicket from './components/MyTicket';
 import { getCurrentTenant } from '@/utils/authority';
+import { LEAVE_QUERY_TYPE } from '@/constants/timeOff';
 
 const { TabPane } = Tabs;
 
@@ -67,9 +68,10 @@ const MyInformation = (props) => {
       },
     });
     dispatch({
-      type: 'dashboard/fetchMyLeaveRequest',
+      type: 'dashboard/fetchLeaveRequests',
       payload: {
-        status: ['IN-PROGRESS'],
+        status: statusRequestTimeoff,
+        queryType: LEAVE_QUERY_TYPE.SELF,
       },
     });
   }, []);

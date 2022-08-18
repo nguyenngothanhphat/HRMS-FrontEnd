@@ -19,10 +19,7 @@ const QuickLinks = (props) => {
   const {
     dispatch,
     holidaysListByCountry = [],
-    currentUser: {
-      location = {},
-      location: { headQuarterAddress: { country: { _id: countryId = '' } = {} } = {} } = {},
-    } = {},
+    currentUser: { location = {} } = {},
     listPolicy = [],
   } = props;
 
@@ -59,7 +56,7 @@ const QuickLinks = (props) => {
   ];
 
   useEffect(() => {
-    const country = location ? location.headQuarterAddress.country._id : '';
+    const country = location ? location.headQuarterAddress?.country?._id : '';
     dispatch({
       type: 'dashboard/fetchHolidaysByCountry',
       payload: {
@@ -69,7 +66,7 @@ const QuickLinks = (props) => {
     dispatch({
       type: 'homePage/fetchListPolicy',
       payload: {
-        country: [countryId],
+        country: [country],
       },
     });
   }, []);
@@ -112,8 +109,8 @@ const QuickLinks = (props) => {
     <div className={styles.QuickLinks}>
       <p className={styles.titleText}>Quick Links</p>
       <Row gutter={[24, 24]} className={styles.links}>
-        {links.map((x) => (
-          <Col xs={24} sm={8} md={12} xl={8} lg={12} xxl={6}>
+        {links.map((x, i) => (
+          <Col xs={24} sm={8} md={12} xl={8} lg={12} xxl={6} key={`${i + 1}`}>
             {renderLinkIcon(x)}
           </Col>
         ))}

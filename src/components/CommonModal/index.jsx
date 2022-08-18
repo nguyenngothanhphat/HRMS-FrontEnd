@@ -8,6 +8,8 @@ import styles from './index.less';
 const CommonModal = ({
   visible = false,
   title = 'Modal',
+  secondTitle = '',
+  cancelButtonType = 1,
   onClose = () => {},
   firstText = 'Submit',
   secondText = 'Button',
@@ -15,6 +17,7 @@ const CommonModal = ({
   content = '',
   width = 700,
   loading = false,
+  loadingSecond = false,
   hasFooter = true,
   onFinish = () => {},
   hasHeader = true,
@@ -24,11 +27,15 @@ const CommonModal = ({
   onSecondButtonClick = () => {},
   maskClosable = false,
   disabledButton = false,
+  formName = 'myForm',
 }) => {
   const renderModalHeader = () => {
     return (
-      <div className={styles.header}>
-        <p className={styles.header__text}>{title}</p>
+      <div className={secondTitle ? styles.headerSecond : styles.header}>
+        <p className={styles.header__text}>
+          <span className={styles.text1}>{title}</span>
+          {secondTitle && <span className={styles.text2}>{secondTitle}</span>}
+        </p>
       </div>
     );
   };
@@ -59,16 +66,27 @@ const CommonModal = ({
           hasFooter ? (
             <div className={styles.footer}>
               {hasCancelButton && (
-                <CustomSecondaryButton onClick={handleCancel}>{cancelText}</CustomSecondaryButton>
+                <CustomSecondaryButton
+                  type={cancelButtonType}
+                  onClick={handleCancel}
+                  paddingInline={0}
+                >
+                  {cancelText}
+                </CustomSecondaryButton>
               )}
               {hasSecondButton && (
-                <CustomSecondaryButton onClick={onSecondButtonClick}>
+                <CustomSecondaryButton
+                  onClick={onSecondButtonClick}
+                  paddingInline={0}
+                  loading={loadingSecond}
+                  disabled={disabledButton}
+                >
                   {secondText}
                 </CustomSecondaryButton>
               )}
               <CustomPrimaryButton
                 disabled={disabledButton}
-                form="myForm"
+                form={formName}
                 key="submit"
                 htmlType="submit"
                 loading={loading}

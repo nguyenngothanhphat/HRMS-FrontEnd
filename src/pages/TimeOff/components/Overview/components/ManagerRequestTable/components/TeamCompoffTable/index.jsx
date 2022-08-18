@@ -1,15 +1,17 @@
-import React, { PureComponent } from 'react';
-import { Table, Avatar, Tooltip, Spin } from 'antd';
-import { history, connect } from 'umi';
-import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
+import { Avatar, Spin, Table, Tooltip } from 'antd';
+import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect, history } from 'umi';
 import ApproveIcon from '@/assets/approveTR.svg';
-import OpenIcon from '@/assets/openTR.svg';
-import CancelIcon from '@/assets/cancelTR.svg';
 import DefaultAvatar from '@/assets/avtDefault.jpg';
-import { roundNumber, TIMEOFF_STATUS } from '@/utils/timeOff';
+import CancelIcon from '@/assets/cancelTR.svg';
+import OpenIcon from '@/assets/openTR.svg';
+import { TIMEOFF_STATUS } from '@/constants/timeOff';
+import { roundNumber } from '@/utils/timeOff';
 import RejectCommentModal from '../RejectCommentModal';
 
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import styles from './index.less';
 
 const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, REJECTED } = TIMEOFF_STATUS;
@@ -69,7 +71,7 @@ class TeamCompoffTable extends PureComponent {
     //   title: `Req’ted on `,
     //   dataIndex: 'onDate',
     //   align: 'left',
-    //   render: (onDate) => <span>{moment.utc(onDate).locale('en').format('MM/DD/YYYY')}</span>,
+    //   render: (onDate) => <span>{moment.utc(onDate).locale('en').format(DATE_FORMAT_MDY)}</span>,
     //   defaultSortOrder: ['ascend'],
     //   sorter: {
     //     compare: (a, b) => moment.utc(a.onDate).isAfter(moment.utc(b.onDate)),
@@ -277,9 +279,9 @@ class TeamCompoffTable extends PureComponent {
       if (extraTime.length !== 0) {
         const fromDate = extraTime[0].date;
         const toDate = extraTime[extraTime.length - 1].date;
-        duration = `${moment.utc(fromDate).format('MM/DD/YYYY')} - ${moment
+        duration = `${moment.utc(fromDate).format(DATE_FORMAT_MDY)} - ${moment
           .utc(toDate)
-          .format('MM/DD/YYYY')}`;
+          .format(DATE_FORMAT_MDY)}`;
       }
 
       const oneAssign = (step) => {

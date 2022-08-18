@@ -1,14 +1,18 @@
+import { VideoCameraAddOutlined } from '@ant-design/icons';
 import { Image, Popconfirm } from 'antd';
 import Parser from 'html-react-parser';
 import moment from 'moment';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
-import { hashtagify, urlify } from '@/utils/homePage';
-import RemoveIcon from '@/assets/homePage/removeIcon.svg';
 import EditIcon from '@/assets/homePage/editIcon.svg';
+import RemoveIcon from '@/assets/homePage/removeIcon.svg';
+import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
+import { ATTACHMENT_TYPES } from '@/constants/upload';
+import { hashtagify, urlify } from '@/utils/homePage';
+import { getAttachmentType } from '@/utils/upload';
+import { goToTop } from '@/utils/utils';
 import CommonTable from '../CommonTable';
 import styles from './index.less';
-import { goToTop } from '@/utils/utils';
 
 const AnnouncementTable = (props) => {
   const {
@@ -56,7 +60,7 @@ const AnnouncementTable = (props) => {
         title: 'ID',
         dataIndex: 'postID',
         key: 'postID',
-        width: '15%',
+        width: '10%',
         render: (postID) => <span className={styles.blueText}>#{postID}</span>,
       },
       {
@@ -73,7 +77,7 @@ const AnnouncementTable = (props) => {
         title: 'Location',
         dataIndex: 'location',
         key: 'location',
-        width: '10%',
+        width: '16%',
         render: (location = []) => (
           <div style={{ lineHeight: '22px' }}>
             {location.map((x, index) => {
@@ -93,12 +97,27 @@ const AnnouncementTable = (props) => {
         key: 'attachments',
         width: '10%',
         render: (attachments = []) => {
+          if (attachments.length === 0) return null;
+
+          const [first] = attachments;
+          if (getAttachmentType(first) === ATTACHMENT_TYPES.IMAGE) {
+            return (
+              <div className={styles.media}>
+                <Image.PreviewGroup>
+                  {attachments.slice(0, 3).map((x) => {
+                    return <Image width={32} height={32} src={x.url} key={x._id || x.id} />;
+                  })}
+                </Image.PreviewGroup>
+                {attachments.length > 3 && (
+                  <span style={{ fontWeight: 500 }}>+{attachments.length - 3} more</span>
+                )}
+              </div>
+            );
+          }
           return (
-            <Image.PreviewGroup>
-              {attachments.map((x) => {
-                return <Image width={32} height={32} src={x.url} />;
-              })}
-            </Image.PreviewGroup>
+            <div className={styles.iconVideo}>
+              <VideoCameraAddOutlined />
+            </div>
           );
         },
       },
@@ -124,7 +143,7 @@ const AnnouncementTable = (props) => {
         key: 'createdAt',
         width: '10%',
         render: (createdAt = {}) => {
-          return <span>{createdAt ? moment(createdAt).format('MM/DD/YYYY') : ''}</span>;
+          return <span>{createdAt ? moment(createdAt).format(DATE_FORMAT_MDY) : ''}</span>;
         },
       },
       {

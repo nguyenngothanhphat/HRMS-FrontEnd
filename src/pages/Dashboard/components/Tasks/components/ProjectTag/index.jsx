@@ -25,8 +25,15 @@ const ProjectTag = (props) => {
             backgroundColor: '#EAF0FF',
           }}
         >
-          {members.map(() => {
-            return <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={MockAvatar} />;
+          {members.map((_, i) => {
+            return (
+              <Avatar
+                size="small"
+                style={{ backgroundColor: '#EAF0FF' }}
+                src={MockAvatar}
+                key={`${i + 1}`}
+              />
+            );
           })}
         </Avatar.Group>
         {members.length > 1 ? (
@@ -42,7 +49,7 @@ const ProjectTag = (props) => {
 
   const renderTag = (project) => {
     return (
-      <Col span={24}>
+      <Col span={24} key={projectProp.id}>
         <div className={styles.ProjectTag}>
           <Row justify="space-between" align="top">
             <Col span={16} className={styles.leftPart}>

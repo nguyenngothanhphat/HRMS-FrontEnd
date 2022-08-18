@@ -3,7 +3,7 @@
     width: 100%;
     margin-bottom: 20px;
     background-color: white;
-    border: 1px solid #ebeff2;
+    border: 1px solid @border-color-base;
     border-radius: 5px;
 
     .formTitle {
@@ -34,7 +34,7 @@
           margin-right: 10px;
         }
         .employeeLink {
-          color: #2c6df9;
+          color: @primary-color;
           cursor: pointer;
         }
         .header {
@@ -104,7 +104,7 @@
         border-radius: 5px;
       }
       .ant-input:focus {
-        border-color: #2c6df9;
+        border-color: @primary-color;
         outline: 0;
         box-shadow: unset;
       }
@@ -113,10 +113,11 @@
 
   .footer {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     padding: 16px 24px;
     background: #fff;
-    border: 1px solid #ebeff2;
+    border: 1px solid @border-color-base;
     border-radius: 5px;
     .note {
       display: flex;
@@ -128,31 +129,6 @@
     .formButtons {
       display: flex;
       justify-content: flex-end;
-      :global {
-        .ant-btn-link {
-          background-color: white !important;
-          span {
-            color: #fd4546 !important;
-            font-weight: bold !important;
-          }
-        }
-        .ant-btn {
-          height: 40px;
-          margin-left: 20px;
-          // width: 120px;
-          padding: 0 30px;
-          background-color: #ffa100;
-          border: none;
-          border-radius: 30px;
-          span {
-            color: white;
-            font-weight: 700;
-          }
-          &:hover {
-            background-color: #ffa100cc; // hex with alpha 0.8
-          }
-        }
-      }
     }
   }
 }

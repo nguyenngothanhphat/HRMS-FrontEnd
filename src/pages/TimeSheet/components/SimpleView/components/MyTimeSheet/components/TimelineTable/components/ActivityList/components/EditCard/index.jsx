@@ -14,7 +14,7 @@ import {
   hourFormatAPI,
   dateFormatAPI,
   MT_SECONDARY_COL_SPAN,
-} from '@/utils/timeSheet';
+} from '@/constants/timeSheet';
 import { getCurrentCompany } from '@/utils/authority';
 
 const { Option } = Select;
@@ -77,8 +77,8 @@ const EditCard = (props) => {
         department: employee.departmentInfo,
         generalInfo: employee.generalInfo,
         manager: {
-          _id: employee.managerInfo._id,
-          generalInfo: employee.managerInfo.generalInfo,
+          _id: employee.managerInfo?._id,
+          generalInfo: employee.managerInfo?.generalInfo,
         },
       },
       date: moment(cardDay).format(dateFormatAPI),

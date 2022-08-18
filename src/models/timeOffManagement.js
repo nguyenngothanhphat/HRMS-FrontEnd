@@ -1,16 +1,17 @@
 import { notification } from 'antd';
 import moment from 'moment';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { exportRawDataToCSV } from '@/utils/exportToCsv';
 import { exportCSV } from '@/utils/timeOffManagement';
-import { dialog, exportRawDataToCSV } from '@/utils/utils';
+import { dialog } from '@/utils/utils';
 import {
   getListEmployees,
   getListTimeOff,
   getLocationsOfCountries,
-  getTimeOffTypeList,
   getMissingLeaveDates,
   getTimeOffTypeByCountry,
-  // getListTimeOffManagement,
+  getTimeOffTypeList,
 } from '../services/timeOffManagement';
 
 const timeOffManagement = {
@@ -27,14 +28,16 @@ const timeOffManagement = {
   },
   effects: {
     *getListEmployeesEffect({ payload = {} }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getListEmployees, payload);
+        response = yield call(getListEmployees, payload);
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listEmployees: data } });
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *getListTimeOffEffect({ payload = {} }, { call, put }) {
@@ -54,7 +57,11 @@ const timeOffManagement = {
     *getTimeOffTypeListEffect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getTimeOffTypeList, payload);
+        response = yield call(getTimeOffTypeList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -134,7 +141,7 @@ const timeOffManagement = {
         if (response) {
           exportRawDataToCSV(
             response,
-            `Time-Off-Missing-Leave-Dates-Report-${moment().format('YYYY-MM-DD')}`,
+            `Time-Off-Missing-Leave-Dates-Report-${moment().format(DATE_FORMAT_YMD)}`,
           );
         } else {
           notification.error('Something failed. Please try again.');

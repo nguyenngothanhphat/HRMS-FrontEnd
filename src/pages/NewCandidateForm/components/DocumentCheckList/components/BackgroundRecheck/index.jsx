@@ -3,9 +3,9 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import CommonModal from '@/components/CommonModal';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import { DOCUMENT_TYPES } from '@/utils/candidatePortal';
-import { DOCUMENTS_CHECKLIST_TYPE } from '@/utils/newCandidateForm';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import { DOCUMENT_TYPES } from '@/constants/candidatePortal';
+import { DOCUMENTS_CHECKLIST_TYPE } from '@/constants/newCandidateForm';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/constants/onboarding';
 import { goToTop } from '@/utils/utils';
 import { Page } from '../../../../utils';
 import MessageBox from '../../../MessageBox';
@@ -84,6 +84,7 @@ const BackgroundRecheck = (props) => {
         payload: {
           candidate,
           documentChecklist,
+          currentStep,
         },
       });
       const check = validateFiles();
