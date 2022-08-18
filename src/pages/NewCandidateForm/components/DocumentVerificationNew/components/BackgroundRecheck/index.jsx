@@ -31,6 +31,7 @@ const BackgroundRecheck = (props) => {
         candidate,
         processStatus = '',
         documentLayout = [],
+        dateOfJoining = '',
       },
       currentStep = '',
     } = {},
@@ -100,6 +101,7 @@ const BackgroundRecheck = (props) => {
           documentTypeD,
           documentTypeE,
           currentStep,
+          dateOfJoining,
         },
       });
       const check = validateFiles();
@@ -221,6 +223,7 @@ const BackgroundRecheck = (props) => {
         candidate,
         currentStep: nextStep,
         processStatus: nextStatus,
+        dateOfJoining,
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
