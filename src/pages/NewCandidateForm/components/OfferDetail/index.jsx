@@ -42,6 +42,7 @@ const OfferDetail = (props) => {
     ticketID = '',
     assignTo: { _id: assignToId = '' } = {},
     assigneeManager: { _id: assigneeManagerId = '' } = {},
+    dateOfJoining = '',
   } = tempData;
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [isAddTemplateModalVisible, setAddTemplateModalVisible] = useState(false);
@@ -230,6 +231,7 @@ const OfferDetail = (props) => {
         tenantId: getCurrentTenant(),
         offerLetterTemplate: key,
         currentStep: ONBOARDING_STEPS.OFFER_LETTER,
+        dateOfJoining,
       },
     });
   };
@@ -255,6 +257,7 @@ const OfferDetail = (props) => {
           candidate,
           currentStep: nextStep,
           tenantId: getCurrentTenant(),
+          dateOfJoining,
         },
       });
     }
@@ -292,6 +295,7 @@ const OfferDetail = (props) => {
         includeOffer: 3,
         tenantId: getCurrentTenant(),
         expiryDate: expiryDateProp || moment().add('15', 'days'),
+        dateOfJoining,
         // offerLetter: templateId,
       },
     });
@@ -346,6 +350,7 @@ const OfferDetail = (props) => {
             assigneeManagerId === assignToId
               ? NEW_PROCESS_STATUS.AWAITING_APPROVALS
               : processStatus,
+          dateOfJoining,
           // offerTemplate: templateId,
         },
       });
@@ -502,6 +507,7 @@ const OfferDetail = (props) => {
         tenantId: getCurrentTenant(),
         offerDocuments: newOfferDocumentsProp,
         currentStep: ONBOARDING_STEPS.OFFER_LETTER,
+        dateOfJoining,
       },
     });
     handleModalVisible(false);
@@ -530,6 +536,7 @@ const OfferDetail = (props) => {
         tenantId: getCurrentTenant(),
         offerDocuments: newOfferDocumentsProp,
         currentStep: ONBOARDING_STEPS.OFFER_LETTER,
+        dateOfJoining,
       },
     });
   };
@@ -559,6 +566,7 @@ const OfferDetail = (props) => {
         tenantId: getCurrentTenant(),
         expiryDate: val,
         currentStep: ONBOARDING_STEPS.OFFER_LETTER,
+        dateOfJoining,
       },
     });
   };
