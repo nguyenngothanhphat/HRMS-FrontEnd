@@ -12,6 +12,7 @@ import EmployeeTag from './components/EmployeeTag';
 import LikeComment from './components/LikeComment';
 import PostContent from './components/PostContent';
 import styles from './index.less';
+import MenuPopover from '@/components/MenuPopover';
 
 function PostCard(props) {
   const {
@@ -32,8 +33,6 @@ function PostCard(props) {
       permissions: { viewSettingHomePage = -1 } = {},
     },
   } = props;
-
-  const [menuVisible, setMenuVisible] = React.useState(false);
 
   const flagPost = (postId = '') => {
     return dispatch({
@@ -66,72 +65,43 @@ function PostCard(props) {
     });
   };
 
-  const renderMenuDropdown = () => {
-    const isMe = item?.createdBy?._id === employeeId;
-    if (isMe) {
-      return (
-        <div className={styles.containerDropdown}>
-          <div
-            className={styles.btn}
-            onClick={() => {
-              setIsVisible(true);
-              setIsEdit(true);
-              setRecord(item);
-              setMenuVisible(false);
-            }}
-          >
-            <img className={styles.actionIcon} src={UpdateIcon} alt="updateIcon" />
-            <span>Edit</span>
-          </div>
-
-          <div
-            className={styles.btn}
-            onClick={() => {
-              setIsDelete(true);
-              setRecord(item);
-              setMenuVisible(false);
-            }}
-          >
-            <img className={styles.actionIcon} src={DeleteIcon} alt="deleteIcon" />
-            <span>Delete</span>
-          </div>
-        </div>
-      );
-    }
-    if (viewSettingHomePage === 1) {
-      return (
-        <div className={styles.containerDropdown}>
-          <div
-            className={styles.btn}
-            onClick={() => {
-              hiddenPost(item._id);
-              setMenuVisible(false);
-            }}
-          >
-            <img className={styles.actionIcon} src={HideIcon} alt="hideIcon" />
-            <span>Hide this post</span>
-          </div>
-        </div>
-      );
-    }
-    if (!item?.flag?.includes(employeeId)) {
-      return (
-        <div className={styles.containerDropdown}>
-          <div
-            className={styles.btn}
-            onClick={() => {
-              flagPost(item?._id);
-              setMenuVisible(false);
-            }}
-          >
-            <img className={styles.actionIcon} src={FlagIcon} alt="flagIcon" />
-            <span>Flag as inappropriate</span>
-          </div>
-        </div>
-      );
-    }
-    return '';
-  };
+  const menuItems = [
+    {
+      label: 'Edit',
+      icon: UpdateIcon,
+      onClick: () => {
+        setIsVisible(true);
+        setIsEdit(true);
+        setRecord(item);
+      },
+      visible: item?.createdBy?._id === employeeId,
+    },
+    {
+      label: 'Delete',
+      icon: DeleteIcon,
+      onClick: () => {
+        setIsDelete(true);
+        setRecord(item);
+      },
+      visible: item?.createdBy?._id === employeeId,
+    },
+    {
+      label: 'Hide this post',
+      icon: HideIcon,
+      onClick: () => {
+        hiddenPost(item._id);
+      },
+      visible: viewSettingHomePage === 1,
+    },
+    {
+      label: 'Flag as inappropriate',
+      icon: FlagIcon,
+      onClick: () => {
+        flagPost(item?._id);
+      },
+      visible: !item?.flag?.includes(employeeId),
+    },
+  ];
 
   return (
     <LazyLoad key={item._id} height={200} offset={[-100, 0]}>
@@ -145,16 +115,9 @@ function PostCard(props) {
               createDate={item.createdAt}
             />
             {isSocial && (
-              <Popover
-                trigger="click"
-                overlayClassName={styles.dropdownPopover}
-                content={renderMenuDropdown()}
-                placement="bottomRight"
-                visible={menuVisible}
-                onVisibleChange={(visible) => setMenuVisible(visible)}
-              >
+              <MenuPopover items={menuItems}>
                 <img src={MenuIcon} alt="" style={{ cursor: 'pointer', padding: '4px 10px' }} />
-              </Popover>
+              </MenuPopover>
             )}
           </div>
           <PostContent post={item} />

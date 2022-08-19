@@ -227,7 +227,7 @@ const EditTaskModal = (props) => {
                         } = project.project;
                         return (
                           <Option key={myProjectId} value={myProjectId}>
-                            {name} - {customerName}
+                            {`${name} - ${customerName}`}
                           </Option>
                         );
                       })}
@@ -239,7 +239,7 @@ const EditTaskModal = (props) => {
                       'projectName',
                     ).map((val) => (
                       <Option key={val.id} value={val.id}>
-                        {val.projectName} - {val.customerName}
+                        {`${val.projectName} - ${val.customerName}`}
                       </Option>
                     ))}
                   </OptGroup>

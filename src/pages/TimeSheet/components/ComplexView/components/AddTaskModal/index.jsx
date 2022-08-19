@@ -454,13 +454,13 @@ const AddTaskModal = (props) => {
                         disabled={loadingFetchProject}
                         filterOption={(input, option) => {
                           if (option.children) {
-                            return option.children?.toLowerCase().includes(input.toLowerCase());
+                            return option.children?.toLowerCase().includes(input?.toLowerCase());
                           }
                           return (
                             (option.options || [])
                               .map((x) => x.children)
-                              .map((x) => x.toLowerCase())
-                              .indexOf(input.toLowerCase()) >= 0
+                              .map((x) => x?.toLowerCase())
+                              .indexOf(input?.toLowerCase()) >= 0
                           );
                         }}
                       >
