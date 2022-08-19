@@ -1,18 +1,21 @@
-import { Popover, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
+import DefaultAvatar from '@/assets/avtDefault.jpg';
+import UpdateIcon from '@/assets/editMailExit.svg';
 import DislikeIcon from '@/assets/homePage/dislike.svg';
 import DislikedIcon from '@/assets/homePage/disliked.svg';
 import LikeIcon from '@/assets/homePage/like.svg';
 import LikedIcon from '@/assets/homePage/liked.svg';
 import MenuIcon from '@/assets/homePage/menuDots.svg';
-import DefaultAvatar from '@/assets/avtDefault.jpg';
+import DeleteIcon from '@/assets/relievingDel.svg';
 import CommentBox from '@/components/CommentBox';
 import { hashtagify, urlify } from '@/utils/homePage';
 
-import styles from './index.less';
 import { DATE_FORMAT, LIKE_ACTION, POST_OR_CMT, TAB_IDS } from '@/constants/homePage';
+import MenuPopover from '../MenuPopover';
+import styles from './index.less';
 
 const UserComment = ({
   dispatch,
@@ -35,7 +38,6 @@ const UserComment = ({
 }) => {
   const { _id: commentId = '', content = '', employee: owner = {}, totalReact = {} } = item;
 
-  const [dropDownVisible, setDropDownVisible] = useState(false);
   const [commentValue, setCommentValue] = useState('');
   const [time, setTime] = useState('');
 
@@ -82,33 +84,24 @@ const UserComment = ({
     setTime(timeTemp);
   }, []);
 
-  const renderMenuDropdown = () => {
-    return (
-      <div className={styles.containerDropdown}>
-        {isMe && (
-          <div
-            className={styles.btn}
-            onClick={() => {
-              onEditComment(commentId);
-              setDropDownVisible(false);
-            }}
-          >
-            <span>Edit</span>
-          </div>
-        )}
-
-        <div
-          className={styles.btn}
-          onClick={() => {
-            onRemoveComment(commentId);
-            setDropDownVisible(false);
-          }}
-        >
-          <span>Delete</span>
-        </div>
-      </div>
-    );
-  };
+  const menuItems = [
+    {
+      label: 'Edit',
+      onClick: () => {
+        onEditComment(commentId);
+      },
+      icon: UpdateIcon,
+      visible: isMe,
+    },
+    {
+      label: 'Delete',
+      onClick: () => {
+        onRemoveComment(commentId);
+      },
+      icon: DeleteIcon,
+      visible: isMe,
+    },
+  ];
 
   // function
   const onLikeComment = async (type) => {
@@ -207,16 +200,9 @@ const UserComment = ({
           </div>
           {!isEdit && (isMe || hasPermission) && (
             <div className={styles.menu}>
-              <Popover
-                trigger="click"
-                overlayClassName={styles.dropdownPopover}
-                content={renderMenuDropdown()}
-                visible={dropDownVisible}
-                onVisibleChange={(visible) => setDropDownVisible(visible)}
-                placement="bottomRight"
-              >
+              <MenuPopover items={menuItems}>
                 <img src={MenuIcon} alt="" style={{ cursor: 'pointer', padding: '4px 10px' }} />
-              </Popover>
+              </MenuPopover>
             </div>
           )}
         </div>

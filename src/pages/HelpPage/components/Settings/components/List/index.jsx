@@ -9,7 +9,7 @@ import CustomOrangeButton from '@/components/CustomOrangeButton';
 import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
-import { HELP_TYPE, HELP_TYPO } from '@/constants/helpPage';
+import { HELP_TYPO } from '@/constants/helpPage';
 import AddQuestionModalContent from './components/AddQuestionModalContent';
 import FilterContent from './components/FilterContent';
 import ListTable from './components/ListTable';
