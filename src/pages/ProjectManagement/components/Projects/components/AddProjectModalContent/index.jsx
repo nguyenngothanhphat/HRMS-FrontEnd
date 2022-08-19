@@ -435,7 +435,6 @@ const AddProjectModal = (props) => {
                 allowClear
                 showArrow
                 placeholder="Select Engineering Owner"
-                mode="multiple"
                 fetchOptions={onEmployeeSearch}
                 showSearch
               />
