@@ -20,7 +20,7 @@ import styles from './index.less';
 const BackgroundRecheck = (props) => {
   const {
     newCandidateForm: {
-      tempData: { ticketID = '', candidate, documentChecklist = [] },
+      tempData: { ticketID = '', candidate, documentChecklist = [], dateOfJoining = '' },
       currentStep = '',
     } = {},
     // loadingUpdateByHR = false,
@@ -84,6 +84,8 @@ const BackgroundRecheck = (props) => {
         payload: {
           candidate,
           documentChecklist,
+          currentStep,
+          dateOfJoining,
         },
       });
       const check = validateFiles();
@@ -214,6 +216,7 @@ const BackgroundRecheck = (props) => {
         candidate,
         currentStep,
         processStatus: nextStatus,
+        dateOfJoining,
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {

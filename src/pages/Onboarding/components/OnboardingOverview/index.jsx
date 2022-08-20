@@ -84,6 +84,10 @@ const OnboardingOverview = (props) => {
     });
   }, []);
 
+  const getTabName = (obj) => {
+    return obj?.name;
+  };
+
   return (
     <div className={styles.OnboardingOverview}>
       <OnboardingLayout type={type} activeTab={activeTab}>
@@ -100,7 +104,7 @@ const OnboardingOverview = (props) => {
                 />
               }
             >
-              <Tabs.TabPane key="1">
+              <Tabs.TabPane key={activeTab} tab={getTabName(activeTab)}>
                 <OnboardTable
                   list={onboardingData}
                   activeTab={activeTab}

@@ -4,7 +4,7 @@ import { history } from 'umi';
 import {
   CANDIDATE_TASK_LINK,
   CANDIDATE_TASK_STATUS,
-  DOCUMENT_TYPES
+  DOCUMENT_TYPES,
 } from '@/constants/candidatePortal';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
@@ -15,13 +15,17 @@ import {
   generateOfferLetter,
   getById,
   getCountryList,
-  getDocumentByCandidate, getSalaryStructureByGrade, getStateListByCountry,
+  getDocumentByCandidate,
+  getSalaryStructureByGrade,
+  getStateListByCountry,
   sendEmailByCandidateModel,
   updateByCandidate,
-  upsertCandidateDocument
+  upsertCandidateDocument,
 } from '@/services/candidatePortal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
+import { socket } from '@/utils/socket';
+import { CHAT_EVENT } from '@/constants/socket';
 
 const pendingTaskDefault = [
   {
@@ -223,6 +227,7 @@ const candidatePortal = {
             },
           },
         });
+        socket.emit(CHAT_EVENT.ADD_USER, data?._id);
       } catch (error) {
         dialog(error);
       }
@@ -434,7 +439,9 @@ const candidatePortal = {
             // case NEW_PROCESS_STATUS.OFFER_REJECTED:
             // offer letter
             tempPendingTasks[4].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
-            tempPendingTasks[4].dueDate = expiryDate ? moment(expiryDate).format(DATE_FORMAT_MDY) : '';
+            tempPendingTasks[4].dueDate = expiryDate
+              ? moment(expiryDate).format(DATE_FORMAT_MDY)
+              : '';
             break;
 
           case NEW_PROCESS_STATUS.DOCUMENT_CHECKLIST_VERIFICATION:

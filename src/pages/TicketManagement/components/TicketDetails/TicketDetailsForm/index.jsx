@@ -10,13 +10,16 @@ import PDFIcon from '@/assets/pdf_icon.png';
 import TrashIcon from '@/assets/ticketManagement-trashIcon.svg';
 import AttachmentIcon from '@/assets/ticketsManagement-attach.svg';
 import CustomBlueButton from '@/components/CustomBlueButton';
+import CustomEditButton from '@/components/CustomEditButton';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { PRIORITY_COLOR } from '@/constants/ticketManagement';
 import { FILE_TYPE } from '@/constants/upload';
-import { getEmployeeUrl } from '@/utils/utils';
 import { beforeUpload, compressImage, identifyFile } from '@/utils/upload';
+import { getEmployeeUrl } from '@/utils/utils';
 import AssignTeamModal from '../../AssignTeamModal';
+import EditTicketModal from '../../EditTicketModal';
+import TicketUpdatedContent from '../TicketUpdatedContent';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -29,6 +32,7 @@ const TicketDetailsForm = (props) => {
     loadingAddChat = false,
     roles = [],
     permissions = {},
+    refreshData = () => {},
   } = props;
 
   const {
@@ -40,7 +44,7 @@ const TicketDetailsForm = (props) => {
     query_type: queryType = '',
     attachments = [],
     chats = [],
-    employeeRaise = [],
+    employeeRaise = {},
     ccList = [],
     employee_assignee: employeeAssignedTickets = '',
   } = ticketDetail;
@@ -50,9 +54,10 @@ const TicketDetailsForm = (props) => {
   const [fileNameList, setFileNameList] = React.useState([]);
   const [arrayChats, setArrayChats] = React.useState([]);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [editVisible, setEditVisible] = React.useState(false);
 
   useEffect(() => {
-    setArrayChats(chats.reverse());
+    if (chats?.length) setArrayChats(chats.reverse());
   }, [chats]);
 
   const findRole = () => {
@@ -180,10 +185,10 @@ const TicketDetailsForm = (props) => {
   };
 
   const getOpenBy = () => {
-    if ((employeeRaise || []).length > 0) {
+    if (!isEmpty(employeeRaise)) {
       return (
-        <Link to={getEmployeeUrl(employeeRaise[0]?.generalInfo?.userId)}>
-          {employeeRaise[0].generalInfo.legalName}
+        <Link to={getEmployeeUrl(employeeRaise?.generalInfo?.userId)}>
+          {employeeRaise?.generalInfo?.legalName}
         </Link>
       );
     }
@@ -220,13 +225,22 @@ const TicketDetailsForm = (props) => {
       <Card
         title="Ticket Details"
         extra={
-          <>
+          <div style={{ display: 'flex' }}>
+            <CustomEditButton
+              onClick={() => setEditVisible(true)}
+              disabled={loadingAddChat}
+              style={{ border: '1px solid #2c6df9', borderRadius: 15 }}
+            />
             {(checkRole || checkPermission || isAppendTicket) && (
-              <CustomBlueButton onClick={() => setModalVisible(true)} disabled={loadingAddChat}>
+              <CustomBlueButton
+                style={{ marginLeft: 12, borderRadius: 15 }}
+                onClick={() => setModalVisible(true)}
+                disabled={loadingAddChat}
+              >
                 Move To
               </CustomBlueButton>
             )}
-          </>
+          </div>
         }
       >
         <div className={styles.formContent}>
@@ -426,7 +440,9 @@ const TicketDetailsForm = (props) => {
                           }
                         >
                           {item.title && <div className={styles.titleChat}>{item.title}</div>}
-                          <div className={styles.chatMessage}>{item.message}</div>
+                          {typeof item.message === 'string' && (
+                            <div className={styles.chatMessage}>{item.message}</div>
+                          )}
                           <>
                             {item.attachments ? (
                               <div>{getAttachmentChat(item.attachments)}</div>
@@ -437,6 +453,9 @@ const TicketDetailsForm = (props) => {
                           <div className={styles.timeChat}>
                             {moment(item.createdAt).format('DD-MM-YYYY, hh:mm a')}
                           </div>
+                          {typeof item.message === 'object' && (
+                            <TicketUpdatedContent message={item.message} />
+                          )}
                         </Timeline.Item>
                       );
                     })}
@@ -453,6 +472,13 @@ const TicketDetailsForm = (props) => {
         </div>
       </Card>
       <AssignTeamModal visible={modalVisible} role={role} onClose={() => setModalVisible(false)} />
+      <EditTicketModal
+        ticket={ticketDetail}
+        visible={editVisible}
+        role={role}
+        onClose={() => setEditVisible(false)}
+        refreshData={refreshData}
+      />
     </div>
   );
 };

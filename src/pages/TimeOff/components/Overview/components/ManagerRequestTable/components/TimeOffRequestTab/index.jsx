@@ -1,8 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import ROLES from '@/constants/roles';
-import { TIMEOFF_DATE_FORMAT_API, TIMEOFF_STATUS } from '@/constants/timeOff';
+import { TIMEOFF_DATE_FORMAT_API, LEAVE_QUERY_TYPE, TIMEOFF_STATUS } from '@/constants/timeOff';
 import MyLeaveTable from '@/pages/TimeOff/components/Overview/components/EmployeeRequestTable/components/MyLeaveTable';
 import useCancelToken from '@/utils/hooks';
 import { getShortType } from '@/utils/timeOff';
@@ -11,9 +10,7 @@ import FilterBar from '../FilterBar';
 import TeamLeaveTable from '../TeamLeaveTable';
 import styles from './index.less';
 
-const { REGION_HEAD } = ROLES;
-const { IN_PROGRESS, IN_PROGRESS_NEXT, ACCEPTED, ON_HOLD, REJECTED, DRAFTS, WITHDRAWN, DELETED } =
-  TIMEOFF_STATUS;
+const { IN_PROGRESS, ACCEPTED, ON_HOLD, REJECTED, DRAFTS, WITHDRAWN, DELETED } = TIMEOFF_STATUS;
 
 const TimeOffRequestTab = (props) => {
   const {
@@ -22,9 +19,8 @@ const TimeOffRequestTab = (props) => {
       filter: { search, fromDate, toDate, type: timeOffTypes = [] },
       filter = {},
       paging: { page, limit },
-      leaveRequests = [],
-      currentUserRole = '',
-      teamLeaveRequests = [],
+      currentScopeTab = '',
+      totalByStatus = {},
       allLeaveRequests = [],
       currentPayloadTypes = [],
       currentLeaveTypeTab = '',
@@ -35,12 +31,6 @@ const TimeOffRequestTab = (props) => {
     dispatch,
   } = props;
 
-  const [inProgressLength, setInProgressLength] = useState(0);
-  const [approvedLength, setApprovedLength] = useState(0);
-  const [rejectedLength, setRejectedLength] = useState(0);
-  const [draftLength, setDraftLength] = useState(0);
-  const [withdrawnLength, setWithdrawnLength] = useState(0);
-  const [deletedLength, setDeletedLength] = useState(0);
   const [selectedTabNumber, setSelectedTabNumber] = useState('1');
   const [handlePackage, setHandlePackage] = useState({});
   const [selectedTab, setSelectedTab] = useState(IN_PROGRESS);
@@ -71,75 +61,11 @@ const TimeOffRequestTab = (props) => {
     }
     setSelectedTab(selectedTabTemp);
     setSelectedTabNumber(currentFilterTab);
-  }, [currentFilterTab]);
-
-  const countTotal = (newData) => {
-    let inProgressLengthTemp = 0;
-    let approvedLengthTemp = 0;
-    let rejectedLengthTemp = 0;
-    let draftLengthTemp = 0;
-    let withdrawnLengthTemp = 0;
-    let deletedLengthTemp = 0;
-
-    newData.forEach((item) => {
-      const { _id: status = '' } = item;
-      if (currentUserRole === REGION_HEAD) {
-        switch (status) {
-          case IN_PROGRESS_NEXT: {
-            inProgressLengthTemp += item.count;
-            break;
-          }
-          default:
-            break;
-        }
-      } else if (currentUserRole !== REGION_HEAD) {
-        switch (status) {
-          case IN_PROGRESS_NEXT: {
-            approvedLengthTemp += item.count;
-            break;
-          }
-          default:
-            break;
-        }
-      }
-
-      switch (status) {
-        case IN_PROGRESS:
-        case ON_HOLD: {
-          inProgressLengthTemp += item.count;
-          break;
-        }
-        case ACCEPTED: {
-          approvedLengthTemp += item.count;
-          break;
-        }
-        case REJECTED: {
-          rejectedLengthTemp += item.count;
-          break;
-        }
-        case DRAFTS: {
-          draftLengthTemp += item.count;
-          break;
-        }
-        case WITHDRAWN: {
-          withdrawnLengthTemp += item.count;
-          break;
-        }
-        case DELETED:
-          deletedLengthTemp += item.count;
-          break;
-
-        default:
-          break;
-      }
+    dispatch({
+      type: 'timeOff/savePaging',
+      payload: { page: 1 },
     });
-    setInProgressLength(inProgressLengthTemp);
-    setApprovedLength(approvedLengthTemp);
-    setRejectedLength(rejectedLengthTemp);
-    setDraftLength(draftLengthTemp);
-    setWithdrawnLength(withdrawnLengthTemp);
-    setDeletedLength(deletedLengthTemp);
-  };
+  }, [currentFilterTab]);
 
   const getTotalByType = () => {
     const payload = {
@@ -147,14 +73,25 @@ const TimeOffRequestTab = (props) => {
       status: [IN_PROGRESS, ON_HOLD],
       cancelToken: cancelToken2(),
     };
-    if (category !== 'MY') {
-      payload.isTeam = category === 'TEAM' ? true : null;
+    if (category !== LEAVE_QUERY_TYPE.SELF) {
+      payload.isTeam = category === LEAVE_QUERY_TYPE.TEAM ? true : null;
     } else {
       payload.isTeam = false;
     }
     dispatch({
       type: 'timeOff/getTotalByTypeEffect',
       payload,
+    });
+  };
+
+  const getTotalByStatus = () => {
+    dispatch({
+      type: 'timeOff/getTotalByStatusEffect',
+      payload: {
+        queryType: Object.values(LEAVE_QUERY_TYPE)[currentScopeTab - 1],
+        type: currentPayloadTypes,
+        status: Object.values(TIMEOFF_STATUS),
+      },
     });
   };
 
@@ -179,16 +116,11 @@ const TimeOffRequestTab = (props) => {
       status = [DELETED];
     }
 
-    let typeAPI = '';
-
-    if (category === 'MY') typeAPI = 'timeOff/fetchMyLeaveRequest';
-    else if (category === 'ALL') typeAPI = 'timeOff/fetchAllLeaveRequests';
-    else typeAPI = 'timeOff/fetchTeamLeaveRequests';
-
     dispatch({
-      type: typeAPI,
+      type: 'timeOff/fetchLeaveRequests',
       payload: {
         status,
+        queryType: LEAVE_QUERY_TYPE[category],
         type: timeOffTypes.length === 0 ? currentPayloadTypes : timeOffTypes,
         search,
         fromDate: fromDate ? moment(fromDate).format(TIMEOFF_DATE_FORMAT_API) : null,
@@ -197,18 +129,11 @@ const TimeOffRequestTab = (props) => {
         limit,
         cancelToken: cancelToken(),
       },
-    }).then((res = {}) => {
-      const { data: { total = [] } = {}, statusCode } = res || {};
-      if (statusCode === 200) {
-        countTotal(total);
-      }
     });
-
-    getTotalByType();
   };
 
   useEffect(() => {
-    if (currentPayloadTypes.length > 0) {
+    if (currentPayloadTypes.length) {
       debounceFetchData(fetchData);
       return () => {
         cancelRequest();
@@ -218,17 +143,18 @@ const TimeOffRequestTab = (props) => {
     return () => {};
   }, [selectedTabNumber, page, limit, JSON.stringify(filter), JSON.stringify(currentPayloadTypes)]);
 
+  useEffect(() => {
+    if (currentLeaveTypeTab) getTotalByType();
+  }, [currentLeaveTypeTab]);
+
+  useEffect(() => {
+    if (currentPayloadTypes.length) {
+      getTotalByStatus();
+    }
+  }, [JSON.stringify(currentPayloadTypes)]);
+
   const onApproveRejectHandle = (obj) => {
     setHandlePackage(obj);
-  };
-
-  const dataNumber = {
-    inProgressLength,
-    approvedLength,
-    rejectedLength,
-    draftLength,
-    withdrawnLength,
-    deletedLength,
   };
 
   const viewHRTimeoff = permissions.viewHRTimeoff !== -1;
@@ -236,13 +162,15 @@ const TimeOffRequestTab = (props) => {
   return (
     <div className={styles.TimeOffRequestTab}>
       <FilterBar
-        dataNumber={dataNumber}
+        totalByStatus={totalByStatus}
         setSelectedFilterTab={setSelectedFilterTab}
         category={category}
         handlePackage={handlePackage}
       />
       <div className={styles.tableContainer}>
-        {category === 'ALL' && (
+        {category === LEAVE_QUERY_TYPE.SELF ? (
+          <MyLeaveTable data={allLeaveRequests} selectedTab={selectedTab} tab={tab} />
+        ) : (
           <TeamLeaveTable
             data={allLeaveRequests}
             category={category}
@@ -253,29 +181,11 @@ const TimeOffRequestTab = (props) => {
             isHR={viewHRTimeoff}
           />
         )}
-        {category === 'TEAM' && (
-          <TeamLeaveTable
-            data={teamLeaveRequests}
-            category={category}
-            selectedTab={selectedTab}
-            onRefreshTable={fetchData}
-            onHandle={onApproveRejectHandle}
-            tab={tab}
-            isHR={viewHRTimeoff}
-          />
-        )}
-        {category === 'MY' && (
-          <MyLeaveTable data={leaveRequests} selectedTab={selectedTab} tab={tab} />
-        )}
       </div>
     </div>
   );
 };
-export default connect(({ timeOff, loading, user }) => ({
+export default connect(({ timeOff, user }) => ({
   timeOff,
   user,
-  loading1: loading.effects['timeOff/fetchMyLeaveRequest'],
-  loading2: loading.effects['timeOff/fetchTeamLeaveRequests'],
-  loading3: loading.effects['timeOff/fetchMyCompoffRequests'],
-  loading4: loading.effects['timeOff/fetchTeamCompoffRequests'],
 }))(TimeOffRequestTab);

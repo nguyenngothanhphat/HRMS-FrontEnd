@@ -30,15 +30,19 @@ const DocumentVerification = (props) => {
         ticketID = '',
         isSentEmail = false,
         assignTo: {
-          generalInfo: { firstName: hrFN = '', middleName: hrMN = '', lastName: hrLN = '' } = {} ||
-            {},
+          generalInfoInfo: {
+            firstName: hrFN = '',
+            middleName: hrMN = '',
+            lastName: hrLN = '',
+          } = {} || {},
           _id: hrId = '',
+          titleInfo: { name: titleName = '' },
         } = {} || {},
         CEOInfo: {
           generalInfoInfo: { legalName: ceoFullname = '' } = {} || {},
           title: { name: titleCEOName = '' } = {} || {},
         } = {} || {},
-        titleList = [],
+        // titleList = [],
         department,
         workLocation,
         reportingManager,
@@ -65,6 +69,7 @@ const DocumentVerification = (props) => {
         documentTypeE = [],
         documentLayout = [],
         currentStep = 0,
+        dateOfJoining = '',
       } = {} || {},
     },
     dispatch,
@@ -209,11 +214,6 @@ const DocumentVerification = (props) => {
     // get hr name
     let hrName = `${hrFN} ${hrMN} ${hrLN}`;
     if (!hrMN) hrName = `${hrFN} ${hrLN}`;
-    // get job title
-    let currentJobTitle = title;
-    if (!currentJobTitle)
-      currentJobTitle = titleList.find((t) => t._id === title?._id || t._id === title) || {};
-    const titleName = currentJobTitle?.name || '-';
     const messages = [
       {
         id: 1,
@@ -383,6 +383,8 @@ const DocumentVerification = (props) => {
           documentTypeC,
           documentTypeD,
           documentTypeE,
+          currentStep,
+          dateOfJoining,
         },
       });
     }

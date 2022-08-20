@@ -15,6 +15,7 @@ const WhatNext = (props) => {
     dispatch,
     item: { _id = '', employee = {}, status = '', meeting = {} } = {},
     setIsEnterClosingComment = () => {},
+    disabled = false,
   } = props;
 
   const {
@@ -36,7 +37,7 @@ const WhatNext = (props) => {
         employeeId: employee?._id,
         action: OFFBOARDING.UPDATE_ACTION.MANAGER_RESCHEDULE,
         meeting: {
-          managerDate: moment(values.time),
+          managerDate: moment(values.time).format('YYYY/MM/DD hh:mm:ss'),
         },
       },
     });
@@ -79,7 +80,10 @@ const WhatNext = (props) => {
             </Col>
             <Col span={8}>
               <div className={styles.oneInOneButton}>
-                <CustomPrimaryButton onClick={() => setOneOnOneMeetingModalVisible(true)}>
+                <CustomPrimaryButton
+                  disabled={disabled}
+                  onClick={() => setOneOnOneMeetingModalVisible(true)}
+                >
                   Schedule a 1-on-1
                 </CustomPrimaryButton>
               </div>

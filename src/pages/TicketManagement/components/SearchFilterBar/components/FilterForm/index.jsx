@@ -16,11 +16,11 @@ const FilterForm = (props) => {
     dispatch,
     visible = false,
     setFilterForm = () => {},
-    country = '',
+    country = {},
     permissions = {},
     ticketManagement: {
       currentStatus = [],
-      listOffAllTicket = [],
+      ticketList = [],
       employeeAssignedList = [],
       employeeRaiseList = [],
       supportTeamList = [],
@@ -39,15 +39,15 @@ const FilterForm = (props) => {
     return [...new Map(arr.map((item) => [item[key], item])).values()];
   }
 
-  const queryTypeList = getUniqueListBy(listOffAllTicket, 'query_type');
-  const priorityList = getUniqueListBy(listOffAllTicket, 'priority');
+  const queryTypeList = getUniqueListBy(ticketList, 'query_type');
+  const priorityList = getUniqueListBy(ticketList, 'priority');
 
   useEffect(() => {
     setNameListState([]);
     setAssignedListState([]);
     dispatch({
       type: 'ticketManagement/fetchSupportTeamList',
-      payload: { country, permissions },
+      payload: { country: country?._id, permissions },
     });
   }, [visible]);
 
@@ -365,14 +365,14 @@ export default connect(
     user: {
       permissions = {},
       currentUser: {
-        employee: { location: { headQuarterAddress: { country = '' } = {} } = {} } = {},
+        employee: { location: { headQuarterAddress: { country = {} } = {} } = {} } = {},
       } = {},
     },
   }) => ({
     permissions,
     country,
     ticketManagement,
-    loadingFetchListAllTicket: loading.effects['ticketManagement/fetchListAllTicket'],
+    loadingFetchListAllTicket: loading.effects['ticketManagement/fetchTicketList'],
     loadingFetchEmployeeRaiseListEffect:
       loading.effects['ticketManagement/fetchEmployeeRaiseListEffect'],
     loadingFetchEmployeeAssigneeListEffect:

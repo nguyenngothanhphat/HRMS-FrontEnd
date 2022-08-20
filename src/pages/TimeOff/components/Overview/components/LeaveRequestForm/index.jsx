@@ -8,7 +8,7 @@ import { connect } from 'umi';
 import Icon1 from '@/assets/timeOff/icon1.svg';
 import NoteComponent from '@/components/NoteComponent';
 import { PageContainer } from '@/layouts/layout/src';
-import { TIMEOFF_LINK_ACTION, TIMEOFF_STATUS } from '@/constants/timeOff';
+import { TIMEOFF_LINK_ACTION, LEAVE_QUERY_TYPE, TIMEOFF_STATUS } from '@/constants/timeOff';
 import RequestInformation from './components/RequestInformation';
 import styles from './index.less';
 
@@ -91,6 +91,7 @@ const LeaveRequestForm = (props) => {
       });
       invalidDatesTemp = [...invalidDatesTemp, ...temp];
     });
+    console.log('🚀  ~ invalidDatesTemp', invalidDatesTemp);
     setInvalidDates(invalidDatesTemp);
   };
 
@@ -125,14 +126,14 @@ const LeaveRequestForm = (props) => {
     }
     if (action !== NEW_BEHALF_OF) {
       dispatch({
-        type: 'timeOff/fetchMyLeaveRequest',
+        type: 'timeOff/fetchLeaveRequests',
         payload: {
+          queryType: LEAVE_QUERY_TYPE.SELF,
           status: [IN_PROGRESS, ACCEPTED],
         },
-      }).then((res) => {
+      }).then((res = {}) => {
         if (res.statusCode === 200) {
-          const { items: leaveRequests = [] } = res?.data;
-          getInvalidDate(leaveRequests);
+          getInvalidDate(res?.data);
         }
       });
     }

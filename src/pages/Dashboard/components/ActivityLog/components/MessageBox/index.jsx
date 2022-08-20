@@ -12,6 +12,7 @@ import PDFIcon from '@/assets/pdf_icon.png';
 import ImageIcon from '@/assets/image_icon.png';
 
 import styles from './index.less';
+import EmptyComponent from '@/components/Empty';
 
 const { Dragger } = Upload;
 @connect(
@@ -23,7 +24,7 @@ const { Dragger } = Upload;
     employee,
     listEmployee,
     loadingUploadAttachment: loading.effects['dashboard/uploadFileAttachments'],
-    loadingFectchListMyTicket: loading.effects['dashboard/fetchListMyTicket'],
+    loadingMyTicketList: loading.effects['dashboard/fetchMyTicketList'],
     loadingFetchListEmployee: loading.effects['dashboard/fetchListEmployee'],
     loadingAddNotes: loading.effects['dashboard/addNotes'],
   }),
@@ -258,14 +259,14 @@ class MessageBox extends PureComponent {
         );
       });
     }
-    return '';
+    return <EmptyComponent />;
   };
 
   renderInput = () => {
     const {
       loadingUploadAttachment = false,
       loadingAddNotes = false,
-      loadingFectchListMyTicket = false,
+      loadingMyTicketList = false,
     } = this.props;
     const { fileNameList, value } = this.state;
 
@@ -311,7 +312,10 @@ class MessageBox extends PureComponent {
               </Dragger>
               <>
                 {fileNameList.map((item) => (
-                  <div className={styles.fileUploadedContainer__listFiles} key={item._id || item.id}>
+                  <div
+                    className={styles.fileUploadedContainer__listFiles}
+                    key={item._id || item.id}
+                  >
                     <div className={styles.fileUploadedContainer__listFiles__files}>
                       <div className={styles.previewIcon}>
                         {this.identifyImageOrPdf(item.nameFile) === 1 ? (
@@ -347,7 +351,7 @@ class MessageBox extends PureComponent {
           <div>
             <Button
               htmlType="submit"
-              loading={loadingAddNotes && loadingFectchListMyTicket}
+              loading={loadingAddNotes && loadingMyTicketList}
               className={`${value === '' ? styles.btnAddNote__disable : styles.btnNote}`}
               onClick={this.handleAddNote}
             >

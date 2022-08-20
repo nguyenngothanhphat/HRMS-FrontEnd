@@ -91,7 +91,16 @@ export const sortedDate = (days = []) => days.sort((a, b) => moment(a.date).diff
 export const holidayFormatDate = (date) => moment(date).locale('en').format('MMM DD');
 
 export const pushSuccess = (errorList = [], text, msg) => {
-  const newErrorList = [...new Set(errorList)];
+  const uniqueDate = new Set();
+  const newErrorList = errorList.filter((element) => {
+    const isDuplicate = uniqueDate.has(element.date);
+    uniqueDate.add(element.date);
+    if (!isDuplicate) {
+      return true;
+    }
+    return false;
+  });
+
   if (newErrorList.length > 0) {
     let datesErr = '';
     for (let i = 0; i < newErrorList.length; i += 1) {

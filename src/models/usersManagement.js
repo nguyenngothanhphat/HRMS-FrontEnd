@@ -103,9 +103,9 @@ const usersManagement = {
       }
     },
 
-    *fetchEmployeeDetail({ payload = {} }, { call, put }) {
+    *fetchEmployeeDetail({ payload = {}, params = {} }, { call, put }) {
       try {
-        const response = yield call(getEmployeeDetailById, payload);
+        const response = yield call(getEmployeeDetailById, payload, params);
         const { statusCode, data: employeeDetail = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { employeeDetail } });
@@ -117,9 +117,9 @@ const usersManagement = {
     },
 
     // update employee
-    *updateEmployee({ payload = {} }, { call }) {
+    *updateEmployee({ payload = {}, params }, { call }) {
       try {
-        const response = yield call(updateEmployee, payload);
+        const response = yield call(updateEmployee, payload, params);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         return statusCode;

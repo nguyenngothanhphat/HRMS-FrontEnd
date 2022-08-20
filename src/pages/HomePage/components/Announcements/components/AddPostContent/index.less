@@ -24,6 +24,9 @@
     .ant-input {
       border-radius: 5px;
     }
+    .ant-form-item-explain {
+      display: none;
+    }
   }
   .fileUploadForm {
     height: 100%;
@@ -120,5 +123,17 @@
 
   .separator:not(:empty)::after {
     margin-left: 12px;
+  }
+
+  .inputURL {
+    width: 100%;
+    min-height: 42px !important;
+    border-radius: 5px !important;
+    :global {
+      .ant-input {
+        min-height: 0 !important;
+        border: none !important;
+      }
+    }
   }
 }

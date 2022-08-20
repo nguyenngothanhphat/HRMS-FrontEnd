@@ -137,8 +137,6 @@ const ActivityList = (props) => {
                 cardDay={date}
                 cardIndex={index}
                 isOldTimeSheet={isOldTimeSheet}
-                startWorkingHour={startWorkingHour}
-                endWorkingHour={endWorkingHour}
               />
             ))}
           {timeoff.map((item, index) => (

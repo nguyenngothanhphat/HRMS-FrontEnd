@@ -17,6 +17,7 @@ import {
 import RejectCommentModal from '../RejectCommentModal';
 import styles from './index.less';
 import { TIMEOFF_DATE_FORMAT, TIMEOFF_STATUS } from '@/constants/timeOff';
+import CommonTable from '@/components/CommonTable';
 
 const { IN_PROGRESS, REJECTED, ON_HOLD } = TIMEOFF_STATUS;
 
@@ -25,7 +26,6 @@ const COLUMN_WIDTH = {
     TICKET_ID: '17%',
     REQUESTEE: '15%',
     TYPE: '17%',
-    // LEAVE_DATES: '25%',
     DURATION: '15%',
     ACTION: '15%',
   },
@@ -43,13 +43,11 @@ const COLUMN_WIDTH = {
   dispatch,
   currentUser,
   paging,
-  loading1: loading.effects['timeOff/fetchTeamLeaveRequests'],
-  // loading2: loading.effects['timeOff/fetchMyLeaveRequest'],
+  loading1: loading.effects['timeOff/fetchLeaveRequests'],
   loading3: loading.effects['timeOff/approveMultipleRequests'],
   loading4: loading.effects['timeOff/rejectMultipleRequests'],
   loading5: loading.effects['timeOff/approveRequest'],
   loading6: loading.effects['timeOff/rejectRequest'],
-  loading7: loading.effects['timeOff/fetchAllLeaveRequests'],
 }))
 class TeamLeaveTable extends PureComponent {
   constructor(props) {
@@ -66,13 +64,12 @@ class TeamLeaveTable extends PureComponent {
   onOpenClick = (_id) => {
     history.push({
       pathname: `/time-off/overview/manager-timeoff/view/${_id}`,
-      // state: { location: name },
     });
   };
 
   dataHover = (employee) => {
     const {
-      generalInfo: {
+      generalInfoInfo: {
         legalName = '',
         avatar: avatar1 = '',
         userId = '',
@@ -80,7 +77,7 @@ class TeamLeaveTable extends PureComponent {
         workNumber = '',
         skills = [],
       } = {},
-      generalInfo = {},
+      generalInfoInfo = {},
       department = {},
       locationInfo = {},
       managerInfo = {},
@@ -93,7 +90,7 @@ class TeamLeaveTable extends PureComponent {
       workEmail,
       workNumber,
       locationInfo,
-      generalInfo,
+      generalInfo: generalInfoInfo,
       managerInfo,
       titleInfo,
       avatar1,
@@ -146,9 +143,10 @@ class TeamLeaveTable extends PureComponent {
         width: COLUMN_WIDTH[TYPE].REQUESTEE,
         align: 'left',
         render: (employee) => {
+          const { generalInfoInfo: { legalName = '' } = {} } = employee;
           return (
             <UserProfilePopover data={this.dataHover(employee)}>
-              <span style={{ cursor: 'pointer' }}>{employee?.generalInfo?.legalName}</span>
+              <span style={{ cursor: 'pointer' }}>{legalName}</span>
             </UserProfilePopover>
           );
         },
@@ -207,7 +205,6 @@ class TeamLeaveTable extends PureComponent {
         dataIndex: 'action',
         fixed: 'right',
         width: COLUMN_WIDTH[TYPE].ACTION,
-        // width: '20%',
         render: (_, record) => {
           const { approvalManager = '' } = record;
           const {
@@ -494,10 +491,8 @@ class TeamLeaveTable extends PureComponent {
       loading4 = false,
       loading5 = false,
       loading6 = false,
-      loading7 = false,
       selectedTab = '',
       paging: { page, limit, total },
-      // currentUser: { employee: { _id: myId = '' } = {} } = {},
       currentUser: { employee: { _id: myId = '' } = {} } = {},
       isHR = false,
     } = this.props;
@@ -507,34 +502,8 @@ class TeamLeaveTable extends PureComponent {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     const tableLoading = {
-      spinning: loading1 || loading3 || loading5 || loading7,
+      spinning: loading1 || loading3 || loading5,
       indicator: <Spin indicator={antIcon} />,
-    };
-
-    const pagination = {
-      position: ['bottomLeft'],
-      total,
-      showTotal: (totals, range) => (
-        <span>
-          {' '}
-          Showing{'  '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          of {totals}{' '}
-        </span>
-      ),
-      defaultPageSize: 10,
-      showSizeChanger: true,
-      pageSizeOptions: ['10', '25', '50', '100'],
-      pageSize: limit,
-      current: page,
-      onChange: this.onChangePagination,
-    };
-
-    const scroll = {
-      x: selectedTab !== REJECTED ? '50vw' : '64vw',
-      y: 'max-content',
     };
 
     const rowSelection = {
@@ -558,16 +527,20 @@ class TeamLeaveTable extends PureComponent {
 
     return (
       <div className={styles.TeamLeaveTable}>
-        <Table
-          // size="middle"
+        <CommonTable
           loading={tableLoading}
           rowSelection={selectedTab === IN_PROGRESS ? rowSelection : null}
-          // if data.length > 10, pagination will appear
-          pagination={data.length === 0 ? null : { ...pagination }}
           columns={tableByRole}
-          dataSource={data}
-          scroll={data.length > 0 ? scroll : null}
-          rowKey={(id) => id._id}
+          list={data}
+          scrollable={data.length > 0}
+          isBackendPaging
+          onChangePage={this.onChangePagination}
+          limit={limit}
+          page={page}
+          total={total}
+          rowKey="_id"
+          width={selectedTab !== REJECTED ? '50vw' : '64vw'}
+          height="max-content"
           locale={{
             emptyText: (
               <div className={styles.emptyTable}>

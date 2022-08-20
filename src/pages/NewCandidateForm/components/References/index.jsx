@@ -1,18 +1,27 @@
-import { Button, Card, Col, Divider, Form, Input, message, Row, Spin } from 'antd';
+import { Button, Card, Col, Divider, Form, Input, Row, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 // import { NEW_PROCESS_STATUS } from '@/constants/onboarding';
+import { isNaN } from 'lodash';
 import { connect, history } from 'umi';
+import CustomModal from '@/components/CustomModal';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
+import { goToTop } from '@/utils/utils';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NewNoteComponent';
+import ModalContent from '../PreviewOffer/components/ModalContent';
 import ReferenceForm from './components/ReferenceForm';
 import styles from './index.less';
-import { goToTop } from '@/utils/utils';
 
 const References = (props) => {
   const [form] = Form.useForm();
 
-  const { data, dispatch } = props;
+  const {
+    tempData,
+    dispatch,
+    loadingSendNoReference = false,
+    loadingFetchReferences = false,
+  } = props;
   const {
     ticketID = '',
     _id: candidateId = '',
@@ -21,11 +30,12 @@ const References = (props) => {
     isFilledReferences = false,
     numReferences: numReferencesProp = null,
     currentStep = 0,
-    loadingSendNoReference = false,
-    loadingFetchReferences = false,
-  } = data;
-  const [numReferences, setNumReferences] = useState(0);
-  const [disabled, setDisabled] = useState(false);
+    dateOfJoining = '',
+  } = tempData;
+
+  const [disabledInput, setDisabledInput] = useState(false);
+  const [disabledButton, setDisabledButton] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     form.resetFields();
@@ -44,20 +54,31 @@ const References = (props) => {
   }, []);
 
   const getDisabled = () => {
-    if (isFilledReferences) {
-      setDisabled(false);
-    }
-
-    if (numReferencesProp && numReferencesProp > 0 && references.length === 0) {
-      setDisabled(true);
+    if (processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION) {
+      if (isFilledReferences && numReferencesProp > 0) {
+        setDisabledInput(false);
+        setDisabledButton(false);
+      }
+      if (numReferencesProp && numReferencesProp > 0 && references.length === 0) {
+        setDisabledInput(true);
+        setDisabledButton(true);
+      }
+    } else {
+      setDisabledInput(true);
+      setDisabledButton(false);
     }
   };
 
   useEffect(() => {
-    setNumReferences(numReferencesProp || 3);
-    form.setFieldsValue({
-      noOfReferences: numReferencesProp || 3,
-    });
+    if (numReferencesProp !== null || numReferencesProp === 0) {
+      form.setFieldsValue({
+        noOfReferences: numReferencesProp,
+      });
+    } else {
+      form.setFieldsValue({
+        noOfReferences: 3,
+      });
+    }
   }, [ticketID]);
 
   useEffect(() => {
@@ -69,6 +90,8 @@ const References = (props) => {
   };
 
   const onClickNext = async () => {
+    const numReferences =
+      numReferencesProp !== null ? numReferencesProp : Number(form.getFieldValue('noOfReferences'));
     const nextStep =
       processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
         ? ONBOARDING_STEPS.SALARY_STRUCTURE
@@ -79,46 +102,65 @@ const References = (props) => {
         ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
         : processStatus;
 
-    if (!isFilledReferences) {
-      dispatch({
-        type: 'newCandidateForm/sendNoReferenceEffect',
-        payload: {
-          numReferences,
-          candidateId,
-        },
-      }).then(({ statusCode }) => {
-        if (statusCode === 200) {
-          message.success('Add number of references successfully');
-        }
-      });
-      setDisabled(true);
-    } else {
-      await dispatch({
-        type: 'newCandidateForm/updateByHR',
-        payload: {
-          candidate: candidateId,
-          currentStep: nextStep,
-          processStatus: nextStatus,
-        },
-      }).then(({ statusCode }) => {
-        if (statusCode === 200) {
+    if (!isNaN(numReferences)) {
+      if (
+        !isFilledReferences &&
+        numReferences > 0 &&
+        processStatus === NEW_PROCESS_STATUS.REFERENCE_VERIFICATION
+      ) {
+        dispatch({
+          type: 'newCandidateForm/sendNoReferenceEffect',
+          payload: {
+            numReferences: numReferences || 0,
+            candidateId,
+          },
+        }).then(({ statusCode }) => {
+          if (statusCode === 200) {
+            setVisible(true);
+          }
+        });
+        setDisabledInput(true);
+        setDisabledButton(true);
+      } else {
+        if (!isFilledReferences) {
           dispatch({
-            type: 'newCandidateForm/save',
+            type: 'newCandidateForm/sendNoReferenceEffect',
             payload: {
-              currentStep: nextStep,
+              numReferences: 0,
+              candidateId,
             },
           });
-          dispatch({
-            type: 'newCandidateForm/saveTemp',
-            payload: {
-              processStatus: nextStatus,
-            },
-          });
-          history.push(
-            `/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`,
-          );
         }
-      });
+        await dispatch({
+          type: 'newCandidateForm/updateByHR',
+          payload: {
+            candidate: candidateId,
+            currentStep: nextStep,
+            processStatus: nextStatus,
+            dateOfJoining,
+          },
+        }).then(({ statusCode }) => {
+          if (statusCode === 200) {
+            dispatch({
+              type: 'newCandidateForm/save',
+              payload: {
+                currentStep: nextStep,
+              },
+            });
+            dispatch({
+              type: 'newCandidateForm/saveTemp',
+              payload: {
+                processStatus: nextStatus,
+                numReferences,
+                currentStep: nextStep,
+              },
+            });
+            history.push(
+              `/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`,
+            );
+          }
+        });
+      }
     }
   };
 
@@ -138,11 +180,7 @@ const References = (props) => {
               <Input
                 placeholder="No. of references"
                 className={styles.formInput}
-                disabled={disabled}
-                onChange={(e) => {
-                  e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                  setNumReferences(e.target.value);
-                }}
+                disabled={disabledInput}
               />
             </Form.Item>
           </Col>
@@ -161,8 +199,8 @@ const References = (props) => {
   };
 
   const getButtonText = () => {
-    if (!isFilledReferences) {
-      if (disabled) return 'Sent';
+    if (!isFilledReferences && numReferencesProp > 0) {
+      if (disabledButton) return 'Sent';
       return 'Send';
     }
     return 'Next';
@@ -185,18 +223,13 @@ const References = (props) => {
                   </Button>
                 </Col>
                 <Col span={12}>
-                  <Button
-                    type="primary"
+                  <CustomPrimaryButton
                     onClick={onClickNext}
-                    className={[
-                      styles.bottomBar__button__primary,
-                      disabled ? styles.bottomBar__button__disabled : '',
-                    ]}
                     loading={loadingSendNoReference}
-                    disabled={disabled}
+                    disabled={disabledButton}
                   >
                     {getButtonText()}
-                  </Button>
+                  </CustomPrimaryButton>
                 </Col>
               </Row>
             </div>
@@ -241,7 +274,7 @@ const References = (props) => {
                                       index={index}
                                       references={references}
                                     />
-                                    {numReferences > index + 1 && (
+                                    {numReferencesProp > index + 1 && (
                                       <Divider className={styles.divider} />
                                     )}
                                   </div>
@@ -273,12 +306,17 @@ const References = (props) => {
           </Row>
         </Col>
       </Row>
+      <CustomModal
+        open={visible}
+        closeModal={() => setVisible(false)}
+        content={<ModalContent closeModal={() => setVisible(false)} type="references" />}
+      />
     </div>
   );
 };
 
-export default connect(({ newCandidateForm: { data }, loading }) => ({
-  data,
+export default connect(({ newCandidateForm: { tempData }, loading }) => ({
+  tempData,
   loadingFetchReferences: loading.effects['newCandidateForm/fetchListReferences'],
   loadingSendNoReference: loading.effects['newCandidateForm/sendNoReferenceEffect'],
 }))(References);

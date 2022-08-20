@@ -99,6 +99,7 @@ export default {
   'menu.view-compoff-request': 'View compoff request',
   'menu.time-off-type-configuration': 'Configure timeoff type',
   'menu.timeoff-setup': 'Setup Timeoff policy',
+  'menu.timeoff-history': 'Timeoff History',
   'menu.timeoff-overview': 'Overview',
   // project management
   'menu.project-management': 'Project Management',
@@ -140,4 +141,5 @@ export default {
   'menu.upload-document': 'Add Document',
   'menu.create-template': 'Create New Template',
   'menu.faqs': 'FAQs',
+  'menu.hrms-help-center': 'HRMS Help Center',
 };

@@ -13,7 +13,7 @@ const FilterCountTag = ({ count = 0, onClearFilter = () => {} }) => {
         closeIcon={<CloseOutlined />}
         onClose={onClearFilter}
       >
-        {count} {singularify('filter')} applied
+        {count} {singularify('filter', count)} applied
       </Tag>
     );
 

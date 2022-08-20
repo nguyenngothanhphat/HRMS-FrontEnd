@@ -34,6 +34,12 @@ export const TIMEOFF_HISTORY_STATUS = {
   WITHDRAW_ACCEPTED: 'WITHDRAW_ACCEPTED',
 };
 
+export const LEAVE_QUERY_TYPE = {
+  COMPANY: 'COMPANY',
+  TEAM: 'TEAM',
+  SELF: 'SELF',
+};
+
 export const TIMEOFF_LINK_ACTION = {
   EDIT_LEAVE_REQUEST: 'edit',
   NEW_LEAVE_REQUEST: 'new',
@@ -83,6 +89,7 @@ export const TIMEOFF_COLOR = {
 
 export const TIMEOFF_DATE_FORMAT = DATE_FORMAT_MDY;
 export const TIMEOFF_DATE_FORMAT_API = DATE_FORMAT_YMD;
+export const TIMEOFF_DATE_HISTORY_FORMAT = 'MMM Do, YYYY';
 
 export const TIMEOFF_COL_SPAN_1 = {
   DATE: 7,
@@ -217,6 +224,21 @@ export const TIMEOFF_WORK_DAYS = [
     id: 6,
     name: 'Sat',
     text: 'SATURDAY',
+  },
+];
+
+export const TIMEOFF_HISTORY_OPERATIONS = [
+  {
+    id: 1,
+    name: 'Timeoff',
+  },
+  {
+    id: 2,
+    name: 'Carry Forward',
+  },
+  {
+    id: 3,
+    name: 'Accrual',
   },
 ];
 

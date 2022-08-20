@@ -31,6 +31,7 @@ const BackgroundRecheck = (props) => {
         candidate,
         processStatus = '',
         documentLayout = [],
+        dateOfJoining = '',
       },
       currentStep = '',
     } = {},
@@ -99,6 +100,8 @@ const BackgroundRecheck = (props) => {
           documentTypeC,
           documentTypeD,
           documentTypeE,
+          currentStep,
+          dateOfJoining,
         },
       });
       const check = validateFiles();
@@ -220,6 +223,7 @@ const BackgroundRecheck = (props) => {
         candidate,
         currentStep: nextStep,
         processStatus: nextStatus,
+        dateOfJoining,
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
@@ -391,6 +395,7 @@ const BackgroundRecheck = (props) => {
         title={`${selectingFile?.item?.alias} ${action ? 'for Resubmission' : ''}`}
         width={600}
         onFinish={action ? () => {} : onVerified}
+        disabledButton={processStatus !== NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION}
       />
 
       {/* view candidate comment modal  */}

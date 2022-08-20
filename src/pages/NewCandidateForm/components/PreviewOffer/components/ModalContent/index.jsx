@@ -32,6 +32,9 @@ class ModalContent extends PureComponent {
     if (type === 'extend') {
       return 'Final offer date has been extended';
     }
+    if (type === 'references') {
+      return ' The request for references has been sent to the candidate';
+    }
     return '';
   };
 
@@ -59,6 +62,9 @@ class ModalContent extends PureComponent {
     }
     if (type === 'extend') {
       return 'Final offer date has been extended by HR Manager';
+    }
+    if (type === 'references') {
+      return 'Please wait for the references to be received before proceeding to the next step';
     }
     return '';
   };

@@ -39,4 +39,6 @@ export const STATUS_POST = {
   HIDDEN: 'HIDDEN',
 };
 
+export const URL_REGEX = /(http(s?):\/\/[^\s]+)/g;
+
 export const DATE_FORMAT = 'MMMM DD YYYY, HH:mm A';

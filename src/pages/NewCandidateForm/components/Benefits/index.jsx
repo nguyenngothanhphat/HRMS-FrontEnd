@@ -19,13 +19,14 @@ import MessageBox from '../MessageBox';
     newCandidateForm: {
       data = {},
       currentStep = 0,
-      tempData: { hidePreviewOffer = false } = {},
+      tempData: { hidePreviewOffer = false, dateOfJoining = '' } = {},
       tempData = {},
     } = {},
     loading,
   }) => ({
     benefits,
     data,
+    dateOfJoining,
     tempData,
     currentStep,
     hidePreviewOffer,
@@ -55,12 +56,12 @@ class Benefits extends PureComponent {
   fetchListBenefit = () => {
     const {
       dispatch,
-      data: { workLocation: { headQuarterAddress: { country = '' } = {} } = {} } = {},
+      data: { workLocation: { headQuarterAddress: { country } = {} } = {} } = {},
     } = this.props;
 
     dispatch({
       type: 'newCandidateForm/fetchListBenefit',
-      payload: { country },
+      payload: { country: typeof country === 'object' ? country?._id : country },
     });
   };
 
@@ -336,7 +337,13 @@ class Benefits extends PureComponent {
   };
 
   onClickNext = async () => {
-    const { hidePreviewOffer, dispatch, currentStep, data: { _id = '' } = {} } = this.props;
+    const {
+      hidePreviewOffer,
+      dispatch,
+      currentStep,
+      data: { _id = '' } = {},
+      dateOfJoining = '',
+    } = this.props;
     if (hidePreviewOffer) {
       dispatch({
         type: 'newCandidateForm/redirectToOnboardList',
@@ -352,6 +359,7 @@ class Benefits extends PureComponent {
           currentStep: nextStep,
           candidate: _id,
           tenantId: getCurrentTenant(),
+          dateOfJoining,
         },
       });
       if (res.statusCode === 200) {

@@ -1,17 +1,29 @@
 import request from '@/utils/request';
 import { API_KEYS } from '../../config/proxy.js';
 
-export async function getOffAllTicketList(payload) {
+export async function getTicketList(params) {
   return request(
-    '/api-ticket/tickettenant/list',
+    '/api-ticket/tickettenant/get-list',
     {
-      method: 'POST',
-      data: payload,
+      method: 'GET',
+      params,
     },
     false,
     API_KEYS.TICKET_API,
   );
 }
+export async function getTotals(params) {
+  return request(
+    '/api-ticket/tickettenant/total-by-status',
+    {
+      method: 'GET',
+      params,
+    },
+    false,
+    API_KEYS.TICKET_API,
+  );
+}
+
 export async function deleteTicketAll(payload) {
   return request(
     '/api-ticket/tickettenant/delete-all',
@@ -124,6 +136,13 @@ export async function deleteOneTicket(payload) {
 
 export async function getLocationsOfCountries(params) {
   return request('/api/locationtenant/group-country', {
+    method: 'GET',
+    params,
+  });
+}
+
+export async function getListEmployeeByIds(params) {
+  return request('/api/employeetenant', {
     method: 'GET',
     params,
   });

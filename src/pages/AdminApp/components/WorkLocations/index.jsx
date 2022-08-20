@@ -1,69 +1,48 @@
-import React, { PureComponent } from 'react';
-import { Form, Button, Skeleton, notification } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { Button, Form, notification, Skeleton, Spin } from 'antd';
 import moment from 'moment';
-
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-// import ThirdStep from '@/pages/EmployeeProfile/components/EmploymentTab/components/HandleChanges/components/ThirdStep';
+import LocationContent from './components/LocationContent';
 import FormWorkLocation from './components/FormWorkLocation';
-import FormWorkLocationTenant from './components/FormWorkLocation-Tenant';
 import s from './index.less';
 
-@connect(
-  ({
-    loading,
-    country: { listCountry = [] } = {},
-    companiesManagement: { originData: { companyDetails = {} } = {} } = {},
-    adminApp: { locationsList = [] },
-    user: { currentUser: { manageTenant = [] } = {} } = {},
-  }) => ({
-    listCountry,
-    locationsList,
-    fetchingLocationsList: loading.effects['adminApp/fetchLocationList'],
-    loadingCountry: loading.effects['country/fetchListCountry'],
-    loadingAddMultiLocation: loading.effects['companiesManagement/addMultiLocation'],
-    companyDetails,
-    manageTenant,
-  }),
-)
-class WorkLocations extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.formRef = React.createRef();
-    this.state = {
-      isFillingIn: false,
-    };
-  }
+const WorkLocations = (props) => {
+  const [form] = Form.useForm();
+  const {
+    listCountry = [],
+    locationsList = [],
+    fetchingLocationsList,
+    loadingCountry,
+    loadingAddMultiLocation = false,
+  } = props;
+  const { workLocations = [] } = props;
+  const { dispatch } = props;
+  const tenantId = getCurrentTenant();
+  const companyId = getCurrentCompany();
 
-  componentDidMount() {
-    const { dispatch, companyId = '' } = this.props;
-    const tenantId = getCurrentTenant();
+  const [isFillingIn, setIsFillingIn] = React.useState(false);
+
+  useEffect(() => {
     if (companyId) {
       dispatch({
         type: 'adminApp/fetchLocationList',
         payload: { company: companyId, tenantId },
       });
     }
-  }
+    return () => {
+      dispatch({
+        type: 'companiesManagement/save',
+        payload: { locationsList: [] },
+      });
+    };
+  }, []);
 
-  componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'companiesManagement/save',
-      payload: { locationsList: [] },
-    });
-  }
-
-  addLocationAPI = async (values) => {
-    const tenantId = getCurrentTenant();
-    const companyId = getCurrentCompany();
-
-    const { dispatch } = this.props;
+  const addLocationAPI = async (values) => {
     // const { company, isNewTenant, locations: originLocations = [] } = companyDetails;
     // const listLocation = [...originLocations, ...locations];
-    const { workLocations = [] } = values;
-    const formatListLocation = workLocations.map((location) => {
+    const formatListLocation = (values.workLocations || []).map((location) => {
       const {
         name = '',
         addressLine1 = '',
@@ -72,7 +51,7 @@ class WorkLocations extends PureComponent {
         country = '',
         state = '',
         zipCode = '',
-        timezone = ''
+        timezone = '',
       } = location;
       return {
         name,
@@ -80,7 +59,7 @@ class WorkLocations extends PureComponent {
           addressLine1,
           addressLine2,
           city,
-          country: country || country?._id || '',
+          country,
           state,
           zipCode,
         },
@@ -88,12 +67,12 @@ class WorkLocations extends PureComponent {
           addressLine1,
           addressLine2,
           city,
-          country: country || country?._id || '',
+          country,
           state,
           zipCode,
         },
         isHeadQuarter: false,
-        timezone
+        timezone,
       };
     });
 
@@ -109,6 +88,7 @@ class WorkLocations extends PureComponent {
     });
     const { statusCode } = res;
     if (statusCode === 200) {
+      form.resetFields();
       notification.success({
         message: 'Add new locations successfully.',
       });
@@ -124,8 +104,7 @@ class WorkLocations extends PureComponent {
     }
   };
 
-  formatListLocation = () => {
-    const { workLocations = [] } = this.props;
+  const formatListLocation = () => {
     const formatData = workLocations.map((item) => {
       const { country: { _id: country } = {} } = item;
       return { ...item, country };
@@ -136,11 +115,7 @@ class WorkLocations extends PureComponent {
     return listLocation;
   };
 
-  removeLocation = async (id) => {
-    const tenantId = getCurrentTenant();
-    const companyId = getCurrentCompany();
-
-    const { dispatch } = this.props;
+  const removeLocation = async (id) => {
     const payload = { id, tenantId };
     const res = await dispatch({
       type: 'adminApp/removeLocation',
@@ -158,8 +133,8 @@ class WorkLocations extends PureComponent {
     }
   };
 
-  formatCurrentLocationList = (locationsList) => {
-    let list = locationsList.map((location) => {
+  const formatCurrentLocationList = (arr = []) => {
+    let list = arr.map((location) => {
       const {
         _id = '',
         name = '',
@@ -190,150 +165,135 @@ class WorkLocations extends PureComponent {
 
     // these lines to move the headquarter to top of array
     const headQuarter = list.find((item) => item.isHeadQuarter);
-    list = list.filter((item) => !item.isHeadQuarter);
-    list.unshift(headQuarter);
+    if (headQuarter) {
+      list = list.filter((item) => !item.isHeadQuarter);
+      list.unshift(headQuarter);
+    }
     return list;
   };
 
-  trackingEditButton = (value) => {
-    this.setState({
-      isFillingIn: value,
-    });
+  const trackingEditButton = (value) => {
+    setIsFillingIn(value);
   };
 
-  render() {
-    const {
-      listCountry = [],
-      locationsList = [],
-      fetchingLocationsList,
-      loadingCountry,
-      loadingAddMultiLocation = false,
-    } = this.props;
+  const listLocation = formatListLocation();
 
-    const { isFillingIn } = this.state;
+  const formatCurrentLocationsList = formatCurrentLocationList(locationsList);
 
-    const listLocation = this.formatListLocation();
-
-    if (fetchingLocationsList || loadingCountry)
-      return (
-        <div className={s.WorkLocations}>
-          <div className={s.root}>
-            <div className={s.content__viewTop}>
-              <p className={s.title}>Work Locations</p>
-              <p className={s.text}>
-                This information is used to assign the employees to the right office. We will also
-                enable you to assign office specific administrators, filter employees per work
-                location, view Business Intelligence reports, and more. You do not need to add the
-                address of your remote employees here.
-              </p>
-            </div>
-            <div className={s.content__viewBottom}>
-              <Skeleton active />
-            </div>
-          </div>
+  return (
+    <div className={s.WorkLocations}>
+      <div className={s.root}>
+        <div className={s.content__viewTop}>
+          <p className={s.title}>Work Locations</p>
+          <p className={s.text}>
+            This information is used to assign the employees to the right office. We will also
+            enable you to assign office specific administrators, filter employees per work location,
+            view Business Intelligence reports, and more. You do not need to add the address of your
+            remote employees here.
+          </p>
         </div>
-      );
-
-    const formatCurrentLocationsList = this.formatCurrentLocationList(locationsList);
-
-    return (
-      <div className={s.WorkLocations}>
-        <div className={s.root}>
-          <div className={s.content__viewTop}>
-            <p className={s.title}>Work Locations</p>
-            <p className={s.text}>
-              This information is used to assign the employees to the right office. We will also
-              enable you to assign office specific administrators, filter employees per work
-              location, view Business Intelligence reports, and more. You do not need to add the
-              address of your remote employees here.
-            </p>
-          </div>
-          <div className={s.content__viewBottom}>
+        <div className={s.content__viewBottom}>
+          <Spin spinning={fetchingLocationsList || loadingCountry}>
             {formatCurrentLocationsList.map((location, index) => {
               return (
-                <FormWorkLocationTenant
+                <LocationContent
                   isRequired={false}
                   defaultCountry={location?.country}
                   listCountry={listCountry}
                   listLocation={listLocation}
                   locationInfo={location}
-                  trackingEditButton={this.trackingEditButton}
-                  removeLocation={this.removeLocation}
+                  trackingEditButton={trackingEditButton}
+                  removeLocation={removeLocation}
                   listLength={formatCurrentLocationsList.length}
                   index={index}
-                  handleEditLocation={this.handleEditLocation}
                 />
               );
             })}
+          </Spin>
+        </div>
+      </div>
+
+      <Form
+        form={form}
+        onFinish={addLocationAPI}
+        autoComplete="off"
+        initialValues={
+          {
+            // workLocations: defaultListLocation,
+          }
+        }
+      >
+        <div className={s.root} style={{ marginTop: '24px' }}>
+          <div className={s.content__viewBottom}>
+            <Form.List name="workLocations">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map((field) => (
+                    <FormWorkLocation
+                      field={field}
+                      key={field.name}
+                      isHidden={false}
+                      name="New work location"
+                      form={form}
+                      listCountry={listCountry}
+                      listLocation={listLocation}
+                      removeLocation={removeLocation}
+                      onRemove={() => {
+                        remove(field.name);
+                      }}
+                    />
+                  ))}
+                  <div className={s.actions}>
+                    <Button
+                      disabled={isFillingIn}
+                      className={s.viewAddWorkLocation}
+                      icon={
+                        <p className={s.viewAddWorkLocation__icon}>
+                          <PlusOutlined />
+                        </p>
+                      }
+                      onClick={() => {
+                        add();
+                      }}
+                    >
+                      <p className={s.viewAddWorkLocation__text}>Add work location</p>
+                    </Button>
+                    {fields.length !== 0 && (
+                      <div className={s.viewBtn}>
+                        <Button
+                          loading={loadingAddMultiLocation}
+                          className={s.btnSubmit}
+                          htmlType="submit"
+                        >
+                          Save
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </Form.List>
           </div>
         </div>
+      </Form>
+    </div>
+  );
+};
 
-        <Form
-          ref={this.formRef}
-          onFinish={this.addLocationAPI}
-          autoComplete="off"
-          initialValues={
-            {
-              // workLocations: defaultListLocation,
-            }
-          }
-        >
-          <div className={s.root} style={{ marginTop: '24px' }}>
-            <div className={s.content__viewBottom}>
-              <Form.List name="workLocations">
-                {(fields, { add, remove }) => (
-                  <>
-                    {fields.map((field) => (
-                      <FormWorkLocation
-                        field={field}
-                        key={field.name}
-                        isHidden={false}
-                        name="New work location"
-                        formRef={this.formRef}
-                        listCountry={listCountry}
-                        listLocation={listLocation}
-                        removeLocation={this.removeLocation}
-                        onRemove={() => {
-                          remove(field.name);
-                        }}
-                      />
-                    ))}
-                    <div className={s.actions}>
-                      <Button
-                        disabled={isFillingIn}
-                        className={s.viewAddWorkLocation}
-                        icon={
-                          <p className={s.viewAddWorkLocation__icon}>
-                            <PlusOutlined />
-                          </p>
-                        }
-                        onClick={() => {
-                          add();
-                        }}
-                      >
-                        <p className={s.viewAddWorkLocation__text}>Add work location</p>
-                      </Button>
-                      {fields.length !== 0 && (
-                        <div className={s.viewBtn}>
-                          <Button
-                            loading={loadingAddMultiLocation}
-                            className={s.btnSubmit}
-                            htmlType="submit"
-                          >
-                            Save
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}
-              </Form.List>
-            </div>
-          </div>
-        </Form>
-      </div>
-    );
-  }
-}
-
-export default WorkLocations;
+export default connect(
+  ({
+    loading,
+    country: { listCountry = [] } = {},
+    companiesManagement: { originData: { companyDetails = {} } = {} } = {},
+    adminApp: { locationsList = [] },
+    user: { currentUser: { manageTenant = [] } = {} } = {},
+  }) => ({
+    listCountry,
+    locationsList,
+    fetchingLocationsList: loading.effects['adminApp/fetchLocationList'],
+    loadingCountry: loading.effects['country/fetchListCountry'],
+    loadingAddMultiLocation: loading.effects['companiesManagement/addMultiLocation'],
+    companyDetails,
+    manageTenant,
+  }),
+)(WorkLocations);

@@ -14,14 +14,18 @@ const TicketDetails = (props) => {
     ticketDetail = {},
   } = props;
 
+  const fetchData = () => {
+    dispatch({
+      type: 'ticketManagement/fetchTicketByID',
+      payload: {
+        id: code,
+      },
+    });
+  };
+
   useEffect(() => {
     if (code) {
-      dispatch({
-        type: 'ticketManagement/fetchTicketByID',
-        payload: {
-          id: code,
-        },
-      });
+      fetchData();
     }
   }, [code]);
 
@@ -36,7 +40,7 @@ const TicketDetails = (props) => {
         <Spin spinning={loadingFetchTicketById}>
           <Row className={styles.container} gutter={[24, 24]}>
             <Col xs={24} lg={16}>
-              <TicketDetailsForm />
+              <TicketDetailsForm refreshData={fetchData} />
             </Col>
             <Col xs={24} lg={8}>
               <RightContent data={ticketDetail} />

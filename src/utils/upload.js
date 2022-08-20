@@ -1,7 +1,9 @@
-import * as axios from 'axios';
 import { message } from 'antd';
+import * as axios from 'axios';
 import imageCompression from 'browser-image-compression';
-import { FILE_TYPE } from '@/constants/upload';
+import { isEmpty } from 'lodash';
+import { YOUTUBE_REGEX } from '@/constants/youtube';
+import { ATTACHMENT_TYPES, FILE_TYPE } from '@/constants/upload';
 
 export default async function uploadFile(files, params) {
   return axios.post('/file/upload', { files, params });
@@ -70,3 +72,17 @@ export async function compressImage(file) {
   }
   return res;
 }
+
+export const getAttachmentType = (attachment = {}) => {
+  if (!attachment || isEmpty(attachment)) return null;
+  if (attachment?.type?.match(/video[/]/gim)) {
+    return ATTACHMENT_TYPES.VIDEO;
+  }
+  if (YOUTUBE_REGEX.test(attachment?.url)) {
+    return ATTACHMENT_TYPES.YOUTUBE;
+  }
+  if (attachment?.type?.match(/image[/]/gim)) {
+    return ATTACHMENT_TYPES.IMAGE;
+  }
+  return ATTACHMENT_TYPES.IMAGE;
+};

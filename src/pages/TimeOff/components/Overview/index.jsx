@@ -1,5 +1,5 @@
 import { Col, Row } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect, history } from 'umi';
 import { goToTop } from '@/utils/utils';
 import ApplyRequest from './components/ApplyRequest';
@@ -16,12 +16,23 @@ const Overview = (props) => {
     viewHRTimeoff = false,
     viewManagerTimeoff = false,
     viewRequestOnBehalfOf = false,
+    dispatch,
   } = props;
-
-  const [isViewingInformation, setIsViewingInformation] = useState(false);
 
   useEffect(() => {
     goToTop();
+    return () => {
+      dispatch({
+        type: 'timeOff/save',
+        payload: {
+          currentLeaveTypeTab: '1',
+          currentScopeTab: '1',
+          totalByType: {},
+          totalByStatus: {},
+          currentPayloadTypes: [],
+        },
+      });
+    };
   }, []);
 
   const buttonOnClickCompoff = () => {
@@ -43,7 +54,6 @@ const Overview = (props) => {
 
   const onInformationClick = () => {
     window.scroll({ top: 150, left: 0, behavior: 'smooth' });
-    setIsViewingInformation(!isViewingInformation);
   };
 
   return (
@@ -53,10 +63,7 @@ const Overview = (props) => {
           <Col xs={24} lg={6}>
             <Row gutter={[20, 20]}>
               <Col span={24}>
-                <LeaveInformation
-                  viewDocumentVisible={isViewingInformation}
-                  onInformationClick={onInformationClick}
-                />
+                <LeaveInformation onInformationClick={onInformationClick} />
               </Col>
               <Col span={24}>
                 <LeaveHistoryAndHoliday />

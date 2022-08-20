@@ -1,10 +1,11 @@
-import { Col, Popover, Row, Spin, Tag } from 'antd';
+import { Col, Popover, Row, Spin, Tag, Tooltip } from 'antd';
 import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { Suspense, useEffect, useState } from 'react';
 import { connect, history, Link } from 'umi';
 import PersonIcon from '@/assets/assignPerson.svg';
 import TeamIcon from '@/assets/assignTeam.svg';
+import EditTicketIcon from '@/assets/ticketManagement/Edit.svg';
 import ArrowDownIcon from '@/assets/ticketManagement/ic_arrowDown.svg';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import AddressPopover from '@/components/AddressPopover';
@@ -13,6 +14,7 @@ import EmptyComponent from '@/components/Empty';
 import UserProfilePopover from '@/components/UserProfilePopover';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { PRIORITY_COLOR } from '@/constants/ticketManagement';
+import EditTicketModal from '@/pages/TicketManagement/components/EditTicketModal';
 import { getEmployeeUrl } from '@/utils/utils';
 import AssignTeamModal from '../../../AssignTeamModal';
 import TicketItem from './components/TicketItem';
@@ -35,6 +37,10 @@ const TableTickets = (props) => {
     refreshFetchTotalList = () => {},
     refreshFetchData = () => {},
     role = '',
+    total = 0,
+    page = 1,
+    size = 10,
+    onChangePage = () => {},
     loadingFetchEmployee = false,
     loadingUpdate = false,
     permissions: { viewTicketByAdmin },
@@ -43,6 +49,7 @@ const TableTickets = (props) => {
   const [ticket, setTicket] = useState({});
   const [nameSearch, setNameSearch] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [editVisible, setEditVisible] = useState(false);
 
   const isViewTicketByAdmin = viewTicketByAdmin === 1;
 
@@ -194,6 +201,11 @@ const TableTickets = (props) => {
     setModalVisible(true);
   };
 
+  const handleEditTicket = (id) => {
+    handleClickSelect(id);
+    setEditVisible(true);
+  };
+
   const renderTag = (priority) => {
     return <Tag color={PRIORITY_COLOR[priority]}>{priority}</Tag>;
   };
@@ -338,7 +350,7 @@ const TableTickets = (props) => {
       sortDirections: ['ascend', 'descend'],
     },
     {
-      title: 'Assigned To',
+      title: 'Actions',
       dataIndex: 'employeeAssignee',
       key: 'employeeAssignee',
       fixed: 'right',
@@ -362,56 +374,86 @@ const TableTickets = (props) => {
         if (isViewTicketByAdmin) {
           return (
             <>
+              <Tooltip title="Edit">
+                <img
+                  width={32}
+                  height={32}
+                  src={EditTicketIcon}
+                  alt="edit ticket icon"
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handleEditTicket(row.id)}
+                />
+              </Tooltip>
               <Popover
                 trigger="click"
                 overlayClassName={styles.dropdownPopover}
                 content={renderMenuAssignTo()}
                 placement="bottomRight"
               >
+                <Tooltip title="Assign to">
+                  <img
+                    width={32}
+                    height={32}
+                    src={PersonIcon}
+                    alt="assign person icon"
+                    style={{
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => handleClickSelect(row.id)}
+                  />
+                </Tooltip>
+              </Popover>
+              <Tooltip title="Move to Team">
                 <img
-                  width={35}
-                  height={35}
-                  src={PersonIcon}
-                  alt="assign person icon"
+                  width={32}
+                  height={32}
+                  src={TeamIcon}
+                  alt="assign team icon"
                   style={{
                     cursor: 'pointer',
                   }}
-                  onClick={() => handleClickSelect(row.id)}
+                  onClick={() => handleAssignTeam(row.id)}
                 />
-              </Popover>
-              <img
-                width={35}
-                height={35}
-                src={TeamIcon}
-                alt="assign team icon"
-                style={{
-                  cursor: 'pointer',
-                }}
-                onClick={() => handleAssignTeam(row.id)}
-              />
+              </Tooltip>
             </>
           );
         }
         return (
-          <Popover
-            trigger="click"
-            overlayClassName={styles.dropdownPopover}
-            content={renderMenuDropdown()}
-            placement="bottomRight"
-          >
-            <div
-              onClick={() => handleClickSelect(row.id)}
-              style={{
-                width: 'fit-content',
-                cursor: 'pointer',
-                color: '#2c6df9',
-                fontWeight: 500,
-              }}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
+            <Popover
+              trigger="click"
+              overlayClassName={styles.dropdownPopover}
+              content={renderMenuDropdown()}
+              placement="bottomRight"
             >
-              Select User &emsp;
-              <img src={ArrowDownIcon} alt="" />
-            </div>
-          </Popover>
+              <div
+                onClick={() => handleClickSelect(row.id)}
+                style={{
+                  width: 'fit-content',
+                  cursor: 'pointer',
+                  color: '#2c6df9',
+                  fontWeight: 500,
+                }}
+              >
+                Select User &emsp;
+                <img src={ArrowDownIcon} alt="" />
+              </div>
+            </Popover>
+            <Tooltip title="Edit">
+              <img
+                width={32}
+                height={32}
+                src={EditTicketIcon}
+                alt="edit ticket icon"
+                style={{
+                  cursor: 'pointer',
+                }}
+                onClick={() => handleEditTicket(row.id)}
+              />
+            </Tooltip>
+          </div>
         );
       },
       sorter: (a, b) => {
@@ -458,10 +500,22 @@ const TableTickets = (props) => {
         columns={columns}
         list={data}
         rowKey="id"
+        total={total}
+        isBackendPaging
+        limit={size}
+        page={page}
+        onChangePage={onChangePage}
       />
       <AssignTeamModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
+        refreshFetchTicketList={refreshFetchData}
+        ticket={ticket}
+        role={role}
+      />
+      <EditTicketModal
+        visible={editVisible}
+        onClose={() => setEditVisible(false)}
         refreshFetchTicketList={refreshFetchData}
         ticket={ticket}
         role={role}

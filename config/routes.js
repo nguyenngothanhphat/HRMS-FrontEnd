@@ -377,6 +377,13 @@ const routes = [
             hideInMenu: true,
           },
           {
+            path: '/time-off/:tabName(history)',
+            name: 'timeoff-history',
+            component: './TimeOff',
+            authority: ['P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
+            hideInMenu: true,
+          },
+          {
             path: '/time-off/:tabName(setup)',
             name: 'timeoff-setup',
             component: './TimeOff',
@@ -759,24 +766,21 @@ const routes = [
             path: '/offboarding/settings/:type/form-detail/:id/view',
             name: 'offboarding.setting.form.view-form',
             hideInMenu: true,
-            component:
-              './Offboarding/components/Settings/components/Forms/components/ViewForm',
+            component: './Offboarding/components/Settings/components/Forms/components/ViewForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/settings/:type/form-detail/add',
             name: 'offboarding.setting.form.add-form',
             hideInMenu: true,
-            component:
-              './Offboarding/components/Settings/components/Forms/components/HandleForm',
+            component: './Offboarding/components/Settings/components/Forms/components/HandleForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
             path: '/offboarding/settings/:type/form-detail/:id/edit',
             name: 'offboarding.setting.form.edit-form',
             hideInMenu: true,
-            component:
-              './Offboarding/components/Settings/components/Forms/components/HandleForm',
+            component: './Offboarding/components/Settings/components/Forms/components/HandleForm',
             authority: ['P_OFFBOARDING_VIEW'],
           },
           {
@@ -826,11 +830,12 @@ const routes = [
             redirect: '/customer-management/list',
             name: 'customer-management',
             icon: '/assets/images/menuIcons/customer.svg',
+            authority: ['P_CUSTOMER_MANAGEMENT_VIEW','M_CUSTOMER_MANAGEMENT_VIEW', OWNER],
           },
           {
             path: '/customer-management/:tabName',
             component: './CustomerManagement',
-            authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
+            authority: ['P_CUSTOMER_MANAGEMENT_VIEW','M_CUSTOMER_MANAGEMENT_VIEW', OWNER],
           },
           {
             path: '/customer-management/list/customer-profile/:reId',
@@ -841,7 +846,7 @@ const routes = [
             name: 'view-customer',
             hideInMenu: true,
             component: './CustomerProfile',
-            authority: ['P_CUSTOMER_MANAGEMENT_VIEW'],
+            authority: ['P_CUSTOMER_MANAGEMENT_VIEW','M_CUSTOMER_MANAGEMENT_VIEW', OWNER],
           },
 
           // PROJECTS MANAGEMENT
@@ -910,25 +915,35 @@ const routes = [
             path: '/faq',
             name: 'faqs',
             hideInMenu: true,
-            component: './FAQs',
+            component: './HelpPage',
           },
           {
             path: '/help-center',
-            name: 'HRMS Help Center',
+            name: 'hrms-help-center',
             hideInMenu: true,
-            component: './FAQs',
+            component: './HelpPage',
           },
           {
             path: '/faq/settings',
             name: 'settings',
             hideInMenu: true,
-            component: './FAQs/components/SettingFAQ',
+            component: './HelpPage/components/Settings',
+          },
+          {
+            path: '/faq/settings/:tabName',
+            hideInMenu: true,
+            component: './HelpPage/components/Settings',
           },
           {
             path: '/help-center/settings',
             name: 'settings',
             hideInMenu: true,
-            component: './FAQs/components/SettingFAQ',
+            component: './HelpPage/components/Settings',
+          },
+          {
+            path: '/help-center/settings/:tabName',
+            hideInMenu: true,
+            component: './HelpPage/components/Settings',
           },
           {
             path: '/policies-regulations',

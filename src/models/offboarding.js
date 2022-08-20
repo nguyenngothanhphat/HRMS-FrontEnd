@@ -1,4 +1,4 @@
-import { notification } from 'antd';
+import { message as msg, notification } from 'antd';
 import { isEmpty } from 'lodash';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
@@ -34,6 +34,7 @@ const offboarding = {
     employeeList: [],
     hourList: [],
     locationsOfCountries: [],
+    filter: {},
   },
   effects: {
     *fetchListEffect({ payload }, { call, put }) {
@@ -270,6 +271,21 @@ const offboarding = {
       } catch (error) {
         dialog(error);
       }
+      return response;
+    },
+    *exportReportEffect({ payload }, { call }) {
+      let response;
+      const hide = msg.loading('Exporting data...', 0);
+      try {
+        response = yield call(getList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      hide();
       return response;
     },
   },

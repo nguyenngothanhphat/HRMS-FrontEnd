@@ -38,7 +38,7 @@ class SelectCompanyModal extends PureComponent {
             _id = '',
             tenant = '',
             headQuarterAddress: {
-              country: { name: countryName = '', _id: countryId = '' } = '',
+              country: { name: countryName = '', _id: countryId = '' } = {},
             } = {},
           } = comp;
           const className = activeCompany === _id ? styles.active : styles.eachCompany;

@@ -1580,6 +1580,12 @@ const newCandidateForm = {
             processStatus: NEW_PROCESS_STATUS.REFERENCE_VERIFICATION,
           },
         });
+        yield put({
+          type: 'saveTemp',
+          payload: {
+            processStatus: NEW_PROCESS_STATUS.REFERENCE_VERIFICATION,
+          },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -1595,6 +1601,10 @@ const newCandidateForm = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
+          payload: { references, processStatus: NEW_PROCESS_STATUS.REFERENCE_VERIFICATION },
+        });
+        yield put({
+          type: 'saveTemp',
           payload: { references, processStatus: NEW_PROCESS_STATUS.REFERENCE_VERIFICATION },
         });
         return references;
@@ -1924,7 +1934,7 @@ const newCandidateForm = {
       const { tempData = {} } = state;
       const { employeeType = '' } = tempData;
 
-      if (Object.keys(employeeType).length === 0) {
+      if (employeeType && Object.keys(employeeType).length === 0) {
         return {
           ...state,
           tempData: {

@@ -42,7 +42,6 @@ const ActivityCard = (props) => {
     } = {},
     card = {},
     cardDay = '',
-    startWorkingHour = '',
     dispatch,
     isOldTimeSheet = false,
     currentUser: {
@@ -100,7 +99,7 @@ const ActivityCard = (props) => {
     if (!isOldTimeSheet) {
       calculateCardPosition();
     }
-  }, [JSON.stringify(card), startWorkingHour]);
+  }, [JSON.stringify(card)]);
 
   useEffect(() => {
     if (startTime && endTime) {
@@ -220,18 +219,12 @@ const ActivityCard = (props) => {
     handleUpdateActivity({ start, end });
   };
 
-  const renderDescription = (text = '') => {
+  const renderLongText = (text = '') => {
     if (text.length <= textLong) return text;
     return (
       <span>
         {handleLongString(text)}{' '}
-        <Tooltip
-          title={text}
-          placement="bottomLeft"
-          getPopupContainer={(trigger) => {
-            return trigger;
-          }}
-        >
+        <Tooltip title={text} placement="bottomLeft" trigger="hover">
           <span className={styles.readMoreBtn}>Read More</span>
         </Tooltip>
       </span>
@@ -299,10 +292,10 @@ const ActivityCard = (props) => {
             {projectName || ''}
           </Col>
           <Col span={TASK} className={styles.normalCell}>
-            {taskName}
+            {renderLongText(taskName)}
           </Col>
           <Col span={DESCRIPTION} className={styles.normalCell}>
-            {renderDescription(description)}
+            {renderLongText(description)}
           </Col>
           <Col span={TIME} className={`${styles.normalCell} ${styles.blueText}`}>
             {timeInfo}

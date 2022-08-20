@@ -12,6 +12,7 @@ import { FILE_TYPE } from '@/constants/upload';
 import { identifyFile } from '@/utils/upload';
 import { getCountryId } from '@/utils/utils';
 import styles from './index.less';
+import EmptyComponent from '../Empty';
 
 class ViewDocumentModal extends PureComponent {
   componentDidUpdate = (prevProps) => {
@@ -135,7 +136,6 @@ class ViewDocumentModal extends PureComponent {
 
   render() {
     const { visible, onClose = () => {}, url = '', disableDownload = false } = this.props;
-
     const viewType = identifyFile(url); // 0: images, 1: pdf
 
     return (
@@ -143,7 +143,7 @@ class ViewDocumentModal extends PureComponent {
         className={styles.ViewDocumentModal}
         destroyOnClose
         // eslint-disable-next-line no-nested-ternary
-        width={viewType === FILE_TYPE.IMAGE ? 500 : 900}
+        width={viewType === FILE_TYPE.IMAGE || !url ? 600 : 900}
         visible={visible}
         footer={null}
         onCancel={() => onClose(false)}
@@ -155,10 +155,14 @@ class ViewDocumentModal extends PureComponent {
           className={styles.container}
           onContextMenu={disableDownload ? (e) => e.preventDefault() : null}
         >
-          <div className={viewType === 0 ? styles.contentViewImage : styles.contentViewPDF}>
-            {viewType === FILE_TYPE.IMAGE && this._renderViewImage()}
-            {viewType === FILE_TYPE.PDF && this._renderViewPDF()}
-          </div>
+          {!url ? (
+            <EmptyComponent height={400} />
+          ) : (
+            <div className={viewType === 0 ? styles.contentViewImage : styles.contentViewPDF}>
+              {viewType === FILE_TYPE.IMAGE && this._renderViewImage()}
+              {viewType === FILE_TYPE.PDF && this._renderViewPDF()}
+            </div>
+          )}
           {this._renderStickyFooter()}
         </div>
       </Modal>

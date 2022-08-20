@@ -25,7 +25,7 @@ const RaiseTicketModal = (props) => {
     currentUser: {
       employee: {
         _id: myEmployeeID = '',
-        location: { headQuarterAddress: { country = '' } = {} } = {},
+        location: { headQuarterAddress: { country = {} } = {} } = {},
       } = {} || {},
     } = {} || {},
     loadingFetchSupportTeam = false,
@@ -51,7 +51,7 @@ const RaiseTicketModal = (props) => {
         type: 'ticketManagement/fetchSupportTeamList',
         payload: {
           permissions,
-          country,
+          country: country?._id,
         },
       });
     }
@@ -138,12 +138,12 @@ const RaiseTicketModal = (props) => {
     if (permissions && permissions.length > 0) {
       payload = {
         ...payload,
-        country,
+        country: country?._id,
         permissions,
       };
     }
     dispatch({
-      type: 'ticketManagement/fetchListAllTicket',
+      type: 'ticketManagement/fetchTicketList',
       payload,
     });
     dispatch({
@@ -297,7 +297,11 @@ const RaiseTicketModal = (props) => {
                 labelCol={{ span: 24 }}
                 rules={[{ required: true, message: 'Please enter the description' }]}
               >
-                <Input.TextArea autoSize={{ minRows: 3 }} placeholder="Enter the description" />
+                <Input.TextArea
+                  autoSize={{ minRows: 5, maxRows: 9 }}
+                  maxLength={1000}
+                  placeholder="Enter the description"
+                />
               </Form.Item>
             </Col>
 
