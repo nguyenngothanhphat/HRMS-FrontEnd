@@ -37,6 +37,7 @@ const TableContainer = (props) => {
     dispatch({
       type: 'timeOffManagement/getListTimeOffEffect',
       payload: {
+        signInRole: 'ADMIN',
         types: (types || []).reduce((a, b) => [...a, ...b], []),
         tenantId: getCurrentTenant(),
         selectedLocations,
