@@ -84,6 +84,7 @@ const TimeOffManagement = (props) => {
     const to = toDate ? moment(toDate).format('YYYY-MM-DD') : null;
     return {
       ...payload,
+      signInRole: 'ADMIN',
       from,
       to,
       types: (payload.types || []).reduce((a, b) => [...a, ...b], []),
