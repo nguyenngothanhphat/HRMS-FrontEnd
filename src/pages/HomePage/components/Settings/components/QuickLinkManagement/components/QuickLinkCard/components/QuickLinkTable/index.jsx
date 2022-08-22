@@ -85,7 +85,7 @@ const QuickLinkTable = (props) => {
         dataIndex: 'employeeInfo',
         key: 'employeeInfo',
         width: '15%',
-        render: (employees = {}) => {
+        render: (employees = []) => {
           return employees.map((employee) => (
             <Link
               key={employee?._id}
