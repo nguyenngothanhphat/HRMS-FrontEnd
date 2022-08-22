@@ -18,7 +18,7 @@ const AddPolicyModal = (props) => {
   const [fileName, setFileName] = useState('');
   const {
     onClose = () => {},
-    generalInfoId = '',
+    employeeId = '',
     onRefresh = () => {},
     selectedCountry = '',
     visible,
@@ -43,10 +43,6 @@ const AddPolicyModal = (props) => {
     switch (ext.toLowerCase()) {
       case 'jpg':
       case 'jpeg':
-      case 'svg':
-      case 'webp':
-      case 'tiff':
-      case 'png':
         return 0;
       case 'pdf':
         return 1;
@@ -55,7 +51,7 @@ const AddPolicyModal = (props) => {
         return 2;
 
       default:
-        return 0;
+        return 3;
     }
   };
 
@@ -114,7 +110,7 @@ const AddPolicyModal = (props) => {
     };
 
     const payload = {
-      employee: generalInfoId,
+      employee: employeeId,
       categoryPolicy,
       namePolicy: namePolicies,
       attachment,
@@ -250,7 +246,7 @@ const AddPolicyModal = (props) => {
                         </div>
                       </div>
                       <span className={styles.belowText}>
-                        File size should not be more than 25mb. Supported file for view: pdf & jpeg.
+                        Maximum file size is 5MB. Supported file types are pdf & jpeg
                       </span>
                     </>
                   )}
@@ -306,14 +302,12 @@ export default connect(
       tempData: { listPolicy = [] },
       originData: { selectedCountry = '' },
     } = {},
-    user: {
-      currentUser: { employee: { generalInfo: { _id: generalInfoId = '' } = {} } = {} } = {},
-    },
+    user: { currentUser: { employee: { _id: employeeId = '' } = {} } = {} },
   }) => ({
     listCategory,
     selectedCountry,
     listPolicy,
-    generalInfoId,
+    employeeId,
     loadingUploadAttachment: loading.effects['policiesRegulations/uploadFileAttachments'],
     loadingAdd: loading.effects['policiesRegulations/addPolicy'],
   }),
