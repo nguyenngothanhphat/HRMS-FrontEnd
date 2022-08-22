@@ -129,9 +129,9 @@ const usersManagement = {
       }
     },
 
-    *removeEmployee({ payload = {} }, { call }) {
+    *removeEmployee({ payload = {}, params = {} }, { call }) {
       try {
-        const response = yield call(updateEmployee, payload);
+        const response = yield call(updateEmployee, payload, params);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({

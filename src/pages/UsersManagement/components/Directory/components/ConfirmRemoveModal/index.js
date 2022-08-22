@@ -62,13 +62,16 @@ class ConfirmRemoveModal extends Component {
 
   handleRemoveToServer = () => {
     const { dispatch, employeeDetail = {} } = this.props;
-    const { _id = '', tenant } = employeeDetail;
+    const { _id = '', tenant, employeeId = '' } = employeeDetail;
     dispatch({
       type: 'usersManagement/removeEmployee',
       payload: {
-        id: _id,
+        _id,
         tenantId: tenant,
         status: 'INACTIVE',
+      },
+      params: {
+        ID: employeeId,
       },
     }).then((statusCode) => {
       if (statusCode === 200) {
