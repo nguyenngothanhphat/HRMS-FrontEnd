@@ -20,7 +20,15 @@ const GeneralInfo = (props) => {
     dispatch,
     employeeProfile: {
       employee = '',
-      originData: { generalData: { isNewComer = false } = {} } = {},
+      originData: {
+        generalData: {
+          isNewComer = false,
+          personalNumber = '',
+          personalEmail = '',
+          isShowPersonalNumber = false,
+          isShowPersonalEmail = false,
+        } = {},
+      } = {},
       visibleSuccess = false,
       isProfileOwner = false,
     } = {},
@@ -79,7 +87,10 @@ const GeneralInfo = (props) => {
     {
       id: 2,
       component: <PersonalInformation permissions={permissions} isProfileOwner={isProfileOwner} />,
-      permission: permissions.viewPassportAndVisa !== -1 || isProfileOwner,
+      permission:
+        (personalEmail && isShowPersonalEmail) ||
+        (personalNumber && isShowPersonalNumber) ||
+        isProfileOwner,
     },
     {
       id: 3,
