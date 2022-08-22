@@ -84,7 +84,7 @@ const TimeOffTable = (props) => {
         title: 'Created By',
         dataIndex: 'employeeInfo',
         key: 'employeeInfo',
-        render: (employees = {}) => {
+        render: (employees = []) => {
           return employees.map((employee) => (
             <Link
               key={employee?._id}
