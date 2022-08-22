@@ -2,7 +2,7 @@ import { Popover, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, Link } from 'umi';
 import TeamIcon from '@/assets/assignTeam.svg';
-import EditIcon from '@/assets/customerManagement/edit2.svg';
+import EditIcon from '@/assets/assignPerson.svg';
 import CloseIcon from '@/assets/ticketManagement-trashIcon.svg';
 import EditTicketIcon from '@/assets/ticketManagement/Edit.svg';
 import UserProfilePopover from '@/components/UserProfilePopover';
@@ -110,6 +110,20 @@ const TicketItem = (props) => {
         </Link>
       </UserProfilePopover>
 
+      <Tooltip title="Edit">
+        <img
+          width={32}
+          height={32}
+          src={EditTicketIcon}
+          alt="edit ticket icon"
+          style={{
+            cursor: 'pointer',
+            pointerEvents: isEdit ? 'none' : 'auto',
+            opacity: isEdit ? 0.5 : 1,
+          }}
+          onClick={() => handleEditTicket(row.id)}
+        />
+      </Tooltip>
       <Popover
         trigger="click"
         overlayClassName={styles.dropdownPopover}
@@ -140,20 +154,6 @@ const TicketItem = (props) => {
           />
         )}
       </Popover>
-      <Tooltip title="Edit">
-        <img
-          width={32}
-          height={32}
-          src={EditTicketIcon}
-          alt="edit ticket icon"
-          style={{
-            cursor: 'pointer',
-            pointerEvents: isEdit ? 'none' : 'auto',
-            opacity: isEdit ? 0.5 : 1,
-          }}
-          onClick={() => handleEditTicket(row.id)}
-        />
-      </Tooltip>
       <Tooltip title="Move to Team">
         <img
           width={32}
