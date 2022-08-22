@@ -5,7 +5,7 @@ import styles from './index.less';
 
 @connect(({ loading, policiesRegulations: { originData: { selectedCountry = '' } } = {} }) => ({
   selectedCountry,
-  loadingDelete: loading.effects['policesRegulations/deletepolicy'],
+  loadingDelete: loading.effects['policiesRegulations/deletepolicy'],
 }))
 class DeletePolicyModal extends Component {
   formRef = React.createRef();

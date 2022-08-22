@@ -21,14 +21,12 @@ const { Option } = Select;
       tempData: { listPolicy = [] },
       originData: { selectedCountry = '' },
     } = {},
-    user: {
-      currentUser: { employee: { generalInfo: { _id: generalInfoId = '' } = {} } = {} } = {},
-    },
+    user: { currentUser: { employee: { _id: employeeId = '' } = {} } = {} },
   }) => ({
     listCategory,
     listPolicy,
     selectedCountry,
-    generalInfoId,
+    employeeId,
     loadingUploadAttachment: loading.effects['policiesRegulations/uploadFileAttachments'],
     loadingUpdate: loading.effects['policiesRegulations/updatePolicy'],
   }),
@@ -51,10 +49,6 @@ class EditPolicyModal extends Component {
     switch (ext.toLowerCase()) {
       case 'jpg':
       case 'jpeg':
-      case 'svg':
-      case 'webp':
-      case 'tiff':
-      case 'png':
         return 0;
       case 'pdf':
         return 1;
@@ -63,7 +57,7 @@ class EditPolicyModal extends Component {
         return 2;
 
       default:
-        return 0;
+        return 3;
     }
   };
 
@@ -131,7 +125,7 @@ class EditPolicyModal extends Component {
     const {
       dispatch,
       item: { _id: id = '', attachment: attachmentProps = [] } = {},
-      generalInfoId = '',
+      employeeId = '',
       onClose = () => {},
       onRefresh = () => {},
       selectedCountry = '',
@@ -145,7 +139,7 @@ class EditPolicyModal extends Component {
 
     const payload = {
       id,
-      employee: generalInfoId,
+      employee: employeeId,
       categoryPolicy,
       namePolicy,
       attachment: !flag ? attachmentProps : attachment,
@@ -307,8 +301,7 @@ class EditPolicyModal extends Component {
                               </div>
                             </div>
                             <span className={styles.belowText}>
-                              File size should not be more than 25mb. Supported file for view: pdf &
-                              jpeg.
+                              Maximum file size is 5MB. Supported file types are pdf & jpeg
                             </span>
                           </>
                         )}
