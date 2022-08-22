@@ -134,6 +134,7 @@ const EditTicketModal = (props) => {
       setQueryTypeList([]);
       setUploadedAttachments([]);
       setIsUploadFile(false);
+      setIsEdit(false);
     };
   }, [visible]);
 
