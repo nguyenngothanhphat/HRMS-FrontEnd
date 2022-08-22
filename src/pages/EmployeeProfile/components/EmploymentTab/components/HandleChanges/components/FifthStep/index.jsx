@@ -16,7 +16,7 @@ export default function FifthStep(props) {
   return (
     <div>
       <div className={styles.headings}>
-        What do you wish to notify about the changes that are made?
+        Who do you wish to notify about the changes that are made?
       </div>
 
       <label className={styles.container}>
@@ -49,7 +49,8 @@ export default function FifthStep(props) {
           showArrow
           mode="multiple"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
         >
           {employeeList.map((item) => {
             return (

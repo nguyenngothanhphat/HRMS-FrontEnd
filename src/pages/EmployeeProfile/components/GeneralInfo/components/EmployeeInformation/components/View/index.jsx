@@ -95,6 +95,8 @@ class View extends PureComponent {
       { label: 'Employee ID', value: dataAPI.employeeId },
       { label: 'Work Email', value: dataAPI.workEmail },
       { label: 'Work Number', value: dataAPI.workNumber },
+      { label: dataAPI.personalEmail ? 'Personal Email' : null, value: dataAPI.personalEmail },
+      { label: dataAPI.personalNumber ? 'Personal Number' : null, value: dataAPI.personalNumber },
       {
         label: checkVisible && checkIndiaLocation ? 'Adhaar Card Number' : null,
         value: dataAPI.adhaarCardNumber,
