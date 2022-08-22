@@ -24,40 +24,41 @@ export default function TicketUpdatedContent(props) {
       </Col>
     );
   };
+  const renderAttachments = (x) =>
+    (!!x.newValue?.length || !!x.oldValue?.length) && (
+      <div className={styles.chatMessage}>
+        <div className={styles.chatMessage__title}>{x.name}:</div>
+        {x.oldValue[0]?.attachmentName ? (
+          <span>
+            {x.oldValue[0]?.attachmentName} <img src={RightIcon} alt="" />{' '}
+          </span>
+        ) : (
+          <span>Added </span>
+        )}
+        {x.newValue[0]?.attachmentName ? (
+          <span className={styles.chatMessage__changed}>{x.newValue[0]?.attachmentName}</span>
+        ) : (
+          <span className={styles.chatMessage__changed}>deleted</span>
+        )}
+      </div>
+    );
+
   return (
     <div className={styles.TicketUpdatedContent}>
       <hr style={{ border: '1px solid #EAECF0' }} />
       {view &&
-        message.map((x) => (
-          <div className={styles.chatMessage}>
-            {x.name === 'attachments' ? (
-              <>
-                <div className={styles.chatMessage__title}>{x.name}:</div>
-                {x.oldValue[0]?.attachmentName ? (
-                  <span>
-                    {x.oldValue[0]?.attachmentName} <img src={RightIcon} alt="" />{' '}
-                  </span>
-                ) : (
-                  <span>Add </span>
-                )}
-                {x.newValue[0]?.attachmentName ? (
-                  <span className={styles.chatMessage__changed}>
-                    {x.newValue[0]?.attachmentName}
-                  </span>
-                ) : (
-                  <span className={styles.chatMessage__changed}>deleted</span>
-                )}
-              </>
-            ) : (
-              <>
-                <div className={styles.chatMessage__title}>{x.name}:</div>
-                {`${x.oldValue || ''} `}
-                <img src={RightIcon} alt="" />{' '}
-                <span className={styles.chatMessage__changed}>{x.newValue}</span>
-              </>
-            )}
-          </div>
-        ))}
+        message.map((x) =>
+          x.name === 'attachments' ? (
+            renderAttachments(x)
+          ) : (
+            <div className={styles.chatMessage}>
+              <div className={styles.chatMessage__title}>{x.name}:</div>
+              {`${x.oldValue || ''} `}
+              <img src={RightIcon} alt="" />{' '}
+              <span className={styles.chatMessage__changed}>{x.newValue}</span>
+            </div>
+          ),
+        )}
       {renderViewDetailBtn()}
     </div>
   );
