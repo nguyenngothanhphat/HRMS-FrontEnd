@@ -169,13 +169,23 @@ const AddQuestionModalContent = (props) => {
                 return Promise.resolve();
               },
             }),
+            { max: 500, message: 'Topic must be maximum 500 characters.' },
           ]}
         >
-          <Input placeholder={`Enter the ${questionName.toLowerCase()}`} />
+          <Input maxLength={500} placeholder={`Enter the ${questionName.toLowerCase()}`} />
         </Form.Item>
 
-        <Form.Item label={descLabel} name="answer" labelCol={{ span: 24 }}>
-          <TextArea rows={4} placeholder={`Enter the ${descLabel.toLowerCase()}`} />
+        <Form.Item
+          label={descLabel}
+          name="answer"
+          labelCol={{ span: 24 }}
+          rules={[{ max: 2000, message: 'Description must be maximum 2000 characters.' }]}
+        >
+          <TextArea
+            maxLength={2000}
+            rows={4}
+            placeholder={`Enter the ${descLabel.toLowerCase()}`}
+          />
         </Form.Item>
 
         <Form.Item
