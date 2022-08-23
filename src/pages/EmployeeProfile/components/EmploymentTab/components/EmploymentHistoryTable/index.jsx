@@ -41,7 +41,7 @@ const EmploymentHistory = (props) => {
       key: `${index + 1}`,
       changed: item.changed,
       effectiveDate: moment(item?.effectiveDate).locale('en').format('Do MMM YYYY'),
-      changedBy: item?.changeByEmployee?.generalInfo || '',
+      changedBy: item?.changeByEmployee?.changeByInfo?.generalInfoInfo || '',
       changeDate: moment(item?.changeDate).locale('en').format('Do MMM YYYY'),
       action: item?.takeEffect === 'WILL_UPDATE' ? 'Revoke' : '',
       reason: item?.reasonChange,
