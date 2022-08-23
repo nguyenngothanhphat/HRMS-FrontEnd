@@ -79,7 +79,7 @@ const GeneralInfo = (props) => {
     {
       id: 2,
       component: <PersonalInformation permissions={permissions} isProfileOwner={isProfileOwner} />,
-      permission: permissions.viewPassportAndVisa !== -1 || isProfileOwner,
+      permission: true,
     },
     {
       id: 3,

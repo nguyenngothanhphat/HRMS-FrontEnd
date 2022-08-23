@@ -427,7 +427,7 @@ class Edit extends PureComponent {
                           message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
                         },
                         {
-                          required: !!AdhaarCard.document,
+                          required: !!AdhaarCard.document && !disabledFields,
                           message: 'Please input your adhaar card number!',
                         },
                       ]}
