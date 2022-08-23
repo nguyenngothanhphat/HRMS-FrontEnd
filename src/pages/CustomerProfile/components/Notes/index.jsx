@@ -18,6 +18,7 @@ const Notes = (props) => {
 
   const {
     dispatch,
+    info: { customerId = '' } = {},
     notes = [],
     reId,
     employeeList = [],
@@ -49,7 +50,7 @@ const Notes = (props) => {
     dispatch({
       type: 'customerProfile/fetchNotes',
       payload: {
-        id: reId,
+        id: customerId,
       },
     });
   };
@@ -58,7 +59,7 @@ const Notes = (props) => {
     dispatch({
       type: 'customerProfile/filterNotes',
       payload: {
-        customerId: reId,
+        customerId,
         author: filter?.byAuthor,
         fromDate: filter?.fromDate,
         toDate: filter?.toDate,
@@ -68,7 +69,7 @@ const Notes = (props) => {
 
   useEffect(() => {
     fetchNotes();
-  }, [reId]);
+  }, [customerId]);
 
   useEffect(() => {
     filterNotes();
