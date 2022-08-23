@@ -1,5 +1,5 @@
-import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
+import { dialog } from '@/utils/utils';
 import {
   getEmployeesList,
   getRoleList,
@@ -7,7 +7,7 @@ import {
   getLocationList,
   getDepartmentList,
   getJobTitleList,
-  getReportingManagerList,
+  getEmployeeList,
   addEmployee,
   importEmployees,
   searchEmployees,
@@ -15,6 +15,7 @@ import {
   updateEmployee,
   importEmployeeTenant,
 } from '../services/employeesManagement';
+import { getCurrentTenant } from '@/utils/authority';
 
 const employeesManagement = {
   namespace: 'employeesManagement',
@@ -178,31 +179,34 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *fetchReportingManagerList({ payload = {} }, { call, put }) {
+    *fetchEmployeeList({ params = {} }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getReportingManagerList, payload);
+        response = yield call(getEmployeeList, {
+          ...params,
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data: reportingManagerList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { reportingManagerList } });
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
-    *addEmployee({ payload }, { call, put }) {
-      let statusAddEmployee = false;
+    *addEmployee({ payload }, { call }) {
+      let response = {};
       try {
-        const response = yield call(addEmployee, payload);
+        response = yield call(addEmployee, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
           message: 'Add employee successfully!',
         });
-        statusAddEmployee = true;
       } catch (errors) {
-        statusAddEmployee = false;
         dialog(errors);
       }
-      yield put({ type: 'save', payload: { statusAddEmployee } });
+      return response;
     },
     *importEmployees({ payload, isAccountSetup = false }, { call, put }) {
       let statusImportEmployees = false;
