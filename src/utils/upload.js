@@ -20,6 +20,9 @@ export const identifyFile = (fileName = '') => {
         return FILE_TYPE.IMAGE;
       case 'pdf':
         return FILE_TYPE.PDF;
+      case 'mp4':
+      case 'mov':
+        return FILE_TYPE.VIDEO;
       default:
         return FILE_TYPE.OTHER;
     }
@@ -37,13 +40,21 @@ const getTypeText = (arr) => {
   if (arr.includes(FILE_TYPE.PDF)) {
     res.push('pdf');
   }
+  if (arr.includes(FILE_TYPE.VIDEO)) {
+    res.push('mp4');
+    res.push('mov');
+  }
   return res.join(', ');
 };
 
-export const beforeUpload = (file, types = [FILE_TYPE.IMAGE, FILE_TYPE.PDF], size = 3) => {
+export const beforeUpload = (
+  file,
+  types = [FILE_TYPE.IMAGE, FILE_TYPE.PDF, FILE_TYPE.VIDEO],
+  size = 3,
+) => {
   const checkType = types.includes(identifyFile(file.name));
   if (!checkType) {
-    message.error(`You can only upload ${getTypeText(types)} image files!`);
+    message.error(`You can only upload ${getTypeText(types)} files format!`);
     return false;
   }
   const isLtSize = file.size / 1024 / 1024 < size;

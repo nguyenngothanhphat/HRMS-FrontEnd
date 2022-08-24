@@ -229,11 +229,26 @@ const AddPostContent = (props) => {
 
     const tempAllValues = { ...allValues };
     const commonFunc = (name) => {
-      let { fileList: fileListTemp = [] } = tempAllValues[name] || {};
+      let { fileList: fileListTemp = [], file: fileTemp = {} } = tempAllValues[name] || {};
       fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
-      setFileList([...fileListTemp]);
-      if (tempAllValues[name]) {
-        tempAllValues[name].fileList = fileListTemp;
+
+      if (Object.keys(fileTemp).length && fileTemp.status !== 'removed') {
+        const isVideo = fileTemp.type?.includes('video');
+        const imgListTemp = fileListTemp.filter((x) => !x.type.includes('video'));
+
+        if (isVideo) setFileList([fileTemp]);
+        else setFileList([...imgListTemp]);
+
+        if (tempAllValues[name]) {
+          tempAllValues[name].fileList = isVideo ? [fileTemp] : imgListTemp;
+        }
+      }
+
+      if (Object.keys(fileTemp).length && fileTemp.status === 'removed') {
+        setFileList([...fileListTemp]);
+        if (tempAllValues[name]) {
+          tempAllValues[name].fileList = fileListTemp;
+        }
       }
       return tempAllValues;
     };
