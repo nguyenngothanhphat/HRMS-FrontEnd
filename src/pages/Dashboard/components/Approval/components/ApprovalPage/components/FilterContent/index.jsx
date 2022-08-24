@@ -45,7 +45,7 @@ const FilterContent = (props) => {
       employeeIDList.map((x) => {
         return {
           value: x.generalInfo?.employeeId,
-          label: x.generalInfo.employeeId,
+          label: x.generalInfo?.employeeId,
         };
       }),
     );
@@ -227,8 +227,7 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by Department"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
           {listDepartmentName.map((x) => {
@@ -249,8 +248,7 @@ const FilterContent = (props) => {
           style={{ width: '100%' }}
           placeholder="Search by request type"
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           showArrow
         >
           {listTypes.map((x) => {
@@ -293,7 +291,7 @@ const FilterContent = (props) => {
 export default connect(({ loading, employee, location: { companyLocationList = [] } = {} }) => ({
   loadingFetchEmployeeIDList: loading.effects['employee/fetchEmployeeIDListEffect'],
   loadingFetchEmployeeNameList: loading.effects['employee/fetchEmployeeNameListEffect'],
-  loadingFetchManagerList: loading.effects['employee/fetchManagerListEffect'],
+  loadingFetchManagerList: loading.effects['employee/searchEmployeesEffect'],
   employee,
   companyLocationList,
 }))(FilterContent);

@@ -3,7 +3,7 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   LocationFilter,
-  DepartmentFilter,
+  getDepartmentList,
   EmployeeTypeFilter,
   getFilterList,
   getSkillList,
@@ -21,7 +21,8 @@ const employee = {
   state: {
     filter: {},
     location: [],
-    department: [],
+    departmentList: [],
+    divisionList: [],
     employeetype: [],
     listSkill: [],
     listEmployeeMyTeam: [],
@@ -64,15 +65,22 @@ const employee = {
         return {};
       }
     },
-    *fetchDepartment({ payload = {} }, { call, put }) {
+    *fetchDepartmentList({ params = {} }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(DepartmentFilter, payload);
-        const { statusCode, data: department = [] } = response;
+        response = yield call(getDepartmentList, {
+          ...params,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveDepartment', payload: { department } });
+        const type = params.type === 'DIVISION' ? 'divisionList' : 'departmentList';
+        yield put({ type: 'saveDepartment', payload: { [type]: data } });
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *fetchFilterList({ payload }, { call, put }) {
       try {
@@ -120,13 +128,9 @@ const employee = {
         return 0;
       }
     },
-    *fetchListEmployeeActive({ payload = {}, params = {} }, { call, put }) {
+    *fetchListEmployeeActive({ params = {} }, { call, put }) {
       try {
-        const currentPayload = {
-          ...payload,
-          status: ['ACTIVE'],
-        };
-        const response = yield call(getListEmployee, currentPayload, params);
+        const response = yield call(getListEmployee, params);
         const { statusCode, data: listEmployeeActive = [] } = response;
         if (statusCode !== 200) throw response;
 
@@ -136,7 +140,7 @@ const employee = {
         });
         yield put({
           type: 'save',
-          payload: { currentPayload },
+          payload: { currentPayload: params },
         });
         return listEmployeeActive;
       } catch (errors) {
@@ -144,13 +148,9 @@ const employee = {
         return 0;
       }
     },
-    *fetchListEmployeeInActive({ payload = {}, params = {} }, { call, put }) {
+    *fetchListEmployeeInActive({ params = {} }, { call, put }) {
       try {
-        const currentPayload = {
-          ...payload,
-          status: ['INACTIVE'],
-        };
-        const response = yield call(getListEmployee, currentPayload, params);
+        const response = yield call(getListEmployee, params);
         const { statusCode, data: listEmployeeInActive = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -159,7 +159,7 @@ const employee = {
         });
         yield put({
           type: 'save',
-          payload: { currentPayload },
+          payload: { currentPayload: params },
         });
       } catch (errors) {
         dialog(errors);
@@ -298,7 +298,7 @@ const employee = {
       }
       return response;
     },
-    *fetchManagerListEffect({ payload }, { call, put }) {
+    *searchEmployeesEffect({ payload }, { call, put }) {
       let response = {};
       try {
         response = yield call(getListEmployeeSingleCompany, {

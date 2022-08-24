@@ -1,7 +1,8 @@
-import { Form, Input, Select } from 'antd';
+import { Form, Select } from 'antd';
 import { debounce, isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import DebounceSelect from '@/components/DebounceSelect';
 import styles from './index.less';
 
 const FilterContent = (props) => {
@@ -10,11 +11,12 @@ const FilterContent = (props) => {
     dispatch,
     usersManagement: {
       filterList: { listCountry = [] } = {},
-      filter: { employeeId = '', name = '', roles = [], countries = [], locations = [] } = {},
+      filter: { search = '', roles = [], countries = [], locations = [] } = {},
       filter = {},
       roleList = [],
     } = {},
     companyLocationList = [],
+    activeTab = '',
   } = props;
 
   const [countryListState, setCountryListState] = useState([]);
@@ -32,6 +34,28 @@ const FilterContent = (props) => {
     setCountryListState(temp);
   };
 
+  const onEmployeeSearch = (value) => {
+    if (!value) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+
+    return dispatch({
+      type: 'usersManagement/searchEmployeesEffect',
+      payload: {
+        name: value,
+        status: activeTab === 'inActive' ? ['INACTIVE'] : ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfo?.legalName,
+        value: user._id,
+      }));
+    });
+  };
+
   // USE EFFECT
   useEffect(() => {
     formatCountryList();
@@ -45,8 +69,7 @@ const FilterContent = (props) => {
     // this is needed for directly filtering when clicking on title or department on the table
     form.setFieldsValue({
       ...filter,
-      employeeId,
-      name,
+      search,
       locations,
       countries,
       roles,
@@ -101,8 +124,14 @@ const FilterContent = (props) => {
       form={form}
       className={styles.FilterContent}
     >
-      <Form.Item label="By name/user id" name="name">
-        <Input placeholder="Search by Name/User ID..." />
+      <Form.Item label="By name/user id" name="ids">
+        <DebounceSelect
+          placeholder="Search by Name/User ID..."
+          fetchOptions={onEmployeeSearch}
+          showSearch
+          allowClear
+          mode="multiple"
+        />
       </Form.Item>
       <Form.Item label="By roles" name="roles">
         <Select

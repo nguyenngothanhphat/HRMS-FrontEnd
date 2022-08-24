@@ -62,8 +62,8 @@ export async function getProjectList(payload) {
 }
 
 export async function updateComment(payload) {
-  return request('/api/employeetenant/update', {
-    method: 'POST',
+  return request(`/api/employeetenant/${payload._id}`, {
+    method: 'PATCH',
     data: payload,
   });
 }

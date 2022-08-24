@@ -27,7 +27,6 @@ import {
   extendOfferLetter,
   withdrawOffer,
   getListCandidate,
-  getReporteesList,
   getDocumentSettingList,
   getListBenefit,
   getReferencesByCandidate,
@@ -455,25 +454,6 @@ const newCandidateForm = {
         dialog(errors);
       }
       return response;
-    },
-
-    *fetchReporteesList({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(getReporteesList, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-        });
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveTemp',
-          payload: { reporteeList: data },
-        });
-        return response;
-      } catch (errors) {
-        dialog(errors);
-        return '';
-      }
     },
 
     *addCandidateByHR({ payload }, { call, put }) {

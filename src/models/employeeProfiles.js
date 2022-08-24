@@ -1351,13 +1351,10 @@ const employeeProfile = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode } = response;
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
 
-        yield put({
-          type: 'fetchEmploymentInfo',
-          payload: { id: payload.id },
-        });
+        yield put({ type: 'saveOrigin', payload: { employmentData: data } });
 
         isUpdateEmployment = true;
         yield put({

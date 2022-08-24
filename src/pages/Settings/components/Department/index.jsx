@@ -195,7 +195,7 @@ const Department = (props) => {
         total={totalDepartmentList}
         isBackendPaging
         page={page}
-        size={limit}
+        limit={limit}
         onChangePage={onChangePage}
       />
       <CommonModal

@@ -29,7 +29,7 @@ const EditUserModalContent = (props) => {
     joinDate = '',
     location: { _id: locationName = '' } = {},
     company: { _id: companyName = '' } = {},
-    generalInfoInfo: {
+    generalInfo: {
       workEmail = '',
       firstName = '',
       lastName = '',
@@ -96,36 +96,7 @@ const EditUserModalContent = (props) => {
   }, [JSON.stringify(employeeDetail)]);
 
   const onFinish = (values) => {
-    const {
-      _id = '',
-      tenant = '',
-      generalInfoInfo: { _id: generalInfoId = '' } = {},
-    } = employeeDetail;
-
-    // Updating details in the admin portal should update the associated fields also
-    // The above 3 points should work for both the active users and inactive users portal
-    dispatch({
-      type: 'usersManagement/updateRolesByEmployee',
-      payload: {
-        employee: _id,
-        roles: values.roles,
-        tenantId: tenant,
-      },
-    });
-
-    dispatch({
-      type: 'usersManagement/updateGeneralInfo',
-      payload: {
-        id: generalInfoId,
-        userId: values.userId,
-        legalName: values.legalName,
-        workEmail: values.workEmail,
-        firstName: values.firstName,
-        lastName: values.lastName,
-        middleName: values.middleName,
-        tenantId: tenant,
-      },
-    });
+    const { _id = '', tenant = '' } = employeeDetail;
 
     const payloadUpdateEmployee = {
       _id,
@@ -133,6 +104,15 @@ const EditUserModalContent = (props) => {
       company: companyId,
       status: values.status,
       tenantId: tenant,
+      generalInfo: {
+        userId: values.userId,
+        legalName: values.legalName,
+        workEmail: values.workEmail,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        middleName: values.middleName,
+      },
+      roles: values.roles,
     };
     if (values.status === 'INACTIVE') {
       delete payloadUpdateEmployee.status;
@@ -140,9 +120,6 @@ const EditUserModalContent = (props) => {
     dispatch({
       type: 'usersManagement/updateEmployee',
       payload: payloadUpdateEmployee,
-      params: {
-        ID: values.employeeId,
-      },
     }).then((statusCode) => {
       if (statusCode === 200) {
         notification.success({

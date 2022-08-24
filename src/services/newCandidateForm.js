@@ -74,13 +74,6 @@ export function getManagerList(params) {
   // });
 }
 
-export function getReporteesList(params) {
-  return request('/api/employeetenant/list', {
-    method: 'POST',
-    data: params,
-  });
-}
-
 export async function getReportingManagerList(params) {
   return request('/api/employeetenant/list-manager', {
     method: 'POST',
