@@ -194,6 +194,8 @@ const AddPostContent = (props) => {
       case 'image/png':
       case 'image/jpg':
       case 'image/jpeg':
+      case 'video/mp4':
+      case 'video/mov':
         checkType = true;
         break;
 
@@ -202,13 +204,14 @@ const AddPostContent = (props) => {
         break;
     }
     if (!checkType) {
-      message.error('You can only upload PNG/JPG/JPEG files');
+      message.error('You can only upload PNG/JPG/JPEG/MP4/MOV files');
+      setIsUpload(false);
     }
-    const isLt3M = file.size / 1024 / 1024 < 3;
-    if (!isLt3M) {
-      message.error('File must smaller than 3MB!');
+    const isLt5M = file.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
+      message.error('File must smaller than 5MB!');
     }
-    return (checkType && isLt3M) || Upload.LIST_IGNORE;
+    return (checkType && isLt5M) || Upload.LIST_IGNORE;
   };
 
   const onValuesChange = (changedValues, allValues) => {
@@ -286,7 +289,8 @@ const AddPostContent = (props) => {
               <span className={styles.chooseFileText}>Choose files</span>
               <span className={styles.uploadText}>or drop files here</span>
               <p className={styles.description}>
-                Maximum file size 3 mb, Supported file format png, jpg & jpeg (Image size 350*300)
+                Maximum file size 5 MB, Maximum file size is 5MB. Supported file formats are png,
+                jpg, jpeg, mp4 & mov
               </p>
             </div>
           </Dragger>
