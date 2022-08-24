@@ -65,7 +65,8 @@ const AnnouncementContent = (props) => {
             <span className={styles.chooseFileText}>Choose files</span>
             <span className={styles.uploadText}>or drop files here</span>
             <p className={styles.description}>
-              Maximum file size 3 mb, Supported file format png, jpg & jpeg (Image size 350*300)
+              Maximum file size 5 MB, Maximum file size is 5MB. Supported file formats are png, jpg,
+              jpeg, mp4 & mov
             </p>
           </div>
         </Dragger>
