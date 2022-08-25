@@ -16,7 +16,7 @@ const ReassignModal = (props) => {
       });
     }
     return dispatch({
-      type: 'onboarding/fetchEmployeeList',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: val,
         status: ['ACTIVE'],
@@ -86,7 +86,6 @@ const ReassignModal = (props) => {
   );
 };
 
-export default connect(({ loading, onboarding: { employeeList = [] } = {} }) => ({
-  loadingFetchEmployeeList: loading.effects['onboarding/fetchEmployeeList'],
+export default connect(({ onboarding: { employeeList = [] } = {} }) => ({
   employeeList,
 }))(ReassignModal);

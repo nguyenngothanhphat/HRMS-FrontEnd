@@ -22,7 +22,7 @@ const TerminateModalContent = (props) => {
   const refreshList = () => {
     dispatch({
       type: 'usersManagement/fetchEmployeesList',
-      payload: currentPayload,
+      params: currentPayload,
     });
   };
 

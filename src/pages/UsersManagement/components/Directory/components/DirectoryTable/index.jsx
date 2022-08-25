@@ -185,10 +185,8 @@ const DirectoryTable = (props) => {
         dataIndex: 'managePermission',
         align: 'left',
         width: '10%',
-        render: (managePermission = []) => {
-          let roles = [];
-          if (managePermission.length && managePermission[0]) roles = managePermission[0].roles;
-          return roles.map((role) => {
+        render: (managePermission = {}) => {
+          return (managePermission?.roles || []).map((role) => {
             const tag = roleTags.find((d) => d.name === role) || {};
             return (
               <Tag

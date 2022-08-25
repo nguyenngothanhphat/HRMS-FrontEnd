@@ -74,16 +74,16 @@ const EditProjectModalContent = (props) => {
       });
     }
     return dispatch({
-      type: 'projectManagement/fetchEmployeeListEffect',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: val,
         status: ['ACTIVE'],
       },
     }).then((res = {}) => {
       const { data = [] } = res;
-      return data.map((user) => ({
-        label: user.generalInfoInfo?.legalName,
-        value: user._id,
+      return data.map((x) => ({
+        label: x.generalInfoInfo?.legalName,
+        value: x._id,
       }));
     });
   };
@@ -250,8 +250,7 @@ const EditProjectModalContent = (props) => {
   );
 };
 
-export default connect(({ projectManagement = {}, user, loading }) => ({
+export default connect(({ projectManagement = {}, user }) => ({
   projectManagement,
   user,
-  loadingFetchEmployeeList: loading.effects['projectManagement/fetchEmployeeListEffect'],
 }))(EditProjectModalContent);

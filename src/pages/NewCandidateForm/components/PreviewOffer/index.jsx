@@ -1436,12 +1436,11 @@ const PreviewOffer = (props) => {
 // export default PreviewOffer;
 export default connect(
   ({
-    info: { previewOffer = {} } = {},
+
     loading,
     user: { currentUser = {} } = {},
     newCandidateForm: { rookieId = '', tempData = {}, data = {} } = {},
   }) => ({
-    previewOffer,
     loading: loading.effects['upload/uploadFile'],
     currentUser,
     tempData,

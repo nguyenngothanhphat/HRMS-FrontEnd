@@ -74,7 +74,7 @@ const JobDetailForm = (props) => {
     }
 
     return dispatch({
-      type: 'newCandidateForm/fetchManagerList',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: value,
         status: ['ACTIVE'],

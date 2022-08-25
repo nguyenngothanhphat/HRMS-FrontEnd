@@ -15,7 +15,7 @@ const ReassignModal = (props) => {
       });
     }
     return dispatch({
-      type: 'offboarding/fetchEmployeeListEffect',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: val,
         status: ['ACTIVE'],

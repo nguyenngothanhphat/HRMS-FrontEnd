@@ -329,7 +329,6 @@ export default connect(
     employee,
     bankDataOrigin,
     bankData,
-
     locationProp,
   }),
 )(EditBank);

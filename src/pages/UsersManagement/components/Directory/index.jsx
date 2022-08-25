@@ -80,13 +80,11 @@ const DirectoryComponent = (props) => {
 
       dispatch({
         type: 'usersManagement/fetchEmployeesList',
-        payload: {
+        params: {
           ...filter,
           status: tabId === inActive ? ['INACTIVE'] : ['ACTIVE'],
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
-        },
-        params: {
           page: pageSelected,
           limit: size,
         },

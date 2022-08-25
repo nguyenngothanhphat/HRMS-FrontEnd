@@ -20,7 +20,6 @@ const Projects = (props) => {
       projectTypeList = [],
       projectStatusList = [],
       divisionList = [],
-      employeeList = [],
       projectNameList = [],
     } = {},
   } = props;
@@ -58,11 +57,6 @@ const Projects = (props) => {
     if (isEmpty(divisionList)) {
       dispatch({
         type: 'customerProfile/fetchDivisionListEffect',
-      });
-    }
-    if (isEmpty(employeeList)) {
-      dispatch({
-        type: 'customerProfile/fetchEmployeeListEffect',
       });
     }
   };

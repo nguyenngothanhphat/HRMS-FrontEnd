@@ -6,7 +6,6 @@ import { exportRawDataToCSV } from '@/utils/exportToCsv';
 import { exportCSV } from '@/utils/timeOffManagement';
 import { dialog } from '@/utils/utils';
 import {
-  getListEmployees,
   getListTimeOff,
   getLocationsOfCountries,
   getMissingLeaveDates,
@@ -19,7 +18,6 @@ const timeOffManagement = {
   state: {
     listTimeOff: [],
     listTotal: 0,
-    listEmployees: [],
     selectedLocations: [],
     locationsOfCountries: [],
     typeList: [],
@@ -27,19 +25,6 @@ const timeOffManagement = {
     timeOffTypesByCountry: [],
   },
   effects: {
-    *getListEmployeesEffect({ payload = {} }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getListEmployees, payload);
-        const { statusCode, data = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listEmployees: data } });
-      } catch (error) {
-        dialog(error);
-      }
-      return response;
-    },
-
     *getListTimeOffEffect({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getListTimeOff, { ...payload, company: getCurrentCompany() });

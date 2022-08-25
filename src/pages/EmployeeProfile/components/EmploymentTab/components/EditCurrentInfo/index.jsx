@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-curly-newline */
 import { DatePicker, Form, Select } from 'antd';
 import moment from 'moment';
-import React, { PureComponent } from 'react';
+import React, { useEffect } from 'react';
 import { connect, formatMessage } from 'umi';
 import DebounceSelect from '@/components/DebounceSelect';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
@@ -11,29 +11,43 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-@connect(
-  ({
-    employeeProfile,
-    loading,
-    employeeProfile: { compensationTypes = [] } = {},
-    location: { companyLocationList = {} } = {},
-  }) => ({
-    employeeProfile,
-    compensationTypes,
-    loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
-    loadingCompensationList: loading.effects['employeeProfile/fetchCompensationList'],
-    loadingFetchEmployeeList:
-      loading.effects['employeeProfile/fetchEmployeeListSingleCompanyEffect'],
-    companyLocationList,
-    loadingUpdate: loading.effects['employeeProfile/updateEmployment'],
-  }),
-)
-class EditCurrentInfo extends PureComponent {
-  formRef = React.createRef();
+const dateFormat = 'Do MMMM YYYY';
 
-  componentDidMount() {
-    const { employeeProfile, dispatch } = this.props;
-    const { department = '' } = employeeProfile.originData.employmentData;
+const formLayout = {
+  labelCol: { span: 6 },
+  wrapperCol: { span: 12 },
+};
+
+const EditCurrentInfo = (props) => {
+  const [form] = Form.useForm();
+
+  const {
+    dispatch,
+    employeeProfile,
+    employeeProfile: { employee = '', departments = [], listGrades = [] },
+    loadingTitleList,
+    handleCancel = () => {},
+    companyLocationList,
+    loadingUpdate = false,
+  } = props;
+
+  const {
+    title = {},
+    joinDate = '',
+    location = {},
+    department = {},
+    employeeType = '',
+    initialJoinDate = '',
+    empTypeOther = '',
+    manager = {},
+    compensation = {},
+    grade = {},
+    initialJoiningDate = '',
+  } = employeeProfile.employmentData;
+
+  const compensationType = compensation ? compensation.compensationType : '';
+
+  useEffect(() => {
     dispatch({
       type: 'employeeProfile/fetchTitleByDepartment',
       payload: {
@@ -46,67 +60,52 @@ class EditCurrentInfo extends PureComponent {
     dispatch({
       type: 'employeeProfile/fetchGradeList',
     });
-  }
+    return () => {
+      dispatch({
+        type: 'employeeProfile/save',
+        payload: {
+          listTitleByDepartment: [],
+          companyLocationList: [],
+        },
+      });
+    };
+  }, []);
 
-  componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'employeeProfile/save',
-      payload: {
-        isUpdateEmployment: false,
-        listTitleByDepartment: [],
-        companyLocationList: [],
-      },
-    });
-  }
-
-  onChangeDepartment = (id) => {
-    const { dispatch } = this.props;
-
+  const onChangeDepartment = (id) => {
     dispatch({
       type: 'employeeProfile/fetchTitleByDepartment',
       payload: {
         department: id,
       },
     });
-    this.formRef.current.setFieldsValue({
+    form.setFieldsValue({
       title: null,
     });
   };
 
-  handleSave = (values, id) => {
-    const { dispatch } = this.props;
-    const {
-      title,
-      joinDate,
-      initialJoinDate,
-      location,
-      empTypeOther,
-      employeeType,
-      manager,
-      department,
-      grade,
-    } = values;
+  const handleSave = async (values) => {
     const payload = {
-      id,
-      title,
-      joinDate,
-      initialJoinDate,
-      location,
-      employeeType,
-      empTypeOther,
-      department,
-      manager,
-      grade,
+      _id: employee,
+      title: values.title,
+      joinDate: values.joinDate,
+      initialJoinDate: values.initialJoinDate,
+      location: values.location,
+      employeeType: values.employeeType,
+      empTypeOther: values.empTypeOther,
+      department: values.department,
+      manager: values.manager,
+      grade: values.grade,
     };
-    dispatch({
+    const res = await dispatch({
       type: 'employeeProfile/patchEmployment',
       payload,
     });
+    if (res.statusCode === 200) {
+      handleCancel();
+    }
   };
 
-  onEmployeeSearch = (value) => {
-    const { dispatch } = this.props;
+  const onEmployeeSearch = (value) => {
     if (!value) {
       return new Promise((resolve) => {
         resolve([]);
@@ -114,7 +113,7 @@ class EditCurrentInfo extends PureComponent {
     }
 
     return dispatch({
-      type: 'employeeProfile/fetchEmployeeListSingleCompanyEffect',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: value,
         status: ['ACTIVE'],
@@ -128,199 +127,169 @@ class EditCurrentInfo extends PureComponent {
     });
   };
 
-  render() {
-    const formLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 12 },
-    };
+  return (
+    <div className={styles.editCurrentInfo}>
+      <Form
+        className={styles.editCurrentInfo__form}
+        requiredMark={false}
+        colon={false}
+        labelAlign="left"
+        form={form}
+        layout="horizontal"
+        {...formLayout}
+        initialValues={{
+          title: title?._id,
+          joinDate: joinDate && moment(joinDate).locale('en'),
+          location: location?._id,
+          employeeType: employeeType?._id,
+          initialJoinDate: initialJoinDate
+            ? initialJoinDate && moment(initialJoinDate).locale('en')
+            : joinDate && moment(joinDate).locale('en'),
+          empTypeOther,
+          department: department?._id,
+          manager: (manager && manager?._id) || null,
+          managerLoading: manager?.generalInfo?.legalName || null,
+          compensationType,
+          grade: grade?._id,
+          initialJoiningDate:
+            (initialJoiningDate && moment(initialJoiningDate).locale('en')) ||
+            (joinDate && moment(joinDate).locale('en')),
+        }}
+        onFinish={(values) => handleSave(values)}
+      >
+        <Form.Item label="Job Title" name="title">
+          <Select
+            placeholder="Enter Job Title"
+            showArrow
+            showSearch
+            loading={loadingTitleList}
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {employeeProfile.listTitleByDepartment.map((item) => (
+              <Option key={item._id}>{item.name}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item label="Department" name="department">
+          <Select
+            placeholder="Enter Department"
+            showArrow
+            onChange={onChangeDepartment}
+            showSearch
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {departments.map((item) => (
+              <Option key={item._id}>{item.name}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item label="Grade" name="grade">
+          <Select
+            placeholder="Enter the grade"
+            showArrow
+            showSearch
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {listGrades.map((item) => (
+              <Option key={item._id}>{item.name}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item label="Initial Joining Date" name="initialJoinDate">
+          <DatePicker format={dateFormat} style={{ width: '100%' }} />
+        </Form.Item>
+        <Form.Item label="Joining Date" name="joinDate">
+          <DatePicker format={dateFormat} style={{ width: '100%' }} />
+        </Form.Item>
+        <Form.Item label={formatMessage({ id: 'addEmployee.location' })} name="location">
+          <Select
+            placeholder={formatMessage({ id: 'addEmployee.placeholder.location' })}
+            showArrow
+            showSearch
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {companyLocationList.map((item) => (
+              <Option key={item._id}>{item.name}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item label="Employee Type" name="empTypeOther">
+          <Select
+            showSearch
+            placeholder="Select an employee type"
+            optionFilterProp="children"
+            // onChange={(value) => onChange(value, 'employment')}
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {['Regular', 'Contingent Worker'].map((x, index) => {
+              return (
+                <Option key={`${index + 1}`} value={x}>
+                  {x}
+                </Option>
+              );
+            })}
+            ]
+          </Select>
+        </Form.Item>
+        <Form.Item label="Employment Type" name="employeeType">
+          <Select
+            showSearch
+            placeholder="Select an employment type"
+            optionFilterProp="children"
+            // onChange={(value) => onChange(value, 'employment')}
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {employeeProfile.employeeTypes.map((item, index) => {
+              return (
+                <Option key={`${index + 1}`} value={item._id}>
+                  {item.name}
+                </Option>
+              );
+            })}
+            ]
+          </Select>
+        </Form.Item>
 
-    const {
-      employeeProfile,
-      employeeProfile: { departments = [], listGrades = [] },
-      loadingTitleList,
-      handleCancel = () => {},
-      companyLocationList,
-      loadingUpdate = false,
-    } = this.props;
-    const {
-      _id = '',
-      title = '',
-      joinDate = '',
-      location = '',
-      department = {},
-      employeeType = '',
-      initialJoinDate = '',
-      empTypeOther = '',
-      manager = '',
-      compensation = {},
-      titleInfo = {},
-      initialJoiningDate = '',
-    } = employeeProfile.originData.employmentData;
+        <Form.Item label="Manager" name="manager">
+          <DebounceSelect
+            placeholder="Select the manager"
+            fetchOptions={onEmployeeSearch}
+            showSearch
+            defaultOptions={{
+              value: manager?._id,
+              label: manager?.generalInfo?.legalName,
+            }}
+          />
+        </Form.Item>
 
-    const compensationType = compensation ? compensation.compensationType : '';
+        <div className={styles.spaceFooter}>
+          <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+          <CustomPrimaryButton htmlType="submit" loading={loadingUpdate}>
+            Save
+          </CustomPrimaryButton>
+        </div>
+      </Form>
+    </div>
+  );
+};
 
-    const dateFormat = 'Do MMMM YYYY';
-
-    return (
-      <div className={styles.editCurrentInfo}>
-        <Form
-          className={styles.editCurrentInfo__form}
-          requiredMark={false}
-          colon={false}
-          labelAlign="left"
-          ref={this.formRef}
-          layout="horizontal"
-          {...formLayout}
-          initialValues={{
-            title: title._id,
-            joinDate: joinDate && moment(joinDate).locale('en'),
-            location: location._id,
-            employeeType: employeeType._id,
-            initialJoinDate: initialJoinDate
-              ? initialJoinDate && moment(initialJoinDate).locale('en')
-              : joinDate && moment(joinDate).locale('en'),
-            empTypeOther,
-            department: department?._id,
-            manager: (manager && manager._id) || null,
-            managerLoading: manager?.generalInfo?.legalName || null,
-            compensationType,
-            grade: titleInfo?.gradeObj,
-            initialJoiningDate:
-              (initialJoiningDate && moment(initialJoiningDate).locale('en')) ||
-              (joinDate && moment(joinDate).locale('en')),
-            // timeOffPolicy,
-          }}
-          // onFinish={(values) => console.log(values)}
-          onFinish={(values) => this.handleSave(values, _id)}
-        >
-          <Form.Item label="Job Title" name="title">
-            <Select
-              placeholder="Enter Job Title"
-              showArrow
-              showSearch
-              loading={loadingTitleList}
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {employeeProfile.listTitleByDepartment.map((item) => (
-                <Option key={item._id}>{item.name}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item label="Department" name="department">
-            <Select
-              placeholder="Enter Department"
-              showArrow
-              onChange={this.onChangeDepartment}
-              showSearch
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {departments.map((item) => (
-                <Option key={item._id}>{item.name}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item label="Grade" name="grade">
-            <Select
-              placeholder="Enter the grade"
-              showArrow
-              showSearch
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-              onChange={this.onChangeGrade}
-            >
-              {listGrades.map((item) => (
-                <Option key={item._id}>{item.name}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item label="Initial Joining Date" name="initialJoinDate">
-            <DatePicker format={dateFormat} style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item label="Joining Date" name="joinDate">
-            <DatePicker format={dateFormat} style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item label={formatMessage({ id: 'addEmployee.location' })} name="location">
-            <Select
-              placeholder={formatMessage({ id: 'addEmployee.placeholder.location' })}
-              showArrow
-              showSearch
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {companyLocationList.map((item) => (
-                <Option key={item._id}>{item.name}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item label="Employee Type" name="empTypeOther">
-            <Select
-              showSearch
-              placeholder="Select an employee type"
-              optionFilterProp="children"
-              // onChange={(value) => onChange(value, 'employment')}
-              filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {['Regular', 'Contingent Worker'].map((x, index) => {
-                return (
-                  <Option key={`${index + 1}`} value={x}>
-                    {x}
-                  </Option>
-                );
-              })}
-              ]
-            </Select>
-          </Form.Item>
-          <Form.Item label="Employment Type" name="employeeType">
-            <Select
-              showSearch
-              placeholder="Select an employment type"
-              optionFilterProp="children"
-              // onChange={(value) => onChange(value, 'employment')}
-              filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {employeeProfile.employeeTypes.map((item, index) => {
-                return (
-                  <Option key={`${index + 1}`} value={item._id}>
-                    {item.name}
-                  </Option>
-                );
-              })}
-              ]
-            </Select>
-          </Form.Item>
-
-          <Form.Item label="Manager" name="manager">
-            <DebounceSelect
-              placeholder="Select the manager"
-              fetchOptions={this.onEmployeeSearch}
-              showSearch
-              defaultOptions={{
-                value: manager?._id,
-                label: manager?.generalInfo?.legalName,
-              }}
-            />
-          </Form.Item>
-
-          <div className={styles.spaceFooter}>
-            <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
-            <CustomPrimaryButton htmlType="submit" loading={loadingUpdate}>
-              Save
-            </CustomPrimaryButton>
-          </div>
-        </Form>
-      </div>
-    );
-  }
-}
-
-export default EditCurrentInfo;
+export default connect(
+  ({ employeeProfile, loading, location: { companyLocationList = {} } = {} }) => ({
+    employeeProfile,
+    loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
+    companyLocationList,
+    loadingUpdate: loading.effects['employeeProfile/patchEmployment'],
+  }),
+)(EditCurrentInfo);

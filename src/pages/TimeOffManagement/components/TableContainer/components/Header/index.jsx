@@ -62,7 +62,7 @@ const Header = (props) => {
     }
 
     return dispatch({
-      type: 'timeOffManagement/getListEmployeesEffect',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: value,
         company: getCurrentCompany(),
@@ -187,7 +187,6 @@ const Header = (props) => {
   );
 };
 export default connect(({ loading, timeOffManagement }) => ({
-  loadingEmployeeList: loading.effects['timeOffManagement/getListEmployeesEffect'],
   loadingFetchTimeoffTypes: loading.effects['timeOffManagement/getTimeOffTypeListEffect'],
   timeOffManagement,
 }))(Header);

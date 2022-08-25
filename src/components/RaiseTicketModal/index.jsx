@@ -65,7 +65,7 @@ const RaiseTicketModal = (props) => {
     }
 
     return dispatch({
-      type: 'ticketManagement/fetchListEmployee',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: value,
         status: ['ACTIVE'],
