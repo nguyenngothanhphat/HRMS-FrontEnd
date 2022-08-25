@@ -7,7 +7,7 @@ import RejectCommentModal from './components/RejectCommentModal';
 import ViewIcon from '@/assets/dashboard/open.svg';
 import ApproveIcon from '@/assets/dashboard/approve.svg';
 import CancelIcon from '@/assets/dashboard/cancel.svg';
-import { TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
+import { STATUS_OF_REPORT, TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
 import styles from './index.less';
 
 const PendingApprovalTag = (props) => {
@@ -46,10 +46,14 @@ const PendingApprovalTag = (props) => {
         refreshData();
       }
     } else {
+      const status =
+        itemProp.status === STATUS_OF_REPORT.PENDING
+          ? STATUS_OF_REPORT.APPROVED
+          : STATUS_OF_REPORT.RE_APPROVED;
       response = await dispatch({
         type: 'dashboard/approveTimeSheetRequest',
         payload: {
-          status: 'APPROVED',
+          status,
           ticketId: itemProp.ticketId,
         },
       });

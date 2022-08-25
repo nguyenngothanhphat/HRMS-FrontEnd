@@ -28,6 +28,7 @@ import {
   getLeaveRequests,
 } from '../services/dashboard';
 import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
+import { STATUS_OF_REPORT } from '@/constants/dashboard';
 
 const defaultState = {
   listTicket: [],
@@ -107,7 +108,7 @@ const dashboard = {
           tenantId: getCurrentTenant(),
           companyId: getCurrentCompany(),
           roles: ['MANAGER'],
-          status: ['PENDING', 'IN-PROGRESS'],
+          status: STATUS_OF_REPORT.ACTIVE,
         });
 
         const {

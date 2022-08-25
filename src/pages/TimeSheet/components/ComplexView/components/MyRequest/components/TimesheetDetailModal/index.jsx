@@ -7,6 +7,7 @@ import { getCurrentCompany } from '@/utils/authority';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import WeeklyTable from './components/WeeklyTable';
 import styles from './index.less';
+import { STATUS_OF_REPORT } from '@/constants/dashboard';
 
 const TimesheetDetailModal = (props) => {
   const {
@@ -74,9 +75,9 @@ const TimesheetDetailModal = (props) => {
         <span
           className={
             // eslint-disable-next-line no-nested-ternary
-            status.toLowerCase() === 'pending'
+            [STATUS_OF_REPORT.PENDING, STATUS_OF_REPORT.RE_SUBMIT].includes(status)
               ? styles.status__Pending
-              : status.toLowerCase() === 'approved'
+              : [STATUS_OF_REPORT.APPROVED, STATUS_OF_REPORT.RE_APPROVED].includes(status)
               ? styles.status__Approved
               : styles.status__Rejected
           }

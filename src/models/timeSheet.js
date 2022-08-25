@@ -43,6 +43,7 @@ import {
 import { getCountry, getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay, pushSuccess } from '@/utils/timeSheet';
 import { dialog } from '@/utils/utils';
+import { STATUS_OF_REPORT } from '@/constants/dashboard';
 
 const tenantId = getCurrentTenant();
 
@@ -817,7 +818,7 @@ const TimeSheet = {
           ...payload,
           tenantId: getCurrentTenant(),
           companyId: getCurrentCompany(),
-          status: 'PENDING',
+          status: STATUS_OF_REPORT.RE_SUBMIT,
         });
         const { code, msg, myRequest } = response;
         if (code !== 200) throw response;
