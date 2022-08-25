@@ -74,7 +74,6 @@ export default connect(
   }) => ({
     dataOrgChart,
     loading: loading.effects['employee/fetchDataOrgChart'],
-    loadingFetchListAll: loading.effects['employee/fetchAllListUser'],
     myEmployeeId,
     companiesOfUser,
     companyLocationList,

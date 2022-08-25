@@ -1,322 +1,189 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { PlusOutlined } from '@ant-design/icons';
-import { Col, Form, Input, notification, Row, Select } from 'antd';
-import React, { Component } from 'react';
+import { Col, Form, Input, notification, Row, Select, Space } from 'antd';
+import React, { Component, useEffect } from 'react';
 import { connect, formatMessage } from 'umi';
 import removeIcon from '../assets/removeIcon.svg';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import styles from './index.less';
 
-@connect(
-  ({
-    loading,
+const { Option } = Select;
+
+const Edit = (props) => {
+  const [form] = Form.useForm();
+
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 6 },
+      sm: { span: 6 },
+    },
+    wrapperCol: {
+      xs: { span: 9 },
+      sm: { span: 12 },
+    },
+  };
+
+  const {
+    dispatch,
     employeeProfile: {
-      originData: { generalData: generalDataOrigin = {} } = {},
-      tempData: { generalData = {} } = {},
+      employee = '',
+      employmentData: { generalInfo = {} } = {},
       listRelation = [],
     } = {},
-  }) => ({
-    loading: loading.effects['employeeProfile/updateGeneralInfo'],
-    generalDataOrigin,
-    generalData,
-    listRelation,
-  }),
-)
-class Edit extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      formEmergencyDetail: [{}],
-    };
-  }
+    loading,
+    handleCancel = () => {},
+  } = props;
 
-  componentDidMount() {
-    const { dispatch } = this.props;
+  const { emergencyContactDetails = [] } = generalInfo;
+
+  useEffect(() => {
     dispatch({
       type: 'employeeProfile/fetchListRelation',
     });
-  }
+  }, []);
 
-  handleAddBtn = () => {
-    const { generalData, dispatch } = this.props;
-    const { formEmergencyDetail } = this.state;
-    const { emergencyContactDetails = [] } = generalData;
-    if (emergencyContactDetails.length > 0) {
-      const newEmergencyContactDetails = [...emergencyContactDetails, {}];
-
-      dispatch({
-        type: 'employeeProfile/saveTemp',
-        payload: { generalData: { emergencyContactDetails: newEmergencyContactDetails } },
-      });
-    } else {
-      const newEmergencyContactDetails = [...formEmergencyDetail, {}];
-
-      dispatch({
-        type: 'employeeProfile/saveTemp',
-        payload: { generalData: { emergencyContactDetails: newEmergencyContactDetails } },
-      });
-    }
-  };
-
-  handleRemove = (index) => {
-    const { generalData, dispatch } = this.props;
-    const { emergencyContactDetails = [] } = generalData;
-    const newList = [...emergencyContactDetails];
-    newList.splice(index, 1);
-
-    dispatch({
-      type: 'employeeProfile/saveTemp',
-      payload: { generalData: { emergencyContactDetails: newList } },
-    });
-  };
-
-  handleChange = (changedValues) => {
-    const { dispatch, generalData, generalDataOrigin } = this.props;
-    const generalInfo = {
-      ...generalData,
-      ...changedValues,
+  const onFinish = async (values) => {
+    const payload = {
+      generalInfo: { emergencyContactDetails: values.emergencyContactDetails },
+      _id: employee,
     };
-    const isModified = JSON.stringify(generalInfo) !== JSON.stringify(generalDataOrigin);
-    dispatch({
-      type: 'employeeProfile/saveTemp',
-      payload: { generalData: generalInfo },
-    });
-    dispatch({
-      type: 'employeeProfile/save',
-      payload: { isModified },
-    });
-  };
-
-  handleChangeField = (idName, value, index) => {
-    const {
-      generalData: { emergencyContactDetails = [] },
-      dispatch,
-    } = this.props;
-    let newIdName = '';
-
-    if (idName === `emergencyContact ${index}`) {
-      newIdName = idName.slice(0, 16);
-    }
-    if (idName === `emergencyPersonName ${index}`) {
-      newIdName = idName.slice(0, 19);
-    }
-
-    const item = emergencyContactDetails[index];
-    const newItem = { ...item, [newIdName]: value };
-    const newList = [...emergencyContactDetails];
-
-    newList.splice(index, 1, newItem);
-
-    dispatch({
-      type: 'employeeProfile/saveTemp',
-      payload: { generalData: { emergencyContactDetails: newList } },
-    });
-  };
-
-  handleChangeFieldSelect = (value, index) => {
-    const {
-      generalData: { emergencyContactDetails = [] },
-      dispatch,
-    } = this.props;
-
-    const item = emergencyContactDetails[index];
-    const newItem = { ...item, emergencyRelation: value };
-    const newList = [...emergencyContactDetails];
-
-    newList.splice(index, 1, newItem);
-
-    dispatch({
-      type: 'employeeProfile/saveTemp',
-      payload: { generalData: { emergencyContactDetails: newList } },
-    });
-  };
-
-  processDataChanges = () => {
-    const { generalData, generalDataOrigin } = this.props;
-
-    const { _id } = generalDataOrigin;
-    const { emergencyContactDetails: newData = [] } = generalData;
-
-    const payloadChanges = {
-      emergencyContactDetails: newData,
-      id: _id,
-    };
-
-    return payloadChanges;
-  };
-
-  processDataKept = () => {
-    const { generalData } = this.props;
-    const newObj = { ...generalData };
-    const listKey = ['emergencyContact', 'emergencyPersonName', 'emergencyRelation'];
-    listKey.forEach((item) => delete newObj[item]);
-    return newObj;
-  };
-
-  handleSave = () => {
-    const { dispatch } = this.props;
-    const payload = this.processDataChanges() || {};
-    const dataTempKept = this.processDataKept() || {};
-
-    const listContact = payload.emergencyContactDetails || [];
-    const findContactNull = listContact.filter(
-      (obj) =>
-        obj.emergencyContact === undefined ||
-        obj.emergencyPersonName === undefined ||
-        obj.emergencyRelation === undefined,
-    );
-    if (findContactNull.length > 0) {
-      notification.error({
-        message: 'All fileds cannot empty!',
-      });
-      return;
-    }
-    dispatch({
+    const res = await dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload,
-      dataTempKept,
-      key: 'openContactDetails',
     });
+    if (res.statusCode === 200) {
+      handleCancel();
+    }
   };
 
-  render() {
-    const { Option } = Select;
-    const { listRelation } = this.props;
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 6 },
-        sm: { span: 6 },
-      },
-      wrapperCol: {
-        xs: { span: 9 },
-        sm: { span: 12 },
-      },
-    };
-
-    const {
-      generalData: { emergencyContactDetails = [] },
-      loading,
-      handleCancel = () => {},
-    } = this.props;
-    const { formEmergencyDetail } = this.state;
-    const formEmergency =
-      emergencyContactDetails.length > 0 ? emergencyContactDetails : formEmergencyDetail;
-    return (
-      <Row gutter={[0, 24]} className={styles.Edit}>
-        <Form
-          ref={this.formRef}
-          className={styles.Form}
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...formItemLayout}
-          onValuesChange={this.handleChange}
-          onFinish={this.handleSave}
-        >
-          {formEmergency.map((item, index) => {
-            const { emergencyContact, emergencyPersonName, emergencyRelation } = item;
-            return (
-              <div key={`${index + 1}`} className={styles.containerForm}>
-                {index > 0 ? <div className={styles.line} /> : null}
-                {index >= 1 ? (
-                  <div className={styles.removeIcon}>
-                    <img onClick={() => this.handleRemove(index)} src={removeIcon} alt="remove" />
+  return (
+    <Row gutter={[0, 24]} className={styles.Edit}>
+      <Form
+        form={form}
+        className={styles.Form}
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...formItemLayout}
+        name="editEmergencyContactForm"
+        initialValues={{
+          emergencyContactDetails,
+        }}
+        onFinish={onFinish}
+      >
+        <Form.List name="emergencyContactDetails">
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map(({ key, name, ...restField }) => (
+                <div className={styles.containerForm}>
+                  <div className={styles.removeIcon} onClick={() => remove(name)}>
+                    <img src={removeIcon} alt="remove" />
                   </div>
-                ) : null}
-                <Form.Item
-                  label="Emergency Contact’s Name"
-                  name={`emergencyPersonName ${index}`}
-                  validateTrigger="onChange"
-                  rules={[
-                    {
-                      pattern: /^[a-zA-Z ]*$/,
-                      message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
-                    },
-                  ]}
-                >
-                  <Input
-                    defaultValue={emergencyPersonName}
-                    className={styles.inputForm}
-                    placeholder="Enter the Emergency Contact’s Name"
-                    onChange={(e) => this.handleChangeField(e.target.id, e.target.value, index)}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="Relation"
-                  name={`emergencyRelation ${index}`}
-                  rules={[
-                    {
-                      pattern: /^[a-zA-Z ]*$/,
-                      message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
-                    },
-                  ]}
-                >
-                  <Select
-                    size={14}
-                    placeholder="Please select a choice"
-                    showArrow
-                    filterOption={
-                      (input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      // eslint-disable-next-line react/jsx-curly-newline
-                    }
-                    className={styles.inputForm}
-                    defaultValue={emergencyRelation}
-                    onChange={(value) => this.handleChangeFieldSelect(value, index)}
+
+                  <Form.Item
+                    {...restField}
+                    name={[name, 'emergencyPersonName']}
+                    label="Emergency Contact’s Name"
+                    validateTrigger="onChange"
+                    rules={[
+                      {
+                        pattern: /^[a-zA-Z ]*$/,
+                        message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                      },
+                      {
+                        required: true,
+                        message: 'Required field!',
+                      },
+                    ]}
                   >
-                    {listRelation.map((value, i) => {
-                      return (
-                        <Option key={`${i + 1}`} value={value}>
-                          {value}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  label="Contact No."
-                  name={`emergencyContact ${index}`}
-                  rules={[
-                    {
-                      // pattern: /^[+]*[\d]{0,10}$/,
-                      pattern:
-                        // eslint-disable-next-line no-useless-escape
-                        /^(?=.{0,25}$)((?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?)$/gm,
-                      message: formatMessage({
-                        id: 'pages.employeeProfile.validateWorkNumber',
-                      }),
-                    },
-                  ]}
-                >
-                  <Input
-                    defaultValue={emergencyContact}
-                    className={styles.inputForm}
-                    placeholder="Enter the Emergency Contact’s Number"
-                    onChange={(e) => this.handleChangeField(e.target.id, e.target.value, index)}
-                  />
-                </Form.Item>
-              </div>
-            );
-          })}
-          <Col span={24} className={styles.addMoreButton}>
-            <div onClick={this.handleAddBtn}>
-              <PlusOutlined className={styles.addMoreButtonIcon} />
-              Add another Emergency Contact
-            </div>
-          </Col>
+                    <Input
+                      className={styles.inputForm}
+                      placeholder="Enter the Emergency Contact’s Name"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    {...restField}
+                    name={[name, 'emergencyRelation']}
+                    label="Relation"
+                    rules={[
+                      {
+                        pattern: /^[a-zA-Z ]*$/,
+                        message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                      },
+                      {
+                        required: true,
+                        message: 'Required field!',
+                      },
+                    ]}
+                  >
+                    <Select
+                      size={14}
+                      placeholder="Please select a choice"
+                      showArrow
+                      filterOption={
+                        (input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        // eslint-disable-next-line react/jsx-curly-newline
+                      }
+                      className={styles.inputForm}
+                    >
+                      {listRelation.map((value, i) => {
+                        return (
+                          <Option key={`${i + 1}`} value={value}>
+                            {value}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    label="Contact No."
+                    name={[name, 'emergencyContact']}
+                    rules={[
+                      {
+                        // pattern: /^[+]*[\d]{0,10}$/,
+                        pattern:
+                          // eslint-disable-next-line no-useless-escape
+                          /^(?=.{0,25}$)((?:(?:\(?(?:00|\+)([1-4]\d\d|[0-9]\d?)\)?)?[\-\.\ ]?)?((?:\(?\d{1,}\)?[\-\.\ ]?){0,})(?:[\-\.\ ]?(?:#|ext\.?|extension|x)[\-\.\ ]?(\d+))?)$/gm,
+                        message: formatMessage({
+                          id: 'pages.employeeProfile.validateWorkNumber',
+                        }),
+                      },
+                      {
+                        required: true,
+                        message: 'Required field!',
+                      },
+                    ]}
+                  >
+                    <Input
+                      className={styles.inputForm}
+                      placeholder="Enter the Emergency Contact’s Number"
+                    />
+                  </Form.Item>
+                </div>
+              ))}
 
-          <div className={styles.spaceFooter}>
-            <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
-            <CustomPrimaryButton
-              htmlType="submit"
-              loading={loading}
-              onClick={this.handleSaveContactDetail}
-            >
-              Save
-            </CustomPrimaryButton>
-          </div>
-        </Form>
-      </Row>
-    );
-  }
-}
+              <Col span={24} className={styles.addMoreButton}>
+                <div onClick={add}>
+                  <PlusOutlined className={styles.addMoreButtonIcon} />
+                  Add another Emergency Contact
+                </div>
+              </Col>
+            </>
+          )}
+        </Form.List>
 
-export default Edit;
+        <div className={styles.spaceFooter}>
+          <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+          <CustomPrimaryButton htmlType="submit" loading={loading} form="editEmergencyContactForm">
+            Save
+          </CustomPrimaryButton>
+        </div>
+      </Form>
+    </Row>
+  );
+};
+
+export default connect(({ loading, employeeProfile = {} }) => ({
+  loading: loading.effects['employeeProfile/updateGeneralInfo'],
+  employeeProfile,
+}))(Edit);

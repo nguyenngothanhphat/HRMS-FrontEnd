@@ -7,7 +7,6 @@ import {
   getProjectList,
   assignToProject,
   updateComment,
-  getListEmployee,
   fetchResourceAvailableStatus,
   fetchDivisions,
   updateProjectDetail,
@@ -170,25 +169,6 @@ const resourceManagement = {
       } catch (error) {
         dialog(error);
       }
-    },
-    *getListEmployee({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getListEmployee, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { employeeList: data },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-      return response;
     },
     *fetchDivisions({ payload }, { call, put }) {
       try {

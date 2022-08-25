@@ -228,7 +228,7 @@ const DirectoryTable = (props) => {
         dataIndex: 'title',
         key: 'title',
         render: (title) => (
-          <span className={styles.title} onClick={() => onFilter(title?._id, 'title')}>
+          <span className={styles.title} onClick={() => onFilter(title?._id, 'titles')}>
             {title?.name || ''}
           </span>
         ),
@@ -300,7 +300,7 @@ const DirectoryTable = (props) => {
           return (
             <Tag
               className={styles.department}
-              onClick={() => onFilter(department?.name, 'department')}
+              onClick={() => onFilter(department?._id, 'departments')}
               color={tag.color}
             >
               {department?.name}

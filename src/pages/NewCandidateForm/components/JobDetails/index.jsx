@@ -374,7 +374,6 @@ export default connect(
     loadingLocationCustomerList: loading.effects['newCandidateForm/fetchLocationCustomer'],
     loadingFetchTitle: loading.effects['newCandidateForm/fetchTitleList'],
     loadingFetchDepartment: loading.effects['newCandidateForm/fetchDepartmentList'],
-    loadingFetchManager: loading.effects['newCandidateForm/fetchManagerList'],
     loadingFetchJobGrade: loading.effects['newCandidateForm/getJobGradeList'],
   }),
 )(JobDetails);

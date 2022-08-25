@@ -14,11 +14,9 @@ const CurrentInfo = (props) => {
     employeeType = {},
     empTypeOther = '',
     manager,
-    titleInfo = {},
     grade = {},
-    // compensation = {},
     department = {},
-  } = employeeProfile?.originData?.employmentData || {};
+  } = employeeProfile?.employmentData || {};
 
   const managerInfo = {
     ...manager,

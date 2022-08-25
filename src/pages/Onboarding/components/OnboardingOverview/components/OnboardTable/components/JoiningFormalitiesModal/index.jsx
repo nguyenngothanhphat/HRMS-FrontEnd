@@ -244,6 +244,5 @@ export default connect(
     loadingCheckUserName: loading.effects['onboarding/checkExistedUserName'],
     loadingCreateEmployee: loading.effects['onboarding/createEmployee'],
     loadingFetchRookie: loading.effects['newCandidateForm/fetchCandidateByRookie'],
-    loadingEmployeeList: loading.effects['newCandidateForm/fetchManagerList'],
   }),
 )(JoiningFormalitiesModal);

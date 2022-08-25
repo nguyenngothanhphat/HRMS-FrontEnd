@@ -49,7 +49,7 @@ const ReportingManagerContent = (props) => {
     }
 
     return dispatch({
-      type: 'newCandidateForm/fetchManagerList',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         company: getCurrentCompany(),
         status: ['ACTIVE'],

@@ -4,31 +4,20 @@ import React, { useState } from 'react';
 import { connect } from 'umi';
 import plusIcon from '@/assets/add-adminstrator.svg';
 import EditBtn from '@/assets/edit.svg';
-import imageAddSuccess from '@/assets/resource-management-success.svg';
-import CommonModal from '@/components/CommonModal';
 import EditBank from './component/EditBank';
 import ModalAddBank from './component/ModalAddBank';
 import ViewBank from './component/ViewBank';
-
-import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import styles from './index.less';
 
 const BankAccount = (props) => {
   const [visible, setVisible] = useState(false);
 
-  const { openBank, loadingBank, visibleSuccess, bankDataOrigin, dispatch } = props;
+  const { openBank, loadingBank, bankDataOrigin, dispatch } = props;
 
   const handleEdit = () => {
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
       payload: { openBank: true },
-    });
-  };
-
-  const handleCancelModelSuccess = () => {
-    dispatch({
-      type: 'employeeProfile/save',
-      payload: { visibleSuccess: false },
     });
   };
 
@@ -110,28 +99,6 @@ const BankAccount = (props) => {
           bankData={bankDataOrigin}
         />
       </Row>
-      <CommonModal
-        width={550}
-        visible={visibleSuccess}
-        hasFooter={false}
-        onClose={handleCancelModelSuccess}
-        hasHeader={false}
-        content={
-          <>
-            <div style={{ textAlign: 'center', paddingTop: 24 }}>
-              <img src={imageAddSuccess} alt="update success" />
-            </div>
-            <br />
-            <br />
-            <p style={{ textAlign: 'center', color: '#707177', fontWeight: 500 }}>
-              Update information successfully
-            </p>
-            <div className={styles.spaceFooterModalSuccess}>
-              <CustomPrimaryButton onClick={handleCancelModelSuccess}>Okay</CustomPrimaryButton>
-            </div>
-          </>
-        }
-      />
     </div>
   );
 };
@@ -142,12 +109,10 @@ export default connect(
     employeeProfile: {
       editGeneral: { openBank } = {},
       originData: { bankData: bankDataOrigin = {} },
-      visibleSuccess = false,
     } = {},
   }) => ({
     loadingBank: loading.effects['employeeProfile/fetchBank'],
     openBank,
-    visibleSuccess,
     bankDataOrigin,
   }),
 )(BankAccount);

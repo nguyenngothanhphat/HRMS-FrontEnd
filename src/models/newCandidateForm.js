@@ -8,7 +8,6 @@ import {
   fetchDepartmentList,
   getLocationList,
   getEmployeeTypeList,
-  getManagerList,
   submitBasicInfo,
   getTableDataByGrade,
   getTitleListByCompany,
@@ -27,7 +26,6 @@ import {
   extendOfferLetter,
   withdrawOffer,
   getListCandidate,
-  getReporteesList,
   getDocumentSettingList,
   getListBenefit,
   getReferencesByCandidate,
@@ -37,11 +35,6 @@ import {
   getDocumentLayoutByCountry,
   getDocumentsCheckList,
   sendDocumentCheckList,
-} from '@/services/newCandidateForm';
-import { dialog, formatAdditionalQuestion } from '@/utils/utils';
-import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
-
-import {
   addTeamMember,
   sentForApproval,
   approveFinalOffer,
@@ -54,7 +47,10 @@ import {
   sendDocumentStatus,
   getAdditionalQuestion,
   verifyAllDocuments,
-} from '@/services/formCandidate';
+} from '@/services/newCandidateForm';
+import { dialog, formatAdditionalQuestion } from '@/utils/utils';
+import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
+
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/constants/onboarding';
 
 const defaultState = {
@@ -434,45 +430,6 @@ const newCandidateForm = {
         });
       } catch (errors) {
         dialog(errors);
-      }
-    },
-
-    *fetchManagerList({ payload = {} }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getManagerList, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveTemp',
-          payload: { managerList: data },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response;
-    },
-
-    *fetchReporteesList({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(getReporteesList, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-        });
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveTemp',
-          payload: { reporteeList: data },
-        });
-        return response;
-      } catch (errors) {
-        dialog(errors);
-        return '';
       }
     },
 

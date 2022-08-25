@@ -15,16 +15,8 @@ const TerminateModalContent = (props) => {
     onClose = () => {},
     approvalflow = [],
     employee = '',
-    usersManagement: { currentPayload = {} } = {},
     dispatch,
   } = props;
-
-  const refreshList = () => {
-    dispatch({
-      type: 'usersManagement/fetchEmployeesList',
-      payload: currentPayload,
-    });
-  };
 
   const handleFinish = (values) => {
     const { reason, lastWorkingDate } = values;
@@ -45,7 +37,7 @@ const TerminateModalContent = (props) => {
       payload,
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
-        refreshList();
+        // refreshList();
         onClose();
       }
     });

@@ -31,7 +31,7 @@ const HandleChanges = (props) => {
   const { currentUser } = user || {};
   const [radio, setRadio] = useState(2);
   const [changeData, setChangeData] = useState({
-    changedBy: currentUser ? currentUser.employee?._id : '',
+    changedBy: currentUser?.employee?._id,
     employee: employeeProfile.employee,
     newTitle: '',
     newLocation: '',
@@ -127,7 +127,7 @@ const HandleChanges = (props) => {
         break;
       case 4: {
         let notifyToTemp = JSON.parse(JSON.stringify(changeData.stepFive.notifyTo));
-        const email = employeeProfile?.originData?.employmentData?.generalInfo?.workEmail;
+        const email = employeeProfile?.employmentData?.generalInfo?.workEmail;
         const checked = !changeData.stepFive.toEmployee;
         if (checked) {
           notifyToTemp.push(email);
@@ -146,7 +146,7 @@ const HandleChanges = (props) => {
       }
       case 5: {
         let notifyToTemp = [...changeData.stepFive.notifyTo];
-        const email = employeeProfile.originData?.employmentData?.manager?.generalInfo?.workEmail;
+        const email = employeeProfile.employmentData?.manager?.generalInfo?.workEmail;
         const checked = !changeData.stepFive.toManager;
         if (checked) {
           notifyToTemp.push(email);

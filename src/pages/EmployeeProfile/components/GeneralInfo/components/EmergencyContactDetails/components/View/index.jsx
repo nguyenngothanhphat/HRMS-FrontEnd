@@ -4,7 +4,7 @@ import styles from './index.less';
 
 class View extends PureComponent {
   render() {
-    const { dataAPI } = this.props;
+    const { dataAPI = {} } = this.props;
     const { emergencyContactDetails = [] } = dataAPI;
     const result =
       emergencyContactDetails.length > 0

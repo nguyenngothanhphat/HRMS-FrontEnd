@@ -1,9 +1,6 @@
 import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import imageAddSuccess from '@/assets/resource-management-success.svg';
-import CommonModal from '@/components/CommonModal';
-import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import ModalAddInfo from '../ModalAddInfo';
 import EmergencyContact from './components/EmergencyContactDetails';
 import EmployeeInformation from './components/EmployeeInformation';
@@ -20,8 +17,7 @@ const GeneralInfo = (props) => {
     dispatch,
     employeeProfile: {
       employee = '',
-      originData: { generalData: { isNewComer = false } = {} } = {},
-      visibleSuccess = false,
+      employmentData: { generalInfo: { isNewComer = false } = {} } = {},
       isProfileOwner = false,
     } = {},
   } = props;
@@ -36,13 +32,6 @@ const GeneralInfo = (props) => {
   useEffect(() => {
     setNewComerModalVisible(isNewComer && currentUserId === employee);
   }, [isNewComer]);
-
-  const handleCancelModelSuccess = () => {
-    dispatch({
-      type: 'employeeProfile/save',
-      payload: { visibleSuccess: false },
-    });
-  };
 
   useEffect(() => {
     if (employee) {
@@ -114,29 +103,7 @@ const GeneralInfo = (props) => {
         })}
       </Row>
 
-      {/* <ModalAddInfo visible={newComerModalVisible} /> */}
-      <CommonModal
-        width={550}
-        visible={visibleSuccess}
-        hasFooter={false}
-        onClose={handleCancelModelSuccess}
-        hasHeader={false}
-        content={
-          <>
-            <div style={{ textAlign: 'center', paddingTop: 24 }}>
-              <img src={imageAddSuccess} alt="update success" />
-            </div>
-            <br />
-            <br />
-            <p style={{ textAlign: 'center', color: '#707177', fontWeight: 500 }}>
-              Update information successfully
-            </p>
-            <div className={styles.spaceFooterModalSuccess}>
-              <CustomPrimaryButton onClick={handleCancelModelSuccess}>Okay</CustomPrimaryButton>
-            </div>
-          </>
-        }
-      />
+      <ModalAddInfo visible={newComerModalVisible} />
     </div>
   );
 };

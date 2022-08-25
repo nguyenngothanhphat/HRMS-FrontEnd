@@ -34,7 +34,7 @@ const FilterContent = (props) => {
       });
     }
     return dispatch({
-      type: 'projectManagement/fetchEmployeeListEffect',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: val,
         status: ['ACTIVE'],

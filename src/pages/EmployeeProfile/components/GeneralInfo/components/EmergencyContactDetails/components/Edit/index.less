@@ -4,8 +4,7 @@
     // padding: 24px;
     :global {
       .ant-select:not(.ant-select-customize-input) .ant-select-selector {
-        border: unset;
-        border-radius: 4px;
+        border-radius: 5px;
       }
       .ant-select .ant-select-arrow {
         transition: transform 0.2s ease-in;
@@ -30,22 +29,14 @@
       .ant-form-item:first-child {
         margin-top: 24px;
       }
-      .ant-input:focus {
-        border-color: @primary-color;
-        outline: 0;
-        box-shadow: unset;
-      }
     }
   }
   .containerForm {
     position: relative;
-    padding: 0 24px;
-  }
-  .line {
-    width: 100%;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border-top: solid 1px @border-color-base;
+    padding: 24px 24px 8px;
+    &:not(:last-child) {
+      border-bottom: solid 1px @border-color-base;
+    }
   }
   .removeIcon {
     position: absolute;

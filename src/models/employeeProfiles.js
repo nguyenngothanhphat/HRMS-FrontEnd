@@ -2,8 +2,7 @@ import { notification } from 'antd';
 import { dialog } from '@/utils/utils';
 import {
   getCompensationList,
-  getGeneralInfo,
-  getGeneralInfoByUserId,
+  getEmployeeByUserId,
   getCompensation,
   getListSkill,
   updateGeneralInfo,
@@ -24,7 +23,6 @@ import {
   getEmployeeTypeList,
   getDepartmentList,
   addChangeHistory,
-  getPRReport,
   getDocumentCategories,
   getDocuments,
   getPayslip,
@@ -45,7 +43,6 @@ import {
   updateTax,
   updateEmployment,
   patchEmployment,
-  updatePrivate,
   getListRelation,
   getCountryStates,
   getRevokeHistory,
@@ -67,17 +64,14 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 const employeeProfile = {
   namespace: 'employeeProfile',
   state: {
-    isModified: false,
-    editGeneral: {
-      openContactDetails: false,
-      openEmployeeInfo: false,
-      openPassport: false,
-      openVisa: false,
-      openPersonalInfo: false,
-      openAcademic: false,
-      openTax: false,
-      openBank: false,
-    },
+    // success modal
+    successModalVisible: false,
+
+    // all information
+    employmentData: {},
+    compensationData: {},
+
+    // others
     paySlip: [],
     countryList: [],
     listSkill: [],
@@ -92,11 +86,8 @@ const employeeProfile = {
     employees: [],
     jobTitleList: [],
     originData: {
-      generalData: {},
-      compensationData: {},
       passportData: [{}],
       visaData: [],
-      employmentData: {},
       changeHistories: [],
       bankData: {},
       taxData: {},
@@ -104,8 +95,6 @@ const employeeProfile = {
       benefitPlans: [],
     },
     tempData: {
-      generalData: {},
-      compensationData: {},
       passportData: [{}],
       visaData: [],
       document: {},
@@ -120,11 +109,9 @@ const employeeProfile = {
     groupViewingDocuments: [],
     AdhaarCard: {},
     emailsList: [],
-    isUpdateEmployment: false,
     listRelation: [],
     listStates: [],
     revoke: [],
-    visibleSuccess: false,
     employeeList: [], // single company
     listGrades: [],
   },
@@ -132,7 +119,7 @@ const employeeProfile = {
     *fetchEmployeeIdByUserId({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getGeneralInfoByUserId, {
+        response = yield call(getEmployeeByUserId, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -150,45 +137,6 @@ const employeeProfile = {
       }
       return response;
     },
-
-    *fetchGeneralInfo({ payload, dataTempKept = {} }, { call, put }) {
-      try {
-        const response = yield call(getGeneralInfo, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data: generalData = {} } = response;
-        if (statusCode !== 200) throw response;
-        const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
-        let generalDataTemp = {
-          ...generalData,
-        };
-        if (!checkDataTempKept) {
-          generalDataTemp = {
-            ...generalDataTemp,
-            ...dataTempKept,
-          };
-          delete generalDataTemp.updatedAt;
-          delete generalData.updatedAt;
-          const isModified = JSON.stringify(generalDataTemp) !== JSON.stringify(generalData);
-          yield put({
-            type: 'save',
-            payload: { isModified },
-          });
-        }
-        yield put({
-          type: 'saveOrigin',
-          payload: { generalData },
-        });
-        yield put({
-          type: 'saveTemp',
-          payload: { generalData: generalDataTemp },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
     *addNewChangeHistory({ payload }, { call, put }) {
       let response = {};
       try {
@@ -201,39 +149,13 @@ const employeeProfile = {
           const { statusCode, message } = response;
           if (statusCode !== 200) throw response;
           notification.success({ message });
-          if (
-            // payload.takeEffect === 'UPDATED' &&
-            statusCode === 200
-          ) {
-            // const updates = yield call(getChangeHistories, {
-            //   employee: payload.employee,
-            //   tenantId: getCurrentTenant(),
-            // });
-            // if (updates.statusCode !== 200) throw updates;
-            // yield put({
-            //   type: 'saveOrigin',
-            //   payload: {
-            //     changeHistories: updates.data?.data || [],
-            //     changeHistoriesTotal: updates.data?.total || 0,
-            //   },
-            // });
-
-            // const employment = yield call(getEmploymentInfo, {
-            //   id: payload.employee,
-            // });
-            // yield put({ type: 'saveOrigin', payload: { employmentData: employment.data } });
-
-            // if (employment.statusCode !== 200) throw response;
+          if (statusCode === 200) {
             const compensation = yield call(getCompensation, {
               employee: payload.employee,
             });
             if (compensation.statusCode !== 200) throw response;
             yield put({
-              type: 'saveOrigin',
-              payload: { compensationData: compensation.data },
-            });
-            yield put({
-              type: 'saveTemp',
+              type: 'save',
               payload: { compensationData: compensation.data },
             });
           }
@@ -253,11 +175,7 @@ const employeeProfile = {
         const { statusCode, data: compensationData = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'saveOrigin',
-          payload: { compensationData },
-        });
-        yield put({
-          type: 'saveTemp',
+          type: 'save',
           payload: { compensationData },
         });
       } catch (errors) {
@@ -407,7 +325,7 @@ const employeeProfile = {
         dialog(error);
       }
     },
-    *addPassPort({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+    *addPassPort({ payload = {}, dataTempKept = {} }, { put, call, select }) {
       try {
         const response = yield call(getAddPassPort, {
           ...payload,
@@ -426,17 +344,11 @@ const employeeProfile = {
           payload: { employee },
           dataTempKept,
         });
-        if (key === 'openPassport') {
-          yield put({
-            type: 'saveOpenEdit',
-            payload: { openPassport: false },
-          });
-        }
       } catch (errors) {
         dialog(errors);
       }
     },
-    *addVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+    *addVisa({ payload = {}, dataTempKept = {} }, { put, call, select }) {
       try {
         const response = yield call(getAddVisa, {
           ...payload,
@@ -454,17 +366,11 @@ const employeeProfile = {
           payload: { employee },
           dataTempKept,
         });
-        if (key === 'openVisa') {
-          yield put({
-            type: 'saveOpenEdit',
-            payload: { openVisa: false },
-          });
-        }
       } catch (errors) {
         dialog(errors);
       }
     },
-    *updatePassPort({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+    *updatePassPort({ payload = {}, dataTempKept = {} }, { put, call, select }) {
       try {
         const response = yield call(updatePassPort, {
           ...payload,
@@ -483,18 +389,12 @@ const employeeProfile = {
           payload: { employee },
           dataTempKept,
         });
-        if (key === 'openPassport') {
-          yield put({
-            type: 'saveOpenEdit',
-            payload: { openPassport: false },
-          });
-        }
       } catch (errors) {
         dialog(errors);
       }
     },
 
-    *updateVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+    *updateVisa({ payload = {}, dataTempKept = {} }, { put, call, select }) {
       try {
         const response = yield call(updateVisa, {
           ...payload,
@@ -513,17 +413,11 @@ const employeeProfile = {
           payload: { employee },
           dataTempKept,
         });
-        if (key === 'openVisa') {
-          yield put({
-            type: 'saveOpenEdit',
-            payload: { openVisa: false },
-          });
-        }
       } catch (errors) {
         dialog(errors);
       }
     },
-    *removeVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+    *removeVisa({ payload = {}, dataTempKept = {} }, { put, call, select }) {
       try {
         const response = yield call(removeVisa, {
           ...payload,
@@ -542,17 +436,11 @@ const employeeProfile = {
           payload: { employee },
           dataTempKept,
         });
-        if (key === 'openVisa') {
-          yield put({
-            type: 'saveOpenEdit',
-            payload: { openVisa: false },
-          });
-        }
       } catch (errors) {
         dialog(errors);
       }
     },
-    *removePassPort({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+    *removePassPort({ payload = {}, dataTempKept = {} }, { put, call, select }) {
       try {
         const response = yield call(removePassport, {
           ...payload,
@@ -571,91 +459,28 @@ const employeeProfile = {
           payload: { employee },
           dataTempKept,
         });
-        if (key === 'openPassport') {
-          yield put({
-            type: 'saveOpenEdit',
-            payload: { openPassport: false },
-          });
-        }
       } catch (errors) {
         dialog(errors);
       }
     },
-    *updateGeneralInfo(
-      { payload = {}, dataTempKept = {}, key = '', isUpdateMyAvt = false, isLinkedIn = false },
-      { put, call, select },
-    ) {
+    *updateGeneralInfo({ payload = {}, isUpdateMyAvt = false, isLinkedIn = false }, { put, call }) {
+      let response = {};
       try {
-        const response = yield call(updateGeneralInfo, {
+        response = yield call(updateGeneralInfo, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { employee } = yield select((state) => state.employeeProfile);
-        const { statusCode } = response;
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        // notification.success({
-        //   message,
-        // });
-
         yield put({
-          type: 'fetchGeneralInfo',
-          payload: { employee },
-          dataTempKept,
-        });
-        yield put({
-          type: 'fetchTax',
-          payload: { employee },
-          dataTempKept,
+          type: 'save',
+          payload: { successModalVisible: true },
         });
         yield put({
           type: 'save',
-          payload: { visibleSuccess: true },
+          payload: { employmentData: data },
         });
-        switch (key) {
-          case 'openContactDetails':
-            yield put({
-              type: 'saveOpenEdit',
-              payload: { openContactDetails: false },
-            });
-            break;
-          case 'openEmployeeInfo':
-            yield put({
-              type: 'saveOpenEdit',
-              payload: { openEmployeeInfo: false },
-            });
-            break;
-          case 'openPassport':
-            yield put({
-              type: 'saveOpenEdit',
-              payload: { openPassport: false },
-            });
-            break;
-          case 'openVisa':
-            yield put({
-              type: 'saveOpenEdit',
-              payload: { openVisa: false },
-            });
-            break;
-          case 'openPersonalInfo':
-            yield put({
-              type: 'saveOpenEdit',
-              payload: { openPersonalInfo: false },
-            });
-            break;
-          case 'openAcademic':
-            yield put({
-              type: 'saveOpenEdit',
-              payload: { openAcademic: false },
-            });
-            break;
-          default:
-            yield put({
-              type: 'saveOpenEdit',
-              payload: { openContactDetails: false },
-            });
-        }
-
         if (isUpdateMyAvt || isLinkedIn) {
           yield put({
             type: 'user/fetchCurrent',
@@ -664,11 +489,9 @@ const employeeProfile = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
-    *updateFirstGeneralInfo(
-      { payload = {}, dataTempKept = {}, key = '', isUpdateMyAvt = false },
-      { put, call, select },
-    ) {
+    *updateFirstComer({ payload = {}, dataTempKept = {} }, { put, call, select }) {
       try {
         const { bankDetails = [], certifications = [], taxDetails = {} } = payload;
         if (bankDetails.length !== 0) {
@@ -712,66 +535,16 @@ const employeeProfile = {
           ...payload,
           certification: arrCertification,
         });
-        const { employee } = yield select((state) => state.employeeProfile);
-        const { statusCode, message } = response;
+        const { statusCode, message, data } = response;
         if (statusCode !== 200) throw response;
         notification.success({
           message,
         });
-
         yield put({
-          type: 'fetchGeneralInfo',
-          payload: { employee },
+          type: 'save',
+          payload: { employmentData: data },
           dataTempKept,
         });
-        switch (key) {
-          case 'openContactDetails':
-            yield put({
-              type: 'saveOpenEdit',
-              payload: { openContactDetails: false },
-            });
-            break;
-          case 'openEmployeeInfo':
-            yield put({
-              type: 'saveOpenEdit',
-              payload: { openEmployeeInfo: false },
-            });
-            break;
-          case 'openPassport':
-            yield put({
-              type: 'saveOpenEdit',
-              payload: { openPassport: false },
-            });
-            break;
-          case 'openVisa':
-            yield put({
-              type: 'saveOpenEdit',
-              payload: { openVisa: false },
-            });
-            break;
-          case 'openPersonalInfo':
-            yield put({
-              type: 'saveOpenEdit',
-              payload: { openPersonalInfo: false },
-            });
-            break;
-          case 'openAcademic':
-            yield put({
-              type: 'saveOpenEdit',
-              payload: { openAcademic: false },
-            });
-            break;
-          default:
-            yield put({
-              type: 'saveOpenEdit',
-              payload: { openContactDetails: false },
-            });
-        }
-        if (isUpdateMyAvt) {
-          yield put({
-            type: 'user/fetchCurrent',
-          });
-        }
         return response;
       } catch (errors) {
         dialog(errors);
@@ -828,7 +601,7 @@ const employeeProfile = {
         });
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveOrigin', payload: { employmentData: data } });
+        yield put({ type: 'save', payload: { employmentData: data } });
       } catch (error) {
         dialog(error.message);
       }
@@ -1114,7 +887,7 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *addBank({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+    *addBank({ payload = {}, dataTempKept = {} }, { put, call, select }) {
       try {
         const response = yield call(getAddBank, {
           ...payload,
@@ -1133,12 +906,6 @@ const employeeProfile = {
           payload: { employee },
           dataTempKept,
         });
-        if (key === 'openBank') {
-          yield put({
-            type: 'saveOpenEdit',
-            payload: { openBank: false },
-          });
-        }
       } catch (errors) {
         dialog(errors);
       }
@@ -1169,7 +936,7 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *updateBank({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+    *updateBank({ payload = {}, dataTempKept = {} }, { put, call, select }) {
       try {
         const response = yield call(updateBank, {
           ...payload,
@@ -1180,9 +947,6 @@ const employeeProfile = {
 
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        // notification.success({
-        //   message,
-        // });
         yield put({
           type: 'fetchBank',
           payload: { employee },
@@ -1190,14 +954,8 @@ const employeeProfile = {
         });
         yield put({
           type: 'save',
-          payload: { visibleSuccess: true },
+          payload: { successModalVisible: true },
         });
-        if (key === 'openBank') {
-          yield put({
-            type: 'saveOpenEdit',
-            payload: { openBank: false },
-          });
-        }
       } catch (errors) {
         dialog(errors);
       }
@@ -1223,7 +981,7 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *addTax({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+    *addTax({ payload = {}, dataTempKept = {} }, { put, call, select }) {
       try {
         const response = yield call(getAddTax, {
           ...payload,
@@ -1242,17 +1000,11 @@ const employeeProfile = {
           payload: { employee },
           dataTempKept,
         });
-        if (key === 'openTax') {
-          yield put({
-            type: 'saveOpenEdit',
-            payload: { openTax: false },
-          });
-        }
       } catch (errors) {
         dialog(errors);
       }
     },
-    *updateTax({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+    *updateTax({ payload = {}, dataTempKept = {} }, { put, call, select }) {
       try {
         const response = yield call(updateTax, {
           ...payload,
@@ -1263,9 +1015,6 @@ const employeeProfile = {
 
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        // notification.success({
-        //   message,
-        // });
         yield put({
           type: 'fetchTax',
           payload: { employee },
@@ -1273,14 +1022,8 @@ const employeeProfile = {
         });
         yield put({
           type: 'save',
-          payload: { visibleSuccess: true },
+          payload: { successModalVisible: true },
         });
-        if (key === 'openTax') {
-          yield put({
-            type: 'saveOpenEdit',
-            payload: { openTax: false },
-          });
-        }
       } catch (errors) {
         dialog(errors);
       }
@@ -1318,7 +1061,6 @@ const employeeProfile = {
       }
     },
     *updateEmployment({ payload = {} }, { call, put }) {
-      let isUpdateEmployment = false;
       try {
         const response = yield call(updateEmployment, {
           ...payload,
@@ -1332,42 +1074,33 @@ const employeeProfile = {
           type: 'fetchEmploymentInfo',
           payload: { id: payload.id },
         });
-
-        isUpdateEmployment = true;
         yield put({
           type: 'save',
-          payload: { visibleSuccess: true },
+          payload: { successModalVisible: true },
         });
       } catch (errors) {
         dialog(errors);
       }
-      yield put({ type: 'save', payload: { isUpdateEmployment } });
     },
     *patchEmployment({ payload = {} }, { call, put }) {
-      let isUpdateEmployment = false;
+      let response = {};
       try {
-        const response = yield call(patchEmployment, {
+        response = yield call(patchEmployment, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode } = response;
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-
-        yield put({
-          type: 'fetchEmploymentInfo',
-          payload: { id: payload.id },
-        });
-
-        isUpdateEmployment = true;
+        yield put({ type: 'save', payload: { employmentData: data } });
         yield put({
           type: 'save',
-          payload: { visibleSuccess: true },
+          payload: { successModalVisible: true },
         });
       } catch (errors) {
         dialog(errors);
       }
-      yield put({ type: 'save', payload: { isUpdateEmployment } });
+      return response;
     },
     *uploadDocument({ data = {} }, { call, put }) {
       try {
@@ -1387,29 +1120,7 @@ const employeeProfile = {
         return '';
       }
     },
-    *setPrivate({ payload = {} }, { call, put, select }) {
-      try {
-        // console.log(payload);
-        const response = yield call(updatePrivate, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { employee } = yield select((state) => state.employeeProfile);
-        const { statusCode, message } = response;
-        if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
 
-        yield put({
-          type: 'fetchGeneralInfo',
-          payload: { employee },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
     *fetchListRelation(_, { call, put }) {
       try {
         const response = yield call(getListRelation);
@@ -1463,7 +1174,7 @@ const employeeProfile = {
             id: payload.employee,
           });
           yield put({
-            type: 'saveOrigin',
+            type: 'save',
             payload: { employmentData: employment.data },
           });
           if (employment.statusCode !== 200) throw response;
@@ -1472,11 +1183,7 @@ const employeeProfile = {
           });
           if (compensation.statusCode !== 200) throw response;
           yield put({
-            type: 'saveOrigin',
-            payload: { compensationData: compensation.data },
-          });
-          yield put({
-            type: 'saveTemp',
+            type: 'save',
             payload: { compensationData: compensation.data },
           });
         }
@@ -1626,7 +1333,7 @@ const employeeProfile = {
       }
       return response;
     },
-    *addNewSkill({ payload }, { call }) {
+    *addNewSkill({ payload }, { call, put }) {
       let response = {};
       try {
         response = yield call(addSkill, {
@@ -1636,7 +1343,9 @@ const employeeProfile = {
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        return response;
+        yield put({
+          type: 'employeeProfile/fetchListSkill',
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -1690,24 +1399,10 @@ const employeeProfile = {
         },
       };
     },
-    closeModeEdit(state) {
-      return {
-        ...state,
-        editGeneral: {
-          openContactDetails: false,
-          openEmployeeInfo: false,
-          openPassport: false,
-          openVisa: false,
-          openPersonalInfo: false,
-          openAcademic: false,
-          openTax: false,
-          openBank: false,
-        },
-      };
-    },
     clearState(state) {
       return {
         ...state,
+        successModalVisible: false,
         paySlip: [],
         countryList: [],
         listSkill: [],
@@ -1724,7 +1419,6 @@ const employeeProfile = {
         tempData: {},
         listPRReport: [],
         AdhaarCard: {},
-        isUpdateEmployment: false,
         listRelation: [],
         listStates: [],
         revoke: [],

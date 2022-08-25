@@ -12,7 +12,6 @@ import {
   getDomain,
   getEmployeeIdFormatByLocation,
   getFilterList,
-  getListEmployee,
   getListJoiningFormalities,
   getListNewComer,
   getLocationList,
@@ -243,45 +242,7 @@ const onboarding = {
         return {};
       }
     },
-    *fetchEmployeeList({ payload = {} }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getListEmployee, {
-          ...payload,
-          status: ['ACTIVE'],
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-        });
-        const { statusCode, data: employeeList = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { employeeList } });
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response;
-    },
-    *fetchHRManagerList(
-      { payload: { company = [], department = [], location = [], roles = [] } = {} },
-      { call, put },
-    ) {
-      try {
-        const response = yield call(getListEmployee, {
-          status: ['ACTIVE'],
-          company,
-          department,
-          location,
-          roles,
-        });
-        const { statusCode, data: hrManagerList = [] } = response;
-        if (statusCode !== 200) throw response;
-
-        yield put({ type: 'save', payload: { hrManagerList } });
-        return hrManagerList;
-      } catch (errors) {
-        dialog(errors);
-        return [];
-      }
-    },
+   
     *fetchJobTitleList({ payload = {} }, { call, put }) {
       try {
         const newPayload = {
