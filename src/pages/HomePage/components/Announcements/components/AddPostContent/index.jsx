@@ -229,27 +229,27 @@ const AddPostContent = (props) => {
 
     const tempAllValues = { ...allValues };
     const commonFunc = (name) => {
-      let { fileList: fileListTemp = [], file: fileTemp = {} } = tempAllValues[name] || {};
+      let { fileList: fileListTemp = [] } = tempAllValues[name] || {};
+      const { file: fileTemp = {} } = tempAllValues[name] || {};
       fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
+      let check = false;
 
-      if (Object.keys(fileTemp).length && fileTemp.status !== 'removed') {
-        const isVideo = fileTemp.type?.includes('video');
-        const imgListTemp = fileListTemp.filter((x) => !x.type.includes('video'));
+      // on change upload file & check upload file type
+      if (Object.keys(fileTemp).length) {
+        // check status and type of the new upload file
+        if (fileTemp.status !== 'removed') {
+          check = fileTemp.type?.includes('video');
+          fileListTemp = fileListTemp.filter((x) => !x.type.includes('video'));
+        }
 
-        if (isVideo) setFileList([fileTemp]);
-        else setFileList([...imgListTemp]);
+        setFileList(check ? [fileTemp] : [...fileListTemp]);
 
         if (tempAllValues[name]) {
-          tempAllValues[name].fileList = isVideo ? [fileTemp] : imgListTemp;
+          tempAllValues[name].fileList = check ? [fileTemp] : fileListTemp;
         }
       }
 
-      if (Object.keys(fileTemp).length && fileTemp.status === 'removed') {
-        setFileList([...fileListTemp]);
-        if (tempAllValues[name]) {
-          tempAllValues[name].fileList = fileListTemp;
-        }
-      }
+      // default return other values if uploadFile don't have any change
       return tempAllValues;
     };
     return commonFunc('uploadFiles');

@@ -250,32 +250,31 @@ const AddPost = (props) => {
     const tempAllValues = { ...allValues };
 
     const commonFunc = (name) => {
-      let { fileList: fileListTemp = [], file: fileTemp = {} } = tempAllValues[name] || {};
-      fileListTemp = fileListTemp.filter((x) =>
-        mode === TAB_IDS.ANNOUNCEMENTS
+      let { fileList: fileListTemp = [] } = tempAllValues[name] || {};
+      const { file: fileTemp = {} } = tempAllValues[name] || {};
+      const isAnnouncements = (x) =>
+        name === 'uploadFilesA'
           ? beforeUpload(x, [FILE_TYPE.IMAGE, FILE_TYPE.VIDEO], 5)
-          : beforeUpload(x, [FILE_TYPE.IMAGE], 3),
-      );
+          : beforeUpload(x, [FILE_TYPE.IMAGE], 3);
+      fileListTemp = fileListTemp.filter((x) => isAnnouncements(x));
+      let check = false;
 
-      if (Object.keys(fileTemp).length && fileTemp.status !== 'removed') {
-        const isVideo = fileTemp.type?.includes('video');
-        const imgListTemp = fileListTemp.filter((x) => !x.type.includes('video'));
+      // on change upload file & check upload file type
+      if (Object.keys(fileTemp).length) {
+        // check status and type of the new upload file
+        if (fileTemp.status !== 'removed') {
+          check = fileTemp.type?.includes('video');
+          fileListTemp = fileListTemp.filter((x) => !x.type.includes('video'));
+        }
 
-        if (isVideo) setFileList([fileTemp]);
-        else setFileList([...imgListTemp]);
+        setFileList(check ? [fileTemp] : [...fileListTemp]);
 
         if (tempAllValues[name]) {
-          tempAllValues[name].fileList = isVideo ? [fileTemp] : imgListTemp;
+          tempAllValues[name].fileList = check ? [fileTemp] : fileListTemp;
         }
       }
 
-      if (Object.keys(fileTemp).length && fileTemp.status === 'removed') {
-        setFileList([...fileListTemp]);
-        if (tempAllValues[name]) {
-          tempAllValues[name].fileList = fileListTemp;
-        }
-      }
-
+      // default return other values if uploadFile don't have any change
       return tempAllValues;
     };
 
