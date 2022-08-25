@@ -10,13 +10,14 @@ const Edit = (props) => {
   const [form] = Form.useForm();
   const {
     dispatch,
-    generalData = {},
-    generalDataOrigin,
-    countryList = [],
-    loading,
+    loadingUpdate = false,
     handleCancel = () => {},
-    // profileOwner = false,
-    loadingStates,
+    loadingStates = false,
+    employeeProfile: {
+      employee = '',
+      employmentData: { generalInfo = {} } = {},
+      countryList = [],
+    } = {},
   } = props;
 
   const {
@@ -41,8 +42,7 @@ const Edit = (props) => {
       state: c_state = '',
       zipCode: c_zipCode = '',
     } = {},
-    _id: id = '',
-  } = generalData || {};
+  } = generalInfo || {};
 
   const { _id: r_country } = r_countryObj || {};
   const { _id: c_country } = c_countryObj || {};
@@ -54,18 +54,18 @@ const Edit = (props) => {
   useEffect(() => {
     // check same address
     if (
-      Object.keys(generalData.residentAddress || {}).length > 0 &&
-      Object.keys(generalData.currentAddress || {}).length > 0
+      Object.keys(generalInfo.residentAddress || {}).length > 0 &&
+      Object.keys(generalInfo.currentAddress || {}).length > 0
     ) {
-      const keys = Object.keys(generalData.currentAddress || {});
+      const keys = Object.keys(generalInfo.currentAddress || {});
       const check = keys.every(
         (x) =>
-          JSON.stringify(generalData.residentAddress[x]) ===
-          JSON.stringify(generalData.currentAddress[x]),
+          JSON.stringify(generalInfo.residentAddress[x]) ===
+          JSON.stringify(generalInfo.currentAddress[x]),
       );
       setIsSameAddress(check);
     }
-  }, [JSON.stringify(generalData)]);
+  }, [JSON.stringify(generalInfo)]);
 
   const onSelectCountry = (countryId, type) => {
     dispatch({
@@ -116,75 +116,46 @@ const Edit = (props) => {
   }, [isSameAddress]);
 
   const onValuesChange = (changedValues, allValues) => {
-    const generalInfo = {
-      ...generalData,
-      ...allValues,
-    };
-    const isModified = JSON.stringify(generalInfo) !== JSON.stringify(generalDataOrigin);
-
     if (isSameAddress) {
       setSameAddress(allValues);
     }
-    dispatch({
-      type: 'employeeProfile/save',
-      payload: { isModified },
-    });
   };
 
-  const processDataChanges = (values) => {
-    const payloadChanges = {
-      id,
-      personalNumber: values.personalNumber,
-      personalEmail: values.personalEmail,
-      Blood: values.Blood,
-      maritalStatus: values.maritalStatus,
-      nationality: values.nationality,
-      residentAddress: {
-        addressLine1: values.r_addressLine1,
-        addressLine2: values.r_addressLine2,
-        city: values.r_city,
-        country: values.r_country,
-        state: values.r_state,
-        zipCode: values.r_zipCode,
-      },
-      currentAddress: {
-        addressLine1: values.c_addressLine1,
-        addressLine2: values.c_addressLine2,
-        city: values.c_city,
-        country: values.c_country,
-        state: values.c_state,
-        zipCode: values.c_zipCode,
+  const onFinish = async (values) => {
+    const payload = {
+      _id: employee,
+      generalInfo: {
+        personalNumber: values.personalNumber,
+        personalEmail: values.personalEmail,
+        Blood: values.Blood,
+        maritalStatus: values.maritalStatus,
+        nationality: values.nationality,
+        residentAddress: {
+          addressLine1: values.r_addressLine1,
+          addressLine2: values.r_addressLine2,
+          city: values.r_city,
+          country: values.r_country,
+          state: values.r_state,
+          zipCode: values.r_zipCode,
+        },
+        currentAddress: {
+          addressLine1: values.c_addressLine1,
+          addressLine2: values.c_addressLine2,
+          city: values.c_city,
+          country: values.c_country,
+          state: values.c_state,
+          zipCode: values.c_zipCode,
+        },
       },
     };
 
-    return payloadChanges;
-  };
-
-  const processDataKept = () => {
-    const newObj = { ...generalData };
-    const listKey = [
-      'personalNumber',
-      'personalEmail',
-      'Blood',
-      'maritalStatus',
-      'nationality',
-      'residentAddress',
-      'currentAddress',
-    ];
-    listKey.forEach((item) => delete newObj[item]);
-    return newObj;
-  };
-
-  const handleSave = (values) => {
-    const payload = processDataChanges(values) || {};
-    const dataTempKept = processDataKept() || {};
-
-    dispatch({
+    const res = await dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload,
-      dataTempKept,
-      key: 'openPersonalInfo',
     });
+    if (res.statusCode === 200) {
+      handleCancel();
+    }
   };
 
   const handleSameAddress = (e) => {
@@ -214,12 +185,11 @@ const Edit = (props) => {
   return (
     <Row gutter={[0, 24]} className={styles.root}>
       <Form
-        className={styles.Form}
-        name="personal_information"
-        form={form}
-        id="myForm"
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...formItemLayout}
+        className={styles.Form}
+        name="editPersonalInfoForm"
+        form={form}
         initialValues={{
           personalNumber: personalNumber || null,
           personalEmail: personalEmail || null,
@@ -240,7 +210,7 @@ const Edit = (props) => {
           c_zipCode: c_zipCode || null,
         }}
         onValuesChange={onValuesChange}
-        onFinish={handleSave}
+        onFinish={onFinish}
       >
         <div className={styles.fieldsContainer}>
           <Form.Item
@@ -449,7 +419,12 @@ const Edit = (props) => {
         </div>
         <div className={styles.spaceFooter}>
           <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
-          <CustomPrimaryButton htmlType="submit" loading={loading}>
+          <CustomPrimaryButton
+            htmlType="submit"
+            loading={loadingUpdate}
+            form="editPersonalInfoForm"
+            key="submit"
+          >
             Save
           </CustomPrimaryButton>
         </div>
@@ -458,19 +433,8 @@ const Edit = (props) => {
   );
 };
 
-export default connect(
-  ({
-    loading,
-    employeeProfile: {
-      originData: { generalData: generalDataOrigin = {} } = {},
-      tempData: { generalData = {} } = {},
-      countryList = [],
-    } = {},
-  }) => ({
-    loadingGeneral: loading.effects['employeeProfile/updateGeneralInfo'],
-    loadingStates: loading.effects['employeeProfile/fetchCountryStates'],
-    generalDataOrigin,
-    generalData,
-    countryList,
-  }),
-)(Edit);
+export default connect(({ loading, employeeProfile = {} }) => ({
+  loadingUpdate: loading.effects['employeeProfile/updateGeneralInfo'],
+  loadingStates: loading.effects['employeeProfile/fetchCountryStates'],
+  employeeProfile,
+}))(Edit);

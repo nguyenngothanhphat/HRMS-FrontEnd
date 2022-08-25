@@ -237,18 +237,6 @@ export async function assignResources(payload) {
   );
 }
 
-export async function countStatusResource(payload) {
-  return request(
-    '/api-project/resourcetenant/count-status',
-    {
-      method: 'POST',
-      data: payload,
-    },
-    false,
-    API_KEYS.PROJECT_API,
-  );
-}
-
 export async function getResourceOfProject(payload) {
   return request(
     '/api-project/resourcetenant/list',
@@ -345,12 +333,4 @@ export async function getAuditTrailList(payload) {
     false,
     API_KEYS.PROJECT_API,
   );
-}
-
-// other
-export async function getEmployeeList(payload) {
-  return request('/api/employeetenant/list-by-single-company', {
-    method: 'POST',
-    data: payload,
-  });
 }

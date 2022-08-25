@@ -11,6 +11,7 @@ import ArrowRightIcon from '@/assets/arrow-right_icon.svg';
 import ModalImg from '@/assets/modal_img_1.png';
 import NoImage from '@/assets/no-photo-available-icon.jpg';
 import styles from './index.less';
+import { getCurrentCompany } from '@/utils/authority';
 
 // pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -102,11 +103,10 @@ class ViewDocument extends PureComponent {
   fetchEmailsListByCompany = () => {
     const {
       dispatch,
-      employeeProfile: { tempData: { compensationData: { company = '' } = {} } = {} } = {},
     } = this.props;
     dispatch({
       type: 'employeeProfile/fetchEmailsListByCompany',
-      payload: { company: [company] },
+      payload: { company: [getCurrentCompany()] },
     });
   };
 

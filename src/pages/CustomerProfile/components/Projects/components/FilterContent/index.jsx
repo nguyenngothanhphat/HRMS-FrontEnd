@@ -29,7 +29,7 @@ const FilterContent = (props) => {
     }
 
     return dispatch({
-      type: 'customerManagement/fetchEmployeeList',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: value,
         status: ['ACTIVE'],

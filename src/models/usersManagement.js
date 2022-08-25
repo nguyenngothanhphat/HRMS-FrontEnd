@@ -11,7 +11,6 @@ import {
   getRolesByEmployee,
   resetPasswordByEmail,
   getFilterList,
-  searchEmployees,
 } from '../services/usersManagement';
 
 const usersManagement = {
@@ -37,7 +36,11 @@ const usersManagement = {
     *fetchEmployeesList({ params }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getEmployeesList, params);
+        response = yield call(getEmployeesList, {
+          ...params,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data: employeeList = [] } = response;
         if (statusCode !== 200) throw response;
 
@@ -50,21 +53,6 @@ const usersManagement = {
           type: 'save',
           payload: { currentPayload: params },
         });
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response;
-    },
-    *searchEmployeesEffect({ payload }, { call }) {
-      let response = {};
-      try {
-        response = yield call(searchEmployees, {
-          company: getCurrentCompany(),
-          ...payload,
-          tenantId: getCurrentTenant(),
-        });
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
       } catch (errors) {
         dialog(errors);
       }

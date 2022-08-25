@@ -63,13 +63,6 @@ export async function getProjectByEmployee(payload) {
   );
 }
 
-export async function getEmployeeList(payload) {
-  return request('/api/employeetenant/list-by-single-company', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 export async function getLocationsOfCountries(params) {
   return request('/api/locationtenant/group-country', {
     method: 'GET',

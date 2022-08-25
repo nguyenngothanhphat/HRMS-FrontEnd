@@ -1,12 +1,6 @@
 import request from '@/utils/request';
 
-export async function getGeneralInfo(payload) {
-  return request('/api/generalinfotenant/get-by-employee', {
-    method: 'POST',
-    data: payload,
-  });
-}
-export async function getGeneralInfoByUserId(payload) {
+export async function getEmployeeByUserId(payload) {
   return request('/api/generalinfotenant/get-employee-by-user-id', {
     method: 'POST',
     data: payload,
@@ -57,15 +51,14 @@ export async function getLocationList() {
 }
 
 export async function updateGeneralInfo(payload) {
-  return request('/api/generalinfotenant/update', {
-    method: 'POST',
+  return request(`/api/employeetenant/${payload._id}`, {
+    method: 'PATCH',
     data: payload,
   });
 }
 
 export async function getListTitle(payload) {
   return request('/api/titletenant/list', {
-    // return request('/api/title/list', {
     method: 'POST',
     data: payload,
   });
@@ -88,11 +81,6 @@ export async function addCertification(payload) {
 export async function addChangeHistory(payload) {
   return request('/api/changehistorytenant/add', { method: 'POST', data: payload });
 }
-// export async function getCountryList() {
-//   return request('/api/countrytenant/list', {
-//     method: 'POST',
-//   });
-// }
 
 export async function getCountryList() {
   return request('/api/country/list', {
@@ -313,15 +301,8 @@ export async function updateEmployment(payload) {
 }
 
 export async function patchEmployment(payload) {
-  return request(`/api/employeetenant/${payload.id}`, {
+  return request(`/api/employeetenant/${payload._id}`, {
     method: 'PATCH',
-    data: payload,
-  });
-}
-
-export async function updatePrivate(payload) {
-  return request('/api/generalinfotenant/update', {
-    method: 'POST',
     data: payload,
   });
 }

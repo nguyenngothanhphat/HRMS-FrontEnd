@@ -7,13 +7,6 @@ export async function getEmployeesList(params) {
   });
 }
 
-export async function searchEmployees(payload) {
-  return request('/api/employeetenant/list-by-single-company', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 export async function getFilterList(payload) {
   return request('/api/companytenant/list-filter-parent', {
     method: 'POST',

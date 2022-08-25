@@ -42,7 +42,7 @@ const FilterContent = (props) => {
     }
 
     return dispatch({
-      type: 'usersManagement/searchEmployeesEffect',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: value,
         status: activeTab === 'inActive' ? ['INACTIVE'] : ['ACTIVE'],

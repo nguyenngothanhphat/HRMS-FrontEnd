@@ -35,7 +35,7 @@ const FilterContent = (props) => {
       });
     }
     return dispatch({
-      type: 'projectDetails/fetchEmployeeListEffect',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: val,
         status: ['ACTIVE'],
@@ -137,10 +137,7 @@ const FilterContent = (props) => {
   );
 };
 
-export default connect(
-  ({ projectDetails, loading, user: { currentUser: { employee = {} } = {} } }) => ({
-    employee,
-    projectDetails,
-    loadingFetchEmployeeList: loading.effects['projectDetails/fetchEmployeeListEffect'],
-  }),
-)(FilterContent);
+export default connect(({ projectDetails, user: { currentUser: { employee = {} } = {} } }) => ({
+  employee,
+  projectDetails,
+}))(FilterContent);

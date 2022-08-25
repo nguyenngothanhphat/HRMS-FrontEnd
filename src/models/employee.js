@@ -221,23 +221,6 @@ const employee = {
       }
       return response;
     },
-    *fetchAllListUser({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getListEmployeeSingleCompany, {
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-          ...payload,
-        });
-        const { statusCode, data: listEmployeeAll = [] } = response;
-        if (statusCode !== 200) throw response;
-
-        yield put({ type: 'listEmployeeAll', payload: { listEmployeeAll } });
-      } catch (errors) {
-        // dialog(errors);
-      }
-      return response;
-    },
 
     *exportEmployees({ payload }, { call }) {
       try {
@@ -291,28 +274,6 @@ const employee = {
           type: 'save',
           payload: {
             employeeNameList: data,
-          },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response;
-    },
-    *searchEmployeesEffect({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getListEmployeeSingleCompany, {
-          company: getCurrentCompany(),
-          ...payload,
-          tenantId: getCurrentTenant(),
-        });
-        const { statusCode, data = [] } = response;
-        if (statusCode !== 200) throw response;
-
-        yield put({
-          type: 'save',
-          payload: {
-            managerList: data,
           },
         });
       } catch (errors) {

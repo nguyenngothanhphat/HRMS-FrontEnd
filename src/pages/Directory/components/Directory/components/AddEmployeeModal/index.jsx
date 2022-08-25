@@ -186,7 +186,7 @@ class AddEmployeeModal extends Component {
       });
     }
     return dispatch({
-      type: 'employeesManagement/fetchEmployeeList',
+      type: 'globalData/fetchEmployeeListEffect',
       params: {
         search: val,
         status: ['ACTIVE'],

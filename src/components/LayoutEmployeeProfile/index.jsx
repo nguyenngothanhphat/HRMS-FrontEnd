@@ -24,7 +24,6 @@ import s from './index.less';
     selectedNewCompanyTab,
     isProfileOwner,
     loadingFetchEmployee:
-      loading.effects['employeeProfile/fetchGeneralInfo'] ||
       loading.effects['employeeProfile/fetchEmployeeIdByUserId'] ||
       loading.effects['employeeProfile/fetchEmploymentInfo'],
   }),

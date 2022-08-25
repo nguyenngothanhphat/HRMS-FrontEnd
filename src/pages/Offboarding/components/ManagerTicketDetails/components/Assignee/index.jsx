@@ -53,7 +53,7 @@ const Assignee = (props) => {
     }
 
     return dispatch({
-      type: 'offboarding/fetchEmployeeListEffect',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: value,
         status: ['ACTIVE'],

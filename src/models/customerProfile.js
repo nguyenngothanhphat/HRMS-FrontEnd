@@ -24,7 +24,6 @@ import getCustomerInfo, {
 } from '../services/customerProfile';
 import {
   getDivisionList,
-  getEmployeeList, // other
   getProjectTypeList,
   getProjectNameList,
   getProjectStatusList,
@@ -50,7 +49,6 @@ const customerProfile = {
     projectList: [],
     titleList: [],
     divisionList: [],
-    employeeList: [],
     projectTypeList: [],
     projectNameList: [],
     projectStatusList: [],
@@ -449,29 +447,6 @@ const customerProfile = {
             },
           });
         }
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response;
-    },
-
-    *fetchEmployeeListEffect({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getEmployeeList, {
-          ...payload,
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-        });
-        const { statusCode, data = [] } = response;
-        if (statusCode !== 200) throw response;
-
-        yield put({
-          type: 'save',
-          payload: {
-            employeeList: data,
-          },
-        });
       } catch (errors) {
         dialog(errors);
       }

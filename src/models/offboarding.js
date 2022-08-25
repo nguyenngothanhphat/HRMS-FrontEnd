@@ -4,7 +4,6 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   createRequest,
-  getEmployeeList,
   getList,
   getMyRequest,
   // helpers
@@ -212,27 +211,7 @@ const offboarding = {
       }
       return response;
     },
-    *fetchEmployeeListEffect({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getEmployeeList, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: {
-            employeeList: data,
-          },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response;
-    },
+
     *getLocationsOfCountriesEffect({ payload }, { call, put }) {
       let response = {};
       try {

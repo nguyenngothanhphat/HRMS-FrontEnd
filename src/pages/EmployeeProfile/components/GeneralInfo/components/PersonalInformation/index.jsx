@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-indent */
 import { Card } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
 import CustomEditButton from '@/components/CustomEditButton';
 import Edit from './components/Edit';
@@ -8,88 +8,40 @@ import View from './components/View';
 import styles from './index.less';
 
 const PersonalInformation = (props) => {
-  const {
-    generalData,
-    openPersonalInfo,
-    permissions = {},
-    isProfileOwner,
-    generalDataOrigin,
-    dispatch,
-  } = props;
+  const { employeeProfile: { employmentData = {} } = {}, permissions = {}, isProfileOwner } = props;
 
-  const handleEdit = () => {
-    dispatch({
-      type: 'employeeProfile/saveOpenEdit',
-      payload: { openPersonalInfo: true },
-    });
-  };
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleCancel = () => {
-    const {
-      personalNumber = '',
-      personalEmail = '',
-      Blood = '',
-      maritalStatus = '',
-      linkedIn = '',
-      residentAddress = '',
-      currentAddress = '',
-    } = generalDataOrigin;
-    const reverseFields = {
-      personalNumber,
-      personalEmail,
-      Blood,
-      maritalStatus,
-      linkedIn,
-      residentAddress,
-      currentAddress,
-    };
-    const payload = { ...generalData, ...reverseFields };
-    const isModified = JSON.stringify(payload) !== JSON.stringify(generalDataOrigin);
-    dispatch({
-      type: 'employeeProfile/saveTemp',
-      payload: { generalData: payload },
-    });
-    dispatch({
-      type: 'employeeProfile/save',
-      payload: { isModified },
-    });
-    dispatch({
-      type: 'employeeProfile/saveOpenEdit',
-      payload: { openPersonalInfo: false },
-    });
+    setIsEditing(false);
   };
 
   const options = () => {
     return (
-      !openPersonalInfo &&
+      !isEditing &&
       (permissions.editPersonalInfo !== -1 || isProfileOwner) && (
-        <CustomEditButton onClick={handleEdit}>Edit</CustomEditButton>
+        <CustomEditButton onClick={() => setIsEditing(true)}>Edit</CustomEditButton>
       )
     );
   };
 
-  const renderComponent = openPersonalInfo ? (
-    <Edit handleCancel={handleCancel} isProfileOwner={isProfileOwner} />
-  ) : (
-    <View dataAPI={generalData} permissions={permissions} isProfileOwner={isProfileOwner} />
-  );
   return (
     <Card className={styles.PersonalInformation} title="Personal Information" extra={options()}>
-      <div className={styles.container}>{renderComponent}</div>
+      <div className={styles.container}>
+        {isEditing ? (
+          <Edit handleCancel={handleCancel} isProfileOwner={isProfileOwner} />
+        ) : (
+          <View
+            dataAPI={employmentData.generalInfo}
+            permissions={permissions}
+            isProfileOwner={isProfileOwner}
+          />
+        )}
+      </div>
     </Card>
   );
 };
 
-export default connect(
-  ({
-    employeeProfile: {
-      editGeneral: { openPersonalInfo = false },
-      originData: { generalData: generalDataOrigin = {} } = {},
-      tempData: { generalData = {} } = {},
-    } = {},
-  }) => ({
-    openPersonalInfo,
-    generalDataOrigin,
-    generalData,
-  }),
-)(PersonalInformation);
+export default connect(({ employeeProfile }) => ({
+  employeeProfile,
+}))(PersonalInformation);

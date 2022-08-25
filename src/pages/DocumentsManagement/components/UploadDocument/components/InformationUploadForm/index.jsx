@@ -107,10 +107,6 @@ class InformationUploadForm extends PureComponent {
           type: 'documentsManagement/fetchAdhaarCard',
           employee,
         });
-        dispatch({
-          type: 'documentsManagement/fetchGeneralInfo',
-          employee,
-        });
       } else {
         this.setState({
           checkEmployeeExists: false,

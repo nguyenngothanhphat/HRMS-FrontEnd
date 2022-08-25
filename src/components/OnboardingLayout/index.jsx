@@ -87,7 +87,5 @@ export default connect(({ loading, info, user: { permissions = {} } = {}, onboar
   info,
   permissions,
   onboarding,
-  loadingAddTeamMember:
-    loading.effects['info/fetchCandidateInfo'] ||
-    loading.effects['newCandidateForm/fetchCandidateInfo'],
+  loadingAddTeamMember: loading.effects['newCandidateForm/fetchCandidateInfo'],
 }))(OnboardingLayout);

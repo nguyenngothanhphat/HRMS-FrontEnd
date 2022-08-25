@@ -27,7 +27,6 @@ import styles from './index.less';
     loadingCustomerID: loading.effects['customerManagement/getCustomerID'],
     loadingTagList: loading.effects['customerManagement/fetchTagList'],
     loadingStateList: loading.effects['customerManagement/fetchStateByCountry'],
-    loadingEmployeeList: loading.effects['customerManagement/fetchEmployeeList'],
     loadingAdd: loading.effects['customerManagement/addNewCustomer'],
   }),
 )
@@ -72,7 +71,7 @@ class EditCustomerModalContent extends PureComponent {
       });
     }
     return dispatch({
-      type: 'customerManagement/fetchEmployeeList',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: val,
         status: ['ACTIVE'],

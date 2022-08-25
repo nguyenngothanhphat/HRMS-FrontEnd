@@ -291,7 +291,6 @@ const FilterContent = (props) => {
 export default connect(({ loading, employee, location: { companyLocationList = [] } = {} }) => ({
   loadingFetchEmployeeIDList: loading.effects['employee/fetchEmployeeIDListEffect'],
   loadingFetchEmployeeNameList: loading.effects['employee/fetchEmployeeNameListEffect'],
-  loadingFetchManagerList: loading.effects['employee/searchEmployeesEffect'],
   employee,
   companyLocationList,
 }))(FilterContent);

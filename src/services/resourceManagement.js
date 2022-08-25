@@ -12,13 +12,6 @@ export async function getResources(payload) {
     API_KEYS.PROJECT_API,
   );
 }
-
-export async function getListEmployee(payload) {
-  return request('/api/employeetenant/list-by-single-company', {
-    method: 'POST',
-    data: payload,
-  });
-}
 export async function getDepartmentList(payload) {
   return request('/api/departmenttenant/list', {
     method: 'POST',

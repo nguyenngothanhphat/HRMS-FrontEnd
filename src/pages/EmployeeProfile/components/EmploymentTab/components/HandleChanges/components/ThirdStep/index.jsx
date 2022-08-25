@@ -12,19 +12,8 @@ export default function ThirdStep(props) {
     loadingFetchEmployeeList = false,
     loadingFetchTitleList = false,
   } = props;
-  // const { stepTwo: { department = '' } = {} } = changeData;
+
   const { employeeList = [] } = fetchedState;
-
-  // const sameDeptEmployees = employeeList.filter(
-  //   (item) => item.department._id === department || item.department._id === '',
-  // );
-
-  // const sameDeptEmployeeId = sameDeptEmployees.map((item) => item._id);
-
-  // changeData.stepThree.reportees = changeData.stepThree.reportees.filter((item) =>
-  //   sameDeptEmployeeId.includes(item),
-  // );
-
   const makeKey = () => {
     return Math.random().toString(36).substring(7);
   };
