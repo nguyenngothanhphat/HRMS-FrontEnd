@@ -48,13 +48,6 @@ export async function createProfile(payload) {
     data: payload, // rookieID: id, employeeId: id
   });
 }
-
-export async function getListEmployee(payload) {
-  return request('/api/employeetenant/list-by-single-company', {
-    method: 'POST',
-    data: payload,
-  });
-}
 export async function getFilterList(payload) {
   return request('/api/companytenant/list-filter-parent', {
     method: 'POST',

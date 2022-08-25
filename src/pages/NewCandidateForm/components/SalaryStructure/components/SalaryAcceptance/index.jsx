@@ -50,31 +50,6 @@ class SalaryAcceptance extends PureComponent {
     };
   }
 
-  // onFinish = (values) => {};
-
-  // static getDerivedStateFromProps(props) {
-  //   if ('salaryStructure' in props) {
-  //     return { salaryStructure: props.salaryStructure || {} };
-  //   }
-  //   return null;
-  // }
-
-  // handleChange = (e) => {
-  //   const { target } = e;
-  //   const { name, value } = target;
-  //   const { dispatch } = this.props;
-
-  //   const { salaryStructure = {} } = this.state;
-  //   salaryStructure[name] = value;
-
-  //   dispatch({
-  //     type: 'info/save',
-  //     payload: {
-  //       salaryStructure,
-  //     },
-  //   });
-  // };
-
   onCloseCandidate = () => {
     const { dispatch, _id } = this.props;
     dispatch({

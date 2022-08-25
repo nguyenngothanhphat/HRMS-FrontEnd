@@ -24,7 +24,7 @@ const ChangeManagerModalContent = (props) => {
     }
 
     return dispatch({
-      type: 'resourceManagement/getListEmployee',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: value,
         status: ['ACTIVE'],
@@ -103,13 +103,11 @@ const ChangeManagerModalContent = (props) => {
 
 export default connect(
   ({
-    loading = {},
     resourceManagement: { employeeList = [] } = {},
     user: {
       currentUser: { employee = {} },
     },
   }) => ({
-    loading: loading.effects['resourceManagement/getListEmployee'],
     employeeList,
     employee,
   }),

@@ -55,7 +55,7 @@ const AddProjectModal = (props) => {
       });
     }
     return dispatch({
-      type: 'projectManagement/fetchEmployeeListEffect',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: val,
         status: ['ACTIVE'],
@@ -507,7 +507,6 @@ export default connect(
     projectManagement,
     loadingGenId: loading.effects['projectManagement/generateProjectIdEffect'],
     loadingAddProject: loading.effects['projectManagement/addProjectEffect'],
-    loadingFetchEmployeeList: loading.effects['projectManagement/fetchEmployeeListEffect'],
     loadingFetchCustomerList: loading.effects['projectManagement/fetchCustomerListEffect'],
     loadingFetchCustomerInfo: loading.effects['projectManagement/fetchCustomerInfo'],
   }),

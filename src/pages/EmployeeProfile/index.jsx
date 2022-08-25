@@ -6,13 +6,15 @@ import { PageContainer } from '@/layouts/layout/src';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 import { IS_TERRALOGIC_LOGIN } from '@/utils/login';
-// import AccountsPaychecks from './components/Accounts&Paychecks';
 import Compensation from './components/Compensation';
 import Documents from './components/Documents';
 import GeneralInfo from './components/GeneralInfo';
 import PerformanceHistory from './components/PerformanceHistory';
 import styles from './index.less';
 import History from '../TimeOff/components/History';
+import CommonModal from '@/components/CommonModal';
+import SuccessImage from '@/assets/resource-management-success.svg';
+import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 
 const EmployeeProfile = (props) => {
   const {
@@ -21,18 +23,13 @@ const EmployeeProfile = (props) => {
     currentUser: { employee: { generalInfo: { userId = '' } = {} } = {} },
     permissions = {},
     location: { state: { location = '' } = {} } = {},
-    employeeProfile: { employee = '', isProfileOwner = false } = {},
+    employeeProfile: { employee = '', isProfileOwner = false, successModalVisible = false } = {},
   } = props;
 
   const fetchData = async (id) => {
     dispatch({
       type: 'employeeProfile/fetchEmploymentInfo',
       payload: { id },
-    });
-
-    dispatch({
-      type: 'employeeProfile/fetchGeneralInfo',
-      payload: { employee: id },
     });
   };
 
@@ -144,6 +141,15 @@ const EmployeeProfile = (props) => {
     return listMenu;
   };
 
+  const onCloseSuccessModal = () => {
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: {
+        successModalVisible: false,
+      },
+    });
+  };
+
   if (!tabName) return null;
   return (
     <PageContainer>
@@ -160,6 +166,29 @@ const EmployeeProfile = (props) => {
           reId={reId}
           employeeLocation={location}
           permissions={permissions}
+        />
+
+        <CommonModal
+          width={550}
+          visible={successModalVisible}
+          hasFooter={false}
+          onClose={onCloseSuccessModal}
+          hasHeader={false}
+          content={
+            <div className={styles.SuccessModal}>
+              <div style={{ textAlign: 'center', paddingTop: 24 }}>
+                <img src={SuccessImage} alt="update success" />
+              </div>
+              <br />
+              <br />
+              <p style={{ textAlign: 'center', color: '#707177', fontWeight: 500 }}>
+                Update information successfully
+              </p>
+              <div className={styles.footer}>
+                <CustomPrimaryButton onClick={onCloseSuccessModal}>Okay</CustomPrimaryButton>
+              </div>
+            </div>
+          }
         />
       </div>
     </PageContainer>

@@ -12,19 +12,12 @@ import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import styles from './index.less';
 
 const TaxWithholdingInfo = (props) => {
-  const { openTax, loadingTax, visibleSuccess, taxDataOrigin, dispatch } = props;
+  const { openTax, loadingTax, taxDataOrigin, dispatch } = props;
 
   const handleEdit = () => {
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
       payload: { openTax: true },
-    });
-  };
-
-  const handleCancelModelSuccess = () => {
-    dispatch({
-      type: 'employeeProfile/save',
-      payload: { visibleSuccess: false },
     });
   };
 
@@ -84,28 +77,6 @@ const TaxWithholdingInfo = (props) => {
           )}
         </Col>
       </Row>
-      <CommonModal
-        width={550}
-        visible={visibleSuccess}
-        hasFooter={false}
-        onClose={handleCancelModelSuccess}
-        hasHeader={false}
-        content={
-          <>
-            <div style={{ textAlign: 'center', paddingTop: 24 }}>
-              <img src={imageAddSuccess} alt="update success" />
-            </div>
-            <br />
-            <br />
-            <p style={{ textAlign: 'center', color: '#707177', fontWeight: 500 }}>
-              Update information successfully
-            </p>
-            <div className={styles.spaceFooterModalSuccess}>
-              <CustomPrimaryButton onClick={handleCancelModelSuccess}>Okay</CustomPrimaryButton>
-            </div>
-          </>
-        }
-      />
     </div>
   );
 };
@@ -116,13 +87,10 @@ export default connect(
     employeeProfile: {
       editGeneral: { openTax } = {},
       originData: { taxData: taxDataOrigin = {} },
-      // tempData: { bankData = {}, taxData = {} } = {},
-      visibleSuccess = false,
     } = {},
   }) => ({
     loadingTax: loading.effects['employeeProfile/fetchTax'],
     openTax,
-    visibleSuccess,
     taxDataOrigin,
   }),
 )(TaxWithholdingInfo);

@@ -83,11 +83,6 @@ const HeaderProjectRM = (props) => {
         type: 'projectManagement/fetchProjectStatusListEffect',
       });
     }
-    if (isEmpty(employeeList)) {
-      dispatch({
-        type: 'projectManagement/fetchEmployeeListEffect',
-      });
-    }
   };
 
   const allProject = data.filter((obj) => obj.statusId === undefined || obj.statusId === 0);

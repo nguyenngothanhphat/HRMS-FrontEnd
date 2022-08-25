@@ -7,13 +7,6 @@ export async function getListTimeOff(params) {
   });
 }
 
-export async function getListEmployees(payload) {
-  return request('/api/employeetenant/list-by-single-company', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 export async function getLocationsOfCountries(params) {
   return request('/api/locationtenant/group-country', {
     method: 'GET',

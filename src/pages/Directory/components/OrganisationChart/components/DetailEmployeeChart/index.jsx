@@ -61,7 +61,7 @@ const DetailEmployeeChart = (props) => {
       });
     }
     return dispatch({
-      type: 'employee/fetchAllListUser',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: val,
         status: ['ACTIVE'],
@@ -268,7 +268,6 @@ export default connect(
     listEmployeeAll,
     companiesOfUser,
     companyLocationList,
-    loadingFetchListAll: loading.effects['employee/fetchAllListUser'],
     loadingFetchOrgChart: loading.effects['employee/fetchDataOrgChart'],
   }),
 )(DetailEmployeeChart);

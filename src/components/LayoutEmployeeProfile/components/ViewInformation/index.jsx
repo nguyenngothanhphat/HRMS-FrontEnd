@@ -1,137 +1,123 @@
 import { Checkbox, Divider, Dropdown, Input, Menu, Tag, Tooltip } from 'antd';
-import React, { Component } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect, history } from 'umi';
 import avtDefault from '@/assets/avtDefault.jpg';
 import bioSvg from '@/assets/bioActions.svg';
 import CommonModal from '@/components/CommonModal';
 import ModalUpload from '@/components/ModalUpload';
-import { getCurrentTenant } from '@/utils/authority';
 import { setHideOffboarding, setOffboardingEmpMode } from '@/utils/offboarding';
 import s from './index.less';
 
 const { TextArea } = Input;
 const { SubMenu } = Menu;
 
-@connect(
-  ({
-    employeeProfile: {
-      tempData: { generalData = {}, compensationData = {} } = {},
-      originData: {
-        generalData: originGeneralData = {},
-        employmentData: {
-          manager = {},
-          location = {},
-          department = {},
-          joinDate = '',
-          title = {},
-        } = {},
-      } = {},
+const ViewInformation = (props) => {
+  const actionBtnRef = useRef();
+
+  const [visible, setVisible] = useState(false);
+  const [openEditBio, setOpenEditBio] = useState(false);
+  const [bio, setBio] = useState('');
+  const [placementText, setPlacementText] = useState('topCenter');
+
+  const {
+    dispatch,
+    permissions = {},
+    isProfileOwner = false,
+    // joinDate = '',
+    loadingFetchEmployee = false,
+    loading = false,
+    employeeProfile: { employee = '', employmentData = {} } = {},
+    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
+  } = props;
+
+  const {
+    manager: {
+      generalInfo: { legalName: managerName = '', userId: managerUserId = '' } = {} || {},
     } = {},
-    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {}, roles = [] } = {} } = {},
-  }) => ({
-    generalData,
-    compensationData,
-    originGeneralData,
-    myEmployeeID,
-    manager,
-    location,
-    department,
-    joinDate,
-    title,
-    roles,
-  }),
-)
-class ViewInformation extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      visible: false,
-      openEditBio: false,
-      bio: '',
-      placementText: 'topCenter',
-    };
+    location: { name: locationName = '' } = {},
+    department: { name: departmentName = '' } = {},
+    title = {},
+    generalInfo = {},
+  } = employmentData;
 
-    this.actionBtnRef = React.createRef();
-  }
+  const {
+    legalName = '',
+    avatar = '',
+    linkedIn = '',
+    workEmail = '',
+    certification = [],
+    userId = '',
+    skills = [],
+    bioInfo = '',
+    isShowAvatar = true,
+  } = generalInfo;
 
-  componentDidMount = () => {
-    this.onScroll('addEventListener');
-  };
+  const bioCheck = 170 - bio.length;
 
-  shouldComponentUpdate(nextProps) {
-    const { generalData: { bioInfo = '' } = {} } = this.props;
-    const { generalData: { bioInfo: nextBioInfo = '' } = {} } = nextProps;
-    if (bioInfo !== nextBioInfo) {
-      this.setState({
-        bio: nextBioInfo,
-      });
-    }
-    return true;
-  }
+  const listColors = [
+    {
+      bg: '#E0F4F0',
+      colorText: '#00c598',
+    },
+    {
+      bg: '#ffefef',
+      colorText: '#fd4546',
+    },
+    {
+      bg: '#f1edff',
+      colorText: '#6236ff',
+    },
+    {
+      bg: '#f1f8ff',
+      colorText: '#006bec',
+    },
+    {
+      bg: '#fff7fa',
+      colorText: '#ff6ca1',
+    },
+  ];
 
-  componentDidUpdate = () => {
-    this.onScroll('addEventListener');
-  };
-
-  componentWillUnmount = () => {
-    this.onScroll('removeEventListener');
-  };
-
-  viewProfile = (id) => {
+  const viewProfile = (id) => {
     const url = `/directory/employee-profile/${id}`;
     window.open(url, '_blank');
   };
 
-  onScroll = (name) => {
-    if (name === 'addEventListener') {
-      window.addEventListener('scroll', this.handleScroll, { passive: true });
-    } else {
-      window.removeEventListener('scroll', this.handleScroll);
-    }
-  };
-
-  handleScroll = () => {
+  const handleScroll = () => {
     const positionY = window.scrollY;
 
     if (positionY > 300) {
-      this.setState({
-        placementText: 'bottomCenter',
-      });
+      setPlacementText('bottomCenter');
     } else {
-      this.setState({
-        placementText: 'topCenter',
-      });
+      setPlacementText('topCenter');
     }
   };
 
-  getPlacement = (placement) => {
-    this.setState({
-      placementText: placement,
-    });
+  const onScroll = (name) => {
+    if (name === 'addEventListener') {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+    } else {
+      window.removeEventListener('scroll', handleScroll);
+    }
   };
 
-  handleEditBio = () => {
-    const { openEditBio } = this.state;
-    this.setState({
-      openEditBio: !openEditBio,
-    });
+  useEffect(() => {
+    onScroll('addEventListener');
+    return () => {
+      onScroll('removeEventListener');
+    };
+  }, []);
+
+  useEffect(() => {
+    setBio(bioInfo);
+  }, [bioInfo]);
+
+  const toggleUploadAvatarModal = () => {
+    setVisible(!visible);
   };
 
-  openModalUpload = () => {
-    this.setState({
-      visible: true,
-    });
-  };
-
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-    });
-  };
-
-  formatListSkill = (skills, colors) => {
+  const formatListSkill = (arr, colors) => {
     let temp = 0;
-    const listFormat = skills?.map((item) => {
+    const listFormat = arr?.map((item) => {
       if (temp >= 5) {
         temp -= 5;
       }
@@ -142,69 +128,47 @@ class ViewInformation extends Component {
         id: item._id,
       };
     });
-    // const checkTypeOf = otherSkills instanceof Array ? otherSkills : [otherSkills];
-    // const listFormatOther = checkTypeOf?.map((item) => {
-    //   if (temp >= 5) {
-    //     temp -= 5;
-    //   }
-    //   temp += 1;
-    //   return {
-    //     color: colors[temp - 1],
-    //     name: item,
-    //     id: item,
-    //   };
-    // });
     return [...listFormat];
   };
 
-  getResponse = (resp) => {
-    const {
-      dispatch,
-      generalData: { _id: id = '', employee = '' } = {},
-      myEmployeeID = '',
-    } = this.props;
+  const getResponse = (resp) => {
     const { statusCode, data = {} } = resp;
-    const check = employee === myEmployeeID;
     if (statusCode === 200) {
       const [first] = data;
-      this.handleCancel();
+      toggleUploadAvatarModal();
       dispatch({
         type: 'employeeProfile/updateGeneralInfo',
         payload: {
-          id,
-          avatar: first.url,
-          tenantId: getCurrentTenant(),
+          _id: employee,
+          generalInfo: {
+            avatar: first.url,
+          },
         },
-        dataTempKept: {},
-        key: 'noKey',
-        isUpdateMyAvt: check,
+        isUpdateMyAvt: employee === myEmployeeID,
       });
     }
   };
 
-  handleSaveBio = () => {
-    const { dispatch, generalData: { _id: id = '' } = {} } = this.props;
-    const { bio } = this.state;
-    dispatch({
+  const handleSaveBio = async () => {
+    const res = await dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload: {
-        id,
-        bioInfo: bio,
-        tenantId: getCurrentTenant(),
+        _id: employee,
+        generalInfo: {
+          bioInfo: bio,
+        },
       },
     });
-    this.handleEditBio();
+    if (res.statusCode === 200) {
+      setOpenEditBio(false);
+    }
   };
 
-  onChangeInput = ({ target: { value } }) => {
-    this.setState({
-      bio: value,
-    });
+  const onChangeInput = ({ target: { value } }) => {
+    setBio(value);
   };
 
-  _renderFormEditBio = () => {
-    const { bio } = this.state;
-    const check = 170 - bio.length;
+  const _renderFormEditBio = () => {
     return (
       <div className={s.formEditBio}>
         <div className={s.formEditBio__description1}>Only 170 character allowed!</div>
@@ -214,47 +178,46 @@ class ViewInformation extends Component {
             maxRows: 7,
           }}
           defaultValue={bio}
-          onChange={this.onChangeInput}
+          onChange={onChangeInput}
         />
         <div className={s.formEditBio__description2}>
           <span style={{ opacity: 0.5 }}>Remaining characters: </span>
-          {check >= 0 ? (
-            <span style={{ opacity: 0.5 }}>{check}</span>
+          {bioCheck >= 0 ? (
+            <span style={{ opacity: 0.5 }}>{bioCheck}</span>
           ) : (
-            <span style={{ color: '#ff6c6c' }}>{check} (Limit exceeded)</span>
+            <span style={{ color: '#ff6c6c' }}>{bioCheck} (Limit exceeded)</span>
           )}
         </div>
       </div>
     );
   };
 
-  onChangeShowAvatar = (e) => {
+  const onChangeShowAvatar = (e) => {
     const { target: { checked } = {} } = e;
-    const { dispatch, generalData: { _id: id = '' } = {} } = this.props;
     dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload: {
-        id,
-        isShowAvatar: checked,
-        tenantId: getCurrentTenant(),
+        _id: employee,
+        generalInfo: {
+          isShowAvatar: checked,
+        },
       },
     });
   };
 
-  getAvatarUrl = (avatar, isShowAvatar) => {
-    const { permissions = {}, isProfileOwner = false } = this.props;
+  const getAvatarUrl = () => {
     if (isShowAvatar || permissions.viewAvatarEmployee !== -1 || isProfileOwner)
       return avatar || avtDefault;
     return avtDefault;
   };
 
-  handleClickMenu = (menu) => {
-    const { handleClickOnActions = () => {} } = this.props;
+  const handleClickMenu = (menu) => {
+    const { handleClickOnActions = () => {} } = props;
     const { key = '' } = menu;
     handleClickOnActions(key);
   };
 
-  redirectOffboarding = () => {
+  const redirectOffboarding = () => {
     setHideOffboarding(false);
     setOffboardingEmpMode(true);
     history.push({
@@ -262,16 +225,13 @@ class ViewInformation extends Component {
     });
   };
 
-  btnAction = (permissions, isProfileOwner) => {
-    const { loading, loadingFetchEmployee } = this.props;
-    const { placementText } = this.state;
-
+  const btnAction = () => {
     const subDropdown = (
       <SubMenu className={s.subMenu} key="sub1" title="Job Change">
         <Menu.Item
           key="offboarding"
           className={s.menuItem}
-          onClick={this.redirectOffboarding}
+          onClick={redirectOffboarding}
           // disabled
         >
           Resignation
@@ -283,16 +243,16 @@ class ViewInformation extends Component {
       <Menu
         className={s.menuDropdown}
         mode="inline"
-        onClick={this.handleClickMenu}
+        onClick={handleClickMenu}
         disabled={loading || loadingFetchEmployee}
       >
         {isProfileOwner && (
-          <Menu.Item key="editBio" className={s.menuItem} onClick={this.handleEditBio}>
+          <Menu.Item key="editBio" className={s.menuItem} onClick={() => setOpenEditBio(true)}>
             Edit Bio
           </Menu.Item>
         )}
         {isProfileOwner && subDropdown}
-        {permissions.viewAdvancedActions !== -1 && (
+        {/* {permissions.viewAdvancedActions !== -1 && (
           <>
             <Menu.Item key="0" className={s.menuItem}>
               Put on Leave (LWP)
@@ -304,7 +264,7 @@ class ViewInformation extends Component {
               Request Details
             </Menu.Item>
           </>
-        )}
+        )} */}
       </Menu>
     );
 
@@ -316,7 +276,7 @@ class ViewInformation extends Component {
           trigger={['click']}
           placement={placementText}
         >
-          <div ref={this.actionBtnRef} onClick={(e) => e.preventDefault()}>
+          <div ref={actionBtnRef} onClick={(e) => e.preventDefault()}>
             Actions <img alt="bio" src={bioSvg} />
           </div>
         </Dropdown>
@@ -324,7 +284,7 @@ class ViewInformation extends Component {
     );
   };
 
-  _renderListCertification = (list) => {
+  const _renderListCertification = (list = []) => {
     if (list.length === 0) {
       return <div className={s.infoEmployee__textNameAndTitle__title}>No certifications</div>;
     }
@@ -338,212 +298,158 @@ class ViewInformation extends Component {
     });
   };
 
-  render() {
-    const {
-      generalData,
-      // compensationData,
-      originGeneralData: { bioInfo = '', isShowAvatar = true } = {},
-      // employeeLocation = '',
-      permissions = {},
-      isProfileOwner = false,
-      manager = {},
-      location: { name: locationName = '' } = {},
-      department: { name: departmentName = '' } = {},
-      // joinDate = '',
-      title,
-      loadingFetchEmployee = false,
-      loading = false,
-    } = this.props;
+  const listSkill = formatListSkill(skills, listColors) || [];
 
-    const {
-      legalName = '',
-      avatar = '',
-      linkedIn = '',
-      workEmail = '',
-      certification = [],
-      userId = '',
-      skills = [],
-    } = generalData;
+  const avatarUrl = getAvatarUrl();
 
-    const { visible, openEditBio } = this.state;
-    const { generalInfo: { legalName: managerName = '', userId: managerUserId = '' } = {} || {} } =
-      manager || {};
-
-    const { bio } = this.state;
-    const check = 170 - bio.length;
-
-    const listColors = [
-      {
-        bg: '#E0F4F0',
-        colorText: '#00c598',
-      },
-      {
-        bg: '#ffefef',
-        colorText: '#fd4546',
-      },
-      {
-        bg: '#f1edff',
-        colorText: '#6236ff',
-      },
-      {
-        bg: '#f1f8ff',
-        colorText: '#006bec',
-      },
-      {
-        bg: '#fff7fa',
-        colorText: '#ff6ca1',
-      },
-    ];
-    const formatListSkill = this.formatListSkill(skills, listColors) || [];
-
-    const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
-
-    return (
-      <div className={s.ViewInformation}>
-        <div className={s.ViewInformation__infoEmployee}>
+  return (
+    <div className={s.ViewInformation}>
+      <div className={s.ViewInformation__infoEmployee}>
+        <img
+          src="/assets/images/img-cover.jpg"
+          alt="img-cover"
+          className={s.infoEmployee__imgCover}
+        />
+        <img
+          src={avatarUrl}
+          alt="img-avt"
+          className={s.infoEmployee__imgAvt}
+          onError={(e) => {
+            e.target.src = avtDefault;
+          }}
+        />
+        {(permissions.updateAvatarEmployee !== -1 || isProfileOwner) && (
           <img
-            src="/assets/images/img-cover.jpg"
-            alt="img-cover"
-            className={s.infoEmployee__imgCover}
+            src="/assets/images/iconUploadImage.svg"
+            onClick={toggleUploadAvatarModal}
+            alt="img-upload"
+            className={s.infoEmployee__imgAvt__upload}
           />
-          <img
-            src={avatarUrl}
-            alt="img-avt"
-            className={s.infoEmployee__imgAvt}
-            onError={(e) => {
-              e.target.src = avtDefault;
-            }}
-          />
-          {(permissions.updateAvatarEmployee !== -1 || isProfileOwner) && (
-            <img
-              src="/assets/images/iconUploadImage.svg"
-              onClick={this.openModalUpload}
-              alt="img-upload"
-              className={s.infoEmployee__imgAvt__upload}
-            />
-          )}
-          <div className={s.infoEmployee__textNameAndTitle}>
-            {legalName && (
-              <p className={s.infoEmployee__textNameAndTitle__name}>
-                {legalName} ({userId}
-              </p>
-            )}
-            {title?.name && (
-              <p className={s.infoEmployee__textNameAndTitle__title} style={{ margin: '5px 0' }}>
-                {title?.name || ''}
-              </p>
-            )}
-          </div>
-
-          <div className={s.infoEmployee__viewBottom}>
-            <p className={s.infoEmployee__viewBottom__description} style={{ marginTop: '10px' }}>
-              {bioInfo}
+        )}
+        <div className={s.infoEmployee__textNameAndTitle}>
+          {legalName && (
+            <p className={s.infoEmployee__textNameAndTitle__name}>
+              {legalName} ({userId}
             </p>
-            {(permissions.editShowAvatarEmployee !== -1 || isProfileOwner) && (
-              <>
-                <Divider />
-                <div className={s.infoEmployee__viewBottom__row}>
-                  <Checkbox
-                    className={s.showAvatar}
-                    checked={isShowAvatar}
-                    disabled={loadingFetchEmployee}
-                    onChange={this.onChangeShowAvatar}
-                  >
-                    Show profile picture to other users
-                  </Checkbox>
-                </div>
-              </>
-            )}
-            <Divider />
-            <p className={s.titleTag}>Skills</p>
-            <div>
-              {formatListSkill.length === 0 && (
-                <div className={s.infoEmployee__viewBottom__certifications}>
-                  <div className={s.infoEmployee__textNameAndTitle__title}>No skills</div>
-                </div>
-              )}
-              {formatListSkill.map((item) => (
-                <Tag
-                  style={{
-                    color: `${item.color.colorText}`,
-                  }}
-                  key={item.id}
-                  color={item.color.bg}
-                >
-                  {item.name}
-                </Tag>
-              ))}
-            </div>
-            <Divider />
-            <p className={s.titleTag}>Certifications</p>
-            <div className={s.infoEmployee__viewBottom__certifications}>
-              {this._renderListCertification(certification)}
-            </div>
-            <Divider />
-
-            <div className={s.infoEmployee__viewBottom__row}>
-              <p className={s.titleTag}>Location</p>
-              <p className={s.infoEmployee__textNameAndTitle__title}>{locationName}</p>
-            </div>
-            <div className={s.infoEmployee__viewBottom__row}>
-              <p className={s.titleTag}>Reporting to</p>
-              <p className={s.infoEmployee__textNameAndTitle__title}>
-                <span className={s.managerName} onClick={() => this.viewProfile(managerUserId)}>
-                  {managerName}
-                </span>
-              </p>
-            </div>
-            <div className={s.infoEmployee__viewBottom__row}>
-              <p className={s.titleTag}>Department</p>
-              <p className={s.infoEmployee__textNameAndTitle__title}>{departmentName}</p>
-            </div>
-
-            <Divider />
-            <div className={s.infoEmployee__socialMedia}>
-              <Tooltip
-                title={
-                  linkedIn
-                    ? 'LinkedIn'
-                    : 'Please update the Linkedin Profile in the Employee profile page'
-                }
-              >
-                <a href={linkedIn || '#'} target="_blank" rel="noopener noreferrer">
-                  <img src="/assets/images/iconLinkedin.svg" alt="img-arrow" />
-                </a>
-              </Tooltip>
-              <Tooltip title="Email">
-                <a href={`mailto:${workEmail}`}>
-                  <img src="/assets/images/iconMail.svg" alt="img-arrow" />
-                </a>
-              </Tooltip>
-            </div>
-            {(isProfileOwner || permissions.viewAdvancedActions !== -1) && (
-              <div className={s.viewBtnAction}>{this.btnAction(permissions, isProfileOwner)}</div>
-            )}
-          </div>
-          <ModalUpload
-            titleModal="Profile Picture Update"
-            visible={visible}
-            handleCancel={this.handleCancel}
-            widthImage="40%"
-            getResponse={this.getResponse}
-          />
-          <CommonModal
-            visible={openEditBio}
-            onClose={this.handleEditBio}
-            content={this._renderFormEditBio()}
-            hasCancelButton={false}
-            title="Edit Bio"
-            firstText="Save"
-            width={500}
-            loading={loading}
-            onFinish={this.handleSaveBio}
-            disabledButton={check < 0}
-          />
+          )}
+          {title?.name && (
+            <p className={s.infoEmployee__textNameAndTitle__title} style={{ margin: '5px 0' }}>
+              {title?.name || ''}
+            </p>
+          )}
         </div>
-      </div>
-    );
-  }
-}
 
-export default ViewInformation;
+        <div className={s.infoEmployee__viewBottom}>
+          <p className={s.infoEmployee__viewBottom__description} style={{ marginTop: '10px' }}>
+            {bioInfo}
+          </p>
+          {(permissions.editShowAvatarEmployee !== -1 || isProfileOwner) && (
+            <>
+              <Divider />
+              <div className={s.infoEmployee__viewBottom__row}>
+                <Checkbox
+                  className={s.showAvatar}
+                  checked={isShowAvatar}
+                  disabled={loadingFetchEmployee}
+                  onChange={onChangeShowAvatar}
+                >
+                  Show profile picture to other users
+                </Checkbox>
+              </div>
+            </>
+          )}
+          <Divider />
+          <p className={s.titleTag}>Skills</p>
+          <div>
+            {listSkill.length === 0 && (
+              <div className={s.infoEmployee__viewBottom__certifications}>
+                <div className={s.infoEmployee__textNameAndTitle__title}>No skills</div>
+              </div>
+            )}
+            {listSkill.map((item) => (
+              <Tag
+                style={{
+                  color: `${item.color.colorText}`,
+                }}
+                key={item.id}
+                color={item.color.bg}
+              >
+                {item.name}
+              </Tag>
+            ))}
+          </div>
+          <Divider />
+          <p className={s.titleTag}>Certifications</p>
+          <div className={s.infoEmployee__viewBottom__certifications}>
+            {_renderListCertification(certification)}
+          </div>
+          <Divider />
+
+          <div className={s.infoEmployee__viewBottom__row}>
+            <p className={s.titleTag}>Location</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>{locationName}</p>
+          </div>
+          <div className={s.infoEmployee__viewBottom__row}>
+            <p className={s.titleTag}>Reporting to</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>
+              <span className={s.managerName} onClick={() => viewProfile(managerUserId)}>
+                {managerName}
+              </span>
+            </p>
+          </div>
+          <div className={s.infoEmployee__viewBottom__row}>
+            <p className={s.titleTag}>Department</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>{departmentName}</p>
+          </div>
+
+          <Divider />
+          <div className={s.infoEmployee__socialMedia}>
+            <Tooltip
+              title={
+                linkedIn
+                  ? 'LinkedIn'
+                  : 'Please update the Linkedin Profile in the Employee profile page'
+              }
+            >
+              <a href={linkedIn || '#'} target="_blank" rel="noopener noreferrer">
+                <img src="/assets/images/iconLinkedin.svg" alt="img-arrow" />
+              </a>
+            </Tooltip>
+            <Tooltip title="Email">
+              <a href={`mailto:${workEmail}`}>
+                <img src="/assets/images/iconMail.svg" alt="img-arrow" />
+              </a>
+            </Tooltip>
+          </div>
+          {(isProfileOwner || permissions.viewAdvancedActions !== -1) && (
+            <div className={s.viewBtnAction}>{btnAction()}</div>
+          )}
+        </div>
+        <ModalUpload
+          titleModal="Profile Picture Update"
+          visible={visible}
+          handleCancel={toggleUploadAvatarModal}
+          widthImage="40%"
+          getResponse={getResponse}
+        />
+        <CommonModal
+          visible={openEditBio}
+          onClose={() => setOpenEditBio(false)}
+          content={_renderFormEditBio()}
+          hasCancelButton={false}
+          title="Edit Bio"
+          firstText="Save"
+          width={500}
+          loading={loading}
+          onFinish={handleSaveBio}
+          disabledButton={bioCheck < 0}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default connect(({ employeeProfile = {}, user }) => ({
+  employeeProfile,
+  user,
+}))(ViewInformation);

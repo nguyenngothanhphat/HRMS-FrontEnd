@@ -10,7 +10,6 @@ import {
   getProjectStatusList,
   getTagList,
   getDivisionList,
-  getEmployeeList,
   addProject,
   updateProject,
   deleteProject,
@@ -270,29 +269,6 @@ const ProjectManagement = {
             },
           });
         }
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response;
-    },
-
-    *fetchEmployeeListEffect({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getEmployeeList, {
-          ...payload,
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-        });
-        const { statusCode, data = [] } = response;
-        if (statusCode !== 200) throw response;
-
-        yield put({
-          type: 'save',
-          payload: {
-            employeeList: data,
-          },
-        });
       } catch (errors) {
         dialog(errors);
       }

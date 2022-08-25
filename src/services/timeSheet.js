@@ -304,13 +304,6 @@ export async function getProjectTypeList(payload) {
   );
 }
 
-export async function getListEmployeeSingleCompany(payload) {
-  return request('/api/employeetenant/list-by-single-company', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 export async function getDivisionList(payload) {
   return request('/api/departmenttenant/get-all-division', {
     method: 'GET',

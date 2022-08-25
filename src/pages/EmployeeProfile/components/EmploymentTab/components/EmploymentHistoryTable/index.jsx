@@ -1,19 +1,17 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
+import { connect, Link } from 'umi';
 import { SwapRightOutlined } from '@ant-design/icons';
 import CommonTable from '@/components/CommonTable';
 import styles from './index.less';
+import { getEmployeeUrl } from '@/utils/utils';
 
 const EmploymentHistory = (props) => {
   const {
     loading,
     employeeProfile: {
-      originData: {
-        generalData: { employee: employeeId = '' } = {},
-        changeHistories = [],
-        changeHistoriesTotal = 0,
-      } = {},
+      employee = '',
+      originData: { changeHistories = [], changeHistoriesTotal = 0 } = {},
     } = {},
     fetchChangeHistories = () => {},
   } = props;
@@ -41,7 +39,7 @@ const EmploymentHistory = (props) => {
       key: `${index + 1}`,
       changed: item.changed,
       effectiveDate: moment(item?.effectiveDate).locale('en').format('Do MMM YYYY'),
-      changedBy: item?.changeByEmployee?.generalInfo || '',
+      changedBy: item?.changeByEmployee?.changeByInfo?.generalInfo || '',
       changeDate: moment(item?.changeDate).locale('en').format('Do MMM YYYY'),
       action: item?.takeEffect === 'WILL_UPDATE' ? 'Revoke' : '',
       reason: item?.reasonChange,
@@ -52,19 +50,14 @@ const EmploymentHistory = (props) => {
   };
 
   useEffect(() => {
-    if (employeeId) {
-      fetchChangeHistories({ employee: employeeId, limit, page });
+    if (employee) {
+      fetchChangeHistories({ employee, limit, page });
     }
-  }, [page, limit, employeeId]);
+  }, [page, limit, employee]);
 
   useEffect(() => {
     formatData(changeHistories);
   }, [JSON.stringify(changeHistories)]);
-
-  const viewProfile = (id) => {
-    const url = `/directory/employee-profile/${id}`;
-    window.open(url, '_blank');
-  };
 
   const generateColumns = () => {
     const columns = [
@@ -101,14 +94,13 @@ const EmploymentHistory = (props) => {
         dataIndex: 'changedBy',
         key: 'changedBy',
         align: 'left',
-        render: (changedBy) => (
-          <span
-            style={{ color: 'blue', cursor: 'pointer', fontWeight: 500 }}
-            onClick={() => viewProfile(changedBy?.userId)}
-          >
-            {changedBy?.legalName} {changedBy?.userId ? `(${changedBy?.userId})` : ''}
-          </span>
-        ),
+        render: (changedBy = {}) => {
+          return (
+            <Link to={getEmployeeUrl(changedBy?.userId)}>
+              {changedBy?.legalName} ({changedBy?.userId || ''})
+            </Link>
+          );
+        },
       },
       {
         title: 'Changed Reason',

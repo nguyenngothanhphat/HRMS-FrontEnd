@@ -1,26 +1,22 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Button, Skeleton } from 'antd';
 import { connect, history, formatMessage } from 'umi';
-// import PreviewOffer from '@/pages/NewCandidateForm/components/PreviewOffer/index';
 import { getCurrentTenant } from '@/utils/authority';
-// import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { ONBOARDING_FORM_LINK, ONBOARDING_STEPS } from '@/constants/onboarding';
 import Header from './components/Header';
 import GlobalEmployeeComponent from './components/GlobalEmployeeComponent';
-import LocalEmployeeComponent from './components/LocalEmployeeComponent';
 import NoteComponent from '../NewNoteComponent';
 import styles from './index.less';
-// import { Page } from '../../utils';
 import MessageBox from '../MessageBox';
 
 @connect(
   ({
-    info: { benefits } = {},
     newCandidateForm: {
       data = {},
       currentStep = 0,
       tempData: { hidePreviewOffer = false, dateOfJoining = '' } = {},
       tempData = {},
+      benefits,
     } = {},
     loading,
   }) => ({
@@ -54,10 +50,8 @@ class Benefits extends PureComponent {
   }
 
   fetchListBenefit = () => {
-    const {
-      dispatch,
-      data: { workLocation: { headQuarterAddress: { country } = {} } = {} } = {},
-    } = this.props;
+    const { dispatch, data: { workLocation: { headQuarterAddress: { country } = {} } = {} } = {} } =
+      this.props;
 
     dispatch({
       type: 'newCandidateForm/fetchListBenefit',
@@ -88,7 +82,7 @@ class Benefits extends PureComponent {
 
     if (title === 'Medical') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -100,7 +94,7 @@ class Benefits extends PureComponent {
       this.setState({ listChecked: list });
     } else if (title === 'Dental') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -111,7 +105,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'Vision') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -122,7 +116,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'Life') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -133,7 +127,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'shortTerm') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -144,7 +138,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'employeeProvident') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -165,7 +159,7 @@ class Benefits extends PureComponent {
 
     if (title === 'Dental') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -176,7 +170,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'Vision') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -187,7 +181,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'Life') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -198,7 +192,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'Medical') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -209,7 +203,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'shortTerm') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -221,7 +215,7 @@ class Benefits extends PureComponent {
     }
     if (title === 'Paytm Wallet') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -232,7 +226,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'Employee Provident Fund') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -258,7 +252,7 @@ class Benefits extends PureComponent {
     const { dispatch } = this.props;
     if (title === 'Medical') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -269,7 +263,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'Dental') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -280,7 +274,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'Vision') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -291,7 +285,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'Life') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -302,7 +296,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'shortTerm') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -313,7 +307,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'employeeProvident') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -324,7 +318,7 @@ class Benefits extends PureComponent {
       });
     } else if (title === 'paytmWallet') {
       dispatch({
-        type: 'info/saveBenefits',
+        type: 'newCandidateForm/save',
         payload: {
           benefits: {
             ...benefits,
@@ -533,17 +527,6 @@ class Benefits extends PureComponent {
                 benefits={benefits}
                 listBenefits={listBenefits}
               />
-              {/* <LocalEmployeeComponent
-                IndiaEmployeesCheckbox={IndiaEmployeesCheckbox}
-                onChange={this.onChange}
-                handleCheckAll={this.handleCheckAll}
-                handleChange={this.handleChange}
-                benefits={benefits}
-                listBenefits={listBenefits}
-              /> */}
-              {/* <div style={{ margin: '32px' }}>
-                <RenderAddQuestion page={Page.Benefits} />
-              </div> */}
             </div>
 
             <div className={styles.bars}>{this._renderBottomBar()}</div>

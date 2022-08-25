@@ -1,8 +1,6 @@
 import { Card, Col, Row, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import imageAddSuccess from '@/assets/resource-management-success.svg';
-import CommonModal from '@/components/CommonModal';
 import CustomEditButton from '@/components/CustomEditButton';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
@@ -15,31 +13,25 @@ import HandleChanges from './components/HandleChanges';
 import styles from './index.less';
 
 const EmploymentTab = (props) => {
-  const {
-    dispatch,
-    listEmployeeActive,
-    permissions = {},
-    employeeProfile = {},
-    loadingReportees = false,
-  } = props;
+  const { dispatch, permissions = {}, employeeProfile = {}, loadingReportees = false } = props;
 
   const {
-    originData: { generalData = {}, employmentData = {}, compensationData = {} } = {},
-    isUpdateEmployment = false,
+    employmentData = {},
+    compensationData = {},
+    employmentData: {
+      title = {},
+      location = {},
+      department = {},
+      employeeType = {},
+      manager = {},
+      reportees = [],
+      generalInfo = {},
+    } = {},
     employee = '',
     isProfileOwner = false,
   } = employeeProfile;
 
-  const {
-    title = {},
-    location = {},
-    department = {},
-    employeeType = {},
-    manager = {},
-    reportees = [],
-  } = employmentData || {};
-
-  const { firstName = '', legalName = '' } = generalData || {};
+  const { firstName = '', legalName = '' } = generalInfo || {};
   const { compensationType = '', currentAnnualCTC = '' } = compensationData || {};
 
   const [isChanging, setIsChanging] = useState(false);
@@ -49,8 +41,6 @@ const EmploymentTab = (props) => {
   const [currentData, setCurrentData] = useState({});
   const [changedData, setChangedData] = useState({});
   const [currentPayload, setCurrentPayload] = useState({});
-
-  const visibleSuccess = employeeProfile ? employeeProfile.visibleSuccess : false;
 
   const fetchData = () => {
     dispatch({
@@ -74,12 +64,6 @@ const EmploymentTab = (props) => {
   };
 
   useEffect(() => {
-    if (isUpdateEmployment) {
-      setIsEdit(false);
-    }
-  }, []);
-
-  useEffect(() => {
     if (employee) {
       fetchData();
     }
@@ -99,7 +83,7 @@ const EmploymentTab = (props) => {
         currentAnnualCTC: currentAnnualCTC || null,
       });
     }
-  }, [JSON.stringify(reportees), JSON.stringify(generalData), JSON.stringify(employmentData)]);
+  }, [JSON.stringify(reportees), JSON.stringify(employmentData)]);
 
   const handleMakeChanges = async () => {
     setCurrent(0);
@@ -118,7 +102,7 @@ const EmploymentTab = (props) => {
       employeeType: employeeType.name,
       currentAnnualCTC,
       compensationType,
-      manager: manager?.generalInfoInfo?.legalName,
+      manager: manager?.generalInfo?.legalName,
       reportees: currentData.reportees.length,
     };
 
@@ -179,8 +163,8 @@ const EmploymentTab = (props) => {
       notifyTo: data.stepFive.notifyTo || [],
       effectiveDate: data.stepOne.effectDate || Date.now(),
       changeDate: new Date(),
-      id: data.employee,
-      employee: data.employee,
+      id: employee,
+      employee,
       changedBy: data.changedBy,
       tenantId: getCurrentTenant(),
       type: data.stepOne.type,
@@ -193,10 +177,13 @@ const EmploymentTab = (props) => {
       if (payload[array[i]] === null || payload[array[i]] === undefined) delete payload[array[i]];
     }
     await dispatch({
-      type: 'employeeProfile/updateEmployment',
-      payload,
+      type: 'employeeProfile/patchEmployment',
+      payload: {
+        _id: employee,
+        ...payload,
+      },
     });
-    await dispatch({ type: 'employeeProfile/addNewChangeHistory', payload }).then((res) => {
+    dispatch({ type: 'employeeProfile/addNewChangeHistory', payload }).then((res) => {
       if (res.statusCode === 200) {
         fetchChangeHistories(currentPayload);
       }
@@ -224,14 +211,6 @@ const EmploymentTab = (props) => {
 
   const previousTab = () => {
     setCurrent(current - 1);
-  };
-
-  const handleCancelModelSuccess = () => {
-    dispatch({
-      type: 'employeeProfile/save',
-      payload: { visibleSuccess: false },
-    });
-    setIsEdit(false);
   };
 
   const options = () => {
@@ -265,7 +244,6 @@ const EmploymentTab = (props) => {
               {isEdit ? (
                 <EditCurrentInfo
                   handleCancel={handleEditCurrentInfo}
-                  listEmployeeActive={listEmployeeActive}
                   isProfileOwner={isProfileOwner}
                 />
               ) : (
@@ -313,30 +291,6 @@ const EmploymentTab = (props) => {
           </Card>
         </Col>
       </Row>
-
-      <CommonModal
-        width={550}
-        visible={visibleSuccess}
-        hasFooter={false}
-        onClose={handleCancelModelSuccess}
-        onFinish={handleCancelModelSuccess}
-        hasHeader={false}
-        content={
-          <>
-            <div style={{ textAlign: 'center', paddingTop: 24 }}>
-              <img src={imageAddSuccess} alt="update success" />
-            </div>
-            <br />
-            <br />
-            <p style={{ textAlign: 'center', color: '#707177', fontWeight: 500 }}>
-              Update information successfully
-            </p>
-            <div className={styles.spaceFooterModalSuccess}>
-              <CustomPrimaryButton onClick={handleCancelModelSuccess}>Okay</CustomPrimaryButton>
-            </div>
-          </>
-        }
-      />
     </div>
   );
 };

@@ -30,7 +30,6 @@ import {
   getDesignationList,
   getDepartmentList,
   getProjectTypeList,
-  getListEmployeeSingleCompany,
   getDivisionList,
   // common
   getEmployeeScheduleByLocation,
@@ -702,7 +701,7 @@ const TimeSheet = {
     *fetchEmployeeNameListEffect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getListEmployeeSingleCompany, {
+        response = yield call(getEmployeeList, {
           company: getCurrentCompany(),
           ...payload,
           tenantId: getCurrentTenant(),

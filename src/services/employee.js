@@ -21,17 +21,16 @@ export async function EmployeeTypeFilter(payload) {
   });
 }
 
-export async function DepartmentFilter(payload) {
-  return request('/api/departmenttenant/list', {
-    method: 'POST',
-    data: payload,
+export async function getDepartmentList(params) {
+  return request('/api/departmenttenant', {
+    method: 'GET',
+    params,
   });
 }
 
-export async function getListEmployee(payload, params) {
-  return request('/api/employeetenant/list', {
-    method: 'POST',
-    data: payload,
+export async function getListEmployee(params) {
+  return request('/api/employeetenant', {
+    method: 'GET',
     params,
   });
 }

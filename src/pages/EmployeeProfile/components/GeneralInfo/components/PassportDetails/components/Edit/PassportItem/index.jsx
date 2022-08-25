@@ -153,15 +153,6 @@ class PassportItem extends Component {
             </div>
           ) : (
             <div className={s.viewUpLoadData}>
-              {/* <p
-                onClick={() =>
-                  this.handleOpenModalReview(
-                    passportData[index]?.urlFile ? passportData[index].urlFile.url : '',
-                  )}
-                className={s.viewUpLoadDataURL}
-              >
-                {fileName}
-              </p> */}
               <p className={s.viewUpLoadDataText}>Uploaded</p>
               <img
                 src={cancelIcon}

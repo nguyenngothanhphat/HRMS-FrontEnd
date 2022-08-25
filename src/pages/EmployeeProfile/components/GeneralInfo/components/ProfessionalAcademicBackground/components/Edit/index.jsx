@@ -1,8 +1,9 @@
 /* eslint-disable react/jsx-curly-newline */
 import { Form, Input } from 'antd';
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
 import { connect } from 'umi';
+import { getCurrentCompany } from '@/utils/authority';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import FormCertification from './components/FormCertification';
@@ -13,119 +14,53 @@ const formItemLayout = {
   wrapperCol: { span: 12 },
 };
 
-// const { Option } = Select;
-
-@connect(
-  ({
+const Edit = (props) => {
+  const {
+    dispatch,
+    handleCancel = () => {},
     loading,
+    isProfileOwner = false,
     employeeProfile: {
-      originData: { generalData: generalDataOrigin = {}, compensationData = {} } = {},
-      tempData: { generalData = {} } = {},
-      listSkill = [],
       employee = '',
-      // listTitle = [],
+      listSkill = [],
+      employmentData: { generalInfo = {} } = {},
     } = {},
-    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
-  }) => ({
-    loading: loading.effects['employeeProfile/updateGeneralInfo'],
-    loadingAddNewSkill: loading.effects['employeeProfile/addNewSkill'],
-    generalDataOrigin,
-    generalData,
-    myEmployeeID,
-    listSkill,
-    // listTitle,
-    compensationData,
-    employee,
-  }),
-)
-class Edit extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      notValid: false,
-      newSkillList: [],
+  } = props;
+
+  const [notValid, setNotValid] = useState(false);
+  const [newSkills, setNewSkills] = useState([]);
+
+  const {
+    preJobTitle = '',
+    skills = [],
+    preCompany = '',
+    linkedIn = '',
+    totalExp = 0,
+    qualification = '',
+  } = generalInfo;
+
+  let { certification = [{}] } = generalInfo;
+  certification = certification?.length > 0 ? certification : [{}];
+
+  const getIdSkill = skills.map((item) => {
+    return {
+      label: item.name,
+      value: item._id,
     };
-  }
+  });
 
-  handleFormChange = (changedValues) => {
-    const { generalDataOrigin, generalData, dispatch } = this.props;
-    const payload = { ...generalData, ...changedValues };
-    const isModified = JSON.stringify(payload) !== JSON.stringify(generalDataOrigin);
-    dispatch({
-      type: 'employeeProfile/saveTemp',
-      payload: { generalData: payload },
-    });
-    dispatch({
-      type: 'employeeProfile/save',
-      payload: { isModified },
-    });
-    if (changedValues.certification) {
-      this.checkCertification(changedValues.certification);
-    }
-  };
-
-  checkCertification = (listCertification) => {
+  const checkCertification = (listCertification) => {
     const listNoName = listCertification.filter((item) => !item.name);
-    if (listNoName.length > 0) {
-      this.setState({ notValid: true });
-    } else {
-      this.setState({ notValid: false });
+    setNotValid(listNoName.length > 0);
+  };
+
+  const handleFormChange = (changedValues) => {
+    if (changedValues.certification) {
+      checkCertification(changedValues.certification);
     }
   };
 
-  processDataChanges = (newSkills) => {
-    const { generalData: generalDataTemp } = this.props;
-    const { newSkillList } = this.state;
-    const listSkill = [];
-    newSkills.forEach((item) => {
-      if (!item.__isNew__) {
-        listSkill.push(item.value ? item.value : item._id);
-      }
-    });
-    const {
-      preJobTitle = '',
-      // skills = [],
-      preCompany = '',
-      linkedIn = '',
-      totalExp = 0,
-      qualification = '',
-      certification = [],
-      // otherSkills = '',
-      _id: id = '',
-    } = generalDataTemp;
-    const payloadChanges = {
-      id,
-      preJobTitle,
-      skills: newSkillList.length > 0 ? listSkill.concat(newSkillList) : listSkill,
-      preCompany,
-      linkedIn,
-      totalExp,
-      qualification,
-      certification,
-      // otherSkills: otherSkills instanceof Array ? otherSkills : [otherSkills]
-    };
-    return payloadChanges;
-  };
-
-  processDataKept = () => {
-    const { generalData } = this.props;
-    const newObj = { ...generalData };
-    const listKey = [
-      'preJobTitle',
-      'skills',
-      'preCompany',
-      'linkedIn',
-      'totalExp',
-      'qualification',
-      'certification',
-      // 'otherSkills',
-    ];
-    listKey.forEach((item) => delete newObj[item]);
-    return newObj;
-  };
-
-  handleRemoveCertification = ({ _id: id }) => {
-    const { dispatch } = this.props;
+  const handleRemoveCertification = ({ _id: id }) => {
     dispatch({
       type: 'employeeProfile/removeCertification',
       payload: {
@@ -134,10 +69,7 @@ class Edit extends PureComponent {
     });
   };
 
-  handleUpdateCertification = (list) => {
-    const { dispatch, compensationData = {}, employee = '' } = this.props;
-    const { company = {} } = compensationData;
-
+  const handleUpdateCertification = (list) => {
     list.forEach((element) => {
       if (element._id && element.name) {
         dispatch({
@@ -155,7 +87,7 @@ class Edit extends PureComponent {
             name: element?.name || '',
             urlFile: element?.urlFile,
             employee,
-            company,
+            company: getCurrentCompany(),
           },
         });
       } else if (element._id) {
@@ -169,9 +101,7 @@ class Edit extends PureComponent {
     });
   };
 
-  handleChangeSkill = (value) => {
-    const { dispatch } = this.props;
-    const { newSkillList } = this.state;
+  const handleChangeSkill = (value) => {
     if (value.length > 0) {
       value.forEach(async (item) => {
         if (item.__isNew__ === true) {
@@ -180,9 +110,9 @@ class Edit extends PureComponent {
             payload: {
               name: item.label,
             },
-          }).then((response) => {
-            if (response.data._id) {
-              this.setState({ newSkillList: [...newSkillList, response.data._id] });
+          }).then((res) => {
+            if (res.statusCode === 200) {
+              setNewSkills([...newSkills, res.data?._id]);
             }
           });
         }
@@ -190,130 +120,112 @@ class Edit extends PureComponent {
     }
   };
 
-  handleSave = async () => {
-    const {
-      dispatch,
-      generalData,
-      // listSkill = [],
-      generalData: { employee = '' } = {},
-      myEmployeeID = '',
-    } = this.props;
-    const check = employee === myEmployeeID;
-    const { skills } = generalData;
-    const newSkills = skills.filter((e) => e !== 'Other');
-    const payload = this.processDataChanges(newSkills) || {};
-    const dataTempKept = this.processDataKept() || {};
-    const { certification } = payload;
-    await this.handleUpdateCertification(certification);
-    await dispatch({
+  const onFinish = async (values) => {
+    const payload = {
+      _id: employee,
+      generalInfo: {
+        preJobTitle: values.preJobTitle,
+        skills: [...values.skills.map((x) => x.value), ...newSkills],
+        preCompany: values.preCompany,
+        linkedIn: values.linkedIn,
+        totalExp: values.totalExp,
+        qualification: values.qualification,
+        certification: values.certification,
+      },
+    };
+    await handleUpdateCertification(payload.generalInfo?.certification);
+    const res = await dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload,
-      dataTempKept,
-      key: 'openAcademic',
-      isLinkedIn: check,
     });
+    if (res.statusCode === 200) {
+      handleCancel();
+    }
   };
 
-  render() {
-    const {
-      generalData,
-      handleCancel = () => {},
-      listSkill = [],
-      loading,
-      // listTitle = [],
-      isProfileOwner = false,
-    } = this.props;
-    const { notValid } = this.state;
-    const {
-      preJobTitle = '',
-      skills = [],
-      preCompany = '',
-      linkedIn = '',
-      totalExp = 0,
-      qualification = '',
-      // otherSkills = [],
-    } = generalData;
-    let { certification = [{}] } = generalData;
-    certification = certification?.length > 0 ? certification : [{}];
-    // const getIdSkill = skills.map((item) => item._id);
-    const getIdSkill = skills.map((item) => {
-      return {
-        label: item.name,
-        value: item._id,
-      };
-    });
-    // const newOtherSkills = otherSkills.length > 0 ? otherSkills : [];
-    // const verifySkillOther = skills.filter((item) => item === 'Other');
-    return (
-      <div className={s.root}>
-        <Form
-          name="basic"
-          initialValues={{
-            preJobTitle,
-            preCompany,
-            linkedIn,
-            totalExp,
-            qualification,
-            skills: getIdSkill,
-            // otherSkills: newOtherSkills,
-            certification,
-          }}
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...formItemLayout}
-          onFinish={this.handleSave}
-          requiredMark={false}
-          className={s.form}
-          labelAlign="left"
-          colon={false}
-          onValuesChange={this.handleFormChange}
-        >
-          <div className={s.formContainer}>
-            <Form.Item label="Previous Job Tilte" name="preJobTitle">
-              <Input disabled={!isProfileOwner} placeholder="Type the previous job title" />
-            </Form.Item>
-            <Form.Item label="Previous Company" name="preCompany">
-              <Input disabled={!isProfileOwner} placeholder="Type the previous company" />
-            </Form.Item>
-            <Form.Item label="Total Experience" name="totalExp">
-              <Input disabled={!isProfileOwner} placeholder="Type the total experience" />
-            </Form.Item>
-            <Form.Item label="Highest Qualification" name="qualification">
-              <Input disabled={!isProfileOwner} placeholder="Type the highest qualification" />
-            </Form.Item>
-            <Form.Item label="Linkedin" name="linkedIn">
-              <Input className={s.linkedIn} placeholder="Type the linkedin url" />
-            </Form.Item>
-            <Form.Item name="certification" className={s.certificationContainer}>
-              <FormCertification
-                notValid={notValid}
-                handleRemoveCertification={this.handleRemoveCertification}
-              />
-            </Form.Item>
-            <Form.Item label="Skills" name="skills">
-              <CreatableSelect
-                isMulti
-                onChange={(value) => this.handleChangeSkill(value)}
-                options={listSkill
-                  .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((item) => {
-                    return {
-                      label: item.name,
-                      value: item._id,
-                    };
-                  })}
-              />
-            </Form.Item>
-          </div>
-          <div className={s.viewFooter}>
-            <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
-            <CustomPrimaryButton type="primary" htmlType="submit" loading={loading}>
-              Save
-            </CustomPrimaryButton>
-          </div>
-        </Form>
-      </div>
-    );
-  }
-}
+  return (
+    <div className={s.root}>
+      <Form
+        name="backgroundForm"
+        initialValues={{
+          preJobTitle,
+          preCompany,
+          linkedIn,
+          totalExp,
+          qualification,
+          skills: getIdSkill,
+          certification,
+        }}
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...formItemLayout}
+        onFinish={onFinish}
+        requiredMark={false}
+        className={s.form}
+        labelAlign="left"
+        colon={false}
+        onValuesChange={handleFormChange}
+      >
+        <div className={s.formContainer}>
+          <Form.Item label="Previous Job Title" name="preJobTitle">
+            <Input disabled={!isProfileOwner} placeholder="Type the previous job title" />
+          </Form.Item>
+          <Form.Item label="Previous Company" name="preCompany">
+            <Input disabled={!isProfileOwner} placeholder="Type the previous company" />
+          </Form.Item>
+          <Form.Item label="Total Experience" name="totalExp">
+            <Input disabled={!isProfileOwner} placeholder="Type the total experience" />
+          </Form.Item>
+          <Form.Item label="Highest Qualification" name="qualification">
+            <Input disabled={!isProfileOwner} placeholder="Type the highest qualification" />
+          </Form.Item>
+          <Form.Item label="LinkedIn" name="linkedIn">
+            <Input className={s.linkedIn} placeholder="Type the linkedin url" />
+          </Form.Item>
+          <Form.Item name="certification" className={s.certificationContainer}>
+            <FormCertification
+              notValid={notValid}
+              handleRemoveCertification={handleRemoveCertification}
+            />
+          </Form.Item>
+          <Form.Item label="Skills" name="skills">
+            <CreatableSelect
+              isMulti
+              onChange={(value) => handleChangeSkill(value)}
+              options={listSkill
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((item) => {
+                  return {
+                    label: item.name,
+                    value: item._id,
+                  };
+                })}
+            />
+          </Form.Item>
+        </div>
+        <div className={s.viewFooter}>
+          <CustomSecondaryButton onClick={handleCancel}>Cancel</CustomSecondaryButton>
+          <CustomPrimaryButton
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            form="backgroundForm"
+          >
+            Save
+          </CustomPrimaryButton>
+        </div>
+      </Form>
+    </div>
+  );
+};
 
-export default Edit;
+export default connect(
+  ({
+    loading,
+    employeeProfile = {},
+    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
+  }) => ({
+    loading: loading.effects['employeeProfile/updateGeneralInfo'],
+    employeeProfile,
+    myEmployeeID,
+  }),
+)(Edit);

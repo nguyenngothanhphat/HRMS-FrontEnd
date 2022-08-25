@@ -4,9 +4,8 @@ import { connect } from 'umi';
 import TableEmployees from './components/TableEmployees';
 import styles from './index.less';
 
-@connect(({ user: { currentUser = {} }, loading }) => ({
+@connect(({ user: { currentUser = {} } }) => ({
   currentUser,
-  loadingProfile: loading.effects['employeeProfile/fetchGeneralInfo'],
 }))
 class GlobalEmployeeSearch extends Component {
   constructor(props) {

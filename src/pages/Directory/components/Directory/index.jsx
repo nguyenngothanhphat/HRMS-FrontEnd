@@ -1,16 +1,12 @@
 import { Skeleton, Tabs } from 'antd';
 import React, { Suspense, useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
+import { isEmpty } from 'lodash';
 import iconDownload from '@/assets/download-icon-yellow.svg';
 import CustomOrangeButton from '@/components/CustomOrangeButton';
 import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
-import {
-  getCurrentCompany,
-  getCurrentLocation,
-  getCurrentTenant,
-  isOwner,
-} from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { exportArrayDataToCsv, exportRawDataToCSV } from '@/utils/exportToCsv';
 import { goToTop } from '@/utils/utils';
 import AddEmployeeModal from './components/AddEmployeeModal';
@@ -109,41 +105,26 @@ const DirectoryComponent = (props) => {
 
   const renderData = (params = {}) => {
     goToTop();
-
     const { active, myTeam, inActive } = tabList;
-
-    const currentCompany = getCurrentCompany();
-    const currentLocation = getCurrentLocation();
-    const {
-      // country = [], state = [],
-      page = 1,
-      company = [],
-    } = params;
+    const { page = 1 } = params;
 
     // if there are location & company, call API
     const checkCallAPI =
       companiesOfUser.length > 0 && companyLocationList.length > 0 && listCountry.length > 0;
 
     if (checkCallAPI) {
-      // MULTI COMPANY & LOCATION PAYLOAD
-      let companyPayload = [];
-      const companyList = companiesOfUser.filter(
-        (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
-      );
-      const isOwnerCheck = isOwner();
-      // OWNER
-      if (!currentLocation && isOwnerCheck) {
-        if (company.length !== 0) {
-          companyPayload = companyList.filter((lo) => company.includes(lo?._id));
-        } else {
-          companyPayload = [...companyList];
-        }
-      } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
       const payload = {
         ...params,
-        company: isOwnerCheck ? getCurrentCompany() : companyPayload,
+        company: getCurrentCompany(),
         tenantId: getCurrentTenant(),
       };
+      if (params.managers) {
+        payload.managers = [params.managers];
+      }
+      if (!isEmpty(params.ids)) {
+        payload.ids = [params.ids];
+      }
+
       setPageSelected(page || 1);
 
       // permissions to view tab
@@ -154,10 +135,9 @@ const DirectoryComponent = (props) => {
       if (viewTabActive && tabId === active) {
         dispatch({
           type: 'employee/fetchListEmployeeActive',
-          payload,
           params: {
-            page: payload.page,
-            limit: payload.limit,
+            ...payload,
+            status: ['ACTIVE'],
           },
         });
       }
@@ -182,8 +162,10 @@ const DirectoryComponent = (props) => {
       if (viewTabInActive && tabId === inActive) {
         dispatch({
           type: 'employee/fetchListEmployeeInActive',
-          payload,
-          params,
+          params: {
+            ...payload,
+            status: ['INACTIVE'],
+          },
         });
       }
     }
