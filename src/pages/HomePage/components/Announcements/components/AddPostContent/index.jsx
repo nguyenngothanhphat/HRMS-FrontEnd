@@ -230,11 +230,26 @@ const AddPostContent = (props) => {
     const tempAllValues = { ...allValues };
     const commonFunc = (name) => {
       let { fileList: fileListTemp = [] } = tempAllValues[name] || {};
+      const { file: fileTemp = {} } = tempAllValues[name] || {};
       fileListTemp = fileListTemp.filter((x) => beforeUpload(x));
-      setFileList([...fileListTemp]);
-      if (tempAllValues[name]) {
-        tempAllValues[name].fileList = fileListTemp;
+      let check = false;
+
+      // on change upload file & check upload file type
+      if (Object.keys(fileTemp).length) {
+        // check status and type of the new upload file
+        if (fileTemp.status !== 'removed') {
+          check = fileTemp.type?.includes('video');
+          fileListTemp = fileListTemp.filter((x) => !x.type.includes('video'));
+        }
+
+        setFileList(check ? [fileTemp] : [...fileListTemp]);
+
+        if (tempAllValues[name]) {
+          tempAllValues[name].fileList = check ? [fileTemp] : fileListTemp;
+        }
       }
+
+      // default return other values if uploadFile don't have any change
       return tempAllValues;
     };
     return commonFunc('uploadFiles');

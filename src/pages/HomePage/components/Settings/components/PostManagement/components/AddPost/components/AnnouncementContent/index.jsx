@@ -1,4 +1,4 @@
-import { Form, Input, Select, Upload } from 'antd';
+import { Form, Input, message, Select, Upload } from 'antd';
 import React from 'react';
 import AttachmentIcon from '@/assets/attachment.svg';
 import styles from './index.less';
@@ -13,6 +13,18 @@ const AnnouncementContent = (props) => {
     isUpload = false,
     isURL = false,
   } = props;
+  const beforeUpload = (file) => {
+    const fileRegex = /image[/](jpg|jpeg|png)|video[/](mp4|mov)/gim;
+    const checkType = fileRegex.test(file.type);
+    if (!checkType) {
+      message.error('You can only upload PNG/JPG/JPEG/MP4/MOV files');
+    }
+    const isLt5M = file.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
+      message.error('File must smaller than 5MB!');
+    }
+    return (checkType && isLt5M) || Upload.LIST_IGNORE;
+  };
 
   return (
     <div className={styles.AnnouncementContent}>
@@ -59,6 +71,7 @@ const AnnouncementContent = (props) => {
           fileList={[...defaultFileList]}
           multiple
           disabled={isURL}
+          beforeUpload={beforeUpload}
         >
           <div className={styles.drapperBlock}>
             <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" />

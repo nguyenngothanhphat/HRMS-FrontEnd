@@ -5,19 +5,19 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import CustomPrimaryButton from '@/components/CustomPrimaryButton';
 import CustomSecondaryButton from '@/components/CustomSecondaryButton';
+import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import { TAB_IDS } from '@/constants/homePage';
 import { FILE_TYPE, UPLOAD } from '@/constants/upload';
-import { beforeUpload, compressImage } from '@/utils/upload';
+import { uploadFirebaseMultiple } from '@/services/firebase';
+import { beforeUpload } from '@/utils/upload';
 import { getCurrentCompanyObj } from '@/utils/utils';
 import AnnouncementContent from './components/AnnouncementContent';
-import { DATE_FORMAT_YMD } from '@/constants/dateFormat';
 import BannerContent from './components/BannerContent';
 import BirthdayContent from './components/BirthdayContent';
 import ImagesContent from './components/ImagesContent';
 import PollContent from './components/PollContent';
 import Preview from './components/Preview';
 import styles from './index.less';
-import { uploadFirebaseMultiple } from '@/services/firebase';
 
 // A: ANNOUNCEMENT
 // B: BIRTHDAY/ANNIVERSARY
@@ -251,11 +251,30 @@ const AddPost = (props) => {
 
     const commonFunc = (name) => {
       let { fileList: fileListTemp = [] } = tempAllValues[name] || {};
-      fileListTemp = fileListTemp.filter((x) => beforeUpload(x, [FILE_TYPE.IMAGE]));
-      setFileList([...fileListTemp]);
-      if (tempAllValues[name]) {
-        tempAllValues[name].fileList = fileListTemp;
+      const { file: fileTemp = {} } = tempAllValues[name] || {};
+      const isAnnouncements = (x) =>
+        name === 'uploadFilesA'
+          ? beforeUpload(x, [FILE_TYPE.IMAGE, FILE_TYPE.VIDEO], 5)
+          : beforeUpload(x, [FILE_TYPE.IMAGE], 3);
+      fileListTemp = fileListTemp.filter((x) => isAnnouncements(x));
+      let check = false;
+
+      // on change upload file & check upload file type
+      if (Object.keys(fileTemp).length) {
+        // check status and type of the new upload file
+        if (fileTemp.status !== 'removed') {
+          check = fileTemp.type?.includes('video');
+          fileListTemp = fileListTemp.filter((x) => !x.type.includes('video'));
+        }
+
+        setFileList(check ? [fileTemp] : [...fileListTemp]);
+
+        if (tempAllValues[name]) {
+          tempAllValues[name].fileList = check ? [fileTemp] : fileListTemp;
+        }
       }
+
+      // default return other values if uploadFile don't have any change
       return tempAllValues;
     };
 

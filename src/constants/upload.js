@@ -20,6 +20,7 @@ export const UPLOAD = {
   TYPE_FILE: {
     IMAGE: 'image',
     PDF: 'pdf',
+    VIDEO: 'video',
     ATTACHMENT: 'attachment',
     LANGUAGE: 'language',
     ROOT: 'root',
