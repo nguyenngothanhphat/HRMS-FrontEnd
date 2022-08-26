@@ -46,27 +46,31 @@ class NewCandidateForm extends PureComponent {
           rookieID: reId,
           tenantId: getCurrentTenant(),
         },
-      }).then(({ data }) => {
+      }).then(({ data, statusCode }) => {
         if (!data) {
           return;
         }
-        const { _id, currentStep = '' } = data;
+        if (statusCode === 200) {
+          const { _id, currentStep = '' } = data;
 
-        const find = ONBOARDING_FORM_STEP_LINK.find((l) => l.link === tabName) || {};
-        if (currentStep <= find.id) {
-          const currentComponent = ONBOARDING_FORM_STEP_LINK.find((l) => l.id === currentStep);
-          if (currentComponent) {
-            history.push(`/onboarding/list/view/${reId}/${currentComponent.link}`);
+          const find = ONBOARDING_FORM_STEP_LINK.find((l) => l.link === tabName) || {};
+          if (currentStep <= find.id) {
+            const currentComponent = ONBOARDING_FORM_STEP_LINK.find((l) => l.id === currentStep);
+            if (currentComponent) {
+              history.push(`/onboarding/list/view/${reId}/${currentComponent.link}`);
+            }
           }
+          this.renderListMenu();
+          dispatch({
+            type: 'optionalQuestion/save',
+            payload: {
+              candidate: _id,
+              data: {},
+            },
+          });
+        } else {
+          history.push(`/onboarding/list/all`);
         }
-        this.renderListMenu();
-        dispatch({
-          type: 'optionalQuestion/save',
-          payload: {
-            candidate: _id,
-            data: {},
-          },
-        });
       });
       dispatch({
         type: 'newCandidateForm/fetchEmployeeTypeList',
