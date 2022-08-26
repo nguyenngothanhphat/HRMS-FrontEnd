@@ -21,13 +21,14 @@ const ModalAddInfo = (props) => {
     onCancel = () => {},
     visible,
     dispatch,
-    listRelation,
-    listSkill,
-    generalId,
     loading,
-    employee,
-    location,
-    generalData = {},
+    employeeProfile: {
+      employmentData: { location = {} } = {},
+      tempData: { generalData = {} } = {},
+      listRelation = [],
+      listSkill = [],
+      employee = '',
+    } = {},
   } = props;
   const [currentStep, setCurrentStep] = useState(0);
   const [newSkillList, setListNewSkill] = useState([]);
@@ -252,12 +253,14 @@ const ModalAddInfo = (props) => {
 
     let payload = {
       tenantId: getCurrentTenant(),
-      id: generalId,
-      isUpdatedProfile: true,
-      isNewComer: false,
-      incomeTaxRule: values.incomeTaxRule || '',
-      ...resultForm,
-      maritalStatus,
+      _id: employee,
+      generalInfo: {
+        isUpdatedProfile: true,
+        isNewComer: false,
+        incomeTaxRule: values.incomeTaxRule || '',
+        ...resultForm,
+        maritalStatus,
+      },
     };
 
     if (country === 'IN') {
@@ -272,10 +275,8 @@ const ModalAddInfo = (props) => {
       payload = { ...payload, taxDetails, uanNumber: nationalId };
     }
 
-    // payload = removeEmptyFields(payload);
-
     dispatch({
-      type: 'employeeProfile/updateFirstGeneralInfo',
+      type: 'employeeProfile/updateFirstComer',
       payload,
     });
   };
@@ -1378,26 +1379,7 @@ const ModalAddInfo = (props) => {
   );
 };
 
-export default connect(
-  ({
-    loading,
-    employeeProfile: {
-      originData: {
-        generalData: { _id: generalId = '' } = {},
-        employmentData: { location = {} } = {},
-      } = {},
-      tempData: { generalData = {} } = {},
-      listRelation = [],
-      listSkill = [],
-      employee,
-    } = {},
-  }) => ({
-    loading: loading.effects['employeeProfile/updateFirstGeneralInfo'],
-    location,
-    generalId,
-    generalData,
-    listSkill,
-    listRelation,
-    employee,
-  }),
-)(ModalAddInfo);
+export default connect(({ loading, employeeProfile = {} }) => ({
+  loading: loading.effects['employeeProfile/updateFirstComer'],
+  employeeProfile,
+}))(ModalAddInfo);

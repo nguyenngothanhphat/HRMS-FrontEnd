@@ -11,7 +11,7 @@ class AddCommentModalContent extends PureComponent {
   onFinish = async (values, obj) => {
     const payload = {
       commentResource: values.comment,
-      id: obj?.employeeId,
+      _id: obj?.employeeId,
     };
     const { dispatch, refreshData = () => {}, onClose = () => {} } = this.props;
     await dispatch({

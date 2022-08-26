@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-indent */
 import { Card } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
 import CustomEditButton from '@/components/CustomEditButton';
 import Edit from './components/Edit';
@@ -9,72 +9,40 @@ import styles from './index.less';
 
 const EmergencyContact = (props) => {
   const {
-    generalData,
-    openContactDetails,
-    permissions = {},
     isProfileOwner = false,
-    generalDataOrigin,
-    dispatch,
+    employeeProfile: { employmentData = {} } = {},
+    user: { permissions = {} } = {},
   } = props;
 
-  const handleEdit = () => {
-    dispatch({
-      type: 'employeeProfile/saveOpenEdit',
-      payload: { openContactDetails: true },
-    });
-  };
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleCancel = () => {
-    const { emergencyContactDetails = [] } = generalDataOrigin;
-    const reverseFields = { emergencyContactDetails };
-    const payload = { ...generalData, ...reverseFields };
-    const isModified = JSON.stringify(payload) !== JSON.stringify(generalDataOrigin);
-
-    dispatch({
-      type: 'employeeProfile/saveTemp',
-      payload: { generalData: payload },
-    });
-    dispatch({
-      type: 'employeeProfile/save',
-      payload: { isModified },
-    });
-    dispatch({
-      type: 'employeeProfile/saveOpenEdit',
-      payload: { openContactDetails: false },
-    });
+    setIsEditing(false);
   };
 
   const options = () => {
-    return openContactDetails
-      ? ''
-      : (permissions.editEmergencyContact !== -1 || isProfileOwner) && (
-          <CustomEditButton onClick={handleEdit}>Edit</CustomEditButton>
-        );
+    return (
+      !isEditing &&
+      (permissions.editEmergencyContact !== -1 || isProfileOwner) && (
+        <CustomEditButton onClick={() => setIsEditing(true)}>Edit</CustomEditButton>
+      )
+    );
   };
-
-  const renderComponent = openContactDetails ? (
-    <Edit handleCancel={handleCancel} />
-  ) : (
-    <View dataAPI={generalData} />
-  );
 
   return (
     <Card className={styles.EmergencyContact} title="Emergency Contact Details" extra={options()}>
-      <div className={styles.container}>{renderComponent}</div>
+      <div className={styles.container}>
+        {isEditing ? (
+          <Edit handleCancel={handleCancel} dataAPI={employmentData.generalInfo} />
+        ) : (
+          <View dataAPI={employmentData.generalInfo} />
+        )}
+      </div>
     </Card>
   );
 };
 
-export default connect(
-  ({
-    employeeProfile: {
-      editGeneral: { openContactDetails = false },
-      originData: { generalData: generalDataOrigin = {} } = {},
-      tempData: { generalData = {} } = {},
-    } = {},
-  }) => ({
-    openContactDetails,
-    generalDataOrigin,
-    generalData,
-  }),
-)(EmergencyContact);
+export default connect(({ employeeProfile = {}, user }) => ({
+  employeeProfile,
+  user,
+}))(EmergencyContact);

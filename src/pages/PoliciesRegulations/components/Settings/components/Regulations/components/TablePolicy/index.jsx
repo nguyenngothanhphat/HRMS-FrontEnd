@@ -148,19 +148,13 @@ class TablePolicy extends Component {
       },
       {
         title: 'Added By',
-        dataIndex: 'infoEmployee',
+        dataIndex: 'employee',
         sorter: {
           compare: (a, b) =>
-            a.infoEmployee[0].generalInfoInfo.legalName.localeCompare(
-              b.infoEmployee[0].generalInfoInfo.legalName,
-            ),
+            a?.employee?.generalInfo?.legalName.localeCompare(b?.employee?.generalInfo?.legalName),
         },
-        render: (infoEmployee) => {
-          if (infoEmployee && infoEmployee.length > 0) {
-            const { legalName = '' } = infoEmployee[0] || [];
-            return <span>{legalName}</span>;
-          }
-          return '';
+        render: (employee) => {
+          return <span>{employee?.generalInfo?.legalName || ''}</span>;
         },
       },
       {

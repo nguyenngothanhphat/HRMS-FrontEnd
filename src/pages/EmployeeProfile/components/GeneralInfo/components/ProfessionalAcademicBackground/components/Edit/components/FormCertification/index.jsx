@@ -102,7 +102,7 @@ const CertificationInput = ({
                     placeholder="Enter name"
                   />
                   {list.length > 1 ? (
-                    <Popconfirm onConfirm={() => handleRemoveBtn(i)}>
+                    <Popconfirm title="Sure to remove?" onConfirm={() => handleRemoveBtn(i)}>
                       <MinusCircleOutlined className={s.iconRemove} />
                     </Popconfirm>
                   ) : null}

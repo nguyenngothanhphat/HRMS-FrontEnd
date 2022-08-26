@@ -12,7 +12,7 @@ import CustomSearchBox from '@/components/CustomSearchBox';
 import FilterCountTag from '@/components/FilterCountTag';
 import FilterPopover from '@/components/FilterPopover';
 import UserProfilePopover from '@/components/UserProfilePopover';
-import { TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
+import { STATUS_OF_REPORT, TYPE_TICKET_APPROVAL } from '@/constants/dashboard';
 import { DATE_FORMAT_MDY } from '@/constants/dateFormat';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { getEmployeeUrl } from '@/utils/utils';
@@ -101,10 +101,14 @@ const ApprovalPage = (props) => {
         fetchListTicket();
       }
     } else {
+      const status =
+        record.status === STATUS_OF_REPORT.PENDING
+          ? STATUS_OF_REPORT.APPROVED
+          : STATUS_OF_REPORT.RE_APPROVED;
       response = await dispatch({
         type: 'dashboard/approveTimeSheetRequest',
         payload: {
-          status: TYPE_TICKET_APPROVAL.APPROVED,
+          status,
           ticketId,
         },
       });

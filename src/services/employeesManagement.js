@@ -42,10 +42,10 @@ export async function getJobTitleList(payload) {
   });
 }
 
-export async function getReportingManagerList(params) {
-  return request('/api/employeetenant/list', {
-    method: 'POST',
-    data: params,
+export async function getEmployeeList(params) {
+  return request('/api/employeetenant', {
+    method: 'GET',
+    params,
   });
 }
 

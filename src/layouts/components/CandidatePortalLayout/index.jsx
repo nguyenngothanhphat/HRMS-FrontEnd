@@ -122,11 +122,11 @@ const CandidatePortalLayout = React.memo((props) => {
           candidate: candidate._id,
         },
       });
-    } else {
-      dispatch({
-        type: 'user/fetchCurrent',
-      });
-    }
+    } else
+      window.location.pathname !== '/candidate' &&
+        dispatch({
+          type: 'user/fetchCurrent',
+        });
   }, [candidate]);
 
   useEffect(() => {

@@ -11,7 +11,7 @@ const DeleteCommentModalContent = (props) => {
       type: 'resourceManagement/updateComment',
       payload: {
         commentResource: '',
-        id: handlingRow?.employeeId,
+        _id: handlingRow?.employeeId,
       },
     });
     onClose();

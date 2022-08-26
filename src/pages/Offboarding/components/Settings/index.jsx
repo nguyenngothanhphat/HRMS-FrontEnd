@@ -6,10 +6,7 @@ import CustomEmails from './components/CustomEmails';
 import DocsTemplates from './components/DocsTemplates';
 import Forms from './components/Forms';
 
-@connect(({ info: { currentStep = 0, displayComponent = {} } = {} }) => ({
-  currentStep,
-  displayComponent,
-}))
+@connect()
 class Settings extends PureComponent {
   render() {
     const listMenu = [

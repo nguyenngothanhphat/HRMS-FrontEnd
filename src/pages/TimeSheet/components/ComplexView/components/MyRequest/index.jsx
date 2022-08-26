@@ -7,6 +7,7 @@ import CommonTable from '@/components/CommonTable';
 import ViewIcon from '@/assets/dashboard/open.svg';
 import TimesheetDetailModal from './components/TimesheetDetailModal';
 import styles from './index.less';
+import { STATUS_OF_REPORT } from '@/constants/dashboard';
 
 const MyRequest = (props) => {
   const {
@@ -111,9 +112,9 @@ const MyRequest = (props) => {
             <div
               className={
                 // eslint-disable-next-line no-nested-ternary
-                status.toLowerCase() === 'pending'
+                [STATUS_OF_REPORT.PENDING, STATUS_OF_REPORT.RE_SUBMIT].includes(status)
                   ? styles.status__Pending
-                  : status.toLowerCase() === 'approved'
+                  : [STATUS_OF_REPORT.APPROVED, STATUS_OF_REPORT.RE_APPROVED].includes(status)
                   ? styles.status__Approved
                   : styles.status__Rejected
               }

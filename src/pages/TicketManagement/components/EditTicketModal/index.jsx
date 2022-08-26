@@ -96,7 +96,7 @@ const EditTicketModal = (props) => {
     }
 
     return dispatch({
-      type: 'ticketManagement/fetchListEmployee',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: value,
         status: ['ACTIVE'],
@@ -134,6 +134,7 @@ const EditTicketModal = (props) => {
       setQueryTypeList([]);
       setUploadedAttachments([]);
       setIsUploadFile(false);
+      setIsEdit(false);
     };
   }, [visible]);
 

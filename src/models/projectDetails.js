@@ -18,7 +18,6 @@ import {
   assignResources,
   getResourceList,
   getResourceTypeList,
-  countStatusResource,
   getResourceOfProject,
   updateResourceOfProject,
   removeResourceOfProject,
@@ -36,7 +35,6 @@ import {
   getSkillList,
   getTitleList,
   getDivisionList,
-  getEmployeeList,
 } from '@/services/projectDetails';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
@@ -642,29 +640,6 @@ const ProjectDetails = {
         if (statusCode !== 200) throw response;
         notification.success({
           message,
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response;
-    },
-
-    *fetchEmployeeListEffect({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getEmployeeList, {
-          ...payload,
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-        });
-        const { statusCode, data = [] } = response;
-        if (statusCode !== 200) throw response;
-
-        yield put({
-          type: 'save',
-          payload: {
-            employeeList: data,
-          },
         });
       } catch (errors) {
         dialog(errors);

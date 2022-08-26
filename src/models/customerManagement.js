@@ -3,7 +3,6 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
   getCustomerList,
   getCompaniesList,
-  getEmployeeList,
   addCustomer,
   genCustomerID,
   getTagList,
@@ -153,23 +152,6 @@ const customerManagement = {
         dialog(error);
       }
       hide();
-      return response;
-    },
-
-    *fetchEmployeeList({ payload }, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getEmployeeList, {
-          ...payload,
-          tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
-        });
-        const { statusCode, data = {} } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { employeeList: data } });
-      } catch (errors) {
-        dialog(errors);
-      }
       return response;
     },
 

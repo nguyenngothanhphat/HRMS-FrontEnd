@@ -58,6 +58,7 @@ const TicketDetailsForm = (props) => {
 
   useEffect(() => {
     if (chats?.length) setArrayChats(chats.reverse());
+    else setArrayChats([]);
   }, [chats]);
 
   const findRole = () => {

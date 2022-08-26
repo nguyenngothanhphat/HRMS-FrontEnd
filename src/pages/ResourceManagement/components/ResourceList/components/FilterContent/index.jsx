@@ -35,7 +35,7 @@ const FilterContent = (props) => {
       });
     }
     return dispatch({
-      type: 'resourceManagement/getListEmployee',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: val,
         status: ['ACTIVE'],
@@ -291,7 +291,6 @@ const FilterContent = (props) => {
 
 export default connect(
   ({
-    loading,
     resourceManagement: {
       projectList = [],
       employeeList = [],
@@ -301,7 +300,6 @@ export default connect(
       listSkill = [],
     } = {},
   }) => ({
-    loadingFetchEmployeeNameList: loading.effects['resourceManagement/getListEmployee'],
     projectList,
     employeeList,
     divisions,

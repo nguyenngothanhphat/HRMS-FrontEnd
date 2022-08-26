@@ -8,9 +8,7 @@ import {
   getEmployeeDetailById,
   getRoleList,
   updateEmployee,
-  updateRolesByEmployee,
   getRolesByEmployee,
-  updateGeneralInfo,
   resetPasswordByEmail,
   getFilterList,
 } from '../services/usersManagement';
@@ -35,10 +33,14 @@ const usersManagement = {
     total: 0,
   },
   effects: {
-    *fetchEmployeesList({ payload = {}, params }, { call, put }) {
+    *fetchEmployeesList({ params }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getEmployeesList, payload, params);
+        response = yield call(getEmployeesList, {
+          ...params,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data: employeeList = [] } = response;
         if (statusCode !== 200) throw response;
 
@@ -49,7 +51,7 @@ const usersManagement = {
 
         yield put({
           type: 'save',
-          payload: { currentPayload: payload },
+          payload: { currentPayload: params },
         });
       } catch (errors) {
         dialog(errors);
@@ -129,9 +131,9 @@ const usersManagement = {
       }
     },
 
-    *removeEmployee({ payload = {} }, { call }) {
+    *removeEmployee({ payload = {}, params = {} }, { call }) {
       try {
-        const response = yield call(updateEmployee, payload);
+        const response = yield call(updateEmployee, payload, params);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -155,26 +157,6 @@ const usersManagement = {
       } catch (errors) {
         dialog(errors);
         return '';
-      }
-    },
-
-    // update role by employee
-    *updateRolesByEmployee({ payload = {} }, { call }) {
-      try {
-        const response = yield call(updateRolesByEmployee, payload);
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *updateGeneralInfo({ payload = {} }, { call }) {
-      try {
-        const response = yield call(updateGeneralInfo, payload);
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
-      } catch (errors) {
-        dialog(errors);
       }
     },
     *resetPasswordByEmail({ email = '' }, { call }) {

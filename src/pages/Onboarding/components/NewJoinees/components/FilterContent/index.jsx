@@ -21,7 +21,7 @@ const Filter = (props) => {
       });
     }
     return dispatch({
-      type: 'onboarding/fetchEmployeeList',
+      type: 'globalData/fetchEmployeeListEffect',
       payload: {
         name: val,
         status: ['ACTIVE'],

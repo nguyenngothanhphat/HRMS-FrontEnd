@@ -30,7 +30,6 @@ import {
   getDesignationList,
   getDepartmentList,
   getProjectTypeList,
-  getListEmployeeSingleCompany,
   getDivisionList,
   // common
   getEmployeeScheduleByLocation,
@@ -44,6 +43,7 @@ import {
 import { getCountry, getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { convertMsToTime, isTheSameDay, pushSuccess } from '@/utils/timeSheet';
 import { dialog } from '@/utils/utils';
+import { STATUS_OF_REPORT } from '@/constants/dashboard';
 
 const tenantId = getCurrentTenant();
 
@@ -702,7 +702,7 @@ const TimeSheet = {
     *fetchEmployeeNameListEffect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getListEmployeeSingleCompany, {
+        response = yield call(getEmployeeList, {
           company: getCurrentCompany(),
           ...payload,
           tenantId: getCurrentTenant(),
@@ -818,7 +818,7 @@ const TimeSheet = {
           ...payload,
           tenantId: getCurrentTenant(),
           companyId: getCurrentCompany(),
-          status: 'PENDING',
+          status: STATUS_OF_REPORT.RE_SUBMIT,
         });
         const { code, msg, myRequest } = response;
         if (code !== 200) throw response;

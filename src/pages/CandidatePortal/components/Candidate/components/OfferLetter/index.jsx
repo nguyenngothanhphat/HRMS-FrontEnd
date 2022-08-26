@@ -339,7 +339,6 @@ const OfferLetter = (props) => {
 // export default PreviewOffer;
 export default connect(
   ({
-    info: { previewOffer = {} } = {},
     loading,
     user: { currentUser = {} } = {},
     // newCandidateForm: { rookieId = '', tempData = {}, data = {} } = {},
@@ -350,7 +349,6 @@ export default connect(
       candidate = '',
     } = {},
   }) => ({
-    previewOffer,
     loading: loading.effects['upload/uploadFile'],
     currentUser,
     tempData,

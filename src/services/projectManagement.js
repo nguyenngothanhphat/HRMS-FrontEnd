@@ -146,13 +146,6 @@ export async function getDivisionList(payload) {
   });
 }
 
-export async function getEmployeeList(payload) {
-  return request('/api/employeetenant/list-by-single-company', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 export async function getCustomerInfo(payload) {
   return request(
     `/api-customer/customertenant/get-customer-info`,

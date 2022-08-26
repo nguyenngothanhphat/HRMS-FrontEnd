@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { connect, formatMessage } from 'umi';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
+import DebounceSelect from '@/components/DebounceSelect';
 
 const { Option } = Select;
 
@@ -21,7 +22,6 @@ const { Option } = Select;
       departmentList = [],
       jobTitleList = [],
       reportingManagerList = [],
-      statusAddEmployee,
     },
     employee: { employeetype = [] },
     user: { companiesOfUser = [], currentUser: { manageLocation = [] } = {} } = {},
@@ -34,7 +34,6 @@ const { Option } = Select;
     jobTitleList,
     employeetype,
     reportingManagerList,
-    statusAddEmployee,
     companiesOfUser,
     manageLocation, // locations of admin
     companyLocationList,
@@ -47,100 +46,26 @@ const { Option } = Select;
   }),
 )
 class AddEmployeeModal extends Component {
-  constructor(props) {
-    super(props);
-    this.formRef = React.createRef();
-    this.state = {
-      isDisabled: true,
-      isDisabledTitle: true,
-      // tenantCurrentEmployee: '',
-    };
-  }
-
-  static getDerivedStateFromProps(props) {
-    if ('statusAddEmployee' in props && props.statusAddEmployee) {
-      if (!props.company) {
-        return {
-          isDisabledTitle: true,
-          isDisabled: true,
-        };
-      }
-      return { isDisabledTitle: true };
-    }
-    return null;
-  }
-
-  // componentDidMount() {
-  //   const { company, visible = false } = this.props;
-  //   if (company) {
-  //     this.setState({
-  //       isDisabled: false,
-  //     });
-  //     this.fetchData(company);
-  //   }
-  // }
+  formRef = React.createRef();
 
   componentDidUpdate(prevProps) {
-    const { dispatch, statusAddEmployee = false, company, visible = false } = this.props;
-    if (statusAddEmployee) {
-      this.formRef.current.resetFields();
-      dispatch({
-        type: 'employeesManagement/save',
-        payload: {
-          statusAddEmployee: false,
-        },
-      });
-    }
+    const { company, visible = false } = this.props;
     if (prevProps.visible !== visible && visible && company) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({
-        isDisabled: false,
-      });
       this.fetchData(company);
     }
   }
 
   fetchData = (_id) => {
-    const { dispatch, companiesOfUser = [], companyLocationList = [] } = this.props;
+    const { dispatch, companiesOfUser = [] } = this.props;
 
     const companyMatch = companiesOfUser.find((item) => item._id === _id);
     const tenantLocation = companyMatch.tenant;
-
-    // this.setState({
-    //   tenantCurrentEmployee: companyMatch.tenant,
-    // });
-
-    const locationPayload = companyLocationList.map(
-      ({ headQuarterAddress: { country: countryItem1 = {} } = {} }) => {
-        let stateList = [];
-        companyLocationList.forEach(
-          ({ headQuarterAddress: { country: countryItem2 = {}, state: stateItem2 = '' } = {} }) => {
-            if (countryItem1?._id === countryItem2?._id) {
-              stateList = [...stateList, stateItem2];
-            }
-          },
-        );
-        return {
-          country: countryItem1?._id,
-          state: stateList,
-        };
-      },
-    );
 
     dispatch({
       type: 'employeesManagement/fetchRolesList',
       payload: {
         tenantId: tenantLocation,
         company: _id,
-      },
-    });
-
-    dispatch({
-      type: 'employeesManagement/fetchReportingManagerList',
-      payload: {
-        company: [companyMatch],
-        location: locationPayload,
-        status: ['ACTIVE'],
       },
     });
     dispatch({
@@ -166,10 +91,6 @@ class AddEmployeeModal extends Component {
     switch (type) {
       case 'company':
         this.fetchData(value);
-        this.setState({
-          isDisabled: false,
-          // company: value,
-        });
         this.formRef.current.setFieldsValue({
           location: undefined,
           title: undefined,
@@ -177,14 +98,10 @@ class AddEmployeeModal extends Component {
         });
         break;
       case 'department':
-        this.setState(
-          {
-            isDisabledTitle: false,
-          },
-          this.formRef.current.setFieldsValue({
-            title: undefined,
-          }),
-        );
+        this.formRef.current.setFieldsValue({
+          title: undefined,
+        });
+
         dispatch({
           type: 'employeesManagement/fetchJobTitleList',
           payload: {
@@ -200,33 +117,24 @@ class AddEmployeeModal extends Component {
 
   handleCancel = () => {
     const { handleCancel, dispatch, company } = this.props;
-    let isDisabled = true;
+
     let payload = {
       listCompany: [],
       departmentList: [],
       locationList: [],
       jobTitleList: [],
       reportingManagerList: [],
-      statusAddEmployee: false,
     };
     if (company) {
-      isDisabled = true;
       payload = {
         listCompany: [],
-        statusAddEmployee: false,
       };
     }
     dispatch({
       type: 'employeesManagement/save',
       payload,
     });
-    this.setState(
-      {
-        isDisabled,
-        isDisabledTitle: true,
-      },
-      () => handleCancel(),
-    );
+    handleCancel();
   };
 
   handleChangeAddEmployee = () => {};
@@ -241,10 +149,11 @@ class AddEmployeeModal extends Component {
     dispatch({
       type: 'employeesManagement/addEmployee',
       payload,
-    }).then(() => {
-      this.setState({ isDisabled: true });
-      handleCancel();
-      handleRefresh();
+    }).then((res) => {
+      if (res.statusCode === 200) {
+        handleCancel();
+        handleRefresh();
+      }
     });
   };
 
@@ -269,6 +178,28 @@ class AddEmployeeModal extends Component {
     return childCompanyList.filter((company) => company?._id === currentCompany);
   };
 
+  onEmployeeSearch = (val) => {
+    const { dispatch } = this.props;
+    if (!val) {
+      return new Promise((resolve) => {
+        resolve([]);
+      });
+    }
+    return dispatch({
+      type: 'globalData/fetchEmployeeListEffect',
+      params: {
+        search: val,
+        status: ['ACTIVE'],
+      },
+    }).then((res = {}) => {
+      const { data = [] } = res;
+      return data.map((user) => ({
+        label: user.generalInfoInfo?.legalName,
+        value: user._id,
+      }));
+    });
+  };
+
   renderAddEmployeeForm = () => {
     const formLayout = {
       labelCol: { span: 8 },
@@ -283,21 +214,17 @@ class AddEmployeeModal extends Component {
       },
     };
     const {
-      rolesList,
       employeetype,
       companyList,
       locationList,
       departmentList,
       jobTitleList,
-      reportingManagerList,
       loadingDepartment,
       loadingLocation,
       loadingTitle,
       loadingManager,
       company,
     } = this.props;
-
-    const { isDisabled, isDisabledTitle } = this.state;
 
     const formatCompanyList = this.getUserCompanyList(companyList);
 
@@ -480,7 +407,7 @@ class AddEmployeeModal extends Component {
               placeholder={formatMessage({ id: 'addEmployee.placeholder.location' })}
               showArrow
               showSearch
-              disabled={isDisabled || loadingLocation}
+              disabled={loadingLocation}
               loading={loadingLocation}
               getPopupContainer={() => document.getElementById('addEmployee__form')}
               filterOption={(input, option) =>
@@ -507,7 +434,7 @@ class AddEmployeeModal extends Component {
               showArrow
               showSearch
               loading={loadingDepartment}
-              disabled={isDisabled || loadingDepartment}
+              disabled={loadingDepartment}
               getPopupContainer={() => document.getElementById('addEmployee__form')}
               onChange={(value) => this.onChangeSelect('department', value)}
               filterOption={(input, option) =>
@@ -529,7 +456,7 @@ class AddEmployeeModal extends Component {
               placeholder={formatMessage({ id: 'addEmployee.placeholder.jobTitle' })}
               showArrow
               showSearch
-              disabled={isDisabledTitle || loadingTitle}
+              disabled={loadingTitle}
               loading={loadingTitle}
               getPopupContainer={() => document.getElementById('addEmployee__form')}
               filterOption={(input, option) =>
@@ -547,25 +474,15 @@ class AddEmployeeModal extends Component {
             name="manager"
             // rules={[{ required: true }]}
           >
-            <Select
+            <DebounceSelect
               autoComplete="dontshow"
               allowClear
-              placeholder={formatMessage({ id: 'addEmployee.placeholder.manager' })}
               showArrow
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.manager' })}
+              fetchOptions={this.onEmployeeSearch}
               showSearch
-              disabled={isDisabled || loadingManager}
-              loading={loadingManager}
-              getPopupContainer={() => document.getElementById('addEmployee__form')}
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {reportingManagerList.map((item) => (
-                <Option key={item?._id}>
-                  {`${item?.generalInfo?.firstName} ${item?.generalInfo?.lastName}`}
-                </Option>
-              ))}
-            </Select>
+              disabled={loadingManager}
+            />
           </Form.Item>
         </Form>
       </div>
