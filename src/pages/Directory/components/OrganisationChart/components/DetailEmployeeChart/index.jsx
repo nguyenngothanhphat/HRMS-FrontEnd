@@ -102,9 +102,16 @@ const DetailEmployeeChart = (props) => {
           </Popover>
         </div>
         <div className={styles.information}>
-          <span className={styles.name}>
-            {legalName || legalName} {userId ? `(${userId})` : ''}
-          </span>
+          {legalName && legalName.length > 30 ? (
+            <span>
+              <Tooltip title={legalName}>
+                <span className={styles.name}>{`${legalName.substr(0, 30)}...`}</span>
+              </Tooltip> 
+              {userId ? `(${userId})` : ''}
+            </span>
+          ) : (
+            <span className={styles.name}>{legalName || ''} {userId ? `(${userId})` : ''}</span>
+          )}
           <span className={styles.position}>
             {titleName}, {deptName}
           </span>
@@ -121,7 +128,7 @@ const DetailEmployeeChart = (props) => {
     const timezone =
       getTimezone !== '' ? getTimezone : Intl.DateTimeFormat().resolvedOptions().timeZone;
     const time = getCurrentTimeOfTimezoneOption(new Date(), timezone);
-
+    const emailId = 'Email id';
     const items = [
       {
         label: 'Mobile',
@@ -129,7 +136,7 @@ const DetailEmployeeChart = (props) => {
         copy: true,
       },
       {
-        label: 'Email id',
+        label: emailId,
         value: workEmail,
         copy: true,
       },
@@ -151,7 +158,9 @@ const DetailEmployeeChart = (props) => {
               {i.label}:
             </Col>
             <Col className={styles.eachRow__value} span={i.copy && i.value ? 14 : 16}>
-              {i.value}
+              {i.value && i.value.length > 25 && i.label === emailId
+                ? `${i.value.substr(0, 25)}...`
+                : i.value}
             </Col>
             <Col className={styles.eachRow__value} span={i.copy && i.value ? 2 : 0}>
               <Tooltip title="Copy" placement="right">
@@ -173,7 +182,7 @@ const DetailEmployeeChart = (props) => {
   const linkedInLink = getLinkedInUrl(linkedIn);
 
   return (
-    <>
+    <div className={styles.DetailEmployeeChart}>
       <div className={styles.chartSearch}>
         <div className={styles.chartSearch__name} onClick={checkObj ? onClose : null}>
           {getCurrentCompanyObj()?.name}
@@ -254,7 +263,7 @@ const DetailEmployeeChart = (props) => {
           </div>
         </Spin>
       )}
-    </>
+    </div>
   );
 };
 
