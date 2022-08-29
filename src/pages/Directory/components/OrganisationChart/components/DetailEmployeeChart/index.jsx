@@ -104,9 +104,13 @@ const DetailEmployeeChart = (props) => {
         <div className={styles.information}>
           {legalName && legalName.length > 30 ? (
             <span>
-              <Tooltip title={legalName}>
+              <Popover
+                placement="top"
+                content={<span style={{ fontWeight: 500 }}>{legalName}</span>}
+                trigger="hover"
+              >
                 <span className={styles.name}>{`${legalName.substr(0, 30)}...`}</span>
-              </Tooltip> 
+              </Popover> 
               {userId ? `(${userId})` : ''}
             </span>
           ) : (
