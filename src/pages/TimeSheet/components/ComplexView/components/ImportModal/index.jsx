@@ -1,4 +1,4 @@
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -28,6 +28,7 @@ const ImportModal = (props) => {
   const [step, setStep] = useState(1);
   const [dates, setDates] = useState(null);
   const [selectedDate, setSelectedDate] = useState(moment());
+  const [validImport, setValidImport] = useState(false);
 
   useEffect(() => {
     if (importDate) {
@@ -82,43 +83,41 @@ const ImportModal = (props) => {
   };
 
   const getDateLists = (startDate, endDate) => {
-    let datelist = [];
+    let dateList = [];
     const endDateTemp = moment(endDate).clone();
 
     if (startDate && endDate) {
       const now = moment(startDate);
       while (now.isSameOrBefore(moment(endDateTemp), 'day')) {
-        datelist = [...datelist, moment(now).locale('en').format(dateFormatAPI)];
+        dateList = [...dateList, moment(now).locale('en').format(dateFormatAPI)];
         now.add(1, 'days');
       }
     }
 
-    return datelist;
+    return dateList;
   };
 
-  const onImport = (datesProps) => {
-    const ids = [];
-    const datesTemp = getDateLists(datesProps[0], datesProps[1]);
-    importingIds.forEach((item) => {
-      item?.selectedIds.forEach((obj) => {
-        ids.push(obj.id);
+  const handleFinish = async ({ dates: dateProps = [] }, selected) => {
+    if (dateProps?.length > 1) {
+      const formatTime = (time) => moment(time, 'hh:mm a').format('HH:mm');
+      const payload = {
+        params: {
+          companyId: getCurrentCompany(),
+          employeeId,
+        },
+        data: {
+          selected: selected.map((task) => ({
+            id: task.id,
+            startTime: formatTime(task.startTime),
+            endTime: formatTime(task.endTime),
+          })),
+          dates: getDateLists(dateProps[0], dateProps[1]),
+        },
+      };
+      const res = await dispatch({
+        type: 'timeSheet/importTimesheet',
+        payload,
       });
-    });
-
-    return dispatch({
-      type: 'timeSheet/importTimesheet',
-      payload: {
-        companyId: getCurrentCompany(),
-        employeeId,
-        dates: datesTemp,
-        ids,
-      },
-    });
-  };
-
-  const handleFinish = async ({ dates: dateProp = [] }) => {
-    if (!isEmpty(dateProp)) {
-      const res = await onImport(dateProp);
       if (res.code === 200) {
         handleCancel();
         refreshData();
@@ -160,10 +159,10 @@ const ImportModal = (props) => {
           <div className={styles.containerButtons}>
             <CustomSecondaryButton onClick={() => setStep(1)}>Previous</CustomSecondaryButton>
             <CustomPrimaryButton
-              onClick={handleFinish}
               loading={loadingImportTimesheet}
               htmlType="submit"
               form="myForm"
+              disabled={!validImport}
             >
               Import
             </CustomPrimaryButton>
@@ -198,6 +197,7 @@ const ImportModal = (props) => {
             handleFinish={handleFinish}
             dates={dates}
             setDates={setDates}
+            setValid={setValidImport}
           />
         )}
       </Modal>

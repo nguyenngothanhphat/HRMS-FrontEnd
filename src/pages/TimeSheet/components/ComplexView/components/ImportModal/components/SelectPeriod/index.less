@@ -1,3 +1,6 @@
+@error_border: #FDA29B;
+@error_text: #EB5146;
+
 .SelectPeriod {
   padding: 24px;
   :global {
@@ -17,41 +20,58 @@
   .container_selectedTask {
     max-height: 336px;
     margin-top: 8px;
-    padding: 0 16px;
+    margin-bottom: 8px;
     overflow-y: scroll;
     background: #f9fafc;
     border: 1px solid #e6e6e6;
     border-radius: 8px;
-    .selectedRow {
-      padding-block: 20px;
-      &:not(:last-child) {
-        border-bottom: 1px solid #e6e6e6;
+    .selected__Date {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 !important;
+
+      .timePicker {
+        min-width: 100px !important;
       }
-      .selected__Date {
-        span {
-          display: block;
-        }
-        span:first-child {
-          margin-bottom: 5px;
-          font-weight: 400;
-          font-size: 10px;
-          text-transform: uppercase;
-        }
-        span:last-child {
-          margin-bottom: 5px;
-          color: #444444;
-          font-weight: 500;
-          font-size: 14px;
+      .overlap {
+        border: 1px solid @error_border;
+        border-radius: 4px;
+        min-width: 100px;
+        :global {
+          .ant-select-selector {
+            border: none !important;
+          }
+          .ant-select-selection-item {
+            color: @error_text;
+          }
+          .ant-select-arrow {
+            color: @error_text;
+          }
         }
       }
     }
   }
+  .overlapError {
+    color: @error_text;
+    font-size: 12px;
+  }
   .contentRight {
-    &:not(:last-child) {
-      padding-bottom: 16px;
+    margin: 16px !important;
+    padding: 16px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    &:nth-child(even) {
+      border: none;
+    }
+    &:nth-child(2n + 1) {
+      background-color: #fff;
+    }
+    &__taskContainer {
+      padding: 0 !important;
     }
     &__taskName {
-      padding-bottom: 4px;
+      padding: 0 !important;
       color: #3a70f0;
       font-weight: 600;
       font-size: 14px;

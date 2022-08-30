@@ -418,11 +418,8 @@ const TimeSheet = {
     *importTimesheet({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(
-          importTimesheet,
-          { ids: payload.ids, dates: payload.dates },
-          { ...payload, tenantId },
-        );
+        const { params, data: payloadData } = payload;
+        response = yield call(importTimesheet, payloadData, params);
         const { code, data = {}, msg = '' } = response;
         const { error = [] } = data;
         if (code !== 200) {
