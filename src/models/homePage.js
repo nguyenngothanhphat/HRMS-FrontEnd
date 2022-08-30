@@ -619,7 +619,6 @@ const homePage = {
       try {
         response = yield call(getQuickLinkList, {
           ...payload,
-          tenantId: getCurrentTenant(),
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
@@ -637,7 +636,6 @@ const homePage = {
       try {
         response = yield call(getQuickLinkList, {
           ...payload,
-          tenantId: getCurrentTenant(),
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
@@ -655,7 +653,6 @@ const homePage = {
       try {
         response = yield call(getQuickLinkList, {
           ...payload,
-          tenantId: getCurrentTenant(),
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;

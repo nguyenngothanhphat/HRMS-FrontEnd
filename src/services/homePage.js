@@ -94,7 +94,7 @@ export async function upsertCelebrationConversation(data) {
 }
 
 export async function getQuickLinkList(params) {
-  return request('/api/quicklinktenant/list', {
+  return request('/api/quicklinktenant', {
     method: 'GET',
     params,
   });

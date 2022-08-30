@@ -64,11 +64,11 @@ class QuickLinks extends Component {
 
   renderContent = () => {
     const { type = '', quickLinkListHomePage = [] } = this.props;
-    const listQuickLinks = flattenDeep(quickLinkListHomePage.map((x) => x.attachmentInfo));
+    const listQuickLinks = flattenDeep(quickLinkListHomePage.map((x) => x?.attachment));
     return (
       <div className={s.QuickLinks}>
         {!listQuickLinks.length > 0 && <EmptyComponent />}
-        {listQuickLinks.map((item) =>
+        {listQuickLinks?.map((item) =>
           type === 'link' ? this.renderLink(item) : this.renderViewPDF(item),
         )}
       </div>
