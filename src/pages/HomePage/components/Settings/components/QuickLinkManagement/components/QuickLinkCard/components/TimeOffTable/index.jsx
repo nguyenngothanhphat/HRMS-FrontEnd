@@ -56,12 +56,12 @@ const TimeOffTable = (props) => {
       },
       {
         title: 'Location',
-        dataIndex: 'locationInfo',
-        key: 'locationInfo',
+        dataIndex: 'locations',
+        key: 'locations',
         width: '10%',
-        render: (locations) => (
+        render: (locations = []) => (
           <div style={{ lineHeight: '22px' }}>
-            {locations.map((x, index) => {
+            {(locations || []).map((x, index) => {
               return (
                 <span key={x._id}>
                   {x.name}
@@ -74,26 +74,26 @@ const TimeOffTable = (props) => {
       },
       {
         title: 'File',
-        dataIndex: 'attachmentInfo',
-        key: 'attachmentInfo',
-        render: (attachments = []) => {
-          return attachments.map((x) => <div key={x._id || x.id}>{x.name}</div>);
+        dataIndex: 'attachment',
+        key: 'attachment',
+        render: (attachment = []) => {
+          return (attachment || []).map((x) => <div key={x._id || x.id}>{x.name}</div>);
         },
       },
       {
         title: 'Created By',
-        dataIndex: 'employeeInfo',
-        key: 'employeeInfo',
-        render: (employees = []) => {
-          return employees.map((employee) => (
+        dataIndex: 'employee',
+        key: 'employee',
+        render: (employee = {}) => {
+          return (
             <Link
               key={employee?._id}
               style={{ fontWeight: 500 }}
-              to={`/directory/employee-profile/${employee?.userId}`}
+              to={`/directory/employee-profile/${employee?.generalInfo?.userId}`}
             >
-              {employee?.legalName || ''}
+              {employee?.generalInfo?.legalName || ''}
             </Link>
-          ));
+          );
         },
       },
       {

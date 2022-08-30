@@ -55,12 +55,12 @@ const QuickLinkTable = (props) => {
       },
       {
         title: 'Location',
-        dataIndex: 'locationInfo',
-        key: 'locationInfo',
+        dataIndex: 'locations',
+        key: 'locations',
         width: '10%',
         render: (locations) => (
           <div style={{ lineHeight: '22px' }}>
-            {locations.map((x, index) => {
+            {(locations || []).map((x, index) => {
               return (
                 <span key={x._id}>
                   {x.name}
@@ -73,28 +73,28 @@ const QuickLinkTable = (props) => {
       },
       {
         title: 'File',
-        dataIndex: 'attachmentInfo',
-        key: 'attachmentInfo',
+        dataIndex: 'attachment',
+        key: 'attachment',
         width: '10%',
-        render: (attachments = []) => {
-          return attachments.map((x) => <div key={x._id || x.id}>{x.name}</div>);
+        render: (attachment = []) => {
+          return (attachment || []).map((x) => <div key={x._id || x.id}>{x.name}</div>);
         },
       },
       {
         title: 'Created By',
-        dataIndex: 'employeeInfo',
-        key: 'employeeInfo',
+        dataIndex: 'employee',
+        key: 'employee',
         width: '15%',
-        render: (employees = []) => {
-          return employees.map((employee) => (
+        render: (employee = {}) => {
+          return (
             <Link
               key={employee?._id}
               style={{ fontWeight: 500 }}
-              to={`/directory/employee-profile/${employee?.userId}`}
+              to={`/directory/employee-profile/${employee?.generalInfo?.userId}`}
             >
-              {employee?.legalName || ''}
+              {employee?.generalInfo?.legalName || ''}
             </Link>
-          ));
+          );
         },
       },
       {

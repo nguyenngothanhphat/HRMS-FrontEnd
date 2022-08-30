@@ -45,7 +45,7 @@ class QuickLinks extends PureComponent {
   render() {
     const { viewDocumentModal, link } = this.state;
     const { quickLinkListTimeOff } = this.props;
-    const quickLinkList = flattenDeep(quickLinkListTimeOff.map((x) => x.attachmentInfo));
+    const quickLinkList = flattenDeep(quickLinkListTimeOff.map((x) => x.attachment));
     return (
       <div className={styles.QuickLinks}>
         <Tabs defaultActiveKey="1">
