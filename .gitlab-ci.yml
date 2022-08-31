@@ -80,6 +80,7 @@ deploy-job-dev:
   tags:
     - dev-master
   script:
+    - whoami
     - kubectl patch deployment frontend-deployment -p "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"frontend\", \"image\":\"gitlab.paxanimi.ai:8150/hrms/hrms-frontend:dev-$CI_PIPELINE_ID\"}]}}}}"
   only:
     - dev
