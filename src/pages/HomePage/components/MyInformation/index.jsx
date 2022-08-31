@@ -5,7 +5,7 @@ import styles from './index.less';
 import MyTeam from './components/MyTeam';
 import MyCalendar from './components/MyCalendar';
 import MyTicket from './components/MyTicket';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { LEAVE_QUERY_TYPE } from '@/constants/timeOff';
 
 const { TabPane } = Tabs;
@@ -54,17 +54,14 @@ const MyInformation = (props) => {
   }, [status]);
 
   useEffect(() => {
-    // const roleEmployee = employee && employee?.title ? employee.title.roles : [];
-    const employeeId = employee ? employee._id : '';
-    const companyInfo = employee ? employee.company : {};
     dispatch({
       type: 'dashboard/fetchMyTeam',
       payload: {
         tenantId: getCurrentTenant(),
         roles,
-        employee: employeeId,
+        employee: employee?._id,
         status: ['ACTIVE'],
-        company: [companyInfo],
+        company: getCurrentCompany(),
       },
     });
     dispatch({

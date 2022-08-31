@@ -14,6 +14,7 @@ const GlobalSearch = (props) => {
   const { dispatch, employees, employeeDoc, tickets, keySearch, loadingFetch = false } = props;
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     if (text.length >= 3) {
@@ -160,7 +161,14 @@ const GlobalSearch = (props) => {
     </div>
   );
   return (
-    <div className={styles.globalSearch}>
+    <div
+      className={styles.globalSearch}
+      style={{
+        width: isSearching ? "30vw" : 44,
+        cursor: !isSearching ? 'pointer' : 'default',
+      }}
+      onClick={() => setIsSearching(true)}
+    >
       <Dropdown
         overlay={menu}
         trigger={['click']}
